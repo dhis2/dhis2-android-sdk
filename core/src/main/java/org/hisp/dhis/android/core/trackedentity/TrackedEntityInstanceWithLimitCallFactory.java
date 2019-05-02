@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -67,7 +66,6 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     private final Resource.Type resourceType = Resource.Type.TRACKED_ENTITY_INSTANCE;
 
     private final APICallExecutor apiCallExecutor;
-    private final D2CallExecutor d2CallExecutor;
     private final RxAPICallExecutor rxCallExecutor;
     private final ResourceHandler resourceHandler;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
@@ -82,7 +80,6 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     @Inject
     TrackedEntityInstanceWithLimitCallFactory(
             APICallExecutor apiCallExecutor,
-            D2CallExecutor d2CallExecutor,
             RxAPICallExecutor rxCallExecutor,
             ResourceHandler resourceHandler,
             UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
@@ -92,7 +89,6 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
             DHISVersionManager versionManager, TrackedEntityInstancesEndpointCallFactory endpointCallFactory) {
         this.apiCallExecutor = apiCallExecutor;
         this.rxCallExecutor = rxCallExecutor;
-        this.d2CallExecutor = d2CallExecutor;
         this.resourceHandler = resourceHandler;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.systemInfoRepository = systemInfoRepository;
@@ -104,17 +100,24 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     }
 
     public D2CallWithProgress getCall(final int teiLimit, final boolean limitByOrgUnit) {
-        D2ProgressManager progressManager = new D2ProgressManager(5);
+        D2ProgressManager progressManager = new D2ProgressManager(null);
 
-        Observable<D2Progress> observable = systemInfoRepository.download()
-                .toSingle(() -> progressManager.increaseProgressAndCompleteWithCount(SystemInfo.class))
-                .flatMapObservable(progress -> downloadInternal(progressManager, teiLimit, limitByOrgUnit));
+        Observable<D2Progress> systemInfoDownload = systemInfoRepository.download()
+                .toSingle(() -> progressManager.increaseProgress(SystemInfo.class, false))
+                .toObservable();
 
-        return rxCallExecutor.wrapObservableTransactionally(observable, true);
+        Observable<D2Progress> concatObservable = Observable.concat(
+                systemInfoDownload,
+                downloadTeis(progressManager, teiLimit, limitByOrgUnit),
+                downloadRelationshipTeis(progressManager)
+        );
+
+        return rxCallExecutor.wrapObservableTransactionally(concatObservable, true);
     }
 
-    private Observable<D2Progress> downloadInternal(D2ProgressManager progressManager,
-                                                    int teiLimit, boolean limitByOrgUnit) {
+    private Observable<D2Progress> downloadTeis(D2ProgressManager progressManager,
+                                                int teiLimit,
+                                                boolean limitByOrgUnit) {
 
         TeiQuery.Builder teiQueryBuilder = TeiQuery.builder();
         int pageSize = teiQueryBuilder.build().pageSize();
@@ -123,15 +126,17 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
         String lastUpdatedStartDate = resourceHandler.getLastUpdated(resourceType);
         teiQueryBuilder.lastUpdatedStartDate(lastUpdatedStartDate);
 
-        Observable<D2Progress> teisDownloadObservable = limitByOrgUnit
+        return limitByOrgUnit
                 ? getTrackedEntityInstancesWithLimitByOrgUnit(progressManager, teiQueryBuilder, pagingList)
                 : getTrackedEntityInstancesWithoutLimits(progressManager, teiQueryBuilder, pagingList);
+    }
 
-        return teisDownloadObservable.doOnComplete(() -> {
-            if (!versionManager.is2_29()) {
-                d2CallExecutor.executeD2Call(relationshipDownloadCallFactory.getCall());
-            }
-        });
+    private Observable<D2Progress> downloadRelationshipTeis(D2ProgressManager progressManager) {
+        return versionManager.is2_29()
+                ? Observable.empty()
+                : relationshipDownloadCallFactory.getCall().map(
+                trackedEntityInstances -> progressManager.increaseProgress(String.class, true))
+                .toObservable();
     }
 
     private Observable<D2Progress> getTrackedEntityInstancesWithLimitByOrgUnit(D2ProgressManager progressManager,
@@ -157,7 +162,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
                 .ouMode(OuMode.DESCENDANTS);
         return Single.fromCallable(() -> {
             getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
-            return progressManager.increaseProgress(TrackedEntityInstance.class, true);
+            return progressManager.increaseProgress(TrackedEntityInstance.class, false);
         }).toObservable();
     }
 

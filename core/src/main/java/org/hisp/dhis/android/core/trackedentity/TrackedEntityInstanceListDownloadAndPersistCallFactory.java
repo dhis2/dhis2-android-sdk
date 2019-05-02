@@ -115,7 +115,7 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
             d2CallExecutor.executeD2Call(persistenceCallFactory.getCall(teis));
 
             if (!versionManager.is2_29()) {
-                d2CallExecutor.executeD2Call(relationshipsCallFactory.getCall());
+                relationshipsCallFactory.getCall().blockingGet();
             }
 
             foreignKeyCleaner.cleanForeignKeyErrors();

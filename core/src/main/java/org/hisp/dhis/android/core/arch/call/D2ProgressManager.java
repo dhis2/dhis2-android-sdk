@@ -35,7 +35,7 @@ public class D2ProgressManager {
 
     private D2Progress progress;
 
-    public D2ProgressManager(int totalCalls) {
+    public D2ProgressManager(Integer totalCalls) {
         this.progress = D2Progress.empty(totalCalls);
     }
 

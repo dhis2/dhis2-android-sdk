@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core;
 
+import android.util.Log;
+
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
@@ -56,8 +58,12 @@ public class TeisCallRealIntegrationShould extends AbsStoreTestCase {
 
         d2.syncMetaData().call();
 
-        d2.trackedEntityModule().downloadTrackedEntityInstances(5,  false).asObservable().subscribe();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(5,  false).asObservable()
+                .doOnEach(e -> Log.w("EVENT", e.toString()))
+                .subscribe();
 
-        assertThat(TrackedEntityInstanceStoreImpl.create(databaseAdapter()).count() >= 5).isTrue();
+        int count = TrackedEntityInstanceStoreImpl.create(databaseAdapter()).count();
+
+        assertThat(count >= 5).isTrue();
     }
 }

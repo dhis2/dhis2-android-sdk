@@ -84,18 +84,18 @@ public class IdentifiableObjectWithStateStoreImpl<M extends Model & ObjectWithUi
         boolean deleted = false;
         if (state == State.SYNCED) {
             String whereClause = new WhereClauseBuilder()
-                    .appendKeyStringValue(BaseIdentifiableObjectModel.Columns.UID, uid)
+                    .appendKeyStringValue(UID, uid)
                     .appendKeyStringValue(STATE, State.TO_DELETE)
                     .build();
 
             deleted = deleteWhere(whereClause);
         }
 
-        if (!deleted) {
+        if (deleted) {
+            return HandleAction.Delete;
+        } else {
             setState(uid, state);
             return HandleAction.Update;
-        } else {
-            return HandleAction.Delete;
         }
     }
 

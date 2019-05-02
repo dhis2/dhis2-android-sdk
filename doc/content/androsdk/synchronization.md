@@ -16,7 +16,9 @@ In order to by able to be fully functional when offline, the SDK reproduces a re
 
 Two main strategies to download tracker data: bulk or by uid.
 
-#### Bulk download
+#### Download strategies 
+
+##### Bulk download
 
 Download a maximum of N trackedEntityInstances.
 
@@ -29,7 +31,7 @@ About scopes:
 
 - Only CAPTURE scope is used to download.
 
-#### By UID
+##### By UID
 
 Download a list of trackedEntityInstances by providing a uid list.
 
@@ -41,7 +43,47 @@ PROTECTED programs:
 
 - 
 
+#### Overwriting existing data
+
+In general all the downloaded data is stored and set as `SYNCED`. Although there are some exceptions:
+- Tracker elements with errors. 
+- Tracker elements with warnings. 
+- Tracker elements with pending updates.
+
+These exceptions ensure that no updated data or data with errors or warnings is lost during the download process.
+
 ### Upload
+
+The SDK can be used to upload data to the server.
+
+For data upload, the SDK collects the tracker elements which are set to be uploaded and creates a payload. This payload will be sent to the server.
+The **state** property of each tracker element is used to store the synchronization status of each instance.
+After an upload, the SDK will analyze the import summaries and update the **state** property of each synced element.
+
+#### Strategies
+
+- **Tracked entity instances**. The SDK uses `CREATE_AND_UPDATE` for 2.29 and `SYNC` for later versions.
+- **Single events**. The `CREATE_AND_UPDATE` strategy is used to synchronize single events.
+
+#### States
+
+- `TO_POST`. This state is set each time an element is created. When the upload method is executed all the data set to to post is collected and added to the payload for the upload.
+- `TO_UPDATE`. This state is set when an existing element is retrofitted. All the elements with this state will be collected to generate the payload for the upload.
+- `TO_DELETE`. The elements set with *to delete* state will be deleted from the server when the upload method is executed.
+- `SYNCED`. The element is synced. The elements *synced* won't be collected to form the payload for uploads.
+- `ERROR`. If one element displays an error while syncing it will be set automatically as `ERROR` after the upload. The elements with *errors* won't be collected to form the payload for uploads.
+- `WARNING`. If one element displays a warning while syncing it will be set automatically as `WARNING` after the upload. The elements with *warnings* won't be collected to form the payload for uploads.
+
+#### Server response management
+
+After an upload, the SDK will analyze the import summaries and take the next actions.
+
+- If the response success:
+    - Set the **state** property of each element to `SYNCED`.
+- If there are conflicts:
+    - Set the **state** property to `ERROR` or `WARNING` for the element with the conflict.
+    - Propagate errors and warnings from enrollments and events up to tracked entity instance level giving errors higher priority than warnings.
+    - Store the import conflicts.
 
 ## Reserved values
 

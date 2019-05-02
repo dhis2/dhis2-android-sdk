@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.event;
 
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
@@ -79,15 +80,19 @@ public class EventImportHandler {
                 break;
             }
 
+            HandleAction handleAction = null;
+
             if (eventImportSummary.reference() != null) {
                 State state = getState(eventImportSummary.status());
-                eventStore.setState(eventImportSummary.reference(), state);
+                handleAction = eventStore.setStateOrDelete(eventImportSummary.reference(), state);
                 if (state == State.ERROR || state == State.WARNING) {
                     parentState = parentState == State.ERROR ? State.ERROR : state;
                 }
             }
 
-            storeEventImportConflicts(eventImportSummary, trackerImportConflictBuilder);
+            if (handleAction != HandleAction.Delete) {
+                storeEventImportConflicts(eventImportSummary, trackerImportConflictBuilder);
+            }
         }
 
         updateParentState(parentState, teiUid, enrollmentUid);

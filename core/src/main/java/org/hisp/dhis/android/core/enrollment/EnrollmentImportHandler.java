@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
@@ -89,18 +90,22 @@ public class EnrollmentImportHandler {
 
             State state = getState(enrollmentImportSummary.status());
 
+            HandleAction handleAction = null;
+
             if (enrollmentImportSummary.reference() != null) {
-                enrollmentStore.setState(enrollmentImportSummary.reference(), state);
+                handleAction = enrollmentStore.setStateOrDelete(enrollmentImportSummary.reference(), state);
                 if (state == State.ERROR || state == State.WARNING) {
                     parentState = parentState == State.ERROR ? State.ERROR : state;
                 }
             }
 
-            handleNoteImportSummary(enrollmentImportSummary.reference(), state);
+            if (handleAction != HandleAction.Delete) {
+                handleNoteImportSummary(enrollmentImportSummary.reference(), state);
 
-            storeEnrollmentImportConflicts(enrollmentImportSummary, trackerImportConflictBuilder);
+                storeEnrollmentImportConflicts(enrollmentImportSummary, trackerImportConflictBuilder);
 
-            handleEventImportSummaries(enrollmentImportSummary, trackerImportConflictBuilder, teiUid);
+                handleEventImportSummaries(enrollmentImportSummary, trackerImportConflictBuilder, teiUid);
+            }
         }
 
         updateParentState(parentState, teiUid);

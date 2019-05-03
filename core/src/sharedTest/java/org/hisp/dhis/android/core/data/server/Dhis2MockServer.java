@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.data.server;
 
 import org.hisp.dhis.android.core.data.file.IFileReader;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
@@ -76,10 +77,14 @@ public class Dhis2MockServer {
     private MockWebServer server;
     private IFileReader fileReader;
 
-    public Dhis2MockServer(IFileReader fileReader) throws IOException {
+    private Dhis2MockServer(IFileReader fileReader) throws IOException {
         this.fileReader = fileReader;
         this.server = new MockWebServer();
         this.server.start();
+    }
+
+    public Dhis2MockServer() throws IOException {
+        this(new ResourcesFileReader());
     }
 
     public void shutdown() throws IOException {

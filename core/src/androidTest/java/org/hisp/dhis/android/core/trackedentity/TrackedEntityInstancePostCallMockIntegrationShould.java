@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityDataValueSamples;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
@@ -71,7 +70,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
     public void setUp() throws IOException {
         super.setUp();
 
-        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+        dhis2MockServer = new Dhis2MockServer();
         d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
         trackedEntityInstancePostCall = getD2DIComponent(d2).trackedEntityInstancePostCall();

@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.systeminfo;
 
 import android.database.Cursor;
-import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.db.TableInfo;
@@ -37,7 +36,6 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownl
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
 import org.junit.After;
@@ -46,6 +44,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
@@ -66,7 +66,7 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+        dhis2MockServer = new Dhis2MockServer();
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 

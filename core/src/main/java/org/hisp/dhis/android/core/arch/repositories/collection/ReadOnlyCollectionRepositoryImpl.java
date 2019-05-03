@@ -66,7 +66,7 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
         this.cf = cf;
     }
 
-    private List<M> getWithoutChildren() {
+    protected List<M> getWithoutChildren() {
         return store.selectWhere(getWhereClause(), OrderByClauseBuilder.orderByFromItems(scope.orderBy()));
     }
 

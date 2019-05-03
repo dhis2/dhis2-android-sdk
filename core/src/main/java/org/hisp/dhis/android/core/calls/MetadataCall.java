@@ -113,7 +113,7 @@ public class MetadataCall implements Callable<Unit> {
 
             constantModuleDownloader.downloadMetadata().call();
 
-            smsModule.initCase().refreshMetadataIdsCallable().call();
+            smsModule.configCase().refreshMetadataIdsCallable().call();
 
             foreignKeyCleaner.cleanForeignKeyErrors();
 

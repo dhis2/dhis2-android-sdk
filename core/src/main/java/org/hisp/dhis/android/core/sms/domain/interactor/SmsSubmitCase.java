@@ -90,13 +90,21 @@ public class SmsSubmitCase {
                 mapFail(localDbRepository.getGatewayNumber().map(number -> number.length() > 0),
                         PreconditionFailed.Type.NO_GATEWAY_NUMBER_SET),
                 mapFail(localDbRepository.getUserName().map(username -> username.length() > 0),
-                        PreconditionFailed.Type.NO_USER_LOGGED_IN)
+                        PreconditionFailed.Type.NO_USER_LOGGED_IN),
+                mapFail(localDbRepository.getMetadataIds().map(ids -> ids.lastSyncDate != null),
+                        PreconditionFailed.Type.NO_METADATA_DOWNLOADED),
+                mapFail(localDbRepository.isModuleEnabled(),
+                        PreconditionFailed.Type.SMS_MODULE_DISABLED)
         );
     }
 
     private Completable mapFail(Single<Boolean> precondition, PreconditionFailed.Type failType) {
         return precondition.flatMapCompletable(success ->
-                success ? Completable.complete() : Completable.error(new PreconditionFailed(failType)));
+                success ? Completable.complete() : Completable.error(new Throwable()))
+                .onErrorResumeNext(error ->
+                        // on any error return this one
+                        Completable.error(new PreconditionFailed(failType))
+                );
     }
 
     public static class PreconditionFailed extends Throwable {
@@ -116,7 +124,9 @@ public class SmsSubmitCase {
             NO_RECEIVE_SMS_PERMISSION,
             NO_SEND_SMS_PERMISSION,
             NO_GATEWAY_NUMBER_SET,
-            NO_USER_LOGGED_IN
+            NO_USER_LOGGED_IN,
+            NO_METADATA_DOWNLOADED,
+            SMS_MODULE_DISABLED
         }
     }
 }

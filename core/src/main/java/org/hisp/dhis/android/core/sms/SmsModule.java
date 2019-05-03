@@ -28,7 +28,7 @@ public class SmsModule {
         this.webApiRepository = webApiRepository;
     }
 
-    public ConfigCase initCase() {
+    public ConfigCase configCase() {
         return new ConfigCase(webApiRepository, localDbRepository);
     }
 

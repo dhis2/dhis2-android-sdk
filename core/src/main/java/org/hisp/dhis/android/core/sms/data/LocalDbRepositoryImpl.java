@@ -212,7 +212,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     public Single<Boolean> isModuleEnabled() {
         return Single.fromCallable(() ->
                 context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
-                        .getBoolean(KEY_MODULE_ENABLED, false)
+                        .getBoolean(KEY_MODULE_ENABLED, true)
         );
     }
 }

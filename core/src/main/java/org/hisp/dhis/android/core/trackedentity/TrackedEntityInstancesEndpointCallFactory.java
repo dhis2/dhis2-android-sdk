@@ -28,13 +28,12 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 import retrofit2.Call;
 
@@ -53,6 +52,7 @@ public final class TrackedEntityInstancesEndpointCallFactory {
         return trackedEntityInstanceService.getTrackedEntityInstances(
                 Utils.joinCollectionWithSeparator(trackerQuery.orgUnits(), ";"),
                 trackerQuery.ouMode().name(), TrackedEntityInstanceFields.allFields, Boolean.TRUE,
-                trackerQuery.page(), trackerQuery.pageSize(), trackerQuery.lastUpdatedStartDate(), true);
+                trackerQuery.page(), trackerQuery.pageSize(), trackerQuery.lastUpdatedStartDate(), true,
+                true);
     }
 }

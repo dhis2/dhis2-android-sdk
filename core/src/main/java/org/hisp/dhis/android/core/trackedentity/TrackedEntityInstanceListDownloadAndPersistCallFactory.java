@@ -103,7 +103,7 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
                 if (program == null) {
                     Call<Payload<TrackedEntityInstance>> teiCall =
                             trackedEntityInstanceService.getTrackedEntityInstance(uid,
-                                    TrackedEntityInstanceFields.allFields, true);
+                                    TrackedEntityInstanceFields.allFields, true, true);
                     teiList = apiCallExecutor.executePayloadCall(teiCall);
                 } else {
                     teiList = downloadGlassAware(uid, program);
@@ -148,6 +148,6 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
 
     private Call<TrackedEntityInstance> getTeiByProgram(String uid, String program) {
         return trackedEntityInstanceService.getTrackedEntityInstanceByProgram(uid, program,
-                TrackedEntityInstanceFields.allFields, true);
+                TrackedEntityInstanceFields.allFields, true, true);
     }
 }

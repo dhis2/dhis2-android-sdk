@@ -64,6 +64,7 @@ public interface TrackedEntityInstanceService {
     String STRATEGY = "strategy";
     String LAST_UPDATED_START_DATE = "lastUpdatedStartDate";
     String REASON = "reason";
+    String INCLUDE_DELETED = "includeDeleted";
 
     @POST(TRACKED_ENTITY_INSTANCES)
     Call<TEIWebResponse> postTrackedEntityInstances(
@@ -74,14 +75,16 @@ public interface TrackedEntityInstanceService {
     Call<Payload<TrackedEntityInstance>> getTrackedEntityInstance(
             @Query(TRACKED_ENTITY_INSTACE) String trackedEntityInstance,
             @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
-            @Query(INCLUDE_ALL_ATTRIBUTES) boolean includeAllAttributes);
+            @Query(INCLUDE_ALL_ATTRIBUTES) boolean includeAllAttributes,
+            @Query(INCLUDE_DELETED) boolean includeDeleted);
 
     @GET(TRACKED_ENTITY_INSTANCES + "/{" + TRACKED_ENTITY_INSTACE + "}")
     Call<TrackedEntityInstance> getTrackedEntityInstanceByProgram(
             @Path(TRACKED_ENTITY_INSTACE) String trackedEntityInstanceUid,
             @Query(PROGRAM) String program,
             @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
-            @Query(INCLUDE_ALL_ATTRIBUTES) boolean includeAllAttributes);
+            @Query(INCLUDE_ALL_ATTRIBUTES) boolean includeAllAttributes,
+            @Query(INCLUDE_DELETED) boolean includeDeleted);
 
     @GET(TRACKED_ENTITY_INSTANCES)
     Call<Payload<TrackedEntityInstance>> getTrackedEntityInstances(
@@ -92,7 +95,8 @@ public interface TrackedEntityInstanceService {
             @Query(PAGE) int page,
             @Query(PAGE_SIZE) int pageSize,
             @Query(LAST_UPDATED_START_DATE) String lastUpdatedStartDate,
-            @Query(INCLUDE_ALL_ATTRIBUTES) boolean includeAllAttributes);
+            @Query(INCLUDE_ALL_ATTRIBUTES) boolean includeAllAttributes,
+            @Query(INCLUDE_DELETED) boolean includeDeleted);
 
     @GET(TRACKED_ENTITY_INSTANCES + "/query")
     Call<SearchGrid> query(

@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.Payload;
@@ -41,6 +39,7 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
@@ -80,7 +79,8 @@ public final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactor
             for (String uid : relationships) {
                 try {
                     retrofit2.Call<Payload<TrackedEntityInstance>> teiCall =
-                            service.getTrackedEntityInstance(uid, TrackedEntityInstanceFields.allFields, true);
+                            service.getTrackedEntityInstance(uid, TrackedEntityInstanceFields.allFields,
+                                    true, true);
 
                     teis.addAll(apiCallExecutor.executePayloadCall(teiCall));
                 } catch (D2Error ignored) {

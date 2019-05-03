@@ -29,9 +29,11 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -50,6 +52,15 @@ public final class UidsHelper {
     public static <O extends IdentifiableObject> Set<String> addUids(Set<String> uids, Collection<O> objects) {
         for (IdentifiableObject object: objects) {
             uids.add(object.uid());
+        }
+        return uids;
+    }
+
+    public static <O extends ObjectWithUidInterface> List<String> getUids(List<O> objects) {
+        List<String> uids = new ArrayList<>(objects.size());
+        int i = 0;
+        for (O o: objects) {
+            uids.add(o.uid());
         }
         return uids;
     }

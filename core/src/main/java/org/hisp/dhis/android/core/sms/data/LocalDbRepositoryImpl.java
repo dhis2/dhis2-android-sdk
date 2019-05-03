@@ -11,7 +11,6 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;
@@ -19,7 +18,8 @@ import org.hisp.dhis.smscompression.models.Metadata;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
+
+import javax.inject.Inject;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -39,6 +39,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     private final static String KEY_CONFIRMATION_SENDER = "confirmationsender";
     private final static String KEY_WAITING_RESULT_TIMEOUT = "reading_timeout";
 
+    @Inject
     public LocalDbRepositoryImpl(Context ctx,
                                  UserModule userModule,
                                  TrackedEntityModule trackedEntityModule,
@@ -137,25 +138,19 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     @Override
     public Single<Event> getEventToSubmit(String eventUid, String teiUid) {
         return Single.fromCallable(() ->
-                trackedEntityModule.trackedEntityDataValues.byEvent().eq(eventUid).get()
-        ).map(values ->
-                eventModule.events.byUid().eq(eventUid).one().get().toBuilder()
+                eventModule.events.withTrackedEntityDataValues()
+                        .byUid().eq(eventUid).one().get().toBuilder()
                         .trackedEntityInstance(teiUid)
-                        .trackedEntityDataValues(values)
                         .build()
         );
     }
 
     @Override
     public Single<TrackedEntityInstance> getTeiEnrollmentToSubmit(String enrollmentUid, String teiUid) {
-        return Single.fromCallable(() ->
-                trackedEntityModule.trackedEntityInstances.byUid().eq(teiUid).one().get()
-        ).map(tei -> {
+        return Single.fromCallable(() -> {
             Enrollment enrollment = enrollmentModule.enrollments.byUid().eq(enrollmentUid).one().get();
-            List<TrackedEntityAttributeValue> attributes =
-                    trackedEntityModule.trackedEntityAttributeValues.byTrackedEntityInstance().eq(teiUid).get();
-            return tei.toBuilder()
-                    .trackedEntityAttributeValues(attributes)
+            return trackedEntityModule.trackedEntityInstances.withTrackedEntityAttributeValues()
+                    .byUid().eq(teiUid).one().get().toBuilder()
                     .enrollments(Collections.singletonList(enrollment))
                     .build();
         });

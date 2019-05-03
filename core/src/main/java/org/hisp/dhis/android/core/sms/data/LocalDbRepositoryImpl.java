@@ -1,6 +1,7 @@
 package org.hisp.dhis.android.core.sms.data;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import org.hisp.dhis.android.core.ObjectMapperFactory;
 import org.hisp.dhis.android.core.common.State;
@@ -11,6 +12,7 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
@@ -25,7 +27,6 @@ import io.reactivex.Completable;
 import io.reactivex.Single;
 
 public class LocalDbRepositoryImpl implements LocalDbRepository {
-
     private final Context context;
     private final UserModule userModule;
     private final TrackedEntityModule trackedEntityModule;
@@ -38,6 +39,8 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     private final static String KEY_GATEWAY = "gateway";
     private final static String KEY_CONFIRMATION_SENDER = "confirmationsender";
     private final static String KEY_WAITING_RESULT_TIMEOUT = "reading_timeout";
+    private static final String KEY_METADATA_CONFIG = "metadata_conf";
+    private static final String KEY_MODULE_ENABLED = "module_enabled";
 
     public LocalDbRepositoryImpl(Context ctx,
                                  UserModule userModule,
@@ -169,5 +172,47 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     @Override
     public Completable updateEnrollmentSubmissionState(String enrollmentUid, State state) {
         return Completable.fromAction(() -> enrollmentStore.setState(enrollmentUid, state));
+    }
+
+    @Override
+    public Completable setMetadataDownloadConfig(WebApiRepository.GetMetadataIdsConfig config) {
+        return Completable.fromAction(() -> {
+            String value = ObjectMapperFactory.objectMapper().writeValueAsString(config);
+            SharedPreferences.Editor editor = context
+                    .getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
+                    .edit().putString(KEY_METADATA_CONFIG, value);
+            if (!editor.commit()) {
+                throw new IOException("Failed writing SMS metadata config to local storage");
+            }
+        });
+    }
+
+    @Override
+    public Single<WebApiRepository.GetMetadataIdsConfig> getMetadataDownloadConfig() {
+        return Single.fromCallable(() -> {
+            String stringVal = context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
+                    .getString(KEY_METADATA_CONFIG, null);
+            return ObjectMapperFactory.objectMapper()
+                    .readValue(stringVal, WebApiRepository.GetMetadataIdsConfig.class);
+        });
+    }
+
+    @Override
+    public Completable setModuleEnabled(boolean enabled) {
+        return Completable.fromAction(() -> {
+            boolean result = context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
+                    .edit().putBoolean(KEY_MODULE_ENABLED, enabled).commit();
+            if (!result) {
+                throw new IOException("Failed writing module enabled value to local storage");
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> isModuleEnabled() {
+        return Single.fromCallable(() ->
+                context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
+                        .getBoolean(KEY_MODULE_ENABLED, false)
+        );
     }
 }

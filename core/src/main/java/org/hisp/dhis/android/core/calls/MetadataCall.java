@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.calls;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.category.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.Unit;
@@ -38,6 +40,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModuleDownloa
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramModuleDownloader;
 import org.hisp.dhis.android.core.settings.SystemSettingModuleDownloader;
+import org.hisp.dhis.android.core.sms.SmsModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserModuleDownloader;
@@ -47,7 +50,6 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
@@ -64,6 +66,7 @@ public class MetadataCall implements Callable<Unit> {
     private final DataSetModuleDownloader dataSetDownloader;
     private final ConstantModuleDownloader constantModuleDownloader;
     private final ForeignKeyCleaner foreignKeyCleaner;
+    private final SmsModule smsModule;
 
     @Inject
     public MetadataCall(@NonNull D2CallExecutor d2CallExecutor,
@@ -75,7 +78,8 @@ public class MetadataCall implements Callable<Unit> {
                         @NonNull OrganisationUnitModuleDownloader organisationUnitDownloadModule,
                         @NonNull DataSetModuleDownloader dataSetDownloader,
                         @NonNull ConstantModuleDownloader constantModuleDownloader,
-                        @NonNull ForeignKeyCleaner foreignKeyCleaner) {
+                        @NonNull ForeignKeyCleaner foreignKeyCleaner,
+                        @NonNull SmsModule smsModule) {
         this.d2CallExecutor = d2CallExecutor;
         this.systemInfoDownloader = systemInfoDownloader;
         this.systemSettingDownloader = systemSettingDownloader;
@@ -86,6 +90,7 @@ public class MetadataCall implements Callable<Unit> {
         this.dataSetDownloader = dataSetDownloader;
         this.constantModuleDownloader = constantModuleDownloader;
         this.foreignKeyCleaner = foreignKeyCleaner;
+        this.smsModule = smsModule;
     }
 
     @Override
@@ -107,6 +112,8 @@ public class MetadataCall implements Callable<Unit> {
             organisationUnitDownloadModule.downloadMetadata(user, programs, dataSets).call();
 
             constantModuleDownloader.downloadMetadata().call();
+
+            smsModule.initCase().refreshMetadataIdsCallable().call();
 
             foreignKeyCleaner.cleanForeignKeyErrors();
 

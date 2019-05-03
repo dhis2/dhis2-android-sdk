@@ -1,6 +1,6 @@
 package org.hisp.dhis.android.core.sms;
 
-import org.hisp.dhis.android.core.sms.domain.interactor.InitCase;
+import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase;
 import org.hisp.dhis.android.core.sms.domain.interactor.QrCodeCase;
 import org.hisp.dhis.android.core.sms.domain.interactor.SmsSubmitCase;
 import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;
@@ -28,8 +28,8 @@ public class SmsModule {
         this.webApiRepository = webApiRepository;
     }
 
-    public InitCase initCase() {
-        return new InitCase(webApiRepository, localDbRepository);
+    public ConfigCase initCase() {
+        return new ConfigCase(webApiRepository, localDbRepository);
     }
 
     public QrCodeCase qrCodeCase() {

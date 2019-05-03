@@ -152,7 +152,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
     }
 
     @Test
-    public void handleImportConflictsCorrectly() throws Exception {
+    public void handle_import_conflicts_correctly() throws Exception {
         givenAMetadataInDatabase();
 
         storeTrackedEntityInstance();
@@ -162,6 +162,24 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
         d2.trackedEntityModule().trackedEntityInstances.upload().call();
 
         assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(3);
+    }
+
+    @Test
+    public void handle_tei_deletions() throws Exception {
+        givenAMetadataInDatabase();
+
+        storeTrackedEntityInstance();
+
+        TrackedEntityInstanceStoreImpl.create(databaseAdapter()).setState("teiId", State.TO_DELETE);
+
+        dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
+
+        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+
+        assertThat(d2.trackedEntityModule().trackedEntityInstances.count()).isEqualTo(0);
+        assertThat(d2.enrollmentModule().enrollments.count()).isEqualTo(0);
+        assertThat(d2.eventModule().events.count()).isEqualTo(0);
+        assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(0);
     }
 
     private void givenAMetadataInDatabase() throws Exception {
@@ -264,5 +282,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
         TrackedEntityDataValueStoreImpl.create(databaseAdapter()).insert(dataValue1);
         TrackedEntityDataValueStoreImpl.create(databaseAdapter()).insert(dataValue2);
         TrackedEntityDataValueStoreImpl.create(databaseAdapter()).insert(dataValue3);
+
+        assertThat(d2.trackedEntityModule().trackedEntityInstances.count()).isEqualTo(1);
     }
 }

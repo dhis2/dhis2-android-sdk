@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
@@ -75,17 +76,20 @@ public final class TrackedEntityInstanceImportHandler {
 
             State state = getState(teiImportSummary.status());
 
-            trackedEntityInstanceStore.setState(teiImportSummary.reference(), state);
+            HandleAction action = trackedEntityInstanceStore.setStateOrDelete(teiImportSummary.reference(), state);
 
-            storeTEIImportConflicts(teiImportSummary);
+            if (action != HandleAction.Delete) {
+                storeTEIImportConflicts(teiImportSummary);
 
-            if (teiImportSummary.enrollments() != null) {
-                EnrollmentImportSummaries importEnrollment = teiImportSummary.enrollments();
+                if (teiImportSummary.enrollments() != null) {
+                    EnrollmentImportSummaries importEnrollment = teiImportSummary.enrollments();
 
-                enrollmentImportHandler.handleEnrollmentImportSummary(
-                        importEnrollment.importSummaries(),
-                        TrackerImportConflict.builder().trackedEntityInstance(teiImportSummary.reference()),
-                        teiImportSummary.reference());
+                    enrollmentImportHandler.handleEnrollmentImportSummary(
+                            importEnrollment.importSummaries(),
+                            TrackerImportConflict.builder().trackedEntityInstance(teiImportSummary.reference()),
+                            teiImportSummary.reference());
+                }
+
             }
         }
     }

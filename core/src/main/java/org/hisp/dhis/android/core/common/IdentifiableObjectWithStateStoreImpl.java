@@ -30,10 +30,12 @@ package org.hisp.dhis.android.core.common;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
-import androidx.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.common.BaseDataModel.Columns.STATE;
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
@@ -75,6 +77,26 @@ public class IdentifiableObjectWithStateStoreImpl<M extends Model & ObjectWithUi
         setStateStatement.clearBindings();
 
         return updatedRow;
+    }
+
+    @Override
+    public HandleAction setStateOrDelete(@NonNull String uid, @NonNull State state) {
+        boolean deleted = false;
+        if (state == State.SYNCED) {
+            String whereClause = new WhereClauseBuilder()
+                    .appendKeyStringValue(UID, uid)
+                    .appendKeyStringValue(STATE, State.TO_DELETE)
+                    .build();
+
+            deleted = deleteWhere(whereClause);
+        }
+
+        if (deleted) {
+            return HandleAction.Delete;
+        } else {
+            setState(uid, state);
+            return HandleAction.Update;
+        }
     }
 
     @Override

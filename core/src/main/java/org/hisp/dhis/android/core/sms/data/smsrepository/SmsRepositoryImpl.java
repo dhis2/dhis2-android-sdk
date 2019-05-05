@@ -72,7 +72,7 @@ public class SmsRepositoryImpl implements SmsRepository {
                                    String contents, int timeoutSeconds) {
         List<String> parts = generateSmsParts(contents);
         int totalMessages = parts.size();
-        if (!askSMSCountAcceptance(e, totalMessages)) {
+        if (!askSMSCountAcceptance(e, totalMessages) && !e.isDisposed()) {
             e.onError(new SMSCountException(totalMessages));
             return;
         }
@@ -91,7 +91,9 @@ public class SmsRepositoryImpl implements SmsRepository {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException ie) {
-                e.onError(ie);
+                if (!e.isDisposed()) {
+                    e.onError(ie);
+                }
                 Utility.unregisterReceiver(context, stateReceiver);
                 return;
             }

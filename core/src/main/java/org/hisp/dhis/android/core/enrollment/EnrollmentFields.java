@@ -50,7 +50,7 @@ public final class EnrollmentFields {
     public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
     private static final String COORDINATE = "coordinate";
     static final String DELETED = "deleted";
-    private static final String EVENTS = "events";
+    static final String EVENTS = "events";
     static final String NOTES = "notes";
 
     private static FieldsHelper<Enrollment> fh = new FieldsHelper<>();

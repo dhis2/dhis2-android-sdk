@@ -201,7 +201,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     //@Test
     public void post_a_tei() throws Exception {
         downloadMetadata();
-        d2.trackedEntityModule().downloadTrackedEntityInstances(4, true).call();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(4, true).asObservable().subscribe();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
@@ -227,7 +227,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     //@Test
     public void post_more_than_one_tei() throws Exception {
         downloadMetadata();
-        d2.trackedEntityModule().downloadTrackedEntityInstances(4, true).call();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(4, true).asObservable().subscribe();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
@@ -251,7 +251,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     //@Test
     public void post_one_tei_and_delete_it() throws Exception {
         downloadMetadata();
-        d2.trackedEntityModule().downloadTrackedEntityInstances(1, true).call();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(1, true).asObservable().subscribe();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
@@ -282,7 +282,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     //@Test
     public void post_new_relationship_to_client_created_tei() throws Exception {
         downloadMetadata();
-        d2.trackedEntityModule().downloadTrackedEntityInstances(5, true).call();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(5, true).asObservable().subscribe();
 
         TrackedEntityInstance teiA = trackedEntityInstanceStore.selectFirst();
         RelationshipType relationshipType = d2.relationshipModule().relationshipTypes.get().iterator().next();
@@ -330,7 +330,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     public void create_tei_to_tei_relationship() throws Exception {
         downloadMetadata();
 
-        d2.trackedEntityModule().downloadTrackedEntityInstances(5,  false).call();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(5,  false).asObservable().subscribe();
         List<TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.selectAll();
         assertThat(trackedEntityInstances.size() >= 5).isTrue();
 
@@ -349,7 +349,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     public void create_and_delete_tei_to_tei_relationship() throws Exception {
         downloadMetadata();
 
-        d2.trackedEntityModule().downloadTrackedEntityInstances(10,  false).call();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(10,  false).asObservable().subscribe();
         List<TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.selectAll();
 
         assertThat(trackedEntityInstances.size() == 10).isTrue();

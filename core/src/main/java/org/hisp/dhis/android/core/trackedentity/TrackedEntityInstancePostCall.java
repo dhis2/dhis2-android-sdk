@@ -28,20 +28,16 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.enrollment.note.NoteToPostTransformer;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventImportHandler;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.imports.TEIWebResponse;
 import org.hisp.dhis.android.core.imports.TEIWebResponseHandler;
@@ -62,6 +58,7 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.ExcessiveImports"})
@@ -83,6 +80,8 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
     private final ObjectWithoutUidStore<Note> noteStore;
 
+    private final TEIWebResponseHandler teiWebResponseHandler;
+
     private final APICallExecutor apiCallExecutor;
 
     @Inject
@@ -96,6 +95,7 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
                                   @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
                                   @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
                                   @NonNull ObjectWithoutUidStore<Note> noteStore,
+                                  @NonNull TEIWebResponseHandler teiWebResponseHandler,
                                   @NonNull APICallExecutor apiCallExecutor) {
         this.versionManager = versionManager;
         this.relationshipDHISVersionManager = relationshipDHISVersionManager;
@@ -107,6 +107,7 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
         this.noteStore = noteStore;
+        this.teiWebResponseHandler = teiWebResponseHandler;
         this.apiCallExecutor = apiCallExecutor;
     }
 
@@ -132,7 +133,7 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
         TEIWebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
                 trackedEntityInstanceService.postTrackedEntityInstances(trackedEntityInstancePayload, strategy),
                 Collections.singletonList(409), TEIWebResponse.class);
-        handleWebResponse(webResponse);
+        teiWebResponseHandler.handleWebResponse(webResponse);
         return webResponse;
     }
 
@@ -202,21 +203,6 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
         }
 
         return trackedEntityInstancesRecreated;
-
-    }
-
-    private void handleWebResponse(TEIWebResponse webResponse) {
-        EventImportHandler eventImportHandler = new EventImportHandler(eventStore);
-
-        EnrollmentImportHandler enrollmentImportHandler = new EnrollmentImportHandler(
-                enrollmentStore, noteStore, eventImportHandler
-        );
-
-        TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler =
-                new TrackedEntityInstanceImportHandler(trackedEntityInstanceStore, enrollmentImportHandler);
-        TEIWebResponseHandler teiWebResponseHandler = new TEIWebResponseHandler(trackedEntityInstanceImportHandler);
-
-        teiWebResponseHandler.handleWebResponse(webResponse);
 
     }
 }

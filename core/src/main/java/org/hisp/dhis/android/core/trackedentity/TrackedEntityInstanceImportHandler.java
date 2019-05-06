@@ -29,55 +29,97 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 
-import androidx.annotation.NonNull;
-
+import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
 import org.hisp.dhis.android.core.imports.EnrollmentImportSummaries;
-import org.hisp.dhis.android.core.imports.ImportStatus;
+import org.hisp.dhis.android.core.imports.ImportConflict;
 import org.hisp.dhis.android.core.imports.TEIImportSummary;
+import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
+import dagger.Reusable;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.getState;
 
+@Reusable
 public final class TrackedEntityInstanceImportHandler {
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final EnrollmentImportHandler enrollmentImportHandler;
+    private final ObjectStore<TrackerImportConflict> trackerImportConflictStore;
 
+    @Inject
     TrackedEntityInstanceImportHandler(@NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
-                                       @NonNull EnrollmentImportHandler enrollmentImportHandler) {
+                                       @NonNull EnrollmentImportHandler enrollmentImportHandler,
+                                       @NonNull ObjectStore<TrackerImportConflict> trackerImportConflictStore) {
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.enrollmentImportHandler = enrollmentImportHandler;
+        this.trackerImportConflictStore = trackerImportConflictStore;
     }
 
-    public void handleTrackedEntityInstanceImportSummaries(@NonNull List<TEIImportSummary> importSummaries) {
-        if (importSummaries == null) {
+    public void handleTrackedEntityInstanceImportSummaries(List<TEIImportSummary> teiImportSummaries) {
+        if (teiImportSummaries == null) {
             return;
         }
 
-        int size = importSummaries.size();
-        for (int i = 0; i < size; i++) {
-            TEIImportSummary importSummary = importSummaries.get(i);
-
-            if (importSummary == null) {
+        for (TEIImportSummary teiImportSummary : teiImportSummaries) {
+            if (teiImportSummary == null) {
                 break;
             }
 
-            ImportStatus importStatus = importSummary.status();
-            State state = getState(importStatus);
+            State state = getState(teiImportSummary.status());
 
-            // store the state in database
-            trackedEntityInstanceStore.setState(importSummary.reference(), state);
+            HandleAction action = trackedEntityInstanceStore.setStateOrDelete(teiImportSummary.reference(), state);
 
-            if (importSummary.enrollments() != null) {
-                EnrollmentImportSummaries importEnrollment = importSummary.enrollments();
+            if (action != HandleAction.Delete) {
+                storeTEIImportConflicts(teiImportSummary);
 
-                enrollmentImportHandler.handleEnrollmentImportSummary(importEnrollment.importSummaries());
+                if (teiImportSummary.enrollments() != null) {
+                    EnrollmentImportSummaries importEnrollment = teiImportSummary.enrollments();
+
+                    enrollmentImportHandler.handleEnrollmentImportSummary(
+                            importEnrollment.importSummaries(),
+                            TrackerImportConflict.builder().trackedEntityInstance(teiImportSummary.reference()),
+                            teiImportSummary.reference());
+                }
+
+            }
+        }
+    }
+
+    private void storeTEIImportConflicts(TEIImportSummary teiImportSummary) {
+        TrackerImportConflict.Builder trackerImportConflictBuilder = TrackerImportConflict.builder()
+                .trackedEntityInstance(teiImportSummary.reference())
+                .tableReference(TrackedEntityInstanceTableInfo.TABLE_INFO.name())
+                .status(teiImportSummary.status())
+                .created(new Date());
+
+        List<TrackerImportConflict> trackerImportConflicts = new ArrayList<>();
+        if (teiImportSummary.description() != null) {
+            trackerImportConflicts.add(trackerImportConflictBuilder
+                    .conflict(teiImportSummary.description())
+                    .value(teiImportSummary.reference())
+                    .build());
+        }
+
+        if (teiImportSummary.conflicts() != null) {
+            for (ImportConflict importConflict : teiImportSummary.conflicts()) {
+                trackerImportConflicts.add(trackerImportConflictBuilder
+                        .conflict(importConflict.value())
+                        .value(importConflict.object())
+                        .build());
             }
         }
 
-
+        for (TrackerImportConflict trackerImportConflict : trackerImportConflicts) {
+            trackerImportConflictStore.insert(trackerImportConflict);
+        }
     }
 }
-

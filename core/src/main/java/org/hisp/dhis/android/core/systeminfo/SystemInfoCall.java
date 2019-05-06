@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.RxAPICallExecutor;
+import org.hisp.dhis.android.core.arch.call.CompletableProvider;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -39,20 +39,19 @@ import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.utils.Utils;
 
-import java.util.concurrent.Callable;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
 
 @Reusable
-class SystemInfoCall implements Callable<Unit> {
+class SystemInfoCall implements CompletableProvider {
     private final DatabaseAdapter databaseAdapter;
     private final SyncHandler<SystemInfo> systemInfoHandler;
     private final SystemInfoService systemInfoService;
     private final ResourceHandler resourceHandler;
     private final DHISVersionManager versionManager;
-    private final APICallExecutor apiCallExecutor;
+    private final RxAPICallExecutor apiCallExecutor;
 
     @Inject
     SystemInfoCall(DatabaseAdapter databaseAdapter,
@@ -60,7 +59,7 @@ class SystemInfoCall implements Callable<Unit> {
                    SystemInfoService systemInfoService,
                    ResourceHandler resourceHandler,
                    DHISVersionManager versionManager,
-                   APICallExecutor apiCallExecutor) {
+                   RxAPICallExecutor apiCallExecutor) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoHandler = systemInfoHandler;
         this.systemInfoService = systemInfoService;
@@ -70,24 +69,23 @@ class SystemInfoCall implements Callable<Unit> {
     }
 
     @Override
-    public Unit call() throws D2Error {
-        SystemInfo systemInfo = apiCallExecutor.executeObjectCall(
-                systemInfoService.getSystemInfo(SystemInfoFields.allFields));
+    public Completable getCompletable() {
+        return apiCallExecutor.wrapSingle(systemInfoService.getSystemInfo(SystemInfoFields.allFields))
+                .doOnSuccess(systemInfo -> {
+                    if (DHISVersion.isAllowedVersion(systemInfo.version())) {
+                        versionManager.setVersion(systemInfo.version());
+                    } else {
+                        throw D2Error.builder()
+                                .errorComponent(D2ErrorComponent.SDK)
+                                .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
+                                .errorDescription("Server DHIS version (" + systemInfo.version() + ") not valid. "
+                                        + "Allowed versions: "
+                                        + Utils.commaAndSpaceSeparatedArrayValues(DHISVersion.allowedVersionsAsStr()))
+                                .build();
+                    }
 
-        if (DHISVersion.isAllowedVersion(systemInfo.version())) {
-            versionManager.setVersion(systemInfo.version());
-        } else {
-            throw D2Error.builder()
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
-                    .errorDescription("Server DHIS version (" + systemInfo.version() + ") not valid. "
-                            + "Allowed versions: "
-                            + Utils.commaAndSpaceSeparatedArrayValues(DHISVersion.allowedVersionsAsStr()))
-                    .build();
-        }
-
-        insertOrUpdateSystemInfo(systemInfo);
-        return new Unit();
+                    insertOrUpdateSystemInfo(systemInfo);
+                }).ignoreElement();
     }
 
     private void insertOrUpdateSystemInfo(SystemInfo systemInfo) {

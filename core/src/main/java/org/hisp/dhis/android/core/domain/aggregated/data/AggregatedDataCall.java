@@ -27,37 +27,38 @@
  */
 package org.hisp.dhis.android.core.domain.aggregated.data;
 
-import androidx.annotation.NonNull;
-
+import org.hisp.dhis.android.core.arch.api.executors.RxAPICallExecutor;
+import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
+import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.call.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
-import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationQuery;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.DataValueQuery;
-import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-@SuppressWarnings("PMD.ExcessiveImports")
-final class AggregatedDataCall implements Callable<Unit> {
+import androidx.annotation.NonNull;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 
-    private final D2CallExecutor d2CallExecutor;
+@SuppressWarnings("PMD.ExcessiveImports")
+final class AggregatedDataCall {
 
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory;
@@ -66,56 +67,61 @@ final class AggregatedDataCall implements Callable<Unit> {
     private final IdentifiableObjectStore<DataSet> dataSetStore;
     private final PeriodStore periodStore;
     private final UserOrganisationUnitLinkStore organisationUnitStore;
-    private final ForeignKeyCleaner foreignKeyCleaner;
+    private final RxAPICallExecutor rxCallExecutor;
 
     @Inject
-    AggregatedDataCall(@NonNull D2CallExecutor d2CallExecutor,
-                       @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
+    AggregatedDataCall(@NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
                        @NonNull QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory,
                        @NonNull QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
                                dataSetCompleteRegistrationCallFactory,
                        @NonNull IdentifiableObjectStore<DataSet> dataSetStore,
                        @NonNull PeriodStore periodStore,
                        @NonNull UserOrganisationUnitLinkStore organisationUnitStore,
-                       @NonNull ForeignKeyCleaner foreignKeyCleaner) {
-        this.d2CallExecutor = d2CallExecutor;
+                       @NonNull RxAPICallExecutor rxCallExecutor) {
         this.systemInfoRepository = systemInfoRepository;
         this.dataValueCallFactory = dataValueCallFactory;
         this.dataSetCompleteRegistrationCallFactory = dataSetCompleteRegistrationCallFactory;
         this.dataSetStore = dataSetStore;
         this.periodStore = periodStore;
         this.organisationUnitStore = organisationUnitStore;
-        this.foreignKeyCleaner = foreignKeyCleaner;
+        this.rxCallExecutor = rxCallExecutor;
     }
 
-    @Override
-    public Unit call() throws Exception {
-        return d2CallExecutor.executeD2CallTransactionally(() -> {
-            systemInfoRepository.download().call();
+    D2CallWithProgress asCompletable() {
+        D2ProgressManager progressManager = new D2ProgressManager(3);
 
-            List<String> dataSetUids = Collections.unmodifiableList(dataSetStore.selectUids());
-            Set<String> periodIds = Collections.unmodifiableSet(
-                    selectPeriodIds(periodStore.selectAll()));
-            List<String> organisationUnitUids = Collections.unmodifiableList(
-                    organisationUnitStore.queryRootCaptureOrganisationUnitUids());
+        Observable<D2Progress> observable = systemInfoRepository.download()
+                .toSingle(() -> progressManager.increaseProgressAndCompleteWithCount(SystemInfo.class))
+                .flatMapObservable(progress -> downloadInternal(progressManager, progress));
+        return rxCallExecutor.wrapObservableTransactionally(observable, true);
+    }
 
-            DataValueQuery dataValueQuery = DataValueQuery.create(dataSetUids, periodIds, organisationUnitUids);
+    private Observable<D2Progress> downloadInternal(D2ProgressManager progressManager, D2Progress systemInfoProgress) {
+        List<String> dataSetUids = Collections.unmodifiableList(dataSetStore.selectUids());
+        Set<String> periodIds = Collections.unmodifiableSet(selectPeriodIds(periodStore.selectAll()));
+        List<String> organisationUnitUids = Collections.unmodifiableList(
+                organisationUnitStore.queryRootCaptureOrganisationUnitUids());
 
-            dataValueCallFactory.create(dataValueQuery).call();
+        DataValueQuery dataValueQuery = DataValueQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
-            DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
-                    DataSetCompleteRegistrationQuery.create(dataSetUids, periodIds, organisationUnitUids);
+        Single<D2Progress> dataValueSingle = Single.fromCallable(dataValueCallFactory.create(dataValueQuery))
+                .map(dataValues -> progressManager.increaseProgressAndCompleteWithCount(DataValue.class));
 
-            Callable<List<DataSetCompleteRegistration>> dataSetCompleteRegistrationCall =
-                    dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery);
+        DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
+                DataSetCompleteRegistrationQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
-            dataSetCompleteRegistrationCall.call();
+        Single<D2Progress> dataSetCompleteRegistrationSingle = Single.fromCallable(
+                dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery)).map(dataValues ->
+                        progressManager.increaseProgressAndCompleteWithCount(DataSetCompleteRegistration.class));
 
-            foreignKeyCleaner.cleanForeignKeyErrors();
+        @SuppressWarnings("PMD.NonStaticInitializer")
+        ArrayList<Single<D2Progress>> list = new ArrayList<Single<D2Progress>>() {{
+            add(Single.just(systemInfoProgress));
+            add(dataValueSingle);
+            add(dataSetCompleteRegistrationSingle);
+        }};
 
-            return new Unit();
-        });
-
+        return Single.merge(list).toObservable();
     }
 
     private Set<String> selectPeriodIds(Collection<Period> periods) {

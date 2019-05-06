@@ -28,13 +28,18 @@
 
 package org.hisp.dhis.android.core.imports;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceImportHandler;
 
+import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
+import dagger.Reusable;
+
+@Reusable
 public final class TEIWebResponseHandler {
     private final TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler;
 
+    @Inject
     public TEIWebResponseHandler(@NonNull TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler) {
         this.trackedEntityInstanceImportHandler = trackedEntityInstanceImportHandler;
     }
@@ -51,5 +56,4 @@ public final class TEIWebResponseHandler {
         );
 
     }
-
 }

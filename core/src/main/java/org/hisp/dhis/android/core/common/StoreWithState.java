@@ -34,6 +34,8 @@ public interface StoreWithState {
 
     int setState(@NonNull String uid, @NonNull State state);
 
+    HandleAction setStateOrDelete(@NonNull String uid, @NonNull State state);
+
     State getState(@NonNull String uid);
 
     Boolean exists(@NonNull String uid);

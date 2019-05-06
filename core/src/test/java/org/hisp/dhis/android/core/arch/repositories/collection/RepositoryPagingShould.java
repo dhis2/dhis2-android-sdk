@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.paging.RepositoryDataSource;
 import org.hisp.dhis.android.core.arch.repositories.paging.RepositoryPagingConfig;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeOrderByItem;
 import org.hisp.dhis.android.core.category.CategoryOption;
@@ -137,22 +138,26 @@ public class RepositoryPagingShould  {
     }
 
     @Test
-    public void get_after_page_objects_with_order_by() {
+    public void get_after_page_objects_with_order_by_and_filter() {
         when(key.toContentValues()).thenReturn(keyContentValues);
         when(keyContentValues.getAsString("_id")).thenReturn("5");
         when(keyContentValues.getAsString("code")).thenReturn("key-code");
         when(keyContentValues.getAsString("name")).thenReturn("key-name");
 
-        RepositoryScope updatedScope = RepositoryScopeHelper.withOrderBy(emptyScope,
+        RepositoryScope filterScope = RepositoryScopeHelper.withFilterItem(emptyScope,
+                RepositoryScopeFilterItem.builder().key("program").operator("=").value("'uid'").build());
+
+        RepositoryScope updatedScope = RepositoryScopeHelper.withOrderBy(filterScope,
                 RepositoryScopeOrderByItem.builder().column("code").direction(RepositoryScope.OrderByDirection.DESC).build());
         RepositoryScope updatedScope2 = RepositoryScopeHelper.withOrderBy(updatedScope,
                 RepositoryScopeOrderByItem.builder().column("name").direction(RepositoryScope.OrderByDirection.ASC).build());
         RepositoryDataSource<CategoryOption> dataSource = new RepositoryDataSource<>(store, updatedScope2, childrenAppenders);
         dataSource.loadAfter(new ItemKeyedDataSource.LoadParams<>(key, 3), initialCallback);
         verify(store).selectWhere(
-                "(code = 'key-code' AND name = 'key-name' AND _id > '5') OR " +
+                "((code = 'key-code' AND name = 'key-name' AND _id > '5') OR " +
                         "(code = 'key-code' AND name > 'key-name') OR " +
-                        "(code < 'key-code')",
+                        "(code < 'key-code')) " +
+                        "AND program = 'uid'",
                 "code DESC, name ASC, _id ASC",
                 3);
         verify(initialCallback).onResult(objects);

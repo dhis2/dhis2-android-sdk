@@ -58,6 +58,8 @@ public interface ObjectStore<M> extends DeletableStore {
 
     boolean deleteWhere(String whereClause);
 
+    void deleteWhereIfExists(@NonNull String uid) throws RuntimeException;
+
     int count();
 
     int countWhere(String whereClause);

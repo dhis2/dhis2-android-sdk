@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core.event;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.imports.EventWebResponse;
+import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
@@ -44,6 +43,7 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
@@ -54,18 +54,21 @@ public final class EventPostCall implements Callable<WebResponse> {
     // adapter and stores
     private final EventStore eventStore;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
+    private final EventImportHandler eventImportHandler;
 
     private final APICallExecutor apiCallExecutor;
 
     @Inject
     EventPostCall(@NonNull EventService eventService,
-                          @NonNull EventStore eventStore,
-                          @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
-                          @NonNull APICallExecutor apiCallExecutor) {
+                  @NonNull EventStore eventStore,
+                  @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
+                  @NonNull APICallExecutor apiCallExecutor,
+                  @NonNull EventImportHandler eventImportHandler) {
         this.eventService = eventService;
         this.eventStore = eventStore;
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
         this.apiCallExecutor = apiCallExecutor;
+        this.eventImportHandler = eventImportHandler;
     }
 
     @Override
@@ -113,9 +116,11 @@ public final class EventPostCall implements Callable<WebResponse> {
         if (webResponse == null || webResponse.response() == null) {
             return;
         }
-        EventImportHandler eventImportHandler = new EventImportHandler(eventStore);
         eventImportHandler.handleEventImportSummaries(
-                webResponse.response().importSummaries()
+                webResponse.response().importSummaries(),
+                TrackerImportConflict.builder(),
+                null,
+                null
         );
     }
 }

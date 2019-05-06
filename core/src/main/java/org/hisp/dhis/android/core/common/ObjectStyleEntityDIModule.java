@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -49,7 +47,7 @@ public final class ObjectStyleEntityDIModule implements ObjectWithoutUidStorePro
 
     @Provides
     @Reusable
-    public SyncHandlerWithTransformer<ObjectStyle> handler(ObjectWithoutUidStore<ObjectStyle> store) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(store);
+    public ObjectStyleHandler handler(ObjectWithoutUidStore<ObjectStyle> store) {
+        return new ObjectStyleHandlerImpl(store);
     }
 }

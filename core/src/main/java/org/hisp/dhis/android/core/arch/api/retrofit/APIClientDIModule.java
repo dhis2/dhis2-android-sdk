@@ -28,17 +28,15 @@
 
 package org.hisp.dhis.android.core.arch.api.retrofit;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.maintenance.D2ErrorStore;
+import org.hisp.dhis.android.core.arch.api.executors.APIExecutorsDIModule;
 
 import dagger.Module;
 import dagger.Provides;
-import dagger.Reusable;
 import retrofit2.Retrofit;
 
-@Module
+@Module(includes = {
+        APIExecutorsDIModule.class
+})
 public class APIClientDIModule {
 
     private final Retrofit retrofit;
@@ -50,11 +48,5 @@ public class APIClientDIModule {
     @Provides
     Retrofit retrofit() {
         return retrofit;
-    }
-
-    @Provides
-    @Reusable
-    APICallExecutor apiCallExecutor(DatabaseAdapter databaseAdapter) {
-        return new APICallExecutorImpl(D2ErrorStore.create(databaseAdapter));
     }
 }

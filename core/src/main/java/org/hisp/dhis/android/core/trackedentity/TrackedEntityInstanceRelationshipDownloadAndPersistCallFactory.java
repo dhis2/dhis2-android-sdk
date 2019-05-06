@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.Payload;
@@ -37,11 +35,12 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
+import io.reactivex.Single;
 
 @Reusable
 public final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory {
@@ -66,8 +65,8 @@ public final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactor
         this.persistenceCallFactory = persistenceCallFactory;
     }
 
-    public Callable<List<TrackedEntityInstance>> getCall() {
-        return this::downloadAndPersist;
+    public Single<List<TrackedEntityInstance>> getCall() {
+        return Single.fromCallable(this::downloadAndPersist);
     }
 
     @SuppressWarnings("PMD.EmptyCatchBlock")
@@ -80,7 +79,8 @@ public final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactor
             for (String uid : relationships) {
                 try {
                     retrofit2.Call<Payload<TrackedEntityInstance>> teiCall =
-                            service.getTrackedEntityInstance(uid, TrackedEntityInstanceFields.allFields, true);
+                            service.getTrackedEntityInstance(uid, TrackedEntityInstanceFields.allFields,
+                                    true, true);
 
                     teis.addAll(apiCallExecutor.executePayloadCall(teiCall));
                 } catch (D2Error ignored) {

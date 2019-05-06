@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
-import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
@@ -45,6 +44,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
@@ -114,13 +115,9 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
     @Override
     public Map<String, List<TrackedEntityDataValue>> queryTrackerTrackedEntityDataValues() {
 
-        String queryStatement = "SELECT TrackedEntityDataValue.* FROM (TrackedEntityDataValue" +
-                " INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid " +
-                " INNER JOIN Enrollment ON Event.enrollment = Enrollment.uid " +
-                " INNER JOIN TrackedEntityInstance ON Enrollment.trackedEntityInstance = TrackedEntityInstance.uid) " +
-                " WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE' " +
-                " OR Enrollment.state = 'TO_POST' OR Enrollment.state = 'TO_UPDATE' " +
-                " OR Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE';";
+        String queryStatement = "SELECT TrackedEntityDataValue.* " +
+                " FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid) " +
+                " WHERE Event.enrollment IS NOT NULL AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE');";
 
         return queryTrackedEntityDataValues(queryStatement);
     }

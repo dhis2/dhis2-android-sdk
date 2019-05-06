@@ -28,11 +28,9 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 
 import javax.inject.Inject;
 
@@ -40,18 +38,17 @@ import dagger.Reusable;
 
 @Reusable
 final class OptionHandler extends IdentifiableSyncHandlerImpl<Option> {
-    private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
+    private final ObjectStyleHandler styleHandler;
 
     @Inject
     OptionHandler(IdentifiableObjectStore<Option> optionStore,
-                          SyncHandlerWithTransformer<ObjectStyle> styleHandler) {
+                          ObjectStyleHandler styleHandler) {
         super(optionStore);
         this.styleHandler = styleHandler;
     }
 
     @Override
     protected void afterObjectHandled(Option option, HandleAction action) {
-        styleHandler.handle(option.style(),
-                new ObjectStyleTransformer(option.uid(), OptionTableInfo.TABLE_INFO.name()));
+        styleHandler.handle(option.style(), option.uid(), OptionTableInfo.TABLE_INFO.name());
     }
 }

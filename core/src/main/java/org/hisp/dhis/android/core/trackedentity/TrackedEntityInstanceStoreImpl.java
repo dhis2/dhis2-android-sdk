@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.common.SQLStatementWrapper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -66,9 +67,10 @@ public final class TrackedEntityInstanceStoreImpl extends IdentifiableObjectWith
     @Override
     public List<TrackedEntityInstance> queryTrackedEntityInstancesToPost() {
         String whereToPostClause = new WhereClauseBuilder()
-                .appendOrKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST)
-                .appendOrKeyStringValue(BaseDataModel.Columns.STATE, State.TO_UPDATE)
-                .appendOrKeyStringValue(BaseDataModel.Columns.STATE, State.TO_DELETE)
+                .appendInKeyStringValues(BaseDataModel.Columns.STATE, Arrays.asList(
+                        State.TO_POST.name(),
+                        State.TO_UPDATE.name(),
+                        State.TO_DELETE.name()))
                 .build();
 
         return selectWhere(whereToPostClause);

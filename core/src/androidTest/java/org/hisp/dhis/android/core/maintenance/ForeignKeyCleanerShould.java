@@ -29,17 +29,17 @@
 package org.hisp.dhis.android.core.maintenance;
 
 import android.database.Cursor;
-import androidx.test.runner.AndroidJUnit4;
 
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramRule;
@@ -62,6 +62,8 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -88,7 +90,7 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+        dhis2MockServer = new Dhis2MockServer();
 
         d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
     }
@@ -116,6 +118,33 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
 
         assertThatCursor(cursor).isExhausted();
         cursor.close();
+    }
+
+    @Test
+    public void not_cause_null_records_on_fk_table() throws Exception {
+        final D2CallExecutor executor = new D2CallExecutor(d2.databaseAdapter());
+
+        executor.executeD2CallTransactionally(() -> {
+            givenAMetadataInDatabase();
+
+            CategoryCategoryComboLink categoryCategoryComboLink = CategoryCategoryComboLink.builder()
+                    .category("no_category")
+                    .categoryCombo("no_category_combo")
+                    .sortOrder(2)
+                    .build();
+
+            d2.databaseAdapter().database().insert(CategoryCategoryComboLinkTableInfo.TABLE_INFO.name(),
+                    null, categoryCategoryComboLink.toContentValues());
+
+            ForeignKeyCleanerImpl.create(d2.databaseAdapter()).cleanForeignKeyErrors();
+
+            return null;
+        });
+
+        List<ForeignKeyViolation> foreignKeyViolationList =
+                ForeignKeyViolationStore.create(d2.databaseAdapter()).selectAll();
+
+        Truth.assertThat(foreignKeyViolationList.size()).isEqualTo(3);
     }
 
     @Test
@@ -228,7 +257,7 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
 
     private void givenAMetadataInDatabase() {
         try {
-            dhis2MockServer.enqueueMetadataResponses();
+            dhis2MockServer.setRequestDispatcher();
             d2.syncMetaData().call();
         } catch (Exception ignore) {
         }

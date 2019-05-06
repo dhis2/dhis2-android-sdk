@@ -27,18 +27,16 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.modules.MetadataModuleDownloader;
+import org.hisp.dhis.android.core.arch.modules.RxMetadataModuleDownloader;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.common.Unit;
-
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
 
 @Reusable
-public class SystemInfoModuleDownloader implements MetadataModuleDownloader<Unit> {
+public class SystemInfoModuleDownloader implements RxMetadataModuleDownloader {
 
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
 
@@ -48,7 +46,7 @@ public class SystemInfoModuleDownloader implements MetadataModuleDownloader<Unit
     }
 
     @Override
-    public Callable<Unit> downloadMetadata() {
+    public Completable downloadMetadata() {
         return systemInfoRepository.download();
     }
 }

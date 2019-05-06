@@ -89,7 +89,6 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     private void addAll(@NonNull Collection<M> collection) {
         Cursor cursor = databaseAdapter.query(builder.selectAll());
         addObjectsToCollection(cursor, collection);
-        cursor.close();
     }
 
     @Override

@@ -106,8 +106,8 @@ public abstract class SyncedDatabaseMockIntegrationShould {
         d2.syncMetaData().call();
     }
 
-    private static void downloadTrackedEntityInstances() throws Exception {
-        d2.trackedEntityModule().downloadTrackedEntityInstances(2, false).call();
+    private static void downloadTrackedEntityInstances() {
+        d2.trackedEntityModule().downloadTrackedEntityInstances(2, false).asObservable().subscribe();
     }
 
     private static void downloadEvents() throws Exception {

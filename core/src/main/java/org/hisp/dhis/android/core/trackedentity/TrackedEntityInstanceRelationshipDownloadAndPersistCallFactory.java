@@ -35,12 +35,12 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import dagger.Reusable;
+import io.reactivex.Single;
 
 @Reusable
 public final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory {
@@ -65,8 +65,8 @@ public final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactor
         this.persistenceCallFactory = persistenceCallFactory;
     }
 
-    public Callable<List<TrackedEntityInstance>> getCall() {
-        return this::downloadAndPersist;
+    public Single<List<TrackedEntityInstance>> getCall() {
+        return Single.fromCallable(this::downloadAndPersist);
     }
 
     @SuppressWarnings("PMD.EmptyCatchBlock")

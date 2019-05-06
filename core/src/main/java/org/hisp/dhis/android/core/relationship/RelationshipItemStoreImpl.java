@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.relationship;
 
 import android.database.Cursor;
-import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
@@ -41,6 +40,8 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
@@ -104,6 +105,32 @@ final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<Relation
                 .appendKeyStringValue(RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE, constraintType)
                 .build();
         return selectOneWhere(whereClause);
+    }
+
+    @Override
+    public List<String> getRelatedTeiUids(List<String> trackedEntityInstanceUids) {
+        String whereFromClause = new WhereClauseBuilder()
+                .appendInKeyStringValues(RelationshipItemFields.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUids)
+                .appendKeyStringValue(RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE,
+                        RelationshipConstraintType.FROM)
+                .build();
+        List<RelationshipItem> relationshipItems = selectWhere(whereFromClause);
+        List<String> relationshipUids = new ArrayList<>();
+        for (RelationshipItem relationshipItem : relationshipItems) {
+            relationshipUids.add(relationshipItem.relationship().uid());
+        }
+
+        String whereToClause = new WhereClauseBuilder()
+                .appendInKeyStringValues(RelationshipItemTableInfo.Columns.RELATIONSHIP, relationshipUids)
+                .appendKeyStringValue(RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE,
+                        RelationshipConstraintType.TO)
+                .build();
+        List<RelationshipItem> relatedRelationshipItems = selectWhere(whereToClause);
+        List<String> relatedTEiUids = new ArrayList<>();
+        for (RelationshipItem relationshipItem : relatedRelationshipItems) {
+            relatedTEiUids.add(relationshipItem.relationship().uid());
+        }
+        return relatedTEiUids;
     }
 
     private Cursor getAllItemsOfSameType(@NonNull RelationshipItem from, @NonNull RelationshipItem to) {

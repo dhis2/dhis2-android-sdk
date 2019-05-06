@@ -28,16 +28,18 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
 import java.util.List;
 
-interface RelationshipItemStore extends ObjectWithoutUidStore<RelationshipItem> {
+import androidx.annotation.NonNull;
+
+public interface RelationshipItemStore extends ObjectWithoutUidStore<RelationshipItem> {
     List<String> getRelationshipUidsForItems(@NonNull RelationshipItem from, @NonNull RelationshipItem to);
 
     RelationshipItem getForRelationshipUidAndConstraintType(
             @NonNull String uid,
             @NonNull RelationshipConstraintType constraintType);
+
+    List<String> getRelatedTeiUids(List<String> trackedEntityInstanceUids);
 }

@@ -1,33 +1,82 @@
 package org.hisp.dhis.android.core.sms.domain.converter;
 
+import android.annotation.SuppressLint;
+import android.util.Base64;
+
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.smscompression.SMSSubmissionWriter;
 import org.hisp.dhis.smscompression.models.Metadata;
+import org.hisp.dhis.smscompression.models.SMSSubmission;
 
-import java.util.Collection;
-
+import io.reactivex.Completable;
 import io.reactivex.Single;
 
-public abstract class Converter<P extends Converter.DataToConvert, T extends BaseDataModel> {
-    public Single<SMSSubmissionWriter> getSmsSubmissionWriter(Metadata metadata) {
-        return Single.just(new SMSSubmissionWriter(metadata));
+public abstract class Converter<P> {
+    final private LocalDbRepository localDbRepository;
+
+    public Converter(LocalDbRepository localDbRepository) {
+        this.localDbRepository = localDbRepository;
+    }
+
+    public Single<String> readAndConvert() {
+        return Single.zip(
+                localDbRepository.getMetadataIds(),
+                localDbRepository.getUserName(),
+                readItemFromDb(),
+                CompressionData::new
+        ).flatMap(
+                d -> convert(d.item, d.metadata, d.user)
+        );
     }
 
     /**
      * @param dataItem object to convert
      * @return text ready to be sent by sms
      */
-    public abstract Single<String> format(@NonNull P dataItem);
+    private Single<String> convert(@NonNull P dataItem, Metadata metadata, String user) {
+        return convert(dataItem, user).map(submission -> {
+            SMSSubmissionWriter writer = new SMSSubmissionWriter(metadata);
+            return base64(writer.compress(submission));
+        });
+    }
 
-    /**
-     * @return a texts list, that when they exists in a response confirmation sms, it means that
-     * submission was successfully received
-     */
-    public abstract Single<? extends Collection<String>> getConfirmationRequiredTexts(T dataObject);
+    @SuppressLint("NewApi")
+    private String base64(byte[] bytes) {
+        String encoded;
+        try {
+            encoded = Base64.encodeToString(bytes, Base64.NO_WRAP);
+        } catch (Throwable t) {
+            encoded = null;
+            // not android, so will try with pure java
+        }
+        if (encoded == null) {
+            encoded = java.util.Base64.getEncoder().encodeToString(bytes);
+        }
+        return encoded;
+    }
 
-    public interface DataToConvert {
-        BaseDataModel getDataModel();
+    LocalDbRepository getLocalDbRepository() {
+        return localDbRepository;
+    }
+
+    abstract Single<? extends SMSSubmission> convert(@NonNull P dataItem, String user);
+
+    public abstract Completable updateSubmissionState(State state);
+
+    abstract Single<P> readItemFromDb();
+
+    private class CompressionData {
+        final String user;
+        final Metadata metadata;
+        final P item;
+
+        CompressionData(Metadata metadata, String user, P item) {
+            this.user = user;
+            this.metadata = metadata;
+            this.item = item;
+        }
     }
 }

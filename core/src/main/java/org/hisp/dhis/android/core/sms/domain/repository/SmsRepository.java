@@ -20,10 +20,13 @@ public interface SmsRepository {
     /**
      * Starts process of listening to result confirmation sms
      *
+     * @param searchReceived        should also search previously received messages
      * @param waitingTimeoutSeconds After this time error will be returned.
      * @return Completable that is completed when result sms is successfully received
      */
-    Completable listenToConfirmationSms(int waitingTimeoutSeconds, String requiredSender,
+    Completable listenToConfirmationSms(boolean searchReceived,
+                                        int waitingTimeoutSeconds,
+                                        String requiredSender,
                                         Collection<String> requiredStrings);
 
     /**

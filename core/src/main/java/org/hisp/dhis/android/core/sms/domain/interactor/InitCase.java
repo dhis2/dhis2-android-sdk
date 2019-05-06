@@ -3,8 +3,6 @@ package org.hisp.dhis.android.core.sms.domain.interactor;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
 
-import java.util.ArrayList;
-
 import io.reactivex.Completable;
 
 /**
@@ -20,18 +18,21 @@ public class InitCase {
     }
 
     public Completable initSMSModule(String gatewayNumber,
-                                     String confirmationSenderNumber,
                                      WebApiRepository.GetMetadataIdsConfig metadataIdsConfig) {
         if (gatewayNumber == null || gatewayNumber.isEmpty()) {
             return Completable.error(new IllegalArgumentException("Gateway number can't be empty"));
         }
-        ArrayList<Completable> tasks = new ArrayList<>();
-        tasks.add(refreshMetadataIds(metadataIdsConfig));
-        tasks.add(localDbRepository.setGatewayNumber(gatewayNumber));
-        if (confirmationSenderNumber != null && !confirmationSenderNumber.isEmpty()) {
-            tasks.add(localDbRepository.setConfirmationSenderNumber(confirmationSenderNumber));
-        }
-        return Completable.merge(tasks);
+        return Completable.mergeArray(
+                refreshMetadataIds(metadataIdsConfig),
+                localDbRepository.setGatewayNumber(gatewayNumber)
+        );
+    }
+
+    public Completable setResultListeningConfig(String confirmationSenderNumber, Integer timeoutSeconds) {
+        return Completable.mergeArray(
+                localDbRepository.setConfirmationSenderNumber(confirmationSenderNumber),
+                localDbRepository.setWaitingResultTimeout(timeoutSeconds)
+        );
     }
 
     public Completable refreshMetadataIds(WebApiRepository.GetMetadataIdsConfig metadataIdsConfig) {

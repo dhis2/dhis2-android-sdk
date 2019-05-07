@@ -45,7 +45,7 @@ import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<RelationshipItem>
+public final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<RelationshipItem>
         implements RelationshipItemStore {
 
     private static final StatementBinder<RelationshipItem> BINDER = (o, sqLiteStatement) -> {
@@ -128,7 +128,7 @@ final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<Relation
         List<RelationshipItem> relatedRelationshipItems = selectWhere(whereToClause);
         List<String> relatedTEiUids = new ArrayList<>();
         for (RelationshipItem relationshipItem : relatedRelationshipItems) {
-            relatedTEiUids.add(relationshipItem.relationship().uid());
+            relatedTEiUids.add(relationshipItem.trackedEntityInstance().trackedEntityInstance());
         }
         return relatedTEiUids;
     }

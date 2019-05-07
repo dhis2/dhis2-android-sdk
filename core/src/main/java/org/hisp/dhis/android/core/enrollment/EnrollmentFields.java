@@ -42,7 +42,7 @@ public final class EnrollmentFields {
     static final String CREATED = "created";
     static final String LAST_UPDATED = "lastUpdated";
     static final String ORGANISATION_UNIT = "orgUnit";
-    static final String PROGRAM = "program";
+    public static final String PROGRAM = "program";
     static final String ENROLLMENT_DATE = "enrollmentDate";
     static final String INCIDENT_DATE = "incidentDate";
     static final String FOLLOW_UP = "followup";

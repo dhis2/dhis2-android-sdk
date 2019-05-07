@@ -56,7 +56,7 @@ public final class UidsHelper {
         return uids;
     }
 
-    public static <O extends ObjectWithUidInterface> List<String> getUids(List<O> objects) {
+    public static <O extends ObjectWithUidInterface> List<String> getUidsList(List<O> objects) {
         List<String> uids = new ArrayList<>(objects.size());
         int i = 0;
         for (O o: objects) {

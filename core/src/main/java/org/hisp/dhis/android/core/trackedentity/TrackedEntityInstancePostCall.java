@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.note.Note;
@@ -48,6 +49,7 @@ import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.relationship.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
+import org.hisp.dhis.android.core.relationship.RelationshipItemStore;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.ArrayList;
@@ -78,11 +80,13 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
     private final EventStore eventStore;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
+    private final RelationshipItemStore relationshipItemStore;
     private final ObjectWithoutUidStore<Note> noteStore;
 
     private final TEIWebResponseHandler teiWebResponseHandler;
 
     private final APICallExecutor apiCallExecutor;
+    private List<TrackedEntityInstance> trackedEntityInstancesToSync;
 
     @Inject
     TrackedEntityInstancePostCall(@NonNull DHISVersionManager versionManager,
@@ -94,6 +98,7 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
                                   @NonNull EventStore eventStore,
                                   @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
                                   @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
+                                  @NonNull RelationshipItemStore relationshipItemStore,
                                   @NonNull ObjectWithoutUidStore<Note> noteStore,
                                   @NonNull TEIWebResponseHandler teiWebResponseHandler,
                                   @NonNull APICallExecutor apiCallExecutor) {
@@ -106,9 +111,11 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
         this.eventStore = eventStore;
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
+        this.relationshipItemStore = relationshipItemStore;
         this.noteStore = noteStore;
         this.teiWebResponseHandler = teiWebResponseHandler;
         this.apiCallExecutor = apiCallExecutor;
+        this.trackedEntityInstancesToSync = null;
     }
 
     @Override
@@ -137,6 +144,10 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
         return webResponse;
     }
 
+    void setTrackedEntityInstancesToSync(List<TrackedEntityInstance> trackedEntityInstancesToSync) {
+        this.trackedEntityInstancesToSync = trackedEntityInstancesToSync;
+    }
+
     @NonNull
     List<TrackedEntityInstance> queryDataToSync() {
         Map<String, List<TrackedEntityDataValue>> dataValueMap =
@@ -145,64 +156,109 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
         Map<String, List<Enrollment>> enrollmentMap = enrollmentStore.queryEnrollmentsToPost();
         Map<String, List<TrackedEntityAttributeValue>> attributeValueMap =
                 trackedEntityAttributeValueStore.queryTrackedEntityAttributeValueToPost();
-        List<TrackedEntityInstance> trackedEntityInstances =
-                trackedEntityInstanceStore.queryTrackedEntityInstancesToPost();
-
-        String whereClause = new WhereClauseBuilder()
+        String whereNotesClause = new WhereClauseBuilder()
                 .appendKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST).build();
-        List<Note> notes = noteStore.selectWhere(whereClause);
+        List<Note> notes = noteStore.selectWhere(whereNotesClause);
+
+        setTrackedEntityInstancesToSync();
 
         List<TrackedEntityInstance> trackedEntityInstancesRecreated = new ArrayList<>();
-        List<TrackedEntityAttributeValue> emptyAttributeValueList = new ArrayList<>();
 
-        for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
-            String trackedEntityInstanceUid = trackedEntityInstance.uid();
-            List<Enrollment> enrollmentsRecreated = new ArrayList<>();
-            List<Enrollment> enrollments = enrollmentMap.get(trackedEntityInstanceUid);
-
-            if (enrollments != null) {
-                for (Enrollment enrollment : enrollments) {
-                    List<Event> eventRecreated = new ArrayList<>();
-                    List<Event> eventsForEnrollment = eventMap.get(enrollment.uid());
-                    if (eventsForEnrollment != null) {
-                        for (Event event : eventsForEnrollment) {
-                            List<TrackedEntityDataValue> dataValuesForEvent = dataValueMap.get(event.uid());
-                            eventRecreated.add(event.toBuilder().trackedEntityDataValues(dataValuesForEvent).build());
-                        }
-                    }
-
-                    List<Note> notesForEnrollment = new ArrayList<>();
-                    NoteToPostTransformer transformer = new NoteToPostTransformer(versionManager);
-                    for (Note note : notes) {
-                        if (enrollment.uid().equals(note.enrollment())) {
-                            notesForEnrollment.add(transformer.transform(note));
-                        }
-                    }
-
-                    enrollmentsRecreated.add(enrollment.toBuilder()
-                            .events(eventRecreated)
-                            .notes(notesForEnrollment)
-                            .build());
-                }
-            }
-
-            List<TrackedEntityAttributeValue> attributeValues = attributeValueMap.get(trackedEntityInstanceUid);
-
-            List<Relationship> dbRelationships =
-                    relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstance.uid()));
-            List<Relationship229Compatible> versionAwareRelationships =
-                    relationshipDHISVersionManager.to229Compatible(dbRelationships, trackedEntityInstance.uid());
-
-            TrackedEntityInstance recreatedTrackedEntityInstance = trackedEntityInstance.toBuilder()
-                    .trackedEntityAttributeValues(attributeValues == null ? emptyAttributeValueList : attributeValues)
-                    .relationships(versionAwareRelationships)
-                    .enrollments(enrollmentsRecreated)
-                    .build();
+        for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstancesToSync) {
+            TrackedEntityInstance recreatedTrackedEntityInstance = recreateTrackedEntityInstance(
+                    trackedEntityInstance, dataValueMap, eventMap, enrollmentMap, attributeValueMap, notes);
 
             trackedEntityInstancesRecreated.add(recreatedTrackedEntityInstance);
         }
 
         return trackedEntityInstancesRecreated;
+    }
 
+    private void setTrackedEntityInstancesToSync() {
+        List<TrackedEntityInstance> trackedEntityInstancesInDBToSync =
+                trackedEntityInstanceStore.queryTrackedEntityInstancesToSync();
+        if (trackedEntityInstancesToSync == null) {
+            trackedEntityInstancesToSync = trackedEntityInstancesInDBToSync;
+        } else {
+            List<String> teisToSync = UidsHelper.getUidsList(trackedEntityInstancesToSync);
+            List<String> teiUidsToPost =
+                    UidsHelper.getUidsList(trackedEntityInstanceStore.queryTrackedEntityInstancesToPost());
+            List<String> relatedTeisToPost = new ArrayList<>();
+            List<String> internalRelatedTeis = teisToSync;
+            List<String> relatedTeiUids;
+            do {
+                relatedTeiUids = relationshipItemStore.getRelatedTeiUids(internalRelatedTeis);
+                relatedTeiUids.retainAll(teiUidsToPost);
+                internalRelatedTeis = new ArrayList<>();
+
+                for (String relatedTeiUid : relatedTeiUids) {
+                    if (relatedTeiUids.contains(relatedTeiUid) && !teisToSync.contains(relatedTeiUid)
+                            && !relatedTeisToPost.contains(relatedTeiUid)) {
+                        relatedTeisToPost.add(relatedTeiUid);
+                        internalRelatedTeis.add(relatedTeiUid);
+                    }
+                }
+            } while (!internalRelatedTeis.isEmpty());
+
+            for (TrackedEntityInstance trackedEntityInstanceInDB : trackedEntityInstancesInDBToSync) {
+                if (relatedTeisToPost.contains(trackedEntityInstanceInDB.uid())) {
+                    trackedEntityInstancesToSync.add(trackedEntityInstanceInDB);
+                }
+            }
+        }
+    }
+
+    @NonNull
+    private TrackedEntityInstance recreateTrackedEntityInstance(
+            TrackedEntityInstance trackedEntityInstance,
+            Map<String, List<TrackedEntityDataValue>> dataValueMap,
+            Map<String, List<Event>> eventMap,
+            Map<String, List<Enrollment>> enrollmentMap,
+            Map<String, List<TrackedEntityAttributeValue>> attributeValueMap,
+            List<Note> notes) {
+
+        String trackedEntityInstanceUid = trackedEntityInstance.uid();
+        List<Enrollment> enrollmentsRecreated = new ArrayList<>();
+        List<Enrollment> enrollments = enrollmentMap.get(trackedEntityInstanceUid);
+        List<TrackedEntityAttributeValue> emptyAttributeValueList = new ArrayList<>();
+
+        if (enrollments != null) {
+            for (Enrollment enrollment : enrollments) {
+                List<Event> eventRecreated = new ArrayList<>();
+                List<Event> eventsForEnrollment = eventMap.get(enrollment.uid());
+                if (eventsForEnrollment != null) {
+                    for (Event event : eventsForEnrollment) {
+                        List<TrackedEntityDataValue> dataValuesForEvent = dataValueMap.get(event.uid());
+                        eventRecreated.add(event.toBuilder().trackedEntityDataValues(dataValuesForEvent).build());
+                    }
+                }
+
+                List<Note> notesForEnrollment = new ArrayList<>();
+                NoteToPostTransformer transformer = new NoteToPostTransformer(versionManager);
+                for (Note note : notes) {
+                    if (enrollment.uid().equals(note.enrollment())) {
+                        notesForEnrollment.add(transformer.transform(note));
+                    }
+                }
+
+                enrollmentsRecreated.add(enrollment.toBuilder()
+                        .events(eventRecreated)
+                        .notes(notesForEnrollment)
+                        .build());
+            }
+        }
+
+        List<TrackedEntityAttributeValue> attributeValues = attributeValueMap.get(trackedEntityInstanceUid);
+
+        List<Relationship> dbRelationships =
+                relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstance.uid()));
+        List<Relationship229Compatible> versionAwareRelationships =
+                relationshipDHISVersionManager.to229Compatible(dbRelationships, trackedEntityInstance.uid());
+
+        return trackedEntityInstance.toBuilder()
+                .trackedEntityAttributeValues(attributeValues == null ? emptyAttributeValueList : attributeValues)
+                .relationships(versionAwareRelationships)
+                .enrollments(enrollmentsRecreated)
+                .build();
     }
 }

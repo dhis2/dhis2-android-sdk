@@ -18,6 +18,7 @@ import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
 public class SmsRepositoryImpl implements SmsRepository {
@@ -26,25 +27,18 @@ public class SmsRepositoryImpl implements SmsRepository {
     static final String SMS_KEY = "sms_key";
     private final Context context;
     private final String sendSmsAction;
-    private Boolean smsCountAccepted;
 
     public SmsRepositoryImpl(Context context) {
         this.context = context;
         sendSmsAction = context.getPackageName() + ".SEND_SMS";
-        smsCountAccepted = null;
     }
 
     @Override
-    public void acceptSMSCount(boolean accept) {
-        smsCountAccepted = accept;
-    }
-
-    @Override
-    public Observable<SmsSendingState> sendSms(String number, String contents,
+    public Observable<SmsSendingState> sendSms(String number, List<String> smsParts,
                                                int sendingTimeoutSeconds) {
         return Observable.create(
                 (ObservableOnSubscribe<SmsSendingState>) e ->
-                        executeSmsSending(e, number, contents, sendingTimeoutSeconds)
+                        executeSmsSending(e, number, smsParts, sendingTimeoutSeconds)
         ).doOnError(throwable ->
                 Log.e(TAG, throwable.getClass().getSimpleName(), throwable)
         ).subscribeOn(Schedulers.newThread());
@@ -69,21 +63,15 @@ public class SmsRepositoryImpl implements SmsRepository {
 
     @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.CyclomaticComplexity"})
     private void executeSmsSending(ObservableEmitter<SmsSendingState> e, String number,
-                                   String contents, int timeoutSeconds) {
-        List<String> parts = generateSmsParts(contents);
-        int totalMessages = parts.size();
-        if (!askSMSCountAcceptance(e, totalMessages) && !e.isDisposed()) {
-            e.onError(new SMSCountException(totalMessages));
-            return;
-        }
-
+                                   List<String> smsParts, int timeoutSeconds) {
         final long timeStarted = System.currentTimeMillis();
         SendingStateReceiver stateReceiver = new SendingStateReceiver(timeStarted,
                 timeoutSeconds, sendSmsAction);
         context.registerReceiver(stateReceiver, new IntentFilter(sendSmsAction));
         int sentNumber = 0;
-        sendSmsToOS(stateReceiver, number, contents, parts);
-        e.onNext(new SmsSendingState(State.SENDING, 0, totalMessages));
+        sendSmsToOS(stateReceiver, number, smsParts);
+        int totalMessages = smsParts.size();
+        e.onNext(new SmsSendingState(0, totalMessages));
 
         while (stateReceiver.smsResultsWaiting() > 0 && !stateReceiver.isError() &&
                 Utility.timeLeft(timeStarted, timeoutSeconds) > 0 && !e.isDisposed()) {
@@ -100,7 +88,7 @@ public class SmsRepositoryImpl implements SmsRepository {
             int currentSentNumber = totalMessages - stateReceiver.smsResultsWaiting();
             if (currentSentNumber != sentNumber) {
                 sentNumber = currentSentNumber;
-                e.onNext(new SmsSendingState(State.SENDING, sentNumber, totalMessages));
+                e.onNext(new SmsSendingState(sentNumber, totalMessages));
             }
         }
         Utility.unregisterReceiver(context, stateReceiver);
@@ -109,7 +97,7 @@ public class SmsRepositoryImpl implements SmsRepository {
             return;
         }
         if (stateReceiver.smsResultsWaiting() == 0 && !stateReceiver.isError()) {
-            e.onNext(new SmsSendingState(State.ALL_SENT, totalMessages, totalMessages));
+            e.onNext(new SmsSendingState(totalMessages, totalMessages));
             e.onComplete();
         } else if (stateReceiver.isError()) {
             e.onError(new ReceivedErrorException(stateReceiver.getErrorCode()));
@@ -118,39 +106,24 @@ public class SmsRepositoryImpl implements SmsRepository {
         }
     }
 
-    private List<String> generateSmsParts(String text) {
-        SmsManager sms = SmsManager.getDefault();
-        return sms.divideMessage(text);
-    }
-
-    /**
-     * @return true if should continue execution
-     */
-    private boolean askSMSCountAcceptance(ObservableEmitter<SmsSendingState> e,
-                                          int totalMessages) {
-        e.onNext(new SmsSendingState(State.WAITING_SMS_COUNT_ACCEPT,
-                0, totalMessages));
-        while (smsCountAccepted == null && !e.isDisposed()) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException ie) {
-                return false;
-            }
-        }
-        return smsCountAccepted != null && smsCountAccepted;
+    @Override
+    public Single<List<String>> generateSmsParts(String value) {
+        return Single.fromCallable(() -> {
+            SmsManager sms = SmsManager.getDefault();
+            return sms.divideMessage(value);
+        });
     }
 
     /**
      * Sends an SMS
      *
-     * @param number   String The phone number the sms should be sent to.
-     * @param contents String The message that should be sent.
+     * @param number The phone number the sms should be sent to.
+     * @param parts  The message that should be sent.
      */
     @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
-    private void sendSmsToOS(SendingStateReceiver stateReceiver, String number, String contents,
-                             List<String> parts) {
+    private void sendSmsToOS(SendingStateReceiver stateReceiver, String number, List<String> parts) {
         SmsManager sms = SmsManager.getDefault();
-        int uniqueIntentId = contents.hashCode();
+        int uniqueIntentId = joinStrings(parts).hashCode();
         String uniqueKeyPrefix = uniqueIntentId + "_" + UUID.randomUUID().toString();
         ArrayList<PendingIntent> sentMessagePIs = new ArrayList<>();
         for (int i = 0; i < parts.size(); i++) {
@@ -167,5 +140,13 @@ public class SmsRepositoryImpl implements SmsRepository {
 
         sms.sendMultipartTextMessage(number, null, new ArrayList<>(parts),
                 sentMessagePIs, null);
+    }
+
+    private String joinStrings(Collection<String> parts) {
+        StringBuilder sb = new StringBuilder();
+        for (String part : parts) {
+            sb.append(part);
+        }
+        return sb.toString();
     }
 }

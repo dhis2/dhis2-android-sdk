@@ -58,7 +58,6 @@ public final class UidsHelper {
 
     public static <O extends ObjectWithUidInterface> List<String> getUidsList(List<O> objects) {
         List<String> uids = new ArrayList<>(objects.size());
-        int i = 0;
         for (O o: objects) {
             uids.add(o.uid());
         }

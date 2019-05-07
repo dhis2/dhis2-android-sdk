@@ -106,7 +106,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
 
         storeTrackedEntityInstance();
 
-        List<TrackedEntityInstance> instances = trackedEntityInstancePostCall.queryDataToSync();
+        List<TrackedEntityInstance> instances = trackedEntityInstancePostCall.queryDataToSync(null);
 
         assertThat(instances.size()).isEqualTo(1);
         for (TrackedEntityInstance instance : instances) {
@@ -126,7 +126,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
 
         storeTrackedEntityInstance();
 
-        List<TrackedEntityInstance> instances = trackedEntityInstancePostCall.queryDataToSync();
+        List<TrackedEntityInstance> instances = trackedEntityInstancePostCall.queryDataToSync(null);
         assertThat(instances.size()).isEqualTo(1);
         for (TrackedEntityInstance instance : instances) {
             assertThat(instance.enrollments().size()).isEqualTo(2);
@@ -139,7 +139,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
         }
 
         EnrollmentStoreImpl.create(databaseAdapter()).setState("enrollment3Id", State.TO_POST);
-        instances = trackedEntityInstancePostCall.queryDataToSync();
+        instances = trackedEntityInstancePostCall.queryDataToSync(null);
         assertThat(instances.size()).isEqualTo(1);
         for (TrackedEntityInstance instance : instances) {
             assertThat(instance.enrollments().size()).isEqualTo(3);
@@ -153,7 +153,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
         }
 
         EventStoreImpl.create(databaseAdapter()).setState("event3Id", State.TO_POST);
-        instances = trackedEntityInstancePostCall.queryDataToSync();
+        instances = trackedEntityInstancePostCall.queryDataToSync(null);
         assertThat(instances.size()).isEqualTo(1);
         for (TrackedEntityInstance instance : instances) {
             assertThat(instance.enrollments().size()).isEqualTo(3);
@@ -218,9 +218,8 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
         storeRelationship("relationship3", tei1, tei5);
         storeRelationship("relationship4", tei5, tei4);
 
-        trackedEntityInstancePostCall.setTrackedEntityInstancesToSync(
+        List<TrackedEntityInstance> instances = trackedEntityInstancePostCall.queryDataToSync(
                 d2.trackedEntityModule().trackedEntityInstances.byUid().eq(tei1).get());
-        List<TrackedEntityInstance> instances = trackedEntityInstancePostCall.queryDataToSync();
 
         assertThat(instances.size()).isEqualTo(3);
         assertThat(UidsHelper.getUidsList(instances).containsAll(Lists.newArrayList(tei1, tei2, tei3))).isEqualTo(true);

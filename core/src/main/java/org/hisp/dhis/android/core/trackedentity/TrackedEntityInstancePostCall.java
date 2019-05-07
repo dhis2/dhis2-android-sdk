@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.imports.TEIWebResponse;
 import org.hisp.dhis.android.core.imports.TEIWebResponseHandler;
-import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
@@ -56,7 +55,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -65,7 +63,7 @@ import dagger.Reusable;
 
 @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.ExcessiveImports"})
 @Reusable
-public final class TrackedEntityInstancePostCall implements Callable<WebResponse> {
+public final class TrackedEntityInstancePostCall {
     // internal modules
     private final DHISVersionManager versionManager;
     private final RelationshipDHISVersionManager relationshipDHISVersionManager;
@@ -86,7 +84,6 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
     private final TEIWebResponseHandler teiWebResponseHandler;
 
     private final APICallExecutor apiCallExecutor;
-    private List<TrackedEntityInstance> trackedEntityInstancesToSync;
 
     @Inject
     TrackedEntityInstancePostCall(@NonNull DHISVersionManager versionManager,
@@ -115,12 +112,10 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
         this.noteStore = noteStore;
         this.teiWebResponseHandler = teiWebResponseHandler;
         this.apiCallExecutor = apiCallExecutor;
-        this.trackedEntityInstancesToSync = null;
     }
 
-    @Override
-    public TEIWebResponse call() throws D2Error {
-        List<TrackedEntityInstance> trackedEntityInstancesToPost = queryDataToSync();
+    public TEIWebResponse call(List<TrackedEntityInstance> filteredTrackedEntityInstances) throws D2Error {
+        List<TrackedEntityInstance> trackedEntityInstancesToPost = queryDataToSync(filteredTrackedEntityInstances);
 
         // if size is 0, then no need to do network request
         if (trackedEntityInstancesToPost.isEmpty()) {
@@ -144,12 +139,8 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
         return webResponse;
     }
 
-    void setTrackedEntityInstancesToSync(List<TrackedEntityInstance> trackedEntityInstancesToSync) {
-        this.trackedEntityInstancesToSync = trackedEntityInstancesToSync;
-    }
-
     @NonNull
-    List<TrackedEntityInstance> queryDataToSync() {
+    List<TrackedEntityInstance> queryDataToSync(List<TrackedEntityInstance> filteredTrackedEntityInstances) {
         Map<String, List<TrackedEntityDataValue>> dataValueMap =
                 trackedEntityDataValueStore.queryTrackerTrackedEntityDataValues();
         Map<String, List<Event>> eventMap = eventStore.queryEventsAttachedToEnrollmentToPost();
@@ -160,7 +151,8 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
                 .appendKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST).build();
         List<Note> notes = noteStore.selectWhere(whereNotesClause);
 
-        setTrackedEntityInstancesToSync();
+        List<TrackedEntityInstance> trackedEntityInstancesToSync
+                = setTrackedEntityInstancesToSync(filteredTrackedEntityInstances);
 
         List<TrackedEntityInstance> trackedEntityInstancesRecreated = new ArrayList<>();
 
@@ -174,13 +166,14 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
         return trackedEntityInstancesRecreated;
     }
 
-    private void setTrackedEntityInstancesToSync() {
+    private List<TrackedEntityInstance> setTrackedEntityInstancesToSync(
+            List<TrackedEntityInstance> filteredTrackedEntityInstances) {
         List<TrackedEntityInstance> trackedEntityInstancesInDBToSync =
                 trackedEntityInstanceStore.queryTrackedEntityInstancesToSync();
-        if (trackedEntityInstancesToSync == null) {
-            trackedEntityInstancesToSync = trackedEntityInstancesInDBToSync;
+        if (filteredTrackedEntityInstances == null) {
+            return trackedEntityInstancesInDBToSync;
         } else {
-            List<String> teisToSync = UidsHelper.getUidsList(trackedEntityInstancesToSync);
+            List<String> teisToSync = UidsHelper.getUidsList(filteredTrackedEntityInstances);
             List<String> teiUidsToPost =
                     UidsHelper.getUidsList(trackedEntityInstanceStore.queryTrackedEntityInstancesToPost());
             List<String> relatedTeisToPost = new ArrayList<>();
@@ -202,9 +195,10 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
 
             for (TrackedEntityInstance trackedEntityInstanceInDB : trackedEntityInstancesInDBToSync) {
                 if (relatedTeisToPost.contains(trackedEntityInstanceInDB.uid())) {
-                    trackedEntityInstancesToSync.add(trackedEntityInstanceInDB);
+                    filteredTrackedEntityInstances.add(trackedEntityInstanceInDB);
                 }
             }
+            return filteredTrackedEntityInstances;
         }
     }
 

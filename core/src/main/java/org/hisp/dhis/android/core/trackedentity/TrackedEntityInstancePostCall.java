@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.BaseDataModel;
@@ -58,7 +60,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.ExcessiveImports"})
@@ -173,24 +174,24 @@ public final class TrackedEntityInstancePostCall {
         if (filteredTrackedEntityInstances == null) {
             return trackedEntityInstancesInDBToSync;
         } else {
-            List<String> teisToSync = UidsHelper.getUidsList(filteredTrackedEntityInstances);
+            List<String> filteredUids = UidsHelper.getUidsList(filteredTrackedEntityInstances);
             List<String> teiUidsToPost =
                     UidsHelper.getUidsList(trackedEntityInstanceStore.queryTrackedEntityInstancesToPost());
             List<String> relatedTeisToPost = new ArrayList<>();
-            List<String> internalRelatedTeis = teisToSync;
+            List<String> internalRelatedTeis = filteredUids;
 
             do {
                 List<String> relatedTeiUids = relationshipItemStore.getRelatedTeiUids(internalRelatedTeis);
-                relatedTeiUids.retainAll(teiUidsToPost);
-                internalRelatedTeis = new ArrayList<>();
 
-                for (String relatedTeiUid : relatedTeiUids) {
-                    if (!teisToSync.contains(relatedTeiUid) && !relatedTeisToPost.contains(relatedTeiUid)) {
-                        relatedTeisToPost.add(relatedTeiUid);
-                        internalRelatedTeis.add(relatedTeiUid);
-                    }
-                }
-            } while (!internalRelatedTeis.isEmpty());
+                relatedTeiUids.retainAll(teiUidsToPost);
+
+                relatedTeiUids.removeAll(filteredUids);
+                relatedTeiUids.removeAll(relatedTeisToPost);
+
+                relatedTeisToPost.addAll(relatedTeiUids);
+                internalRelatedTeis = relatedTeiUids;
+            }
+            while (!internalRelatedTeis.isEmpty());
 
             for (TrackedEntityInstance trackedEntityInstanceInDB : trackedEntityInstancesInDBToSync) {
                 if (relatedTeisToPost.contains(trackedEntityInstanceInDB.uid())) {

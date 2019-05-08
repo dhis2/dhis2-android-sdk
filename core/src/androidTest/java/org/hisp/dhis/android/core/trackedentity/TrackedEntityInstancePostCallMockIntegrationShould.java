@@ -219,7 +219,8 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
         storeRelationship("relationship4", tei5, tei4);
 
         List<TrackedEntityInstance> instances = trackedEntityInstancePostCall.queryDataToSync(
-                d2.trackedEntityModule().trackedEntityInstances.byUid().eq(tei1).get());
+                d2.trackedEntityModule().trackedEntityInstances.byUid().eq(tei1)
+                .byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).get());
 
         assertThat(instances.size()).isEqualTo(3);
         assertThat(UidsHelper.getUidsList(instances).containsAll(Lists.newArrayList(tei1, tei2, tei3))).isEqualTo(true);

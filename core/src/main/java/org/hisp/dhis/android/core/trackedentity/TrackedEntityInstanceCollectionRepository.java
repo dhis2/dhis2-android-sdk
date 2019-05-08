@@ -69,7 +69,7 @@ public final class TrackedEntityInstanceCollectionRepository
 
     @Override
     public Callable<WebResponse> upload() {
-        return () -> postCall.call(getWithoutChildren());
+        return () -> postCall.call(byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).getWithoutChildren());
     }
 
     public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byUid() {

@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.common.State;
@@ -37,6 +38,7 @@ import org.hisp.dhis.android.core.imports.EnrollmentImportSummaries;
 import org.hisp.dhis.android.core.imports.ImportConflict;
 import org.hisp.dhis.android.core.imports.TEIImportSummary;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
+import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -75,10 +77,15 @@ public final class TrackedEntityInstanceImportHandler {
             }
 
             State state = getState(teiImportSummary.status());
+            HandleAction handleAction = null;
 
-            HandleAction action = trackedEntityInstanceStore.setStateOrDelete(teiImportSummary.reference(), state);
+            if (teiImportSummary.reference() != null) {
+                handleAction = trackedEntityInstanceStore.setStateOrDelete(teiImportSummary.reference(), state);
 
-            if (action != HandleAction.Delete) {
+                deleteTEIConflicts(teiImportSummary.reference());
+            }
+
+            if (handleAction != HandleAction.Delete) {
                 storeTEIImportConflicts(teiImportSummary);
 
                 if (teiImportSummary.enrollments() != null) {
@@ -121,5 +128,15 @@ public final class TrackedEntityInstanceImportHandler {
         for (TrackerImportConflict trackerImportConflict : trackerImportConflicts) {
             trackerImportConflictStore.insert(trackerImportConflict);
         }
+    }
+
+    private void deleteTEIConflicts(String teiUid) {
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(TrackerImportConflictTableInfo.Columns.TRACKED_ENTITY_INSTANCE, teiUid)
+                .appendKeyStringValue(
+                        TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE,
+                        TrackedEntityInstanceTableInfo.TABLE_INFO.name())
+                .build();
+        trackerImportConflictStore.deleteWhereIfExists(whereClause);
     }
 }

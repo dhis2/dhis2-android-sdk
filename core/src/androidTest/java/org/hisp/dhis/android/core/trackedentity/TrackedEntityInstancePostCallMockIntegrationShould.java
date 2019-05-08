@@ -164,6 +164,28 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
     }
 
     @Test
+    public void delete_old_import_conflicts() throws Exception {
+        givenAMetadataInDatabase();
+
+        storeTrackedEntityInstance();
+
+        dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
+        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(3);
+
+
+        TrackedEntityInstanceStoreImpl.create(databaseAdapter()).setState("teiId", State.TO_POST);
+        EnrollmentStoreImpl.create(databaseAdapter()).setState("enrollment1Id", State.TO_POST);
+        EnrollmentStoreImpl.create(databaseAdapter()).setState("enrollment2Id", State.TO_POST);
+        EventStoreImpl.create(databaseAdapter()).setState("event1Id", State.TO_POST);
+        EventStoreImpl.create(databaseAdapter()).setState("event2Id", State.TO_POST);
+
+        dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_3.json");
+        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(1);
+    }
+
+    @Test
     public void handle_tei_deletions() throws Exception {
         givenAMetadataInDatabase();
 

@@ -152,7 +152,7 @@ public final class TrackedEntityInstancePostCall {
         List<Note> notes = noteStore.selectWhere(whereNotesClause);
 
         List<TrackedEntityInstance> trackedEntityInstancesToSync
-                = setTrackedEntityInstancesToSync(filteredTrackedEntityInstances);
+                = getTrackedEntityInstancesToSync(filteredTrackedEntityInstances);
 
         List<TrackedEntityInstance> trackedEntityInstancesRecreated = new ArrayList<>();
 
@@ -166,7 +166,7 @@ public final class TrackedEntityInstancePostCall {
         return trackedEntityInstancesRecreated;
     }
 
-    private List<TrackedEntityInstance> setTrackedEntityInstancesToSync(
+    private List<TrackedEntityInstance> getTrackedEntityInstancesToSync(
             List<TrackedEntityInstance> filteredTrackedEntityInstances) {
         List<TrackedEntityInstance> trackedEntityInstancesInDBToSync =
                 trackedEntityInstanceStore.queryTrackedEntityInstancesToSync();
@@ -178,15 +178,14 @@ public final class TrackedEntityInstancePostCall {
                     UidsHelper.getUidsList(trackedEntityInstanceStore.queryTrackedEntityInstancesToPost());
             List<String> relatedTeisToPost = new ArrayList<>();
             List<String> internalRelatedTeis = teisToSync;
-            List<String> relatedTeiUids;
+
             do {
-                relatedTeiUids = relationshipItemStore.getRelatedTeiUids(internalRelatedTeis);
+                List<String> relatedTeiUids = relationshipItemStore.getRelatedTeiUids(internalRelatedTeis);
                 relatedTeiUids.retainAll(teiUidsToPost);
                 internalRelatedTeis = new ArrayList<>();
 
                 for (String relatedTeiUid : relatedTeiUids) {
-                    if (relatedTeiUids.contains(relatedTeiUid) && !teisToSync.contains(relatedTeiUid)
-                            && !relatedTeisToPost.contains(relatedTeiUid)) {
+                    if (!teisToSync.contains(relatedTeiUid) && !relatedTeisToPost.contains(relatedTeiUid)) {
                         relatedTeisToPost.add(relatedTeiUid);
                         internalRelatedTeis.add(relatedTeiUid);
                     }

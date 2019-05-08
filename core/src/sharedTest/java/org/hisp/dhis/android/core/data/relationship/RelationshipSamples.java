@@ -92,7 +92,7 @@ public class RelationshipSamples {
                 .build();
     }
 
-    protected Relationship get230(String uid, String fromUid, String toUid) {
+    public static Relationship get230(String uid, String fromUid, String toUid) {
         return commonBuilder
                 .uid(uid)
                 .relationshipType(TYPE)

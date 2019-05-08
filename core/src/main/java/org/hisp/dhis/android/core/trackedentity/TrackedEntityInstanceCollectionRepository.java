@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
@@ -66,12 +67,10 @@ public final class TrackedEntityInstanceCollectionRepository
         this.postCall = postCall;
     }
 
-
     @Override
     public Callable<WebResponse> upload() {
-        return postCall;
+        return () -> postCall.call(byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).getWithoutChildren());
     }
-
 
     public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byUid() {
         return cf.string(TrackedEntityInstanceTableInfo.Columns.UID);

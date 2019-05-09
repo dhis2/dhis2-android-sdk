@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core;
 
 import android.util.Log;
 
+import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
@@ -37,6 +38,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 import org.junit.Before;
 
 import java.io.IOException;
+
+import io.reactivex.observers.TestObserver;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -58,9 +61,12 @@ public class TeisCallRealIntegrationShould extends AbsStoreTestCase {
 
         d2.syncMetaData().call();
 
-        d2.trackedEntityModule().downloadTrackedEntityInstances(5,  false).asObservable()
+        TestObserver<D2Progress> testObserver = d2.trackedEntityModule().downloadTrackedEntityInstances(5, false)
+                .asObservable()
                 .doOnEach(e -> Log.w("EVENT", e.toString()))
-                .subscribe();
+                .test();
+
+        testObserver.awaitTerminalEvent();
 
         int count = TrackedEntityInstanceStoreImpl.create(databaseAdapter()).count();
 

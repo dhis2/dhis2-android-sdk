@@ -66,10 +66,9 @@ public final class EventCollectionRepository
         this.postCall = postCall;
     }
 
-
     @Override
     public Callable<WebResponse> upload() {
-        return postCall;
+        return () -> postCall.call(byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).getWithoutChildren());
     }
 
     public StringFilterConnector<EventCollectionRepository> byUid() {

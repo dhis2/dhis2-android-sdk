@@ -98,17 +98,20 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     public D2CallWithProgress getCall(final int teiLimit, final boolean limitByOrgUnit) {
         D2ProgressManager progressManager = new D2ProgressManager(null);
 
-        Observable<D2Progress> systemInfoDownload = systemInfoRepository.download()
-                .toSingle(() -> progressManager.increaseProgress(SystemInfo.class, false))
-                .toObservable();
-
         Observable<D2Progress> concatObservable = Observable.concat(
-                systemInfoDownload,
+                downloadSystemInfo(progressManager),
                 downloadTeis(progressManager, teiLimit, limitByOrgUnit),
-                downloadRelationshipTeis(progressManager)
+                downloadRelationshipTeis(progressManager),
+                updateResource(progressManager)
         );
 
         return rxCallExecutor.wrapObservableTransactionally(concatObservable, true);
+    }
+
+    private Observable<D2Progress> downloadSystemInfo(D2ProgressManager progressManager) {
+        return systemInfoRepository.download()
+                .toSingle(() -> progressManager.increaseProgress(SystemInfo.class, false))
+                .toObservable();
     }
 
     private Observable<D2Progress> downloadTeis(D2ProgressManager progressManager,
@@ -206,6 +209,13 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
         }
 
         return organisationUnitUids;
+    }
+
+    private Observable<D2Progress> updateResource(D2ProgressManager progressManager) {
+        return Observable.fromCallable(() -> {
+            resourceHandler.handleResource(resourceType);
+            return progressManager.increaseProgress(TrackedEntityInstance.class, true);
+        });
     }
 
     private class TeiListWithPaging {

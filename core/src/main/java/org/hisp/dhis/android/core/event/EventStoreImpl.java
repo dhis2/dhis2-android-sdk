@@ -111,7 +111,7 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
     @Override
     public List<Event> querySingleEventsToPost() {
         String singleEventsToPostQuery = QUERY_SINGLE_EVENTS +
-                " AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE')";
+                " AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE' OR Event.state = 'TO_DELETE')";
         return eventListFromQuery(singleEventsToPostQuery);
     }
 

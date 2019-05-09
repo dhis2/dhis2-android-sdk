@@ -62,11 +62,10 @@ public final class TrackedEntityInstanceQueryDataSource
     private boolean isExhaustedOnline = false;
     private boolean isExhaustedOffline = false;
 
-    public TrackedEntityInstanceQueryDataSource(TrackedEntityInstanceStore store,
-                                                TrackedEntityInstanceQueryCallFactory onlineCallFactory,
-                                                TrackedEntityInstanceQueryRepositoryScope scope,
-                                                Map<String, ChildrenAppender<TrackedEntityInstance>>
-                                                        childrenAppenders) {
+    TrackedEntityInstanceQueryDataSource(TrackedEntityInstanceStore store,
+                                         TrackedEntityInstanceQueryCallFactory onlineCallFactory,
+                                         TrackedEntityInstanceQueryRepositoryScope scope,
+                                         Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders) {
         this.store = store;
         this.onlineCallFactory = onlineCallFactory;
         this.scope = scope;
@@ -76,6 +75,7 @@ public final class TrackedEntityInstanceQueryDataSource
     @Override
     public void loadInitial(@NonNull LoadInitialParams<TrackedEntityInstance> params,
                             @NonNull LoadInitialCallback<TrackedEntityInstance> callback) {
+        returnedUids = new ArrayList<>();
         callback.onResult(loadPages(params.requestedLoadSize, true));
     }
 

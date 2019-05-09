@@ -111,7 +111,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         return new LivePagedListBuilder<>(factory, pageSize).build();
     }
 
-    private DataSource<TrackedEntityInstance, TrackedEntityInstance> getDataSource() {
+    public DataSource<TrackedEntityInstance, TrackedEntityInstance> getDataSource() {
         return new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders);
     }
 

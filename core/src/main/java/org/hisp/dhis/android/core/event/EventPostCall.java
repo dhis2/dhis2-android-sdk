@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.event;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.imports.EventWebResponse;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 
@@ -47,6 +48,7 @@ import dagger.Reusable;
 @Reusable
 public final class EventPostCall {
     // retrofit service
+    private final DHISVersionManager versionManager;
     private final EventService eventService;
 
     // adapter and stores
@@ -57,11 +59,13 @@ public final class EventPostCall {
     private final APICallExecutor apiCallExecutor;
 
     @Inject
-    EventPostCall(@NonNull EventService eventService,
+    EventPostCall(@NonNull DHISVersionManager versionManager,
+                  @NonNull EventService eventService,
                   @NonNull EventStore eventStore,
                   @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
                   @NonNull APICallExecutor apiCallExecutor,
                   @NonNull EventImportHandler eventImportHandler) {
+        this.versionManager = versionManager;
         this.eventService = eventService;
         this.eventStore = eventStore;
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
@@ -80,7 +84,7 @@ public final class EventPostCall {
         EventPayload eventPayload = new EventPayload();
         eventPayload.events = eventsToPost;
 
-        String strategy = "CREATE_AND_UPDATE";
+        String strategy = versionManager.is2_29() ? "CREATE_AND_UPDATE" : "SYNC";
 
         EventWebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
                 eventService.postEvents(eventPayload, strategy), Collections.singletonList(409),

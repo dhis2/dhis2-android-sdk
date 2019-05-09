@@ -1,0 +1,125 @@
+{
+  "httpStatus": "OK",
+  "httpStatusCode": 200,
+  "status": "OK",
+  "message": "Import was successful.",
+  "response": {
+    "responseType": "ImportSummaries",
+    "status": "SUCCESS",
+    "imported": 0,
+    "updated": 2,
+    "deleted": 0,
+    "ignored": 0,
+    "importOptions": {
+      "idSchemes": {},
+      "dryRun": false,
+      "async": false,
+      "importStrategy": "CREATE_AND_UPDATE",
+      "mergeMode": "REPLACE",
+      "skipExistingCheck": false,
+      "sharing": false,
+      "skipNotifications": false,
+      "datasetAllowsPeriods": false,
+      "strictPeriods": false,
+      "strictCategoryOptionCombos": false,
+      "strictAttributeOptionCombos": false,
+      "strictOrganisationUnits": false,
+      "requireCategoryOptionCombo": false,
+      "requireAttributeOptionCombo": false
+    },
+    "importSummaries": [
+      {
+        "responseType": "ImportSummary",
+        "status": "SUCCESS",
+        "importCount": {
+          "imported": 0,
+          "updated": 1,
+          "ignored": 0,
+          "deleted": 0
+        },
+        "reference": "teiId",
+        "href": "https://play.dhis2.org/dev/api/trackedEntityInstances/AHgGHO6ZH9b",
+        "enrollments": {
+          "responseType": "ImportSummaries",
+          "status": "SUCCESS",
+          "imported": 0,
+          "updated": 1,
+          "deleted": 0,
+          "ignored": 0,
+          "importSummaries": [
+            {
+              "responseType": "ImportSummary",
+              "status": "SUCCESS",
+              "importCount": {
+                "imported": 0,
+                "updated": 1,
+                "ignored": 0,
+                "deleted": 0
+              },
+              "reference": "enrollment1Id",
+              "events": {
+                "responseType": "ImportSummaries",
+                "status": "SUCCESS",
+                "imported": 0,
+                "updated": 2,
+                "deleted": 0,
+                "ignored": 0,
+                "importSummaries": [
+                  {
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS",
+                    "importCount": {
+                      "imported": 0,
+                      "updated": 2,
+                      "ignored": 0,
+                      "deleted": 0
+                    },
+                    "reference": "event1Id"
+                  }
+                ]
+              }
+            },
+            {
+              "responseType": "ImportSummary",
+              "status": "SUCCESS",
+              "importCount": {
+                "imported": 0,
+                "updated": 1,
+                "ignored": 0,
+                "deleted": 0
+              },
+              "reference": "enrollment2Id",
+              "events": {
+                "responseType": "ImportSummaries",
+                "status": "ERROR",
+                "imported": 0,
+                "updated": 0,
+                "deleted": 0,
+                "ignored": 1,
+                "importSummaries": [
+                  {
+                    "responseType": "ImportSummary",
+                    "status": "ERROR",
+                    "importCount": {
+                      "imported": 0,
+                      "updated": 0,
+                      "ignored": 1,
+                      "deleted": 0
+                    },
+                    "conflicts": [
+                      {
+                        "object": "Illegal category option identifier: as6ygGvUGNg",
+                        "value": "as6ygGvUGNg"
+                      }
+                    ],
+                    "reference": "event2Id"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

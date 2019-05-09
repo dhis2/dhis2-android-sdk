@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCallFactory;
 
@@ -82,7 +82,7 @@ public final class TrackedEntityModule {
         this.queryCallFactory = queryCallFactory;
     }
 
-    public Callable<Unit> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
+    public D2CallWithProgress downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
         return withLimitCallFactory.getCall(teiLimit, limitByOrgUnit);
     }
 

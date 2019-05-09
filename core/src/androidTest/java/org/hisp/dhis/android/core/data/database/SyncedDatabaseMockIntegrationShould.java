@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.DaggerD2DIComponent;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.ObjectStore;
-import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.imports.TrackerImportConflictSamples;
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
@@ -75,7 +74,7 @@ public abstract class SyncedDatabaseMockIntegrationShould {
                     InstrumentationRegistry.getTargetContext().getApplicationContext(), "synced.db");
             sqLiteDatabase = dbOpenHelper.getWritableDatabase();
             databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
-            dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+            dhis2MockServer = new Dhis2MockServer();
             d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter);
             Stetho.initializeWithDefaults(InstrumentationRegistry.getTargetContext().getApplicationContext());
 
@@ -107,8 +106,8 @@ public abstract class SyncedDatabaseMockIntegrationShould {
         d2.syncMetaData().call();
     }
 
-    private static void downloadTrackedEntityInstances() throws Exception {
-        d2.trackedEntityModule().downloadTrackedEntityInstances(2, false).call();
+    private static void downloadTrackedEntityInstances() {
+        d2.trackedEntityModule().downloadTrackedEntityInstances(2, false).asObservable().subscribe();
     }
 
     private static void downloadEvents() throws Exception {

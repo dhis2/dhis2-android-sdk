@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
-import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
@@ -50,6 +49,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -180,7 +181,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
         // verify that tei was successfully inserted into database
         assertThatCursor(cursor).hasRow(UID).isExhausted();
 
-        List<TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.queryTrackedEntityInstancesToPost();
+        List<TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.queryTrackedEntityInstancesToSync();
 
         List<String> teiUids = new ArrayList<>();
         for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {

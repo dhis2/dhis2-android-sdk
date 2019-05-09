@@ -65,12 +65,21 @@ public final class TrackedEntityInstanceStoreImpl extends IdentifiableObjectWith
     }
 
     @Override
-    public List<TrackedEntityInstance> queryTrackedEntityInstancesToPost() {
-        String whereToPostClause = new WhereClauseBuilder()
+    public List<TrackedEntityInstance> queryTrackedEntityInstancesToSync() {
+        String whereToSyncClause = new WhereClauseBuilder()
                 .appendInKeyStringValues(BaseDataModel.Columns.STATE, Arrays.asList(
                         State.TO_POST.name(),
                         State.TO_UPDATE.name(),
                         State.TO_DELETE.name()))
+                .build();
+
+        return selectWhere(whereToSyncClause);
+    }
+
+    @Override
+    public List<TrackedEntityInstance> queryTrackedEntityInstancesToPost() {
+        String whereToPostClause = new WhereClauseBuilder()
+                .appendKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST.name())
                 .build();
 
         return selectWhere(whereToPostClause);

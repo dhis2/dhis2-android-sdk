@@ -79,6 +79,7 @@ public final class OrderByClauseBuilder {
                     .direction(RepositoryScope.OrderByDirection.ASC).build());
         }
 
+        WhereClauseBuilder wrapperClause = new WhereClauseBuilder();
         do {
             List<RepositoryScopeOrderByItem> nextIterationItems = new ArrayList<>();
             WhereClauseBuilder subWhereClause = new WhereClauseBuilder();
@@ -91,10 +92,12 @@ public final class OrderByClauseBuilder {
                     nextIterationItems.add(item);
                 }
             }
-            whereClauseBuilder.appendOrComplexQuery(subWhereClause.build());
+            wrapperClause.appendOrComplexQuery(subWhereClause.build());
             items = nextIterationItems;
         }
         while (!items.isEmpty());
+
+        whereClauseBuilder.appendComplexQuery(wrapperClause.build());
     }
 
     private static void addItemOperator(WhereClauseBuilder whereClauseBuilder, RepositoryScopeOrderByItem item,

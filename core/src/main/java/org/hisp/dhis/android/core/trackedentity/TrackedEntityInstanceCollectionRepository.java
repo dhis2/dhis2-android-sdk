@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
@@ -36,10 +37,14 @@ import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFacto
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.period.FeatureType;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -66,12 +71,10 @@ public final class TrackedEntityInstanceCollectionRepository
         this.postCall = postCall;
     }
 
-
     @Override
     public Callable<WebResponse> upload() {
-        return postCall;
+        return () -> postCall.call(byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).getWithoutChildren());
     }
-
 
     public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byUid() {
         return cf.string(TrackedEntityInstanceTableInfo.Columns.UID);
@@ -111,6 +114,14 @@ public final class TrackedEntityInstanceCollectionRepository
 
     public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> byState() {
         return cf.enumC(BaseDataModel.Columns.STATE);
+    }
+
+    public TrackedEntityInstanceCollectionRepository byProgramUids(List<String> programUids) {
+        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).inLinkTable(
+                EnrollmentTableInfo.TABLE_INFO.name(),
+                EnrollmentFields.TRACKED_ENTITY_INSTANCE,
+                EnrollmentFields.PROGRAM,
+                programUids);
     }
 
     public TrackedEntityInstanceCollectionRepository withEnrollments() {

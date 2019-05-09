@@ -156,13 +156,12 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
 
     private Observable<List<TrackedEntityInstance>> getTrackedEntityInstancesWithoutLimits(
             String lastUpdated, List<Paging> pagingList) {
-        return Observable.just(1).flatMap(empty -> {
-            TeiQuery.Builder teiQueryBuilder = TeiQuery.builder()
-                    .lastUpdatedStartDate(lastUpdated)
-                    .orgUnits(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids())
-                    .ouMode(OuMode.DESCENDANTS);
-            return getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList).subscribeOn(Schedulers.io());
-        });
+        TeiQuery.Builder teiQueryBuilder = TeiQuery.builder()
+                .lastUpdatedStartDate(lastUpdated)
+                .orgUnits(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids())
+                .ouMode(OuMode.DESCENDANTS);
+        return getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList)
+                .subscribeOn(Schedulers.io());
     }
 
     private Observable<List<TrackedEntityInstance>> getTrackedEntityInstancesWithPaging(

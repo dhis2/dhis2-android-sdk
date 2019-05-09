@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.event;
 
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.common.State;
@@ -35,6 +36,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.imports.EventImportSummary;
 import org.hisp.dhis.android.core.imports.ImportConflict;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
+import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 
 import java.util.ArrayList;
@@ -88,6 +90,8 @@ public class EventImportHandler {
                 if (state == State.ERROR || state == State.WARNING) {
                     parentState = parentState == State.ERROR ? State.ERROR : state;
                 }
+
+                deleteEventConflicts(eventImportSummary.reference());
             }
 
             if (handleAction != HandleAction.Delete) {
@@ -138,5 +142,15 @@ public class EventImportHandler {
                 enrollmentStore.setState(enrollmentUid, parentState);
             }
         }
+    }
+
+    private void deleteEventConflicts(String eventUid) {
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(TrackerImportConflictTableInfo.Columns.EVENT, eventUid)
+                .appendKeyStringValue(
+                        TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE,
+                        EventTableInfo.TABLE_INFO.name())
+                .build();
+        trackerImportConflictStore.deleteWhereIfExists(whereClause);
     }
 }

@@ -247,6 +247,36 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         assertThat(teiList.size() == 1).isTrue();
     }
 
+    //@Test
+    public void post_teis_filtering_what_to_post() throws Exception {
+        downloadMetadata();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(4, true).asObservable().subscribe();
+
+        TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
+
+        String newUid1 = codeGenerator.generate();
+        String newUid2 = codeGenerator.generate();
+
+        insertATei(newUid1, tei, tei.featureType());
+        insertATei(newUid2, tei, tei.featureType());
+
+        d2.trackedEntityModule().trackedEntityInstances.byUid().eq(newUid1).upload().call();
+
+        d2.wipeModule().wipeEverything();
+        downloadMetadata();
+
+        List<TrackedEntityInstance> teiList =  d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid1)).call();
+        assertThat(teiList.size() == 1).isTrue();
+
+        boolean teiDownloadedSuccessfully = true;
+        try {
+            d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid2)).call();
+        } catch (Exception e) {
+            teiDownloadedSuccessfully = false;
+        }
+        assertThat(teiDownloadedSuccessfully).isFalse();
+    }
+
     /* Set Dhis2 server to 2.30 or up*/
     //@Test
     public void post_one_tei_and_delete_it() throws Exception {

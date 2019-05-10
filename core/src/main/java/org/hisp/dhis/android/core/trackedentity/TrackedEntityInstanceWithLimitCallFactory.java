@@ -49,11 +49,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 import io.reactivex.Observable;
+import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
 
 @Reusable
@@ -72,6 +74,8 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     private final TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipDownloadCallFactory;
     private final TrackedEntityInstancePersistenceCallFactory persistenceCallFactory;
     private final TrackedEntityInstancesEndpointCallFactory endpointCallFactory;
+
+    private final Scheduler teiDownloadScheduler = Schedulers.from(Executors.newFixedThreadPool(6));
 
     @Inject
     TrackedEntityInstanceWithLimitCallFactory(
@@ -146,14 +150,14 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     private Observable<List<TrackedEntityInstance>> getTrackedEntityInstancesWithLimitByOrgUnit(
             String lastUpdated, List<Paging> pagingList) {
         // TODO handle continue on error
-        // TODO handle resource handle on success
+        // TODO handle transaction
         return Observable.fromIterable(getOrgUnitUids())
                 .flatMap(orgUnitUid -> {
                     TeiQuery.Builder teiQueryBuilder = TeiQuery.builder()
                             .lastUpdatedStartDate(lastUpdated)
                             .orgUnits(Collections.singleton(orgUnitUid));
                     return getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList)
-                            .subscribeOn(Schedulers.io());
+                            .subscribeOn(teiDownloadScheduler);
                 });
     }
 
@@ -164,7 +168,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
                 .orgUnits(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids())
                 .ouMode(OuMode.DESCENDANTS);
         return getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList)
-                .subscribeOn(Schedulers.io());
+                .subscribeOn(teiDownloadScheduler);
     }
 
     private Observable<List<TrackedEntityInstance>> getTrackedEntityInstancesWithPaging(

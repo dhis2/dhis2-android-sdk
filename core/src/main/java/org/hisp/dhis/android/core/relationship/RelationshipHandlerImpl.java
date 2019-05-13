@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
 import java.util.Collection;
 import java.util.List;
@@ -43,7 +42,7 @@ import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 @Reusable
 final class RelationshipHandlerImpl implements RelationshipHandler {
 
-    private final IdentifiableObjectStore<Relationship> relationshipStore;
+    private final RelationshipStore relationshipStore;
     private final RelationshipItemStore relationshipItemStore;
     private final SyncHandler<RelationshipItem> relationshipItemHandler;
     private final RelationshipItemElementStoreSelector storeSelector;
@@ -51,7 +50,7 @@ final class RelationshipHandlerImpl implements RelationshipHandler {
 
     @Inject
     RelationshipHandlerImpl(
-            IdentifiableObjectStore<Relationship> relationshipStore,
+            RelationshipStore relationshipStore,
             RelationshipItemStore relationshipItemStore,
             SyncHandler<RelationshipItem> relationshipItemHandler,
             RelationshipItemElementStoreSelector storeSelector,

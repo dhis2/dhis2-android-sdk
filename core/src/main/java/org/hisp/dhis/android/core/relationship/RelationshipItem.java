@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.relationship;
 
 import android.database.Cursor;
-import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -44,6 +43,8 @@ import org.hisp.dhis.android.core.data.database.RelationshipItemEnrollmentColumn
 import org.hisp.dhis.android.core.data.database.RelationshipItemEventColumnAdapter;
 import org.hisp.dhis.android.core.data.database.RelationshipItemTrackedEntityInstanceColumnAdapter;
 import org.hisp.dhis.android.core.data.database.RelationshipWithUidColumnAdapter;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_RelationshipItem.Builder.class)
@@ -93,6 +94,16 @@ public abstract class RelationshipItem implements Model {
             return enrollment().enrollment();
         } else {
             return event().event();
+        }
+    }
+
+    public String elementType() {
+        if (hasTrackedEntityInstance()) {
+            return RelationshipItemFields.TRACKED_ENTITY_INSTANCE;
+        } else if (hasEnrollment()) {
+            return RelationshipItemFields.ENROLLMENT;
+        } else {
+            return RelationshipItemFields.EVENT;
         }
     }
 

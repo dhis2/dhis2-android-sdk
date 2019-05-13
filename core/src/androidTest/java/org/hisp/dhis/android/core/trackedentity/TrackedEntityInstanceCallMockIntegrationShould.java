@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
@@ -118,6 +119,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         trackedEntityInstanceByUidEndPointCall = d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
 
+        EnrollmentStoreImpl.create(databaseAdapter()).setState("p6xHz0sbDlx", State.TO_DELETE);
 
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_with_removed_data_payload.json");
 
@@ -162,6 +164,8 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         assertThat(downloadedTei.uid(), is(expectedEnrollmentResponse.uid()));
         assertThat(downloadedTei.trackedEntityAttributeValues().size(),
                 is(expectedEnrollmentResponse.trackedEntityAttributeValues().size()));
+        assertThat(downloadedTei.enrollments().size(),
+                is(expectedEnrollmentResponse.enrollments().size()));
     }
 
     private void verifyDownloadedTrackedEntityInstance(String file, String teiUid)

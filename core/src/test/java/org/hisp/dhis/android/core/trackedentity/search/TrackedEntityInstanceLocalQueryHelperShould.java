@@ -33,8 +33,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -62,6 +65,22 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
 
         String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(query, Collections.emptyList(), 50);
         assertThat(sqlQuery).contains("program");
+    }
+
+    @Test
+    public void build_sql_query_with_enrollment_date() throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+        TrackedEntityInstanceQuery query  = queryBuilder
+                .program("IpHINAT79UW")
+                .programStartDate(format.parse("2019-04-15"))
+                .programEndDate(format.parse("2019-05-19"))
+                .query(QueryFilter.create(QueryOperator.LIKE,"female"))
+                .build();
+
+        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(query, Collections.emptyList(), 50);
+        assertThat(sqlQuery).contains("enrollmentDate >= '2019-04-15'");
+        assertThat(sqlQuery).contains("enrollmentDate <= '2019-05-19'");
     }
 
 }

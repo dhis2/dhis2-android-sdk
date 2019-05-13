@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -77,5 +77,22 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
         assertThat(tei.trackedEntityAttributeValues().size(), is(1));
         assertThat(tei.trackedEntityAttributeValues().get(0).trackedEntityAttribute(), is("lZGmxYbs97q"));
         assertThat(tei.trackedEntityAttributeValues().get(0).value(), is("4081507"));
+    }
+
+    @Test
+    public void include_relationships_as_children() {
+        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances
+                .withRelationships().uid("nWrB0TfWlvh").get();
+        assertThat(tei.relationships().size(), is(2));
+        assertThat(tei.relationships().get(0).uid(), is("AJOytZW7OaI"));
+    }
+
+    @Test
+    public void include_relationship_items_in_relationships_as_children() {
+        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances
+                .withRelationships().uid("nWrB0TfWlvh").get();
+        assertThat(tei.relationships().size(), is(2));
+        assertThat(tei.relationships().get(0).from().elementUid(), is("nWrB0TfWlvh"));
+        assertThat(tei.relationships().get(0).to().elementUid(), is("nWrB0TfWlvh"));
     }
 }

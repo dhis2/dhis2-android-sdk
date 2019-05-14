@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -81,7 +82,9 @@ public class IdentifiableDataSyncHandlerImpl<O extends DataModel & ObjectWithUid
         if (!storedObjectUids.isEmpty()) {
             String syncedObjectUidsWhereClause2 = new WhereClauseBuilder()
                     .appendInKeyStringValues(BaseIdentifiableObjectModel.Columns.UID, storedObjectUids)
-                    .appendKeyStringValue(BaseDataModel.Columns.STATE, State.SYNCED).build();
+                    .appendInKeyStringValues(BaseDataModel.Columns.STATE,
+                            Arrays.asList(State.SYNCED.name(), State.RELATIONSHIP.name()))
+                    .build();
             return store.selectUidsWhere(syncedObjectUidsWhereClause2);
         }
 

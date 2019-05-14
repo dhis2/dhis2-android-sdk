@@ -27,10 +27,16 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
+
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
-import org.hisp.dhis.android.core.arch.repositories.collection.CallableReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFields;
@@ -42,10 +48,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import androidx.lifecycle.LiveData;
-import androidx.paging.DataSource;
-import androidx.paging.LivePagedListBuilder;
-import androidx.paging.PagedList;
 import dagger.Reusable;
 
 import static org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode.OFFLINE_FIRST;
@@ -53,7 +55,7 @@ import static org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode.
 
 @Reusable
 public final class TrackedEntityInstanceQueryCollectionRepository
-        implements CallableReadOnlyCollectionRepository<TrackedEntityInstance> {
+        implements ReadOnlyCollectionRepository<TrackedEntityInstance> {
 
     private final TrackedEntityInstanceStore store;
     private final TrackedEntityInstanceQueryCallFactory onlineCallFactory;
@@ -119,17 +121,39 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     public List<TrackedEntityInstance> get() {
         if (scope.mode().equals(OFFLINE_ONLY) || scope.mode().equals(OFFLINE_FIRST)) {
             String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope.query(), Collections.emptyList(),
-                    50);
+                    -1);
             List<TrackedEntityInstance> instances = store.selectRawQuery(sqlQuery);
             return ChildrenAppenderExecutor.appendInObjectCollection(instances, childrenAppenders,
                     new ChildrenSelection(Collections.singleton(
                             TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES), false));
         } else {
             try {
-                return onlineCallFactory.getCall(scope.query()).call();
+                TrackedEntityInstanceQuery noPagingQuery = scope.query().toBuilder().paging(false).build();
+                return onlineCallFactory.getCall(noPagingQuery).call();
             } catch (Exception e) {
                 return Collections.emptyList();
             }
         }
+    }
+
+    @Override
+    public int count() {
+        return get().size();
+    }
+
+    @Override
+    public ReadOnlyObjectRepository<TrackedEntityInstance> one() {
+        return new ReadOnlyObjectRepository<TrackedEntityInstance>() {
+            @Override
+            public TrackedEntityInstance get() {
+                List<TrackedEntityInstance> list = TrackedEntityInstanceQueryCollectionRepository.this.get();
+                return list.isEmpty() ? null : list.get(0);
+            }
+
+            @Override
+            public boolean exists() {
+                return get() != null;
+            }
+        };
     }
 }

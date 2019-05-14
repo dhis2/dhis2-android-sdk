@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
@@ -49,21 +48,18 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 import io.reactivex.Observable;
-import io.reactivex.Scheduler;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.Single;
 
 @Reusable
 public final class TrackedEntityInstanceWithLimitCallFactory {
 
     private final Resource.Type resourceType = Resource.Type.TRACKED_ENTITY_INSTANCE;
 
-    private final APICallExecutor apiCallExecutor;
     private final RxAPICallExecutor rxCallExecutor;
     private final ResourceHandler resourceHandler;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
@@ -75,19 +71,19 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     private final TrackedEntityInstancePersistenceCallFactory persistenceCallFactory;
     private final TrackedEntityInstancesEndpointCallFactory endpointCallFactory;
 
-    private final Scheduler teiDownloadScheduler = Schedulers.from(Executors.newFixedThreadPool(6));
+    // TODO use scheduler for parallel download
+    // private final Scheduler teiDownloadScheduler = Schedulers.from(Executors.newFixedThreadPool(6));
 
     @Inject
     TrackedEntityInstanceWithLimitCallFactory(
-            APICallExecutor apiCallExecutor,
             RxAPICallExecutor rxCallExecutor,
             ResourceHandler resourceHandler,
             UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipDownloadCallFactory,
             TrackedEntityInstancePersistenceCallFactory persistenceCallFactory,
-            DHISVersionManager versionManager, TrackedEntityInstancesEndpointCallFactory endpointCallFactory) {
-        this.apiCallExecutor = apiCallExecutor;
+            DHISVersionManager versionManager,
+            TrackedEntityInstancesEndpointCallFactory endpointCallFactory) {
         this.rxCallExecutor = rxCallExecutor;
         this.resourceHandler = resourceHandler;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
@@ -149,15 +145,13 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
 
     private Observable<List<TrackedEntityInstance>> getTrackedEntityInstancesWithLimitByOrgUnit(
             String lastUpdated, List<Paging> pagingList) {
-        // TODO handle continue on error
-        // TODO handle transaction
         return Observable.fromIterable(getOrgUnitUids())
                 .flatMap(orgUnitUid -> {
                     TeiQuery.Builder teiQueryBuilder = TeiQuery.builder()
                             .lastUpdatedStartDate(lastUpdated)
                             .orgUnits(Collections.singleton(orgUnitUid));
-                    return getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList)
-                            .subscribeOn(teiDownloadScheduler);
+                    return getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
+                            // TODO .subscribeOn(teiDownloadScheduler);
                 });
     }
 
@@ -167,8 +161,8 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
                 .lastUpdatedStartDate(lastUpdated)
                 .orgUnits(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids())
                 .ouMode(OuMode.DESCENDANTS);
-        return getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList)
-                .subscribeOn(teiDownloadScheduler);
+        return getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
+                // TODO .subscribeOn(teiDownloadScheduler);
     }
 
     private Observable<List<TrackedEntityInstance>> getTrackedEntityInstancesWithPaging(
@@ -178,10 +172,12 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
                 .flatMapSingle(paging -> {
                     teiQueryBuilder.page(paging.page()).pageSize(paging.pageSize());
                     return endpointCallFactory.getCall(teiQueryBuilder.build()).map(payload ->
-                            new TeiListWithPaging(limitTeisForPage(payload.items(), paging), paging));
+                            new TeiListWithPaging(true, limitTeisForPage(payload.items(), paging), paging))
+                            .onErrorResumeNext((err) ->
+                                    Single.just(new TeiListWithPaging(false, Collections.emptyList(), paging)));
                 })
-                .takeUntil(tuple -> tuple.paging.isLastPage() ||
-                        (!tuple.paging.isLastPage() && tuple.teiList.size() < tuple.paging.pageSize()))
+                .takeUntil(res -> res.isSuccess && (res.paging.isLastPage() ||
+                        (!res.paging.isLastPage() && res.teiList.size() < res.paging.pageSize())))
                 .map(tuple -> tuple.teiList);
     }
 
@@ -223,10 +219,12 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     }
 
     private class TeiListWithPaging {
-        public final List<TrackedEntityInstance> teiList;
+        final boolean isSuccess;
+        final List<TrackedEntityInstance> teiList;
         public final Paging paging;
 
-        private TeiListWithPaging(List<TrackedEntityInstance> teiList, Paging paging) {
+        private TeiListWithPaging(boolean isSuccess, List<TrackedEntityInstance> teiList, Paging paging) {
+            this.isSuccess = isSuccess;
             this.teiList = teiList;
             this.paging = paging;
         }

@@ -70,7 +70,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
         DataSetCompleteRegistration dataSetCompleteRegistration
                 = getTestDataSetCompleteRegistrationWith(State.TO_POST, "2018");
 
-        ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> repository
+        ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration, DataSetCompleteRegistration> repository
                 = d2.dataSetModule().dataSetCompleteRegistrations;
         repository.add(dataSetCompleteRegistration);
 
@@ -116,7 +116,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
         DataSetCompleteRegistration dataSetCompleteRegistration
                 = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2018");
 
-        ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> repository
+        ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration, DataSetCompleteRegistration> repository
                 = d2.dataSetModule().dataSetCompleteRegistrations;
         repository.add(toDeleteDataSetCompleteRegistration);
         repository.add(dataSetCompleteRegistration);
@@ -140,7 +140,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
         DataSetCompleteRegistration dataSetCompleteRegistration
                 = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2018");
 
-        ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> repository
+        ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration, DataSetCompleteRegistration> repository
                 = d2.dataSetModule().dataSetCompleteRegistrations;
         repository.add(dataSetCompleteRegistration);
         dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, State.TO_DELETE);

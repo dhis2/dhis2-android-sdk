@@ -54,7 +54,7 @@ public final class TrackedEntityInstanceQueryDataSource
     private final TrackedEntityInstanceQueryRepositoryScope scope;
     private final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders;
 
-    private final int initialLoadSizeFactor = 3;
+    private final static int initialLoadSizeFactor = 3;
 
     private List<String> returnedUids = new ArrayList<>();
     private int currentOnlinePage = 0;

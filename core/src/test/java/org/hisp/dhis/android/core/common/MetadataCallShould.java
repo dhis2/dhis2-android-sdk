@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModuleDownloa
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramModuleDownloader;
 import org.hisp.dhis.android.core.settings.SystemSettingModuleDownloader;
+import org.hisp.dhis.android.core.sms.SmsModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserModuleDownloader;
@@ -124,6 +125,9 @@ public class MetadataCallShould extends BaseCallShould {
     @Mock
     private ForeignKeyCleaner foreignKeyCleaner;
 
+    @Mock
+    private SmsModule smsModule;
+
     // object to test
     private MetadataCall metadataCall;
 
@@ -163,7 +167,8 @@ public class MetadataCallShould extends BaseCallShould {
                 organisationUnitDownloader,
                 dataSetDownloader,
                 constantDownloader,
-                foreignKeyCleaner);
+                foreignKeyCleaner,
+                smsModule);
     }
 
     @After

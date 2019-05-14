@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -106,13 +105,7 @@ public final class TrackedEntityInstanceCollectionRepository
 
     @Override
     public TrackedEntityInstanceObjectRepository uid(String uid) {
-        RepositoryScopeFilterItem filterItem = RepositoryScopeFilterItem.builder()
-                .key(BaseIdentifiableObjectModel.Columns.UID)
-                .operator("=")
-                .value("'" + uid + "'")
-                .build();
-        RepositoryScope updatedScope = RepositoryScopeHelper.withFilterItem(scope, filterItem);
-
+        RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
         return new TrackedEntityInstanceObjectRepository(store, uid, childrenAppenders, updatedScope);
     }
 

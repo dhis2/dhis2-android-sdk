@@ -29,8 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCallFactory;
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
 
 import java.util.Collection;
 import java.util.List;
@@ -52,11 +51,12 @@ public final class TrackedEntityModule {
     public final TrackedEntityAttributeCollectionRepository trackedEntityAttributes;
     public final TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes;
 
+    public final TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery;
+
     public final TrackedEntityAttributeReservedValueManager reservedValueManager;
 
     private final TrackedEntityInstanceWithLimitCallFactory withLimitCallFactory;
     private final TrackedEntityInstanceListDownloadAndPersistCallFactory downloadAndPersistCallFactory;
-    private final TrackedEntityInstanceQueryCallFactory queryCallFactory;
 
     @Inject
     TrackedEntityModule(
@@ -69,7 +69,7 @@ public final class TrackedEntityModule {
             TrackedEntityAttributeReservedValueManager reservedValueManager,
             TrackedEntityInstanceWithLimitCallFactory withLimitCallFactory,
             TrackedEntityInstanceListDownloadAndPersistCallFactory downloadAndPersistCallFactory,
-            TrackedEntityInstanceQueryCallFactory queryCallFactory) {
+            TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery) {
         this.trackedEntityTypes = trackedEntityTypes;
         this.trackedEntityInstances = trackedEntityInstances;
         this.trackedEntityDataValues = trackedEntityDataValues;
@@ -79,7 +79,7 @@ public final class TrackedEntityModule {
         this.reservedValueManager = reservedValueManager;
         this.withLimitCallFactory = withLimitCallFactory;
         this.downloadAndPersistCallFactory = downloadAndPersistCallFactory;
-        this.queryCallFactory = queryCallFactory;
+        this.trackedEntityInstanceQuery = trackedEntityInstanceQuery;
     }
 
     public D2CallWithProgress downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
@@ -93,9 +93,5 @@ public final class TrackedEntityModule {
     public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids,
                                                                                      String program) {
         return downloadAndPersistCallFactory.getCall(uids, program);
-    }
-
-    public Callable<List<TrackedEntityInstance>> queryTrackedEntityInstances(TrackedEntityInstanceQuery query) {
-        return queryCallFactory.getCall(query);
     }
 }

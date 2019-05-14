@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryEntityDIModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -42,6 +43,7 @@ import retrofit2.Retrofit;
         TrackedEntityAttributeValueEntityDIModule.class,
         TrackedEntityDataValueEntityDIModule.class,
         TrackedEntityInstanceEntityDIModule.class,
+        TrackedEntityInstanceQueryEntityDIModule.class,
         TrackedEntityTypeEntityDIModule.class,
         TrackedEntityTypeAttributeEntityDIModule.class
 })

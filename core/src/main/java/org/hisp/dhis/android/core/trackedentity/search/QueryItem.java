@@ -26,41 +26,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.trackedentity.search;
 
+import com.google.auto.value.AutoValue;
+
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 
-public interface ObjectStore<M> extends DeletableStore {
+@AutoValue
+public abstract class QueryItem {
 
-    long insert(@NonNull M m) throws RuntimeException;
+    @NonNull
+    public abstract String item();
 
-    List<M> selectAll();
+    @NonNull
+    public abstract List<QueryFilter> filters();
 
-    List<M> selectWhere(String whereClause);
 
-    List<M> selectWhere(String filterWhereClause, String orderByClause);
+    public static Builder builder() {
+        return new AutoValue_QueryItem.Builder()
+                .filters(Collections.emptyList());
+    }
 
-    List<M> selectWhere(String filterWhereClause, String orderByClause, int limit);
+    public static QueryItem create(String item, QueryFilter... filters) {
+        return builder().item(item).filters(Arrays.asList(filters)).build();
+    }
 
-    List<M> selectRawQuery(String sqlRawQuery);
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder item(String item);
 
-    M selectOneWhere(String whereClause);
+        public abstract Builder filters(List<QueryFilter> filters);
 
-    M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
-
-    M selectFirst();
-
-    List<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
-
-    boolean deleteById(@NonNull M m);
-
-    boolean deleteWhere(String whereClause);
-
-    void deleteWhereIfExists(@NonNull String whereClause) throws RuntimeException;
-
-    int count();
-
-    int countWhere(String whereClause);
+        public abstract QueryItem build();
+    }
 }

@@ -26,41 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.trackedentity.search;
 
-import java.util.List;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-import androidx.annotation.NonNull;
+@Module
+public final class TrackedEntityInstanceQueryEntityDIModule {
 
-public interface ObjectStore<M> extends DeletableStore {
+    @Provides
+    @Reusable
+    public TrackedEntityInstanceQueryRepositoryScope empty() {
+        return TrackedEntityInstanceQueryRepositoryScope.empty();
+    }
 
-    long insert(@NonNull M m) throws RuntimeException;
-
-    List<M> selectAll();
-
-    List<M> selectWhere(String whereClause);
-
-    List<M> selectWhere(String filterWhereClause, String orderByClause);
-
-    List<M> selectWhere(String filterWhereClause, String orderByClause, int limit);
-
-    List<M> selectRawQuery(String sqlRawQuery);
-
-    M selectOneWhere(String whereClause);
-
-    M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
-
-    M selectFirst();
-
-    List<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
-
-    boolean deleteById(@NonNull M m);
-
-    boolean deleteWhere(String whereClause);
-
-    void deleteWhereIfExists(@NonNull String whereClause) throws RuntimeException;
-
-    int count();
-
-    int countWhere(String whereClause);
 }

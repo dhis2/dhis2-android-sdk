@@ -26,41 +26,62 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.trackedentity.search;
 
-import java.util.List;
+import com.google.auto.value.AutoValue;
 
 import androidx.annotation.NonNull;
 
-public interface ObjectStore<M> extends DeletableStore {
+@AutoValue
+public abstract class QueryFilter {
 
-    long insert(@NonNull M m) throws RuntimeException;
+    @NonNull
+    public abstract QueryOperator operator();
 
-    List<M> selectAll();
+    @NonNull
+    public abstract String filter();
 
-    List<M> selectWhere(String whereClause);
 
-    List<M> selectWhere(String filterWhereClause, String orderByClause);
+    public static Builder builder() {
+        return new AutoValue_QueryFilter.Builder()
+                .operator(QueryOperator.EQ);
+    }
 
-    List<M> selectWhere(String filterWhereClause, String orderByClause, int limit);
+    public static QueryFilter create(QueryOperator operator, String filter) {
+        return builder().operator(operator).filter(filter).build();
+    }
 
-    List<M> selectRawQuery(String sqlRawQuery);
+    public static QueryFilter create(String filter) {
+        return builder().filter(filter).build();
+    }
 
-    M selectOneWhere(String whereClause);
+    String[] getSqlFilters() {
+        String[] tokens = filter().split(" ");
+        if (operator().equals(QueryOperator.LIKE)) {
+            String[] result = new String[tokens.length];
+            for (int i = 0; i < tokens.length; i++) {
+                result[i] = "%" + tokens[i] + "%";
+            }
+            return result;
+        } else {
+            return tokens;
+        }
+    }
 
-    M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
+    String getSqlFilter() {
+        if (operator().equals(QueryOperator.LIKE)) {
+            return "%" + filter() + "%";
+        } else {
+            return filter();
+        }
+    }
 
-    M selectFirst();
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder operator(QueryOperator operator);
 
-    List<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
+        public abstract Builder filter(String filter);
 
-    boolean deleteById(@NonNull M m);
-
-    boolean deleteWhere(String whereClause);
-
-    void deleteWhereIfExists(@NonNull String whereClause) throws RuntimeException;
-
-    int count();
-
-    int countWhere(String whereClause);
+        public abstract QueryFilter build();
+    }
 }

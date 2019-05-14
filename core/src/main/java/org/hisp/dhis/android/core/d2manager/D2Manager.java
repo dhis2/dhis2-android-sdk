@@ -47,9 +47,9 @@ public final class D2Manager {
     private final D2Configuration d2Configuration;
     final DatabaseAdapter databaseAdapter;
 
-    D2Manager(@Nullable D2Configuration d2Configuration) {
+    public D2Manager(@Nullable D2Configuration d2Configuration) {
         this.d2Configuration = d2Configuration;
-        this.databaseAdapter = databaseAdapter();
+        this.databaseAdapter = newDatabaseAdapter();
     }
 
     public boolean isD2Configured() {
@@ -84,7 +84,7 @@ public final class D2Manager {
         return d2;
     }
 
-    private DatabaseAdapter databaseAdapter() {
+    private DatabaseAdapter newDatabaseAdapter() {
         DbOpenHelper dbOpenHelper = new DbOpenHelper(d2Configuration.context(), d2Configuration.databaseName());
         return new SqLiteDatabaseAdapter(dbOpenHelper);
     }

@@ -84,6 +84,10 @@ final class OkHttpClientFactory {
             client.addNetworkInterceptor(interceptor);
         }
 
+        for (Interceptor interceptor : d2Configuration.interceptors()) {
+            client.addInterceptor(interceptor);
+        }
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             try {
 

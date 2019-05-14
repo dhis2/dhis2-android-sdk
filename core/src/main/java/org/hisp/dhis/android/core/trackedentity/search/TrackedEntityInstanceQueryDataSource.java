@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.search;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
@@ -150,6 +151,8 @@ public final class TrackedEntityInstanceQueryDataSource
                 }
             }
             return instances;
+        } catch (D2Error e) {
+            return Collections.emptyList();
         } catch (Exception e) {
             return Collections.emptyList();
         }

@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
@@ -130,6 +131,8 @@ public final class TrackedEntityInstanceQueryCollectionRepository
             try {
                 TrackedEntityInstanceQuery noPagingQuery = scope.query().toBuilder().paging(false).build();
                 return onlineCallFactory.getCall(noPagingQuery).call();
+            } catch (D2Error e) {
+                return Collections.emptyList();
             } catch (Exception e) {
                 return Collections.emptyList();
             }

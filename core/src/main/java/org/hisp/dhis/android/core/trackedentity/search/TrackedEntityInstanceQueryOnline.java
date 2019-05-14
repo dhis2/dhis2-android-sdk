@@ -82,12 +82,13 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         return new AutoValue_TrackedEntityInstanceQueryOnline.Builder();
     }
 
+    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
     static TrackedEntityInstanceQueryOnline create(TrackedEntityInstanceQuery teiQuery) {
         List<String> attributes = new ArrayList<>();
         for (QueryItem item : teiQuery.attribute()) {
             StringBuilder attributeBuilder = new StringBuilder(item.item());
             for (QueryFilter filter : item.filters()) {
-                attributeBuilder.append(":").append(filter.operator()).append(":").append(filter.filter());
+                attributeBuilder.append(':').append(filter.operator()).append(':').append(filter.filter());
             }
             attributes.add(attributeBuilder.toString());
         }
@@ -96,7 +97,7 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         for (QueryItem item : teiQuery.filter()) {
             StringBuilder filterBuilder = new StringBuilder(item.item());
             for (QueryFilter filter : item.filters()) {
-                filterBuilder.append(":").append(filter.operator()).append(":").append(filter.filter());
+                filterBuilder.append(':').append(filter.operator()).append(':').append(filter.filter());
             }
             filters.add(filterBuilder.toString());
         }

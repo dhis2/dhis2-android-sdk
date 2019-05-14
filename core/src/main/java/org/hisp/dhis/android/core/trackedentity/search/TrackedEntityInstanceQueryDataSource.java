@@ -58,10 +58,10 @@ public final class TrackedEntityInstanceQueryDataSource
     private final static int initialLoadSizeFactor = 3;
 
     private List<String> returnedUids = new ArrayList<>();
-    private int currentOnlinePage = 0;
+    private int currentOnlinePage;
 
-    private boolean isExhaustedOnline = false;
-    private boolean isExhaustedOffline = false;
+    private boolean isExhaustedOnline;
+    private boolean isExhaustedOffline;
 
     TrackedEntityInstanceQueryDataSource(TrackedEntityInstanceStore store,
                                          TrackedEntityInstanceQueryCallFactory onlineCallFactory,

@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.trackedentity.search;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.api.OuMode;
+import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
@@ -39,19 +41,11 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
-import static org.hisp.dhis.android.core.common.State.SYNCED;
-import static org.hisp.dhis.android.core.common.State.TO_DELETE;
-import static org.hisp.dhis.android.core.common.State.TO_POST;
-import static org.hisp.dhis.android.core.common.State.TO_UPDATE;
-import static org.hisp.dhis.android.core.enrollment.EnrollmentFields.ENROLLMENT_DATE;
-import static org.hisp.dhis.android.core.enrollment.EnrollmentFields.PROGRAM;
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitFields.PARENT;
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitFields.PATH;
 import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueFields.VALUE;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE;
 
-abstract class TrackedEntityInstanceLocalQueryHelper {
+final class TrackedEntityInstanceLocalQueryHelper {
 
     private static String TEI_ALIAS = "tei";
     private static String ENROLLMENT_ALIAS = "en";
@@ -63,6 +57,17 @@ abstract class TrackedEntityInstanceLocalQueryHelper {
     private static String TEI_STATE = dot(TEI_ALIAS, BaseDataModel.Columns.STATE);
     private static String TEI_LAST_UPDATED = dot(TEI_ALIAS, "lastUpdated");
 
+    private static String ENROLLMENT_DATE = EnrollmentFields.ENROLLMENT_DATE;
+    private static String PROGRAM = EnrollmentFields.PROGRAM;
+
+    private static String TRACKED_ENTITY_ATTRIBUTE =
+            TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE;
+    private static String TRACKED_ENTITY_INSTANCE =
+            TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE;
+
+    private TrackedEntityInstanceLocalQueryHelper() { }
+
+    @SuppressWarnings({"PMD.UseStringBufferForStringAppends"})
     static String getSqlQuery(TrackedEntityInstanceQuery query, List<String> excludeList, int limit) {
 
         String queryStr = "SELECT " + TEI_ALL + " FROM " +
@@ -98,9 +103,10 @@ abstract class TrackedEntityInstanceLocalQueryHelper {
 
         // TODO In case a program uid is provided, the server orders by enrollmentStatus.
 
-        queryStr += " ORDER BY CASE WHEN " + TEI_STATE + " IN ('" + TO_POST + "','" + TO_UPDATE + "') THEN 1 " +
-                "WHEN " + TEI_STATE + " = '" + TO_DELETE + "' THEN 2 " +
-                "WHEN " + TEI_STATE + " = '" + SYNCED + "' THEN 3 ELSE 4 END ASC, " +
+        queryStr += " ORDER BY CASE " +
+                "WHEN " + TEI_STATE + " IN ('" + State.TO_POST + "','" + State.TO_UPDATE + "') THEN 1 " +
+                "WHEN " + TEI_STATE + " = '" + State.TO_DELETE + "' THEN 2 " +
+                "WHEN " + TEI_STATE + " = '" + State.SYNCED + "' THEN 3 ELSE 4 END ASC, " +
                 TEI_LAST_UPDATED + " DESC ";
 
         if (limit > 0) {
@@ -139,12 +145,6 @@ abstract class TrackedEntityInstanceLocalQueryHelper {
 
         WhereClauseBuilder inner = new WhereClauseBuilder();
         switch (ouMode) {
-            case SELECTED:
-                for (String orgunit : query.orgUnits()) {
-                    inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, UID), orgunit);
-                }
-
-                break;
             case DESCENDANTS:
                 for (String orgunit : query.orgUnits()) {
                     inner.appendOrKeyLikeStringValue(dot(ORGUNIT_ALIAS, PATH), "%" + orgunit + "%");
@@ -154,6 +154,12 @@ abstract class TrackedEntityInstanceLocalQueryHelper {
                 for (String orgunit : query.orgUnits()) {
                     inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, PARENT), orgunit);
                     // TODO Include orgunit?
+                    inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, UID), orgunit);
+                }
+                break;
+            // SELECTED mode
+            default:
+                for (String orgunit : query.orgUnits()) {
                     inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, UID), orgunit);
                 }
                 break;

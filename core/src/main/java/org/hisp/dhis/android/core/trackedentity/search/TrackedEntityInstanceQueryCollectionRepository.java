@@ -51,9 +51,6 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 
-import static org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode.OFFLINE_FIRST;
-import static org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode.OFFLINE_ONLY;
-
 @Reusable
 public final class TrackedEntityInstanceQueryCollectionRepository
         implements ReadOnlyCollectionRepository<TrackedEntityInstance> {
@@ -62,7 +59,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     private final TrackedEntityInstanceQueryCallFactory onlineCallFactory;
     private final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders;
 
-    private TrackedEntityInstanceQueryRepositoryScope scope;
+    private final TrackedEntityInstanceQueryRepositoryScope scope;
 
     @Inject
     public TrackedEntityInstanceQueryCollectionRepository(
@@ -83,7 +80,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
 
     public TrackedEntityInstanceQueryCollectionRepository offlineOnly() {
         return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().mode(OFFLINE_ONLY).build());
+                scope.toBuilder().mode(RepositoryMode.OFFLINE_ONLY).build());
     }
 
     public TrackedEntityInstanceQueryCollectionRepository onlineFirst() {
@@ -120,7 +117,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
 
     @Override
     public List<TrackedEntityInstance> get() {
-        if (scope.mode().equals(OFFLINE_ONLY) || scope.mode().equals(OFFLINE_FIRST)) {
+        if (scope.mode().equals(RepositoryMode.OFFLINE_ONLY) || scope.mode().equals(RepositoryMode.OFFLINE_FIRST)) {
             String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope.query(), Collections.emptyList(),
                     -1);
             List<TrackedEntityInstance> instances = store.selectRawQuery(sqlQuery);

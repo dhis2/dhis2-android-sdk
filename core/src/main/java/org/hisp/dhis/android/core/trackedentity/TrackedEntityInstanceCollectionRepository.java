@@ -29,21 +29,26 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.period.FeatureType;
+import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -54,11 +59,12 @@ import dagger.Reusable;
 
 @Reusable
 public final class TrackedEntityInstanceCollectionRepository
-        extends ReadOnlyWithUidCollectionRepositoryImpl<TrackedEntityInstance,
-        TrackedEntityInstanceCollectionRepository>
-        implements ReadOnlyWithUploadWithUidCollectionRepository<TrackedEntityInstance> {
+        extends ReadOnlyCollectionRepositoryImpl<TrackedEntityInstance, TrackedEntityInstanceCollectionRepository>
+        implements ReadWriteWithUploadWithUidCollectionRepository<TrackedEntityInstance,
+        TrackedEntityInstanceCreateProjection> {
 
     private final TrackedEntityInstancePostCall postCall;
+    private final TrackedEntityInstanceStore store;
 
     @Inject
     TrackedEntityInstanceCollectionRepository(
@@ -69,11 +75,45 @@ public final class TrackedEntityInstanceCollectionRepository
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new TrackedEntityInstanceCollectionRepository(store, childrenAppenders, s, postCall)));
         this.postCall = postCall;
+        this.store = store;
     }
 
     @Override
     public Callable<WebResponse> upload() {
         return () -> postCall.call(byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).getWithoutChildren());
+    }
+
+    @Override
+    public String add(TrackedEntityInstanceCreateProjection projection) {
+        String generatedUid;
+        do {
+            generatedUid = new CodeGeneratorImpl().generate();
+        } while (store.exists(generatedUid));
+
+        Date creationDate = new Date();
+
+        store.insert(TrackedEntityInstance.builder()
+                .uid(generatedUid)
+                .state(State.TO_POST)
+                .createdAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
+                .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
+                .organisationUnit(projection.organisationUnit())
+                .trackedEntityType(projection.trackedEntityType())
+                .build());
+
+        return generatedUid;
+    }
+
+    @Override
+    public TrackedEntityInstanceObjectRepository uid(String uid) {
+        RepositoryScopeFilterItem filterItem = RepositoryScopeFilterItem.builder()
+                .key(BaseIdentifiableObjectModel.Columns.UID)
+                .operator("=")
+                .value("'" + uid + "'")
+                .build();
+        RepositoryScope updatedScope = RepositoryScopeHelper.withFilterItem(scope, filterItem);
+
+        return new TrackedEntityInstanceObjectRepository(store, uid, childrenAppenders, updatedScope);
     }
 
     public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byUid() {

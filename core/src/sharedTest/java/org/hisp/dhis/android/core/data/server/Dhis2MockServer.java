@@ -72,6 +72,7 @@ public class Dhis2MockServer {
     private static final String DATA_VALUES_JSON = "datavalue/data_values.json";
     private static final String DATA_SET_COMPLETE_REGISTRATIONS_JSON = "dataset/data_set_complete_registrations.json";
     private static final String ORGANISATION_UNITS_JSON = "organisationunit/organisation_units.json";
+    private static final String SMS_METADATA_IDS = "sms/metadata_ids.json";
 
     private MockWebServer server;
     private IFileReader fileReader;
@@ -190,6 +191,7 @@ public class Dhis2MockServer {
         enqueueMockResponse(ORGANISATION_UNITS_JSON);
         enqueueMockResponse(ORGANISATION_UNIT_LEVELS_JSON);
         enqueueMockResponse(CONSTANTS_JSON);
+        enqueueMockResponse(SMS_METADATA_IDS);
     }
 
     @NonNull

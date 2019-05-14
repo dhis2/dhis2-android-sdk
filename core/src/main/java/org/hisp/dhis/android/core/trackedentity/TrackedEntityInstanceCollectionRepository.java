@@ -38,16 +38,13 @@ import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnecto
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.period.FeatureType;
-import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -84,23 +81,11 @@ public final class TrackedEntityInstanceCollectionRepository
 
     @Override
     public String add(TrackedEntityInstanceCreateProjection projection) {
-        String generatedUid;
-        do {
-            generatedUid = new CodeGeneratorImpl().generate();
-        } while (store.exists(generatedUid));
+        TrackedEntityInstance trackedEntityInstance =
+                new TrackedEntityInstanceProjectionTransformer(store).transform(projection);
+        store.insert(trackedEntityInstance);
 
-        Date creationDate = new Date();
-
-        store.insert(TrackedEntityInstance.builder()
-                .uid(generatedUid)
-                .state(State.TO_POST)
-                .createdAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
-                .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
-                .organisationUnit(projection.organisationUnit())
-                .trackedEntityType(projection.trackedEntityType())
-                .build());
-
-        return generatedUid;
+        return trackedEntityInstance.uid();
     }
 
     @Override

@@ -35,4 +35,12 @@ public interface LocalDbRepository {
     Completable updateEventSubmissionState(String eventUid, State state);
 
     Completable updateEnrollmentSubmissionState(String enrollmentUid, State state);
+
+    Completable setMetadataDownloadConfig(WebApiRepository.GetMetadataIdsConfig metadataIdsConfig);
+
+    Single<WebApiRepository.GetMetadataIdsConfig> getMetadataDownloadConfig();
+
+    Completable setModuleEnabled(boolean enabled);
+
+    Single<Boolean> isModuleEnabled();
 }

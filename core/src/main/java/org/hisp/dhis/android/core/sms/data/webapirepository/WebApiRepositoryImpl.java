@@ -52,17 +52,20 @@ public class WebApiRepositoryImpl implements WebApiRepository {
         return new Metadata.ID(id);
     }
 
-    private Call<MetadataResponseModel> metadataCall(final GetMetadataIdsConfig config) {
-        ConfigWrapper c = new ConfigWrapper(config);
+    private Call<MetadataResponseModel> metadataCall(final GetMetadataIdsConfig c) {
         return apiService.getMetadataIds(
-                c.dataElements(),
-                c.categoryOptionCombos(),
-                c.organisationUnits(),
-                c.users(),
-                c.trackedEntityTypes(),
-                c.trackedEntityAttributes(),
-                c.programs()
+                val(c.dataElements),
+                val(c.categoryOptionCombos),
+                val(c.organisationUnits),
+                val(c.users),
+                val(c.trackedEntityTypes),
+                val(c.trackedEntityAttributes),
+                val(c.programs)
         );
+    }
+
+    private String val(boolean enable) {
+        return enable ? ApiService.GET_IDS : null;
     }
 
     private <T> Single<T> translateCallToSingle(Call<T> call) {

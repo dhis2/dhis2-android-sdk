@@ -12,6 +12,7 @@ import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
 
 import java.util.Collection;
+import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -22,6 +23,8 @@ public class SmsSubmitCase {
     private final LocalDbRepository localDbRepository;
     private final SmsRepository smsRepository;
     private final DeviceStateRepository deviceStateRepository;
+    private Converter<?> converter;
+    private List<String> smsParts;
 
     public SmsSubmitCase(LocalDbRepository localDbRepository, SmsRepository smsRepository,
                          DeviceStateRepository deviceStateRepository) {
@@ -30,30 +33,40 @@ public class SmsSubmitCase {
         this.deviceStateRepository = deviceStateRepository;
     }
 
-    public void acceptSMSCount(boolean accept) {
-        smsRepository.acceptSMSCount(accept);
+    public Single<Integer> convertEvent(String eventUid,
+                                        String teiUid) {
+        return convert(new EventConverter(localDbRepository, eventUid, teiUid));
     }
 
-    public Observable<SmsRepository.SmsSendingState> submitEvent(final String eventUid,
-                                                                 final String teiUid) {
-        return submit(new EventConverter(localDbRepository, eventUid, teiUid));
+    public Single<Integer> convertEnrollment(String enrollmentUid,
+                                             String teiUid) {
+        return convert(new EnrollmentConverter(localDbRepository, enrollmentUid, teiUid));
     }
 
-    public Observable<SmsRepository.SmsSendingState> submitEnrollment(String enrollmentUid,
-                                                                      String teiUid) {
-        return submit(new EnrollmentConverter(localDbRepository, enrollmentUid, teiUid));
+    private Single<Integer> convert(Converter<?> converter) {
+        if (this.converter != null) {
+            return Single.error(new IllegalStateException("SMS submit case should be used once"));
+        }
+        this.converter = converter;
+        return converter.readAndConvert().flatMap(
+                smsRepository::generateSmsParts
+        ).map(parts -> {
+            smsParts = parts;
+            return parts.size();
+        });
     }
 
-    private <T> Observable<SmsRepository.SmsSendingState> submit(final Converter<T> converter) {
+    public Observable<SmsRepository.SmsSendingState> send() {
+        if (smsParts == null || smsParts.isEmpty()) {
+            return Observable.error(new IllegalStateException("Convert method should be called first"));
+        }
         return checkPreconditions()
-                .andThen(Single.zip(
-                        localDbRepository.getGatewayNumber(),
-                        converter.readAndConvert(),
-                        Pair::create)
-                ).flatMapObservable(numAndContents ->
-                        smsRepository.sendSms(numAndContents.first, numAndContents.second, SENDING_TIMEOUT))
+                .andThen(
+                        localDbRepository.getGatewayNumber()
+                ).flatMapObservable(number ->
+                        smsRepository.sendSms(number, smsParts, SENDING_TIMEOUT))
                 .flatMap(smsSendingState -> {
-                    if (SmsRepository.State.ALL_SENT.equals(smsSendingState.getState())) {
+                    if (smsSendingState.getSent() == smsSendingState.getTotal()) {
                         return converter.updateSubmissionState(State.SENT_VIA_SMS)
                                 .andThen(Observable.just(smsSendingState));
                     }
@@ -90,13 +103,21 @@ public class SmsSubmitCase {
                 mapFail(localDbRepository.getGatewayNumber().map(number -> number.length() > 0),
                         PreconditionFailed.Type.NO_GATEWAY_NUMBER_SET),
                 mapFail(localDbRepository.getUserName().map(username -> username.length() > 0),
-                        PreconditionFailed.Type.NO_USER_LOGGED_IN)
+                        PreconditionFailed.Type.NO_USER_LOGGED_IN),
+                mapFail(localDbRepository.getMetadataIds().map(ids -> ids.lastSyncDate != null),
+                        PreconditionFailed.Type.NO_METADATA_DOWNLOADED),
+                mapFail(localDbRepository.isModuleEnabled(),
+                        PreconditionFailed.Type.SMS_MODULE_DISABLED)
         );
     }
 
     private Completable mapFail(Single<Boolean> precondition, PreconditionFailed.Type failType) {
         return precondition.flatMapCompletable(success ->
-                success ? Completable.complete() : Completable.error(new PreconditionFailed(failType)));
+                success ? Completable.complete() : Completable.error(new Throwable()))
+                .onErrorResumeNext(error ->
+                        // on any error return this one
+                        Completable.error(new PreconditionFailed(failType))
+                );
     }
 
     public static class PreconditionFailed extends Throwable {
@@ -116,7 +137,9 @@ public class SmsSubmitCase {
             NO_RECEIVE_SMS_PERMISSION,
             NO_SEND_SMS_PERMISSION,
             NO_GATEWAY_NUMBER_SET,
-            NO_USER_LOGGED_IN
+            NO_USER_LOGGED_IN,
+            NO_METADATA_DOWNLOADED,
+            SMS_MODULE_DISABLED
         }
     }
 }

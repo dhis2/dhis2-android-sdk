@@ -28,11 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.mockito.ArgumentMatcher;
 
-@RunWith(JUnit4.class)
 class QueryPageMatcher implements ArgumentMatcher<TrackedEntityInstanceQuery> {
 
     private final int page;

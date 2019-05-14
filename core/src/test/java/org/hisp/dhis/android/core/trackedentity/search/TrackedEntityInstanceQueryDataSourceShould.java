@@ -108,7 +108,7 @@ public class TrackedEntityInstanceQueryDataSourceShould {
         dataSource.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, scope.query().pageSize(), false),
                 initialCallback);
         verify(onlineCallFactory).getCall(scope.query());
-        verify(initialCallback).onResult(offlineObjects);
+        verify(initialCallback).onResult(onlineObjects);
     }
 
     @Test
@@ -146,7 +146,7 @@ public class TrackedEntityInstanceQueryDataSourceShould {
                 initialCallback);
         verify(store).selectRawQuery(anyString());
         verifyNoMoreInteractions(store);
-        verify(onlineCallFactory.getCall(any(TrackedEntityInstanceQuery.class)), times(2));
+        verify(onlineCallFactory, times(2)).getCall(any(TrackedEntityInstanceQuery.class));
         verifyNoMoreInteractions(onlineCallFactory);
     }
 

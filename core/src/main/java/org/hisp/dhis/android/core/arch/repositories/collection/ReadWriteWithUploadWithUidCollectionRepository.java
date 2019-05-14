@@ -27,11 +27,14 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
-public interface ReadWriteIdentifiableCollectionRepository<M extends Model & ObjectWithUidInterface>
-        extends ReadWriteCollectionRepository<M> {
-    ReadWriteObjectRepository<M> uid(String uid);
+import java.util.concurrent.Callable;
+
+public interface ReadWriteWithUploadWithUidCollectionRepository<M extends Model & ObjectWithUidInterface, C>
+        extends ReadWriteWithUidCollectionRepository<M, C> {
+    Callable<WebResponse> upload() throws D2Error;
 }

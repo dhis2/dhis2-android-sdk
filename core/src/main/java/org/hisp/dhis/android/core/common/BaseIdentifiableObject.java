@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -40,6 +37,9 @@ import org.hisp.dhis.android.core.data.database.IgnoreBooleanColumnAdapter;
 
 import java.text.ParseException;
 import java.util.Date;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public abstract class BaseIdentifiableObject implements IdentifiableObject, ObjectWithDeleteInterface {
     /* date format which should be used for all Date instances
@@ -94,11 +94,11 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject, Obje
         return BaseIdentifiableObject.SPACE_DATE_FORMAT.parse(dateStr);
     }
 
-    public static String dateToSpaceDateStr(Date date) throws ParseException {
+    public static String dateToSpaceDateStr(Date date) {
         return BaseIdentifiableObject.SPACE_DATE_FORMAT.format(date);
     }
 
-    public static String dateToDateStr(Date date) throws ParseException {
+    public static String dateToDateStr(Date date) {
         return BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
 

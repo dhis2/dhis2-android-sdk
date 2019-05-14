@@ -54,7 +54,7 @@ public final class TrackedEntityInstanceQueryDataSource
     private final TrackedEntityInstanceQueryRepositoryScope scope;
     private final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders;
 
-    private final int INITIAL_LOAD_SIZE_FACTOR = 3;
+    private final int initialLoadSizeFactor = 3;
 
     private List<String> returnedUids = new ArrayList<>();
     private int currentOnlinePage = 0;
@@ -140,7 +140,7 @@ public final class TrackedEntityInstanceQueryDataSource
                 .paging(true).build();
 
         // If first page, the requestedSize is three times the original. Increment in three.
-        currentOnlinePage += isInitial ? INITIAL_LOAD_SIZE_FACTOR : 1;
+        currentOnlinePage += isInitial ? initialLoadSizeFactor : 1;
 
         try {
             List<TrackedEntityInstance> instances = new ArrayList<>();

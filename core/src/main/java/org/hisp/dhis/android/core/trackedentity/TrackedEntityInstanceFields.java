@@ -44,7 +44,7 @@ public final class TrackedEntityInstanceFields {
     final static String CREATED = "created";
     final static String LAST_UPDATED = "lastUpdated";
     final static String ORGANISATION_UNIT = "orgUnit";
-    final static String TRACKED_ENTITY_ATTRIBUTE_VALUES = "attributes";
+    public final static String TRACKED_ENTITY_ATTRIBUTE_VALUES = "attributes";
     private final static String RELATIONSHIPS = "relationships";
     final static String TRACKED_ENTITY_TYPE = "trackedEntityType";
     final static String COORDINATES = "coordinates";

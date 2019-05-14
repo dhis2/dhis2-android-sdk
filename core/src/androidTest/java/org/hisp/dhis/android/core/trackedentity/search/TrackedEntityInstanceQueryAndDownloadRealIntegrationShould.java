@@ -26,14 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.trackedentity.search;
 
+import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -71,7 +71,8 @@ public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends 
         d2.syncMetaData().call();
 
         TrackedEntityInstanceQuery query = queryBuilder.build();
-        List<TrackedEntityInstance> queriedTeis = d2.trackedEntityModule().queryTrackedEntityInstances(query).call();
+        List<TrackedEntityInstance> queriedTeis =
+                d2.trackedEntityModule().trackedEntityInstanceQuery.onlineOnly().query(query).get();
         assertThat(queriedTeis).isNotEmpty();
 
         Set<String> uids = new HashSet<>(queriedTeis.size());

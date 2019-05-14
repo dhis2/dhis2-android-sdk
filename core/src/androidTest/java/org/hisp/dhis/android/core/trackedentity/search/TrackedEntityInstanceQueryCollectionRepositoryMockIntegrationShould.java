@@ -26,41 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.trackedentity.search;
 
-import java.util.List;
+import com.jraska.livedata.TestObserver;
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
 
-public interface ObjectStore<M> extends DeletableStore {
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+import androidx.lifecycle.LiveData;
+import androidx.paging.PagedList;
+import androidx.test.runner.AndroidJUnit4;
 
-    long insert(@NonNull M m) throws RuntimeException;
+@RunWith(AndroidJUnit4.class)
+public class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould
+        extends SyncedDatabaseMockIntegrationShould {
 
-    List<M> selectAll();
+    @Rule
+    public TestRule rule = new InstantTaskExecutorRule();
 
-    List<M> selectWhere(String whereClause);
+    @Test
+    public void get_offline_initial_objects() throws InterruptedException {
+        LiveData<PagedList<TrackedEntityInstance>> liveData = d2.trackedEntityModule().trackedEntityInstanceQuery
+                .offlineOnly().getPaged(2);
 
-    List<M> selectWhere(String filterWhereClause, String orderByClause);
-
-    List<M> selectWhere(String filterWhereClause, String orderByClause, int limit);
-
-    List<M> selectRawQuery(String sqlRawQuery);
-
-    M selectOneWhere(String whereClause);
-
-    M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
-
-    M selectFirst();
-
-    List<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
-
-    boolean deleteById(@NonNull M m);
-
-    boolean deleteWhere(String whereClause);
-
-    void deleteWhereIfExists(@NonNull String whereClause) throws RuntimeException;
-
-    int count();
-
-    int countWhere(String whereClause);
+        TestObserver.test(liveData)
+                .awaitValue()
+                .assertHasValue()
+                .assertValue(pagedList -> pagedList.size() == 2);
+    }
 }

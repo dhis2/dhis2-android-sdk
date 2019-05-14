@@ -26,41 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.trackedentity.search;
 
-import java.util.List;
+public enum QueryOperator {
+    LIKE("LIKE"),
+    EQ("LIKE");     // Intentionally LIKE to perform case insensitive matching
 
-import androidx.annotation.NonNull;
+    private String sqlOperator;
 
-public interface ObjectStore<M> extends DeletableStore {
+    QueryOperator(String sqlOperator) {
+        this.sqlOperator = sqlOperator;
+    }
 
-    long insert(@NonNull M m) throws RuntimeException;
-
-    List<M> selectAll();
-
-    List<M> selectWhere(String whereClause);
-
-    List<M> selectWhere(String filterWhereClause, String orderByClause);
-
-    List<M> selectWhere(String filterWhereClause, String orderByClause, int limit);
-
-    List<M> selectRawQuery(String sqlRawQuery);
-
-    M selectOneWhere(String whereClause);
-
-    M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
-
-    M selectFirst();
-
-    List<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
-
-    boolean deleteById(@NonNull M m);
-
-    boolean deleteWhere(String whereClause);
-
-    void deleteWhereIfExists(@NonNull String whereClause) throws RuntimeException;
-
-    int count();
-
-    int countWhere(String whereClause);
+    public String getSqlOperator() {
+        return this.sqlOperator;
+    }
 }

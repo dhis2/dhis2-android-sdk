@@ -26,41 +26,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.trackedentity.search;
 
-import java.util.List;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode;
 
 import androidx.annotation.NonNull;
 
-public interface ObjectStore<M> extends DeletableStore {
+@AutoValue
+public abstract class TrackedEntityInstanceQueryRepositoryScope {
 
-    long insert(@NonNull M m) throws RuntimeException;
+    @NonNull
+    public abstract RepositoryMode mode();
 
-    List<M> selectAll();
+    @NonNull
+    public abstract TrackedEntityInstanceQuery query();
 
-    List<M> selectWhere(String whereClause);
+    public abstract Builder toBuilder();
 
-    List<M> selectWhere(String filterWhereClause, String orderByClause);
+    public static Builder builder() {
+        return new AutoValue_TrackedEntityInstanceQueryRepositoryScope.Builder()
+                .mode(RepositoryMode.OFFLINE_ONLY)
+                .query(TrackedEntityInstanceQuery.empty());
+    }
 
-    List<M> selectWhere(String filterWhereClause, String orderByClause, int limit);
+    public static TrackedEntityInstanceQueryRepositoryScope empty() {
+        return builder().build();
+    }
 
-    List<M> selectRawQuery(String sqlRawQuery);
+    @AutoValue.Builder
+    public abstract static class Builder {
 
-    M selectOneWhere(String whereClause);
+        public abstract Builder mode(RepositoryMode mode);
 
-    M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
+        public abstract Builder query(TrackedEntityInstanceQuery query);
 
-    M selectFirst();
-
-    List<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
-
-    boolean deleteById(@NonNull M m);
-
-    boolean deleteWhere(String whereClause);
-
-    void deleteWhereIfExists(@NonNull String whereClause) throws RuntimeException;
-
-    int count();
-
-    int countWhere(String whereClause);
+        public abstract TrackedEntityInstanceQueryRepositoryScope build();
+    }
 }

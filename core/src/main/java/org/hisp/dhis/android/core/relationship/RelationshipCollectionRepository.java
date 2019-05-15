@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnecto
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.StoreWithState;
 import org.hisp.dhis.android.core.common.UidsHelper;
@@ -63,13 +62,13 @@ public final class RelationshipCollectionRepository
         extends ReadOnlyCollectionRepositoryImpl<Relationship, RelationshipCollectionRepository>
         implements ReadWriteIdentifiableCollectionRepository<Relationship> {
 
-    private final IdentifiableObjectStore<Relationship> store;
+    private final RelationshipStore store;
     private final RelationshipHandler relationshipHandler;
     private final RelationshipItemStore relationshipItemStore;
     private final RelationshipItemElementStoreSelector storeSelector;
 
     @Inject
-    RelationshipCollectionRepository(final IdentifiableObjectStore<Relationship> store,
+    RelationshipCollectionRepository(final RelationshipStore store,
                                      final Map<String, ChildrenAppender<Relationship>> childrenAppenders,
                                      final RepositoryScope scope,
                                      final RelationshipHandler relationshipHandler,

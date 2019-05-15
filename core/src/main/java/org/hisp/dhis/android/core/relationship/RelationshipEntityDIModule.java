@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collections;
@@ -44,8 +43,8 @@ public final class RelationshipEntityDIModule {
 
     @Provides
     @Reusable
-    IdentifiableObjectStore<Relationship> store(DatabaseAdapter databaseAdapter) {
-        return RelationshipStore.create(databaseAdapter);
+    RelationshipStore store(DatabaseAdapter databaseAdapter) {
+        return RelationshipStoreImpl.create(databaseAdapter);
     }
 
     @Provides

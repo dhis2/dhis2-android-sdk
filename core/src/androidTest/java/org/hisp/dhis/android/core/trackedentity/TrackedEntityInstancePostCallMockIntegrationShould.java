@@ -56,7 +56,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.relationship.RelationshipItemStoreImpl;
 import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance;
-import org.hisp.dhis.android.core.relationship.RelationshipStore;
+import org.hisp.dhis.android.core.relationship.RelationshipStoreImpl;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.junit.After;
@@ -372,7 +372,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
 
         executor.executeD2CallTransactionally(() -> {
 
-            RelationshipStore.create(databaseAdapter()).insert(
+            RelationshipStoreImpl.create(databaseAdapter()).insert(
                     RelationshipSamples.get230(relationshipUid, fromUid, toUid).toBuilder()
                             .relationshipType(relationshipType.uid()).build());
             RelationshipItemStoreImpl.create(databaseAdapter()).insert(

@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.StoreWithState;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -44,11 +43,11 @@ final class RelationshipObjectRepository
         extends ReadOnlyOneObjectRepositoryImpl<Relationship, RelationshipObjectRepository>
         implements ReadWriteObjectRepository<Relationship> {
 
-    private final IdentifiableObjectStore<Relationship> relationshipStore;
+    private final RelationshipStore relationshipStore;
     private final RelationshipItemElementStoreSelector storeSelector;
     private final String uid;
 
-    RelationshipObjectRepository(final IdentifiableObjectStore<Relationship> store,
+    RelationshipObjectRepository(final RelationshipStore store,
                                  final String uid,
                                  final Map<String, ChildrenAppender<Relationship>> childrenAppenders,
                                  final RepositoryScope scope,

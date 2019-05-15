@@ -218,7 +218,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
         });
     }
 
-    private class TeiListWithPaging {
+    private static class TeiListWithPaging {
         final boolean isSuccess;
         final List<TrackedEntityInstance> teiList;
         public final Paging paging;

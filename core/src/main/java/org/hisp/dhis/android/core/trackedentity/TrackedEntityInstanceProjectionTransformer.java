@@ -35,27 +35,22 @@ import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 
 import java.util.Date;
 
-public class TrackedEntityInstanceProjectionTransformer
+final class TrackedEntityInstanceProjectionTransformer
         implements Transformer<TrackedEntityInstanceCreateProjection, TrackedEntityInstance> {
 
-    private final TrackedEntityInstanceStore store;
-
-    TrackedEntityInstanceProjectionTransformer(TrackedEntityInstanceStore store) {
-        this.store = store;
+    TrackedEntityInstanceProjectionTransformer() {
     }
 
     @Override
     public TrackedEntityInstance transform(TrackedEntityInstanceCreateProjection projection) {
-        String generatedUid;
-        do {
-            generatedUid = new CodeGeneratorImpl().generate();
-        } while (store.exists(generatedUid));
-
+        String generatedUid = new CodeGeneratorImpl().generate();
         Date creationDate = new Date();
 
         return TrackedEntityInstance.builder()
                 .uid(generatedUid)
                 .state(State.TO_POST)
+                .created(creationDate)
+                .lastUpdated(creationDate)
                 .createdAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
                 .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
                 .organisationUnit(projection.organisationUnit())

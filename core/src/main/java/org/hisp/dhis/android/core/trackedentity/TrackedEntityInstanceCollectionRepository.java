@@ -82,7 +82,7 @@ public final class TrackedEntityInstanceCollectionRepository
     @Override
     public String add(TrackedEntityInstanceCreateProjection projection) {
         TrackedEntityInstance trackedEntityInstance =
-                new TrackedEntityInstanceProjectionTransformer(store).transform(projection);
+                new TrackedEntityInstanceProjectionTransformer().transform(projection);
         store.insert(trackedEntityInstance);
 
         return trackedEntityInstance.uid();

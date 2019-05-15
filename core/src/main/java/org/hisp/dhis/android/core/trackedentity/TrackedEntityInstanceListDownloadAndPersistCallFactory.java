@@ -102,7 +102,7 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
                 List<TrackedEntityInstance> teiList;
                 if (program == null) {
                     Call<Payload<TrackedEntityInstance>> teiCall =
-                            trackedEntityInstanceService.getTrackedEntityInstance(uid,
+                            trackedEntityInstanceService.getTrackedEntityInstanceAsCall(uid,
                                     TrackedEntityInstanceFields.allFields, true, true);
                     teiList = apiCallExecutor.executePayloadCall(teiCall);
                 } else {
@@ -115,7 +115,7 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
             d2CallExecutor.executeD2Call(persistenceCallFactory.getCall(teis));
 
             if (!versionManager.is2_29()) {
-                relationshipsCallFactory.getCall().blockingGet();
+                relationshipsCallFactory.downloadAndPersist().blockingGet();
             }
 
             foreignKeyCleaner.cleanForeignKeyErrors();

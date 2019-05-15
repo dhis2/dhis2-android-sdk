@@ -137,7 +137,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     private Observable<D2Progress> downloadRelationshipTeis(D2ProgressManager progressManager) {
         Observable<List<TrackedEntityInstance>> observable = versionManager.is2_29()
                 ? Observable.just(Collections.emptyList())
-                : relationshipDownloadCallFactory.getCall().toObservable();
+                : relationshipDownloadCallFactory.downloadAndPersist().toObservable();
 
         return observable.map(
                 trackedEntityInstances -> progressManager.increaseProgress(TrackedEntityInstance.class, true));

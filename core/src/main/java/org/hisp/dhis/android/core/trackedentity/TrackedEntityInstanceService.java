@@ -73,7 +73,14 @@ public interface TrackedEntityInstanceService {
             @Query(STRATEGY) String strategy);
 
     @GET(TRACKED_ENTITY_INSTANCES)
-    Call<Payload<TrackedEntityInstance>> getTrackedEntityInstance(
+    Single<Payload<TrackedEntityInstance>> getTrackedEntityInstance(
+            @Query(TRACKED_ENTITY_INSTACE) String trackedEntityInstance,
+            @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
+            @Query(INCLUDE_ALL_ATTRIBUTES) boolean includeAllAttributes,
+            @Query(INCLUDE_DELETED) boolean includeDeleted);
+
+    @GET(TRACKED_ENTITY_INSTANCES)
+    Call<Payload<TrackedEntityInstance>> getTrackedEntityInstanceAsCall(
             @Query(TRACKED_ENTITY_INSTACE) String trackedEntityInstance,
             @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
             @Query(INCLUDE_ALL_ATTRIBUTES) boolean includeAllAttributes,

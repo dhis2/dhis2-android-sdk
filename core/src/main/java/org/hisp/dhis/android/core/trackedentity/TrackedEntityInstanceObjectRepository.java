@@ -25,25 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteWithUidDataObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
+import java.util.Date;
 import java.util.Map;
 
 final class TrackedEntityInstanceObjectRepository
-        extends ReadOnlyOneObjectRepositoryImpl<TrackedEntityInstance, TrackedEntityInstanceObjectRepository>
+        extends ReadWriteWithUidDataObjectRepositoryImpl<TrackedEntityInstance, TrackedEntityInstanceObjectRepository>
         implements ReadWriteObjectRepository<TrackedEntityInstance> {
-
-    private final TrackedEntityInstanceStore trackedEntityInstanceStore;
-    private final String uid;
 
     TrackedEntityInstanceObjectRepository(final TrackedEntityInstanceStore store,
                                           final String uid,
@@ -51,26 +50,23 @@ final class TrackedEntityInstanceObjectRepository
                                           final RepositoryScope scope) {
         super(store, childrenAppenders, scope,
                 s -> new TrackedEntityInstanceObjectRepository(store, uid, childrenAppenders, s));
-        this.trackedEntityInstanceStore = store;
-        this.uid = uid;
     }
 
-    @Override
-    public void delete() throws D2Error {
-        TrackedEntityInstance trackedEntityInstance = withAllChildren().get();
-        if (trackedEntityInstance == null) {
-            throw D2Error
-                    .builder()
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .errorCode(D2ErrorCode.CANT_DELETE_NON_EXISTING_OBJECT)
-                    .errorDescription("Tried to delete non existing tracked entity instance")
-                    .build();
-        } else {
-            if (trackedEntityInstance.state() == State.TO_POST) {
-                trackedEntityInstanceStore.delete(uid);
-            } else {
-                trackedEntityInstanceStore.setState(trackedEntityInstance.uid(), State.TO_DELETE);
-            }
-        }
+    public Unit setOrganisationUnitUid(String organisationUnitUid) throws D2Error {
+        return updateObject(updateBuilder().organisationUnit(organisationUnitUid).build());
+    }
+
+    public Unit setCoordinates(String coordinates) throws D2Error {
+        return updateObject(updateBuilder().coordinates(coordinates).build());
+    }
+
+    private TrackedEntityInstance.Builder updateBuilder() {
+        State state = getWithoutChildren().state();
+        state = state == State.TO_POST || state == State.TO_DELETE ? state : State.TO_UPDATE;
+        Date updateDate = new Date();
+
+        return getWithoutChildren().toBuilder().state(state)
+                .lastUpdated(updateDate)
+                .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(updateDate));
     }
 }

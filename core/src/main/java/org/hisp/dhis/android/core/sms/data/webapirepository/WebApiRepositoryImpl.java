@@ -8,8 +8,6 @@ import java.util.List;
 
 import io.reactivex.Single;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class WebApiRepositoryImpl implements WebApiRepository {
@@ -69,22 +67,12 @@ public class WebApiRepositoryImpl implements WebApiRepository {
     }
 
     private <T> Single<T> translateCallToSingle(Call<T> call) {
-        return Single.create(emitter ->
-                call.enqueue(new Callback<T>() {
-                    @Override
-                    public void onResponse(Call<T> call, Response<T> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            emitter.onSuccess(response.body());
-                        } else {
-                            emitter.onError(new HttpException(response.code()));
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<T> call, Throwable t) {
-                        emitter.onError(t);
-                    }
-                })
-        );
+        return Single.fromCallable(call::execute).flatMap(response -> {
+            if (response.isSuccessful() && response.body() != null) {
+                return Single.just(response.body());
+            } else {
+                return Single.error(new HttpException(response.code()));
+            }
+        });
     }
 }

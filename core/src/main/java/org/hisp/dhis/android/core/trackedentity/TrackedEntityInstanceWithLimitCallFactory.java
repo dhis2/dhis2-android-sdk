@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.utils.services.ApiPagingEngine;
 import org.hisp.dhis.android.core.utils.services.Paging;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -125,9 +126,12 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
 
         String lastUpdated = resourceHandler.getLastUpdated(resourceType);
 
-        Observable<List<TrackedEntityInstance>> teiDownloadObservable = limitByOrgUnit
-                ? getTrackedEntityInstancesWithLimitByOrgUnit(lastUpdated, pagingList, allOkay)
-                : getTrackedEntityInstancesWithoutLimits(lastUpdated, pagingList, allOkay);
+        Observable<List<TrackedEntityInstance>> teiDownloadObservable =
+                Observable.fromIterable(getTeiQueryBuilder(limitByOrgUnit, lastUpdated))
+                        .flatMap(teiQueryBuilder -> {
+                            return getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList, allOkay);
+                            // TODO .subscribeOn(teiDownloadScheduler);
+                        });
 
         return teiDownloadObservable.map(
                 teiList -> {
@@ -145,26 +149,23 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
                 trackedEntityInstances -> progressManager.increaseProgress(TrackedEntityInstance.class, true));
     }
 
-    private Observable<List<TrackedEntityInstance>> getTrackedEntityInstancesWithLimitByOrgUnit(
-            String lastUpdated, List<Paging> pagingList, BooleanWrapper allOkay) {
-        return Observable.fromIterable(getOrgUnitUids())
-                .flatMap(orgUnitUid -> {
-                    TeiQuery.Builder teiQueryBuilder = TeiQuery.builder()
-                            .lastUpdatedStartDate(lastUpdated)
-                            .orgUnits(Collections.singleton(orgUnitUid));
-                    return getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList, allOkay);
-                            // TODO .subscribeOn(teiDownloadScheduler);
-                });
-    }
-
-    private Observable<List<TrackedEntityInstance>> getTrackedEntityInstancesWithoutLimits(
-            String lastUpdated, List<Paging> pagingList, BooleanWrapper allOkay) {
-        TeiQuery.Builder teiQueryBuilder = TeiQuery.builder()
-                .lastUpdatedStartDate(lastUpdated)
-                .orgUnits(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids())
-                .ouMode(OuMode.DESCENDANTS);
-        return getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList, allOkay);
-                // TODO .subscribeOn(teiDownloadScheduler);
+    private List<TeiQuery.Builder> getTeiQueryBuilder(boolean limitByOrgUnit, String lastUpdated) {
+        List<TeiQuery.Builder> teiQueryBuilders = new ArrayList<>();
+        if (limitByOrgUnit) {
+            for (String orgUnitUid: getOrgUnitUids()) {
+                TeiQuery.Builder teiQueryBuilder = TeiQuery.builder()
+                        .lastUpdatedStartDate(lastUpdated)
+                        .orgUnits(Collections.singleton(orgUnitUid));
+                teiQueryBuilders.add(teiQueryBuilder);
+            }
+        } else {
+            TeiQuery.Builder teiQueryBuilder = TeiQuery.builder()
+                    .lastUpdatedStartDate(lastUpdated)
+                    .orgUnits(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids())
+                    .ouMode(OuMode.DESCENDANTS);
+            teiQueryBuilders.add(teiQueryBuilder);
+        }
+        return teiQueryBuilders;
     }
 
     private Observable<List<TrackedEntityInstance>> getTrackedEntityInstancesWithPaging(

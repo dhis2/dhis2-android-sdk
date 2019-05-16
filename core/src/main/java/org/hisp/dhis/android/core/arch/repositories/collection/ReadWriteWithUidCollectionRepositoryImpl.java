@@ -31,6 +31,7 @@ import android.database.sqlite.SQLiteConstraintException;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Model;
@@ -42,10 +43,10 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.util.Map;
 
-public class ReadWriteWithUidCollectionRepositoryImpl
+public abstract class ReadWriteWithUidCollectionRepositoryImpl
         <M extends Model & ObjectWithUidInterface, P, R extends ReadOnlyCollectionRepository<M>>
         extends ReadOnlyCollectionRepositoryImpl<M, R>
-        implements ReadWriteCollectionRepository<M, P> {
+        implements ReadWriteWithUidCollectionRepository<M, P> {
 
     protected final IdentifiableObjectStore<M> store;
     protected final Transformer<P, M> transformer;
@@ -59,6 +60,8 @@ public class ReadWriteWithUidCollectionRepositoryImpl
         this.store = store;
         this.transformer = transformer;
     }
+
+    public abstract ReadWriteObjectRepository<M> uid(String uid);
 
     @SuppressWarnings({"PMD.PreserveStackTrace"})
     @Override

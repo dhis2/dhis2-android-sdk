@@ -111,7 +111,7 @@ public final class RelationshipCollectionRepository
                         .build();
             }
         }
-        return null;
+        return relationship.uid();
     }
 
     @Override

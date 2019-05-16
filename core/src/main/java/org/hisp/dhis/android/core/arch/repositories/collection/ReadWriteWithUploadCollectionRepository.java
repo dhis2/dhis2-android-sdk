@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.concurrent.Callable;
 
-public interface ReadWriteWithUploadCollectionRepository<M extends Model, C>
-        extends ReadWriteCollectionRepository<M, C> {
+public interface ReadWriteWithUploadCollectionRepository<M extends Model> extends ReadWriteCollectionRepository<M> {
     Callable<DataValueImportSummary> upload() throws D2Error;
 }

@@ -30,8 +30,12 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 public interface ReadWriteWithUidCollectionRepository<M extends Model & ObjectWithUidInterface, C>
-        extends ReadWriteCollectionRepository<M, C> {
+        extends ReadOnlyCollectionRepository<M> {
+
     ReadWriteObjectRepository<M> uid(String uid);
+
+    String add(C c) throws D2Error;
 }

@@ -50,7 +50,7 @@ import dagger.Reusable;
 public final class DataSetCompleteRegistrationCollectionRepository
         extends ReadOnlyCollectionRepositoryImpl<DataSetCompleteRegistration,
         DataSetCompleteRegistrationCollectionRepository>
-        implements ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration, DataSetCompleteRegistration> {
+        implements ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> {
 
     private final SyncHandler<DataSetCompleteRegistration> handler;
     private final DataSetCompleteRegistrationPostCall postCall;
@@ -70,9 +70,8 @@ public final class DataSetCompleteRegistrationCollectionRepository
     }
 
     @Override
-    public String add(DataSetCompleteRegistration dataSetCompleteRegistration) {
+    public void add(DataSetCompleteRegistration dataSetCompleteRegistration) {
         handler.handle(dataSetCompleteRegistration.toBuilder().state(State.TO_POST).build());
-        return null;
     }
 
     @Override
@@ -104,5 +103,4 @@ public final class DataSetCompleteRegistrationCollectionRepository
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byStoredBy() {
         return cf.string(DataSetCompleteRegistrationFields.STORED_BY);
     }
-
 }

@@ -53,7 +53,7 @@ import dagger.Reusable;
 @Reusable
 public final class DataValueCollectionRepository
         extends ReadOnlyCollectionRepositoryImpl<DataValue, DataValueCollectionRepository>
-        implements ReadWriteWithUploadCollectionRepository<DataValue, DataValue> {
+        implements ReadWriteWithUploadCollectionRepository<DataValue> {
 
     private final DataValueStore dataValueStore;
     private final SyncHandler<DataValue> dataValueHandler;
@@ -74,7 +74,7 @@ public final class DataValueCollectionRepository
     }
 
     @Override
-    public String add(DataValue dataValue) throws D2Error {
+    public void add(DataValue dataValue) throws D2Error {
 
         if (dataValueStore.exists(dataValue)) {
             throw D2Error
@@ -86,7 +86,6 @@ public final class DataValueCollectionRepository
         }
 
         dataValueHandler.handle(dataValue.toBuilder().state(State.TO_POST).build());
-        return null;
     }
 
     @Override

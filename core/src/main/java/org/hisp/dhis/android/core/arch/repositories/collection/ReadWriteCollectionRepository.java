@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
-public interface ReadWriteCollectionRepository<M extends Model, C>
-        extends ReadOnlyCollectionRepository<M> {
-    String add(C c) throws D2Error;
+public interface ReadWriteCollectionRepository<M extends Model> extends ReadOnlyCollectionRepository<M> {
+    void add(M m) throws D2Error;
 }

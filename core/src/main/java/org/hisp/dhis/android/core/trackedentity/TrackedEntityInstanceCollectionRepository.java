@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.imports.WebResponse;
@@ -55,9 +56,10 @@ import dagger.Reusable;
 
 @Reusable
 public final class TrackedEntityInstanceCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl<TrackedEntityInstance, TrackedEntityInstanceCollectionRepository>
-        implements ReadWriteWithUploadWithUidCollectionRepository<TrackedEntityInstance,
-        TrackedEntityInstanceCreateProjection> {
+        extends ReadWriteWithUidCollectionRepositoryImpl
+        <TrackedEntityInstance, TrackedEntityInstanceCreateProjection, TrackedEntityInstanceCollectionRepository>
+        implements ReadWriteWithUploadWithUidCollectionRepository
+        <TrackedEntityInstance, TrackedEntityInstanceCreateProjection> {
 
     private final TrackedEntityInstancePostCall postCall;
     private final TrackedEntityInstanceStore store;
@@ -67,9 +69,10 @@ public final class TrackedEntityInstanceCollectionRepository
             final TrackedEntityInstanceStore store,
             final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
             final RepositoryScope scope,
+            final Transformer<TrackedEntityInstanceCreateProjection, TrackedEntityInstance> transformer,
             final TrackedEntityInstancePostCall postCall) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new TrackedEntityInstanceCollectionRepository(store, childrenAppenders, s, postCall)));
+        super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope,
+                s -> new TrackedEntityInstanceCollectionRepository(store, childrenAppenders, s, transformer, postCall)));
         this.postCall = postCall;
         this.store = store;
     }
@@ -77,15 +80,6 @@ public final class TrackedEntityInstanceCollectionRepository
     @Override
     public Callable<WebResponse> upload() {
         return () -> postCall.call(byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).getWithoutChildren());
-    }
-
-    @Override
-    public String add(TrackedEntityInstanceCreateProjection projection) {
-        TrackedEntityInstance trackedEntityInstance =
-                new TrackedEntityInstanceProjectionTransformer().transform(projection);
-        store.insert(trackedEntityInstance);
-
-        return trackedEntityInstance.uid();
     }
 
     @Override

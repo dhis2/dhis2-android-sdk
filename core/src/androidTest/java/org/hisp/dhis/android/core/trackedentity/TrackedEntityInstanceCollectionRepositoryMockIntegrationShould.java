@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -97,7 +98,7 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
     }
 
     @Test
-    public void add_tracked_entity_instances_to_the_repository() {
+    public void add_tracked_entity_instances_to_the_repository() throws D2Error {
         List<TrackedEntityInstance> trackedEntityInstances1 = d2.trackedEntityModule().trackedEntityInstances.get();
         assertThat(trackedEntityInstances1.size(), is(2));
 
@@ -109,5 +110,7 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
 
         TrackedEntityInstance trackedEntityInstance = d2.trackedEntityModule().trackedEntityInstances.uid(teiUid).get();
         assertThat(trackedEntityInstance.uid(), is(teiUid));
+
+        d2.trackedEntityModule().trackedEntityInstances.uid(teiUid).delete();
     }
 }

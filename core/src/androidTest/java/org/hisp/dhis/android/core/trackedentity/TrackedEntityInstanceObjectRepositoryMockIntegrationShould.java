@@ -52,6 +52,9 @@ public class TrackedEntityInstanceObjectRepositoryMockIntegrationShould extends 
 
         repository.setOrganisationUnitUid(orgUnitUid);
         assertThat(repository.get().organisationUnit(), is(orgUnitUid));
+
+        repository.delete();
+        OrganisationUnitStore.create(databaseAdapter).delete(orgUnitUid);
     }
 
     @Test(expected = D2Error.class)
@@ -60,7 +63,11 @@ public class TrackedEntityInstanceObjectRepositoryMockIntegrationShould extends 
 
         TrackedEntityInstanceObjectRepository repository = objectRepository();
 
-        repository.setOrganisationUnitUid(orgUnitUid);
+        try {
+            repository.setOrganisationUnitUid(orgUnitUid);
+        } finally {
+            repository.delete();
+        }
     }
 
     @Test
@@ -71,9 +78,11 @@ public class TrackedEntityInstanceObjectRepositoryMockIntegrationShould extends 
 
         repository.setCoordinates(coordinates);
         assertThat(repository.get().coordinates(), is(coordinates));
+
+        repository.delete();
     }
 
-    private TrackedEntityInstanceObjectRepository objectRepository() {
+    private TrackedEntityInstanceObjectRepository objectRepository() throws D2Error {
         String teiUid = d2.trackedEntityModule().trackedEntityInstances.add(
                 TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp"));
         return d2.trackedEntityModule().trackedEntityInstances.uid(teiUid);

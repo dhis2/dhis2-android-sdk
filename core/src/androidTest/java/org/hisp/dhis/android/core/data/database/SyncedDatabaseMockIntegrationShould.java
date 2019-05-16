@@ -95,7 +95,6 @@ public abstract class SyncedDatabaseMockIntegrationShould {
     @AfterClass
     public static void tearDownClass() throws IOException {
         dhis2MockServer.shutdown();
-        sqLiteDatabase.close();
     }
 
     private static void login() throws Exception {

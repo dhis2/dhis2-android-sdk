@@ -35,7 +35,7 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import dagger.Reusable;
-import retrofit2.Call;
+import io.reactivex.Single;
 
 @Reusable
 public final class TrackedEntityInstancesEndpointCallFactory {
@@ -48,7 +48,7 @@ public final class TrackedEntityInstancesEndpointCallFactory {
         this.trackedEntityInstanceService = trackedEntityInstanceService;
     }
 
-    public Call<Payload<TrackedEntityInstance>> getCall(final TeiQuery trackerQuery) {
+    public Single<Payload<TrackedEntityInstance>> getCall(final TeiQuery trackerQuery) {
         return trackedEntityInstanceService.getTrackedEntityInstances(
                 Utils.joinCollectionWithSeparator(trackerQuery.orgUnits(), ";"),
                 trackerQuery.ouMode().name(), TrackedEntityInstanceFields.allFields, Boolean.TRUE,

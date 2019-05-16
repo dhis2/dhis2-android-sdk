@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.trackedentity.search.SearchGrid;
 
 import java.util.List;
 
+import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -87,7 +88,7 @@ public interface TrackedEntityInstanceService {
             @Query(INCLUDE_DELETED) boolean includeDeleted);
 
     @GET(TRACKED_ENTITY_INSTANCES)
-    Call<Payload<TrackedEntityInstance>> getTrackedEntityInstances(
+    Single<Payload<TrackedEntityInstance>> getTrackedEntityInstances(
             @Query(OU) String orgUnits,
             @Query(OU_MODE) String orgUnitMode,
             @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,

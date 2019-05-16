@@ -28,14 +28,12 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.data.api.OuMode;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -46,7 +44,6 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.utils.services.ApiPagingEngine;
 import org.hisp.dhis.android.core.utils.services.Paging;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -63,7 +60,6 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
 
     private final Resource.Type resourceType = Resource.Type.TRACKED_ENTITY_INSTANCE;
 
-    private final APICallExecutor apiCallExecutor;
     private final RxAPICallExecutor rxCallExecutor;
     private final ResourceHandler resourceHandler;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
@@ -75,17 +71,19 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     private final TrackedEntityInstancePersistenceCallFactory persistenceCallFactory;
     private final TrackedEntityInstancesEndpointCallFactory endpointCallFactory;
 
+    // TODO use scheduler for parallel download
+    // private final Scheduler teiDownloadScheduler = Schedulers.from(Executors.newFixedThreadPool(6));
+
     @Inject
     TrackedEntityInstanceWithLimitCallFactory(
-            APICallExecutor apiCallExecutor,
             RxAPICallExecutor rxCallExecutor,
             ResourceHandler resourceHandler,
             UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipDownloadCallFactory,
             TrackedEntityInstancePersistenceCallFactory persistenceCallFactory,
-            DHISVersionManager versionManager, TrackedEntityInstancesEndpointCallFactory endpointCallFactory) {
-        this.apiCallExecutor = apiCallExecutor;
+            DHISVersionManager versionManager,
+            TrackedEntityInstancesEndpointCallFactory endpointCallFactory) {
         this.rxCallExecutor = rxCallExecutor;
         this.resourceHandler = resourceHandler;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
@@ -99,105 +97,106 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
 
     public D2CallWithProgress getCall(final int teiLimit, final boolean limitByOrgUnit) {
         D2ProgressManager progressManager = new D2ProgressManager(null);
-
-        Observable<D2Progress> systemInfoDownload = systemInfoRepository.download()
-                .toSingle(() -> progressManager.increaseProgress(SystemInfo.class, false))
-                .toObservable();
+        BooleanWrapper allOkay = new BooleanWrapper(true);
 
         Observable<D2Progress> concatObservable = Observable.concat(
-                systemInfoDownload,
-                downloadTeis(progressManager, teiLimit, limitByOrgUnit),
-                downloadRelationshipTeis(progressManager)
+                downloadSystemInfo(progressManager),
+                downloadTeis(progressManager, teiLimit, limitByOrgUnit, allOkay),
+                downloadRelationshipTeis(progressManager),
+                updateResource(progressManager, allOkay)
         );
 
         return rxCallExecutor.wrapObservableTransactionally(concatObservable, true);
     }
 
-    private Observable<D2Progress> downloadTeis(D2ProgressManager progressManager,
-                                                int teiLimit,
-                                                boolean limitByOrgUnit) {
-
-        TeiQuery.Builder teiQueryBuilder = TeiQuery.builder();
-        int pageSize = teiQueryBuilder.build().pageSize();
-        List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, teiLimit);
-
-        String lastUpdatedStartDate = resourceHandler.getLastUpdated(resourceType);
-        teiQueryBuilder.lastUpdatedStartDate(lastUpdatedStartDate);
-
-        return limitByOrgUnit
-                ? getTrackedEntityInstancesWithLimitByOrgUnit(progressManager, teiQueryBuilder, pagingList)
-                : getTrackedEntityInstancesWithoutLimits(progressManager, teiQueryBuilder, pagingList);
-    }
-
-    private Observable<D2Progress> downloadRelationshipTeis(D2ProgressManager progressManager) {
-        return versionManager.is2_29()
-                ? Observable.empty()
-                : relationshipDownloadCallFactory.getCall().map(
-                trackedEntityInstances -> progressManager.increaseProgress(TrackedEntityInstance.class, true))
+    private Observable<D2Progress> downloadSystemInfo(D2ProgressManager progressManager) {
+        return systemInfoRepository.download()
+                .toSingle(() -> progressManager.increaseProgress(SystemInfo.class, false))
                 .toObservable();
     }
 
-    private Observable<D2Progress> getTrackedEntityInstancesWithLimitByOrgUnit(D2ProgressManager progressManager,
-                                                                               TeiQuery.Builder teiQueryBuilder,
-                                                                               List<Paging> pagingList) {
-        List<Single<D2Progress>> singles = new ArrayList<>();
-        for (String orgUnitUid : getOrgUnitUids()) {
-            Single<D2Progress> single = Single.fromCallable(() -> {
-                teiQueryBuilder.orgUnits(Collections.singleton(orgUnitUid));
-                getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
-                return progressManager.increaseProgress(TrackedEntityInstance.class, false);
-            });
-            singles.add(single);
-        }
-        return Single.merge(singles).toObservable();
+    private Observable<D2Progress> downloadTeis(D2ProgressManager progressManager,
+                                                int teiLimit,
+                                                boolean limitByOrgUnit,
+                                                BooleanWrapper allOkay) {
+
+        int pageSize = TeiQuery.builder().build().pageSize();
+        List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, teiLimit);
+
+        String lastUpdated = resourceHandler.getLastUpdated(resourceType);
+
+        Observable<List<TrackedEntityInstance>> teiDownloadObservable = limitByOrgUnit
+                ? getTrackedEntityInstancesWithLimitByOrgUnit(lastUpdated, pagingList, allOkay)
+                : getTrackedEntityInstancesWithoutLimits(lastUpdated, pagingList, allOkay);
+
+        return teiDownloadObservable.map(
+                teiList -> {
+                    persistenceCallFactory.getCall(teiList).call();
+                    return progressManager.increaseProgress(TrackedEntityInstance.class, false);
+                });
     }
 
-    private Observable<D2Progress> getTrackedEntityInstancesWithoutLimits(D2ProgressManager progressManager,
-                                                                          TeiQuery.Builder teiQueryBuilder,
-                                                                          List<Paging> pagingList) {
-        teiQueryBuilder
+    private Observable<D2Progress> downloadRelationshipTeis(D2ProgressManager progressManager) {
+        Observable<List<TrackedEntityInstance>> observable = versionManager.is2_29()
+                ? Observable.just(Collections.emptyList())
+                : relationshipDownloadCallFactory.getCall().toObservable();
+
+        return observable.map(
+                trackedEntityInstances -> progressManager.increaseProgress(TrackedEntityInstance.class, true));
+    }
+
+    private Observable<List<TrackedEntityInstance>> getTrackedEntityInstancesWithLimitByOrgUnit(
+            String lastUpdated, List<Paging> pagingList, BooleanWrapper allOkay) {
+        return Observable.fromIterable(getOrgUnitUids())
+                .flatMap(orgUnitUid -> {
+                    TeiQuery.Builder teiQueryBuilder = TeiQuery.builder()
+                            .lastUpdatedStartDate(lastUpdated)
+                            .orgUnits(Collections.singleton(orgUnitUid));
+                    return getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList, allOkay);
+                            // TODO .subscribeOn(teiDownloadScheduler);
+                });
+    }
+
+    private Observable<List<TrackedEntityInstance>> getTrackedEntityInstancesWithoutLimits(
+            String lastUpdated, List<Paging> pagingList, BooleanWrapper allOkay) {
+        TeiQuery.Builder teiQueryBuilder = TeiQuery.builder()
+                .lastUpdatedStartDate(lastUpdated)
                 .orgUnits(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids())
                 .ouMode(OuMode.DESCENDANTS);
-        return Single.fromCallable(() -> {
-            getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
-            return progressManager.increaseProgress(TrackedEntityInstance.class, false);
-        }).toObservable();
+        return getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList, allOkay);
+                // TODO .subscribeOn(teiDownloadScheduler);
     }
 
-    private void getTrackedEntityInstancesWithPaging(TeiQuery.Builder teiQueryBuilder,
-                                                     List<Paging> pagingList) throws Exception {
-        boolean successfulSync = true;
+    private Observable<List<TrackedEntityInstance>> getTrackedEntityInstancesWithPaging(
+            TeiQuery.Builder teiQueryBuilder, List<Paging> pagingList, BooleanWrapper allOkay) {
+        Observable<Paging> pagingObservable = Observable.fromIterable(pagingList);
+        return pagingObservable
+                .flatMapSingle(paging -> {
+                    teiQueryBuilder.page(paging.page()).pageSize(paging.pageSize());
+                    return endpointCallFactory.getCall(teiQueryBuilder.build()).map(payload ->
+                            new TeiListWithPaging(true, limitTeisForPage(payload.items(), paging), paging))
+                            .onErrorResumeNext((err) -> {
+                                allOkay.set(false);
+                                return Single.just(new TeiListWithPaging(false, Collections.emptyList(), paging));
+                            });
+                })
+                .takeUntil(res -> res.isSuccess && (res.paging.isLastPage() ||
+                        !res.paging.isLastPage() && res.teiList.size() < res.paging.pageSize()))
+                .map(tuple -> tuple.teiList);
+    }
 
-        for (Paging paging : pagingList) {
-            try {
-                teiQueryBuilder.page(paging.page()).pageSize(paging.pageSize());
-                List<TrackedEntityInstance> pageTrackedEntityInstances =
-                        apiCallExecutor.executePayloadCall(endpointCallFactory.getCall(teiQueryBuilder.build()));
+    private List<TrackedEntityInstance> limitTeisForPage(List<TrackedEntityInstance> pageTrackedEntityInstances,
+                                                         Paging paging) {
+        if (paging.isLastPage()
+                && pageTrackedEntityInstances.size() > paging.previousItemsToSkipCount()) {
+            int toIndex = pageTrackedEntityInstances.size() <
+                    paging.pageSize() - paging.posteriorItemsToSkipCount() ?
+                    pageTrackedEntityInstances.size() :
+                    paging.pageSize() - paging.posteriorItemsToSkipCount();
 
-                if (paging.isLastPage() && pageTrackedEntityInstances.size() > paging.previousItemsToSkipCount()) {
-                    int toIndex = pageTrackedEntityInstances.size() <
-                            paging.pageSize() - paging.posteriorItemsToSkipCount() ?
-                            pageTrackedEntityInstances.size() :
-                            paging.pageSize() - paging.posteriorItemsToSkipCount();
-
-                    persistenceCallFactory.getCall(
-                            pageTrackedEntityInstances.subList(paging.previousItemsToSkipCount(), toIndex)).call();
-
-                } else {
-                    persistenceCallFactory.getCall(pageTrackedEntityInstances).call();
-                }
-
-                if (pageTrackedEntityInstances.size() < paging.pageSize()) {
-                    break;
-                }
-
-            } catch (D2Error ignored) {
-                successfulSync = false;
-            }
-        }
-
-        if (successfulSync) {
-            resourceHandler.handleResource(resourceType);
+            return pageTrackedEntityInstances.subList(paging.previousItemsToSkipCount(), toIndex);
+        } else {
+            return pageTrackedEntityInstances;
         }
     }
 
@@ -214,5 +213,42 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
         }
 
         return organisationUnitUids;
+    }
+
+    private Observable<D2Progress> updateResource(D2ProgressManager progressManager, BooleanWrapper allOkay) {
+        return Single.fromCallable(() -> {
+            if (allOkay.get()) {
+                resourceHandler.handleResource(resourceType);
+            }
+            return progressManager.increaseProgress(TrackedEntityInstance.class, true);
+        }).toObservable();
+    }
+
+    private static class TeiListWithPaging {
+        final boolean isSuccess;
+        final List<TrackedEntityInstance> teiList;
+        final Paging paging;
+
+        TeiListWithPaging(boolean isSuccess, List<TrackedEntityInstance> teiList, Paging paging) {
+            this.isSuccess = isSuccess;
+            this.teiList = teiList;
+            this.paging = paging;
+        }
+    }
+
+    private static class BooleanWrapper {
+        private boolean value;
+
+        BooleanWrapper(boolean value) {
+            this.value = value;
+        }
+
+        boolean get() {
+            return value;
+        }
+
+        void set(boolean value) {
+            this.value = value;
+        }
     }
 }

@@ -36,6 +36,8 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.util.Date;
 import java.util.Map;
@@ -60,8 +62,16 @@ final class TrackedEntityInstanceObjectRepository
         return updateObject(updateBuilder().coordinates(coordinates).build());
     }
 
-    private TrackedEntityInstance.Builder updateBuilder() {
+    private TrackedEntityInstance.Builder updateBuilder() throws D2Error {
         State state = getWithoutChildren().state();
+        if (state == State.RELATIONSHIP) {
+            throw D2Error
+                    .builder()
+                    .errorComponent(D2ErrorComponent.SDK)
+                    .errorCode(D2ErrorCode.RELATIONSHIPS_CANT_BE_UPDATED)
+                    .errorDescription("Relationships can't be updated")
+                    .build();
+        }
         state = state == State.TO_POST || state == State.TO_DELETE ? state : State.TO_UPDATE;
         Date updateDate = new Date();
 

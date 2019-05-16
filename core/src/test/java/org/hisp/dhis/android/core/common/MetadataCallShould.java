@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.constant.ConstantModuleDownloader;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetModuleDownloader;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorStore;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.program.Program;
@@ -56,6 +57,7 @@ import java.util.concurrent.Callable;
 
 import io.reactivex.Completable;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
@@ -122,6 +124,9 @@ public class MetadataCallShould extends BaseCallShould {
     private ConstantModuleDownloader constantDownloader;
 
     @Mock
+    private ObjectStore<D2Error> d2ErrorStore;
+
+    @Mock
     private ForeignKeyCleaner foreignKeyCleaner;
 
     // object to test
@@ -152,9 +157,11 @@ public class MetadataCallShould extends BaseCallShould {
         when(organisationUnitDownloadCall.call()).thenReturn(new Unit());
         when(constantCall.call()).thenReturn(Lists.newArrayList(constant));
 
+        when(d2ErrorStore.insert(any(D2Error.class))).thenReturn(0L);
+
         // Metadata call
         metadataCall = new MetadataCall(
-                D2CallExecutor.create(databaseAdapter),
+                new D2CallExecutor(databaseAdapter, d2ErrorStore),
                 systemInfoDownloader,
                 systemSettingDownloader,
                 userDownloader,

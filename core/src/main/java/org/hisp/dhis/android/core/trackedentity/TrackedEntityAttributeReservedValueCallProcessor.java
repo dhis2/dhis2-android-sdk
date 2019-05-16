@@ -58,7 +58,7 @@ class TrackedEntityAttributeReservedValueCallProcessor implements CallProcessor<
     @Override
     public void process(List<TrackedEntityAttributeReservedValue> objectList) throws D2Error {
         if (objectList != null && !objectList.isEmpty()) {
-            new D2CallExecutor(databaseAdapter).executeD2CallTransactionally(() -> {
+            D2CallExecutor.create(databaseAdapter).executeD2CallTransactionally(() -> {
 
                 for (TrackedEntityAttributeReservedValue trackedEntityAttributeReservedValue : objectList) {
                     handler.handle(trackedEntityAttributeReservedValue.toBuilder()

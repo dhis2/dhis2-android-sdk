@@ -154,7 +154,7 @@ public class MetadataCallShould extends BaseCallShould {
 
         // Metadata call
         metadataCall = new MetadataCall(
-                new D2CallExecutor(databaseAdapter),
+                D2CallExecutor.create(databaseAdapter),
                 systemInfoDownloader,
                 systemSettingDownloader,
                 userDownloader,

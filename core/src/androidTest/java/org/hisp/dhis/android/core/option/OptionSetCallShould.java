@@ -83,7 +83,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
 
         optionSetCall = getD2DIComponent(d2).optionSetCallFactory().create(uids);
 
-        d2CallExecutor = new D2CallExecutor(databaseAdapter());
+        d2CallExecutor = D2CallExecutor.create(databaseAdapter());
 
     }
 

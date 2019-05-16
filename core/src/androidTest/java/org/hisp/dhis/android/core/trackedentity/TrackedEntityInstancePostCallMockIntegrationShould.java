@@ -368,7 +368,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
     private void storeRelationship(String relationshipUid, String fromUid, String toUid) throws D2Error {
 
         RelationshipType relationshipType = RelationshipTypeStore.create(databaseAdapter()).selectFirst();
-        final D2CallExecutor executor = new D2CallExecutor(d2.databaseAdapter());
+        final D2CallExecutor executor = D2CallExecutor.create(d2.databaseAdapter());
 
         executor.executeD2CallTransactionally(() -> {
 

@@ -55,6 +55,7 @@ public class ReadWriteWithUidObjectRepositoryImpl
         this.store = store;
     }
 
+    @SuppressWarnings({"PMD.PreserveStackTrace"})
     protected Unit updateObject(M m) throws D2Error {
         try {
             store.update(m);

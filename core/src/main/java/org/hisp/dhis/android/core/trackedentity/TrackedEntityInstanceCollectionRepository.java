@@ -71,8 +71,8 @@ public final class TrackedEntityInstanceCollectionRepository
             final RepositoryScope scope,
             final Transformer<TrackedEntityInstanceCreateProjection, TrackedEntityInstance> transformer,
             final TrackedEntityInstancePostCall postCall) {
-        super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope,
-                s -> new TrackedEntityInstanceCollectionRepository(store, childrenAppenders, s, transformer, postCall)));
+        super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope, s ->
+                new TrackedEntityInstanceCollectionRepository(store, childrenAppenders, s, transformer, postCall)));
         this.postCall = postCall;
         this.store = store;
     }

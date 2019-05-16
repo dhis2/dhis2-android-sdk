@@ -38,9 +38,6 @@ import java.util.Date;
 final class TrackedEntityInstanceProjectionTransformer
         implements Transformer<TrackedEntityInstanceCreateProjection, TrackedEntityInstance> {
 
-    TrackedEntityInstanceProjectionTransformer() {
-    }
-
     @Override
     public TrackedEntityInstance transform(TrackedEntityInstanceCreateProjection projection) {
         String generatedUid = new CodeGeneratorImpl().generate();

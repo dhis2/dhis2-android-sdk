@@ -60,7 +60,7 @@ public class ReadWriteWithUidCollectionRepositoryImpl
         this.transformer = transformer;
     }
 
-
+    @SuppressWarnings({"PMD.PreserveStackTrace"})
     @Override
     public String add(P projection) throws D2Error {
         M object = transformer.transform(projection);

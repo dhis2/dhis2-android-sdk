@@ -36,7 +36,8 @@ import retrofit2.Retrofit;
 @Module(includes = {
         OrganisationUnitEntityDIModule.class,
         OrganisationUnitLevelEntityDIModule.class,
-        OrganisationUnitGroupEntityDIModule.class
+        OrganisationUnitGroupEntityDIModule.class,
+        OrganisationUnitProgramLinkEntityDIModule.class
 })
 public final class OrganisationUnitPackageDIModule {
 

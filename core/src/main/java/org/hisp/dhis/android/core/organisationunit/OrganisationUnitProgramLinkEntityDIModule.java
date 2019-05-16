@@ -26,58 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.organisationunit;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import com.google.auto.value.AutoValue;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-import org.hisp.dhis.android.core.common.BaseQuery;
-import org.hisp.dhis.android.core.data.api.OuMode;
+@Module
+public final class OrganisationUnitProgramLinkEntityDIModule {
 
-import java.util.Collection;
-import java.util.Collections;
-
-@AutoValue
-public abstract class TeiQuery extends BaseQuery {
-
-    @Nullable
-    public abstract Collection<String> orgUnits();
-
-    @Nullable
-    public abstract String program();
-
-    @NonNull
-    public abstract OuMode ouMode();
-
-    @Nullable
-    public abstract String lastUpdatedStartDate();
-
-    @Nullable
-    public abstract Collection<String> uIds();
-
-    public static Builder builder() {
-        return new AutoValue_TeiQuery.Builder()
-                .page(1)
-                .pageSize(DEFAULT_PAGE_SIZE)
-                .paging(true)
-                .ouMode(OuMode.SELECTED)
-                .uIds(Collections.emptyList());
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseQuery.Builder<Builder> {
-        public abstract Builder orgUnits(Collection<String> orgUnits);
-
-        public abstract Builder program(String program);
-
-        public abstract Builder ouMode(OuMode ouMode);
-
-        public abstract Builder lastUpdatedStartDate(String lastUpdatedStartDate);
-
-        public abstract Builder uIds(Collection<String> uIds);
-
-        public abstract TeiQuery build();
+    @Provides
+    @Reusable
+    LinkModelStore<OrganisationUnitProgramLink> store(DatabaseAdapter databaseAdapter) {
+        return OrganisationUnitProgramLinkStore.create(databaseAdapter);
     }
 }

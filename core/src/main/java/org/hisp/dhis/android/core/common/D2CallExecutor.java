@@ -43,6 +43,7 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 
+@SuppressWarnings({"PMD.PreserveStackTrace"})
 @Reusable
 public final class D2CallExecutor {
 

@@ -131,7 +131,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
         List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, teiLimit);
 
         Observable<List<TrackedEntityInstance>> teiDownloadObservable =
-                Observable.fromIterable(getTeiQueryBuilder(limitByOrgUnit, limitByProgram))
+                Observable.fromIterable(getTeiQueryBuilders(limitByOrgUnit, limitByProgram))
                         .flatMap(teiQueryBuilder -> {
                             return getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList, allOkay);
                             // TODO .subscribeOn(teiDownloadScheduler);
@@ -153,7 +153,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
                 trackedEntityInstances -> progressManager.increaseProgress(TrackedEntityInstance.class, true));
     }
 
-    private List<TeiQuery.Builder> getTeiQueryBuilder(boolean limitByOrgUnit, boolean limitByProgram) {
+    private List<TeiQuery.Builder> getTeiQueryBuilders(boolean limitByOrgUnit, boolean limitByProgram) {
 
         String lastUpdated = resourceHandler.getLastUpdated(resourceType);
 

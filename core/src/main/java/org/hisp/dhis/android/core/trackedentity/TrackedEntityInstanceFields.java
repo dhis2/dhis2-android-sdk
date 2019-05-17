@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.common.Property;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
@@ -36,7 +37,10 @@ import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipFields;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 public final class TrackedEntityInstanceFields {
 
@@ -54,20 +58,23 @@ public final class TrackedEntityInstanceFields {
 
     private static final FieldsHelper<TrackedEntityInstance> fh = new FieldsHelper<>();
 
-    private static final Fields.Builder<TrackedEntityInstance> commonFieldsBuilder =
-            Fields.<TrackedEntityInstance>builder().fields(
-                    fh.<String>field(UID),
-                    fh.<Date>field(CREATED),
-                    fh.<Date>field(LAST_UPDATED),
-                    fh.<String>field(ORGANISATION_UNIT),
-                    fh.<String>field(TRACKED_ENTITY_TYPE),
-                    fh.<String>field(COORDINATES),
-                    fh.<FeatureType>field(FEATURE_TYPE),
-                    fh.<Boolean>field(DELETED),
-                    fh.<TrackedEntityAttributeValue>nestedField(TRACKED_ENTITY_ATTRIBUTE_VALUES)
-                            .with(TrackedEntityAttributeValueFields.allFields));
+    private static List<Property<TrackedEntityInstance, ?>> getCommonFields() {
+        return new ArrayList<>(Arrays.asList(
+                fh.<String>field(UID),
+                fh.<Date>field(CREATED),
+                fh.<Date>field(LAST_UPDATED),
+                fh.<String>field(ORGANISATION_UNIT),
+                fh.<String>field(TRACKED_ENTITY_TYPE),
+                fh.<String>field(COORDINATES),
+                fh.<FeatureType>field(FEATURE_TYPE),
+                fh.<Boolean>field(DELETED),
+                fh.<TrackedEntityAttributeValue>nestedField(TRACKED_ENTITY_ATTRIBUTE_VALUES)
+                        .with(TrackedEntityAttributeValueFields.allFields)
+        ));
+    }
 
-    public static final Fields<TrackedEntityInstance> allFields = commonFieldsBuilder
+    public static final Fields<TrackedEntityInstance> allFields = Fields.<TrackedEntityInstance>builder()
+            .fields(getCommonFields())
             .fields(
                     fh.<Relationship229Compatible>nestedField(RELATIONSHIPS)
                             .with(RelationshipFields.allFields),
@@ -75,7 +82,8 @@ public final class TrackedEntityInstanceFields {
                             .with(EnrollmentFields.allFields)
             ).build();
 
-    public static final Fields<TrackedEntityInstance> asRelationshipFields = commonFieldsBuilder.build();
+    public static final Fields<TrackedEntityInstance> asRelationshipFields = Fields.<TrackedEntityInstance>builder()
+            .fields(getCommonFields()).build();
 
     private TrackedEntityInstanceFields() {
     }

@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.enrollment;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
-
 import androidx.annotation.NonNull;
 
 @AutoValue
@@ -59,7 +57,7 @@ public abstract class EnrollmentCreateProjection {
         return new AutoValue_EnrollmentCreateProjection.Builder();
     }
 
-    public abstract TrackedEntityInstanceCreateProjection.Builder toBuilder();
+    public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder {

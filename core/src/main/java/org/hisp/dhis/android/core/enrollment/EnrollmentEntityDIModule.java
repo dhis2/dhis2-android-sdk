@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.DataOrphanCleanerImpl;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.note.NoteChildrenAppender;
 import org.hisp.dhis.android.core.event.Event;
@@ -60,6 +61,12 @@ public final class EnrollmentEntityDIModule {
     @Reusable
     public SyncHandlerWithTransformer<Enrollment> handler(EnrollmentHandler impl) {
         return impl;
+    }
+
+    @Provides
+    @Reusable
+    Transformer<EnrollmentCreateProjection, Enrollment> transformer() {
+        return new EnrollmentProjectionTransformer();
     }
 
     @Provides

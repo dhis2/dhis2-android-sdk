@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.DataOrphanCleanerImpl;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentChildrenAppender;
@@ -60,6 +61,12 @@ public final class TrackedEntityInstanceEntityDIModule {
     @Reusable
     TrackedEntityInstanceService service(Retrofit retrofit) {
         return retrofit.create(TrackedEntityInstanceService.class);
+    }
+
+    @Provides
+    @Reusable
+    Transformer<TrackedEntityInstanceCreateProjection, TrackedEntityInstance> transformer() {
+        return new TrackedEntityInstanceProjectionTransformer();
     }
 
     @Provides

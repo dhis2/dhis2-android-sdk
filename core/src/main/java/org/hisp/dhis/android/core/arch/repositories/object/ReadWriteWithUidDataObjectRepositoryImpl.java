@@ -25,37 +25,50 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
+package org.hisp.dhis.android.core.arch.repositories.object;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.DataModel;
+import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStore;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.util.Map;
 
-public class ReadOnlyWithUidCollectionRepositoryImpl<M extends Model & ObjectWithUidInterface,
-        R extends ReadOnlyCollectionRepository<M>>
-        extends ReadOnlyCollectionRepositoryImpl<M, R>
-        implements ReadOnlyWithUidCollectionRepository<M> {
+public class ReadWriteWithUidDataObjectRepositoryImpl
+        <M extends Model & ObjectWithUidInterface & DataModel, R extends ReadOnlyObjectRepository<M>>
+        extends ReadWriteWithUidObjectRepositoryImpl<M, R> {
 
-    protected final IdentifiableObjectStore<M> store;
+    private final IdentifiableObjectWithStateStore<M> store;
 
-    public ReadOnlyWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
-                                                   Map<String, ChildrenAppender<M>> childrenAppenders,
-                                                   RepositoryScope scope,
-                                                   FilterConnectorFactory<R> cf) {
-        super(store, childrenAppenders, scope, cf);
+    public ReadWriteWithUidDataObjectRepositoryImpl(IdentifiableObjectWithStateStore<M> store,
+                                                    Map<String, ChildrenAppender<M>> childrenAppenders,
+                                                    RepositoryScope scope,
+                                                    ObjectRepositoryFactory<R> repositoryFactory) {
+        super(store, childrenAppenders, scope, repositoryFactory);
         this.store = store;
     }
 
-    @Override
-    public ReadOnlyOneObjectRepositoryFinalImpl<M> uid(String uid) {
-        RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
-        return new ReadOnlyOneObjectRepositoryFinalImpl<>(store, childrenAppenders, updatedScope);
+    public void delete() throws D2Error {
+        M object = withAllChildren().get();
+        if (object == null) {
+            throw D2Error
+                    .builder()
+                    .errorComponent(D2ErrorComponent.SDK)
+                    .errorCode(D2ErrorCode.CANT_DELETE_NON_EXISTING_OBJECT)
+                    .errorDescription("Tried to delete non existing object")
+                    .build();
+        } else {
+            if (object.state() == State.TO_POST) {
+                store.delete(object.uid());
+            } else {
+                store.setState(object.uid(), State.TO_DELETE);
+            }
+        }
     }
 }

@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -94,5 +95,22 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
         assertThat(tei.relationships().size(), is(2));
         assertThat(tei.relationships().get(0).from().elementUid(), is("nWrB0TfWlvh"));
         assertThat(tei.relationships().get(0).to().elementUid(), is("nWrB0TfWlvh"));
+    }
+
+    @Test
+    public void add_tracked_entity_instances_to_the_repository() throws D2Error {
+        List<TrackedEntityInstance> trackedEntityInstances1 = d2.trackedEntityModule().trackedEntityInstances.get();
+        assertThat(trackedEntityInstances1.size(), is(2));
+
+        String teiUid = d2.trackedEntityModule().trackedEntityInstances.add(
+                TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp"));
+
+        List<TrackedEntityInstance> trackedEntityInstances2 = d2.trackedEntityModule().trackedEntityInstances.get();
+        assertThat(trackedEntityInstances2.size(), is(3));
+
+        TrackedEntityInstance trackedEntityInstance = d2.trackedEntityModule().trackedEntityInstances.uid(teiUid).get();
+        assertThat(trackedEntityInstance.uid(), is(teiUid));
+
+        d2.trackedEntityModule().trackedEntityInstances.uid(teiUid).delete();
     }
 }

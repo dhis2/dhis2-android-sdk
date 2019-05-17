@@ -26,40 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.maintenance;
+package org.hisp.dhis.android.core.trackedentity;
 
-public enum D2ErrorCode {
-    ALREADY_AUTHENTICATED,
-    ALREADY_EXECUTED,
-    API_UNSUCCESSFUL_RESPONSE,
-    API_INVALID_QUERY,
-    API_RESPONSE_PROCESS_ERROR,
-    BAD_CREDENTIALS,
-    CANT_CREATE_EXISTING_OBJECT,
-    CANT_DELETE_NON_EXISTING_OBJECT,
-    COULD_NOT_RESERVE_VALUE_ON_SERVER,
-    LOGIN_USERNAME_NULL,
-    LOGIN_PASSWORD_NULL,
-    MIGHT_BE_RUNNING_LOW_ON_AVAILABLE_VALUES,
-    NO_AUTHENTICATED_USER,
-    NO_AUTHENTICATED_USER_OFFLINE,
-    NOT_ENOUGH_VALUES_LEFT_TO_RESERVE_ON_SERVER,
-    DIFFERENT_AUTHENTICATED_USER_OFFLINE,
-    DIFFERENT_SERVER_OFFLINE,
-    INVALID_DHIS_VERSION,
-    NO_RESERVED_VALUES,
-    OBJECT_CANT_BE_UPDATED,
-    OBJECT_CANT_BE_INSERTED,
-    OWNERSHIP_ACCESS_DENIED,
-    SEARCH_GRID_PARSE,
-    SOCKET_TIMEOUT,
-    RELATIONSHIPS_CANT_BE_UPDATED,
-    TOO_MANY_ORG_UNITS,
-    TOO_MANY_PERIODS,
-    UNEXPECTED,
-    UNKNOWN_HOST,
-    URL_NOT_FOUND,
-    USER_ACCOUNT_DISABLED,
-    USER_ACCOUNT_LOCKED,
-    VALUES_RESERVATION_TOOK_TOO_LONG
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.Transformer;
+import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
+
+import java.util.Date;
+
+final class TrackedEntityInstanceProjectionTransformer
+        implements Transformer<TrackedEntityInstanceCreateProjection, TrackedEntityInstance> {
+
+    @Override
+    public TrackedEntityInstance transform(TrackedEntityInstanceCreateProjection projection) {
+        String generatedUid = new CodeGeneratorImpl().generate();
+        Date creationDate = new Date();
+
+        return TrackedEntityInstance.builder()
+                .uid(generatedUid)
+                .state(State.TO_POST)
+                .created(creationDate)
+                .lastUpdated(creationDate)
+                .createdAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
+                .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
+                .organisationUnit(projection.organisationUnit())
+                .trackedEntityType(projection.trackedEntityType())
+                .build();
+    }
 }

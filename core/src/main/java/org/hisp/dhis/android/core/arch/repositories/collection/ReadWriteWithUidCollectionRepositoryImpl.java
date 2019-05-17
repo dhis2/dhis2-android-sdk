@@ -27,35 +27,65 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
+import android.database.sqlite.SQLiteConstraintException;
+
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.common.Transformer;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.util.Map;
 
-public class ReadOnlyWithUidCollectionRepositoryImpl<M extends Model & ObjectWithUidInterface,
-        R extends ReadOnlyCollectionRepository<M>>
+public abstract class ReadWriteWithUidCollectionRepositoryImpl
+        <M extends Model & ObjectWithUidInterface, P, R extends ReadOnlyCollectionRepository<M>>
         extends ReadOnlyCollectionRepositoryImpl<M, R>
-        implements ReadOnlyWithUidCollectionRepository<M> {
+        implements ReadWriteWithUidCollectionRepository<M, P> {
 
     protected final IdentifiableObjectStore<M> store;
+    protected final Transformer<P, M> transformer;
 
-    public ReadOnlyWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
-                                                   Map<String, ChildrenAppender<M>> childrenAppenders,
-                                                   RepositoryScope scope,
-                                                   FilterConnectorFactory<R> cf) {
+    public ReadWriteWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
+                                                    Map<String, ChildrenAppender<M>> childrenAppenders,
+                                                    RepositoryScope scope,
+                                                    Transformer<P, M> transformer,
+                                                    FilterConnectorFactory<R> cf) {
         super(store, childrenAppenders, scope, cf);
         this.store = store;
+        this.transformer = transformer;
     }
 
+    public abstract ReadWriteObjectRepository<M> uid(String uid);
+
+    @SuppressWarnings({"PMD.PreserveStackTrace"})
     @Override
-    public ReadOnlyOneObjectRepositoryFinalImpl<M> uid(String uid) {
-        RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
-        return new ReadOnlyOneObjectRepositoryFinalImpl<>(store, childrenAppenders, updatedScope);
+    public String add(P projection) throws D2Error {
+        M object = transformer.transform(projection);
+        try {
+            store.insert(object);
+            return object.uid();
+        } catch (SQLiteConstraintException e) {
+            throw D2Error
+                    .builder()
+                    .errorComponent(D2ErrorComponent.SDK)
+                    .errorCode(D2ErrorCode.OBJECT_CANT_BE_INSERTED)
+                    .errorDescription("Object can't be inserted")
+                    .originalException(e)
+                    .build();
+        } catch (Exception e) {
+            throw D2Error
+                    .builder()
+                    .errorComponent(D2ErrorComponent.SDK)
+                    .errorCode(D2ErrorCode.UNEXPECTED)
+                    .errorDescription("Unexpected exception on property update")
+                    .originalException(e)
+                    .build();
+        }
     }
 }

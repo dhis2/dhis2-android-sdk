@@ -78,11 +78,15 @@ final class EnrollmentObjectRepository
     }
 
     private Enrollment.Builder updateBuilder() {
-        State state = getWithoutChildren().state();
-        state = state == State.TO_POST || state == State.TO_DELETE ? state : State.TO_UPDATE;
+        Enrollment enrollment = getWithoutChildren();
         Date updateDate = new Date();
+        State state = enrollment.state();
+        if (state != State.TO_POST && state != State.TO_DELETE) {
+            state = State.TO_UPDATE;
+        }
 
-        return getWithoutChildren().toBuilder().state(state)
+        return enrollment.toBuilder()
+                .state(state)
                 .lastUpdated(updateDate)
                 .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(updateDate));
     }

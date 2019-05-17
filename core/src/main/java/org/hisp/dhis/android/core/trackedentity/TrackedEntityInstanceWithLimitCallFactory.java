@@ -157,22 +157,15 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
 
         String lastUpdated = resourceHandler.getLastUpdated(resourceType);
 
-        List<TeiQuery.Builder> teiQueryBuilders = new ArrayList<>();
+        List<TeiQuery.Builder> builders = new ArrayList<>();
         if (limitByOrgUnit) {
             if (limitByProgram) {
                 for (OrganisationUnitProgramLink link : organisationUnitProgramLinkStore.selectAll()) {
-                    TeiQuery.Builder teiQueryBuilder = TeiQuery.builder()
-                            .lastUpdatedStartDate(lastUpdated)
-                            .program(link.program())
-                            .orgUnits(Collections.singleton(link.organisationUnit()));
-                    teiQueryBuilders.add(teiQueryBuilder);
+                    builders.add(getTeiBuilderForOrgUnit(lastUpdated, link.organisationUnit()).program(link.program()));
                 }
             } else {
                 for (String orgUnitUid: getOrgUnitUids()) {
-                    TeiQuery.Builder teiQueryBuilder = TeiQuery.builder()
-                            .lastUpdatedStartDate(lastUpdated)
-                            .orgUnits(Collections.singleton(orgUnitUid));
-                    teiQueryBuilders.add(teiQueryBuilder);
+                    builders.add(getTeiBuilderForOrgUnit(lastUpdated, orgUnitUid));
                 }
             }
         } else {
@@ -182,22 +175,26 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
                     programs.add(link.program());
                 }
                 for (String program : programs) {
-                    TeiQuery.Builder teiQueryBuilder = TeiQuery.builder()
-                            .lastUpdatedStartDate(lastUpdated)
-                            .orgUnits(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids())
-                            .ouMode(OuMode.DESCENDANTS)
-                            .program(program);
-                    teiQueryBuilders.add(teiQueryBuilder);
+                    builders.add(getTeiBuilderForRoot(lastUpdated).program(program));
                 }
             } else {
-                TeiQuery.Builder teiQueryBuilder = TeiQuery.builder()
-                        .lastUpdatedStartDate(lastUpdated)
-                        .orgUnits(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids())
-                        .ouMode(OuMode.DESCENDANTS);
-                teiQueryBuilders.add(teiQueryBuilder);
+                builders.add(getTeiBuilderForRoot(lastUpdated));
             }
         }
-        return teiQueryBuilders;
+        return builders;
+    }
+
+    private TeiQuery.Builder getTeiBuilderForRoot(String lastUpdated) {
+        return TeiQuery.builder()
+                .lastUpdatedStartDate(lastUpdated)
+                .orgUnits(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids())
+                .ouMode(OuMode.DESCENDANTS);
+    }
+
+    private TeiQuery.Builder getTeiBuilderForOrgUnit(String lastUpdated, String orgUnitUid) {
+        return TeiQuery.builder()
+                .lastUpdatedStartDate(lastUpdated)
+                .orgUnits(Collections.singleton(orgUnitUid));
     }
 
     private Observable<List<TrackedEntityInstance>> getTrackedEntityInstancesWithPaging(

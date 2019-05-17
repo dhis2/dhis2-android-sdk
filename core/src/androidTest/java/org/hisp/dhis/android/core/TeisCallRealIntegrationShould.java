@@ -61,7 +61,7 @@ public class TeisCallRealIntegrationShould extends AbsStoreTestCase {
 
         d2.syncMetaData().call();
 
-        TestObserver<D2Progress> testObserver = d2.trackedEntityModule().downloadTrackedEntityInstances(5, false)
+        TestObserver<D2Progress> testObserver = d2.trackedEntityModule().downloadTrackedEntityInstances(5, false, false)
                 .asObservable()
                 .doOnEach(e -> Log.w("EVENT", e.toString()))
                 .test();

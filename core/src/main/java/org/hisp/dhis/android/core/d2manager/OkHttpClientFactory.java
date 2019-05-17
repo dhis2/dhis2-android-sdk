@@ -80,12 +80,16 @@ final class OkHttpClientFactory {
                 .connectTimeout(d2Configuration.connectTimeoutInSeconds(), TimeUnit.SECONDS)
                 .writeTimeout(d2Configuration.writeTimeoutInSeconds(), TimeUnit.SECONDS);
 
-        for (Interceptor interceptor : d2Configuration.networkInterceptors()) {
-            client.addNetworkInterceptor(interceptor);
+        if (d2Configuration.networkInterceptors() != null) {
+            for (Interceptor interceptor : d2Configuration.networkInterceptors()) {
+                client.addNetworkInterceptor(interceptor);
+            }
         }
 
-        for (Interceptor interceptor : d2Configuration.interceptors()) {
-            client.addInterceptor(interceptor);
+        if (d2Configuration.interceptors() != null) {
+            for (Interceptor interceptor : d2Configuration.interceptors()) {
+                client.addInterceptor(interceptor);
+            }
         }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {

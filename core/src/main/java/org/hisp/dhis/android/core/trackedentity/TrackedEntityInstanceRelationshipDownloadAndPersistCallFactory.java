@@ -68,7 +68,7 @@ public final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactor
             } else {
                 List<Single<Payload<TrackedEntityInstance>>> singles = new ArrayList<>();
                 for (String uid : relationships) {
-                    singles.add(service.getTrackedEntityInstance(uid, TrackedEntityInstanceFields.allFields,
+                    singles.add(service.getTrackedEntityInstance(uid, TrackedEntityInstanceFields.asRelationshipFields,
                             true, true));
                 }
 

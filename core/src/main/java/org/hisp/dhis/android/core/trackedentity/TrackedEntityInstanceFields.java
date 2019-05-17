@@ -63,23 +63,19 @@ public final class TrackedEntityInstanceFields {
                     fh.<String>field(TRACKED_ENTITY_TYPE),
                     fh.<String>field(COORDINATES),
                     fh.<FeatureType>field(FEATURE_TYPE),
-                    fh.<Boolean>field(DELETED));
+                    fh.<Boolean>field(DELETED),
+                    fh.<TrackedEntityAttributeValue>nestedField(TRACKED_ENTITY_ATTRIBUTE_VALUES)
+                            .with(TrackedEntityAttributeValueFields.allFields));
 
     public static final Fields<TrackedEntityInstance> allFields = commonFieldsBuilder
             .fields(
                     fh.<Relationship229Compatible>nestedField(RELATIONSHIPS)
                             .with(RelationshipFields.allFields),
-                    fh.<TrackedEntityAttributeValue>nestedField(TRACKED_ENTITY_ATTRIBUTE_VALUES)
-                            .with(TrackedEntityAttributeValueFields.allFields),
                     fh.<Enrollment>nestedField(ENROLLMENTS)
                             .with(EnrollmentFields.allFields)
             ).build();
 
-    public static final Fields<TrackedEntityInstance> asRelationshipFields = commonFieldsBuilder
-            .fields(
-                    fh.<TrackedEntityAttributeValue>nestedField(TRACKED_ENTITY_ATTRIBUTE_VALUES)
-                            .with(TrackedEntityAttributeValueFields.allFields)
-            ).build();
+    public static final Fields<TrackedEntityInstance> asRelationshipFields = commonFieldsBuilder.build();
 
     private TrackedEntityInstanceFields() {
     }

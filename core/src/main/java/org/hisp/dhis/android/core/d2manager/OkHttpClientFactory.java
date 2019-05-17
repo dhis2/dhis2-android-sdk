@@ -57,21 +57,13 @@ import okhttp3.TlsVersion;
 final class OkHttpClientFactory {
 
     static OkHttpClient okHttpClient(D2Configuration d2Configuration, DatabaseAdapter databaseAdapter) {
-
-        String userAgent = String.format("%s/%s/%s/Android_%s",
-                d2Configuration.appName(),
-                BuildConfig.VERSION_NAME, //SDK version
-                d2Configuration.appVersion(),
-                Build.VERSION.SDK_INT //Android Version
-        );
-
         OkHttpClient.Builder client = new OkHttpClient.Builder()
                 .addInterceptor(BasicAuthenticatorFactory.create(databaseAdapter))
                 .addInterceptor(new PreventURLDecodeInterceptor())
                 .addInterceptor(chain -> {
                     Request originalRequest = chain.request();
                     Request withUserAgent = originalRequest.newBuilder()
-                            .header("User-Agent", userAgent)
+                            .header("User-Agent", getUserAgent(d2Configuration))
                             .build();
                     return chain.proceed(withUserAgent);
                 })
@@ -92,6 +84,21 @@ final class OkHttpClientFactory {
             }
         }
 
+        setTLSParameters(client);
+
+        return client.build();
+    }
+
+    private static String getUserAgent(D2Configuration d2Configuration) {
+        return String.format("%s/%s/%s/Android_%s",
+                d2Configuration.appName(),
+                BuildConfig.VERSION_NAME, //SDK version
+                d2Configuration.appVersion(),
+                Build.VERSION.SDK_INT //Android Version
+        );
+    }
+
+    private static void setTLSParameters(OkHttpClient.Builder client) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             try {
 
@@ -132,8 +139,6 @@ final class OkHttpClientFactory {
                 Log.e(OkHttpClientFactory.class.getSimpleName(), e.getMessage(), e);
             }
         }
-
-        return client.build();
     }
 
     private OkHttpClientFactory() {

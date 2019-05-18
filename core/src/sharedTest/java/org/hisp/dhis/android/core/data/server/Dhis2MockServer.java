@@ -191,7 +191,6 @@ public class Dhis2MockServer {
         enqueueMockResponse(ORGANISATION_UNITS_JSON);
         enqueueMockResponse(ORGANISATION_UNIT_LEVELS_JSON);
         enqueueMockResponse(CONSTANTS_JSON);
-        enqueueMockResponse(SMS_METADATA_IDS);
     }
 
     @NonNull

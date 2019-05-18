@@ -139,12 +139,20 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
-    public Single<Event> getEventToSubmit(String eventUid, String teiUid) {
+    public Single<Event> getTrackerEventToSubmit(String eventUid, String teiUid) {
         return Single.fromCallable(() ->
                 eventModule.events.withTrackedEntityDataValues()
                         .byUid().eq(eventUid).one().get().toBuilder()
                         .trackedEntityInstance(teiUid)
                         .build()
+        );
+    }
+
+    @Override
+    public Single<Event> getSimpleEventToSubmit(String eventUid) {
+        return Single.fromCallable(() ->
+                eventModule.events.withTrackedEntityDataValues()
+                        .byUid().eq(eventUid).one().get()
         );
     }
 

@@ -6,7 +6,8 @@ import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.sms.domain.converter.Converter;
 import org.hisp.dhis.android.core.sms.domain.converter.EnrollmentConverter;
-import org.hisp.dhis.android.core.sms.domain.converter.EventConverter;
+import org.hisp.dhis.android.core.sms.domain.converter.SimpleEventConverter;
+import org.hisp.dhis.android.core.sms.domain.converter.TrackerEventConverter;
 import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
@@ -33,9 +34,13 @@ public class SmsSubmitCase {
         this.deviceStateRepository = deviceStateRepository;
     }
 
-    public Single<Integer> convertEvent(String eventUid,
-                                        String teiUid) {
-        return convert(new EventConverter(localDbRepository, eventUid, teiUid));
+    public Single<Integer> convertTrackerEvent(String eventUid,
+                                               String teiUid) {
+        return convert(new TrackerEventConverter(localDbRepository, eventUid, teiUid));
+    }
+
+    public Single<Integer> convertSimpleEvent(String eventUid) {
+        return convert(new SimpleEventConverter(localDbRepository, eventUid));
     }
 
     public Single<Integer> convertEnrollment(String enrollmentUid,
@@ -48,7 +53,9 @@ public class SmsSubmitCase {
             return Single.error(new IllegalStateException("SMS submit case should be used once"));
         }
         this.converter = converter;
-        return converter.readAndConvert().flatMap(
+        return checkPreconditions().andThen(
+                converter.readAndConvert()
+        ).flatMap(
                 smsRepository::generateSmsParts
         ).map(parts -> {
             smsParts = parts;

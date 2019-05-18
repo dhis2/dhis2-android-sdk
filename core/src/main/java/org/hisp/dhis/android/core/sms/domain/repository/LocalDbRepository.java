@@ -28,7 +28,9 @@ public interface LocalDbRepository {
 
     Completable setMetadataIds(Metadata metadata);
 
-    Single<Event> getEventToSubmit(String eventUid, String teiUid);
+    Single<Event> getTrackerEventToSubmit(String eventUid, String teiUid);
+
+    Single<Event> getSimpleEventToSubmit(String eventUid);
 
     Single<TrackedEntityInstance> getTeiEnrollmentToSubmit(String enrollmentUid, String teiUid);
 

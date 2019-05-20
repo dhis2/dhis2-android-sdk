@@ -12,13 +12,13 @@ public interface WebApiRepository {
     Single<Metadata> getMetadataIds(GetMetadataIdsConfig config);
 
     class GetMetadataIdsConfig {
-        public boolean dataElements;
-        public boolean categoryOptionCombos;
-        public boolean organisationUnits;
-        public boolean users;
-        public boolean trackedEntityTypes;
-        public boolean trackedEntityAttributes;
-        public boolean programs;
+        public boolean dataElements = true;
+        public boolean categoryOptionCombos = true;
+        public boolean organisationUnits = true;
+        public boolean users = true;
+        public boolean trackedEntityTypes = true;
+        public boolean trackedEntityAttributes = true;
+        public boolean programs = true;
     }
 
     class HttpException extends RuntimeException {

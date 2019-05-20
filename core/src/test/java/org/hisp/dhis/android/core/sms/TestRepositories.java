@@ -144,6 +144,26 @@ public class TestRepositories {
         public Completable updateEnrollmentSubmissionState(String enrollmentUid, State state) {
             return Completable.complete();
         }
+
+        @Override
+        public Completable setMetadataDownloadConfig(WebApiRepository.GetMetadataIdsConfig metadataIdsConfig) {
+            return Completable.complete();
+        }
+
+        @Override
+        public Single<WebApiRepository.GetMetadataIdsConfig> getMetadataDownloadConfig() {
+            return Single.just(new WebApiRepository.GetMetadataIdsConfig());
+        }
+
+        @Override
+        public Completable setModuleEnabled(boolean enabled) {
+            return Completable.complete();
+        }
+
+        @Override
+        public Single<Boolean> isModuleEnabled() {
+            return Single.just(true);
+        }
     }
 
     public static Enrollment getTestEnrollment(String enrollmentUid, String teiUid) {

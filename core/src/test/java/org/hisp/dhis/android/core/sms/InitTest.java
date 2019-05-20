@@ -28,8 +28,7 @@
 
 package org.hisp.dhis.android.core.sms;
 
-import org.hisp.dhis.android.core.sms.domain.interactor.InitCase;
-import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
+import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -44,10 +43,9 @@ public class InitTest {
         String testGateway = "testGateway";
         TestRepositories.TestLocalDbRepository testLocalDbRepository = new TestRepositories.TestLocalDbRepository();
         TestRepositories.TestWebApiRepository testWebApiRepository = new TestRepositories.TestWebApiRepository();
-        WebApiRepository.GetMetadataIdsConfig config = new WebApiRepository.GetMetadataIdsConfig();
 
-        new InitCase(testWebApiRepository, testLocalDbRepository)
-                .initSMSModule(testGateway, config)
+        new ConfigCase(testWebApiRepository, testLocalDbRepository)
+                .setGatewayNumber(testGateway)
                 .test()
                 .awaitDone(3, TimeUnit.SECONDS)
                 .assertNoErrors();
@@ -60,8 +58,8 @@ public class InitTest {
         TestRepositories.TestLocalDbRepository testLocalDbRepository = new TestRepositories.TestLocalDbRepository();
         TestRepositories.TestWebApiRepository testWebApiRepository = new TestRepositories.TestWebApiRepository();
 
-        new InitCase(testWebApiRepository, testLocalDbRepository)
-                .initSMSModule(null, null)
+        new ConfigCase(testWebApiRepository, testLocalDbRepository)
+                .setGatewayNumber(null)
                 .test()
                 .awaitDone(3, TimeUnit.SECONDS)
                 .assertError(IllegalArgumentException.class);

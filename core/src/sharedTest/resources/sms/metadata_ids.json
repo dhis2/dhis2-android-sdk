@@ -1,0 +1,38 @@
+{
+  "system": {
+    "id": "eed3d451-4ff5-4193-b951-ffcc68954299",
+    "rev": "a9daf3f",
+    "version": "2.31.4-SNAPSHOT",
+    "date": "2019-05-14T17:09:24.704"
+  },
+  "categoryOptionCombos": [
+    {
+      "id": "lxAQ7Zs9VYR"
+    }
+  ],
+  "organisationUnits": [
+    {
+      "id": "lxAQ7Zs9VYR"
+    }
+  ],
+  "dataElements": [
+    {
+      "id": "lxAQ7Zs9VYR"
+    }
+  ],
+  "trackedEntityTypes": [
+    {
+      "id": "lxAQ7Zs9VYR"
+    }
+  ],
+  "trackedEntityAttributes": [
+    {
+      "id": "lxAQ7Zs9VYR"
+    }
+  ],
+  "programs": [
+    {
+      "id": "lxAQ7Zs9VYR"
+    }
+  ]
+}

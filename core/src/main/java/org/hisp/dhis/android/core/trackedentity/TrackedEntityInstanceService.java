@@ -98,6 +98,7 @@ public interface TrackedEntityInstanceService {
     Single<Payload<TrackedEntityInstance>> getTrackedEntityInstances(
             @Query(OU) String orgUnits,
             @Query(OU_MODE) String orgUnitMode,
+            @Query(PROGRAM) String program,
             @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
             @Query(PAGING) Boolean paging,
             @Query(PAGE) int page,

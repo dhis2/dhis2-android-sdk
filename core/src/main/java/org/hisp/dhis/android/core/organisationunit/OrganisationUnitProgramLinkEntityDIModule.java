@@ -26,50 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.organisationunit;
 
-import android.util.Log;
+import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
-import org.junit.Before;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-import java.io.IOException;
+@Module
+public final class OrganisationUnitProgramLinkEntityDIModule {
 
-import io.reactivex.observers.TestObserver;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class TeisCallRealIntegrationShould extends AbsStoreTestCase {
-
-    private D2 d2;
-
-    @Before
-    @Override
-    public void setUp() throws IOException {
-        super.setUp();
-
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
-    }
-
-    //@Test
-    public void download_tracked_entity_instances() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
-
-        d2.syncMetaData().call();
-
-        TestObserver<D2Progress> testObserver = d2.trackedEntityModule().downloadTrackedEntityInstances(5, false, false)
-                .asObservable()
-                .doOnEach(e -> Log.w("EVENT", e.toString()))
-                .test();
-
-        testObserver.awaitTerminalEvent();
-
-        int count = TrackedEntityInstanceStoreImpl.create(databaseAdapter()).count();
-
-        assertThat(count >= 5).isTrue();
+    @Provides
+    @Reusable
+    LinkModelStore<OrganisationUnitProgramLink> store(DatabaseAdapter databaseAdapter) {
+        return OrganisationUnitProgramLinkStore.create(databaseAdapter);
     }
 }

@@ -48,11 +48,11 @@ public final class TrackedEntityInstancesEndpointCallFactory {
         this.trackedEntityInstanceService = trackedEntityInstanceService;
     }
 
-    public Single<Payload<TrackedEntityInstance>> getCall(final TeiQuery trackerQuery) {
+    public Single<Payload<TrackedEntityInstance>> getCall(final TeiQuery query) {
         return trackedEntityInstanceService.getTrackedEntityInstances(
-                Utils.joinCollectionWithSeparator(trackerQuery.orgUnits(), ";"),
-                trackerQuery.ouMode().name(), TrackedEntityInstanceFields.allFields, Boolean.TRUE,
-                trackerQuery.page(), trackerQuery.pageSize(), trackerQuery.lastUpdatedStartDate(), true,
+                Utils.joinCollectionWithSeparator(query.orgUnits(), ";"),
+                query.ouMode().name(), query.program(), TrackedEntityInstanceFields.allFields, Boolean.TRUE,
+                query.page(), query.pageSize(), query.lastUpdatedStartDate(), true,
                 true);
     }
 }

@@ -82,8 +82,9 @@ public final class TrackedEntityModule {
         this.trackedEntityInstanceQuery = trackedEntityInstanceQuery;
     }
 
-    public D2CallWithProgress downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
-        return withLimitCallFactory.getCall(teiLimit, limitByOrgUnit);
+    public D2CallWithProgress downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit,
+                                                             boolean limitByProgram) {
+        return withLimitCallFactory.getCall(teiLimit, limitByOrgUnit, limitByProgram);
     }
 
     public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {

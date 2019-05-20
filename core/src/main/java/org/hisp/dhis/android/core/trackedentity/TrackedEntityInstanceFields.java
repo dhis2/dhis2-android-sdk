@@ -58,6 +58,18 @@ public final class TrackedEntityInstanceFields {
 
     private static final FieldsHelper<TrackedEntityInstance> fh = new FieldsHelper<>();
 
+    public static final Fields<TrackedEntityInstance> allFields = Fields.<TrackedEntityInstance>builder()
+            .fields(getCommonFields())
+            .fields(
+                    fh.<Relationship229Compatible>nestedField(RELATIONSHIPS)
+                            .with(RelationshipFields.allFields),
+                    fh.<Enrollment>nestedField(ENROLLMENTS)
+                            .with(EnrollmentFields.allFields)
+            ).build();
+
+    public static final Fields<TrackedEntityInstance> asRelationshipFields = Fields.<TrackedEntityInstance>builder()
+            .fields(getCommonFields()).build();
+    
     private static List<Property<TrackedEntityInstance, ?>> getCommonFields() {
         return new ArrayList<>(Arrays.asList(
                 fh.<String>field(UID),
@@ -72,18 +84,6 @@ public final class TrackedEntityInstanceFields {
                         .with(TrackedEntityAttributeValueFields.allFields)
         ));
     }
-
-    public static final Fields<TrackedEntityInstance> allFields = Fields.<TrackedEntityInstance>builder()
-            .fields(getCommonFields())
-            .fields(
-                    fh.<Relationship229Compatible>nestedField(RELATIONSHIPS)
-                            .with(RelationshipFields.allFields),
-                    fh.<Enrollment>nestedField(ENROLLMENTS)
-                            .with(EnrollmentFields.allFields)
-            ).build();
-
-    public static final Fields<TrackedEntityInstance> asRelationshipFields = Fields.<TrackedEntityInstance>builder()
-            .fields(getCommonFields()).build();
 
     private TrackedEntityInstanceFields() {
     }

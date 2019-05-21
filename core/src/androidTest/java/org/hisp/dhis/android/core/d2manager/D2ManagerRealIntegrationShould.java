@@ -41,7 +41,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Random;
 
 import androidx.test.InstrumentationRegistry;
@@ -62,7 +61,6 @@ public class D2ManagerRealIntegrationShould {
                 .readTimeoutInSeconds(100)
                 .connectTimeoutInSeconds(100)
                 .writeTimeoutInSeconds(100)
-                .interceptors(Collections.emptyList())
                 .networkInterceptors(Lists.newArrayList(new StethoInterceptor()))
                 .context(InstrumentationRegistry.getTargetContext().getApplicationContext())
                 .build();

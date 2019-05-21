@@ -34,6 +34,7 @@ import com.google.auto.value.AutoValue;
 
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import okhttp3.Interceptor;
 
 @AutoValue
@@ -51,8 +52,10 @@ public abstract class D2Configuration {
 
     public abstract Integer writeTimeoutInSeconds();
 
+    @Nullable
     public abstract List<Interceptor> interceptors();
 
+    @Nullable
     public abstract List<Interceptor> networkInterceptors();
 
     public abstract Context context();

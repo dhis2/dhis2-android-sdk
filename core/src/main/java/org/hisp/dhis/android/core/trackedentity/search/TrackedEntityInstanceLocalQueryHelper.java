@@ -70,7 +70,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
     @SuppressWarnings({"PMD.UseStringBufferForStringAppends"})
     static String getSqlQuery(TrackedEntityInstanceQuery query, List<String> excludeList, int limit) {
 
-        String queryStr = "SELECT " + TEI_ALL + " FROM " +
+        String queryStr = "SELECT DISTINCT " + TEI_ALL + " FROM " +
                 TrackedEntityInstanceTableInfo.TABLE_INFO.name() + " " + TEI_ALIAS;
 
         WhereClauseBuilder where = new WhereClauseBuilder();

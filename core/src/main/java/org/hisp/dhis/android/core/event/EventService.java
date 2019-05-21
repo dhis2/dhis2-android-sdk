@@ -52,6 +52,7 @@ public interface EventService {
     String STRATEGY = "strategy";
     String EVENT_UID = "eventUid";
     String LAST_UPDATED_START_DATE = "lastUpdatedStartDate";
+    String INCLUDE_DELETED = "includeDeleted";
 
     @POST(EVENTS)
     Call<EventWebResponse> postEvents(@Body EventPayload events, @Query(STRATEGY) String strategy);
@@ -65,7 +66,8 @@ public interface EventService {
             @Query(PAGING) Boolean paging,
             @Query(PAGE) int page,
             @Query(PAGE_SIZE) int pageSize,
-            @Query(LAST_UPDATED_START_DATE) String lastUpdatedStartDate);
+            @Query(LAST_UPDATED_START_DATE) String lastUpdatedStartDate,
+            @Query(INCLUDE_DELETED) Boolean includeDeleted);
 
     @GET(EVENTS + "/{" + EVENT_UID + "}")
     Call<Event> getEvent(

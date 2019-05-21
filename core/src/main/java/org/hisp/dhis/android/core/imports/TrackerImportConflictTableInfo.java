@@ -50,13 +50,13 @@ public final class TrackerImportConflictTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
         final static String CONFLICT = "conflict";
         final static String VALUE = "value";
-        final static String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
-        final static String ENROLLMENT = "enrollment";
-        final static String EVENT = "event";
-        final static String TABLE_REFERENCE = "tableReference";
+        public final static String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+        public final static String ENROLLMENT = "enrollment";
+        public final static String EVENT = "event";
+        public final static String TABLE_REFERENCE = "tableReference";
         final static String ERROR_CODE = "errorCode";
         final static String STATUS = "status";
         final static String CREATED = "created";

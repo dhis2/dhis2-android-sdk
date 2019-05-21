@@ -103,5 +103,4 @@ public final class DataSetCompleteRegistrationCollectionRepository
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byStoredBy() {
         return cf.string(DataSetCompleteRegistrationFields.STORED_BY);
     }
-
 }

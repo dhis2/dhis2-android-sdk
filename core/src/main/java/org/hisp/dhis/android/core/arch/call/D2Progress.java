@@ -73,12 +73,12 @@ public abstract class D2Progress {
 
     public abstract Builder toBuilder();
 
-    public static D2Progress empty(int totalCalls) {
-        if (totalCalls < 0) {
+    public static D2Progress empty(Integer totalCalls) {
+        if (totalCalls != null && totalCalls < 0) {
             throw new IllegalArgumentException("Negative total calls");
         }
         return D2Progress.builder()
-            .isComplete(totalCalls == 0)
+            .isComplete(totalCalls != null && totalCalls == 0)
             .totalCalls(totalCalls)
             .doneCalls(Collections.emptyList())
             .build();

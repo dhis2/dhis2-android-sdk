@@ -51,6 +51,8 @@ public abstract class D2Configuration {
 
     public abstract Integer writeTimeoutInSeconds();
 
+    public abstract List<Interceptor> interceptors();
+
     public abstract List<Interceptor> networkInterceptors();
 
     public abstract Context context();
@@ -77,6 +79,8 @@ public abstract class D2Configuration {
         public abstract Builder connectTimeoutInSeconds(Integer connectTimeoutInSeconds);
 
         public abstract Builder writeTimeoutInSeconds(Integer writeTimeoutInSeconds);
+
+        public abstract Builder interceptors(List<Interceptor> interceptors);
 
         public abstract Builder networkInterceptors(List<Interceptor> networkInterceptors);
 

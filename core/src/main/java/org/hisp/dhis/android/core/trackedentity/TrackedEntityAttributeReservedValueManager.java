@@ -67,6 +67,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
     private final IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
     private final DatabaseAdapter databaseAdapter;
+    private final D2CallExecutor executor;
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final QueryCallFactory<TrackedEntityAttributeReservedValue,
             TrackedEntityAttributeReservedValueQuery> trackedEntityAttributeReservedValueQueryCallFactory;
@@ -74,6 +75,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     @Inject
     TrackedEntityAttributeReservedValueManager(
             DatabaseAdapter databaseAdapter,
+            D2CallExecutor executor,
             ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             TrackedEntityAttributeReservedValueStoreInterface store,
             IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
@@ -81,6 +83,7 @@ public final class TrackedEntityAttributeReservedValueManager {
             QueryCallFactory<TrackedEntityAttributeReservedValue,
                     TrackedEntityAttributeReservedValueQuery> trackedEntityAttributeReservedValueQueryCallFactory) {
         this.databaseAdapter = databaseAdapter;
+        this.executor = executor;
         this.systemInfoRepository = systemInfoRepository;
         this.store = store;
         this.organisationUnitStore = organisationUnitStore;
@@ -158,8 +161,6 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     private void fillReservedValues(String trackedEntityAttributeUid, OrganisationUnit organisationUnit,
                                     Integer numberToReserve) throws D2Error {
-
-        D2CallExecutor executor = new D2CallExecutor(databaseAdapter);
 
         systemInfoRepository.download().blockingAwait();
 

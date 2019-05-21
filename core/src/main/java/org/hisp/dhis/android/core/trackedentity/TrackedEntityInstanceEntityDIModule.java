@@ -32,11 +32,13 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.DataOrphanCleanerImpl;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentChildrenAppender;
 import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
+import org.hisp.dhis.android.core.relationship.RelationshipChildrenAppender;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,6 +65,12 @@ public final class TrackedEntityInstanceEntityDIModule {
 
     @Provides
     @Reusable
+    Transformer<TrackedEntityInstanceCreateProjection, TrackedEntityInstance> transformer() {
+        return new TrackedEntityInstanceProjectionTransformer();
+    }
+
+    @Provides
+    @Reusable
     TrackedEntityInstanceUidHelper uidHelper(TrackedEntityInstanceUidHelperImpl impl) {
         return impl;
     }
@@ -77,11 +85,14 @@ public final class TrackedEntityInstanceEntityDIModule {
     @Provides
     @Reusable
     @SuppressWarnings("PMD.NonStaticInitializer")
-    Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+    Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders(
+            DatabaseAdapter databaseAdapter,
+            RelationshipChildrenAppender relationshipChildrenAppender) {
         return new HashMap<String, ChildrenAppender<TrackedEntityInstance>>() {{
             put(TrackedEntityInstanceFields.ENROLLMENTS, EnrollmentChildrenAppender.create(databaseAdapter));
             put(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES,
                     TrackedEntityAttributeValueChildrenAppender.create(databaseAdapter));
+            put(TrackedEntityInstanceFields.RELATIONSHIPS, relationshipChildrenAppender);
         }};
     }
 }

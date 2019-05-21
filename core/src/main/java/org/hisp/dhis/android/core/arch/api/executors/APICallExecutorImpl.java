@@ -68,6 +68,8 @@ public final class APICallExecutorImpl implements APICallExecutor {
             } else {
                 throw storeAndReturn(errorMapper.responseException(errorBuilder, response));
             }
+        } catch (D2Error d2Error) {
+            throw d2Error;
         } catch (Throwable t) {
             throw storeAndReturn(errorMapper.mapRetrofitException(t, errorBuilder));
         }
@@ -123,6 +125,8 @@ public final class APICallExecutorImpl implements APICallExecutor {
                 }
             }
             throw storeAndReturn(errorMapper.responseException(errorBuilder, response));
+        } catch (D2Error d2Error) {
+            throw d2Error;
         } catch (Throwable t) {
             throw storeAndReturn(errorMapper.mapRetrofitException(t, errorBuilder));
         }

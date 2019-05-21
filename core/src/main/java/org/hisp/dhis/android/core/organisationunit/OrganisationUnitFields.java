@@ -34,8 +34,8 @@ import org.hisp.dhis.android.core.data.api.Fields;
 
 public final class OrganisationUnitFields {
 
-    static final String PARENT = "parent";
-    static final String PATH = "path";
+    public static final String PARENT = "parent";
+    public static final String PATH = "path";
     static final String OPENING_DATE = "openingDate";
     static final String CLOSED_DATE = "closedDate";
     static final String LEVEL = "level";

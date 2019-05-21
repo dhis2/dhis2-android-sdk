@@ -51,7 +51,7 @@ class AuthorityCallProcessor implements CallProcessor<Authority> {
         AuthorityStore.create(databaseAdapter).delete();
 
         if (objectList != null && !objectList.isEmpty()) {
-            new D2CallExecutor(databaseAdapter).executeD2CallTransactionally(() -> {
+            D2CallExecutor.create(databaseAdapter).executeD2CallTransactionally(() -> {
                 handler.handleMany(objectList);
                 return null;
             });

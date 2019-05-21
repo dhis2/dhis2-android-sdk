@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.common.BaseQuery;
 import org.hisp.dhis.android.core.common.SafeDateFormat;
 import org.hisp.dhis.android.core.data.api.OuMode;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -55,13 +56,13 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
     public abstract String program();
 
     @Nullable
-    public abstract String query();
+    public abstract QueryFilter query();
 
-    @Nullable
-    public abstract List<String> attribute();
+    @NonNull
+    public abstract List<QueryItem> attribute();
 
-    @Nullable
-    public abstract List<String> filter();
+    @NonNull
+    public abstract List<QueryItem> filter();
 
     @Nullable
     public abstract Date programStartDate();
@@ -78,7 +79,16 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
     }
 
     public static Builder builder() {
-        return new AutoValue_TrackedEntityInstanceQuery.Builder();
+        return new AutoValue_TrackedEntityInstanceQuery.Builder()
+                .attribute(Collections.<QueryItem>emptyList())
+                .filter(Collections.emptyList())
+                .orgUnits(Collections.emptyList());
+    }
+
+    public abstract Builder toBuilder();
+
+    public static TrackedEntityInstanceQuery empty() {
+        return builder().page(1).pageSize(DEFAULT_PAGE_SIZE).paging(true).build();
     }
 
     @AutoValue.Builder
@@ -89,11 +99,11 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
 
         public abstract Builder program(String program);
 
-        public abstract Builder query(String query);
+        public abstract Builder query(QueryFilter query);
 
-        public abstract Builder attribute(List<String> attribute);
+        public abstract Builder attribute(List<QueryItem> attribute);
 
-        public abstract Builder filter(List<String> filter);
+        public abstract Builder filter(List<QueryItem> filter);
 
         public abstract Builder programStartDate(Date programStartDate);
 

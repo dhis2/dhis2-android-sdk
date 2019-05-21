@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.common.ObjectStore;
 
 import java.util.Map;
 
-public class ReadOnlyOneObjectRepositoryFinalImpl<M extends Model>
+public final class ReadOnlyOneObjectRepositoryFinalImpl<M extends Model>
         extends ReadOnlyOneObjectRepositoryImpl<M, ReadOnlyOneObjectRepositoryFinalImpl<M>> {
 
     public ReadOnlyOneObjectRepositoryFinalImpl(ObjectStore<M> store,

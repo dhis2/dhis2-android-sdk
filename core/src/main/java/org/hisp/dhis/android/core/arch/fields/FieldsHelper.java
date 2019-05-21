@@ -82,13 +82,13 @@ public class FieldsHelper<O> {
         return nested.with(ObjectWithUid.uid);
     }
 
-    public List<Property<O, String>> getIdentifiableFields() {
-        List<Property<O, String>> list = new ArrayList<>(7);
+    public List<Property<O, ?>> getIdentifiableFields() {
+        List<Property<O, ?>> list = new ArrayList<>(7);
         addIdentifiableFields(list);
         return list;
     }
 
-    private void addIdentifiableFields(List<Property<O, String>> list) {
+    private void addIdentifiableFields(List<Property<O, ?>> list) {
         list.add(this.uid());
         list.add(this.code());
         list.add(this.name());
@@ -98,8 +98,8 @@ public class FieldsHelper<O> {
         list.add(this.deleted());
     }
 
-    public List<Property<O, String>> getNameableFields() {
-        List<Property<O, String>> list = new ArrayList<>(11);
+    public List<Property<O, ?>> getNameableFields() {
+        List<Property<O, ?>> list = new ArrayList<>(11);
         addIdentifiableFields(list);
         list.add(this.field(BaseNameableObject.SHORT_NAME));
         list.add(this.field(BaseNameableObject.DISPLAY_SHORT_NAME));

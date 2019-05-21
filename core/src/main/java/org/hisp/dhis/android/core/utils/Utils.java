@@ -103,6 +103,10 @@ public final class Utils {
         return withSingleQuotationMarksArray;
     }
 
+    public static String withSingleQuotationMarks(String value) {
+        return "'" + value + "'";
+    }
+
     private static String commaSeparatedArrayValues(String... values) {
         return commaAndSpaceSeparatedArrayValues(values).replace(", ", ",");
     }

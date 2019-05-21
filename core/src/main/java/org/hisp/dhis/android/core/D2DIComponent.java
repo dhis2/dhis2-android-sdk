@@ -49,6 +49,7 @@ import org.hisp.dhis.android.core.datavalue.DataValuePackageDIModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentPackageDIModule;
 import org.hisp.dhis.android.core.event.EventPackageDIModule;
+import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.imports.ImportPackageDIModule;
 import org.hisp.dhis.android.core.indicator.IndicatorPackageDIModule;
 import org.hisp.dhis.android.core.legendset.LegendPackageDIModule;
@@ -134,6 +135,8 @@ public interface D2DIComponent {
     SyncHandler<RelationshipType> relationshipTypeHandler();
     @VisibleForTesting
     TrackedEntityInstancePostCall trackedEntityInstancePostCall();
+    @VisibleForTesting
+    EventPostCall eventPostCall();
     @VisibleForTesting
     IdentifiableObjectStore<CategoryOption> categoryOptionStore();
 

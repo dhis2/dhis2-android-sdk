@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import androidx.annotation.NonNull;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
@@ -39,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
@@ -61,6 +60,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import androidx.annotation.NonNull;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -74,7 +75,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
     public void setUp() throws IOException {
         super.setUp();
 
-        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+        dhis2MockServer = new Dhis2MockServer();
         d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
     }
 
@@ -118,6 +119,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         trackedEntityInstanceByUidEndPointCall = d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
 
+        EnrollmentStoreImpl.create(databaseAdapter()).setState("p6xHz0sbDlx", State.TO_DELETE);
 
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_with_removed_data_payload.json");
 
@@ -162,6 +164,8 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         assertThat(downloadedTei.uid(), is(expectedEnrollmentResponse.uid()));
         assertThat(downloadedTei.trackedEntityAttributeValues().size(),
                 is(expectedEnrollmentResponse.trackedEntityAttributeValues().size()));
+        assertThat(downloadedTei.enrollments().size(),
+                is(expectedEnrollmentResponse.enrollments().size()));
     }
 
     private void verifyDownloadedTrackedEntityInstance(String file, String teiUid)

@@ -44,6 +44,8 @@ public interface ObjectStore<M> extends DeletableStore {
 
     List<M> selectWhere(String filterWhereClause, String orderByClause, int limit);
 
+    List<M> selectRawQuery(String sqlRawQuery);
+
     M selectOneWhere(String whereClause);
 
     M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
@@ -56,7 +58,7 @@ public interface ObjectStore<M> extends DeletableStore {
 
     boolean deleteWhere(String whereClause);
 
-    void deleteWhereIfExists(@NonNull String uid) throws RuntimeException;
+    void deleteWhereIfExists(@NonNull String whereClause) throws RuntimeException;
 
     int count();
 

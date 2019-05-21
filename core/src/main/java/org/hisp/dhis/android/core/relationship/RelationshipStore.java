@@ -28,27 +28,10 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import java.util.List;
 
-public final class RelationshipStore {
-
-    private static StatementBinder<Relationship> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.uid());
-        sqLiteBind(sqLiteStatement, 2, o.name());
-        sqLiteBind(sqLiteStatement, 3, o.created());
-        sqLiteBind(sqLiteStatement, 4, o.lastUpdated());
-        sqLiteBind(sqLiteStatement, 5, o.relationshipType());
-    };
-
-    private RelationshipStore() {}
-
-    public static IdentifiableObjectStore<Relationship> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, RelationshipTableInfo.TABLE_INFO, BINDER,
-                Relationship::create);
-    }
+public interface RelationshipStore extends IdentifiableObjectStore<Relationship> {
+    List<Relationship> getRelationshipsByItem(RelationshipItem relationshipItem);
 }

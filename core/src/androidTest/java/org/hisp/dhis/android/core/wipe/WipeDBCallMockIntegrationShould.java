@@ -100,6 +100,6 @@ public class WipeDBCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void givenAEventInDatabase() {
-        d2.eventModule().downloadSingleEvents(1, false);
+        d2.eventModule().downloadSingleEvents(1, false, false);
     }
 }

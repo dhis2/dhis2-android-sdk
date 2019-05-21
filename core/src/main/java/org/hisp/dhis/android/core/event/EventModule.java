@@ -59,7 +59,7 @@ public final class EventModule {
         this.eventPersistenceCallFactory = eventPersistenceCallFactory;
     }
 
-    public Callable<Unit> downloadSingleEvents(int eventLimit, boolean limitByOrgUnit) {
-        return eventWithLimitCallFactory.getCall(eventLimit, limitByOrgUnit);
+    public Callable<Unit> downloadSingleEvents(int eventLimit, boolean limitByOrgUnit, boolean limitByProgram) {
+        return eventWithLimitCallFactory.getCall(eventLimit, limitByOrgUnit, limitByProgram);
     }
 }

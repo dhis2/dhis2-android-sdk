@@ -124,11 +124,11 @@ abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V>
     }
 
     public final R isNull() {
-        return newWithUnwrappedScope("","IS NULL");
+        return newWithUnwrappedScope("", "IS NULL");
     }
 
     public final R isNotNull() {
-        return newWithUnwrappedScope("","IS NOT NULL");
+        return newWithUnwrappedScope("", "IS NOT NULL");
     }
 
 }

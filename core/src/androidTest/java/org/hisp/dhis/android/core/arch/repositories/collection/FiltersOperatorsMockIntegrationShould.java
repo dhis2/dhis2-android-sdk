@@ -442,15 +442,15 @@ public class FiltersOperatorsMockIntegrationShould extends SyncedDatabaseMockInt
     @Test
     public void filter_string_with_is_null() {
         ProgramStageCollectionRepository repository = d2.programModule().programStages
-                .byName().isNull();
+                .byDescription().isNull();
         List<ProgramStage> objects = repository.get();
-        assertThat(objects.size(), is(0));
+        assertThat(objects.size(), is(1));
     }
 
     @Test
     public void filter_string_with_is_not_null() {
         ProgramStageCollectionRepository repository = d2.programModule().programStages
-                .byName().isNotNull();
+                .byDescription().isNotNull();
         List<ProgramStage> objects = repository.get();
         assertThat(objects.size(), is(1));
     }

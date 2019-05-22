@@ -28,14 +28,16 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.RxAPICallExecutor;
+import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
+import org.hisp.dhis.android.core.arch.call.D2CallWithProgressImpl;
+import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.call.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.data.api.OuMode;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
@@ -45,133 +47,192 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.utils.services.ApiPagingEngine;
 import org.hisp.dhis.android.core.utils.services.Paging;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 
 @Reusable
 public final class TrackedEntityInstanceWithLimitCallFactory {
 
     private final Resource.Type resourceType = Resource.Type.TRACKED_ENTITY_INSTANCE;
 
-    private final APICallExecutor apiCallExecutor;
-    private final D2CallExecutor d2CallExecutor;
+    private final RxAPICallExecutor rxCallExecutor;
     private final ResourceHandler resourceHandler;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
-    private final ForeignKeyCleaner foreignKeyCleaner;
+    private final LinkModelStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final DHISVersionManager versionManager;
 
 
-    private final TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory downloadAndPersistCallFactory;
+    private final TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipDownloadCallFactory;
     private final TrackedEntityInstancePersistenceCallFactory persistenceCallFactory;
     private final TrackedEntityInstancesEndpointCallFactory endpointCallFactory;
 
+    // TODO use scheduler for parallel download
+    // private final Scheduler teiDownloadScheduler = Schedulers.from(Executors.newFixedThreadPool(6));
+
     @Inject
     TrackedEntityInstanceWithLimitCallFactory(
-            APICallExecutor apiCallExecutor,
-            D2CallExecutor d2CallExecutor,
+            RxAPICallExecutor rxCallExecutor,
             ResourceHandler resourceHandler,
             UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
-            ForeignKeyCleaner foreignKeyCleaner,
+            LinkModelStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore,
             ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
-            TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory downloadAndPersistCallFactory,
+            TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipDownloadCallFactory,
             TrackedEntityInstancePersistenceCallFactory persistenceCallFactory,
-            DHISVersionManager versionManager, TrackedEntityInstancesEndpointCallFactory endpointCallFactory) {
-        this.apiCallExecutor = apiCallExecutor;
-        this.d2CallExecutor = d2CallExecutor;
+            DHISVersionManager versionManager,
+            TrackedEntityInstancesEndpointCallFactory endpointCallFactory) {
+        this.rxCallExecutor = rxCallExecutor;
         this.resourceHandler = resourceHandler;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
-        this.foreignKeyCleaner = foreignKeyCleaner;
+        this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
         this.systemInfoRepository = systemInfoRepository;
         this.versionManager = versionManager;
 
-        this.downloadAndPersistCallFactory = downloadAndPersistCallFactory;
+        this.relationshipDownloadCallFactory = relationshipDownloadCallFactory;
         this.persistenceCallFactory = persistenceCallFactory;
         this.endpointCallFactory = endpointCallFactory;
     }
 
-    public Callable<Unit> getCall(final int teiLimit, final boolean limitByOrgUnit) {
-        return () -> getTrackedEntityInstances(teiLimit, limitByOrgUnit);
+    public D2CallWithProgress getCall(final int teiLimit, final boolean limitByOrgUnit, boolean limitByProgram) {
+        D2ProgressManager progressManager = new D2ProgressManager(null);
+        if (userOrganisationUnitLinkStore.count() == 0) {
+            return new D2CallWithProgressImpl(Observable.just(
+                    progressManager.increaseProgress(TrackedEntityInstance.class, true)));
+        } else {
+            BooleanWrapper allOkay = new BooleanWrapper(true);
+
+            Observable<D2Progress> concatObservable = Observable.concat(
+                    downloadSystemInfo(progressManager),
+                    downloadTeis(progressManager, teiLimit, limitByOrgUnit, limitByProgram, allOkay),
+                    downloadRelationshipTeis(progressManager),
+                    updateResource(progressManager, allOkay)
+            );
+
+            return rxCallExecutor.wrapObservableTransactionally(concatObservable, true);
+        }
     }
-    
-    private Unit getTrackedEntityInstances(final int teiLimit, final boolean limitByOrgUnit) throws D2Error {
-        return d2CallExecutor.executeD2CallTransactionally(() -> {
-            Collection<String> organisationUnitUids;
-            TeiQuery.Builder teiQueryBuilder = TeiQuery.builder();
-            int pageSize = teiQueryBuilder.build().pageSize();
-            List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, teiLimit);
 
-            String lastUpdatedStartDate = resourceHandler.getLastUpdated(resourceType);
-            teiQueryBuilder.lastUpdatedStartDate(lastUpdatedStartDate);
+    private Observable<D2Progress> downloadSystemInfo(D2ProgressManager progressManager) {
+        return systemInfoRepository.download()
+                .toSingle(() -> progressManager.increaseProgress(SystemInfo.class, false))
+                .toObservable();
+    }
 
-            systemInfoRepository.download().call();
+    private Observable<D2Progress> downloadTeis(D2ProgressManager progressManager,
+                                                int teiLimit,
+                                                boolean limitByOrgUnit,
+                                                boolean limitByProgram,
+                                                BooleanWrapper allOkay) {
 
-            if (limitByOrgUnit) {
-                organisationUnitUids = getOrgUnitUids();
-                Set<String> orgUnitWrapper = new HashSet<>();
-                for (String orgUnitUid : organisationUnitUids) {
-                    orgUnitWrapper.clear();
-                    orgUnitWrapper.add(orgUnitUid);
-                    teiQueryBuilder.orgUnits(orgUnitWrapper);
-                    getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
+        int pageSize = TeiQuery.builder().build().pageSize();
+        List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, teiLimit);
+
+        Observable<List<TrackedEntityInstance>> teiDownloadObservable =
+                Observable.fromIterable(getTeiQueryBuilders(limitByOrgUnit, limitByProgram))
+                        .flatMap(teiQueryBuilder -> {
+                            return getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList, allOkay);
+                            // TODO .subscribeOn(teiDownloadScheduler);
+                        });
+
+        return teiDownloadObservable.map(
+                teiList -> {
+                    persistenceCallFactory.getCall(teiList).call();
+                    return progressManager.increaseProgress(TrackedEntityInstance.class, false);
+                });
+    }
+
+    private Observable<D2Progress> downloadRelationshipTeis(D2ProgressManager progressManager) {
+        Observable<List<TrackedEntityInstance>> observable = versionManager.is2_29()
+                ? Observable.just(Collections.emptyList())
+                : relationshipDownloadCallFactory.downloadAndPersist().toObservable();
+
+        return observable.map(
+                trackedEntityInstances -> progressManager.increaseProgress(TrackedEntityInstance.class, true));
+    }
+
+    private List<TeiQuery.Builder> getTeiQueryBuilders(boolean limitByOrgUnit, boolean limitByProgram) {
+
+        String lastUpdated = resourceHandler.getLastUpdated(resourceType);
+
+        List<TeiQuery.Builder> builders = new ArrayList<>();
+        if (limitByOrgUnit) {
+            if (limitByProgram) {
+                for (OrganisationUnitProgramLink link : organisationUnitProgramLinkStore.selectAll()) {
+                    builders.add(getTeiBuilderForOrgUnit(lastUpdated, link.organisationUnit()).program(link.program()));
                 }
             } else {
-                organisationUnitUids = userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids();
-                teiQueryBuilder.orgUnits(organisationUnitUids).ouMode(OuMode.DESCENDANTS);
-                getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
-            }
-
-            if (!versionManager.is2_29()) {
-                d2CallExecutor.executeD2Call(downloadAndPersistCallFactory.getCall());
-            }
-
-            foreignKeyCleaner.cleanForeignKeyErrors();
-
-            return new Unit();
-        });
-    }
-
-    private void getTrackedEntityInstancesWithPaging(TeiQuery.Builder teiQueryBuilder,
-                                                     List<Paging> pagingList) throws Exception {
-        boolean successfulSync = true;
-
-        for (Paging paging : pagingList) {
-            try {
-                teiQueryBuilder.page(paging.page()).pageSize(paging.pageSize());
-                List<TrackedEntityInstance> pageTrackedEntityInstances =
-                        apiCallExecutor.executePayloadCall(endpointCallFactory.getCall(teiQueryBuilder.build()));
-
-                if (paging.isLastPage() && pageTrackedEntityInstances.size() > paging.previousItemsToSkipCount()) {
-                    int toIndex = pageTrackedEntityInstances.size() <
-                            paging.pageSize() - paging.posteriorItemsToSkipCount() ?
-                            pageTrackedEntityInstances.size() :
-                            paging.pageSize() - paging.posteriorItemsToSkipCount();
-
-                    persistenceCallFactory.getCall(
-                            pageTrackedEntityInstances.subList(paging.previousItemsToSkipCount(), toIndex)).call();
-
-                } else {
-                    persistenceCallFactory.getCall(pageTrackedEntityInstances).call();
+                for (String orgUnitUid: getOrgUnitUids()) {
+                    builders.add(getTeiBuilderForOrgUnit(lastUpdated, orgUnitUid));
                 }
-
-                if (pageTrackedEntityInstances.size() < paging.pageSize()) {
-                    break;
+            }
+        } else {
+            if (limitByProgram) {
+                Set<String> programs = new HashSet<>();
+                for (OrganisationUnitProgramLink link : organisationUnitProgramLinkStore.selectAll()) {
+                    programs.add(link.program());
                 }
-
-            } catch (D2Error ignored) {
-                successfulSync = false;
+                for (String program : programs) {
+                    builders.add(getTeiBuilderForRoot(lastUpdated).program(program));
+                }
+            } else {
+                builders.add(getTeiBuilderForRoot(lastUpdated));
             }
         }
+        return builders;
+    }
 
-        if (successfulSync) {
-            resourceHandler.handleResource(resourceType);
+    private TeiQuery.Builder getTeiBuilderForRoot(String lastUpdated) {
+        return TeiQuery.builder()
+                .lastUpdatedStartDate(lastUpdated)
+                .orgUnits(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids())
+                .ouMode(OuMode.DESCENDANTS);
+    }
+
+    private TeiQuery.Builder getTeiBuilderForOrgUnit(String lastUpdated, String orgUnitUid) {
+        return TeiQuery.builder()
+                .lastUpdatedStartDate(lastUpdated)
+                .orgUnits(Collections.singleton(orgUnitUid));
+    }
+
+    private Observable<List<TrackedEntityInstance>> getTrackedEntityInstancesWithPaging(
+            TeiQuery.Builder teiQueryBuilder, List<Paging> pagingList, BooleanWrapper allOkay) {
+        Observable<Paging> pagingObservable = Observable.fromIterable(pagingList);
+        return pagingObservable
+                .flatMapSingle(paging -> {
+                    teiQueryBuilder.page(paging.page()).pageSize(paging.pageSize());
+                    return endpointCallFactory.getCall(teiQueryBuilder.build()).map(payload ->
+                            new TeiListWithPaging(true, limitTeisForPage(payload.items(), paging), paging))
+                            .onErrorResumeNext((err) -> {
+                                allOkay.set(false);
+                                return Single.just(new TeiListWithPaging(false, Collections.emptyList(), paging));
+                            });
+                })
+                .takeUntil(res -> res.isSuccess && (res.paging.isLastPage() ||
+                        !res.paging.isLastPage() && res.teiList.size() < res.paging.pageSize()))
+                .map(tuple -> tuple.teiList);
+    }
+
+    private List<TrackedEntityInstance> limitTeisForPage(List<TrackedEntityInstance> pageTrackedEntityInstances,
+                                                         Paging paging) {
+        if (paging.isLastPage()
+                && pageTrackedEntityInstances.size() > paging.previousItemsToSkipCount()) {
+            int toIndex = pageTrackedEntityInstances.size() <
+                    paging.pageSize() - paging.posteriorItemsToSkipCount() ?
+                    pageTrackedEntityInstances.size() :
+                    paging.pageSize() - paging.posteriorItemsToSkipCount();
+
+            return pageTrackedEntityInstances.subList(paging.previousItemsToSkipCount(), toIndex);
+        } else {
+            return pageTrackedEntityInstances;
         }
     }
 
@@ -188,5 +249,42 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
         }
 
         return organisationUnitUids;
+    }
+
+    private Observable<D2Progress> updateResource(D2ProgressManager progressManager, BooleanWrapper allOkay) {
+        return Single.fromCallable(() -> {
+            if (allOkay.get()) {
+                resourceHandler.handleResource(resourceType);
+            }
+            return progressManager.increaseProgress(TrackedEntityInstance.class, true);
+        }).toObservable();
+    }
+
+    private static class TeiListWithPaging {
+        final boolean isSuccess;
+        final List<TrackedEntityInstance> teiList;
+        final Paging paging;
+
+        TeiListWithPaging(boolean isSuccess, List<TrackedEntityInstance> teiList, Paging paging) {
+            this.isSuccess = isSuccess;
+            this.teiList = teiList;
+            this.paging = paging;
+        }
+    }
+
+    private static class BooleanWrapper {
+        private boolean value;
+
+        BooleanWrapper(boolean value) {
+            this.value = value;
+        }
+
+        boolean get() {
+            return value;
+        }
+
+        void set(boolean value) {
+            this.value = value;
+        }
     }
 }

@@ -25,15 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ParentOrphanCleaner;
 
 import java.util.ArrayList;
@@ -52,7 +51,7 @@ final class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
     private final SyncHandler<ProgramRule> programRuleHandler;
     private final SyncHandler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler;
     private final SyncHandler<ProgramSection> programSectionHandler;
-    private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
+    private final ObjectStyleHandler styleHandler;
     private final ParentOrphanCleaner<Program> orphanCleaner;
     private final CollectionCleaner<Program> collectionCleaner;
     private final ProgramDHISVersionManager programVersionManager;
@@ -64,7 +63,7 @@ final class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
                    SyncHandler<ProgramRule> programRuleHandler,
                    SyncHandler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler,
                    SyncHandler<ProgramSection> programSectionHandler,
-                   SyncHandlerWithTransformer<ObjectStyle> styleHandler,
+                   ObjectStyleHandler styleHandler,
                    ParentOrphanCleaner<Program> orphanCleaner,
                    CollectionCleaner<Program> collectionCleaner,
                    ProgramDHISVersionManager programVersionManager) {
@@ -92,8 +91,7 @@ final class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
         programRuleHandler.handleMany(program.programRules());
         programRuleVariableHandler.handleMany(program.programRuleVariables());
         programSectionHandler.handleMany(program.programSections());
-        styleHandler.handle(program.style(), new ObjectStyleTransformer(program.uid(),
-                ProgramTableInfo.TABLE_INFO.name()));
+        styleHandler.handle(program.style(), program.uid(), ProgramTableInfo.TABLE_INFO.name());
 
         if (action == HandleAction.Update) {
             orphanCleaner.deleteOrphan(program);

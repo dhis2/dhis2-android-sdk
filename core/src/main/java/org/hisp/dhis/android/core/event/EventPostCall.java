@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.event;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.imports.EventWebResponse;
-import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.imports.TrackerImportConflict;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 
@@ -40,37 +39,42 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
-public final class EventPostCall implements Callable<WebResponse> {
+public final class EventPostCall {
     // retrofit service
+    private final DHISVersionManager versionManager;
     private final EventService eventService;
 
     // adapter and stores
     private final EventStore eventStore;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
+    private final EventImportHandler eventImportHandler;
 
     private final APICallExecutor apiCallExecutor;
 
     @Inject
-    EventPostCall(@NonNull EventService eventService,
-                          @NonNull EventStore eventStore,
-                          @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
-                          @NonNull APICallExecutor apiCallExecutor) {
+    EventPostCall(@NonNull DHISVersionManager versionManager,
+                  @NonNull EventService eventService,
+                  @NonNull EventStore eventStore,
+                  @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
+                  @NonNull APICallExecutor apiCallExecutor,
+                  @NonNull EventImportHandler eventImportHandler) {
+        this.versionManager = versionManager;
         this.eventService = eventService;
         this.eventStore = eventStore;
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
         this.apiCallExecutor = apiCallExecutor;
+        this.eventImportHandler = eventImportHandler;
     }
 
-    @Override
-    public EventWebResponse call() throws Exception {
-        List<Event> eventsToPost = queryEventsToPost();
+    public EventWebResponse call(List<Event> filteredEvents) throws Exception {
+        List<Event> eventsToPost = queryDataToSync(filteredEvents);
 
         // if there is nothing to send, return null
         if (eventsToPost.isEmpty()) {
@@ -80,7 +84,7 @@ public final class EventPostCall implements Callable<WebResponse> {
         EventPayload eventPayload = new EventPayload();
         eventPayload.events = eventsToPost;
 
-        String strategy = "CREATE_AND_UPDATE";
+        String strategy = versionManager.is2_29() ? "CREATE_AND_UPDATE" : "SYNC";
 
         EventWebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
                 eventService.postEvents(eventPayload, strategy), Collections.singletonList(409),
@@ -91,18 +95,15 @@ public final class EventPostCall implements Callable<WebResponse> {
     }
 
     @NonNull
-    private List<Event> queryEventsToPost() {
+    List<Event> queryDataToSync(List<Event> filteredEvents) {
         Map<String, List<TrackedEntityDataValue>> dataValueMap =
                 trackedEntityDataValueStore.querySingleEventsTrackedEntityDataValues();
-        List<Event> events = eventStore.querySingleEventsToPost();
-        int eventSize = events.size();
 
-        List<Event> eventRecreated = new ArrayList<>(eventSize);
+        List<Event> events = filteredEvents == null ? eventStore.querySingleEventsToPost() : filteredEvents;
+        List<Event> eventRecreated = new ArrayList<>();
 
-        for (int i = 0; i < eventSize; i++) {
-            Event event = events.get(i);
+        for (Event event : events) {
             List<TrackedEntityDataValue> dataValuesForEvent = dataValueMap.get(event.uid());
-
             eventRecreated.add(event.toBuilder().trackedEntityDataValues(dataValuesForEvent).build());
         }
 
@@ -113,9 +114,11 @@ public final class EventPostCall implements Callable<WebResponse> {
         if (webResponse == null || webResponse.response() == null) {
             return;
         }
-        EventImportHandler eventImportHandler = new EventImportHandler(eventStore);
         eventImportHandler.handleEventImportSummaries(
-                webResponse.response().importSummaries()
+                webResponse.response().importSummaries(),
+                TrackerImportConflict.builder(),
+                null,
+                null
         );
     }
 }

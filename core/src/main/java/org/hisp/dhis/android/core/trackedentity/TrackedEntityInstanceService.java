@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.trackedentity.search.SearchGrid;
 
 import java.util.List;
 
+import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -64,6 +65,7 @@ public interface TrackedEntityInstanceService {
     String STRATEGY = "strategy";
     String LAST_UPDATED_START_DATE = "lastUpdatedStartDate";
     String REASON = "reason";
+    String INCLUDE_DELETED = "includeDeleted";
 
     @POST(TRACKED_ENTITY_INSTANCES)
     Call<TEIWebResponse> postTrackedEntityInstances(
@@ -71,28 +73,39 @@ public interface TrackedEntityInstanceService {
             @Query(STRATEGY) String strategy);
 
     @GET(TRACKED_ENTITY_INSTANCES)
-    Call<Payload<TrackedEntityInstance>> getTrackedEntityInstance(
+    Single<Payload<TrackedEntityInstance>> getTrackedEntityInstance(
             @Query(TRACKED_ENTITY_INSTACE) String trackedEntityInstance,
             @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
-            @Query(INCLUDE_ALL_ATTRIBUTES) boolean includeAllAttributes);
+            @Query(INCLUDE_ALL_ATTRIBUTES) boolean includeAllAttributes,
+            @Query(INCLUDE_DELETED) boolean includeDeleted);
+
+    @GET(TRACKED_ENTITY_INSTANCES)
+    Call<Payload<TrackedEntityInstance>> getTrackedEntityInstanceAsCall(
+            @Query(TRACKED_ENTITY_INSTACE) String trackedEntityInstance,
+            @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
+            @Query(INCLUDE_ALL_ATTRIBUTES) boolean includeAllAttributes,
+            @Query(INCLUDE_DELETED) boolean includeDeleted);
 
     @GET(TRACKED_ENTITY_INSTANCES + "/{" + TRACKED_ENTITY_INSTACE + "}")
     Call<TrackedEntityInstance> getTrackedEntityInstanceByProgram(
             @Path(TRACKED_ENTITY_INSTACE) String trackedEntityInstanceUid,
             @Query(PROGRAM) String program,
             @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
-            @Query(INCLUDE_ALL_ATTRIBUTES) boolean includeAllAttributes);
+            @Query(INCLUDE_ALL_ATTRIBUTES) boolean includeAllAttributes,
+            @Query(INCLUDE_DELETED) boolean includeDeleted);
 
     @GET(TRACKED_ENTITY_INSTANCES)
-    Call<Payload<TrackedEntityInstance>> getTrackedEntityInstances(
+    Single<Payload<TrackedEntityInstance>> getTrackedEntityInstances(
             @Query(OU) String orgUnits,
             @Query(OU_MODE) String orgUnitMode,
+            @Query(PROGRAM) String program,
             @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
             @Query(PAGING) Boolean paging,
             @Query(PAGE) int page,
             @Query(PAGE_SIZE) int pageSize,
             @Query(LAST_UPDATED_START_DATE) String lastUpdatedStartDate,
-            @Query(INCLUDE_ALL_ATTRIBUTES) boolean includeAllAttributes);
+            @Query(INCLUDE_ALL_ATTRIBUTES) boolean includeAllAttributes,
+            @Query(INCLUDE_DELETED) boolean includeDeleted);
 
     @GET(TRACKED_ENTITY_INSTANCES + "/query")
     Call<SearchGrid> query(

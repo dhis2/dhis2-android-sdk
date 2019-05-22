@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.testapp.trackedentity;
 
-import androidx.test.runner.AndroidJUnit4;
+import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.State;
@@ -40,6 +40,8 @@ import org.junit.runner.RunWith;
 
 import java.text.ParseException;
 import java.util.List;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -156,5 +158,13 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Sync
         assertThat(trackedEntityInstances.size(), is(2));
     }
 
+    @Test
+    public void filter_by_program_uids() {
+        List<TrackedEntityInstance> trackedEntityInstances =
+                d2.trackedEntityModule().trackedEntityInstances
+                        .byProgramUids(Lists.newArrayList("lxAQ7Zs9VYR"))
+                        .get();
 
+        assertThat(trackedEntityInstances.size(), is(2));
+    }
 }

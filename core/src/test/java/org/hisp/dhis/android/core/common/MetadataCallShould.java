@@ -35,11 +35,14 @@ import org.hisp.dhis.android.core.constant.ConstantModuleDownloader;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetModuleDownloader;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorStore;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramModuleDownloader;
 import org.hisp.dhis.android.core.settings.SystemSettingModuleDownloader;
+import org.hisp.dhis.android.core.sms.SmsModule;
+import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserModuleDownloader;
@@ -54,7 +57,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static org.mockito.ArgumentMatchers.anyCollectionOf;
+import io.reactivex.Completable;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -73,9 +79,6 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Mock
     private Constant constant;
-
-    @Mock
-    private Callable<Unit> systemInfoDownloadCall;
 
     @Mock
     private Callable<Unit> systemSettingDownloadCall;
@@ -123,7 +126,17 @@ public class MetadataCallShould extends BaseCallShould {
     private ConstantModuleDownloader constantDownloader;
 
     @Mock
+    private ObjectStore<D2Error> d2ErrorStore;
+
+    @Mock
     private ForeignKeyCleaner foreignKeyCleaner;
+
+    @Mock
+    private SmsModule smsModule;
+    @Mock
+    private ConfigCase configCase;
+    @Mock
+    private Callable<Void> refreshMetadataIdsCallable;
 
     // object to test
     private MetadataCall metadataCall;
@@ -134,18 +147,19 @@ public class MetadataCallShould extends BaseCallShould {
         super.setUp();
 
         // Call factories
-        when(systemInfoDownloader.downloadMetadata()).thenReturn(systemInfoDownloadCall);
+        when(systemInfoDownloader.downloadMetadata()).thenReturn(Completable.complete());
         when(systemSettingDownloader.downloadMetadata()).thenReturn(systemSettingDownloadCall);
         when(userDownloader.downloadMetadata()).thenReturn(userCall);
         when(programDownloader.downloadMetadata()).thenReturn(programDownloadCall);
         when(categoryDownloader.downloadMetadata()).thenReturn(categoryDownloadCall);
-        when(organisationUnitDownloader.downloadMetadata(same(user), anyCollectionOf(Program.class),
-                anyCollectionOf(DataSet.class))).thenReturn(organisationUnitDownloadCall);
+        when(organisationUnitDownloader.downloadMetadata(same(user), anyCollection(),
+                anyCollection())).thenReturn(organisationUnitDownloadCall);
         when(dataSetDownloader.downloadMetadata()).thenReturn(dataSetDownloadCall);
         when(constantDownloader.downloadMetadata()).thenReturn(constantCall);
+        when(smsModule.configCase()).thenReturn(configCase);
+        when(configCase.refreshMetadataIdsCallable()).thenReturn(refreshMetadataIdsCallable);
 
         // Calls
-        when(systemInfoDownloadCall.call()).thenReturn(new Unit());
         when(systemSettingDownloadCall.call()).thenReturn(new Unit());
         when(userCall.call()).thenReturn(user);
         when(categoryDownloadCall.call()).thenReturn(new Unit());
@@ -154,9 +168,11 @@ public class MetadataCallShould extends BaseCallShould {
         when(organisationUnitDownloadCall.call()).thenReturn(new Unit());
         when(constantCall.call()).thenReturn(Lists.newArrayList(constant));
 
+        when(d2ErrorStore.insert(any(D2Error.class))).thenReturn(0L);
+
         // Metadata call
         metadataCall = new MetadataCall(
-                new D2CallExecutor(databaseAdapter),
+                new D2CallExecutor(databaseAdapter, d2ErrorStore),
                 systemInfoDownloader,
                 systemSettingDownloader,
                 userDownloader,
@@ -165,7 +181,8 @@ public class MetadataCallShould extends BaseCallShould {
                 organisationUnitDownloader,
                 dataSetDownloader,
                 constantDownloader,
-                foreignKeyCleaner);
+                foreignKeyCleaner,
+                smsModule);
     }
 
     @After
@@ -180,7 +197,7 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Test(expected = D2Error.class)
     public void fail_when_system_info_call_fail() throws Exception {
-        when(systemInfoDownloadCall.call()).thenThrow(d2Error);
+        when(systemInfoDownloader.downloadMetadata()).thenReturn(Completable.error(d2Error));
         metadataCall.call();
     }
 

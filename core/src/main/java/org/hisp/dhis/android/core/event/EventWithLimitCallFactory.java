@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.event;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.Unit;
@@ -53,6 +51,7 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
@@ -88,24 +87,21 @@ final class EventWithLimitCallFactory {
         this.persistenceCallFactory = persistenceCallFactory;
     }
 
-    public Callable<Unit> getCall(final int eventLimit, final boolean limitByOrgUnit) {
-        return () -> getEvents(eventLimit, limitByOrgUnit);
+    public Callable<Unit> getCall(final int eventLimit, final boolean limitByOrgUnit, final boolean limitByProgram) {
+        return () -> getEvents(eventLimit, limitByOrgUnit, limitByProgram);
     }
 
-    private Unit getEvents(int eventLimit, boolean limitByOrgUnit) throws Exception {
+    private Unit getEvents(int eventLimit, boolean limitByOrgUnit, boolean limitByProgram) {
         Collection<String> organisationUnitUids;
-        int eventsCount = 0;
         boolean successfulSync = true;
 
         EventQuery.Builder eventQueryBuilder = EventQuery.builder();
         int pageSize = eventQueryBuilder.build().pageSize();
 
-        List<String> programUids = programStore.queryWithoutRegistrationProgramUids();
+        systemInfoRepository.download().blockingAwait();
 
         String lastUpdatedStartDate = resourceHandler.getLastUpdated(resourceType);
         eventQueryBuilder.lastUpdatedStartDate(lastUpdatedStartDate);
-
-        systemInfoRepository.download().call();
 
         if (limitByOrgUnit) {
             organisationUnitUids = getOrgUnitUids();
@@ -114,15 +110,31 @@ final class EventWithLimitCallFactory {
             eventQueryBuilder.ouMode(OuMode.DESCENDANTS);
         }
 
+        int eventsCount = 0;
         for (String orgUnitUid : organisationUnitUids) {
-            if (!limitByOrgUnit && eventsCount == eventLimit) {
+            if (limitByOrgUnit) {
+                eventsCount = 0;
+            }
+            if (eventsCount >= eventLimit) {
                 break;
             }
             eventQueryBuilder.orgUnit(orgUnitUid);
-            EventsWithPagingResult result  = getEventsWithPaging(eventQueryBuilder, pageSize,
-                    programUids, eventsCount, eventLimit, limitByOrgUnit);
-            eventsCount = eventsCount + result.eventCount;
-            successfulSync = successfulSync && result.successfulSync;
+
+            for (String programUid : programStore.queryWithoutRegistrationProgramUids()) {
+                if (limitByProgram) {
+                    eventsCount = 0;
+                }
+                if (eventsCount >= eventLimit) {
+                    break;
+                }
+
+                eventQueryBuilder.program(programUid);
+
+                EventsWithPagingResult result = getEventsForOrgUnitProgramCombination(eventQueryBuilder,
+                        pageSize, eventLimit - eventsCount);
+                eventsCount = eventsCount + result.eventCount;
+                successfulSync = successfulSync && result.successfulSync;
+            }
         }
 
         if (successfulSync) {
@@ -132,49 +144,45 @@ final class EventWithLimitCallFactory {
         return new Unit();
     }
 
-    private EventsWithPagingResult getEventsWithPaging(EventQuery.Builder eventQueryBuilder,
-                                                       int pageSize,
-                                                       Collection<String> programUids,
-                                                       int globalEventsSize,
-                                                       int eventLimit,
-                                                       boolean limitByOrgUnit) {
+    private EventsWithPagingResult getEventsForOrgUnitProgramCombination(EventQuery.Builder eventQueryBuilder,
+                                                                         int pageSize,
+                                                                         int combinationLimit) {
         int eventsCount = 0;
         boolean successfulSync = true;
 
-        for (String programUid : programUids) {
-            try {
-                eventQueryBuilder.program(programUid);
-                int eventLimitForProgram = limitByOrgUnit ? eventLimit - eventsCount :
-                        eventLimit - globalEventsSize - eventsCount;
-                List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, eventLimitForProgram);
-
-                for (Paging paging : pagingList) {
-                    eventQueryBuilder.pageSize(paging.pageSize());
-                    eventQueryBuilder.page(paging.page());
-
-                    List<Event> pageEvents = d2CallExecutor.executeD2Call(
-                            endpointCallFactory.getCall(eventQueryBuilder.build()));
-
-                    List<Event> eventsToPersist = getEventsToPersist(paging, pageEvents);
-
-                    d2CallExecutor.executeD2CallTransactionally(persistenceCallFactory.getCall(eventsToPersist));
-                    eventsCount = eventsCount + eventsToPersist.size();
-
-                    if (pageEvents.size() < paging.pageSize()) {
-                        break;
-                    }
-                }
-
-                if (globalEventsSize + eventsCount == eventLimit) {
-                    break;
-                }
-
-            } catch (D2Error ignored) {
-                successfulSync = false;
-            }
+        try {
+            eventsCount = getEventsWithPaging(eventQueryBuilder, pageSize, combinationLimit);
+        } catch (D2Error ignored) {
+            successfulSync = false;
         }
 
         return new EventsWithPagingResult(eventsCount, successfulSync);
+    }
+
+    private int getEventsWithPaging(EventQuery.Builder eventQueryBuilder,
+                                    int pageSize,
+                                    int combinationLimit) throws D2Error {
+        int downloadedEventsForCombination = 0;
+        List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, combinationLimit);
+
+        for (Paging paging : pagingList) {
+            eventQueryBuilder.pageSize(paging.pageSize());
+            eventQueryBuilder.page(paging.page());
+
+            List<Event> pageEvents = d2CallExecutor.executeD2Call(
+                    endpointCallFactory.getCall(eventQueryBuilder.build()));
+
+            List<Event> eventsToPersist = getEventsToPersist(paging, pageEvents);
+
+            d2CallExecutor.executeD2CallTransactionally(persistenceCallFactory.getCall(eventsToPersist));
+            downloadedEventsForCombination += eventsToPersist.size();
+
+            if (pageEvents.size() < paging.pageSize()) {
+                break;
+            }
+        }
+
+        return downloadedEventsForCombination;
     }
 
     private List<Event> getEventsToPersist(Paging paging, List<Event> pageEvents) {

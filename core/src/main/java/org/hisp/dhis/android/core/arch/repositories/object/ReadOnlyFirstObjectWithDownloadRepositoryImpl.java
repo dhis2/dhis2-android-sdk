@@ -27,32 +27,33 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.object;
 
+import org.hisp.dhis.android.core.arch.call.CompletableProvider;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
-import org.hisp.dhis.android.core.common.Unit;
 
 import java.util.Map;
-import java.util.concurrent.Callable;
+
+import io.reactivex.Completable;
 
 public class ReadOnlyFirstObjectWithDownloadRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
         extends ReadOnlyOneObjectRepositoryImpl<M, R> implements ReadOnlyWithDownloadObjectRepository<M> {
 
-    private final Callable<Unit> downloadCall;
+    private final CompletableProvider downloadCompletableProvider;
 
     public ReadOnlyFirstObjectWithDownloadRepositoryImpl(ObjectStore<M> store,
                                                          Map<String, ChildrenAppender<M>> childrenAppenders,
                                                          RepositoryScope scope,
-                                                         Callable<Unit> downloadCall,
+                                                         CompletableProvider downloadCompletableProvider,
                                                          ObjectRepositoryFactory<R> repositoryFactory) {
         super(store, childrenAppenders, scope, repositoryFactory);
-        this.downloadCall = downloadCall;
+        this.downloadCompletableProvider = downloadCompletableProvider;
     }
 
     @Override
-    public Callable<Unit> download() {
-        return downloadCall;
+    public Completable download() {
+        return downloadCompletableProvider.getCompletable();
     }
 }

@@ -86,38 +86,33 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
         }
     }
 
-    private void addAll(@NonNull Collection<M> collection) {
-        Cursor cursor = databaseAdapter.query(builder.selectAll());
-        addObjectsToCollection(cursor, collection);
-        cursor.close();
-    }
-
     @Override
     public List<M> selectAll() {
-        List<M> list = new ArrayList<>();
-        addAll(list);
-        return list;
+        String query = builder.selectAll();
+        return selectRawQuery(query);
     }
 
     @Override
     public List<M> selectWhere(String whereClause) {
-        List<M> list = new ArrayList<>();
-        Cursor cursor = databaseAdapter.query(builder.selectWhere(whereClause));
-        addObjectsToCollection(cursor, list);
-        return list;
+        String query = builder.selectWhere(whereClause);
+        return selectRawQuery(query);
     }
 
     @Override
     public List<M> selectWhere(String filterWhereClause, String orderByClause) {
-        Cursor cursor = databaseAdapter.query(builder.selectWhere(filterWhereClause, orderByClause));
-        List<M> list = new ArrayList<>();
-        addObjectsToCollection(cursor, list);
-        return list;
+        String query = builder.selectWhere(filterWhereClause, orderByClause);
+        return selectRawQuery(query);
     }
 
     @Override
     public List<M> selectWhere(String filterWhereClause, String orderByClause, int limit) {
-        Cursor cursor = databaseAdapter.query(builder.selectWhere(filterWhereClause, orderByClause, limit));
+        String query = builder.selectWhere(filterWhereClause, orderByClause, limit);
+        return selectRawQuery(query);
+    }
+
+    @Override
+    public List<M> selectRawQuery(String sqlRawQuery) {
+        Cursor cursor = databaseAdapter.query(sqlRawQuery);
         List<M> list = new ArrayList<>();
         addObjectsToCollection(cursor, list);
         return list;
@@ -126,6 +121,12 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     @Override
     public M selectOneWhere(@NonNull String whereClause) {
         Cursor cursor = databaseAdapter.query(builder.selectWhere(whereClause, 1));
+        return getFirstFromCursor(cursor);
+    }
+
+    @Override
+    public M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType) {
+        Cursor cursor = databaseAdapter.query(builder.selectOneOrderedBy(orderingColumName, orderingType));
         return getFirstFromCursor(cursor);
     }
 
@@ -197,6 +198,17 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     @Override
     public boolean deleteWhere(String clause) {
         return databaseAdapter.database().delete(builder.tableName, clause, null) > 0;
+    }
+
+    @Override
+    public void deleteWhereIfExists(@NonNull String whereClause) throws RuntimeException {
+        try {
+            deleteWhere(whereClause);
+        } catch(RuntimeException e) {
+            if (!e.getMessage().equals("No rows affected")) {
+                throw e;
+            }
+        }
     }
 
     @Override

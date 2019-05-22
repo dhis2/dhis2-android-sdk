@@ -65,6 +65,7 @@ final class DataSetStore {
             sqLiteBind(sqLiteStatement, 24, o.renderAsTabs());
             sqLiteBind(sqLiteStatement, 25, o.renderHorizontally());
             sqLiteBind(sqLiteStatement, 26, AccessHelper.getAccessDataWrite(o.access()));
+            sqLiteBind(sqLiteStatement, 27, UidsHelper.getUidOrNull(o.workflow()));
         }
     };
 

@@ -45,6 +45,9 @@ public abstract class TeiQuery extends BaseQuery {
     @Nullable
     public abstract Collection<String> orgUnits();
 
+    @Nullable
+    public abstract String program();
+
     @NonNull
     public abstract OuMode ouMode();
 
@@ -66,6 +69,8 @@ public abstract class TeiQuery extends BaseQuery {
     @AutoValue.Builder
     public abstract static class Builder extends BaseQuery.Builder<Builder> {
         public abstract Builder orgUnits(Collection<String> orgUnits);
+
+        public abstract Builder program(String program);
 
         public abstract Builder ouMode(OuMode ouMode);
 

@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableDataSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
@@ -47,10 +45,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
-final class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<TrackedEntityInstance> {
+final class TrackedEntityInstanceHandler extends IdentifiableDataSyncHandlerImpl<TrackedEntityInstance> {
     private final RelationshipDHISVersionManager relationshipVersionManager;
     private final RelationshipHandler relationshipHandler;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
@@ -98,7 +97,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<Tra
     private void handleRelationships(TrackedEntityInstance trackedEntityInstance) {
         List<Relationship229Compatible> relationships = trackedEntityInstance.relationships();
         if (relationships != null) {
-            for (Relationship229Compatible relationship229 : trackedEntityInstance.relationships()) {
+            for (Relationship229Compatible relationship229 : relationships) {
                 TrackedEntityInstance relativeTEI =
                         relationshipVersionManager.getRelativeTei(relationship229, trackedEntityInstance.uid());
 

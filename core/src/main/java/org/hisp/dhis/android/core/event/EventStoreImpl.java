@@ -30,18 +30,23 @@ package org.hisp.dhis.android.core.event;
 
 import android.database.Cursor;
 
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
+import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.CoordinateHelper;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.common.SQLStatementWrapper;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +78,9 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
         sqLiteBind(sqLiteStatement, 18, o.trackedEntityInstance());
     };
 
+    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            EventTableInfo.TABLE_INFO, EventFields.ENROLLMENT);
+
     private EventStoreImpl(DatabaseAdapter databaseAdapter,
                            SQLStatementWrapper statementWrapper,
                            SQLStatementBuilder builder,
@@ -83,14 +91,14 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
 
     @Override
     public Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost() {
-        String eventsAttachedToEnrollmentsQuery = "SELECT Event.* FROM " +
-                "(Event INNER JOIN Enrollment ON Event.enrollment = Enrollment.uid " +
-                "INNER JOIN TrackedEntityInstance ON Enrollment.trackedEntityInstance = TrackedEntityInstance.uid) " +
-                "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE' " +
-                "OR Enrollment.state = 'TO_POST' OR Enrollment.state = 'TO_UPDATE' OR Event.state = 'TO_POST' " +
-                "OR Event.state = 'TO_UPDATE' OR Event.state = 'TO_DELETE';";
+        String eventsAttachedToEnrollmentsQuery = new WhereClauseBuilder()
+                .appendIsNotNullValue(EventFields.ENROLLMENT)
+                .appendInKeyStringValues(BaseDataModel.Columns.STATE, Arrays.asList(
+                        State.TO_POST.name(),
+                        State.TO_UPDATE.name(),
+                        State.TO_DELETE.name())).build();
 
-        List<Event> eventList = eventListFromQuery(eventsAttachedToEnrollmentsQuery);
+        List<Event> eventList = selectWhere(eventsAttachedToEnrollmentsQuery);
 
         Map<String, List<Event>> eventsMap = new HashMap<>();
         for (Event event : eventList) {
@@ -103,7 +111,7 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
     @Override
     public List<Event> querySingleEventsToPost() {
         String singleEventsToPostQuery = QUERY_SINGLE_EVENTS +
-                " AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE')";
+                " AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE' OR Event.state = 'TO_DELETE')";
         return eventListFromQuery(singleEventsToPostQuery);
     }
 

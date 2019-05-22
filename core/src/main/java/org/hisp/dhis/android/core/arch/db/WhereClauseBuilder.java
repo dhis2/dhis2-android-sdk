@@ -41,6 +41,8 @@ public class WhereClauseBuilder {
     private static final String PARENTHESES_START = "(";
     private static final String PARENTHESES_END = ")";
 
+    private static final String EXISTS = " EXISTS ";
+
     private static final String EQ_NUMBER = " = ";
 
     private static final String AND = " AND ";
@@ -49,6 +51,7 @@ public class WhereClauseBuilder {
     private static final String NOT_IN = " NOT IN (";
 
     private static final String IS_NULL = " IS NULL";
+    private static final String IS_NOT_NULL = " IS NOT NULL";
 
     @SuppressWarnings("PMD.AvoidStringBufferField")
     private final StringBuilder whereClause = new StringBuilder();
@@ -72,6 +75,10 @@ public class WhereClauseBuilder {
 
     public WhereClauseBuilder appendKeyLikeStringValue(String column, Object value) {
         return appendKeyValue(column, value, AND, LIKE_STR, END_STR);
+    }
+
+    public WhereClauseBuilder appendOrKeyLikeStringValue(String column, Object value) {
+        return appendKeyValue(column, value, OR, LIKE_STR, END_STR);
     }
 
     public WhereClauseBuilder appendKeyNumberValue(String column, double value) {
@@ -100,6 +107,10 @@ public class WhereClauseBuilder {
         return appendKeyValue(column, "", AND, IS_NULL, "");
     }
 
+    public WhereClauseBuilder appendIsNotNullValue(String column) {
+        return appendKeyValue(column, "", AND, IS_NOT_NULL, "");
+    }
+
     private WhereClauseBuilder appendKeyValue(String column, Object value, String logicGate, String eq, String end) {
         String andOpt = addOperator ? logicGate : "";
         addOperator = true;
@@ -119,6 +130,13 @@ public class WhereClauseBuilder {
         String andOpt = addOperator ? operator : "";
         addOperator = true;
         whereClause.append(andOpt).append(PARENTHESES_START).append(complexQuery).append(PARENTHESES_END);
+        return this;
+    }
+
+    public WhereClauseBuilder appendExistsSubQuery(String subQuery) {
+        String andOpt = addOperator ? AND : "";
+        addOperator = true;
+        whereClause.append(andOpt).append(EXISTS).append(PARENTHESES_START).append(subQuery).append(PARENTHESES_END);
         return this;
     }
 

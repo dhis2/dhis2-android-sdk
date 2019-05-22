@@ -42,15 +42,15 @@ public final class EnrollmentFields {
     static final String CREATED = "created";
     static final String LAST_UPDATED = "lastUpdated";
     static final String ORGANISATION_UNIT = "orgUnit";
-    static final String PROGRAM = "program";
-    static final String ENROLLMENT_DATE = "enrollmentDate";
+    public static final String PROGRAM = "program";
+    public static final String ENROLLMENT_DATE = "enrollmentDate";
     static final String INCIDENT_DATE = "incidentDate";
     static final String FOLLOW_UP = "followup";
-    static final String STATUS = "status";
+    public static final String STATUS = "status";
     public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
     private static final String COORDINATE = "coordinate";
     static final String DELETED = "deleted";
-    private static final String EVENTS = "events";
+    static final String EVENTS = "events";
     static final String NOTES = "notes";
 
     private static FieldsHelper<Enrollment> fh = new FieldsHelper<>();

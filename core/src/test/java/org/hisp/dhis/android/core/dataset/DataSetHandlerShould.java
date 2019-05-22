@@ -25,18 +25,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
@@ -69,7 +68,7 @@ public class DataSetHandlerShould {
     private IdentifiableObjectStore<DataSet> dataSetStore;
 
     @Mock
-    private SyncHandlerWithTransformer<ObjectStyle> styleHandler;
+    private ObjectStyleHandler styleHandler;
 
     @Mock
     private SyncHandler<Section> sectionHandler;
@@ -242,7 +241,7 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet);
 
-        verify(styleHandler).handle(eq(dataSet.style()), any(ObjectStyleTransformer.class));
+        verify(styleHandler).handle(eq(dataSet.style()), anyString(), anyString());
     }
 
     @Test

@@ -28,11 +28,9 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
 
 import javax.inject.Inject;
@@ -42,12 +40,12 @@ import dagger.Reusable;
 @Reusable
 final class TrackedEntityTypeHandler extends IdentifiableSyncHandlerImpl<TrackedEntityType> {
 
-    private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
+    private final ObjectStyleHandler styleHandler;
     private final OrderedLinkSyncHandler<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute> attributeHandler;
 
     @Inject
     TrackedEntityTypeHandler(IdentifiableObjectStore<TrackedEntityType> trackedEntityTypeStore,
-                             SyncHandlerWithTransformer<ObjectStyle> styleHandler,
+                             ObjectStyleHandler styleHandler,
                              OrderedLinkSyncHandler<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute>
                                      attributeHandler) {
         super(trackedEntityTypeStore);
@@ -57,8 +55,8 @@ final class TrackedEntityTypeHandler extends IdentifiableSyncHandlerImpl<Tracked
 
     @Override
     protected void afterObjectHandled(TrackedEntityType trackedEntityType, HandleAction action) {
-        styleHandler.handle(trackedEntityType.style(), new ObjectStyleTransformer(trackedEntityType.uid(),
-                TrackedEntityTypeTableInfo.TABLE_INFO.name()));
+        styleHandler.handle(trackedEntityType.style(), trackedEntityType.uid(),
+                TrackedEntityTypeTableInfo.TABLE_INFO.name());
 
         attributeHandler.handleMany(trackedEntityType.uid(), trackedEntityType.trackedEntityTypeAttributes(),
                 (trackedEntityTypeAttribute, sortOrder) ->

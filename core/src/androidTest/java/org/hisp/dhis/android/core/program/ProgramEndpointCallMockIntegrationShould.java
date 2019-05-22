@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import androidx.test.runner.AndroidJUnit4;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,7 +42,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;
 import org.hisp.dhis.android.core.legendset.LegendTableInfo;
@@ -60,6 +58,8 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -109,7 +109,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+        dhis2MockServer = new Dhis2MockServer();
 
         D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
@@ -280,7 +280,6 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
                 TrackedEntityAttributeFields.OPTION_SET,
                 TrackedEntityAttributeFields.VALUE_TYPE,
                 TrackedEntityAttributeFields.EXPRESSION,
-                TrackedEntityAttributeFields.SEARCH_SCOPE,
                 TrackedEntityAttributeFields.PROGRAM_SCOPE,
                 TrackedEntityAttributeFields.DISPLAY_IN_LIST_NO_PROGRAM,
                 TrackedEntityAttributeFields.GENERATED,
@@ -309,7 +308,6 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
                 null,
                 "TEXT",
                 null,
-                "SEARCH_ORG_UNITS",
                 0, // false
                 1, // true
                 0, // false

@@ -1,9 +1,11 @@
 package org.hisp.dhis.android.core.sms.domain.repository;
 
 import java.util.Collection;
+import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 public interface SmsRepository {
 
@@ -11,26 +13,29 @@ public interface SmsRepository {
      * Sends given text by sms
      *
      * @param number                Recipient phone number
-     * @param value                 Text data to send
+     * @param smsParts              Text data to send, returned from generateSmsParts
      * @param sendingTimeoutSeconds After this time error will be returned.
      * @return Observable that emits current status of sending
      */
-    Observable<SmsSendingState> sendSms(String number, String value, int sendingTimeoutSeconds);
+    Observable<SmsSendingState> sendSms(String number, List<String> smsParts, int sendingTimeoutSeconds);
+
+    /**
+     * @param value text to send
+     * @return contents for multiple sms parts
+     */
+    Single<List<String>> generateSmsParts(String value);
 
     /**
      * Starts process of listening to result confirmation sms
      *
+     * @param searchReceived        should also search previously received messages
      * @param waitingTimeoutSeconds After this time error will be returned.
      * @return Completable that is completed when result sms is successfully received
      */
-    Completable listenToConfirmationSms(int waitingTimeoutSeconds, String requiredSender,
+    Completable listenToConfirmationSms(boolean searchReceived,
+                                        int waitingTimeoutSeconds,
+                                        String requiredSender,
                                         Collection<String> requiredStrings);
-
-    /**
-     * Sending status Observable may emit WAITING_SMS_COUNT_ACCEPT, as a protection for sending too
-     * many messages. Then this method has to be called to resume sms sending.
-     */
-    void acceptSMSCount(boolean accept);
 
     /**
      * Returned when sms sending error is returned from OS.
@@ -54,30 +59,13 @@ public interface SmsRepository {
     }
 
     /**
-     * Returned when not accepted SMS count
-     */
-    class SMSCountException extends Exception {
-        private final int count;
-
-        public SMSCountException(int count) {
-            this.count = count;
-        }
-
-        public int getCount() {
-            return count;
-        }
-    }
-
-    /**
      * Shows the current status of sending task.
      */
     class SmsSendingState {
-        private final State state;
         private final int sent;
         private final int total;
 
-        public SmsSendingState(State state, int sent, int total) {
-            this.state = state;
+        public SmsSendingState(int sent, int total) {
             this.sent = sent;
             this.total = total;
         }
@@ -95,18 +83,5 @@ public interface SmsRepository {
         public int getTotal() {
             return total;
         }
-
-        /**
-         * @return Current sending state enum
-         */
-        public State getState() {
-            return state;
-        }
-    }
-
-    enum State {
-        SENDING,
-        WAITING_SMS_COUNT_ACCEPT,
-        ALL_SENT
     }
 }

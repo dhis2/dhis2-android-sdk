@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.common.CommonPackageDIModule;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.constant.ConstantPackageDIModule;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
+import org.hisp.dhis.android.core.dataapproval.DataApprovalPackageDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementPackageDIModule;
 import org.hisp.dhis.android.core.dataset.DataSet;
@@ -48,6 +49,8 @@ import org.hisp.dhis.android.core.datavalue.DataValuePackageDIModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentPackageDIModule;
 import org.hisp.dhis.android.core.event.EventPackageDIModule;
+import org.hisp.dhis.android.core.event.EventPostCall;
+import org.hisp.dhis.android.core.imports.ImportPackageDIModule;
 import org.hisp.dhis.android.core.indicator.IndicatorPackageDIModule;
 import org.hisp.dhis.android.core.legendset.LegendPackageDIModule;
 import org.hisp.dhis.android.core.maintenance.MaintenancePackageDIModule;
@@ -89,9 +92,11 @@ import dagger.Component;
         ConstantPackageDIModule.class,
         DataElementPackageDIModule.class,
         DataSetPackageDIModule.class,
+        DataApprovalPackageDIModule.class,
         DataValuePackageDIModule.class,
         EnrollmentPackageDIModule.class,
         EventPackageDIModule.class,
+        ImportPackageDIModule.class,
         IndicatorPackageDIModule.class,
         LegendPackageDIModule.class,
         MaintenancePackageDIModule.class,
@@ -131,6 +136,8 @@ public interface D2DIComponent {
     @VisibleForTesting
     TrackedEntityInstancePostCall trackedEntityInstancePostCall();
     @VisibleForTesting
+    EventPostCall eventPostCall();
+    @VisibleForTesting
     IdentifiableObjectStore<CategoryOption> categoryOptionStore();
 
     @Component.Builder
@@ -146,9 +153,11 @@ public interface D2DIComponent {
         Builder constantPackageDIModule(ConstantPackageDIModule constantPackageDIModule);
         Builder dataElementPackageDIModule(DataElementPackageDIModule dataElementPackageDIModule);
         Builder dataSetPackageDIModule(DataSetPackageDIModule dataSetPackageDIModule);
+        Builder dataApprovalPackageDIModule(DataApprovalPackageDIModule dataApprovalPackageDIModule);
         Builder dataValuePackageDIModule(DataValuePackageDIModule dataValuePackageDIModule);
         Builder enrollmentPackageDIModule(EnrollmentPackageDIModule enrollmentPackageDIModule);
         Builder eventPackageDIModule(EventPackageDIModule eventPackageDIModule);
+        Builder importPackageDIModule(ImportPackageDIModule importPackageDIModule);
         Builder indicatorPackageDIModule(IndicatorPackageDIModule indicatorPackageDIModule);
         Builder legendPackageDIModule(LegendPackageDIModule legendPackageDIModule);
         Builder maintenancePackageDIModule(MaintenancePackageDIModule maintenancePackageDIModule);

@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.option;
 
 import android.database.Cursor;
-import androidx.test.runner.AndroidJUnit4;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,7 +39,6 @@ import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleanerImpl;
 import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
@@ -54,6 +52,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -69,7 +69,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+        dhis2MockServer = new Dhis2MockServer();
         dhis2MockServer.enqueueMockResponse("option/option_sets.json");
 
         // ToDo: consider moving this out
@@ -83,7 +83,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
 
         optionSetCall = getD2DIComponent(d2).optionSetCallFactory().create(uids);
 
-        d2CallExecutor = new D2CallExecutor(databaseAdapter());
+        d2CallExecutor = D2CallExecutor.create(databaseAdapter());
 
     }
 
@@ -109,6 +109,16 @@ public class OptionSetCallShould extends AbsStoreTestCase {
                         "2015-08-06T14:23:38.789", // lastUpdated
                         1, // version
                         "TEXT" // valueType
+                ).hasRow(
+                        2L, // id
+                        "TQ2lai3OfVG", // uid
+                        null, // code
+                        "One option", // name
+                        "One option", // displayName
+                        "2014-06-22T10:59:26.564", // created
+                        "2015-08-06T14:23:38.789", // lastUpdated
+                        2, // version
+                        "NUMBER" // valueType
                 ).isExhausted();
 
         assertThatCursor(optionCursor)
@@ -122,10 +132,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
                         "2014-08-18T12:39:16.000", // lastUpdated
                         1, // sortOrder
                         "VQ2lai3OfVG"  // optionSet
-                );
-
-        assertThatCursor(optionCursor)
-                .hasRow(
+                ).hasRow(
                         2L, // id
                         "egT1YqFWsVk", // uid
                         "15-19 years", // code
@@ -135,6 +142,16 @@ public class OptionSetCallShould extends AbsStoreTestCase {
                         "2014-08-18T12:39:16.000", // lastUpdated
                         2, // sortOrder
                         "VQ2lai3OfVG"  // optionSet
+                ).hasRow(
+                        4L, // id
+                        "Z1ILwhy5VDY", // uid
+                        "First option", // code
+                        "First option", // name
+                        "First option", // displayName
+                        "2014-08-18T12:39:16.000", // created
+                        "2014-08-18T12:39:16.000", // lastUpdated
+                        1, // sortOrder
+                        "TQ2lai3OfVG"  // optionSet
                 ).isExhausted();
 
     }
@@ -143,7 +160,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
     public void return_option_set_after_call() throws Exception {
         List<OptionSet> optionSetList = executeOptionSetCall();
 
-        assertThat(optionSetList.size()).isEqualTo(1);
+        assertThat(optionSetList.size()).isEqualTo(2);
 
         OptionSet optionSet = optionSetList.get(0);
 

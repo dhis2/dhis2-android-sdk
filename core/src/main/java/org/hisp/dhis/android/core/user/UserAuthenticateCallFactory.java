@@ -28,13 +28,10 @@
 
 package org.hisp.dhis.android.core.user;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIUrlProvider;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -51,6 +48,7 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 import retrofit2.Call;
 
@@ -142,7 +140,7 @@ final class UserAuthenticateCallFactory {
                     username, password);
             authenticatedUserStore.updateOrInsertWhere(authenticatedUserToStore);
 
-            new D2CallExecutor(databaseAdapter).executeD2Call(systemInfoRepository.download());
+            systemInfoRepository.download().blockingAwait();
 
             handleUser(authenticatedUser);
             transaction.setSuccessful();

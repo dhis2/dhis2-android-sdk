@@ -8,8 +8,6 @@ import java.util.List;
 
 import io.reactivex.Single;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class WebApiRepositoryImpl implements WebApiRepository {
@@ -52,36 +50,29 @@ public class WebApiRepositoryImpl implements WebApiRepository {
         return new Metadata.ID(id);
     }
 
-    private Call<MetadataResponseModel> metadataCall(final GetMetadataIdsConfig config) {
-        ConfigWrapper c = new ConfigWrapper(config);
+    private Call<MetadataResponseModel> metadataCall(final GetMetadataIdsConfig c) {
         return apiService.getMetadataIds(
-                c.dataElements(),
-                c.categoryOptionCombos(),
-                c.organisationUnits(),
-                c.users(),
-                c.trackedEntityTypes(),
-                c.trackedEntityAttributes(),
-                c.programs()
+                val(c.dataElements),
+                val(c.categoryOptionCombos),
+                val(c.organisationUnits),
+                val(c.users),
+                val(c.trackedEntityTypes),
+                val(c.trackedEntityAttributes),
+                val(c.programs)
         );
     }
 
-    private <T> Single<T> translateCallToSingle(Call<T> call) {
-        return Single.create(emitter ->
-                call.enqueue(new Callback<T>() {
-                    @Override
-                    public void onResponse(Call<T> call, Response<T> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            emitter.onSuccess(response.body());
-                        } else {
-                            emitter.onError(new HttpException(response.code()));
-                        }
-                    }
+    private String val(boolean enable) {
+        return enable ? ApiService.GET_IDS : null;
+    }
 
-                    @Override
-                    public void onFailure(Call<T> call, Throwable t) {
-                        emitter.onError(t);
-                    }
-                })
-        );
+    private <T> Single<T> translateCallToSingle(Call<T> call) {
+        return Single.fromCallable(call::execute).flatMap(response -> {
+            if (response.isSuccessful() && response.body() != null) {
+                return Single.just(response.body());
+            } else {
+                return Single.error(new HttpException(response.code()));
+            }
+        });
     }
 }

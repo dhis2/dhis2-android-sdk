@@ -28,13 +28,11 @@
 
 package org.hisp.dhis.android.core.sms;
 
-import org.hisp.dhis.android.core.sms.domain.interactor.InitCase;
-import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
+import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @RunWith(JUnit4.class)
@@ -43,19 +41,16 @@ public class InitTest {
     @Test
     public void allData() {
         String testGateway = "testGateway";
-        String testConfirmationNumber = "testConfirmationNumber";
         TestRepositories.TestLocalDbRepository testLocalDbRepository = new TestRepositories.TestLocalDbRepository();
         TestRepositories.TestWebApiRepository testWebApiRepository = new TestRepositories.TestWebApiRepository();
-        WebApiRepository.GetMetadataIdsConfig config = new WebApiRepository.GetMetadataIdsConfig();
 
-        new InitCase(testWebApiRepository, testLocalDbRepository)
-                .initSMSModule(testGateway, testConfirmationNumber, config)
+        new ConfigCase(testWebApiRepository, testLocalDbRepository)
+                .setGatewayNumber(testGateway)
                 .test()
                 .awaitDone(3, TimeUnit.SECONDS)
                 .assertNoErrors();
 
         testLocalDbRepository.getGatewayNumber().test().assertNoErrors().assertValue(testGateway);
-        testLocalDbRepository.getConfirmationSenderNumber().test().assertNoErrors().assertValue(testConfirmationNumber);
     }
 
     @Test
@@ -63,27 +58,10 @@ public class InitTest {
         TestRepositories.TestLocalDbRepository testLocalDbRepository = new TestRepositories.TestLocalDbRepository();
         TestRepositories.TestWebApiRepository testWebApiRepository = new TestRepositories.TestWebApiRepository();
 
-        new InitCase(testWebApiRepository, testLocalDbRepository)
-                .initSMSModule(null, null, null)
+        new ConfigCase(testWebApiRepository, testLocalDbRepository)
+                .setGatewayNumber(null)
                 .test()
                 .awaitDone(3, TimeUnit.SECONDS)
                 .assertError(IllegalArgumentException.class);
-    }
-
-    @Test
-    public void onlyGateway() {
-        String testGateway = "testGateway";
-        TestRepositories.TestLocalDbRepository testLocalDbRepository = new TestRepositories.TestLocalDbRepository();
-        TestRepositories.TestWebApiRepository testWebApiRepository = new TestRepositories.TestWebApiRepository();
-        WebApiRepository.GetMetadataIdsConfig config = new WebApiRepository.GetMetadataIdsConfig();
-
-        new InitCase(testWebApiRepository, testLocalDbRepository)
-                .initSMSModule(testGateway, null, config)
-                .test()
-                .awaitDone(3, TimeUnit.SECONDS)
-                .assertNoErrors();
-
-        testLocalDbRepository.getGatewayNumber().test().assertNoErrors().assertValue(testGateway);
-        testLocalDbRepository.getConfirmationSenderNumber().test().assertError(Objects::nonNull);
     }
 }

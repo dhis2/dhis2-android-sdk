@@ -87,24 +87,26 @@ public final class ForeignKeyCleanerImpl implements ForeignKeyCleaner {
         ForeignKeyViolation foreignKeyViolation =
                 getForeignKeyViolation(foreignKeyIdNumber, fromTable, toTable, rowId);
 
-        foreignKeyViolationStore.insert(foreignKeyViolation);
+        if (foreignKeyViolation != null) {
+            foreignKeyViolationStore.insert(foreignKeyViolation);
 
-        List<String> argumentValues = new ArrayList<>();
-        argumentValues.add(rowId);
-        String[] argumentValuesArray = argumentValues.toArray(new String[argumentValues.size()]);
-        String deleteClause = "ROWID = ?;";
-        int rowsAffected = databaseAdapter.delete(fromTable, deleteClause, argumentValuesArray);
-        if (rowsAffected != 0) {
-            String msg = " was not persisted on " + fromTable +
-                    " table to avoid Foreign Key constraint error. Target not found on "
-                    + toTable + " table. " + foreignKeyViolation.toString();
-            String warningMsg;
-            if (foreignKeyViolation.fromObjectUid() == null) {
-                warningMsg = "An object" + msg;
-            } else {
-                warningMsg = "The object " + foreignKeyViolation.fromObjectUid() + msg;
+            List<String> argumentValues = new ArrayList<>();
+            argumentValues.add(rowId);
+            String[] argumentValuesArray = argumentValues.toArray(new String[argumentValues.size()]);
+            String deleteClause = "ROWID = ?;";
+            int rowsAffected = databaseAdapter.delete(fromTable, deleteClause, argumentValuesArray);
+            if (rowsAffected != 0) {
+                String msg = " was not persisted on " + fromTable +
+                        " table to avoid Foreign Key constraint error. Target not found on "
+                        + toTable + " table. " + foreignKeyViolation.toString();
+                String warningMsg;
+                if (foreignKeyViolation.fromObjectUid() == null) {
+                    warningMsg = "An object" + msg;
+                } else {
+                    warningMsg = "The object " + foreignKeyViolation.fromObjectUid() + msg;
+                }
+                Log.w(this.getClass().getSimpleName(), warningMsg);
             }
-            Log.w(this.getClass().getSimpleName(), warningMsg);
         }
     }
 
@@ -134,13 +136,12 @@ public final class ForeignKeyCleanerImpl implements ForeignKeyCleaner {
 
     private ForeignKeyViolation buildViolation(Cursor listCursor, String fromTable, String toTable, String rowId) {
 
-        ForeignKeyViolation.Builder foreignKeyViolationBuilder = ForeignKeyViolation.builder();
+        ForeignKeyViolation foreignKeyViolation = null;
 
         String fromColumn = listCursor.getString(3);
         String selectStatement = "SELECT * FROM " + fromTable + " WHERE ROWID = " + rowId + ";";
-        Cursor objectCursor = databaseAdapter.query(selectStatement);
 
-        try {
+        try (Cursor objectCursor = databaseAdapter.query(selectStatement)) {
             if (objectCursor.getCount() > 0) {
                 objectCursor.moveToFirst();
 
@@ -157,7 +158,7 @@ public final class ForeignKeyCleanerImpl implements ForeignKeyCleaner {
                             getColumnValueAsString(objectCursor, columnName));
                 }
 
-                foreignKeyViolationBuilder
+                foreignKeyViolation = ForeignKeyViolation.builder()
                         .fromTable(fromTable)
                         .toTable(toTable)
                         .fromColumn(fromColumn)
@@ -166,14 +167,12 @@ public final class ForeignKeyCleanerImpl implements ForeignKeyCleaner {
                         .fromObjectRow(Utils.commaAndSpaceSeparatedArrayValues(
                                 columnAndValues.toArray(new String[objectCursor.getColumnCount()])))
                         .fromObjectUid(uid)
-                        .created(new Date());
-
+                        .created(new Date())
+                        .build();
             }
-        } finally {
-            objectCursor.close();
         }
 
-        return foreignKeyViolationBuilder.build();
+        return foreignKeyViolation;
     }
 
     private String getColumnValueAsString(Cursor cursor, String columnName) {

@@ -28,69 +28,56 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
+import io.reactivex.Single;
 
 @Reusable
 public final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory {
 
-    private final APICallExecutor apiCallExecutor;
-    private final D2CallExecutor d2CallExecutor;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final TrackedEntityInstanceService service;
     private final TrackedEntityInstanceRelationshipPersistenceCallFactory persistenceCallFactory;
 
     @Inject
     TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory(
-            @NonNull APICallExecutor apiCallExecutor,
-            @NonNull D2CallExecutor d2CallExecutor,
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
             @NonNull TrackedEntityInstanceService service,
             @NonNull TrackedEntityInstanceRelationshipPersistenceCallFactory persistenceCallFactory) {
-        this.apiCallExecutor = apiCallExecutor;
-        this.d2CallExecutor = d2CallExecutor;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.service = service;
         this.persistenceCallFactory = persistenceCallFactory;
     }
 
-    public Callable<List<TrackedEntityInstance>> getCall() {
-        return this::downloadAndPersist;
-    }
+    Single<List<TrackedEntityInstance>> downloadAndPersist() {
+        return Single.just(Collections.emptyList()).flatMap(emptyMap -> {
 
-    @SuppressWarnings("PMD.EmptyCatchBlock")
-    private List<TrackedEntityInstance> downloadAndPersist() throws D2Error {
-        List<String> relationships = trackedEntityInstanceStore.queryMissingRelationshipsUids();
+            List<String> relationships = trackedEntityInstanceStore.queryMissingRelationshipsUids();
 
-        List<TrackedEntityInstance> teis = new ArrayList<>();
-        if (!relationships.isEmpty()) {
-
-            for (String uid : relationships) {
-                try {
-                    retrofit2.Call<Payload<TrackedEntityInstance>> teiCall =
-                            service.getTrackedEntityInstance(uid, TrackedEntityInstanceFields.allFields, true);
-
-                    teis.addAll(apiCallExecutor.executePayloadCall(teiCall));
-                } catch (D2Error ignored) {
-                    // Ignore
+            if (relationships.isEmpty()) {
+                return Single.just(Collections.emptyList());
+            } else {
+                List<Single<Payload<TrackedEntityInstance>>> singles = new ArrayList<>();
+                for (String uid : relationships) {
+                    singles.add(service.getTrackedEntityInstance(uid, TrackedEntityInstanceFields.asRelationshipFields,
+                            true, true));
                 }
+
+                return Single.merge(singles)
+                        .collect((Callable<List<TrackedEntityInstance>>) ArrayList::new,
+                                (teis, payload) -> teis.addAll(payload.items()))
+                        .doAfterSuccess(teis -> persistenceCallFactory.getCall(teis).call());
             }
+        });
 
-            d2CallExecutor.executeD2Call(persistenceCallFactory.getCall(teis));
-        }
-
-        return teis;
     }
 }

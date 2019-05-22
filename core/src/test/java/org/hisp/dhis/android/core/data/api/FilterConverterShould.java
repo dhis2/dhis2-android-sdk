@@ -38,7 +38,6 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import retrofit2.Converter;
-import retrofit2.Retrofit;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
@@ -62,7 +61,7 @@ public class FilterConverterShould {
 
     @Test
     public void returns_correct_path_when_create_a_retrofit_request_using_filters() throws IOException, InterruptedException {
-        ArrayList<String> values = new ArrayList(2);
+        ArrayList<String> values = new ArrayList<>(2);
         values.add("uid1");
         values.add("uid2");
         MockWebServer server = new MockWebServer();
@@ -70,12 +69,8 @@ public class FilterConverterShould {
 
         server.enqueue(new MockResponse());
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(server.url("/"))
-                .addConverterFactory(FilterConverterFactory.create())
-                .build();
+        TestService service = testService(server);
 
-        TestService service = retrofit.create(TestService.class);
         service.test(
                 InFilter.create(Field.create("id"), values),
                 SingleValueFilter.gt(Field.create("lastUpdated"), "updatedDate")
@@ -89,7 +84,7 @@ public class FilterConverterShould {
 
     @Test
     public void returns_correct_path_when_create_a_retrofit_request_using_filters_and_single_value() throws IOException, InterruptedException {
-        ArrayList<String> values = new ArrayList(2);
+        ArrayList<String> values = new ArrayList<>(2);
         values.add("uid1");
 
         MockWebServer server = new MockWebServer();
@@ -97,12 +92,8 @@ public class FilterConverterShould {
 
         server.enqueue(new MockResponse());
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(server.url("/"))
-                .addConverterFactory(FilterConverterFactory.create())
-                .build();
+        TestService service = testService(server);
 
-        TestService service = retrofit.create(TestService.class);
         service.test(
                 InFilter.create(Field.create("id"), values),
                 SingleValueFilter.gt(Field.create("lastUpdated"), "updatedDate")
@@ -116,7 +107,7 @@ public class FilterConverterShould {
 
     @Test
     public void returns_correct_path_when_create_a_retrofit_request_using_filters_and_values() throws IOException, InterruptedException {
-        ArrayList<String> values = new ArrayList(2);
+        ArrayList<String> values = new ArrayList<>(2);
         values.add("uid1");
         values.add("uid2");
         MockWebServer server = new MockWebServer();
@@ -124,13 +115,8 @@ public class FilterConverterShould {
 
         server.enqueue(new MockResponse());
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(server.url("/"))
-                .addConverterFactory(FieldsConverterFactory.create())
-                .addConverterFactory(FilterConverterFactory.create())
-                .build();
+        MixedTestService service = mixedTestService(server);
 
-        MixedTestService service = retrofit.create(MixedTestService.class);
         service.test(
                 Fields.builder().fields(
                         Field.create("id"), Field.create("code"),
@@ -149,7 +135,7 @@ public class FilterConverterShould {
 
     @Test
     public void returns_correct_path_when_create_a_retrofit_request_ignoring_null_filter() throws IOException, InterruptedException {
-        ArrayList<String> values = new ArrayList(2);
+        ArrayList<String> values = new ArrayList<>(2);
         values.add("uid1");
         values.add("uid2");
         MockWebServer server = new MockWebServer();
@@ -157,12 +143,8 @@ public class FilterConverterShould {
 
         server.enqueue(new MockResponse());
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(server.url("/"))
-                .addConverterFactory(FilterConverterFactory.create())
-                .build();
+        TestService service = testService(server);
 
-        TestService service = retrofit.create(TestService.class);
         service.test(
                 InFilter.create(Field.create("id"), values),
                 SingleValueFilter.gt(Field.create("lastUpdated"), null)
@@ -176,7 +158,7 @@ public class FilterConverterShould {
 
     @Test
     public void returns_correct_path_when_create_a_retrofit_request_ignoring_empty_string_filter() throws IOException, InterruptedException {
-        ArrayList<String> values = new ArrayList(2);
+        ArrayList<String> values = new ArrayList<>(2);
         values.add("uid1");
         values.add("uid2");
         MockWebServer server = new MockWebServer();
@@ -184,12 +166,8 @@ public class FilterConverterShould {
 
         server.enqueue(new MockResponse());
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(server.url("/"))
-                .addConverterFactory(FilterConverterFactory.create())
-                .build();
+        TestService service = testService(server);
 
-        TestService service = retrofit.create(TestService.class);
         service.test(
                 InFilter.create(Field.create("id"), values),
                 SingleValueFilter.gt(Field.create("lastUpdated"), "")
@@ -203,18 +181,14 @@ public class FilterConverterShould {
 
     @Test
     public void returns_correct_path_when_create_a_retrofit_request_with_in_filter_and_empty_values() throws IOException, InterruptedException {
-        ArrayList<String> values = new ArrayList(0);
+        ArrayList<String> values = new ArrayList<>(0);
         MockWebServer server = new MockWebServer();
         server.start();
 
         server.enqueue(new MockResponse());
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(server.url("/"))
-                .addConverterFactory(FilterConverterFactory.create())
-                .build();
+        TestService service = testService(server);
 
-        TestService service = retrofit.create(TestService.class);
         service.test(
                 InFilter.create(Field.create("id"), values),
                 SingleValueFilter.gt(Field.create("lastUpdated"), "")
@@ -224,6 +198,14 @@ public class FilterConverterShould {
 
         assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[]");
         server.shutdown();
+    }
+
+    private TestService testService(MockWebServer mockWebServer) {
+        return RetrofitFactory.getRetrofit(mockWebServer).create(TestService.class);
+    }
+
+    private MixedTestService mixedTestService(MockWebServer mockWebServer) {
+        return RetrofitFactory.getRetrofit(mockWebServer).create(MixedTestService.class);
     }
 
     //TODO: test Filter for null input and empty string.

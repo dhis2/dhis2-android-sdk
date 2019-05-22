@@ -25,21 +25,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.Transformer;
+import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.period.FeatureType;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -49,29 +56,37 @@ import dagger.Reusable;
 
 @Reusable
 public final class TrackedEntityInstanceCollectionRepository
-        extends ReadOnlyWithUidCollectionRepositoryImpl<TrackedEntityInstance,
-        TrackedEntityInstanceCollectionRepository>
-        implements ReadOnlyWithUploadWithUidCollectionRepository<TrackedEntityInstance> {
+        extends ReadWriteWithUidCollectionRepositoryImpl
+        <TrackedEntityInstance, TrackedEntityInstanceCreateProjection, TrackedEntityInstanceCollectionRepository>
+        implements ReadWriteWithUploadWithUidCollectionRepository
+        <TrackedEntityInstance, TrackedEntityInstanceCreateProjection> {
 
     private final TrackedEntityInstancePostCall postCall;
+    private final TrackedEntityInstanceStore store;
 
     @Inject
     TrackedEntityInstanceCollectionRepository(
             final TrackedEntityInstanceStore store,
             final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
             final RepositoryScope scope,
+            final Transformer<TrackedEntityInstanceCreateProjection, TrackedEntityInstance> transformer,
             final TrackedEntityInstancePostCall postCall) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new TrackedEntityInstanceCollectionRepository(store, childrenAppenders, s, postCall)));
+        super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope, s ->
+                new TrackedEntityInstanceCollectionRepository(store, childrenAppenders, s, transformer, postCall)));
         this.postCall = postCall;
+        this.store = store;
     }
-
 
     @Override
     public Callable<WebResponse> upload() {
-        return postCall;
+        return () -> postCall.call(byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).getWithoutChildren());
     }
 
+    @Override
+    public TrackedEntityInstanceObjectRepository uid(String uid) {
+        RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
+        return new TrackedEntityInstanceObjectRepository(store, uid, childrenAppenders, updatedScope);
+    }
 
     public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byUid() {
         return cf.string(TrackedEntityInstanceTableInfo.Columns.UID);
@@ -113,11 +128,23 @@ public final class TrackedEntityInstanceCollectionRepository
         return cf.enumC(BaseDataModel.Columns.STATE);
     }
 
+    public TrackedEntityInstanceCollectionRepository byProgramUids(List<String> programUids) {
+        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).inLinkTable(
+                EnrollmentTableInfo.TABLE_INFO.name(),
+                EnrollmentFields.TRACKED_ENTITY_INSTANCE,
+                EnrollmentFields.PROGRAM,
+                programUids);
+    }
+
     public TrackedEntityInstanceCollectionRepository withEnrollments() {
         return cf.withChild(TrackedEntityInstanceFields.ENROLLMENTS);
     }
 
     public TrackedEntityInstanceCollectionRepository withTrackedEntityAttributeValues() {
         return cf.withChild(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES);
+    }
+
+    public TrackedEntityInstanceCollectionRepository withRelationships() {
+        return cf.withChild(TrackedEntityInstanceFields.RELATIONSHIPS);
     }
 }

@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModuleDownloa
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramModuleDownloader;
 import org.hisp.dhis.android.core.settings.SystemSettingModuleDownloader;
+import org.hisp.dhis.android.core.sms.SmsModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserModuleDownloader;
@@ -65,6 +66,7 @@ public class MetadataCall implements Callable<Unit> {
     private final DataSetModuleDownloader dataSetDownloader;
     private final ConstantModuleDownloader constantModuleDownloader;
     private final ForeignKeyCleaner foreignKeyCleaner;
+    private final SmsModule smsModule;
 
     @Inject
     public MetadataCall(@NonNull D2CallExecutor d2CallExecutor,
@@ -76,7 +78,8 @@ public class MetadataCall implements Callable<Unit> {
                         @NonNull OrganisationUnitModuleDownloader organisationUnitDownloadModule,
                         @NonNull DataSetModuleDownloader dataSetDownloader,
                         @NonNull ConstantModuleDownloader constantModuleDownloader,
-                        @NonNull ForeignKeyCleaner foreignKeyCleaner) {
+                        @NonNull ForeignKeyCleaner foreignKeyCleaner,
+                        @NonNull SmsModule smsModule) {
         this.d2CallExecutor = d2CallExecutor;
         this.systemInfoDownloader = systemInfoDownloader;
         this.systemSettingDownloader = systemSettingDownloader;
@@ -87,13 +90,14 @@ public class MetadataCall implements Callable<Unit> {
         this.dataSetDownloader = dataSetDownloader;
         this.constantModuleDownloader = constantModuleDownloader;
         this.foreignKeyCleaner = foreignKeyCleaner;
+        this.smsModule = smsModule;
     }
 
     @Override
     public Unit call() throws Exception {
 
         return d2CallExecutor.executeD2CallTransactionally(() -> {
-            systemInfoDownloader.downloadMetadata().call();
+            systemInfoDownloader.downloadMetadata().blockingAwait();
 
             systemSettingDownloader.downloadMetadata().call();
 
@@ -108,6 +112,8 @@ public class MetadataCall implements Callable<Unit> {
             organisationUnitDownloadModule.downloadMetadata(user, programs, dataSets).call();
 
             constantModuleDownloader.downloadMetadata().call();
+
+            smsModule.configCase().refreshMetadataIdsCallable().call();
 
             foreignKeyCleaner.cleanForeignKeyErrors();
 

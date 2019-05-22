@@ -29,38 +29,17 @@
 package org.hisp.dhis.android.core.d2manager;
 
 import android.database.Cursor;
-import android.os.Build;
-import android.util.Log;
 
-import org.hisp.dhis.android.BuildConfig;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.configuration.Configuration;
 import org.hisp.dhis.android.core.configuration.ConfigurationManagerFactory;
 import org.hisp.dhis.android.core.configuration.ConfigurationTableInfo;
-import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
 
-import java.security.KeyStore;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
-
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
-import okhttp3.CipherSuite;
-import okhttp3.ConnectionSpec;
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.TlsVersion;
 
 public final class D2Manager {
 
@@ -68,9 +47,9 @@ public final class D2Manager {
     private final D2Configuration d2Configuration;
     final DatabaseAdapter databaseAdapter;
 
-    D2Manager(@Nullable D2Configuration d2Configuration) {
+    public D2Manager(@Nullable D2Configuration d2Configuration) {
         this.d2Configuration = d2Configuration;
-        this.databaseAdapter = databaseAdapter();
+        this.databaseAdapter = newDatabaseAdapter();
     }
 
     public boolean isD2Configured() {
@@ -92,7 +71,7 @@ public final class D2Manager {
         d2 = new D2.Builder()
                 .configuration(configuration)
                 .databaseAdapter(databaseAdapter)
-                .okHttpClient(okHttpClient())
+                .okHttpClient(OkHttpClientFactory.okHttpClient(d2Configuration, databaseAdapter))
                 .context(d2Configuration.context())
                 .build();
     }
@@ -105,79 +84,8 @@ public final class D2Manager {
         return d2;
     }
 
-    private DatabaseAdapter databaseAdapter() {
+    private DatabaseAdapter newDatabaseAdapter() {
         DbOpenHelper dbOpenHelper = new DbOpenHelper(d2Configuration.context(), d2Configuration.databaseName());
         return new SqLiteDatabaseAdapter(dbOpenHelper);
-    }
-
-    private OkHttpClient okHttpClient() {
-
-        String userAgent = String.format("%s/%s/%s/Android_%s",
-                d2Configuration.appName(),
-                BuildConfig.VERSION_NAME, //SDK version
-                d2Configuration.appVersion(),
-                Build.VERSION.SDK_INT //Android Version
-        );
-
-        OkHttpClient.Builder client = new OkHttpClient.Builder()
-                .addInterceptor(BasicAuthenticatorFactory.create(databaseAdapter))
-                .addInterceptor(chain -> {
-                    Request originalRequest = chain.request();
-                    Request withUserAgent = originalRequest.newBuilder()
-                            .header("User-Agent", userAgent)
-                            .build();
-                    return chain.proceed(withUserAgent);
-                })
-
-                .readTimeout(d2Configuration.readTimeoutInSeconds(), TimeUnit.SECONDS)
-                .connectTimeout(d2Configuration.connectTimeoutInSeconds(), TimeUnit.SECONDS)
-                .writeTimeout(d2Configuration.writeTimeoutInSeconds(), TimeUnit.SECONDS);
-
-        for (Interceptor interceptor : d2Configuration.networkInterceptors()) {
-            client.addNetworkInterceptor(interceptor);
-        }
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            try {
-
-                SSLContext sc = SSLContext.getInstance("TLS" /*"TLSv1.2"*/);
-                sc.init(null, null, null);
-
-                TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(
-                        TrustManagerFactory.getDefaultAlgorithm());
-                trustManagerFactory.init((KeyStore) null);
-                TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
-
-                if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
-                    throw new IllegalStateException("Unexpected default trust managers:"
-                            + Arrays.toString(trustManagers));
-                }
-
-                X509TrustManager trustManager = (X509TrustManager) trustManagers[0];
-                client.sslSocketFactory(new TLSSocketFactory(sc.getSocketFactory()), trustManager);
-
-                ConnectionSpec cs = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
-                        .tlsVersions(TlsVersion.TLS_1_0, TlsVersion.TLS_1_1, TlsVersion.TLS_1_2)
-                        .cipherSuites(
-                                CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
-                                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
-                                CipherSuite.TLS_DHE_RSA_WITH_AES_128_GCM_SHA256)
-                        .build();
-
-                List<ConnectionSpec> specs = new ArrayList<>();
-                specs.add(cs);
-                specs.add(ConnectionSpec.COMPATIBLE_TLS);
-                specs.add(ConnectionSpec.CLEARTEXT);
-
-                client.connectionSpecs(specs);
-
-            } catch (RuntimeException e) {
-                throw e;
-            } catch (Exception e) {
-                Log.e(D2Manager.class.getSimpleName(), e.getMessage(), e);
-            }
-        }
-
-        return client.build();
     }
 }

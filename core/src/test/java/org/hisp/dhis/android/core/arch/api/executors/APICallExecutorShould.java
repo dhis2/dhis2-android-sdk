@@ -42,11 +42,15 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 public class APICallExecutorShould {
@@ -70,6 +74,8 @@ public class APICallExecutorShould {
     @Mock
     private IOException ioException;
 
+    private Response conflictResponse;
+
     private APICallExecutor apiCallExecutor;
 
     @Before
@@ -81,6 +87,9 @@ public class APICallExecutorShould {
         when(objectAPICall.execute()).thenReturn(Response.success(user));
         when(payloadAPICall.execute()).thenReturn(Response.success(payload));
         when(payload.items()).thenReturn(users);
+
+        conflictResponse = Response.error(409, ResponseBody.create(MediaType.get("application/text"),
+                "error_response"));
 
         apiCallExecutor = new APICallExecutorImpl(errorStore);
     }
@@ -109,8 +118,10 @@ public class APICallExecutorShould {
         try {
             apiCallExecutor.executeObjectCall(objectAPICall);
         } catch (D2Error d2Error) {
-            verify(errorStore).insert(d2Error);
+            // Empty block
         }
+        verify(errorStore).insert(any(D2Error.class));
+        verifyNoMoreInteractions(errorStore);
     }
 
     @Test
@@ -137,7 +148,35 @@ public class APICallExecutorShould {
         try {
             apiCallExecutor.executePayloadCall(payloadAPICall);
         } catch (D2Error d2Error) {
-            verify(errorStore).insert(d2Error);
+            // Empty block
         }
+        verify(errorStore).insert(any(D2Error.class));
+        verifyNoMoreInteractions(errorStore);
+    }
+
+    @Test
+    public void persist_thrown_d2_error_when_payload_call_is_conflict() throws IOException {
+        when(payloadAPICall.execute()).thenReturn(conflictResponse);
+
+        try {
+            apiCallExecutor.executePayloadCall(payloadAPICall);
+        } catch (D2Error d2Error) {
+            //Empty block
+        }
+        verify(errorStore).insert(any(D2Error.class));
+        verifyNoMoreInteractions(errorStore);
+    }
+
+    @Test
+    public void persist_thrown_d2_error_when_object_call_is_conflict() throws IOException {
+        when(objectAPICall.execute()).thenReturn(conflictResponse);
+
+        try {
+            apiCallExecutor.executeObjectCall(objectAPICall);
+        } catch (D2Error d2Error) {
+            //Empty block
+        }
+        verify(errorStore).insert(any(D2Error.class));
+        verifyNoMoreInteractions(errorStore);
     }
 }

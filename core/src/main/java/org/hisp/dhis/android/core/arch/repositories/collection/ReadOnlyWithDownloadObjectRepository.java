@@ -29,10 +29,9 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.Unit;
 
-import java.util.concurrent.Callable;
+import io.reactivex.Completable;
 
 public interface ReadOnlyWithDownloadObjectRepository<M extends Model> extends ReadOnlyObjectRepository<M> {
-    Callable<Unit> download();
+    Completable download();
 }

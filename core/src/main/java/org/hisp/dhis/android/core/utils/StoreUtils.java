@@ -175,8 +175,7 @@ public final class StoreUtils {
                 return State.SYNCED;
             }
             case WARNING: {
-                // TODO: Handle WARNING different? State.WARNING and then highligh what went wrong in the UI.
-                return State.SYNCED;
+                return State.WARNING;
             }
             default: {
                 throw new IllegalArgumentException("Unknown import status");

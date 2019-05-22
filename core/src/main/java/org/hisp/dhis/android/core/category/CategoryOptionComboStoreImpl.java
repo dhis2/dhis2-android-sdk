@@ -44,7 +44,7 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-final class CategoryOptionComboStoreImpl extends IdentifiableObjectStoreImpl<CategoryOptionCombo>
+public final class CategoryOptionComboStoreImpl extends IdentifiableObjectStoreImpl<CategoryOptionCombo>
         implements CategoryOptionComboStore {
 
     private CategoryOptionComboStoreImpl(DatabaseAdapter databaseAdapter,

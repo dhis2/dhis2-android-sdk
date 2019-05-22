@@ -78,11 +78,6 @@ public final class TrackedEntityAttributeCollectionRepository
         return cf.string(TrackedEntityAttributeFields.EXPRESSION);
     }
 
-    public EnumFilterConnector<TrackedEntityAttributeCollectionRepository,
-            TrackedEntityAttributeSearchScope> bySearchScope() {
-        return cf.enumC(TrackedEntityAttributeFields.SEARCH_SCOPE);
-    }
-
     public BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> byProgramScope() {
         return cf.bool(TrackedEntityAttributeFields.PROGRAM_SCOPE);
     }

@@ -28,7 +28,11 @@
 
 package org.hisp.dhis.android.core.period;
 
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -41,5 +45,12 @@ public final class PeriodEntityDIModule {
     @Reusable
     PeriodStore store(DatabaseAdapter databaseAdapter) {
         return PeriodStoreImpl.create(databaseAdapter);
+    }
+
+
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<Period>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

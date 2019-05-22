@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.repositories.scope;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +42,16 @@ public final class RepositoryScopeHelper {
         List<RepositoryScopeFilterItem> copiedItems = new ArrayList<>(scope.filters());
         copiedItems.add(item);
         return scope.toBuilder().filters(copiedItems).build();
+    }
+
+    public static RepositoryScope withUidFilterItem(RepositoryScope scope, String uid) {
+        RepositoryScopeFilterItem filterItem = RepositoryScopeFilterItem.builder()
+                .key(BaseIdentifiableObjectModel.Columns.UID)
+                .operator("=")
+                .value("'" + uid + "'")
+                .build();
+
+        return RepositoryScopeHelper.withFilterItem(scope, filterItem);
     }
 
     public static RepositoryScope withComplexFilterItem(RepositoryScope scope, RepositoryScopeComplexFilterItem item) {

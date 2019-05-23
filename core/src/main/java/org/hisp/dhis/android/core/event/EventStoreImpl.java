@@ -55,7 +55,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<Event> implements EventStore {
 
-    private static final String QUERY_SINGLE_EVENTS = "SELECT Event.* FROM Event WHERE Event.enrollment ISNULL";
+    private static final String QUERY_SINGLE_EVENTS = "SELECT Event.* FROM Event WHERE Event.enrollment IS NULL";
 
     private static final StatementBinder<Event> BINDER = (o, sqLiteStatement) -> {
         sqLiteBind(sqLiteStatement, 1, o.uid());

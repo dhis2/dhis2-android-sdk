@@ -25,9 +25,10 @@ public class SimpleEventConverter extends Converter<Event> {
     }
 
     @Override
-    public Single<? extends SMSSubmission> convert(@NonNull Event e, String user) {
+    public Single<? extends SMSSubmission> convert(@NonNull Event e, String user, int submissionId) {
         return Single.fromCallable(() -> {
             SimpleEventSMSSubmission subm = new SimpleEventSMSSubmission();
+            subm.setSubmissionID(submissionId);
             subm.setEventProgram(e.program());
             subm.setAttributeOptionCombo(e.attributeOptionCombo());
             subm.setEvent(e.uid());

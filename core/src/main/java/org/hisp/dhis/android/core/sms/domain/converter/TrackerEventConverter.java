@@ -27,9 +27,10 @@ public class TrackerEventConverter extends Converter<Event> {
     }
 
     @Override
-    public Single<? extends SMSSubmission> convert(@NonNull Event e, String user) {
+    public Single<? extends SMSSubmission> convert(@NonNull Event e, String user, int submissionId) {
         return Single.fromCallable(() -> {
             TrackerEventSMSSubmission subm = new TrackerEventSMSSubmission();
+            subm.setSubmissionID(submissionId);
             subm.setAttributeOptionCombo(e.attributeOptionCombo());
             subm.setEvent(e.uid());
             subm.setProgramStage(e.programStage());

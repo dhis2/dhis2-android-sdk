@@ -5,6 +5,8 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.smscompression.models.Metadata;
 
+import java.util.Collection;
+
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
@@ -45,4 +47,10 @@ public interface LocalDbRepository {
     Completable setModuleEnabled(boolean enabled);
 
     Single<Boolean> isModuleEnabled();
+
+    Single<Collection<Integer>> getOngoingSubmissionsIds();
+
+    Completable addOngoingSubmissionsId(Integer id);
+
+    Completable removeOngoingSubmissionsId(Integer id);
 }

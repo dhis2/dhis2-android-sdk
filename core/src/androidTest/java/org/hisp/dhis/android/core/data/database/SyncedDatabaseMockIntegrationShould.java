@@ -110,7 +110,7 @@ public abstract class SyncedDatabaseMockIntegrationShould {
     }
 
     private static void downloadEvents() throws Exception {
-        d2.eventModule().downloadSingleEvents(2, false).call();
+        d2.eventModule().downloadSingleEvents(2, false, false).call();
     }
 
     private static void downloadAggregatedData() {

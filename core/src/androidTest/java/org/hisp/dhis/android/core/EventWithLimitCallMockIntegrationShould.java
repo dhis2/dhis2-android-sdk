@@ -80,7 +80,7 @@ public class EventWithLimitCallMockIntegrationShould extends AbsStoreTestCase {
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("event/events_1.json");
 
-        d2.eventModule().downloadSingleEvents(eventLimitByOrgUnit, false).call();
+        d2.eventModule().downloadSingleEvents(eventLimitByOrgUnit, false, false).call();
 
         EventStore eventStore = EventStoreImpl.create(databaseAdapter());
 

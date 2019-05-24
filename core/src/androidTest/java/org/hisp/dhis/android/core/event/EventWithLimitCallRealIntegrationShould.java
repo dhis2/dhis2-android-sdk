@@ -56,7 +56,10 @@ public class EventWithLimitCallRealIntegrationShould extends AbsStoreTestCase {
 
         d2.syncMetaData().call();
 
-         d2.eventModule().downloadSingleEvents(20,  false).call();
-        assertThat(EventStoreImpl.create(databaseAdapter()).selectAll().size()).isEqualTo(20);
+        d2.eventModule().downloadSingleEvents(20,  false, false).call();
+
+        int count = d2.eventModule().events.count();
+
+        assertThat(count).isEqualTo(20);
     }
 }

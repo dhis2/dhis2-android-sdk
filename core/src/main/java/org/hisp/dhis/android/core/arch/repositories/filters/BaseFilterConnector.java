@@ -122,4 +122,13 @@ abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V>
     public final R notIn(V... values) {
         return notIn(Arrays.asList(values));
     }
+
+    public final R isNull() {
+        return newWithUnwrappedScope("", "IS NULL");
+    }
+
+    public final R isNotNull() {
+        return newWithUnwrappedScope("", "IS NOT NULL");
+    }
+
 }

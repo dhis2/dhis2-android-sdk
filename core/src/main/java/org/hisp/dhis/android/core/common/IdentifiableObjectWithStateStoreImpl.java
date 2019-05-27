@@ -57,11 +57,10 @@ public class IdentifiableObjectWithStateStoreImpl<M extends Model & ObjectWithUi
                                                 CursorModelFactory<M> modelFactory) {
         super(databaseAdapter, statements, builder, binder, modelFactory);
         this.tableName = builder.tableName;
+        String whereUid =  " WHERE " + UID + " =?;";
 
         String setState = "UPDATE " + tableName + " SET " +
-                STATE + " =?" +
-                " WHERE " +
-                UID + " =?;";
+                STATE + " =?" + whereUid;
         this.setStateStatement = databaseAdapter.compileStatement(setState);
 
         String setStateForUpdate = "UPDATE " + tableName + " SET " +
@@ -79,11 +78,11 @@ public class IdentifiableObjectWithStateStoreImpl<M extends Model & ObjectWithUi
         this.setStateForUpdateStatement = databaseAdapter.compileStatement(setStateForUpdate);
 
         String setStateForDelete = "UPDATE " + tableName + " SET " +
-                STATE + " = 'TO_DELETE' WHERE " + UID + " =?;";
+                STATE + " = 'TO_DELETE'" + whereUid;
         this.setStateForDeleteStatement = databaseAdapter.compileStatement(setStateForDelete);
 
-        this.selectStateQuery = "SELECT state FROM " + tableName + " WHERE " + UID + " =?;";
-        this.existsQuery = "SELECT 1 FROM " + tableName + " WHERE " + UID + " =?;";
+        this.selectStateQuery = "SELECT state FROM " + tableName + whereUid;
+        this.existsQuery = "SELECT 1 FROM " + tableName + whereUid;
 
     }
 

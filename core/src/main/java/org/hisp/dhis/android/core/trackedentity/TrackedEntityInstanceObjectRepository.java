@@ -64,7 +64,6 @@ final class TrackedEntityInstanceObjectRepository
 
     private TrackedEntityInstance.Builder updateBuilder() throws D2Error {
         TrackedEntityInstance trackedEntityInstance = getWithoutChildren();
-        Date updateDate = new Date();
         State state = trackedEntityInstance.state();
         if (state == State.RELATIONSHIP) {
             throw D2Error
@@ -74,6 +73,7 @@ final class TrackedEntityInstanceObjectRepository
                     .errorDescription("Relationships can't be updated")
                     .build();
         }
+        Date updateDate = new Date();
         state = state == State.TO_POST || state == State.TO_DELETE ? state : State.TO_UPDATE;
 
         return trackedEntityInstance.toBuilder()

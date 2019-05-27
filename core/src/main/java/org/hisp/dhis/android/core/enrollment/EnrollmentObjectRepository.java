@@ -48,7 +48,6 @@ final class EnrollmentObjectRepository
 
     private final DataStatePropagator dataStatePropagator;
     private Enrollment enrollment;
-    private State state;
 
     EnrollmentObjectRepository(final EnrollmentStore store,
                                final String uid,
@@ -87,7 +86,7 @@ final class EnrollmentObjectRepository
     private Enrollment.Builder updateBuilder() {
         enrollment = getWithoutChildren();
         Date updateDate = new Date();
-        state = enrollment.state();
+        State state = enrollment.state();
         if (state != State.TO_POST && state != State.TO_DELETE) {
             state = State.TO_UPDATE;
         }

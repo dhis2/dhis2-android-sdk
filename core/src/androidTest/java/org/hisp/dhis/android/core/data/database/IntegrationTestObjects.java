@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
-import org.junit.After;
 
 import java.io.IOException;
 import java.util.Date;
@@ -62,7 +61,7 @@ public class IntegrationTestObjects {
     public final D2 d2;
     public final Dhis2MockServer dhis2MockServer;
 
-    public IntegrationTestObjects() throws IOException {
+    IntegrationTestObjects() throws IOException {
         DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
                 , dbName);
         sqLiteDatabase = dbOpenHelper.getWritableDatabase();
@@ -82,7 +81,6 @@ public class IntegrationTestObjects {
                 .build();
     }
 
-    @After
     public void tearDown() throws IOException {
         sqLiteDatabase.close();
         dhis2MockServer.shutdown();
@@ -91,5 +89,10 @@ public class IntegrationTestObjects {
     protected GenericCallData getGenericCallData(D2 d2) {
         return GenericCallData.create(
                 databaseAdapter, d2.retrofit(), resourceHandler, d2.systemInfoModule().versionManager);
+    }
+
+    void downloadMetadata() throws Exception {
+        dhis2MockServer.enqueueMetadataResponses();
+        d2.syncMetaData().call();
     }
 }

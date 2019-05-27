@@ -26,38 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.data.database.BaseIntegrationTest;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventStore;
-import org.hisp.dhis.android.core.event.EventStoreImpl;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.io.IOException;
 
-import java.util.List;
+class IntegrationTestObjectsFactory {
 
-import androidx.test.runner.AndroidJUnit4;
+    private static IntegrationTestObjects instance;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+    static IntegrationTestObjects getObjectsWithMetadata() throws Exception {
+        if (instance == null) {
+            instance = new IntegrationTestObjects();
+            instance.downloadMetadata();
+            scheduleTearDown();
+        }
+        return instance;
+    }
 
-@RunWith(AndroidJUnit4.class)
-public class EventWithLimitCallMockIntegrationShould extends BaseIntegrationTest {
-
-    @Test
-    public void download_events() throws Exception {
-        int eventLimitByOrgUnit = 1;
-
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
-        dhis2MockServer.enqueueMockResponse("event/events_1.json");
-
-        d2.eventModule().downloadSingleEvents(eventLimitByOrgUnit, false, false).call();
-
-        EventStore eventStore = EventStoreImpl.create(databaseAdapter);
-
-        List<Event> downloadedEvents = eventStore.querySingleEvents();
-
-        assertThat(downloadedEvents.size(), is(eventLimitByOrgUnit));
+    private static void scheduleTearDown() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                instance.tearDown();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }));
     }
 }

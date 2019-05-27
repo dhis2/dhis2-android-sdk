@@ -30,27 +30,20 @@ package org.hisp.dhis.android.core.event;
 
 import com.google.common.collect.Lists;
 
-import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.UidsHelper;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.IntegrationTestObjects;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.data.database.BaseIntegrationTest;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityDataValueSamples;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -59,41 +52,20 @@ import androidx.test.runner.AndroidJUnit4;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class EventPostCallMockIntegrationShould {
+public class EventPostCallMockIntegrationShould extends BaseIntegrationTest {
 
-    private static IntegrationTestObjects objects;
-    private static D2 d2;
     private static EventPostCall eventPostCall;
-    private static Dhis2MockServer dhis2MockServer;
-    private static DatabaseAdapter databaseAdapter;
     private static EventStore eventStore;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        objects = new IntegrationTestObjects();
-        d2 = objects.d2;
-
-        databaseAdapter = objects.databaseAdapter;
+        BaseIntegrationTest.setUpClass();
         eventStore = EventStoreImpl.create(objects.databaseAdapter);
         eventPostCall = objects.d2DIComponent.eventPostCall();
-        dhis2MockServer = objects.dhis2MockServer;
-        givenAMetadataInDatabase();
-    }
-
-
-    @Before
-    public void setUp() throws D2Error {
-        d2.wipeModule().wipeData();
-    }
-
-    @AfterClass
-    public static void tearDown() throws IOException {
-        objects.tearDown();
     }
 
     @Test
     public void build_payload_with_different_enrollments() {
-
         storeEvents();
 
         List<Event> events = eventPostCall.queryDataToSync(null);
@@ -168,11 +140,6 @@ public class EventPostCallMockIntegrationShould {
         assertThat(events.size()).isEqualTo(3);
         assertThat(UidsHelper.getUidsList(events).containsAll(Lists.newArrayList(event1, event2, event3)))
                 .isEqualTo(true);
-    }
-
-    private static void givenAMetadataInDatabase() throws Exception {
-        dhis2MockServer.enqueueMetadataResponses();
-        d2.syncMetaData().call();
     }
 
     private void storeEvents() {

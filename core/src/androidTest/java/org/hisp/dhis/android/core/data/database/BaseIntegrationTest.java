@@ -26,38 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.data.database.BaseIntegrationTest;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventStore;
-import org.hisp.dhis.android.core.event.EventStoreImpl;
-import org.junit.Test;
+import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-
-import java.util.List;
 
 import androidx.test.runner.AndroidJUnit4;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-
 @RunWith(AndroidJUnit4.class)
-public class EventWithLimitCallMockIntegrationShould extends BaseIntegrationTest {
+public abstract class BaseIntegrationTest {
 
-    @Test
-    public void download_events() throws Exception {
-        int eventLimitByOrgUnit = 1;
+    protected static IntegrationTestObjects objects;
+    protected static D2 d2;
+    protected static Dhis2MockServer dhis2MockServer;
+    protected static DatabaseAdapter databaseAdapter;
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
-        dhis2MockServer.enqueueMockResponse("event/events_1.json");
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        objects = IntegrationTestObjectsFactory.getObjectsWithMetadata();
+        d2 = objects.d2;
+        databaseAdapter = objects.databaseAdapter;
+        dhis2MockServer = objects.dhis2MockServer;
+    }
 
-        d2.eventModule().downloadSingleEvents(eventLimitByOrgUnit, false, false).call();
 
-        EventStore eventStore = EventStoreImpl.create(databaseAdapter);
-
-        List<Event> downloadedEvents = eventStore.querySingleEvents();
-
-        assertThat(downloadedEvents.size(), is(eventLimitByOrgUnit));
+    @Before
+    public void setUp() throws D2Error {
+        d2.wipeModule().wipeData();
     }
 }

@@ -49,7 +49,7 @@ import java.util.Date;
 import androidx.test.InstrumentationRegistry;
 
 public class IntegrationTestObjects {
-    public final SQLiteDatabase sqLiteDatabase;
+    public final SQLiteDatabase database;
     public final DatabaseAdapter databaseAdapter;
 
     public Date serverDate = new Date();
@@ -64,7 +64,7 @@ public class IntegrationTestObjects {
     IntegrationTestObjects() throws IOException {
         DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
                 , dbName);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
+        database = dbOpenHelper.getWritableDatabase();
         databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
         resourceHandler = new ResourceHandler(ResourceStoreImpl.create(databaseAdapter));
         resourceHandler.setServerDate(serverDate);
@@ -82,7 +82,7 @@ public class IntegrationTestObjects {
     }
 
     public void tearDown() throws IOException {
-        sqLiteDatabase.close();
+        database.close();
         dhis2MockServer.shutdown();
     }
 

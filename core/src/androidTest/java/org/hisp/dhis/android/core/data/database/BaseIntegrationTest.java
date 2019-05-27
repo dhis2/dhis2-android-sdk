@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.data.database;
 
+import android.database.sqlite.SQLiteDatabase;
+
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -44,11 +46,13 @@ public abstract class BaseIntegrationTest {
     protected static D2 d2;
     protected static Dhis2MockServer dhis2MockServer;
     protected static DatabaseAdapter databaseAdapter;
+    protected static SQLiteDatabase database;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
         objects = IntegrationTestObjectsFactory.getObjectsWithMetadata();
         d2 = objects.d2;
+        database = objects.database;
         databaseAdapter = objects.databaseAdapter;
         dhis2MockServer = objects.dhis2MockServer;
     }

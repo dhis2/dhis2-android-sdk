@@ -28,89 +28,60 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
-import android.database.Cursor;
-
-import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.data.database.BaseIntegrationTest;
 import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
-
 import androidx.test.runner.AndroidJUnit4;
 
-import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
+public class SystemInfoCallMockIntegrationShould extends BaseIntegrationTest {
 
-    private ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
+    private static ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
 
     private SystemInfo systemInfoFromAPI = SystemInfoSamples.get1();
     private SystemInfo systemInfoFromDB = SystemInfoSamples.get2();
 
     private TableInfo tableInfo = SystemInfoTableInfo.TABLE_INFO;
 
-    private Dhis2MockServer dhis2MockServer;
-
-    @Override
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
-
-        dhis2MockServer = new Dhis2MockServer();
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
-        D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
-
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        BaseIntegrationTest.setUpClass();
         systemInfoRepository = d2.systemInfoModule().systemInfo;
     }
 
-    @Test
-    public void persist_system_info_when_call() throws Exception {
-        systemInfoRepository.download().subscribe();
-        Cursor systemInfoCursor = getCursor();
-        assertSystemInfoInCursor(systemInfoCursor, systemInfoFromAPI);
+    @Before
+    public void setUp() {
+        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
+        database.delete(tableInfo.name(), "1", new String[]{});
     }
 
     @Test
-    public void update_system_info_when_call() throws Exception {
-        database().insert(tableInfo.name(), null, systemInfoFromDB.toContentValues());
-        Cursor cursorPreCall = getCursor();
-        assertSystemInfoInCursor(cursorPreCall, systemInfoFromDB);
-
-        systemInfoRepository.download().subscribe();
-        Cursor cursorPostCall = getCursor();
-        assertSystemInfoInCursor(cursorPostCall, systemInfoFromAPI);
+    public void persist_system_info_when_call() {
+        systemInfoRepository.download().test().awaitTerminalEvent();
+        isSystemInfoInDb(systemInfoFromAPI);
     }
 
-    private Cursor getCursor() {
-        return database().query(tableInfo.name(), tableInfo.columns().all(),
-                null, null, null, null, null);
+    @Test
+    public void update_system_info_when_call() {
+        database.insert(tableInfo.name(), null, systemInfoFromDB.toContentValues());
+        isSystemInfoInDb(systemInfoFromDB);
+
+        systemInfoRepository.download().test().awaitTerminalEvent();
+        isSystemInfoInDb(systemInfoFromAPI);
     }
 
-    private void assertSystemInfoInCursor(Cursor cursor, SystemInfo systemInfo) {
-        assertThatCursor(cursor).hasRow(
-                BaseIdentifiableObject.DATE_FORMAT.format(systemInfo.serverDate()),
-                systemInfo.dateFormat(),
-                systemInfo.version(),
-                systemInfo.contextPath(),
-                systemInfo.systemName()
-        ).isExhausted();
-    }
-
-    @Override
-    @After
-    public void tearDown() throws IOException {
-        super.tearDown();
-
-        dhis2MockServer.shutdown();
+    private void isSystemInfoInDb(SystemInfo si) {
+        SystemInfo siDb = systemInfoRepository.get();
+        assertThat(si.toBuilder().id(null).build()).isEqualTo(
+                siDb.toBuilder().id(null).build()
+        );
     }
 }

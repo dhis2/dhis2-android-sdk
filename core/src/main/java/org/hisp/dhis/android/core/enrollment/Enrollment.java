@@ -106,6 +106,7 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithDele
     public abstract Boolean followUp();
 
     @Nullable
+    @JsonProperty()
     @ColumnAdapter(DbEnrollmentStatusColumnAdapter.class)
     public abstract EnrollmentStatus status();
 

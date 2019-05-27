@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import java.util.Date;
 import java.util.Map;
 
-final class TrackedEntityInstanceObjectRepository
+public final class TrackedEntityInstanceObjectRepository
         extends ReadWriteWithUidDataObjectRepositoryImpl<TrackedEntityInstance, TrackedEntityInstanceObjectRepository>
         implements ReadWriteObjectRepository<TrackedEntityInstance> {
 

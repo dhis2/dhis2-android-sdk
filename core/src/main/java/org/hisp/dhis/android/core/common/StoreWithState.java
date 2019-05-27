@@ -34,6 +34,10 @@ public interface StoreWithState {
 
     int setState(@NonNull String uid, @NonNull State state);
 
+    int setStateForUpdate(@NonNull String uid);
+
+    int setStateForDelete(@NonNull String uid);
+
     HandleAction setStateOrDelete(@NonNull String uid, @NonNull State state);
 
     State getState(@NonNull String uid);

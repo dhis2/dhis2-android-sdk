@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.D2DIComponent;
 import org.hisp.dhis.android.core.DaggerD2DIComponent;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
@@ -88,11 +87,6 @@ public class IntegrationTestObjects {
     public void tearDown() throws IOException {
         database.close();
         dhis2MockServer.shutdown();
-    }
-
-    protected GenericCallData getGenericCallData(D2 d2) {
-        return GenericCallData.create(
-                databaseAdapter, d2.retrofit(), resourceHandler, d2.systemInfoModule().versionManager);
     }
 
     Callable<Unit> downloadMetadata() {

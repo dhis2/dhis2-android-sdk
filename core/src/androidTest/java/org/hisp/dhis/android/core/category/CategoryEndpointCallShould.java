@@ -30,44 +30,21 @@ package org.hisp.dhis.android.core.category;
 
 import com.google.common.collect.Lists;
 
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.junit.After;
-import org.junit.Before;
+import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestWithEmptyDatabase;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import static junit.framework.Assert.assertFalse;
 
-public class CategoryEndpointCallShould extends AbsStoreTestCase {
-
-    private Dhis2MockServer dhis2MockServer;
-
-    @Override
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
-        dhis2MockServer = new Dhis2MockServer();
-    }
-
-    @Override
-    @After
-    public void tearDown() throws IOException {
-        super.tearDown();
-        dhis2MockServer.shutdown();
-    }
+public class CategoryEndpointCallShould extends BaseIntegrationTestWithEmptyDatabase {
 
     @Test
-    public void parse_category_successful() throws Exception {
-        D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
+    public void download_category_successfully() throws Exception {
         Callable<List<Category>> callEndpoint =
-                getD2DIComponent(d2).internalModules().category.categoryCallFactory.create(new HashSet<>(
+                objects.d2DIComponent.internalModules().category.categoryCallFactory.create(new HashSet<>(
                         Lists.newArrayList("vGs6omsRekv", "KfdsGBcoiCa", "cX5k9anHEHd", "x3uo8LqiTBk")));
 
         dhis2MockServer.enqueueMockResponse("category/categories.json");

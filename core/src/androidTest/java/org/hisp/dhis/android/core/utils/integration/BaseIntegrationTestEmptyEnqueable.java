@@ -28,22 +28,21 @@
 
 package org.hisp.dhis.android.core.utils.integration;
 
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-public abstract class BaseIntegrationTestWithMetadataEnqueable extends BaseIntegrationTest {
+public abstract class BaseIntegrationTestEmptyEnqueable extends BaseIntegrationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        setUpClass(IntegrationTestDatabaseContent.MetadataEnqueable, objects -> {
-            objects.dhis2MockServer.enqueueMetadataResponses();
-            return objects.d2.syncMetaData();
-        });
+        setUpClass(IntegrationTestDatabaseContent.EmptyDispatcher, objects -> Unit::new);
     }
+
 
     @Before
     public void setUp() throws D2Error {
-        d2.wipeModule().wipeData();
+        d2.wipeModule().wipeEverything();
     }
 }

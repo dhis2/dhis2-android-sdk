@@ -28,22 +28,23 @@
 
 package org.hisp.dhis.android.core.utils.integration;
 
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-public abstract class BaseIntegrationTestWithMetadataDispatcher extends BaseIntegrationTest {
+public abstract class BaseIntegrationTestEmptyDispatcher extends BaseIntegrationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        setUpClass(IntegrationTestDatabaseContent.MetadataDispatcher, objects -> {
+        setUpClass(IntegrationTestDatabaseContent.EmptyDispatcher, objects -> {
             objects.dhis2MockServer.setRequestDispatcher();
-            return objects.d2.syncMetaData();
+            return Unit::new;
         });
     }
 
     @Before
     public void setUp() throws D2Error {
-        d2.wipeModule().wipeData();
+        d2.wipeModule().wipeEverything();
     }
 }

@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestWithMetadataEnqueable;
+import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestMetadataEnqueable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,7 +43,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class EventWithLimitCallMockIntegrationShould extends BaseIntegrationTestWithMetadataEnqueable {
+public class EventWithLimitCallMockIntegrationShould extends BaseIntegrationTestMetadataEnqueable {
 
     @Test
     public void download_events() throws Exception {

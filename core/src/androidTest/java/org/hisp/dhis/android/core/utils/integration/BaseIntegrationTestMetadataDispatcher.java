@@ -26,30 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.utils.integration;
 
-import com.google.common.collect.Lists;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestEmptyEnqueable;
-import org.junit.Test;
+public abstract class BaseIntegrationTestMetadataDispatcher extends BaseIntegrationTest {
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.concurrent.Callable;
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        setUpClass(IntegrationTestDatabaseContent.MetadataDispatcher, objects -> {
+            objects.dhis2MockServer.setRequestDispatcher();
+            return objects.d2.syncMetaData();
+        });
+    }
 
-import static junit.framework.Assert.assertFalse;
-
-public class CategoryEndpointCallShould extends BaseIntegrationTestEmptyEnqueable {
-
-    @Test
-    public void download_category_successfully() throws Exception {
-        Callable<List<Category>> callEndpoint =
-                objects.d2DIComponent.internalModules().category.categoryCallFactory.create(new HashSet<>(
-                        Lists.newArrayList("vGs6omsRekv", "KfdsGBcoiCa", "cX5k9anHEHd", "x3uo8LqiTBk")));
-
-        dhis2MockServer.enqueueMockResponse("category/categories.json");
-
-        List<Category> categories = callEndpoint.call();
-        assertFalse(categories.isEmpty());
+    @Before
+    public void setUp() throws D2Error {
+        d2.wipeModule().wipeData();
     }
 }

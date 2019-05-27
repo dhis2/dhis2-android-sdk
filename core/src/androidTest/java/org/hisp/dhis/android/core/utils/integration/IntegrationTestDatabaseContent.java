@@ -26,30 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.utils.integration;
 
-import java.io.IOException;
-
-class IntegrationTestObjectsFactory {
-
-    private static IntegrationTestObjects instance;
-
-    static IntegrationTestObjects getObjectsWithMetadata() throws Exception {
-        if (instance == null) {
-            instance = new IntegrationTestObjects();
-            instance.downloadMetadata();
-            scheduleTearDown();
-        }
-        return instance;
-    }
-
-    private static void scheduleTearDown() {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                instance.tearDown();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }));
-    }
+public enum IntegrationTestDatabaseContent {
+    Empty, Metadata
 }

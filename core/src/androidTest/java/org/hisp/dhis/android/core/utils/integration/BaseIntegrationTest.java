@@ -26,21 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.utils.integration;
 
 import android.database.sqlite.SQLiteDatabase;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
 
-import androidx.test.runner.AndroidJUnit4;
+import java.util.concurrent.Callable;
+import java.util.function.Function;
 
-@RunWith(AndroidJUnit4.class)
-public abstract class BaseIntegrationTest {
+abstract class BaseIntegrationTest {
 
     protected static IntegrationTestObjects objects;
     protected static D2 d2;
@@ -48,18 +46,12 @@ public abstract class BaseIntegrationTest {
     protected static DatabaseAdapter databaseAdapter;
     protected static SQLiteDatabase database;
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        objects = IntegrationTestObjectsFactory.getObjectsWithMetadata();
+    static void setUpClass(IntegrationTestDatabaseContent content,
+                           Function<IntegrationTestObjects, Callable<Unit>> setupOnce) throws Exception {
+        objects = IntegrationTestObjectsFactory.getObjects(content, setupOnce);
         d2 = objects.d2;
         database = objects.database;
         databaseAdapter = objects.databaseAdapter;
         dhis2MockServer = objects.dhis2MockServer;
-    }
-
-
-    @Before
-    public void setUp() throws D2Error {
-        d2.wipeModule().wipeData();
     }
 }

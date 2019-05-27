@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.utils.integration;
 
 import android.database.sqlite.SQLiteDatabase;
 
@@ -39,12 +39,18 @@ import org.hisp.dhis.android.core.DaggerD2DIComponent;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
+import org.hisp.dhis.android.core.data.database.DbOpenHelper;
+import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.concurrent.Callable;
 
 import androidx.test.InstrumentationRegistry;
 
@@ -55,15 +61,13 @@ public class IntegrationTestObjects {
     public Date serverDate = new Date();
     public ResourceHandler resourceHandler;
 
-    public final String dbName = null;
-
     public final D2DIComponent d2DIComponent;
     public final D2 d2;
     public final Dhis2MockServer dhis2MockServer;
 
-    IntegrationTestObjects() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , dbName);
+    IntegrationTestObjects() throws Exception {
+        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext(),
+                null);
         database = dbOpenHelper.getWritableDatabase();
         databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
         resourceHandler = new ResourceHandler(ResourceStoreImpl.create(databaseAdapter));
@@ -91,8 +95,8 @@ public class IntegrationTestObjects {
                 databaseAdapter, d2.retrofit(), resourceHandler, d2.systemInfoModule().versionManager);
     }
 
-    void downloadMetadata() throws Exception {
+    Callable<Unit> downloadMetadata() {
         dhis2MockServer.enqueueMetadataResponses();
-        d2.syncMetaData().call();
+        return d2.syncMetaData();
     }
 }

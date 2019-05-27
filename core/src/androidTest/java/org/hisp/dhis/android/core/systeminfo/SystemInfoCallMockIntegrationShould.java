@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.data.database.BaseIntegrationTest;
 import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
+import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestWithEmptyDatabase;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,7 +42,7 @@ import androidx.test.runner.AndroidJUnit4;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class SystemInfoCallMockIntegrationShould extends BaseIntegrationTest {
+public class SystemInfoCallMockIntegrationShould extends BaseIntegrationTestWithEmptyDatabase {
 
     private static ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
 
@@ -53,7 +53,7 @@ public class SystemInfoCallMockIntegrationShould extends BaseIntegrationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        BaseIntegrationTest.setUpClass();
+        BaseIntegrationTestWithEmptyDatabase.setUpClass();
         systemInfoRepository = d2.systemInfoModule().systemInfo;
     }
 

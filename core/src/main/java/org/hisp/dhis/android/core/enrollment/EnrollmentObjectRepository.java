@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteWithUidDataO
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.DataStatePropagator;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -45,12 +46,18 @@ final class EnrollmentObjectRepository
         extends ReadWriteWithUidDataObjectRepositoryImpl<Enrollment, EnrollmentObjectRepository>
         implements ReadWriteObjectRepository<Enrollment> {
 
+    private final DataStatePropagator dataStatePropagator;
+    private Enrollment enrollment;
+    private State state;
+
     EnrollmentObjectRepository(final EnrollmentStore store,
                                final String uid,
                                final Map<String, ChildrenAppender<Enrollment>> childrenAppenders,
-                               final RepositoryScope scope) {
+                               final RepositoryScope scope,
+                               final DataStatePropagator dataStatePropagator) {
         super(store, childrenAppenders, scope,
-                s -> new EnrollmentObjectRepository(store, uid, childrenAppenders, s));
+                s -> new EnrollmentObjectRepository(store, uid, childrenAppenders, s, dataStatePropagator));
+        this.dataStatePropagator = dataStatePropagator;
     }
 
     public Unit setOrganisationUnitUid(String organisationUnitUid) throws D2Error {
@@ -78,9 +85,9 @@ final class EnrollmentObjectRepository
     }
 
     private Enrollment.Builder updateBuilder() {
-        Enrollment enrollment = getWithoutChildren();
+        enrollment = getWithoutChildren();
         Date updateDate = new Date();
-        State state = enrollment.state();
+        state = enrollment.state();
         if (state != State.TO_POST && state != State.TO_DELETE) {
             state = State.TO_UPDATE;
         }
@@ -89,5 +96,10 @@ final class EnrollmentObjectRepository
                 .state(state)
                 .lastUpdated(updateDate)
                 .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(updateDate));
+    }
+
+    @Override
+    protected void propagateState() {
+        dataStatePropagator.propagateEnrollmentState(enrollment);
     }
 }

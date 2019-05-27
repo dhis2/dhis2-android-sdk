@@ -32,11 +32,14 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-public abstract class BaseIntegrationTestWithMetadataDatabase extends BaseIntegrationTest {
+public abstract class BaseIntegrationTestWithMetadataDispatcher extends BaseIntegrationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        setUpClass(IntegrationTestDatabaseContent.Metadata, IntegrationTestObjects::downloadMetadata);
+        setUpClass(IntegrationTestDatabaseContent.MetadataDispatcher, objects -> {
+            objects.dhis2MockServer.setRequestDispatcher();
+            return objects.d2.syncMetaData();
+        });
     }
 
     @Before

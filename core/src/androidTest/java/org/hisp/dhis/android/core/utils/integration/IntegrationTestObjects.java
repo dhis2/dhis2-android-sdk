@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.D2DIComponent;
 import org.hisp.dhis.android.core.DaggerD2DIComponent;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
@@ -49,7 +48,6 @@ import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.concurrent.Callable;
 
 import androidx.test.InstrumentationRegistry;
 
@@ -87,10 +85,5 @@ public class IntegrationTestObjects {
     public void tearDown() throws IOException {
         database.close();
         dhis2MockServer.shutdown();
-    }
-
-    Callable<Unit> downloadMetadata() {
-        dhis2MockServer.enqueueMetadataResponses();
-        return d2.syncMetaData();
     }
 }

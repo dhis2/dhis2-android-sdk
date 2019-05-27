@@ -28,42 +28,16 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.junit.After;
-import org.junit.Before;
+import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestWithMetadataDispatcher;
 import org.junit.Test;
-
-import java.io.IOException;
 
 import io.reactivex.observers.TestObserver;
 
-public class AggregatedDataCallMockIntegrationShould extends AbsStoreTestCase {
-
-    private Dhis2MockServer dhis2MockServer;
-
-    @Override
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
-        dhis2MockServer = new Dhis2MockServer();
-        dhis2MockServer.setRequestDispatcher();
-    }
-
-    @Override
-    @After
-    public void tearDown() throws IOException {
-        super.tearDown();
-        dhis2MockServer.shutdown();
-    }
+public class AggregatedDataCallMockIntegrationShould extends BaseIntegrationTestWithMetadataDispatcher {
 
     @Test
-    public void emit_progress() throws Exception {
-        D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
-        d2.syncMetaData().call();
+    public void emit_progress() {
         TestObserver<D2Progress> testObserver = d2.aggregatedModule().data().download().asObservable().test();
         testObserver.assertValueCount(3);
 

@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFacto
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
+import org.hisp.dhis.android.core.common.DataStatePropagator;
 import org.hisp.dhis.android.core.common.Transformer;
 
 import java.util.Map;
@@ -51,22 +52,25 @@ public final class EnrollmentCollectionRepository extends ReadWriteWithUidCollec
         <Enrollment, EnrollmentCreateProjection, EnrollmentCollectionRepository> {
 
     private final EnrollmentStore store;
+    private final DataStatePropagator dataStatePropagator;
 
     @Inject
     EnrollmentCollectionRepository(
             final EnrollmentStore store,
             final Map<String, ChildrenAppender<Enrollment>> childrenAppenders,
             final RepositoryScope scope,
-            final Transformer<EnrollmentCreateProjection, Enrollment> transformer) {
+            final Transformer<EnrollmentCreateProjection, Enrollment> transformer,
+            final DataStatePropagator dataStatePropagator) {
         super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope, s ->
-                new EnrollmentCollectionRepository(store, childrenAppenders, s, transformer)));
+                new EnrollmentCollectionRepository(store, childrenAppenders, s, transformer, dataStatePropagator)));
         this.store = store;
+        this.dataStatePropagator = dataStatePropagator;
     }
 
     @Override
     public EnrollmentObjectRepository uid(String uid) {
         RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
-        return new EnrollmentObjectRepository(store, uid, childrenAppenders, updatedScope);
+        return new EnrollmentObjectRepository(store, uid, childrenAppenders, updatedScope, dataStatePropagator);
     }
 
     public StringFilterConnector<EnrollmentCollectionRepository> byUid() {

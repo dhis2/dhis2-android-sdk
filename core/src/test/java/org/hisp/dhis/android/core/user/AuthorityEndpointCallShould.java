@@ -32,14 +32,12 @@ import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.EndpointCall;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -77,11 +75,6 @@ public class AuthorityEndpointCallShould extends BaseCallShould {
         when(retrofitCall.execute()).thenReturn(Response.success(payload));
 
         when(authorityService.getAuthorities()).thenReturn(retrofitCall);
-    }
-
-    @After
-    public void tearDown() throws IOException {
-        super.tearDown();
     }
 
     private EndpointCall<Authority> castedEndpointCall() {

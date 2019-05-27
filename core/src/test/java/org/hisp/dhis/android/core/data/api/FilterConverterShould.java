@@ -191,11 +191,11 @@ public class FilterConverterShould {
     }
 
     private TestService testService(MockWebServer mockWebServer) {
-        return RetrofitFactory.getRetrofit(mockWebServer).create(TestService.class);
+        return RetrofitFactory.fromMockWebServer(mockWebServer).create(TestService.class);
     }
 
     private MixedTestService mixedTestService(MockWebServer mockWebServer) {
-        return RetrofitFactory.getRetrofit(mockWebServer).create(MixedTestService.class);
+        return RetrofitFactory.fromMockWebServer(mockWebServer).create(MixedTestService.class);
     }
 
     //TODO: test Filter for null input and empty string.

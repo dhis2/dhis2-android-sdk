@@ -27,13 +27,9 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
-import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
+import org.hisp.dhis.android.core.data.api.RetrofitFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -41,7 +37,6 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.Callable;
 
@@ -51,9 +46,7 @@ import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
@@ -64,8 +57,6 @@ public abstract class BaseCallShould {
 
     @Mock
     protected DatabaseAdapter databaseAdapter;
-
-    protected Dhis2MockServer dhis2MockServer;
 
     protected Retrofit retrofit;
 
@@ -89,14 +80,7 @@ public abstract class BaseCallShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        dhis2MockServer = new Dhis2MockServer();
-
-        retrofit = new Retrofit.Builder()
-                .baseUrl(dhis2MockServer.getBaseEndpoint())
-                .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
-                .addConverterFactory(FilterConverterFactory.create())
-                .addConverterFactory(FieldsConverterFactory.create())
-                .build();
+        retrofit = RetrofitFactory.fromServerUrl("https://fake.dhis.org");
 
         when(genericCallData.databaseAdapter()).thenReturn(databaseAdapter);
         when(genericCallData.retrofit()).thenReturn(retrofit);
@@ -111,19 +95,8 @@ public abstract class BaseCallShould {
                 ResponseBody.create(MediaType.parse("application/json"), "{}"));
     }
 
-    public void tearDown() throws IOException {
-        dhis2MockServer.shutdown();
-    }
-
     protected void whenEndpointCallFails(Callable<?> endpointCall) throws Exception {
         when(endpointCall.call()).thenThrow(new Exception());
-    }
-
-    protected <T> void verifyFail(Response<T> response) throws Exception {
-        assertThat(response).isEqualTo(errorResponse);
-        verify(databaseAdapter).beginNewTransaction();
-        verify(transaction).end();
-        verify(transaction, never()).setSuccessful();
     }
 
     protected void verifyNoTransactionStarted() {

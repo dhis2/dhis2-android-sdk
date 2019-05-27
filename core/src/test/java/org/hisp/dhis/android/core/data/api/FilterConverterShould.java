@@ -27,6 +27,9 @@
  */
 package org.hisp.dhis.android.core.data.api;
 
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -59,15 +62,29 @@ public class FilterConverterShould {
                 @Query("filter") @Where Filter lastUpdatedFilter);
     }
 
+    private static MockWebServer server;
+
+    @BeforeClass
+    public static void setUpClass() throws IOException {
+        server = new MockWebServer();
+        server.start();
+    }
+
+    @Before
+    public void setUp() throws IOException {
+        server.enqueue(new MockResponse());
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws IOException {
+        server.shutdown();
+    }
+
     @Test
     public void returns_correct_path_when_create_a_retrofit_request_using_filters() throws IOException, InterruptedException {
         ArrayList<String> values = new ArrayList<>(2);
         values.add("uid1");
         values.add("uid2");
-        MockWebServer server = new MockWebServer();
-        server.start();
-
-        server.enqueue(new MockResponse());
 
         TestService service = testService(server);
 
@@ -79,18 +96,12 @@ public class FilterConverterShould {
         RecordedRequest request = server.takeRequest();
 
         assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1,uid2]&filter=lastUpdated:gt:updatedDate");
-        server.shutdown();
     }
 
     @Test
     public void returns_correct_path_when_create_a_retrofit_request_using_filters_and_single_value() throws IOException, InterruptedException {
         ArrayList<String> values = new ArrayList<>(2);
         values.add("uid1");
-
-        MockWebServer server = new MockWebServer();
-        server.start();
-
-        server.enqueue(new MockResponse());
 
         TestService service = testService(server);
 
@@ -102,7 +113,6 @@ public class FilterConverterShould {
         RecordedRequest request = server.takeRequest();
 
         assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1]&filter=lastUpdated:gt:updatedDate");
-        server.shutdown();
     }
 
     @Test
@@ -110,10 +120,6 @@ public class FilterConverterShould {
         ArrayList<String> values = new ArrayList<>(2);
         values.add("uid1");
         values.add("uid2");
-        MockWebServer server = new MockWebServer();
-        server.start();
-
-        server.enqueue(new MockResponse());
 
         MixedTestService service = mixedTestService(server);
 
@@ -130,7 +136,6 @@ public class FilterConverterShould {
 
         assertThat(request.getPath()).isEqualTo(
                 "/api?field=id,code,name,displayName&filter=id:in:[uid1,uid2]&filter=lastUpdated:gt:updatedDate");
-        server.shutdown();
     }
 
     @Test
@@ -138,10 +143,6 @@ public class FilterConverterShould {
         ArrayList<String> values = new ArrayList<>(2);
         values.add("uid1");
         values.add("uid2");
-        MockWebServer server = new MockWebServer();
-        server.start();
-
-        server.enqueue(new MockResponse());
 
         TestService service = testService(server);
 
@@ -153,7 +154,6 @@ public class FilterConverterShould {
         RecordedRequest request = server.takeRequest();
 
         assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1,uid2]");
-        server.shutdown();
     }
 
     @Test
@@ -161,10 +161,6 @@ public class FilterConverterShould {
         ArrayList<String> values = new ArrayList<>(2);
         values.add("uid1");
         values.add("uid2");
-        MockWebServer server = new MockWebServer();
-        server.start();
-
-        server.enqueue(new MockResponse());
 
         TestService service = testService(server);
 
@@ -176,16 +172,11 @@ public class FilterConverterShould {
         RecordedRequest request = server.takeRequest();
 
         assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1,uid2]");
-        server.shutdown();
     }
 
     @Test
     public void returns_correct_path_when_create_a_retrofit_request_with_in_filter_and_empty_values() throws IOException, InterruptedException {
         ArrayList<String> values = new ArrayList<>(0);
-        MockWebServer server = new MockWebServer();
-        server.start();
-
-        server.enqueue(new MockResponse());
 
         TestService service = testService(server);
 
@@ -197,7 +188,6 @@ public class FilterConverterShould {
         RecordedRequest request = server.takeRequest();
 
         assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[]");
-        server.shutdown();
     }
 
     private TestService testService(MockWebServer mockWebServer) {

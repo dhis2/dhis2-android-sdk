@@ -106,7 +106,7 @@ public class DataStatePropagatorIntegrationShould extends SyncedDatabaseMockInte
         propagator.propagateEnrollmentState(Enrollment.builder().trackedEntityInstance(teiUid).build());
 
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(State.TO_UPDATE));
-        d2.trackedEntityModule().trackedEntityInstances.uid(teiUid).delete();
+        trackedEntityInstanceStore.delete(teiUid);
     }
 
     public void assertThatDoNotSetTeiToUpdateForState(State state) throws D2Error {
@@ -117,6 +117,6 @@ public class DataStatePropagatorIntegrationShould extends SyncedDatabaseMockInte
         propagator.propagateEnrollmentState(Enrollment.builder().trackedEntityInstance(teiUid).build());
 
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(state));
-        d2.trackedEntityModule().trackedEntityInstances.uid(teiUid).delete();
+        trackedEntityInstanceStore.delete(teiUid);
     }
 }

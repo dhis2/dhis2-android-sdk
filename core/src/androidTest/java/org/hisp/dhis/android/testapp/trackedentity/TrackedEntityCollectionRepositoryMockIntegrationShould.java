@@ -119,7 +119,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Sync
     }
 
     @Test
-    public void filter_by_tarcked_entity_type() {
+    public void filter_by_tracked_entity_type() {
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances
                         .byTrackedEntityType().eq("nEenWmSyUEp")

@@ -28,17 +28,11 @@
 
 package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.junit.After;
-import org.junit.Before;
+import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestWithMetadataEnqueable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -48,32 +42,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
-
-    private Dhis2MockServer dhis2MockServer;
-    private D2 d2;
-
-    @Override
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
-
-        dhis2MockServer = new Dhis2MockServer();
-        d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
-    }
-
-    @Override
-    @After
-    public void tearDown() throws IOException {
-        super.tearDown();
-
-        dhis2MockServer.shutdown();
-    }
+public class EventEndpointCallMockIntegrationShould extends BaseIntegrationTestWithMetadataEnqueable {
 
     @Test
     public void download_events_according_to_default_query() throws Exception {
-        givenAMetadataInDatabase();
-
         Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse("event/events_1.json");
@@ -87,8 +59,6 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
     @Test
     public void download_number_of_events_according_to_page_size() throws Exception {
-        givenAMetadataInDatabase();
-
         int pageSize = 1;
 
         Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", pageSize);
@@ -103,10 +73,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void rollback_transaction_when_insert_a_event_with_wrong_foreign_key()
-            throws Exception {
-        givenAMetadataInDatabase();
-
+    public void rollback_transaction_when_insert_a_event_with_wrong_foreign_key() throws Exception {
         Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse(
@@ -120,8 +87,6 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
     @Test
     public void not_overwrite_events_marked_as_to_post_to_update_or_error() throws Exception {
-        givenAMetadataInDatabase();
-
         int pageSize = 1;
 
         Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", pageSize);
@@ -169,10 +134,5 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         Event event4 = d2.eventModule().events.one().get();
         assertThat(event4.uid(), is("V1CerIi3sdL"));
         assertThat(event4.status(), is(EventStatus.SKIPPED));
-    }
-
-    private void givenAMetadataInDatabase() throws Exception {
-        dhis2MockServer.enqueueMetadataResponses();
-        d2.syncMetaData().call();
     }
 }

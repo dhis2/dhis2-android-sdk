@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.d2manager;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.common.collect.Lists;
 
-import org.hisp.dhis.android.core.configuration.Configuration;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
@@ -40,11 +39,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.Random;
 
 import androidx.test.InstrumentationRegistry;
-import okhttp3.HttpUrl;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -53,7 +50,7 @@ public class D2ManagerRealIntegrationShould {
     private D2Manager d2Manager;
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
         D2Configuration d2Configuration = D2Configuration.builder()
                 .databaseName(generateDatabaseName() + ".db")
                 .appName("app_name")
@@ -69,25 +66,25 @@ public class D2ManagerRealIntegrationShould {
     }
 
     @After
-    public void tearDown() throws IOException {
+    public void tearDown() {
         if (d2Manager.databaseAdapter != null && d2Manager.databaseAdapter.database() != null) {
             d2Manager.databaseAdapter.database().close();
         }
     }
 
     @Test
-    public void return_false_if_not_configured() throws Exception {
+    public void return_false_if_not_configured() {
         assertThat(d2Manager.isD2Configured()).isFalse();
     }
 
     @Test
-    public void return_true_if_configured() throws Exception {
+    public void return_true_if_configured() {
         configureD2();
         assertThat(d2Manager.isD2Configured()).isTrue();
     }
 
     @Test
-    public void create_a_d2_instance_which_reads_data_from_db() throws Exception {
+    public void create_a_d2_instance_which_reads_data_from_db() {
         configureD2();
         persistCredentialsInDb();
 
@@ -109,11 +106,7 @@ public class D2ManagerRealIntegrationShould {
     }
 
     private void configureD2() {
-        Configuration config = Configuration.builder()
-                .serverUrl(HttpUrl.parse(RealServerMother.url))
-                .build();
-
-        d2Manager.configureD2(config);
+        d2Manager.configureD2(RealServerMother.url);
     }
 
     private void persistCredentialsInDb() {

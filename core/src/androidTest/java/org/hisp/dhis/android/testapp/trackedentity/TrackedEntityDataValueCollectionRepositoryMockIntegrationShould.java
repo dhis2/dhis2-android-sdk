@@ -26,10 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.testapp.trackedentity;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCreateProjection;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -107,5 +110,27 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
                 .byProvidedElsewhere().eq(true)
                 .get();
         assertThat(trackedEntityDataValues.size(), is(1));
+    }
+
+    // TODO Uncomment when delete method is ready.
+    // @Test
+    public void add_tracked_entity_data_values_to_the_repository() throws D2Error {
+        List<TrackedEntityDataValue> trackedEntityDataValues1 = d2.trackedEntityModule().trackedEntityDataValues.get();
+        assertThat(trackedEntityDataValues1.size(), is(12));
+
+        TrackedEntityDataValue dataValue = d2.trackedEntityModule().trackedEntityDataValues.add(
+                TrackedEntityDataValueCreateProjection.create(
+                        "event1", "ebaJjqltK5N", "created_value"));
+
+        List<TrackedEntityDataValue> trackedEntityDataValues2 = d2.trackedEntityModule().trackedEntityDataValues.get();
+        assertThat(trackedEntityDataValues2.size(), is(13));
+
+        TrackedEntityDataValue trackedEntityDataValue = d2.trackedEntityModule().trackedEntityDataValues
+                .value(dataValue.event(), dataValue.dataElement()).get();
+        assertThat(trackedEntityDataValue.event(), is("event1"));
+        assertThat(trackedEntityDataValue.dataElement(), is("ebaJjqltK5N"));
+        assertThat(trackedEntityDataValue.value(), is("created_value"));
+
+        d2.trackedEntityModule().trackedEntityDataValues.value(dataValue.event(), dataValue.dataElement()).delete();
     }
 }

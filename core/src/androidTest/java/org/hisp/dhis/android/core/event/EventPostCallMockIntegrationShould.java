@@ -33,6 +33,7 @@ import com.google.common.collect.Lists;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityDataValueSamples;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramStage;
@@ -40,6 +41,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestMetadataEnqueable;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,6 +64,11 @@ public class EventPostCallMockIntegrationShould extends BaseIntegrationTestMetad
         BaseIntegrationTestMetadataEnqueable.setUpClass();
         eventStore = EventStoreImpl.create(objects.databaseAdapter);
         eventPostCall = objects.d2DIComponent.eventPostCall();
+    }
+
+    @After
+    public void tearDown() throws D2Error {
+        d2.wipeModule().wipeData();
     }
 
     @Test

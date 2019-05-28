@@ -29,7 +29,9 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestMetadataEnqueable;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,6 +45,11 @@ import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
 public class EventEndpointCallMockIntegrationShould extends BaseIntegrationTestMetadataEnqueable {
+
+    @After
+    public void tearDown() throws D2Error {
+        d2.wipeModule().wipeData();
+    }
 
     @Test
     public void download_events_according_to_default_query() throws Exception {

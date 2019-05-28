@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.utils.integration;
 
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.junit.Before;
 import org.junit.BeforeClass;
 
 public abstract class BaseIntegrationTestMetadataDispatcher extends BaseIntegrationTest {
@@ -40,10 +38,5 @@ public abstract class BaseIntegrationTestMetadataDispatcher extends BaseIntegrat
             objects.dhis2MockServer.setRequestDispatcher();
             return objects.d2.syncMetaData();
         });
-    }
-
-    @Before
-    public void setUp() throws D2Error {
-        d2.wipeModule().wipeData();
     }
 }

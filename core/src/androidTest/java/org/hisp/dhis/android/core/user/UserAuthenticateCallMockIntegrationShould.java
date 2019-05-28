@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.user;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestEmptyEnqueable;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,6 +58,13 @@ public class UserAuthenticateCallMockIntegrationShould extends BaseIntegrationTe
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
 
         authenticateUserCall = d2.userModule().logIn("test_user", "test_password");
+    }
+
+
+
+    @After
+    public void tearDown() {
+        UserStore.create(databaseAdapter).delete();
     }
 
     @Test

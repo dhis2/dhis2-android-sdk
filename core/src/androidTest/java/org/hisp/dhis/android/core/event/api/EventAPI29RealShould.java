@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.event.api;
 
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 
-public class EventAPI29Should extends EventAPIShould {
+public class EventAPI29RealShould extends EventAPIRealShould {
 
-    public EventAPI29Should() {
+    public EventAPI29RealShould() {
         super(RealServerMother.url2_29, "CREATE_AND_UPDATE");
     }
 

@@ -60,7 +60,7 @@ import static org.hisp.dhis.android.core.imports.ImportStatus.ERROR;
 import static org.hisp.dhis.android.core.imports.ImportStatus.SUCCESS;
 import static org.hisp.dhis.android.core.imports.ImportStatus.WARNING;
 
-public abstract class EventAPIShould extends AbsStoreTestCase {
+public abstract class EventAPIRealShould extends AbsStoreTestCase {
 
     // API version dependant parameters
     private String serverUrl;
@@ -71,7 +71,7 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
 
     private EventService eventService;
 
-    EventAPIShould(String serverUrl, String strategy) {
+    EventAPIRealShould(String serverUrl, String strategy) {
         super();
         this.serverUrl = serverUrl;
         this.strategy = strategy;

@@ -61,8 +61,9 @@ public final class DataStatePropagator {
     }
 
     public void propagateEventState(Event event) {
-        enrollmentStore.setStateForUpdate(event.enrollment());
-        trackedEntityInstanceStore.setStateForUpdate(event.trackedEntityInstance());
+        Enrollment enrollment = enrollmentStore.selectByUid(event.enrollment());
+        enrollmentStore.setStateForUpdate(enrollment.uid());
+        trackedEntityInstanceStore.setStateForUpdate(enrollment.trackedEntityInstance());
     }
 
     public void propagateDataValueState(TrackedEntityDataValue dataValue) {

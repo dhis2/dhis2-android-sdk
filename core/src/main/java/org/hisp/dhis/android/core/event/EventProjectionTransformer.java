@@ -28,44 +28,32 @@
 
 package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.Transformer;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueChildrenAppender;
+import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.Date;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+final class EventProjectionTransformer implements Transformer<EventCreateProjection, Event> {
 
-@Module
-public final class EventEntityDIModule {
+    @Override
+    public Event transform(EventCreateProjection projection) {
+        String generatedUid = new CodeGeneratorImpl().generate();
+        Date creationDate = new Date();
 
-    @Provides
-    @Reusable
-    public EventStore store(DatabaseAdapter databaseAdapter) {
-        return EventStoreImpl.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    public SyncHandlerWithTransformer<Event> handler(EventHandler impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    Transformer<EventCreateProjection, Event> transformer() {
-        return new EventProjectionTransformer();
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Event>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singletonMap(EventFields.TRACKED_ENTITY_DATA_VALUES,
-                TrackedEntityDataValueChildrenAppender.create(databaseAdapter));
+        return Event.builder()
+                .uid(generatedUid)
+                .state(State.TO_POST)
+                .created(creationDate)
+                .lastUpdated(creationDate)
+                .createdAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
+                .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
+                .enrollment(projection.enrollment())
+                .program(projection.program())
+                .programStage(projection.programStage())
+                .organisationUnit(projection.organisationUnit())
+                .attributeOptionCombo(projection.attributeOptionCombo())
+                .build();
     }
 }

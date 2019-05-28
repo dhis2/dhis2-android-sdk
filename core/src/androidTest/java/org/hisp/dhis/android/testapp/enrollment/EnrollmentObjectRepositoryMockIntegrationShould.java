@@ -26,10 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment;
+package org.hisp.dhis.android.testapp.enrollment;
 
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
+import org.hisp.dhis.android.core.enrollment.EnrollmentObjectRepository;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;

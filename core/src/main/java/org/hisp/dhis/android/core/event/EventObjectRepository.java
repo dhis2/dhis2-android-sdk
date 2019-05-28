@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment;
+package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
@@ -42,20 +42,20 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import java.util.Date;
 import java.util.Map;
 
-public final class EnrollmentObjectRepository
-        extends ReadWriteWithUidDataObjectRepositoryImpl<Enrollment, EnrollmentObjectRepository>
-        implements ReadWriteObjectRepository<Enrollment> {
+public final class EventObjectRepository
+        extends ReadWriteWithUidDataObjectRepositoryImpl<Event, EventObjectRepository>
+        implements ReadWriteObjectRepository<Event> {
 
     private final DataStatePropagator dataStatePropagator;
-    private Enrollment enrollment;
+    private Event event;
 
-    EnrollmentObjectRepository(final EnrollmentStore store,
-                               final String uid,
-                               final Map<String, ChildrenAppender<Enrollment>> childrenAppenders,
-                               final RepositoryScope scope,
-                               final DataStatePropagator dataStatePropagator) {
+    EventObjectRepository(final EventStore store,
+                          final String uid,
+                          final Map<String, ChildrenAppender<Event>> childrenAppenders,
+                          final RepositoryScope scope,
+                          final DataStatePropagator dataStatePropagator) {
         super(store, childrenAppenders, scope,
-                s -> new EnrollmentObjectRepository(store, uid, childrenAppenders, s, dataStatePropagator));
+                s -> new EventObjectRepository(store, uid, childrenAppenders, s, dataStatePropagator));
         this.dataStatePropagator = dataStatePropagator;
     }
 
@@ -63,35 +63,35 @@ public final class EnrollmentObjectRepository
         return updateObject(updateBuilder().organisationUnit(organisationUnitUid).build());
     }
 
-    public Unit setEnrollmentDate(Date enrollmentDate) throws D2Error {
-        return updateObject(updateBuilder().enrollmentDate(enrollmentDate).build());
+    public Unit setEventDate(Date eventDate) throws D2Error {
+        return updateObject(updateBuilder().eventDate(eventDate).build());
     }
 
-    public Unit setIncidentDate(Date incidentDate) throws D2Error {
-        return updateObject(updateBuilder().incidentDate(incidentDate).build());
-    }
-
-    public Unit setFollowUp(Boolean followUp) throws D2Error {
-        return updateObject(updateBuilder().followUp(followUp).build());
-    }
-
-    public Unit setStatus(EnrollmentStatus enrollmentStatus) throws D2Error {
-        return updateObject(updateBuilder().status(enrollmentStatus).build());
+    public Unit setStatus(EventStatus eventStatus) throws D2Error {
+        return updateObject(updateBuilder().status(eventStatus).build());
     }
 
     public Unit setCoordinate(Coordinates coordinate) throws D2Error {
         return updateObject(updateBuilder().coordinate(coordinate).build());
     }
 
-    private Enrollment.Builder updateBuilder() {
-        enrollment = getWithoutChildren();
+    public Unit setCompletedDate(Date completedDate) throws D2Error {
+        return updateObject(updateBuilder().completedDate(completedDate).build());
+    }
+
+    public Unit setDueDate(Date dueDate) throws D2Error {
+        return updateObject(updateBuilder().dueDate(dueDate).build());
+    }
+
+    private Event.Builder updateBuilder() {
+        event = getWithoutChildren();
         Date updateDate = new Date();
-        State state = enrollment.state();
+        State state = event.state();
         if (state != State.TO_POST && state != State.TO_DELETE) {
             state = State.TO_UPDATE;
         }
 
-        return enrollment.toBuilder()
+        return event.toBuilder()
                 .state(state)
                 .lastUpdated(updateDate)
                 .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(updateDate));
@@ -99,6 +99,6 @@ public final class EnrollmentObjectRepository
 
     @Override
     protected void propagateState() {
-        dataStatePropagator.propagateEnrollmentState(enrollment);
+        dataStatePropagator.propagateEventState(event);
     }
 }

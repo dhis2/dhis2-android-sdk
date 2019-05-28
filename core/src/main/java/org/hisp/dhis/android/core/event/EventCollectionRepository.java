@@ -28,15 +28,18 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.DataStatePropagator;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.imports.WebResponse;
 
 import java.util.Map;
@@ -48,22 +51,27 @@ import dagger.Reusable;
 
 @Reusable
 public final class EventCollectionRepository
-        extends ReadOnlyWithUidCollectionRepositoryImpl<Event, EventCollectionRepository>
-        implements ReadOnlyWithUploadWithUidCollectionRepository<Event> {
+        extends ReadWriteWithUidCollectionRepositoryImpl<Event, EventCreateProjection, EventCollectionRepository>
+        implements ReadWriteWithUploadWithUidCollectionRepository<Event, EventCreateProjection> {
 
     private final EventPostCall postCall;
 
     private final EventStore store;
+    private final DataStatePropagator dataStatePropagator;
 
     @Inject
     EventCollectionRepository(final EventStore store,
                               final Map<String, ChildrenAppender<Event>> childrenAppenders,
                               final RepositoryScope scope,
-                              final EventPostCall postCall) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new EventCollectionRepository(store, childrenAppenders, s, postCall)));
+                              final EventPostCall postCall,
+                              final Transformer<EventCreateProjection, Event> transformer,
+                              final DataStatePropagator dataStatePropagator) {
+        super(store, childrenAppenders, scope, transformer,
+                new FilterConnectorFactory<>(scope, s -> new EventCollectionRepository(
+                        store, childrenAppenders, s, postCall, transformer, dataStatePropagator)));
         this.store = store;
         this.postCall = postCall;
+        this.dataStatePropagator = dataStatePropagator;
     }
 
     @Override
@@ -72,6 +80,12 @@ public final class EventCollectionRepository
                 byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE)
                         .byEnrollmentUid().isNull()
                         .getWithoutChildren());
+    }
+
+    @Override
+    public EventObjectRepository uid(String uid) {
+        RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
+        return new EventObjectRepository(store, uid, childrenAppenders, updatedScope, dataStatePropagator);
     }
 
     public StringFilterConnector<EventCollectionRepository> byUid() {

@@ -28,44 +28,61 @@
 
 package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.Transformer;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueChildrenAppender;
+import com.google.auto.value.AutoValue;
 
-import java.util.Collections;
-import java.util.Map;
+import androidx.annotation.Nullable;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+@AutoValue
+public abstract class EventCreateProjection {
 
-@Module
-public final class EventEntityDIModule {
+    @Nullable
+    public abstract String enrollment();
 
-    @Provides
-    @Reusable
-    public EventStore store(DatabaseAdapter databaseAdapter) {
-        return EventStoreImpl.create(databaseAdapter);
+    @Nullable
+    public abstract String program();
+
+    @Nullable
+    public abstract String programStage();
+
+    @Nullable
+    public abstract String organisationUnit();
+
+    @Nullable
+    public abstract String attributeOptionCombo();
+
+    public static EventCreateProjection create(
+            String enrollment,
+            String program,
+            String programStage,
+            String organisationUnit,
+            String attributeOptionCombo) {
+        return builder()
+                .enrollment(enrollment)
+                .program(program)
+                .programStage(programStage)
+                .organisationUnit(organisationUnit)
+                .attributeOptionCombo(attributeOptionCombo)
+                .build();
     }
 
-    @Provides
-    @Reusable
-    public SyncHandlerWithTransformer<Event> handler(EventHandler impl) {
-        return impl;
+    public static Builder builder() {
+        return new AutoValue_EventCreateProjection.Builder();
     }
 
-    @Provides
-    @Reusable
-    Transformer<EventCreateProjection, Event> transformer() {
-        return new EventProjectionTransformer();
-    }
+    public abstract Builder toBuilder();
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Event>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singletonMap(EventFields.TRACKED_ENTITY_DATA_VALUES,
-                TrackedEntityDataValueChildrenAppender.create(databaseAdapter));
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder enrollment(String enrollment);
+
+        public abstract Builder program(String program);
+
+        public abstract Builder programStage(String programStage);
+
+        public abstract Builder organisationUnit(String organisationUnit);
+
+        public abstract Builder attributeOptionCombo(String attributeOptionCombo);
+
+        public abstract EventCreateProjection build();
     }
 }

@@ -35,6 +35,6 @@ public abstract class BaseIntegrationTestEmptyEnqueable extends BaseIntegrationT
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        setUpClass(IntegrationTestDatabaseContent.EmptyDispatcher, objects -> Unit::new);
+        setUpClass(IntegrationTestDatabaseContent.EmptyEnqueable, objects -> Unit::new);
     }
 }

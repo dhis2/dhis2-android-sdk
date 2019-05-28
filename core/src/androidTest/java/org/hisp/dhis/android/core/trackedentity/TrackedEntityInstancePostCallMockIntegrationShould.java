@@ -57,7 +57,6 @@ import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestMetadataEnqueable;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -317,8 +316,6 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseInte
         TrackedEntityDataValueStoreImpl.create(databaseAdapter).insert(dataValue1);
         TrackedEntityDataValueStoreImpl.create(databaseAdapter).insert(dataValue2);
         TrackedEntityDataValueStoreImpl.create(databaseAdapter).insert(dataValue3);
-
-        assertThat(d2.trackedEntityModule().trackedEntityInstances.count()).isEqualTo(1);
     }
 
     private void storeSimpleTrackedEntityInstance(String teiUid, State state) {

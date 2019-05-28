@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import java.util.Date;
 import java.util.Map;
 
-final class EnrollmentObjectRepository
+public final class EnrollmentObjectRepository
         extends ReadWriteWithUidDataObjectRepositoryImpl<Enrollment, EnrollmentObjectRepository>
         implements ReadWriteObjectRepository<Enrollment> {
 

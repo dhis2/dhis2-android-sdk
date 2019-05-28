@@ -40,6 +40,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.test.runner.AndroidJUnit4;
@@ -233,7 +234,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends SyncedDataba
     public void filter_by_tracked_entity_instance() {
         List<Event> events =
                 d2.eventModule().events
-                        .byTrackedEntityInstaceUid().eq("nWrB0TfWlvh")
+                        .byTrackedEntityInstanceUids(Collections.singletonList("nWrB0TfWlvh"))
                         .get();
 
         assertThat(events.size(), is(1));

@@ -55,7 +55,6 @@ public class OptionSetCallShould extends BaseIntegrationTestEmptyEnqueable {
 
     @Before
     public void setUp() throws D2Error {
-        super.setUp();
         dhis2MockServer.enqueueMockResponse("option/option_sets.json");
         Set<String> uids = new HashSet<>();
         uids.add("POc7DkGU3QU");

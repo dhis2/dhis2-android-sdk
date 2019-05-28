@@ -51,9 +51,7 @@ public class UserAuthenticateCallMockIntegrationShould extends BaseIntegrationTe
     private Callable<User> authenticateUserCall;
 
     @Before
-    @Override
     public void setUp() throws D2Error {
-        super.setUp();
         dhis2MockServer.enqueueMockResponse("user/user.json");
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
 

@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.configuration;
 
 import android.database.Cursor;
-import androidx.annotation.NonNull;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
@@ -37,6 +36,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
 
+import androidx.annotation.NonNull;
 import okhttp3.HttpUrl;
 
 @AutoValue
@@ -63,5 +63,9 @@ public abstract class Configuration implements Model {
         public abstract Builder serverUrl(HttpUrl serverUrl);
 
         public abstract Configuration build();
+    }
+
+    public static Configuration forServerUrlStringWithoutAPI(String urlWithoutAPI) {
+        return Configuration.builder().serverUrl(HttpUrl.parse(urlWithoutAPI + "api/")).build();
     }
 }

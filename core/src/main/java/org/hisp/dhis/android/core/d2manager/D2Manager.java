@@ -28,12 +28,10 @@
 
 package org.hisp.dhis.android.core.d2manager;
 
-import android.database.Cursor;
-
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.configuration.Configuration;
+import org.hisp.dhis.android.core.configuration.ConfigurationManager;
 import org.hisp.dhis.android.core.configuration.ConfigurationManagerFactory;
-import org.hisp.dhis.android.core.configuration.ConfigurationTableInfo;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
@@ -46,28 +44,29 @@ public final class D2Manager {
     private D2 d2;
     private final D2Configuration d2Configuration;
     final DatabaseAdapter databaseAdapter;
+    private final ConfigurationManager configurationManager;
 
     public D2Manager(@Nullable D2Configuration d2Configuration) {
         this.d2Configuration = d2Configuration;
         this.databaseAdapter = newDatabaseAdapter();
+        this.configurationManager = ConfigurationManagerFactory.create(databaseAdapter);
     }
 
     public boolean isD2Configured() {
-        int count;
-        try (Cursor cursor = databaseAdapter.query("SELECT * from " + ConfigurationTableInfo.TABLE_INFO.name())) {
-            count = cursor.getCount();
-        }
-
-        return count != 0;
+        return configurationManager.get() != null;
     }
 
-    public void configureD2(@NonNull Configuration configuration) {
+    public void configureD2(@NonNull String urlWithoutAPI) {
         if (d2 != null) {
             throw new IllegalStateException("D2 is already configured");
         }
 
-        ConfigurationManagerFactory.create(databaseAdapter).configure(configuration.serverUrl());
+        Configuration configuration = Configuration.forServerUrlStringWithoutAPI(urlWithoutAPI);
+        configurationManager.configure(configuration);
+        instantiate(configuration);
+    }
 
+    private void instantiate(Configuration configuration) {
         d2 = new D2.Builder()
                 .configuration(configuration)
                 .databaseAdapter(databaseAdapter)
@@ -78,10 +77,16 @@ public final class D2Manager {
 
     public D2 getD2() throws IllegalStateException {
         if (d2 == null) {
-            throw new IllegalStateException("D2 is not configured");
+            Configuration configuration = configurationManager.get();
+            if (configuration == null) {
+                throw new IllegalStateException("D2 is not configured");
+            } else {
+                instantiate(configuration);
+                return d2;
+            }
+        } else {
+            return d2;
         }
-
-        return d2;
     }
 
     private DatabaseAdapter newDatabaseAdapter() {

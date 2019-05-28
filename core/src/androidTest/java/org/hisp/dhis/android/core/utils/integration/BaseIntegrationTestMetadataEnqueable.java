@@ -34,9 +34,10 @@ public abstract class BaseIntegrationTestMetadataEnqueable extends BaseIntegrati
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        setUpClass(IntegrationTestDatabaseContent.MetadataEnqueable, objects -> {
+        boolean isNewInstance = setUpClass(IntegrationTestDatabaseContent.MetadataEnqueable);
+        if (isNewInstance) {
             objects.dhis2MockServer.enqueueMetadataResponses();
-            return objects.d2.syncMetaData();
-        });
+            objects.d2.syncMetaData().call();
+        }
     }
 }

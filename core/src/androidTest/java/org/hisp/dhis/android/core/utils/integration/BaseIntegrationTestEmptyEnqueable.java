@@ -28,13 +28,12 @@
 
 package org.hisp.dhis.android.core.utils.integration;
 
-import org.hisp.dhis.android.core.common.Unit;
 import org.junit.BeforeClass;
 
 public abstract class BaseIntegrationTestEmptyEnqueable extends BaseIntegrationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        setUpClass(IntegrationTestDatabaseContent.EmptyEnqueable, objects -> Unit::new);
+        setUpClass(IntegrationTestDatabaseContent.EmptyEnqueable);
     }
 }

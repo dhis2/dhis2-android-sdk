@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.testapp.imports;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.junit.Test;
@@ -45,7 +45,7 @@ import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
 public class TrackerImportConflictCollectionRepositoryMockIntegrationShould
-        extends SyncedDatabaseMockIntegrationShould {
+        extends BaseIntegrationTestFullDispatcher {
 
     @Test
     public void find_all() {

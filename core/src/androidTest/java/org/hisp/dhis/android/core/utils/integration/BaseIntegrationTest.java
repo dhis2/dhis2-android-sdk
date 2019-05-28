@@ -31,14 +31,10 @@ package org.hisp.dhis.android.core.utils.integration;
 import android.database.sqlite.SQLiteDatabase;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 
-import java.util.concurrent.Callable;
-import java.util.function.Function;
-
-abstract class BaseIntegrationTest {
+public abstract class BaseIntegrationTest {
 
     protected static IntegrationTestObjects objects;
     protected static D2 d2;
@@ -46,12 +42,13 @@ abstract class BaseIntegrationTest {
     protected static DatabaseAdapter databaseAdapter;
     protected static SQLiteDatabase database;
 
-    static void setUpClass(IntegrationTestDatabaseContent content,
-                           Function<IntegrationTestObjects, Callable<Unit>> setupOnce) throws Exception {
-        objects = IntegrationTestObjectsFactory.getObjects(content, setupOnce);
+    static boolean setUpClass(IntegrationTestDatabaseContent content) throws Exception {
+        IntegrationTestObjectsFactory.IntegrationTestObjectsWithIsNewInstance tuple = IntegrationTestObjectsFactory.getObjects(content);
+        objects = tuple.objects;
         d2 = objects.d2;
         database = objects.database;
         databaseAdapter = objects.databaseAdapter;
         dhis2MockServer = objects.dhis2MockServer;
+        return tuple.isNewInstance;
     }
 }

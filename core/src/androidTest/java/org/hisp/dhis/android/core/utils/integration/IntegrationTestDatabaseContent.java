@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.utils.integration;
 public enum IntegrationTestDatabaseContent {
     EmptyEnqueable,
     EmptyDispatcher,
+    FullDispatcher,
     MetadataEnqueable,
     MetadataDispatcher
 }

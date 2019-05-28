@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.indicator.Indicator;
 import org.junit.Test;
@@ -43,7 +43,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class DataSetModuleMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+public class DataSetModuleMockIntegrationShould extends BaseIntegrationTestFullDispatcher {
 
     @Test
     public void allow_access_to_all_data_sets_without_children() {

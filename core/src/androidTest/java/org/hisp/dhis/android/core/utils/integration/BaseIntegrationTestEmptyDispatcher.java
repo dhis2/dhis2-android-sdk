@@ -28,16 +28,15 @@
 
 package org.hisp.dhis.android.core.utils.integration;
 
-import org.hisp.dhis.android.core.common.Unit;
 import org.junit.BeforeClass;
 
 public abstract class BaseIntegrationTestEmptyDispatcher extends BaseIntegrationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        setUpClass(IntegrationTestDatabaseContent.EmptyDispatcher, objects -> {
+        boolean isNewInstance = setUpClass(IntegrationTestDatabaseContent.EmptyDispatcher);
+        if (isNewInstance) {
             objects.dhis2MockServer.setRequestDispatcher();
-            return Unit::new;
-        });
+        }
     }
 }

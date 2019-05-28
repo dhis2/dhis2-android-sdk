@@ -32,7 +32,7 @@ import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.junit.Test;
@@ -47,7 +47,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class TrackedEntityCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+public class TrackedEntityCollectionRepositoryMockIntegrationShould extends BaseIntegrationTestFullDispatcher {
 
     @Test
     public void find_all() {

@@ -34,9 +34,10 @@ public abstract class BaseIntegrationTestMetadataDispatcher extends BaseIntegrat
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        setUpClass(IntegrationTestDatabaseContent.MetadataDispatcher, objects -> {
+        boolean isNewInstance = setUpClass(IntegrationTestDatabaseContent.MetadataDispatcher);
+        if (isNewInstance) {
             objects.dhis2MockServer.setRequestDispatcher();
-            return objects.d2.syncMetaData();
-        });
+            objects.d2.syncMetaData().call();
+        }
     }
 }

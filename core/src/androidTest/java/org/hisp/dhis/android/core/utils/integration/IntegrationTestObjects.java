@@ -62,9 +62,9 @@ public class IntegrationTestObjects {
     public final D2 d2;
     public final Dhis2MockServer dhis2MockServer;
 
-    IntegrationTestObjects() throws Exception {
+    IntegrationTestObjects(String databaseName) throws Exception {
         DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext(),
-                null);
+                databaseName);
         database = dbOpenHelper.getWritableDatabase();
         databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
         resourceHandler = new ResourceHandler(ResourceStoreImpl.create(databaseAdapter));

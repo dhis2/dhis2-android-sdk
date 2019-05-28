@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.db.OrderByClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestFullDispatcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -50,7 +50,7 @@ import androidx.paging.PagedList;
 import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-public class PagingMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+public class PagingMockIntegrationShould extends BaseIntegrationTestFullDispatcher {
 
     @Rule
     public TestRule rule = new InstantTaskExecutorRule();
@@ -61,7 +61,7 @@ public class PagingMockIntegrationShould extends SyncedDatabaseMockIntegrationSh
 
     @Before
     public void setUp() {
-        store = getD2DIComponent().categoryOptionStore();
+        store = objects.d2DIComponent.categoryOptionStore();
         allValues = store.selectWhere("1", orderByClause, 8);
     }
 

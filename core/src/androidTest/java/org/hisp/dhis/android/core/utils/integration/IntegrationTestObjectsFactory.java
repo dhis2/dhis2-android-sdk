@@ -28,27 +28,24 @@
 
 package org.hisp.dhis.android.core.utils.integration;
 
-import org.hisp.dhis.android.core.common.Unit;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.function.Function;
 
 class IntegrationTestObjectsFactory {
 
     private static Map<IntegrationTestDatabaseContent, IntegrationTestObjects> instances = new HashMap<>();
 
-    static IntegrationTestObjects getObjects(IntegrationTestDatabaseContent content,
-                                             Function<IntegrationTestObjects, Callable<Unit>> setupOnce) throws Exception {
-        if (!instances.containsKey(content)) {
-            IntegrationTestObjects instance = new IntegrationTestObjects();
-            setupOnce.apply(instance).call();
+    static IntegrationTestObjectsWithIsNewInstance getObjects(IntegrationTestDatabaseContent content) throws Exception {
+        if (instances.containsKey(content)) {
+            return new IntegrationTestObjectsWithIsNewInstance(instances.get(content), false);
+
+        } else {
+            IntegrationTestObjects instance = new IntegrationTestObjects(null);
             instances.put(content, instance);
             scheduleTearDown(instance);
+            return new IntegrationTestObjectsWithIsNewInstance(instance, true);
         }
-        return instances.get(content);
     }
 
     private static void scheduleTearDown(IntegrationTestObjects instance) {
@@ -59,5 +56,15 @@ class IntegrationTestObjectsFactory {
                 e.printStackTrace();
             }
         }));
+    }
+
+    static class IntegrationTestObjectsWithIsNewInstance {
+        public final IntegrationTestObjects objects;
+        public final boolean isNewInstance;
+
+        IntegrationTestObjectsWithIsNewInstance(IntegrationTestObjects objects, boolean isNewInstance) {
+            this.objects = objects;
+            this.isNewInstance = isNewInstance;
+        }
     }
 }

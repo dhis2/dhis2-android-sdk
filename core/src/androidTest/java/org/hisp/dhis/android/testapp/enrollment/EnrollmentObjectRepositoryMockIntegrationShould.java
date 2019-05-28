@@ -29,13 +29,13 @@
 package org.hisp.dhis.android.testapp.enrollment;
 
 import org.hisp.dhis.android.core.common.Coordinates;
-import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
 import org.hisp.dhis.android.core.enrollment.EnrollmentObjectRepository;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestFullDispatcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -47,7 +47,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class EnrollmentObjectRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseIntegrationTestFullDispatcher {
 
     @Test
     public void update_organisation_unit() throws D2Error {

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.testapp.indicator;
 
-import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.indicator.Indicator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +41,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class IndicatorCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseIntegrationTestFullDispatcher {
 
     @Test
     public void find_all() {

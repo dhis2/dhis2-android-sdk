@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository;
@@ -48,7 +48,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class FiltersOperatorsMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+public class FiltersOperatorsMockIntegrationShould extends BaseIntegrationTestFullDispatcher {
 
     private final String NAME_1 = "Antenatal care visit - Program rules demo";
     private final String NAME_2 = "Child care visit - demo";

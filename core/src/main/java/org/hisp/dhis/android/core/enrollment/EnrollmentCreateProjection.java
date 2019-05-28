@@ -26,21 +26,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.enrollment;
+
+import com.google.auto.value.AutoValue;
 
 import androidx.annotation.NonNull;
 
-public interface StoreWithState {
+@AutoValue
+public abstract class EnrollmentCreateProjection {
 
-    int setState(@NonNull String uid, @NonNull State state);
+    @NonNull
+    public abstract String organisationUnit();
 
-    int setStateForUpdate(@NonNull String uid);
+    @NonNull
+    public abstract String program();
 
-    int setStateForDelete(@NonNull String uid);
+    @NonNull
+    public abstract String trackedEntityInstance();
 
-    HandleAction setStateOrDelete(@NonNull String uid, @NonNull State state);
+    public static EnrollmentCreateProjection create(
+            String organisationUnit, String program, String trackedEntityInstance) {
+        return builder()
+                .organisationUnit(organisationUnit)
+                .program(program)
+                .trackedEntityInstance(trackedEntityInstance)
+                .build();
+    }
 
-    State getState(@NonNull String uid);
+    public static Builder builder() {
+        return new AutoValue_EnrollmentCreateProjection.Builder();
+    }
 
-    Boolean exists(@NonNull String uid);
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder organisationUnit(String organisationUnit);
+
+        public abstract Builder program(String program);
+
+        public abstract Builder trackedEntityInstance(String trackedEntityInstance);
+
+        public abstract EnrollmentCreateProjection build();
+    }
 }

@@ -25,10 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.DoubleFilterConnector;
@@ -36,6 +37,9 @@ import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
+import org.hisp.dhis.android.core.common.DataStatePropagator;
+import org.hisp.dhis.android.core.common.Transformer;
 
 import java.util.Map;
 
@@ -44,16 +48,29 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public final class EnrollmentCollectionRepository
-        extends ReadOnlyWithUidCollectionRepositoryImpl<Enrollment, EnrollmentCollectionRepository> {
+public final class EnrollmentCollectionRepository extends ReadWriteWithUidCollectionRepositoryImpl
+        <Enrollment, EnrollmentCreateProjection, EnrollmentCollectionRepository> {
+
+    private final EnrollmentStore store;
+    private final DataStatePropagator dataStatePropagator;
 
     @Inject
     EnrollmentCollectionRepository(
             final EnrollmentStore store,
             final Map<String, ChildrenAppender<Enrollment>> childrenAppenders,
-            final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new EnrollmentCollectionRepository(store, childrenAppenders, s)));
+            final RepositoryScope scope,
+            final Transformer<EnrollmentCreateProjection, Enrollment> transformer,
+            final DataStatePropagator dataStatePropagator) {
+        super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope, s ->
+                new EnrollmentCollectionRepository(store, childrenAppenders, s, transformer, dataStatePropagator)));
+        this.store = store;
+        this.dataStatePropagator = dataStatePropagator;
+    }
+
+    @Override
+    public EnrollmentObjectRepository uid(String uid) {
+        RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
+        return new EnrollmentObjectRepository(store, uid, childrenAppenders, updatedScope, dataStatePropagator);
     }
 
     public StringFilterConnector<EnrollmentCollectionRepository> byUid() {

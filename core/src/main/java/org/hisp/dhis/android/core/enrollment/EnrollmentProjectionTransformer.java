@@ -26,21 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.enrollment;
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.Transformer;
+import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 
-public interface StoreWithState {
+import java.util.Date;
 
-    int setState(@NonNull String uid, @NonNull State state);
+final class EnrollmentProjectionTransformer implements Transformer<EnrollmentCreateProjection, Enrollment> {
 
-    int setStateForUpdate(@NonNull String uid);
+    @Override
+    public Enrollment transform(EnrollmentCreateProjection projection) {
+        String generatedUid = new CodeGeneratorImpl().generate();
+        Date creationDate = new Date();
 
-    int setStateForDelete(@NonNull String uid);
-
-    HandleAction setStateOrDelete(@NonNull String uid, @NonNull State state);
-
-    State getState(@NonNull String uid);
-
-    Boolean exists(@NonNull String uid);
+        return Enrollment.builder()
+                .uid(generatedUid)
+                .state(State.TO_POST)
+                .created(creationDate)
+                .lastUpdated(creationDate)
+                .createdAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
+                .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
+                .organisationUnit(projection.organisationUnit())
+                .program(projection.program())
+                .trackedEntityInstance(projection.trackedEntityInstance())
+                .build();
+    }
 }

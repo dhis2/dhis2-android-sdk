@@ -47,6 +47,8 @@ public class IdentifiableObjectWithStateStoreImpl<M extends Model & ObjectWithUi
     private final String selectStateQuery;
     private final String existsQuery;
     private final SQLiteStatement setStateStatement;
+    private final SQLiteStatement setStateForUpdateStatement;
+    private final SQLiteStatement setStateForDeleteStatement;
     protected final String tableName;
 
     public IdentifiableObjectWithStateStoreImpl(DatabaseAdapter databaseAdapter,
@@ -55,14 +57,32 @@ public class IdentifiableObjectWithStateStoreImpl<M extends Model & ObjectWithUi
                                                 CursorModelFactory<M> modelFactory) {
         super(databaseAdapter, statements, builder, binder, modelFactory);
         this.tableName = builder.tableName;
+        String whereUid =  " WHERE " + UID + " =?;";
 
-        String setStateUpdate = "UPDATE " + tableName + " SET " +
-                STATE + " =?" +
-                " WHERE " +
-                UID + " =?;";
-        this.setStateStatement = databaseAdapter.compileStatement(setStateUpdate);
-        this.selectStateQuery = "SELECT state FROM " + tableName + " WHERE " + UID + " =?;";
-        this.existsQuery = "SELECT 1 FROM " + tableName + " WHERE " + UID + " =?;";
+        String setState = "UPDATE " + tableName + " SET " +
+                STATE + " =?" + whereUid;
+        this.setStateStatement = databaseAdapter.compileStatement(setState);
+
+        String setStateForUpdate = "UPDATE " + tableName + " SET " +
+                STATE + " = (case " +
+                    "when " + STATE + " = 'TO_POST' then 'TO_POST' " +
+                    "when " + STATE + " = 'TO_UPDATE' OR " +
+                        STATE + " = 'SYNCED' OR " +
+                        STATE + " = 'ERROR' OR " +
+                        STATE + " = 'WARNING' then 'TO_UPDATE'" +
+                        " END)" +
+                    " where "  +
+                        UID + " =?" +
+                        " and " +
+                        STATE + " != 'TO_DELETE';";
+        this.setStateForUpdateStatement = databaseAdapter.compileStatement(setStateForUpdate);
+
+        String setStateForDelete = "UPDATE " + tableName + " SET " +
+                STATE + " = 'TO_DELETE'" + whereUid;
+        this.setStateForDeleteStatement = databaseAdapter.compileStatement(setStateForDelete);
+
+        this.selectStateQuery = "SELECT state FROM " + tableName + whereUid;
+        this.existsQuery = "SELECT 1 FROM " + tableName + whereUid;
 
     }
 
@@ -75,6 +95,26 @@ public class IdentifiableObjectWithStateStoreImpl<M extends Model & ObjectWithUi
 
         int updatedRow = databaseAdapter.executeUpdateDelete(tableName, setStateStatement);
         setStateStatement.clearBindings();
+
+        return updatedRow;
+    }
+
+    @Override
+    public int setStateForUpdate(@NonNull String uid) {
+        sqLiteBind(setStateForUpdateStatement, 1, uid);
+
+        int updatedRow = databaseAdapter.executeUpdateDelete(tableName, setStateForUpdateStatement);
+        setStateForUpdateStatement.clearBindings();
+
+        return updatedRow;
+    }
+
+    @Override
+    public int setStateForDelete(@NonNull String uid) {
+        sqLiteBind(setStateForDeleteStatement, 1, uid);
+
+        int updatedRow = databaseAdapter.executeUpdateDelete(tableName, setStateForDeleteStatement);
+        setStateForDeleteStatement.clearBindings();
 
         return updatedRow;
     }

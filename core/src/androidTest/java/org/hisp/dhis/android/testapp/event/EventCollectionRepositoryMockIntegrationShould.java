@@ -216,7 +216,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends SyncedDataba
                         .byState().eq(State.SYNCED)
                         .get();
 
-        assertThat(events.size(), is(2));
+        assertThat(events.size(), is(4));
     }
 
     @Test

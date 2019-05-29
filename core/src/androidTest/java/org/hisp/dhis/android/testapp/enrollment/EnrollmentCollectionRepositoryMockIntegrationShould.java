@@ -212,7 +212,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends SyncedD
                 d2.enrollmentModule().enrollments
                         .byState().eq(State.SYNCED)
                         .get();
-        assertThat(enrollments.size(), is(4));
+        assertThat(enrollments.size(), is(2));
     }
 
     @Test

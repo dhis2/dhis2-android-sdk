@@ -25,16 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.concurrent.Callable;
 
-public interface ReadOnlyWithUploadWithUidCollectionRepository<M extends Model & ObjectWithUidInterface>
-        extends ReadOnlyWithUidCollectionRepository<M> {
-    Callable<WebResponse> upload() throws D2Error;
+public interface ReadOnlyWithUploadCollectionRepository<M extends Model> extends ReadOnlyCollectionRepository<M> {
+    Callable<DataValueImportSummary> upload() throws D2Error;
 }

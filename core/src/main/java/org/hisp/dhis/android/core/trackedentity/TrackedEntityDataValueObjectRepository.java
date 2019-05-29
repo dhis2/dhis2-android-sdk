@@ -44,28 +44,42 @@ public final class TrackedEntityDataValueObjectRepository
         implements ReadWriteValueObjectRepository<TrackedEntityDataValue> {
 
     private final DataStatePropagator dataStatePropagator;
+    private final String event;
+    private final String dataElement;
     private TrackedEntityDataValue trackedEntityDataValue;
 
     TrackedEntityDataValueObjectRepository(
             final TrackedEntityDataValueStore store,
             final Map<String, ChildrenAppender<TrackedEntityDataValue>> childrenAppenders,
             final RepositoryScope scope,
-            final DataStatePropagator dataStatePropagator) {
-        super(store, childrenAppenders, scope,
-                s -> new TrackedEntityDataValueObjectRepository(store, childrenAppenders, s, dataStatePropagator));
+            final DataStatePropagator dataStatePropagator,
+            final String event,
+            final String dataElement) {
+        super(store, childrenAppenders, scope, s -> new TrackedEntityDataValueObjectRepository(
+                store, childrenAppenders, s, dataStatePropagator, event, dataElement));
         this.dataStatePropagator = dataStatePropagator;
+        this.event = event;
+        this.dataElement = dataElement;
     }
 
     public Unit set(String value) throws D2Error {
-        return updateObject(updateBuilder().value(value).build());
+        trackedEntityDataValue = setBuilder().value(value).build();
+        return setObject(trackedEntityDataValue);
     }
 
-    private TrackedEntityDataValue.Builder updateBuilder() {
-        trackedEntityDataValue = getWithoutChildren();
-        Date updateDate = new Date();
-
-        return trackedEntityDataValue.toBuilder()
-                .lastUpdated(updateDate);
+    private TrackedEntityDataValue.Builder setBuilder() {
+        Date date = new Date();
+        if (exists()) {
+            return getWithoutChildren().toBuilder()
+                    .lastUpdated(date);
+        } else {
+            return TrackedEntityDataValue.builder()
+                    .created(date)
+                    .lastUpdated(date)
+                    .providedElsewhere(Boolean.FALSE)
+                    .event(event)
+                    .dataElement(dataElement);
+        }
     }
 
     @Override

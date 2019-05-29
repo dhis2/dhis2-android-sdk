@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.configuration;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,7 +42,7 @@ import okhttp3.HttpUrl;
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
-public class ConfigurationStoreShould extends AbsStoreTestCase {
+public class ConfigurationStoreShould extends BaseRealIntegrationTest {
     private static final String[] PROJECTION = {ConfigurationTableInfo.Columns.ID,
             ConfigurationTableInfo.Columns.SERVER_URL};
 

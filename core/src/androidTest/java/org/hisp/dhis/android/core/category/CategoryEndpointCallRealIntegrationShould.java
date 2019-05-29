@@ -32,7 +32,7 @@ import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
 
@@ -43,7 +43,7 @@ import java.util.concurrent.Callable;
 
 import static junit.framework.Assert.assertFalse;
 
-public class CategoryEndpointCallRealIntegrationShould extends AbsStoreTestCase {
+public class CategoryEndpointCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     private D2 d2;
 

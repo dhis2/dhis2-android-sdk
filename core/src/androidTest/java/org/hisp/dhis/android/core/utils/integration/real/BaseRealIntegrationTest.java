@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.utils.integration.real;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -40,6 +40,10 @@ import org.hisp.dhis.android.core.D2DIComponent;
 import org.hisp.dhis.android.core.DaggerD2DIComponent;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
+import org.hisp.dhis.android.core.data.database.DbOpenHelper;
+import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.After;
@@ -50,7 +54,7 @@ import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public abstract class AbsStoreTestCase {
+public abstract class BaseRealIntegrationTest {
     private SQLiteDatabase sqLiteDatabase;
     private DatabaseAdapter databaseAdapter;
 

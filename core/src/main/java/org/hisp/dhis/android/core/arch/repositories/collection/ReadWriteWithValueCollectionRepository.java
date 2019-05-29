@@ -26,44 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.Transformer;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
-import java.util.Collections;
-import java.util.Map;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class TrackedEntityDataValueEntityDIModule {
-
-    @Provides
-    @Reusable
-    public TrackedEntityDataValueStore store(DatabaseAdapter databaseAdapter) {
-        return TrackedEntityDataValueStoreImpl.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    public SyncHandlerWithTransformer<TrackedEntityDataValue> handler(TrackedEntityDataValueStore store) {
-        return new TrackedEntityDataValueHandler(store);
-    }
-
-    @Provides
-    @Reusable
-    Transformer<TrackedEntityDataValueCreateProjection, TrackedEntityDataValue> transformer() {
-        return new TrackedEntityDataValueProjectionTransformer();
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<TrackedEntityDataValue>> childrenAppenders() {
-        return Collections.emptyMap();
-    }
+public interface ReadWriteWithValueCollectionRepository<M extends Model, C> extends ReadOnlyCollectionRepository<M> {
+    M add(C c) throws D2Error;
 }

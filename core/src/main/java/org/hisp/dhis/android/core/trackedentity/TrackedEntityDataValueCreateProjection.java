@@ -28,42 +28,44 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.Transformer;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import com.google.auto.value.AutoValue;
 
-import java.util.Collections;
-import java.util.Map;
+import androidx.annotation.NonNull;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+@AutoValue
+public abstract class TrackedEntityDataValueCreateProjection {
 
-@Module
-public final class TrackedEntityDataValueEntityDIModule {
+    @NonNull
+    public abstract String event();
 
-    @Provides
-    @Reusable
-    public TrackedEntityDataValueStore store(DatabaseAdapter databaseAdapter) {
-        return TrackedEntityDataValueStoreImpl.create(databaseAdapter);
+    @NonNull
+    public abstract String dataElement();
+
+    @NonNull
+    public abstract String value();
+
+    public static TrackedEntityDataValueCreateProjection create(String event, String dataElement, String value) {
+        return builder()
+                .event(event)
+                .dataElement(dataElement)
+                .value(value)
+                .build();
     }
 
-    @Provides
-    @Reusable
-    public SyncHandlerWithTransformer<TrackedEntityDataValue> handler(TrackedEntityDataValueStore store) {
-        return new TrackedEntityDataValueHandler(store);
+    public static Builder builder() {
+        return new AutoValue_TrackedEntityDataValueCreateProjection.Builder();
     }
 
-    @Provides
-    @Reusable
-    Transformer<TrackedEntityDataValueCreateProjection, TrackedEntityDataValue> transformer() {
-        return new TrackedEntityDataValueProjectionTransformer();
-    }
+    public abstract Builder toBuilder();
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<TrackedEntityDataValue>> childrenAppenders() {
-        return Collections.emptyMap();
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder event(String event);
+
+        public abstract Builder dataElement(String dataElement);
+
+        public abstract Builder value(String value);
+
+        public abstract TrackedEntityDataValueCreateProjection build();
     }
 }

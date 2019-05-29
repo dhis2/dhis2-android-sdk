@@ -39,19 +39,19 @@ public abstract class TrackedEntityAttributeValueCreateProjection {
     public abstract String trackedEntityAttribute();
 
     @NonNull
-    public abstract String value();
+    public abstract String trackedEntityInstance();
 
     @NonNull
-    public abstract String trackedEntityInstance();
+    public abstract String value();
 
     public static TrackedEntityAttributeValueCreateProjection create(
             String trackedEntityAttribute,
-            String value,
-            String trackedEntityInstance) {
+            String trackedEntityInstance,
+            String value) {
         return builder()
                 .trackedEntityAttribute(trackedEntityAttribute)
-                .value(value)
                 .trackedEntityInstance(trackedEntityInstance)
+                .value(value)
                 .build();
     }
 
@@ -59,15 +59,13 @@ public abstract class TrackedEntityAttributeValueCreateProjection {
         return new AutoValue_TrackedEntityAttributeValueCreateProjection.Builder();
     }
 
-    public abstract Builder toBuilder();
-
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract Builder trackedEntityAttribute(String trackedEntityAttribute);
 
-        public abstract Builder value(String value);
-
         public abstract Builder trackedEntityInstance(String trackedEntityInstance);
+
+        public abstract Builder value(String value);
 
         public abstract TrackedEntityAttributeValueCreateProjection build();
     }

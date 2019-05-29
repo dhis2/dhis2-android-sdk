@@ -31,6 +31,7 @@ package org.hisp.dhis.android.testapp.datavalue;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.junit.Test;
@@ -173,6 +174,16 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends SyncedDa
                         .get();
 
         assertThat(dataValues.size(), is(2));
+    }
+
+    @Test
+    public void filter_by_state() {
+        List<DataValue> dataValues =
+                d2.dataValueModule().dataValues
+                        .byState().eq(State.SYNCED)
+                        .get();
+
+        assertThat(dataValues.size(), is(3));
     }
 
 }

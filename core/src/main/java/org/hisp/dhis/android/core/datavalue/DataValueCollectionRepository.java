@@ -34,9 +34,11 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectio
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -136,5 +138,9 @@ public final class DataValueCollectionRepository
 
     public BooleanFilterConnector<DataValueCollectionRepository> byFollowUp() {
         return cf.bool(DataValueFields.FOLLOW_UP);
+    }
+
+    public EnumFilterConnector<DataValueCollectionRepository, State> byState() {
+        return cf.enumC(BaseDataModel.Columns.STATE);
     }
 }

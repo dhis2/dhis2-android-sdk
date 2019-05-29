@@ -44,32 +44,44 @@ public final class TrackedEntityAttributeValueObjectRepository extends ReadWrite
         implements ReadWriteValueObjectRepository<TrackedEntityAttributeValue> {
 
     private final DataStatePropagator dataStatePropagator;
-    private TrackedEntityAttributeValue trackedEntityAttributeValue;
+    private final String trackedEntityAttribute;
+    private final String trackedEntityInstance;
 
     TrackedEntityAttributeValueObjectRepository(
             final TrackedEntityAttributeValueStore store,
             final Map<String, ChildrenAppender<TrackedEntityAttributeValue>> childrenAppenders,
             final RepositoryScope scope,
-            final DataStatePropagator dataStatePropagator) {
+            final DataStatePropagator dataStatePropagator,
+            final String trackedEntityAttribute,
+            final String trackedEntityInstance) {
         super(store, childrenAppenders, scope, s -> new TrackedEntityAttributeValueObjectRepository(
-                store, childrenAppenders, s, dataStatePropagator));
+                store, childrenAppenders, s, dataStatePropagator, trackedEntityAttribute, trackedEntityInstance));
         this.dataStatePropagator = dataStatePropagator;
+        this.trackedEntityAttribute = trackedEntityAttribute;
+        this.trackedEntityInstance = trackedEntityInstance;
     }
 
     public Unit set(String value) throws D2Error {
-        return updateObject(updateBuilder().value(value).build());
+        objectWithValue = setBuilder().value(value).build();
+        return setObject(objectWithValue);
     }
 
-    private TrackedEntityAttributeValue.Builder updateBuilder() {
-        trackedEntityAttributeValue = getWithoutChildren();
-        Date updateDate = new Date();
-
-        return trackedEntityAttributeValue.toBuilder()
-                .lastUpdated(updateDate);
+    private TrackedEntityAttributeValue.Builder setBuilder() {
+        Date date = new Date();
+        if (exists()) {
+            return getWithoutChildren().toBuilder()
+                    .lastUpdated(date);
+        } else {
+            return TrackedEntityAttributeValue.builder()
+                    .created(date)
+                    .lastUpdated(date)
+                    .trackedEntityAttribute(trackedEntityAttribute)
+                    .trackedEntityInstance(trackedEntityInstance);
+        }
     }
 
     @Override
     protected void propagateState() {
-        dataStatePropagator.propagateTrackedEntityAttributeUpdate(trackedEntityAttributeValue);
+        dataStatePropagator.propagateTrackedEntityAttributeUpdate(objectWithValue);
     }
 }

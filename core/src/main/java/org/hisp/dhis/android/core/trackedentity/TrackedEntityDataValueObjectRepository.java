@@ -46,7 +46,6 @@ public final class TrackedEntityDataValueObjectRepository
     private final DataStatePropagator dataStatePropagator;
     private final String event;
     private final String dataElement;
-    private TrackedEntityDataValue trackedEntityDataValue;
 
     TrackedEntityDataValueObjectRepository(
             final TrackedEntityDataValueStore store,
@@ -63,8 +62,8 @@ public final class TrackedEntityDataValueObjectRepository
     }
 
     public Unit set(String value) throws D2Error {
-        trackedEntityDataValue = setBuilder().value(value).build();
-        return setObject(trackedEntityDataValue);
+        objectWithValue = setBuilder().value(value).build();
+        return setObject(objectWithValue);
     }
 
     private TrackedEntityDataValue.Builder setBuilder() {
@@ -84,6 +83,6 @@ public final class TrackedEntityDataValueObjectRepository
 
     @Override
     protected void propagateState() {
-        dataStatePropagator.propagateTrackedEntityDataValueUpdate(trackedEntityDataValue);
+        dataStatePropagator.propagateTrackedEntityDataValueUpdate(objectWithValue);
     }
 }

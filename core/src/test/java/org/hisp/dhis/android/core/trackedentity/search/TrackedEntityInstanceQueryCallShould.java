@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +41,6 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.stubbing.OngoingStubbing;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -117,11 +115,6 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
 
         // Metadata call
         call = new TrackedEntityInstanceQueryCallFactory(service, mapper, apiCallExecutor).getCallInternal(query);
-    }
-
-    @After
-    public void tearDown() throws IOException {
-        super.tearDown();
     }
 
     @Test

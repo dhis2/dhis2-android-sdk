@@ -26,22 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.utils.integration.mock;
 
-import android.database.sqlite.SQLiteDatabase;
-
-import com.facebook.stetho.Stetho;
-
-import org.hisp.dhis.android.core.AppContextDIModule;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2DIComponent;
-import org.hisp.dhis.android.core.DaggerD2DIComponent;
-import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
-import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.data.imports.TrackerImportConflictSamples;
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.TrackerImportConflictStore;
@@ -49,37 +38,20 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.maintenance.D2ErrorStore;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
-import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
-
-@RunWith(AndroidJUnit4.class)
-public abstract class SyncedDatabaseMockIntegrationShould {
-
-    private static SQLiteDatabase sqLiteDatabase;
-    private static Dhis2MockServer dhis2MockServer;
-
-    protected static DatabaseAdapter databaseAdapter;
-    protected static D2 d2;
+@RunWith(D2JunitRunner.class)
+public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockIntegrationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        if (d2 == null) {
-            DbOpenHelper dbOpenHelper = new DbOpenHelper(
-                    InstrumentationRegistry.getTargetContext().getApplicationContext(), "synced.db");
-            sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-            databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
-            dhis2MockServer = new Dhis2MockServer();
-            d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter);
-            Stetho.initializeWithDefaults(InstrumentationRegistry.getTargetContext().getApplicationContext());
-
-            d2.wipeModule().wipeEverything();
-
+        boolean isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.FullDispatcher);
+        if (isNewInstance) {
             dhis2MockServer.setRequestDispatcher();
 
             login();
@@ -152,13 +124,5 @@ public abstract class SyncedDatabaseMockIntegrationShould {
                 .status(ImportStatus.ERROR)
                 .build()
         );
-    }
-
-    protected D2DIComponent getD2DIComponent() {
-        return DaggerD2DIComponent.builder()
-                .databaseDIModule(new DatabaseDIModule(databaseAdapter))
-                .apiClientDIModule(new APIClientDIModule(d2.retrofit()))
-                .appContextDIModule(new AppContextDIModule(InstrumentationRegistry.getTargetContext().getApplicationContext()))
-                .build();
     }
 }

@@ -31,50 +31,29 @@ package org.hisp.dhis.android.core.user;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
-import org.junit.After;
-import org.junit.Before;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
 import java.util.concurrent.Callable;
-
-import androidx.test.runner.AndroidJUnit4;
 
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
-@RunWith(AndroidJUnit4.class)
-public class UserCallMockIntegrationShould extends AbsStoreTestCase {
+@RunWith(D2JunitRunner.class)
+public class UserCallMockIntegrationShould extends BaseMockIntegrationTestEmptyEnqueable {
 
-    private Dhis2MockServer dhis2MockServer;
-    private Callable<User> userCall;
+    private static Callable<User> userCall;
 
-    @Override
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
-        dhis2MockServer = new Dhis2MockServer();
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        BaseMockIntegrationTestEmptyEnqueable.setUpClass();
 
-        dhis2MockServer.enqueueMockResponse("user/user.json");
-        D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
-
-        // ToDo: consider moving this out
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());
-        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
-        userCall = getD2DIComponent(d2).internalModules().user.userCall;
+        userCall = objects.d2DIComponent.internalModules().user.userCall;
 
         ContentValues program1 = CreateProgramUtils.create(1L, "eBAyeGv0exc", null, null, null);
         ContentValues program2 = CreateProgramUtils.create(2L, "ur1Edk5Oe2n", null, null, null);
@@ -82,18 +61,20 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
         ContentValues program4 = CreateProgramUtils.create(4L, "WSGAb5XwJ3Y", null, null, null);
         ContentValues program5 = CreateProgramUtils.create(5L, "IpHINAT79UW", null, null, null);
 
-        database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program1);
-        database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program2);
-        database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program3);
-        database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program4);
-        database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program5);
+        database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program1);
+        database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program2);
+        database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program3);
+        database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program4);
+        database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program5);
     }
 
     @Test
     public void persist_user_in_data_base_when_call() throws Exception {
+        dhis2MockServer.enqueueMockResponse("user/user.json");
+
         userCall.call();
 
-        Cursor userCursor = database().query(UserTableInfo.TABLE_INFO.name(), UserTableInfo.TABLE_INFO.columns().all(), null, null, null, null, null);
+        Cursor userCursor = database.query(UserTableInfo.TABLE_INFO.name(), UserTableInfo.TABLE_INFO.columns().all(), null, null, null, null, null);
 
         assertThatCursor(userCursor).hasRow(
                 "DXyJmlo9rge",
@@ -120,6 +101,8 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
 
     @Test
     public void persist_user_credentials_in_data_base_when_call() throws Exception {
+        dhis2MockServer.enqueueMockResponse("user/user.json");
+
         userCall.call();
 
         String[] projection = {
@@ -134,7 +117,7 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
         };
 
 
-        Cursor userCredentialsCursor = database().query(UserCredentialsTableInfo.TABLE_INFO.name(), projection,
+        Cursor userCredentialsCursor = database.query(UserCredentialsTableInfo.TABLE_INFO.name(), projection,
                 null, null, null, null, null);
 
         assertThatCursor(userCredentialsCursor).hasRow(
@@ -147,12 +130,5 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
                 "android",
                 "DXyJmlo9rge"
         ).isExhausted();
-    }
-
-    @After
-    @Override
-    public void tearDown() throws IOException {
-        super.tearDown();
-        dhis2MockServer.shutdown();
     }
 }

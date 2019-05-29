@@ -28,22 +28,21 @@
 
 package org.hisp.dhis.android.testapp.trackedentity;
 
-import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceObjectRepository;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import androidx.test.runner.AndroidJUnit4;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-@RunWith(AndroidJUnit4.class)
-public class TrackedEntityInstanceObjectRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+@RunWith(D2JunitRunner.class)
+public class TrackedEntityInstanceObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
     public void update_organisation_unit() throws D2Error {

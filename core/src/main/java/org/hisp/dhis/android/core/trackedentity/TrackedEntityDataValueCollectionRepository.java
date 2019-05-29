@@ -78,7 +78,6 @@ public final class TrackedEntityDataValueCollectionRepository extends ReadWriteW
         return new TrackedEntityDataValueObjectRepository(store, childrenAppenders, updatedScope, dataStatePropagator);
     }
 
-
     public StringFilterConnector<TrackedEntityDataValueCollectionRepository> byEvent() {
         return cf.string(TrackedEntityDataValueTableInfo.Columns.EVENT);
     }

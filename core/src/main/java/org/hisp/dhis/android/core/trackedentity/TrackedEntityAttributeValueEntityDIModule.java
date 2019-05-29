@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collections;
@@ -52,6 +53,12 @@ public final class TrackedEntityAttributeValueEntityDIModule {
     @Reusable
     public SyncHandlerWithTransformer<TrackedEntityAttributeValue> handler(TrackedEntityAttributeValueStore store) {
         return new TrackedEntityAttributeValueHandler(store);
+    }
+
+    @Provides
+    @Reusable
+    Transformer<TrackedEntityAttributeValueCreateProjection, TrackedEntityAttributeValue> transformer() {
+        return new TrackedEntityAttributeValueProjectionTransformer();
     }
 
     @Provides

@@ -32,7 +32,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import androidx.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionSetTableInfo;
@@ -46,7 +46,7 @@ import static org.hisp.dhis.android.core.common.StoreMocks.optionSetCursorAssert
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class IdentifiableObjectStoreIntegrationShould extends AbsStoreTestCase {
+public class IdentifiableObjectStoreIntegrationShould extends BaseRealIntegrationTest {
 
     private IdentifiableObjectStore<OptionSet> store;
 

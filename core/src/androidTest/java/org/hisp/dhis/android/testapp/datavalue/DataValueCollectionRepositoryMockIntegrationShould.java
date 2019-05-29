@@ -28,12 +28,11 @@
 
 package org.hisp.dhis.android.testapp.datavalue;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.datavalue.DataValue;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,8 +42,8 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-@RunWith(AndroidJUnit4.class)
-public class DataValueCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+@RunWith(D2JunitRunner.class)
+public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
     public void find_all() {

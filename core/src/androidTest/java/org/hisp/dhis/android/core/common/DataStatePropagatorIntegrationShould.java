@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
@@ -54,7 +54,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class DataStatePropagatorIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     private DataStatePropagator propagator;
     private TrackedEntityInstanceStore trackedEntityInstanceStore;
@@ -119,7 +119,7 @@ public class DataStatePropagatorIntegrationShould extends SyncedDatabaseMockInte
                 TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp"));
         trackedEntityInstanceStore.setState(teiUid, state);
 
-        propagator.propagateEnrollmentState(Enrollment.builder().trackedEntityInstance(teiUid).build());
+        propagator.propagateEnrollmentUpdate(Enrollment.builder().trackedEntityInstance(teiUid).build());
 
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(State.TO_UPDATE));
         trackedEntityInstanceStore.delete(teiUid);
@@ -130,7 +130,7 @@ public class DataStatePropagatorIntegrationShould extends SyncedDatabaseMockInte
                 TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp"));
         trackedEntityInstanceStore.setState(teiUid, state);
 
-        propagator.propagateEnrollmentState(Enrollment.builder().trackedEntityInstance(teiUid).build());
+        propagator.propagateEnrollmentUpdate(Enrollment.builder().trackedEntityInstance(teiUid).build());
 
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(state));
         trackedEntityInstanceStore.delete(teiUid);
@@ -145,7 +145,7 @@ public class DataStatePropagatorIntegrationShould extends SyncedDatabaseMockInte
         trackedEntityInstanceStore.setState(teiUid, state);
         enrollmentStore.setState(enrolmentUid, state);
 
-        propagator.propagateEventState(Event.builder()
+        propagator.propagateEventUpdate(Event.builder()
                 .trackedEntityInstance(teiUid).enrollment(enrolmentUid).build());
 
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(State.TO_UPDATE));
@@ -162,7 +162,7 @@ public class DataStatePropagatorIntegrationShould extends SyncedDatabaseMockInte
         trackedEntityInstanceStore.setState(teiUid, state);
         enrollmentStore.setState(enrolmentUid, state);
 
-        propagator.propagateEventState(Event.builder()
+        propagator.propagateEventUpdate(Event.builder()
                 .trackedEntityInstance(teiUid).enrollment(enrolmentUid).build());
 
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(state));
@@ -183,7 +183,7 @@ public class DataStatePropagatorIntegrationShould extends SyncedDatabaseMockInte
         enrollmentStore.setState(enrolmentUid, state);
         eventStore.setState(eventUid, state);
 
-        propagator.propagateTrackedEntityDataValueState(TrackedEntityDataValue.builder().event(eventUid).build());
+        propagator.propagateTrackedEntityDataValueUpdate(TrackedEntityDataValue.builder().event(eventUid).build());
 
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(State.TO_UPDATE));
         assertThat(enrollmentStore.selectByUid(enrolmentUid).state(), is(State.TO_UPDATE));
@@ -204,7 +204,7 @@ public class DataStatePropagatorIntegrationShould extends SyncedDatabaseMockInte
         enrollmentStore.setState(enrolmentUid, state);
         eventStore.setState(eventUid, state);
 
-        propagator.propagateTrackedEntityDataValueState(TrackedEntityDataValue.builder().event(eventUid).build());
+        propagator.propagateTrackedEntityDataValueUpdate(TrackedEntityDataValue.builder().event(eventUid).build());
 
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(state));
         assertThat(enrollmentStore.selectByUid(enrolmentUid).state(), is(state));

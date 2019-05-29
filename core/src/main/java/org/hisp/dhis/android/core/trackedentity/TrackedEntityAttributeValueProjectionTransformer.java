@@ -26,17 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event.api;
+package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.common.Transformer;
 
-public class EventAPI29Should extends EventAPIShould {
+import java.util.Date;
 
-    public EventAPI29Should() {
-        super(RealServerMother.url2_29, "CREATE_AND_UPDATE");
-    }
+final class TrackedEntityAttributeValueProjectionTransformer
+        implements Transformer<TrackedEntityAttributeValueCreateProjection, TrackedEntityAttributeValue> {
 
-    //@Test
-    public void stub() {
+    @Override
+    public TrackedEntityAttributeValue transform(TrackedEntityAttributeValueCreateProjection projection) {
+        Date creationDate = new Date();
+
+        return TrackedEntityAttributeValue.builder()
+                .created(creationDate)
+                .lastUpdated(creationDate)
+                .trackedEntityAttribute(projection.trackedEntityAttribute())
+                .trackedEntityInstance(projection.trackedEntityInstance())
+                .value(projection.value())
+                .build();
     }
 }

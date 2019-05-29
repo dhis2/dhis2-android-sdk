@@ -29,11 +29,15 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithValueCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
+import org.hisp.dhis.android.core.common.DataStatePropagator;
+import org.hisp.dhis.android.core.common.Transformer;
 
 import java.util.Map;
 
@@ -43,16 +47,37 @@ import dagger.Reusable;
 
 @Reusable
 public final class TrackedEntityAttributeValueCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl<TrackedEntityAttributeValue,
-        TrackedEntityAttributeValueCollectionRepository> {
+        extends ReadWriteWithValueCollectionRepositoryImpl<TrackedEntityAttributeValue,
+        TrackedEntityAttributeValueCreateProjection, TrackedEntityAttributeValueCollectionRepository> {
+
+    private final TrackedEntityAttributeValueStore store;
+    private final DataStatePropagator dataStatePropagator;
 
     @Inject
     TrackedEntityAttributeValueCollectionRepository(
             final TrackedEntityAttributeValueStore store,
             final Map<String, ChildrenAppender<TrackedEntityAttributeValue>> childrenAppenders,
-            final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new TrackedEntityAttributeValueCollectionRepository(store, childrenAppenders, s)));
+            final RepositoryScope scope,
+            final Transformer<TrackedEntityAttributeValueCreateProjection, TrackedEntityAttributeValue> transformer,
+            final DataStatePropagator dataStatePropagator) {
+        super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope,
+                s -> new TrackedEntityAttributeValueCollectionRepository(
+                        store, childrenAppenders, s, transformer, dataStatePropagator)));
+        this.store = store;
+        this.dataStatePropagator = dataStatePropagator;
+    }
+
+    public TrackedEntityAttributeValueObjectRepository value(String trackedEntityAttribute,
+                                                             String trackedEntityInstance) {
+        RepositoryScope updatedScope = RepositoryScopeHelper.withFilterItem(scope, RepositoryScopeFilterItem.builder()
+                .key(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE).operator("=")
+                .value("'" + trackedEntityAttribute + "'").build());
+        updatedScope = RepositoryScopeHelper.withFilterItem(updatedScope, RepositoryScopeFilterItem.builder()
+                .key(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE).operator("=")
+                .value("'" + trackedEntityInstance + "'").build());
+
+        return new TrackedEntityAttributeValueObjectRepository(
+                store, childrenAppenders, updatedScope, dataStatePropagator);
     }
 
     public StringFilterConnector<TrackedEntityAttributeValueCollectionRepository> byTrackedEntityAttribute() {

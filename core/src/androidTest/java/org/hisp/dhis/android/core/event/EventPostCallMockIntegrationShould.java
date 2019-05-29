@@ -30,64 +30,48 @@ package org.hisp.dhis.android.core.event;
 
 import com.google.common.collect.Lists;
 
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.UidsHelper;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityDataValueSamples;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramStage;
-import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.After;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import static com.google.common.truth.Truth.assertThat;
 
-@RunWith(AndroidJUnit4.class)
-public class EventPostCallMockIntegrationShould extends AbsStoreTestCase {
+@RunWith(D2JunitRunner.class)
+public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
 
-    private Dhis2MockServer dhis2MockServer;
-    private D2 d2;
+    private static EventPostCall eventPostCall;
+    private static EventStore eventStore;
 
-    private EventPostCall eventPostCall;
-
-    @Override
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
-
-        dhis2MockServer = new Dhis2MockServer();
-        d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
-
-        eventPostCall = getD2DIComponent(d2).eventPostCall();
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        BaseMockIntegrationTestMetadataEnqueable.setUpClass();
+        eventStore = EventStoreImpl.create(objects.databaseAdapter);
+        eventPostCall = objects.d2DIComponent.eventPostCall();
     }
 
-    @Override
     @After
-    public void tearDown() throws IOException {
-        super.tearDown();
-
-        dhis2MockServer.shutdown();
+    public void tearDown() throws D2Error {
+        d2.wipeModule().wipeData();
     }
 
     @Test
-    public void build_payload_with_different_enrollments() throws Exception {
-        givenAMetadataInDatabase();
-
+    public void build_payload_with_different_enrollments() {
         storeEvents();
 
         List<Event> events = eventPostCall.queryDataToSync(null);
@@ -101,8 +85,6 @@ public class EventPostCallMockIntegrationShould extends AbsStoreTestCase {
 
     @Test
     public void handle_import_conflicts_correctly() throws Exception {
-        givenAMetadataInDatabase();
-
         storeEvents();
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts.json");
@@ -114,17 +96,15 @@ public class EventPostCallMockIntegrationShould extends AbsStoreTestCase {
 
     @Test
     public void delete_old_import_conflicts() throws Exception {
-        givenAMetadataInDatabase();
-
         storeEvents();
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts.json");
         d2.eventModule().events.upload().call();
         assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(3);
 
-        EventStoreImpl.create(databaseAdapter()).setState("event1Id", State.TO_POST);
-        EventStoreImpl.create(databaseAdapter()).setState("event2Id", State.TO_POST);
-        EventStoreImpl.create(databaseAdapter()).setState("event3Id", State.TO_POST);
+        eventStore.setState("event1Id", State.TO_POST);
+        eventStore.setState("event2Id", State.TO_POST);
+        eventStore.setState("event3Id", State.TO_POST);
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts2.json");
         d2.eventModule().events.upload().call();
@@ -133,13 +113,10 @@ public class EventPostCallMockIntegrationShould extends AbsStoreTestCase {
 
     @Test
     public void handle_event_deletions() throws Exception {
-        givenAMetadataInDatabase();
-
         storeEvents();
-
         assertThat(d2.eventModule().events.count()).isEqualTo(4);
 
-        EventStoreImpl.create(databaseAdapter()).setState("event1Id", State.TO_DELETE);
+        eventStore.setState("event1Id", State.TO_DELETE);
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts2.json");
 
@@ -149,9 +126,7 @@ public class EventPostCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void recreate_events_with_filters() throws Exception {
-        givenAMetadataInDatabase();
-
+    public void recreate_events_with_filters() {
         String event1 = "event1";
         String event2 = "event2";
         String event3 = "event3";
@@ -173,20 +148,15 @@ public class EventPostCallMockIntegrationShould extends AbsStoreTestCase {
                 .isEqualTo(true);
     }
 
-    private void givenAMetadataInDatabase() throws Exception {
-        dhis2MockServer.enqueueMetadataResponses();
-        d2.syncMetaData().call();
-    }
-
     private void storeEvents() {
         String event1Id = "event1Id";
         String event2Id = "event2Id";
         String event3Id = "event3Id";
         String event4Id = "event4Id";
 
-        OrganisationUnit orgUnit = OrganisationUnitStore.create(databaseAdapter()).selectFirst();
+        OrganisationUnit orgUnit = d2.organisationUnitModule().organisationUnits.one().get();
         Program program = d2.programModule().programs.one().get();
-        ProgramStage programStage = ProgramStageStore.create(databaseAdapter()).selectFirst();
+        ProgramStage programStage = d2.programModule().programStages.one().get();
 
         TrackedEntityDataValue dataValue1 = TrackedEntityDataValueSamples.get().toBuilder().event(event1Id).build();
 
@@ -232,23 +202,25 @@ public class EventPostCallMockIntegrationShould extends AbsStoreTestCase {
                 .trackedEntityDataValues(Collections.singletonList(dataValue4))
                 .build();
 
-        EventStoreImpl.create(databaseAdapter()).insert(event1);
-        EventStoreImpl.create(databaseAdapter()).insert(event2);
-        EventStoreImpl.create(databaseAdapter()).insert(event3);
-        EventStoreImpl.create(databaseAdapter()).insert(event4);
-        TrackedEntityDataValueStoreImpl.create(databaseAdapter()).insert(dataValue1);
-        TrackedEntityDataValueStoreImpl.create(databaseAdapter()).insert(dataValue2);
-        TrackedEntityDataValueStoreImpl.create(databaseAdapter()).insert(dataValue3);
-        TrackedEntityDataValueStoreImpl.create(databaseAdapter()).insert(dataValue4);
+        eventStore.insert(event1);
+        eventStore.insert(event2);
+        eventStore.insert(event3);
+        eventStore.insert(event4);
+
+        TrackedEntityDataValueStore tedvStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter);
+        tedvStore.insert(dataValue1);
+        tedvStore.insert(dataValue2);
+        tedvStore.insert(dataValue3);
+        tedvStore.insert(dataValue4);
 
         assertThat(d2.eventModule().events.count()).isEqualTo(4);
     }
 
     private void storeSingleEvent(String eventUid, Program program, State state) {
-        OrganisationUnit orgUnit = OrganisationUnitStore.create(databaseAdapter()).selectFirst();
-        ProgramStage programStage = ProgramStageStore.create(databaseAdapter()).selectFirst();
+        OrganisationUnit orgUnit = d2.organisationUnitModule().organisationUnits.one().get();
+        ProgramStage programStage = d2.programModule().programStages.one().get();
 
-        EventStoreImpl.create(databaseAdapter()).insert(
+        eventStore.insert(
                 Event.builder()
                         .uid(eventUid)
                         .organisationUnit(orgUnit.uid())

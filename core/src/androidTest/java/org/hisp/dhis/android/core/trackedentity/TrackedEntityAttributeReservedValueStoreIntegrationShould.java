@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.junit.After;
@@ -47,7 +47,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
 
 @RunWith(JUnit4.class)
-public class TrackedEntityAttributeReservedValueStoreIntegrationShould extends AbsStoreTestCase {
+public class TrackedEntityAttributeReservedValueStoreIntegrationShould extends BaseRealIntegrationTest {
 
     private TrackedEntityAttributeReservedValue expiredValue;
     private TrackedEntityAttributeReservedValue notExpiredValue;

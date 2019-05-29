@@ -26,11 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.utils.integration.mock;
 
-import android.database.Cursor;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import androidx.test.InstrumentationRegistry;
+import android.util.Log;
 
 import com.facebook.stetho.Stetho;
 
@@ -39,66 +39,61 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2DIComponent;
 import org.hisp.dhis.android.core.DaggerD2DIComponent;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
+import org.hisp.dhis.android.core.data.database.DbOpenHelper;
+import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
+import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
-import org.junit.After;
-import org.junit.Before;
 
 import java.io.IOException;
 import java.util.Date;
 
-import static com.google.common.truth.Truth.assertThat;
+import androidx.test.InstrumentationRegistry;
 
-public abstract class AbsStoreTestCase {
-    private SQLiteDatabase sqLiteDatabase;
-    private DatabaseAdapter databaseAdapter;
+public class MockIntegrationTestObjects {
+    public final SQLiteDatabase database;
+    public final DatabaseAdapter databaseAdapter;
 
-    protected Date serverDate = new Date();
-    protected ResourceHandler resourceHandler;
+    public Date serverDate = new Date();
+    public ResourceHandler resourceHandler;
 
-    private String dbName = null;
+    public final D2DIComponent d2DIComponent;
+    public final D2 d2;
+    public final Dhis2MockServer dhis2MockServer;
+    public final MockIntegrationTestDatabaseContent content;
+    private final String dbName;
 
-    @Before
-    public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , dbName);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
+    MockIntegrationTestObjects(MockIntegrationTestDatabaseContent content) throws Exception {
+        this.content = content;
+        dbName = content.toString().toLowerCase() + ".db";
+
+        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext(),
+                dbName);
+        database = dbOpenHelper.getWritableDatabase();
         databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
         resourceHandler = new ResourceHandler(ResourceStoreImpl.create(databaseAdapter));
         resourceHandler.setServerDate(serverDate);
         Stetho.initializeWithDefaults(InstrumentationRegistry.getTargetContext().getApplicationContext());
-    }
 
-    @After
-    public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
-    }
+        dhis2MockServer = new Dhis2MockServer();
 
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
-    }
+        d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter);
 
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
-    }
-
-    protected GenericCallData getGenericCallData(D2 d2) {
-        return GenericCallData.create(
-                databaseAdapter(), d2.retrofit(), resourceHandler, d2.systemInfoModule().versionManager);
-    }
-
-    protected Cursor getCursor(String table, String[] columns) {
-        return sqLiteDatabase.query(table, columns,
-                null, null, null, null, null);
-    }
-
-    protected D2DIComponent getD2DIComponent(D2 d2) {
-        return DaggerD2DIComponent.builder()
-                .databaseDIModule(new DatabaseDIModule(databaseAdapter()))
+        d2DIComponent = DaggerD2DIComponent.builder()
+                .databaseDIModule(new DatabaseDIModule(databaseAdapter))
                 .apiClientDIModule(new APIClientDIModule(d2.retrofit()))
                 .appContextDIModule(new AppContextDIModule(InstrumentationRegistry.getTargetContext().getApplicationContext()))
                 .build();
+    }
+
+    public void tearDown() throws IOException {
+        Log.i("MockIntegrationTestObjects", "Objects teardown: " + content);
+        database.close();
+        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        context.deleteDatabase(dbName);
+        dhis2MockServer.shutdown();
     }
 }

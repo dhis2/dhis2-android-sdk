@@ -70,6 +70,8 @@ public class MockIntegrationTestObjects {
         this.content = content;
         dbName = content.toString().toLowerCase() + ".db";
 
+        deleteDatabase();
+
         DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext(),
                 dbName);
         database = dbOpenHelper.getWritableDatabase();
@@ -89,11 +91,15 @@ public class MockIntegrationTestObjects {
                 .build();
     }
 
+    private void deleteDatabase() {
+        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        context.deleteDatabase(dbName);
+    }
+
     public void tearDown() throws IOException {
         Log.i("MockIntegrationTestObjects", "Objects teardown: " + content);
         database.close();
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        context.deleteDatabase(dbName);
+        deleteDatabase();
         dhis2MockServer.shutdown();
     }
 }

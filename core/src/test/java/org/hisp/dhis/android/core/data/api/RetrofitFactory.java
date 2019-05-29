@@ -28,20 +28,37 @@
 
 package org.hisp.dhis.android.core.data.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.hisp.dhis.android.core.arch.api.retrofit.PreventURLDecodeInterceptor;
+import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockWebServer;
 import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class RetrofitFactory {
 
-    public static Retrofit getRetrofit(MockWebServer mockWebServer) {
+    public static Retrofit fromDHIS2MockServer(Dhis2MockServer server) {
+        return fromServerUrl(server.getBaseEndpoint());
+    }
+
+    public static Retrofit fromMockWebServer(MockWebServer mockWebServer) {
         return new Retrofit.Builder()
                 .client(getOkClient())
                 .baseUrl(mockWebServer.url("/"))
                 .addConverterFactory(FieldsConverterFactory.create())
                 .addConverterFactory(FilterConverterFactory.create())
+                .build();
+    }
+
+    public static Retrofit fromServerUrl(String serverUrl) {
+        return new Retrofit.Builder()
+                .baseUrl(serverUrl)
+                .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
+                .addConverterFactory(FilterConverterFactory.create())
+                .addConverterFactory(FieldsConverterFactory.create())
                 .build();
     }
 

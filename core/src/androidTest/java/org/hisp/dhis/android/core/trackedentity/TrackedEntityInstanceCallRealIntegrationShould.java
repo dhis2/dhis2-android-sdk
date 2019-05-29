@@ -33,7 +33,7 @@ import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
 
@@ -41,7 +41,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class TrackedEntityInstanceCallRealIntegrationShould extends AbsStoreTestCase {
+public class TrackedEntityInstanceCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     private D2 d2;
 

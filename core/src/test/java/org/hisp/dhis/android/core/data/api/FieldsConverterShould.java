@@ -85,7 +85,7 @@ public class FieldsConverterShould {
     }
 
     private TestService testService(MockWebServer mockWebServer) {
-        return RetrofitFactory.getRetrofit(mockWebServer).create(TestService.class);
+        return RetrofitFactory.fromMockWebServer(mockWebServer).create(TestService.class);
     }
 
     @Test

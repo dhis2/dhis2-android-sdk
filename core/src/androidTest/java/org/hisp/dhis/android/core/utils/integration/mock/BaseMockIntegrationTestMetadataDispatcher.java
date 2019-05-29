@@ -26,17 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event.api;
+package org.hisp.dhis.android.core.utils.integration.mock;
 
-import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.junit.BeforeClass;
 
-public class EventAPI30Should extends EventAPIShould {
+public abstract class BaseMockIntegrationTestMetadataDispatcher extends BaseMockIntegrationTest {
 
-    public EventAPI30Should() {
-        super(RealServerMother.url2_30, "CREATE_AND_UPDATE");
-    }
-
-    //@Test
-    public void stub() {
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        boolean isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.MetadataDispatcher);
+        if (isNewInstance) {
+            objects.dhis2MockServer.setRequestDispatcher();
+            objects.d2.syncMetaData().call();
+        }
     }
 }

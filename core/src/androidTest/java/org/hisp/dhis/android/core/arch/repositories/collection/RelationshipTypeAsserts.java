@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 
 import static com.google.common.truth.Truth.assertThat;
 
-class RelationshipTypeAsserts extends AbsStoreTestCase {
+class RelationshipTypeAsserts extends BaseRealIntegrationTest {
 
     static void assertTypesWithoutConstraints(RelationshipType target, RelationshipType reference) {
         assertThat(target.uid()).isEqualTo(reference.uid());

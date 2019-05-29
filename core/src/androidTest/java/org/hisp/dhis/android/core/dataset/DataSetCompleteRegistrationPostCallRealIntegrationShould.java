@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 import org.junit.Before;
@@ -42,7 +42,7 @@ import java.text.SimpleDateFormat;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends AbsStoreTestCase {
+public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 

@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
@@ -49,7 +49,7 @@ import java.util.concurrent.Callable;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.Assert.assertTrue;
 
-public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
+public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     private D2 d2;
     private CodeGenerator codeGenerator;

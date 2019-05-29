@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.d2manager;
 
+import android.content.Context;
+
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.common.collect.Lists;
 
@@ -37,6 +39,7 @@ import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Random;
@@ -47,11 +50,15 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class D2ManagerRealIntegrationShould {
 
+    private static D2Configuration d2Configuration;
+    private static Context context;
+
     private D2Manager d2Manager;
 
-    @Before
-    public void setUp() {
-        D2Configuration d2Configuration = D2Configuration.builder()
+    @BeforeClass
+    public static void setUpClass() {
+        context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        d2Configuration = D2Configuration.builder()
                 .databaseName(generateDatabaseName() + ".db")
                 .appName("app_name")
                 .appVersion("1.0.0")
@@ -59,9 +66,12 @@ public class D2ManagerRealIntegrationShould {
                 .connectTimeoutInSeconds(100)
                 .writeTimeoutInSeconds(100)
                 .networkInterceptors(Lists.newArrayList(new StethoInterceptor()))
-                .context(InstrumentationRegistry.getTargetContext().getApplicationContext())
+                .context(context)
                 .build();
+    }
 
+    @Before
+    public void setUp() {
         d2Manager = new D2Manager(d2Configuration);
     }
 
@@ -70,6 +80,7 @@ public class D2ManagerRealIntegrationShould {
         if (d2Manager.databaseAdapter != null && d2Manager.databaseAdapter.database() != null) {
             d2Manager.databaseAdapter.database().close();
         }
+        context.deleteDatabase(d2Configuration.databaseName());
     }
 
     @Test
@@ -116,7 +127,7 @@ public class D2ManagerRealIntegrationShould {
                 .user(User.builder().uid("user").build()).uid("uid").username("username").build());
     }
 
-    private String generateDatabaseName() {
+    private static String generateDatabaseName() {
 
         int leftLimit = 97; // letter 'a'
         int rightLimit = 122; // letter 'z'

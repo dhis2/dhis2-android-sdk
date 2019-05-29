@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStore;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -70,5 +71,16 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
                 store.setState(object.uid(), State.TO_DELETE);
             }
         }
+    }
+
+    @Override
+    protected Unit updateObject(M m) throws D2Error {
+        super.updateObject(m);
+        propagateState();
+        return new Unit();
+    }
+
+    protected void propagateState() {
+         // Method is empty because is the default action.
     }
 }

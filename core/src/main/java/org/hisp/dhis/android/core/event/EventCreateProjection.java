@@ -26,46 +26,63 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.event;
 
-import android.database.Cursor;
-
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.Model;
-
-import androidx.annotation.NonNull;
-import okhttp3.HttpUrl;
+import androidx.annotation.Nullable;
 
 @AutoValue
-public abstract class Configuration implements Model {
+public abstract class EventCreateProjection {
 
-    @NonNull
-    @ColumnAdapter(HttpUrlColumnAdapter.class)
-    public abstract HttpUrl serverUrl();
+    @Nullable
+    public abstract String enrollment();
 
-    public static Configuration create(Cursor cursor) {
-        return $AutoValue_Configuration.createFromCursor(cursor);
+    @Nullable
+    public abstract String program();
+
+    @Nullable
+    public abstract String programStage();
+
+    @Nullable
+    public abstract String organisationUnit();
+
+    @Nullable
+    public abstract String attributeOptionCombo();
+
+    public static EventCreateProjection create(
+            String enrollment,
+            String program,
+            String programStage,
+            String organisationUnit,
+            String attributeOptionCombo) {
+        return builder()
+                .enrollment(enrollment)
+                .program(program)
+                .programStage(programStage)
+                .organisationUnit(organisationUnit)
+                .attributeOptionCombo(attributeOptionCombo)
+                .build();
+    }
+
+    public static Builder builder() {
+        return new AutoValue_EventCreateProjection.Builder();
     }
 
     public abstract Builder toBuilder();
 
-    public static Builder builder() {
-        return new AutoValue_Configuration.Builder();
-    }
-
     @AutoValue.Builder
-    public abstract static class Builder extends BaseModel.Builder<Builder> {
-        public abstract Builder id(Long id);
+    public abstract static class Builder {
+        public abstract Builder enrollment(String enrollment);
 
-        public abstract Builder serverUrl(HttpUrl serverUrl);
+        public abstract Builder program(String program);
 
-        public abstract Configuration build();
-    }
+        public abstract Builder programStage(String programStage);
 
-    public static Configuration forServerUrlStringWithoutAPI(String urlWithoutAPI) {
-        return Configuration.builder().serverUrl(HttpUrl.parse(urlWithoutAPI + "api/")).build();
+        public abstract Builder organisationUnit(String organisationUnit);
+
+        public abstract Builder attributeOptionCombo(String attributeOptionCombo);
+
+        public abstract EventCreateProjection build();
     }
 }

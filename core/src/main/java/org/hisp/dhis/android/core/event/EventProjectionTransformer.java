@@ -26,46 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.event;
 
-import android.database.Cursor;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.Transformer;
+import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.google.auto.value.AutoValue;
+import java.util.Date;
 
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.Model;
+final class EventProjectionTransformer implements Transformer<EventCreateProjection, Event> {
 
-import androidx.annotation.NonNull;
-import okhttp3.HttpUrl;
+    @Override
+    public Event transform(EventCreateProjection projection) {
+        String generatedUid = new CodeGeneratorImpl().generate();
+        Date creationDate = new Date();
 
-@AutoValue
-public abstract class Configuration implements Model {
-
-    @NonNull
-    @ColumnAdapter(HttpUrlColumnAdapter.class)
-    public abstract HttpUrl serverUrl();
-
-    public static Configuration create(Cursor cursor) {
-        return $AutoValue_Configuration.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_Configuration.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseModel.Builder<Builder> {
-        public abstract Builder id(Long id);
-
-        public abstract Builder serverUrl(HttpUrl serverUrl);
-
-        public abstract Configuration build();
-    }
-
-    public static Configuration forServerUrlStringWithoutAPI(String urlWithoutAPI) {
-        return Configuration.builder().serverUrl(HttpUrl.parse(urlWithoutAPI + "api/")).build();
+        return Event.builder()
+                .uid(generatedUid)
+                .state(State.TO_POST)
+                .created(creationDate)
+                .lastUpdated(creationDate)
+                .createdAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
+                .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
+                .enrollment(projection.enrollment())
+                .program(projection.program())
+                .programStage(projection.programStage())
+                .organisationUnit(projection.organisationUnit())
+                .attributeOptionCombo(projection.attributeOptionCombo())
+                .build();
     }
 }

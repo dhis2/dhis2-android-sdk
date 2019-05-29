@@ -26,59 +26,79 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteWithUidDataObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.DataStatePropagator;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.util.Date;
 import java.util.Map;
 
-public final class TrackedEntityInstanceObjectRepository
-        extends ReadWriteWithUidDataObjectRepositoryImpl<TrackedEntityInstance, TrackedEntityInstanceObjectRepository>
-        implements ReadWriteObjectRepository<TrackedEntityInstance> {
+public final class EnrollmentObjectRepository
+        extends ReadWriteWithUidDataObjectRepositoryImpl<Enrollment, EnrollmentObjectRepository>
+        implements ReadWriteObjectRepository<Enrollment> {
 
-    TrackedEntityInstanceObjectRepository(final TrackedEntityInstanceStore store,
-                                          final String uid,
-                                          final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
-                                          final RepositoryScope scope) {
+    private final DataStatePropagator dataStatePropagator;
+    private Enrollment enrollment;
+
+    EnrollmentObjectRepository(final EnrollmentStore store,
+                               final String uid,
+                               final Map<String, ChildrenAppender<Enrollment>> childrenAppenders,
+                               final RepositoryScope scope,
+                               final DataStatePropagator dataStatePropagator) {
         super(store, childrenAppenders, scope,
-                s -> new TrackedEntityInstanceObjectRepository(store, uid, childrenAppenders, s));
+                s -> new EnrollmentObjectRepository(store, uid, childrenAppenders, s, dataStatePropagator));
+        this.dataStatePropagator = dataStatePropagator;
     }
 
     public Unit setOrganisationUnitUid(String organisationUnitUid) throws D2Error {
         return updateObject(updateBuilder().organisationUnit(organisationUnitUid).build());
     }
 
-    public Unit setCoordinates(String coordinates) throws D2Error {
-        return updateObject(updateBuilder().coordinates(coordinates).build());
+    public Unit setEnrollmentDate(Date enrollmentDate) throws D2Error {
+        return updateObject(updateBuilder().enrollmentDate(enrollmentDate).build());
     }
 
-    private TrackedEntityInstance.Builder updateBuilder() throws D2Error {
-        TrackedEntityInstance trackedEntityInstance = getWithoutChildren();
-        State state = trackedEntityInstance.state();
-        if (state == State.RELATIONSHIP) {
-            throw D2Error
-                    .builder()
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .errorCode(D2ErrorCode.RELATIONSHIPS_CANT_BE_UPDATED)
-                    .errorDescription("Relationships can't be updated")
-                    .build();
-        }
-        Date updateDate = new Date();
-        state = state == State.TO_POST || state == State.TO_DELETE ? state : State.TO_UPDATE;
+    public Unit setIncidentDate(Date incidentDate) throws D2Error {
+        return updateObject(updateBuilder().incidentDate(incidentDate).build());
+    }
 
-        return trackedEntityInstance.toBuilder()
+    public Unit setFollowUp(Boolean followUp) throws D2Error {
+        return updateObject(updateBuilder().followUp(followUp).build());
+    }
+
+    public Unit setStatus(EnrollmentStatus enrollmentStatus) throws D2Error {
+        return updateObject(updateBuilder().status(enrollmentStatus).build());
+    }
+
+    public Unit setCoordinate(Coordinates coordinate) throws D2Error {
+        return updateObject(updateBuilder().coordinate(coordinate).build());
+    }
+
+    private Enrollment.Builder updateBuilder() {
+        enrollment = getWithoutChildren();
+        Date updateDate = new Date();
+        State state = enrollment.state();
+        if (state != State.TO_POST && state != State.TO_DELETE) {
+            state = State.TO_UPDATE;
+        }
+
+        return enrollment.toBuilder()
                 .state(state)
                 .lastUpdated(updateDate)
                 .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(updateDate));
+    }
+
+    @Override
+    protected void propagateState() {
+        dataStatePropagator.propagateEnrollmentState(enrollment);
     }
 }

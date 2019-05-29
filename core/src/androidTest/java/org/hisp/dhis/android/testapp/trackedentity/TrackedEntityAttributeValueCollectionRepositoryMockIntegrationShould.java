@@ -112,7 +112,7 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
 
         TrackedEntityAttributeValue attributeValue = d2.trackedEntityModule().trackedEntityAttributeValues.add(
                 TrackedEntityAttributeValueCreateProjection.create(
-                        "aejWyOfXge6", "nWrB0TfWlvD", "created_value"));
+                        "aejWyOfXge6", "nWrB0TfWlvh", "created_value"));
 
         List<TrackedEntityAttributeValue> trackedEntityAttributeValues2 =
                 d2.trackedEntityModule().trackedEntityAttributeValues.get();
@@ -121,7 +121,7 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
         TrackedEntityAttributeValue trackedEntityAttributeValue = d2.trackedEntityModule().trackedEntityAttributeValues
                 .value(attributeValue.trackedEntityAttribute(), attributeValue.trackedEntityInstance()).get();
         assertThat(trackedEntityAttributeValue.trackedEntityAttribute(), is("aejWyOfXge6"));
-        assertThat(trackedEntityAttributeValue.trackedEntityInstance(), is("nWrB0TfWlvD"));
+        assertThat(trackedEntityAttributeValue.trackedEntityInstance(), is("nWrB0TfWlvh"));
         assertThat(trackedEntityAttributeValue.value(), is("created_value"));
 
         d2.trackedEntityModule().trackedEntityAttributeValues

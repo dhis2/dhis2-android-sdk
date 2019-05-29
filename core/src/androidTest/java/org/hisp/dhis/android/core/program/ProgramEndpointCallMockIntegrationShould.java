@@ -31,12 +31,8 @@ package org.hisp.dhis.android.core.program;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;
@@ -103,9 +99,6 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseIntegrationTes
     @BeforeClass
     public static void setUpClass() throws Exception {
         BaseIntegrationTestEmptyEnqueable.setUpClass();
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());
-        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, "nM3u9s5a52V");
         database.insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo);

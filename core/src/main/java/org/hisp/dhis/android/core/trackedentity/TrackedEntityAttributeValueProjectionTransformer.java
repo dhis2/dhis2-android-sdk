@@ -28,42 +28,23 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.Transformer;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.Date;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+final class TrackedEntityAttributeValueProjectionTransformer
+        implements Transformer<TrackedEntityAttributeValueCreateProjection, TrackedEntityAttributeValue> {
 
-@Module
-public final class TrackedEntityAttributeValueEntityDIModule {
+    @Override
+    public TrackedEntityAttributeValue transform(TrackedEntityAttributeValueCreateProjection projection) {
+        Date creationDate = new Date();
 
-    @Provides
-    @Reusable
-    public TrackedEntityAttributeValueStore store(DatabaseAdapter databaseAdapter) {
-        return TrackedEntityAttributeValueStoreImpl.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    public SyncHandlerWithTransformer<TrackedEntityAttributeValue> handler(TrackedEntityAttributeValueStore store) {
-        return new TrackedEntityAttributeValueHandler(store);
-    }
-
-    @Provides
-    @Reusable
-    Transformer<TrackedEntityAttributeValueCreateProjection, TrackedEntityAttributeValue> transformer() {
-        return new TrackedEntityAttributeValueProjectionTransformer();
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<TrackedEntityAttributeValue>> childrenAppenders() {
-        return Collections.emptyMap();
+        return TrackedEntityAttributeValue.builder()
+                .created(creationDate)
+                .lastUpdated(creationDate)
+                .trackedEntityAttribute(projection.trackedEntityAttribute())
+                .trackedEntityInstance(projection.trackedEntityInstance())
+                .value(projection.value())
+                .build();
     }
 }

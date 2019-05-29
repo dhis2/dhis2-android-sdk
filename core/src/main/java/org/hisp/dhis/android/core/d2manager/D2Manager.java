@@ -58,12 +58,7 @@ public final class D2Manager {
     }
 
     public void configureD2(@NonNull String urlWithoutAPI) {
-        if (d2 != null) {
-            throw new IllegalStateException("D2 is already configured");
-        }
-
         ConfigurationHelper.validateServerUrl(urlWithoutAPI);
-
         Configuration configuration = Configuration.forServerUrlStringWithoutAPI(urlWithoutAPI);
         configurationManager.configure(configuration);
         instantiate(configuration);

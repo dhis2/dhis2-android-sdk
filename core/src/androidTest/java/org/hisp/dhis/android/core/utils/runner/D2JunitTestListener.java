@@ -26,40 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.integration.mock;
+package org.hisp.dhis.android.core.utils.runner;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import android.util.Log;
 
-public class MockIntegrationTestObjectsFactory {
+import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestObjectsFactory;
+import org.junit.runner.Description;
+import org.junit.runner.Result;
+import org.junit.runner.notification.RunListener;
 
-    private static Map<MockIntegrationTestDatabaseContent, MockIntegrationTestObjects> instances = new HashMap<>();
+public class D2JunitTestListener extends RunListener {
 
-    static IntegrationTestObjectsWithIsNewInstance getObjects(MockIntegrationTestDatabaseContent content) throws Exception {
-        if (instances.containsKey(content)) {
-            return new IntegrationTestObjectsWithIsNewInstance(instances.get(content), false);
-        } else {
-            MockIntegrationTestObjects instance = new MockIntegrationTestObjects(null);
-            instances.put(content, instance);
-            return new IntegrationTestObjectsWithIsNewInstance(instance, true);
-        }
+    @Override
+    public void testRunStarted(Description description) {
+        Log.e("D2JunitTestListener", "Test run started");
     }
-
-    public static void tearDown() throws IOException {
-        for (MockIntegrationTestObjects objects : instances.values()) {
-            objects.tearDown();
-        }
-        instances.clear();
-    }
-
-    static class IntegrationTestObjectsWithIsNewInstance {
-        public final MockIntegrationTestObjects objects;
-        public final boolean isNewInstance;
-
-        IntegrationTestObjectsWithIsNewInstance(MockIntegrationTestObjects objects, boolean isNewInstance) {
-            this.objects = objects;
-            this.isNewInstance = isNewInstance;
-        }
+    @Override
+    public void testRunFinished(Result result) throws Exception {
+        Log.i("D2JunitTestListener", "Test run finished");
+        MockIntegrationTestObjectsFactory.tearDown();
     }
 }

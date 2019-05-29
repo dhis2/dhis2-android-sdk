@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.utils.integration.mock;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.facebook.stetho.Stetho;
 
@@ -83,6 +84,7 @@ public class MockIntegrationTestObjects {
     }
 
     public void tearDown() throws IOException {
+        Log.i("MockIntegrationTestObjects", "Objects teardown");
         database.close();
         dhis2MockServer.shutdown();
     }

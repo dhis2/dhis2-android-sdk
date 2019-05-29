@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -52,12 +53,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(D2JunitRunner.class)
 public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegrationTestEmptyEnqueable {
     private static String ACCESS_DATA_WRITE = "accessDataWrite";
     private static String[] PROGRAM_PROJECTION = {

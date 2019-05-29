@@ -26,40 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.integration.mock;
+package org.hisp.dhis.android.core.utils.runner;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import org.junit.runner.notification.RunNotifier;
+import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.model.InitializationError;
 
-public class MockIntegrationTestObjectsFactory {
+public class D2JunitRunner extends BlockJUnit4ClassRunner {
 
-    private static Map<MockIntegrationTestDatabaseContent, MockIntegrationTestObjects> instances = new HashMap<>();
-
-    static IntegrationTestObjectsWithIsNewInstance getObjects(MockIntegrationTestDatabaseContent content) throws Exception {
-        if (instances.containsKey(content)) {
-            return new IntegrationTestObjectsWithIsNewInstance(instances.get(content), false);
-        } else {
-            MockIntegrationTestObjects instance = new MockIntegrationTestObjects(null);
-            instances.put(content, instance);
-            return new IntegrationTestObjectsWithIsNewInstance(instance, true);
-        }
+    public D2JunitRunner(Class<?> klass) throws InitializationError {
+        super(klass);
     }
 
-    public static void tearDown() throws IOException {
-        for (MockIntegrationTestObjects objects : instances.values()) {
-            objects.tearDown();
-        }
-        instances.clear();
-    }
-
-    static class IntegrationTestObjectsWithIsNewInstance {
-        public final MockIntegrationTestObjects objects;
-        public final boolean isNewInstance;
-
-        IntegrationTestObjectsWithIsNewInstance(MockIntegrationTestObjects objects, boolean isNewInstance) {
-            this.objects = objects;
-            this.isNewInstance = isNewInstance;
-        }
+    @Override public void run(RunNotifier notifier){
+        notifier.addListener(new D2JunitTestListener());
+        notifier.fireTestRunStarted(getDescription());
+        super.run(notifier);
     }
 }

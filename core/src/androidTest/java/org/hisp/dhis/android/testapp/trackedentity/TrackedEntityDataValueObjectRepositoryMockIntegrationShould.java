@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.testapp.trackedentity;
 
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCreateProjection;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -47,7 +45,8 @@ public class TrackedEntityDataValueObjectRepositoryMockIntegrationShould extends
     public void update_value() throws D2Error {
         String value = "new_value";
 
-        TrackedEntityDataValueObjectRepository repository = objectRepository();
+        TrackedEntityDataValueObjectRepository repository =
+                d2.trackedEntityModule().trackedEntityDataValues.value("event1", "ebaJjqltK5N");
 
         repository.set(value);
         assertThat(repository.get().value(), is(value));
@@ -55,23 +54,11 @@ public class TrackedEntityDataValueObjectRepositoryMockIntegrationShould extends
         repository.delete();
     }
 
-    // TODO Uncomment when delete method is ready.
-    // @Test
-    public void return_that_a_value_exists_only_if_it_has_been_created() throws D2Error {
+    @Test
+    public void return_that_a_value_exists_only_if_it_has_been_created() {
         assertThat(d2.trackedEntityModule().trackedEntityDataValues
-                .value("event1", "ebaJjqltK5N").exists(), is(false));
-
-        TrackedEntityDataValueObjectRepository repository = objectRepository();
-        assertThat(repository.exists(), is(true));
-
-        repository.delete();
-    }
-
-    private TrackedEntityDataValueObjectRepository objectRepository() throws D2Error {
-        TrackedEntityDataValue dataValue = d2.trackedEntityModule().trackedEntityDataValues.add(
-                TrackedEntityDataValueCreateProjection.create(
-                        "event1", "ebaJjqltK5N", "created_value"));
-
-        return d2.trackedEntityModule().trackedEntityDataValues.value(dataValue.event(), dataValue.dataElement());
+                .value("no_event", "no_data_element").exists(), is(Boolean.FALSE));
+        assertThat(d2.trackedEntityModule().trackedEntityDataValues
+                .value("single1", "ebaJjqltK5N").exists(), is(Boolean.TRUE));
     }
 }

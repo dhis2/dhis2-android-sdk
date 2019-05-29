@@ -34,8 +34,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeFilterItem;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.DataStatePropagator;
 
 import java.util.Map;
@@ -65,13 +63,8 @@ public final class TrackedEntityAttributeValueCollectionRepository extends ReadO
 
     public TrackedEntityAttributeValueObjectRepository value(String trackedEntityAttribute,
                                                              String trackedEntityInstance) {
-        RepositoryScope updatedScope = RepositoryScopeHelper.withFilterItem(scope, RepositoryScopeFilterItem.builder()
-                .key(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE).operator("=")
-                .value("'" + trackedEntityAttribute + "'").build());
-        updatedScope = RepositoryScopeHelper.withFilterItem(updatedScope, RepositoryScopeFilterItem.builder()
-                .key(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE).operator("=")
-                .value("'" + trackedEntityInstance + "'").build());
-
+        RepositoryScope updatedScope = byTrackedEntityAttribute().eq(trackedEntityAttribute)
+                .byTrackedEntityInstance().eq(trackedEntityInstance).scope;
         return new TrackedEntityAttributeValueObjectRepository(store, childrenAppenders, updatedScope,
                 dataStatePropagator, trackedEntityAttribute, trackedEntityInstance);
     }

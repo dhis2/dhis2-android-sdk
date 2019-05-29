@@ -35,8 +35,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeFilterItem;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.DataStatePropagator;
 
 import java.util.Map;
@@ -65,13 +63,7 @@ public final class TrackedEntityDataValueCollectionRepository
     }
 
     public TrackedEntityDataValueObjectRepository value(String event, String dataElement) {
-        RepositoryScope updatedScope = RepositoryScopeHelper.withFilterItem(scope,
-                RepositoryScopeFilterItem.builder().key(TrackedEntityDataValueTableInfo.Columns.EVENT)
-                        .operator("=").value("'" + event + "'").build());
-        updatedScope = RepositoryScopeHelper.withFilterItem(updatedScope,
-                RepositoryScopeFilterItem.builder().key(TrackedEntityDataValueFields.DATA_ELEMENT)
-                        .operator("=").value("'" + dataElement + "'").build());
-
+        RepositoryScope updatedScope = byEvent().eq(event).byDataElement().eq(dataElement).scope;
         return new TrackedEntityDataValueObjectRepository(
                 store, childrenAppenders, updatedScope, dataStatePropagator, event, dataElement);
     }

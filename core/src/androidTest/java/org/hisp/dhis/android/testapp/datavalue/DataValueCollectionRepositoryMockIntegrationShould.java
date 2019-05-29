@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.testapp.datavalue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -172,6 +173,16 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                         .get();
 
         assertThat(dataValues.size(), is(2));
+    }
+
+    @Test
+    public void filter_by_state() {
+        List<DataValue> dataValues =
+                d2.dataValueModule().dataValues
+                        .byState().eq(State.SYNCED)
+                        .get();
+
+        assertThat(dataValues.size(), is(3));
     }
 
 }

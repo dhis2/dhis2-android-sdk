@@ -39,20 +39,20 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import java.util.Date;
 import java.util.Map;
 
-public final class TrackedEntityDataValueObjectRepository
-        extends ReadWriteWithValueObjectRepositoryImpl<TrackedEntityDataValue, TrackedEntityDataValueObjectRepository>
-        implements ReadWriteValueObjectRepository<TrackedEntityDataValue> {
+public final class TrackedEntityAttributeValueObjectRepository extends ReadWriteWithValueObjectRepositoryImpl
+        <TrackedEntityAttributeValue, TrackedEntityAttributeValueObjectRepository>
+        implements ReadWriteValueObjectRepository<TrackedEntityAttributeValue> {
 
     private final DataStatePropagator dataStatePropagator;
-    private TrackedEntityDataValue trackedEntityDataValue;
+    private TrackedEntityAttributeValue trackedEntityAttributeValue;
 
-    TrackedEntityDataValueObjectRepository(
-            final TrackedEntityDataValueStore store,
-            final Map<String, ChildrenAppender<TrackedEntityDataValue>> childrenAppenders,
+    TrackedEntityAttributeValueObjectRepository(
+            final TrackedEntityAttributeValueStore store,
+            final Map<String, ChildrenAppender<TrackedEntityAttributeValue>> childrenAppenders,
             final RepositoryScope scope,
             final DataStatePropagator dataStatePropagator) {
-        super(store, childrenAppenders, scope,
-                s -> new TrackedEntityDataValueObjectRepository(store, childrenAppenders, s, dataStatePropagator));
+        super(store, childrenAppenders, scope, s -> new TrackedEntityAttributeValueObjectRepository(
+                store, childrenAppenders, s, dataStatePropagator));
         this.dataStatePropagator = dataStatePropagator;
     }
 
@@ -60,16 +60,16 @@ public final class TrackedEntityDataValueObjectRepository
         return updateObject(updateBuilder().value(value).build());
     }
 
-    private TrackedEntityDataValue.Builder updateBuilder() {
-        trackedEntityDataValue = getWithoutChildren();
+    private TrackedEntityAttributeValue.Builder updateBuilder() {
+        trackedEntityAttributeValue = getWithoutChildren();
         Date updateDate = new Date();
 
-        return trackedEntityDataValue.toBuilder()
+        return trackedEntityAttributeValue.toBuilder()
                 .lastUpdated(updateDate);
     }
 
     @Override
     protected void propagateState() {
-        dataStatePropagator.propagateTrackedEntityDataValueUpdate(trackedEntityDataValue);
+        dataStatePropagator.propagateTrackedEntityAttributeUpdate(trackedEntityAttributeValue);
     }
 }

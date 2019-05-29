@@ -99,6 +99,6 @@ public final class EnrollmentObjectRepository
 
     @Override
     protected void propagateState() {
-        dataStatePropagator.propagateEnrollmentState(enrollment);
+        dataStatePropagator.propagateEnrollmentUpdate(enrollment);
     }
 }

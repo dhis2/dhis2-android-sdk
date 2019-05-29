@@ -28,42 +28,45 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.Transformer;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import com.google.auto.value.AutoValue;
 
-import java.util.Collections;
-import java.util.Map;
+import androidx.annotation.NonNull;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+@AutoValue
+public abstract class TrackedEntityAttributeValueCreateProjection {
 
-@Module
-public final class TrackedEntityAttributeValueEntityDIModule {
+    @NonNull
+    public abstract String trackedEntityAttribute();
 
-    @Provides
-    @Reusable
-    public TrackedEntityAttributeValueStore store(DatabaseAdapter databaseAdapter) {
-        return TrackedEntityAttributeValueStoreImpl.create(databaseAdapter);
+    @NonNull
+    public abstract String trackedEntityInstance();
+
+    @NonNull
+    public abstract String value();
+
+    public static TrackedEntityAttributeValueCreateProjection create(
+            String trackedEntityAttribute,
+            String trackedEntityInstance,
+            String value) {
+        return builder()
+                .trackedEntityAttribute(trackedEntityAttribute)
+                .trackedEntityInstance(trackedEntityInstance)
+                .value(value)
+                .build();
     }
 
-    @Provides
-    @Reusable
-    public SyncHandlerWithTransformer<TrackedEntityAttributeValue> handler(TrackedEntityAttributeValueStore store) {
-        return new TrackedEntityAttributeValueHandler(store);
+    public static Builder builder() {
+        return new AutoValue_TrackedEntityAttributeValueCreateProjection.Builder();
     }
 
-    @Provides
-    @Reusable
-    Transformer<TrackedEntityAttributeValueCreateProjection, TrackedEntityAttributeValue> transformer() {
-        return new TrackedEntityAttributeValueProjectionTransformer();
-    }
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder trackedEntityAttribute(String trackedEntityAttribute);
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<TrackedEntityAttributeValue>> childrenAppenders() {
-        return Collections.emptyMap();
+        public abstract Builder trackedEntityInstance(String trackedEntityInstance);
+
+        public abstract Builder value(String value);
+
+        public abstract TrackedEntityAttributeValueCreateProjection build();
     }
 }

@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.testapp.trackedentity;
 
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCreateProjection;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -48,7 +46,8 @@ public class TrackedEntityAttributeValueObjectRepositoryMockIntegrationShould
     public void update_value() throws D2Error {
         String value = "new_value";
 
-        TrackedEntityAttributeValueObjectRepository repository = objectRepository();
+        TrackedEntityAttributeValueObjectRepository repository = d2.trackedEntityModule().trackedEntityAttributeValues
+                .value("aejWyOfXge6", "nWrB0TfWlvh");
 
         repository.set(value);
         assertThat(repository.get().value(), is(value));
@@ -56,24 +55,11 @@ public class TrackedEntityAttributeValueObjectRepositoryMockIntegrationShould
         repository.delete();
     }
 
-    // TODO Uncomment when delete method is ready.
-    // @Test
-    public void return_that_a_value_exists_only_if_it_has_been_created() throws D2Error {
+    @Test
+    public void return_that_a_value_exists_only_if_it_has_been_created() {
         assertThat(d2.trackedEntityModule().trackedEntityAttributeValues
-                .value("aejWyOfXge6", "nWrB0TfWlvh").exists(), is(false));
-
-        TrackedEntityAttributeValueObjectRepository repository = objectRepository();
-        assertThat(repository.exists(), is(true));
-
-        repository.delete();
-    }
-
-    private TrackedEntityAttributeValueObjectRepository objectRepository() throws D2Error {
-        TrackedEntityAttributeValue attributeValue = d2.trackedEntityModule().trackedEntityAttributeValues.add(
-                TrackedEntityAttributeValueCreateProjection.create(
-                        "aejWyOfXge6", "nWrB0TfWlvh", "created_value"));
-
-        return d2.trackedEntityModule().trackedEntityAttributeValues.value(
-                attributeValue.trackedEntityAttribute(), attributeValue.trackedEntityInstance());
+                .value("no_attribute", "no_instance").exists(), is(Boolean.FALSE));
+        assertThat(d2.trackedEntityModule().trackedEntityAttributeValues
+                .value("lZGmxYbs97q", "nWrB0TfWlvh").exists(), is(Boolean.TRUE));
     }
 }

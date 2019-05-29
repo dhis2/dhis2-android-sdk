@@ -37,7 +37,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 public final class ConfigurationStoreImpl extends ObjectStoreImpl<Configuration> implements ConfigurationStore {
 
     private static final StatementBinder<Configuration> BINDER = (configuration, sqLiteStatement) ->
-            sqLiteBind(sqLiteStatement, 1, ConfigurationHelper.getConfigurationStr(configuration.serverUrl()));
+            sqLiteBind(sqLiteStatement, 1, configuration.serverUrl().toString());
 
     private ConfigurationStoreImpl(DatabaseAdapter databaseAdapter,
                                    SQLStatementBuilder builder) {

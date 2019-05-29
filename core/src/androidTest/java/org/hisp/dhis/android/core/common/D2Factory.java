@@ -67,7 +67,11 @@ public class D2Factory {
                 .build();
 
         D2Manager d2Manager = new D2Manager(d2Configuration);
-        d2Manager.configureD2(urlWithoutAPI);
+
+        if (!d2Manager.isD2Configured()) {
+            d2Manager.configureD2(urlWithoutAPI);
+        }
+
         return d2Manager.getD2();
     }
 

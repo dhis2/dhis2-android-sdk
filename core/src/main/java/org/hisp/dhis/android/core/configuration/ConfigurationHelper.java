@@ -27,28 +27,24 @@
  */
 package org.hisp.dhis.android.core.configuration;
 
-import androidx.annotation.NonNull;
-
-import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
 import okhttp3.HttpUrl;
 
 public final class ConfigurationHelper {
 
     private ConfigurationHelper() {}
 
-    public static String getConfigurationStr(@NonNull HttpUrl serverUrl) {
-
-        List<String> pathSegments = serverUrl.pathSegments();
-        if (!"".equals(pathSegments.get(pathSegments.size() - 1))) {
-            throw new IllegalArgumentException("baseUrl must end in /: " + serverUrl);
+    public static void validateServerUrl(@NonNull String serverUrl) {
+        if (!serverUrl.endsWith("/")) {
+            throw new IllegalArgumentException("Server URL must end with '/'");
+        } else if (serverUrl.endsWith("api/")) {
+            throw new IllegalArgumentException("Server URL must not end with 'api/'");
         }
-
-        return canonizeBaseUrl(serverUrl).toString();
     }
 
-    private static HttpUrl canonizeBaseUrl(HttpUrl baseUrl) {
-        return HttpUrl.parse(String.format(Locale.US, "%sapi/", baseUrl.toString()));
+    static HttpUrl getCanonicalServerUrl(String serverUrl) {
+        return HttpUrl.parse(String.format(Locale.US, "%sapi/", serverUrl));
     }
 }

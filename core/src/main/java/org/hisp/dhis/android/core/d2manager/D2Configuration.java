@@ -40,6 +40,7 @@ import okhttp3.Interceptor;
 @AutoValue
 public abstract class D2Configuration {
 
+    @Nullable
     public abstract String databaseName();
 
     public abstract String appName();

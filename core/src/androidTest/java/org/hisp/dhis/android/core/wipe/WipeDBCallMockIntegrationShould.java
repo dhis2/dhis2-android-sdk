@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.wipe;
 
+import org.hisp.dhis.android.core.configuration.ConfigurationTableInfo;
 import org.hisp.dhis.android.core.data.database.DatabaseAssert;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
 import org.junit.Test;
@@ -43,6 +44,8 @@ public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmpt
         givenAEventInDatabase();
 
         DatabaseAssert.assertThatDatabase(databaseAdapter).isNotEmpty();
+
+        databaseAdapter.delete(ConfigurationTableInfo.TABLE_INFO.name());
 
         d2.wipeModule().wipeEverything();
 

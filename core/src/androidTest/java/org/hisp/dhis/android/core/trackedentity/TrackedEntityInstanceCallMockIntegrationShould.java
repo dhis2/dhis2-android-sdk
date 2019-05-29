@@ -117,11 +117,6 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
         verifyDownloadedTrackedEntityInstance("trackedentity/tracked_entity_instance.json", teiUid);
     }
 
-    private void givenAMetadataIndatabase() throws Exception {
-        dhis2MockServer.enqueueMetadataResponses();
-        d2.syncMetaData().call();
-    }
-
     private void verifyDownloadedTrackedEntityInstancePayload(String file, String teiUid)
             throws IOException {
         Payload<TrackedEntityInstance> parsed = parseTrackedEntityInstanceResponse(file,

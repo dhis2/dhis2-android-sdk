@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo;
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestEmptyEnqueable;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -58,7 +58,7 @@ import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Colu
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class ProgramEndpointCallMockIntegrationShould extends BaseIntegrationTestEmptyEnqueable {
+public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegrationTestEmptyEnqueable {
     private static String ACCESS_DATA_WRITE = "accessDataWrite";
     private static String[] PROGRAM_PROJECTION = {
             UID,
@@ -98,7 +98,7 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseIntegrationTes
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        BaseIntegrationTestEmptyEnqueable.setUpClass();
+        BaseMockIntegrationTestEmptyEnqueable.setUpClass();
 
         ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, "nM3u9s5a52V");
         database.insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo);

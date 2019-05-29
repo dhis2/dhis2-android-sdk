@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -47,7 +47,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseIntegrationTestFullDispatcher {
+public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
     public void allow_access_to_all_enrollments_without_children() {

@@ -44,11 +44,8 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestEmptyEnqueable;
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestMetadataEnqueable;
-import org.junit.After;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -63,7 +60,7 @@ import androidx.annotation.NonNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-public class TrackedEntityInstanceCallMockIntegrationShould extends BaseIntegrationTestMetadataEnqueable {
+public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
 
     @Test
     public void download_tracked_entity_instance_enrollments_and_events() throws Exception {

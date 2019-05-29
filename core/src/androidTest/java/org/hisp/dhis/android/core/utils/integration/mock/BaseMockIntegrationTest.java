@@ -26,18 +26,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.integration;
+package org.hisp.dhis.android.core.utils.integration.mock;
 
-import org.junit.BeforeClass;
+import android.database.sqlite.SQLiteDatabase;
 
-public abstract class BaseIntegrationTestMetadataEnqueable extends BaseIntegrationTest {
+import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        boolean isNewInstance = setUpClass(IntegrationTestDatabaseContent.MetadataEnqueable);
-        if (isNewInstance) {
-            objects.dhis2MockServer.enqueueMetadataResponses();
-            objects.d2.syncMetaData().call();
-        }
+public abstract class BaseMockIntegrationTest {
+
+    protected static MockIntegrationTestObjects objects;
+    protected static D2 d2;
+    protected static Dhis2MockServer dhis2MockServer;
+    protected static DatabaseAdapter databaseAdapter;
+    protected static SQLiteDatabase database;
+
+    static boolean setUpClass(MockIntegrationTestDatabaseContent content) throws Exception {
+        MockIntegrationTestObjectsFactory.IntegrationTestObjectsWithIsNewInstance tuple = MockIntegrationTestObjectsFactory.getObjects(content);
+        objects = tuple.objects;
+        d2 = objects.d2;
+        database = objects.database;
+        databaseAdapter = objects.databaseAdapter;
+        dhis2MockServer = objects.dhis2MockServer;
+        return tuple.isNewInstance;
     }
 }

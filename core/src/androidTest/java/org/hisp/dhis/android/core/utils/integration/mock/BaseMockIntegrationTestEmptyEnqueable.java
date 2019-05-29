@@ -26,12 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.integration;
+package org.hisp.dhis.android.core.utils.integration.mock;
 
-public enum IntegrationTestDatabaseContent {
-    EmptyEnqueable,
-    EmptyDispatcher,
-    FullDispatcher,
-    MetadataEnqueable,
-    MetadataDispatcher
+import org.junit.BeforeClass;
+
+public abstract class BaseMockIntegrationTestEmptyEnqueable extends BaseMockIntegrationTest {
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        setUpClass(MockIntegrationTestDatabaseContent.EmptyEnqueable);
+    }
 }

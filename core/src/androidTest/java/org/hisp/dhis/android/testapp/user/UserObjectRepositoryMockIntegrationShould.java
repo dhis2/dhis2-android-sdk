@@ -30,7 +30,7 @@ package org.hisp.dhis.android.testapp.user;
 
 import androidx.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.User;
 import org.junit.Test;
@@ -42,7 +42,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class UserObjectRepositoryMockIntegrationShould extends BaseIntegrationTestFullDispatcher {
+public class UserObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
     public void find_user() {

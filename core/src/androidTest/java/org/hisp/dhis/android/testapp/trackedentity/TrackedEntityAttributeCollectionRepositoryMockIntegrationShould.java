@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.testapp.trackedentity;
 
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +42,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould extends BaseIntegrationTestFullDispatcher {
+public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
     public void find_all() {

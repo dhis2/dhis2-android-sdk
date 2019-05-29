@@ -26,14 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.integration;
+package org.hisp.dhis.android.core.utils.integration.mock;
 
 import org.junit.BeforeClass;
 
-public abstract class BaseIntegrationTestEmptyEnqueable extends BaseIntegrationTest {
+public abstract class BaseMockIntegrationTestMetadataEnqueable extends BaseMockIntegrationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        setUpClass(IntegrationTestDatabaseContent.EmptyEnqueable);
+        boolean isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.MetadataEnqueable);
+        if (isNewInstance) {
+            objects.dhis2MockServer.enqueueMetadataResponses();
+            objects.d2.syncMetaData().call();
+        }
     }
 }

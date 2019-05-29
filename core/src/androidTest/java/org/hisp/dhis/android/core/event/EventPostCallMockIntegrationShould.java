@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestMetadataEnqueable;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -54,14 +54,14 @@ import androidx.test.runner.AndroidJUnit4;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class EventPostCallMockIntegrationShould extends BaseIntegrationTestMetadataEnqueable {
+public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
 
     private static EventPostCall eventPostCall;
     private static EventStore eventStore;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        BaseIntegrationTestMetadataEnqueable.setUpClass();
+        BaseMockIntegrationTestMetadataEnqueable.setUpClass();
         eventStore = EventStoreImpl.create(objects.databaseAdapter);
         eventPostCall = objects.d2DIComponent.eventPostCall();
     }

@@ -26,45 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.integration;
+package org.hisp.dhis.android.core.utils.integration.mock;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-class IntegrationTestObjectsFactory {
-
-    private static Map<IntegrationTestDatabaseContent, IntegrationTestObjects> instances = new HashMap<>();
-
-    static IntegrationTestObjectsWithIsNewInstance getObjects(IntegrationTestDatabaseContent content) throws Exception {
-        if (instances.containsKey(content)) {
-            return new IntegrationTestObjectsWithIsNewInstance(instances.get(content), false);
-
-        } else {
-            IntegrationTestObjects instance = new IntegrationTestObjects(null);
-            instances.put(content, instance);
-            scheduleTearDown(instance);
-            return new IntegrationTestObjectsWithIsNewInstance(instance, true);
-        }
-    }
-
-    private static void scheduleTearDown(IntegrationTestObjects instance) {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                instance.tearDown();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }));
-    }
-
-    static class IntegrationTestObjectsWithIsNewInstance {
-        public final IntegrationTestObjects objects;
-        public final boolean isNewInstance;
-
-        IntegrationTestObjectsWithIsNewInstance(IntegrationTestObjects objects, boolean isNewInstance) {
-            this.objects = objects;
-            this.isNewInstance = isNewInstance;
-        }
-    }
+public enum MockIntegrationTestDatabaseContent {
+    EmptyEnqueable,
+    EmptyDispatcher,
+    FullDispatcher,
+    MetadataEnqueable,
+    MetadataDispatcher
 }

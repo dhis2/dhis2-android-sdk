@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.integration;
+package org.hisp.dhis.android.core.utils.integration.mock;
 
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.data.imports.TrackerImportConflictSamples;
@@ -47,11 +47,11 @@ import java.io.IOException;
 import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-public abstract class BaseIntegrationTestFullDispatcher extends BaseIntegrationTest {
+public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockIntegrationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        boolean isNewInstance = setUpClass(IntegrationTestDatabaseContent.FullDispatcher);
+        boolean isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.FullDispatcher);
         if (isNewInstance) {
             dhis2MockServer.setRequestDispatcher();
 

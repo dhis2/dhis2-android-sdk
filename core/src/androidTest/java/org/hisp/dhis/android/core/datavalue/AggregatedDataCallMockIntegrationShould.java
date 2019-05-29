@@ -29,12 +29,12 @@
 package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestMetadataDispatcher;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataDispatcher;
 import org.junit.Test;
 
 import io.reactivex.observers.TestObserver;
 
-public class AggregatedDataCallMockIntegrationShould extends BaseIntegrationTestMetadataDispatcher {
+public class AggregatedDataCallMockIntegrationShould extends BaseMockIntegrationTestMetadataDispatcher {
 
     @Test
     public void emit_progress() {

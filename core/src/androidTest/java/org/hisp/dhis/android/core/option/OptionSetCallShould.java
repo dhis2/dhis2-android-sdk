@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleanerImpl;
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestEmptyEnqueable;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +48,7 @@ import androidx.test.runner.AndroidJUnit4;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class OptionSetCallShould extends BaseIntegrationTestEmptyEnqueable {
+public class OptionSetCallShould extends BaseMockIntegrationTestEmptyEnqueable {
 
     private Callable<List<OptionSet>> optionSetCall;
     private D2CallExecutor d2CallExecutor;

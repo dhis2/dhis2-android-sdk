@@ -26,15 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.integration;
+package org.hisp.dhis.android.core.utils.integration.mock;
 
 import org.junit.BeforeClass;
 
-public abstract class BaseIntegrationTestMetadataDispatcher extends BaseIntegrationTest {
+public abstract class BaseMockIntegrationTestMetadataDispatcher extends BaseMockIntegrationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        boolean isNewInstance = setUpClass(IntegrationTestDatabaseContent.MetadataDispatcher);
+        boolean isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.MetadataDispatcher);
         if (isNewInstance) {
             objects.dhis2MockServer.setRequestDispatcher();
             objects.d2.syncMetaData().call();

@@ -31,7 +31,7 @@ package org.hisp.dhis.android.testapp.maintenance;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo;
 import org.hisp.dhis.android.core.category.CategoryOptionTableInfo;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
 import org.hisp.dhis.android.core.option.OptionFields;
@@ -49,7 +49,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class MaintenanceMockIntegrationShould extends BaseIntegrationTestFullDispatcher {
+public class MaintenanceMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
     public void allow_access_to_foreign_key_violations() {

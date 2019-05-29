@@ -34,7 +34,7 @@ import android.database.Cursor;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestEmptyEnqueable;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,13 +46,13 @@ import androidx.test.runner.AndroidJUnit4;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class UserCallMockIntegrationShould extends BaseIntegrationTestEmptyEnqueable {
+public class UserCallMockIntegrationShould extends BaseMockIntegrationTestEmptyEnqueable {
 
     private static Callable<User> userCall;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        BaseIntegrationTestEmptyEnqueable.setUpClass();
+        BaseMockIntegrationTestEmptyEnqueable.setUpClass();
 
         userCall = objects.d2DIComponent.internalModules().user.userCall;
 

@@ -29,10 +29,10 @@
 package org.hisp.dhis.android.core.wipe;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAssert;
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestEmptyDispatcher;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
 import org.junit.Test;
 
-public class WipeDBCallMockIntegrationShould extends BaseIntegrationTestEmptyDispatcher {
+public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmptyDispatcher {
 
     @Test
     public void have_empty_database_when_wipe_db_after_sync_data() throws Exception {

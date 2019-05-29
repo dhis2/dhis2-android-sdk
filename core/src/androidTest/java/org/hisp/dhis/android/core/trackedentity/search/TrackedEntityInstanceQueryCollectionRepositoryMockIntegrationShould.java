@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.search;
 
 import com.jraska.livedata.TestObserver;
 
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.junit.Rule;
 import org.junit.Test;
@@ -44,7 +44,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould
-        extends BaseIntegrationTestFullDispatcher {
+        extends BaseMockIntegrationTestFullDispatcher {
 
     @Rule
     public TestRule rule = new InstantTaskExecutorRule();

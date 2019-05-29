@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestEmptyEnqueable;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +46,7 @@ import static com.google.common.truth.Truth.assertThat;
 // ToDo: more tests to verify correct store behaviour
 // ToDo:    - what will happen if the same user will be inserted twice?
 @RunWith(AndroidJUnit4.class)
-public class UserAuthenticateCallMockIntegrationShould extends BaseIntegrationTestEmptyEnqueable {
+public class UserAuthenticateCallMockIntegrationShould extends BaseMockIntegrationTestEmptyEnqueable {
 
     private Callable<User> authenticateUserCall;
 

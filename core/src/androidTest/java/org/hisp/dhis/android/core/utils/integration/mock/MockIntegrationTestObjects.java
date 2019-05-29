@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.integration;
+package org.hisp.dhis.android.core.utils.integration.mock;
 
 import android.database.sqlite.SQLiteDatabase;
 
@@ -51,7 +51,7 @@ import java.util.Date;
 
 import androidx.test.InstrumentationRegistry;
 
-public class IntegrationTestObjects {
+public class MockIntegrationTestObjects {
     public final SQLiteDatabase database;
     public final DatabaseAdapter databaseAdapter;
 
@@ -62,7 +62,7 @@ public class IntegrationTestObjects {
     public final D2 d2;
     public final Dhis2MockServer dhis2MockServer;
 
-    IntegrationTestObjects(String databaseName) throws Exception {
+    MockIntegrationTestObjects(String databaseName) throws Exception {
         DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext(),
                 databaseName);
         database = dbOpenHelper.getWritableDatabase();

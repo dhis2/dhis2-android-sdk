@@ -26,29 +26,45 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.integration;
+package org.hisp.dhis.android.core.utils.integration.mock;
 
-import android.database.sqlite.SQLiteDatabase;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+class MockIntegrationTestObjectsFactory {
 
-public abstract class BaseIntegrationTest {
+    private static Map<MockIntegrationTestDatabaseContent, MockIntegrationTestObjects> instances = new HashMap<>();
 
-    protected static IntegrationTestObjects objects;
-    protected static D2 d2;
-    protected static Dhis2MockServer dhis2MockServer;
-    protected static DatabaseAdapter databaseAdapter;
-    protected static SQLiteDatabase database;
+    static IntegrationTestObjectsWithIsNewInstance getObjects(MockIntegrationTestDatabaseContent content) throws Exception {
+        if (instances.containsKey(content)) {
+            return new IntegrationTestObjectsWithIsNewInstance(instances.get(content), false);
 
-    static boolean setUpClass(IntegrationTestDatabaseContent content) throws Exception {
-        IntegrationTestObjectsFactory.IntegrationTestObjectsWithIsNewInstance tuple = IntegrationTestObjectsFactory.getObjects(content);
-        objects = tuple.objects;
-        d2 = objects.d2;
-        database = objects.database;
-        databaseAdapter = objects.databaseAdapter;
-        dhis2MockServer = objects.dhis2MockServer;
-        return tuple.isNewInstance;
+        } else {
+            MockIntegrationTestObjects instance = new MockIntegrationTestObjects(null);
+            instances.put(content, instance);
+            scheduleTearDown(instance);
+            return new IntegrationTestObjectsWithIsNewInstance(instance, true);
+        }
+    }
+
+    private static void scheduleTearDown(MockIntegrationTestObjects instance) {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                instance.tearDown();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }));
+    }
+
+    static class IntegrationTestObjectsWithIsNewInstance {
+        public final MockIntegrationTestObjects objects;
+        public final boolean isNewInstance;
+
+        IntegrationTestObjectsWithIsNewInstance(MockIntegrationTestObjects objects, boolean isNewInstance) {
+            this.objects = objects;
+            this.isNewInstance = isNewInstance;
+        }
     }
 }

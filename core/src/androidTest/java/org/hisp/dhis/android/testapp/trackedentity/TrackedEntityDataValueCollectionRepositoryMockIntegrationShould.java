@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.testapp.trackedentity;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
@@ -46,7 +47,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould extends BaseIntegrationTestFullDispatcher {
+public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
     public void allow_access_to_all_tracked_entity_data_values() {

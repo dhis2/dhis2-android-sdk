@@ -66,7 +66,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeStore;
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestEmptyDispatcher;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -81,7 +81,7 @@ import androidx.test.runner.AndroidJUnit4;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class ProgramIndicatorEngineIntegrationShould extends BaseIntegrationTestEmptyDispatcher {
+public class ProgramIndicatorEngineIntegrationShould extends BaseMockIntegrationTestEmptyDispatcher {
 
     private static String teiUid = "H87GEVeG3JH";
     private static String enrollmentUid = "la16vwCoFM8";
@@ -105,7 +105,7 @@ public class ProgramIndicatorEngineIntegrationShould extends BaseIntegrationTest
 
     @Before
     public void setUp() throws Exception {
-        BaseIntegrationTestEmptyDispatcher.setUpClass();
+        BaseMockIntegrationTestEmptyDispatcher.setUpClass();
 
         programIndicatorEngine = d2.programModule().programIndicatorEngine;
         

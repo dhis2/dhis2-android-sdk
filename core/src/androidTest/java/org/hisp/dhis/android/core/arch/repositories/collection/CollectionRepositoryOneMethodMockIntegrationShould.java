@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,7 +39,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class CollectionRepositoryOneMethodMockIntegrationShould extends BaseIntegrationTestFullDispatcher {
+public class CollectionRepositoryOneMethodMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     private final String BIRTH_UID =  "m2jTvAj5kkm";
     private final String DEFAULT_UID =  "p0KPaWEg3cf";

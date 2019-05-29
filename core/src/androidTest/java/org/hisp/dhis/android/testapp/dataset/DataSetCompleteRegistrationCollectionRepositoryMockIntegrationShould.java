@@ -30,7 +30,7 @@ package org.hisp.dhis.android.testapp.dataset;
 
 import androidx.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,7 +43,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShould extends BaseIntegrationTestFullDispatcher {
+public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     private SimpleDateFormat simpleDateFormat =  new SimpleDateFormat( "yyyy-MM-dd");
 

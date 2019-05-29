@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.category;
 
 import com.google.common.collect.Lists;
 
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestEmptyEnqueable;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
 import org.junit.Test;
 
 import java.util.HashSet;
@@ -39,7 +39,7 @@ import java.util.concurrent.Callable;
 
 import static junit.framework.Assert.assertFalse;
 
-public class CategoryEndpointCallShould extends BaseIntegrationTestEmptyEnqueable {
+public class CategoryEndpointCallShould extends BaseMockIntegrationTestEmptyEnqueable {
 
     @Test
     public void download_category_successfully() throws Exception {

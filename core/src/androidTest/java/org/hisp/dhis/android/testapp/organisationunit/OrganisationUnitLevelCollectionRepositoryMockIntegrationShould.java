@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.testapp.organisationunit;
 
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +41,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class OrganisationUnitLevelCollectionRepositoryMockIntegrationShould extends BaseIntegrationTestFullDispatcher {
+public class OrganisationUnitLevelCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
     public void find_all() {

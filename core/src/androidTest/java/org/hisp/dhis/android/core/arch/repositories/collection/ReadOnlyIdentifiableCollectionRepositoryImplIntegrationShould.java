@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionRepository;
-import org.hisp.dhis.android.core.utils.integration.BaseIntegrationTestEmptyDispatcher;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,13 +47,13 @@ import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSampl
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_UID_2;
 
 @RunWith(AndroidJUnit4.class)
-public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould extends BaseIntegrationTestEmptyDispatcher {
+public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould extends BaseMockIntegrationTestEmptyDispatcher {
 
     private static RelationshipTypeCollectionRepository relationshipTypeCollectionRepository;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        BaseIntegrationTestEmptyDispatcher.setUpClass();
+        BaseMockIntegrationTestEmptyDispatcher.setUpClass();
 
         SyncHandler<RelationshipType> handler = objects.d2DIComponent.relationshipTypeHandler();
 

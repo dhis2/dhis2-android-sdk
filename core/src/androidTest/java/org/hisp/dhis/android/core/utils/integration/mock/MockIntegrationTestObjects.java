@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.utils.integration.mock;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -62,10 +63,15 @@ public class MockIntegrationTestObjects {
     public final D2DIComponent d2DIComponent;
     public final D2 d2;
     public final Dhis2MockServer dhis2MockServer;
+    public final MockIntegrationTestDatabaseContent content;
+    private final String dbName;
 
-    MockIntegrationTestObjects(String databaseName) throws Exception {
+    MockIntegrationTestObjects(MockIntegrationTestDatabaseContent content) throws Exception {
+        this.content = content;
+        dbName = content.toString().toLowerCase() + ".db";
+
         DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext(),
-                databaseName);
+                dbName);
         database = dbOpenHelper.getWritableDatabase();
         databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
         resourceHandler = new ResourceHandler(ResourceStoreImpl.create(databaseAdapter));
@@ -84,8 +90,10 @@ public class MockIntegrationTestObjects {
     }
 
     public void tearDown() throws IOException {
-        Log.i("MockIntegrationTestObjects", "Objects teardown");
+        Log.i("MockIntegrationTestObjects", "Objects teardown: " + content);
         database.close();
+        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        context.deleteDatabase(dbName);
         dhis2MockServer.shutdown();
     }
 }

@@ -40,7 +40,7 @@ public class MockIntegrationTestObjectsFactory {
         if (instances.containsKey(content)) {
             return new IntegrationTestObjectsWithIsNewInstance(instances.get(content), false);
         } else {
-            MockIntegrationTestObjects instance = new MockIntegrationTestObjects(null);
+            MockIntegrationTestObjects instance = new MockIntegrationTestObjects(content);
             instances.put(content, instance);
             return new IntegrationTestObjectsWithIsNewInstance(instance, true);
         }

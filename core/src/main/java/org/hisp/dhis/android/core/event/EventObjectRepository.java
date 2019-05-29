@@ -99,6 +99,6 @@ public final class EventObjectRepository
 
     @Override
     protected void propagateState() {
-        dataStatePropagator.propagateEventState(event);
+        dataStatePropagator.propagateEventUpdate(event);
     }
 }

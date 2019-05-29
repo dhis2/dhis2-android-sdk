@@ -70,6 +70,6 @@ public final class TrackedEntityDataValueObjectRepository
 
     @Override
     protected void propagateState() {
-        dataStatePropagator.propagateTrackedEntityDataValueState(trackedEntityDataValue);
+        dataStatePropagator.propagateTrackedEntityDataValueUpdate(trackedEntityDataValue);
     }
 }

@@ -56,6 +56,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipStoreImpl;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -65,11 +66,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import static com.google.common.truth.Truth.assertThat;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(D2JunitRunner.class)
 public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
 
     private static TrackedEntityInstancePostCall trackedEntityInstancePostCall;

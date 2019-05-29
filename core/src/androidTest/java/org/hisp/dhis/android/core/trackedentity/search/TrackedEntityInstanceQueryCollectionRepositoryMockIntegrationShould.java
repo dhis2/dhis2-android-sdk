@@ -30,8 +30,9 @@ package org.hisp.dhis.android.core.trackedentity.search;
 
 import com.jraska.livedata.TestObserver;
 
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -40,9 +41,8 @@ import org.junit.runner.RunWith;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.LiveData;
 import androidx.paging.PagedList;
-import androidx.test.runner.AndroidJUnit4;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(D2JunitRunner.class)
 public class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould
         extends BaseMockIntegrationTestFullDispatcher {
 

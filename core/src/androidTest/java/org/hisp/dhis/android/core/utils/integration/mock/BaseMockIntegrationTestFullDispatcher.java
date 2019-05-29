@@ -38,15 +38,14 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.maintenance.D2ErrorStore;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
-import androidx.test.runner.AndroidJUnit4;
-
-@RunWith(AndroidJUnit4.class)
+@RunWith(D2JunitRunner.class)
 public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockIntegrationTest {
 
     @BeforeClass

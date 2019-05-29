@@ -28,13 +28,12 @@
 
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -47,7 +46,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(D2JunitRunner.class)
 public class FiltersOperatorsMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     private final String NAME_1 = "Antenatal care visit - Program rules demo";

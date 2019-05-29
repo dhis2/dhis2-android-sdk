@@ -45,7 +45,7 @@ import dagger.Reusable;
 
 @Reusable
 public final class TrackedEntityDataValueCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl <TrackedEntityDataValue, TrackedEntityDataValueCollectionRepository> {
+        extends ReadOnlyCollectionRepositoryImpl<TrackedEntityDataValue, TrackedEntityDataValueCollectionRepository> {
 
     private final TrackedEntityDataValueStore store;
     private final DataStatePropagator dataStatePropagator;

@@ -27,24 +27,36 @@
  */
 package org.hisp.dhis.android.core.configuration;
 
-import java.util.Locale;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import androidx.annotation.NonNull;
-import okhttp3.HttpUrl;
 
-public final class ConfigurationHelper {
+@RunWith(JUnit4.class)
+public class ConfigurationHelperShould {
 
-    private ConfigurationHelper() {}
-
-    public static void validateServerUrl(@NonNull String serverUrl) {
-        if (serverUrl.endsWith("api/")) {
-            throw new IllegalArgumentException("Server URL must not end with 'api/'");
-        } else if (!serverUrl.endsWith("/")) {
-            throw new IllegalArgumentException("Server URL must end with '/'");
-        }
+    @Test(expected = IllegalArgumentException.class)
+    public void validate_error_empty_string() {
+        ConfigurationHelper.validateServerUrl("");
     }
 
-    static HttpUrl getCanonicalServerUrl(String serverUrl) {
-        return HttpUrl.parse(String.format(Locale.US, "%sapi/", serverUrl));
+    @Test(expected = IllegalArgumentException.class)
+    public void validate_error_url_with_api() {
+        ConfigurationHelper.validateServerUrl("http://dhis2.org/api/");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void validate_error_url_without_slash() {
+        ConfigurationHelper.validateServerUrl("http://dhis2.org");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void validate_error_url_with_api_without_slash() {
+        ConfigurationHelper.validateServerUrl("http://dhis2.org/api");
+    }
+
+    @Test
+    public void validate_ok_correct_api() {
+        ConfigurationHelper.validateServerUrl("http://dhis2.org/");
     }
 }

@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
@@ -69,10 +67,17 @@ class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
         sqLiteBind(sqLiteStatement, 17, dataValue.attributeOptionCombo());
     };
 
-    private DataValueStore(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
-                           SQLiteStatement updateWhereStatement, SQLStatementBuilder builder) {
-        super(databaseAdapter, insertStatement, updateWhereStatement,
-                builder, BINDER, WHERE_UPDATE_BINDER, DataValue::create);
+    private static final WhereStatementBinder<DataValue> WHERE_DELETE_BINDER
+            = (dataValue, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, dataValue.dataElement());
+        sqLiteBind(sqLiteStatement, 2, dataValue.period());
+        sqLiteBind(sqLiteStatement, 3, dataValue.organisationUnit());
+        sqLiteBind(sqLiteStatement, 4, dataValue.categoryOptionCombo());
+        sqLiteBind(sqLiteStatement, 5, dataValue.attributeOptionCombo());
+    };
+
+    private DataValueStore(DatabaseAdapter databaseAdapter, SQLStatementBuilder builder) {
+        super(databaseAdapter, builder, BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, DataValue::create);
     }
 
     public static DataValueStore create(DatabaseAdapter databaseAdapter) {
@@ -81,10 +86,7 @@ class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
                 new SQLStatementBuilder(DataValueTableInfo.TABLE_INFO.name(),
                         DataValueTableInfo.TABLE_INFO.columns());
 
-        return new DataValueStore(databaseAdapter, databaseAdapter.compileStatement(
-                sqlStatementBuilder.insert()),
-                databaseAdapter.compileStatement(sqlStatementBuilder.updateWhere()),
-                sqlStatementBuilder);
+        return new DataValueStore(databaseAdapter, sqlStatementBuilder);
     }
 
     Collection<DataValue> getDataValuesWithState(State state) {

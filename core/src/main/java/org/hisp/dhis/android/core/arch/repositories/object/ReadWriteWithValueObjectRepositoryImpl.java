@@ -58,6 +58,7 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends Model, R extends R
         delete(getWithoutChildren());
     }
 
+    @SuppressWarnings({"PMD.PreserveStackTrace"})
     protected void delete(M m) throws D2Error {
         try {
             store.deleteWhere(m);

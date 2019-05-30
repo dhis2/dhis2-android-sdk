@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import androidx.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
 import org.junit.runner.RunWith;
@@ -39,8 +39,8 @@ import org.junit.runner.RunWith;
 public class SystemInfoStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<SystemInfo> {
 
     public SystemInfoStoreIntegrationShould() {
-        super(SystemInfoStore.create(DatabaseAdapterFactory.get(false)), SystemInfoTableInfo.TABLE_INFO,
-                DatabaseAdapterFactory.get(false));
+        super(SystemInfoStore.create(DatabaseAdapterFactory.get()), SystemInfoTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get());
     }
 
     @Override

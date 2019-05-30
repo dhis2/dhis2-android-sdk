@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.dataelement.DataElementOperandSamples;
 import org.junit.runner.RunWith;
@@ -41,8 +41,8 @@ public class DataElementOperandStoreIntegrationShould
         extends IdentifiableObjectStoreAbstractIntegrationShould<DataElementOperand> {
 
     public DataElementOperandStoreIntegrationShould() {
-        super(DataElementOperandStore.create(DatabaseAdapterFactory.get(false)), DataElementOperandTableInfo.TABLE_INFO,
-                DatabaseAdapterFactory.get(false));
+        super(DataElementOperandStore.create(DatabaseAdapterFactory.get()), DataElementOperandTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get());
     }
 
     @Override

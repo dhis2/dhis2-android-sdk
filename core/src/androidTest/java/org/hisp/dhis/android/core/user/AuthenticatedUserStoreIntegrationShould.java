@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.user.AuthenticatedUserSamples;
 import org.junit.runner.RunWith;
@@ -40,8 +40,8 @@ public class AuthenticatedUserStoreIntegrationShould
         extends ObjectWithoutUidStoreAbstractIntegrationShould<AuthenticatedUser> {
 
     public AuthenticatedUserStoreIntegrationShould() {
-        super(AuthenticatedUserStore.create(DatabaseAdapterFactory.get(false)), AuthenticatedUserTableInfo.TABLE_INFO,
-                DatabaseAdapterFactory.get(false));
+        super(AuthenticatedUserStore.create(DatabaseAdapterFactory.get()), AuthenticatedUserTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get());
     }
 
     @Override

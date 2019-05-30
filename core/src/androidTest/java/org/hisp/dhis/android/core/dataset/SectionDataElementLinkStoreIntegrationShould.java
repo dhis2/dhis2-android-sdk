@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.dataset.SectionDataElementLinkSamples;
 import org.junit.runner.RunWith;
@@ -40,8 +40,8 @@ public class SectionDataElementLinkStoreIntegrationShould
         extends LinkModelStoreAbstractIntegrationShould<SectionDataElementLink> {
 
     public SectionDataElementLinkStoreIntegrationShould() {
-        super(SectionDataElementLinkStore.create(DatabaseAdapterFactory.get(false)),
-                SectionDataElementLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(SectionDataElementLinkStore.create(DatabaseAdapterFactory.get()),
+                SectionDataElementLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

@@ -76,6 +76,6 @@ public abstract class LinkModelStoreAbstractIntegrationShould<M extends Model>
         store.insert(object);
         store.deleteLinksForMasterUid(masterUid);
         M objectFromDb = store.selectFirst();
-        assertThat(objectFromDb).isEqualTo(objectWithOtherMasterUid);
+        assertEqualsIgnoreId(objectFromDb, objectWithOtherMasterUid);
     }
 }

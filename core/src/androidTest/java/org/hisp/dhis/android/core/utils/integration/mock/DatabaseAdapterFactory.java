@@ -26,16 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.utils.integration.mock;
 
 import android.content.Context;
-import androidx.test.InstrumentationRegistry;
 
 import com.facebook.stetho.Stetho;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.DbOpenHelper;
+import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
+
+import androidx.test.InstrumentationRegistry;
 
 public class DatabaseAdapterFactory {
     private static String dbName = null;
     private static DatabaseAdapter databaseAdapter = null;
+
+    public static void setUp() {
+        if (databaseAdapter == null) {
+            databaseAdapter = create();
+            databaseAdapter.database().setForeignKeyConstraintsEnabled(false);
+        }
+    }
+
+    public static DatabaseAdapter get() {
+        return databaseAdapter;
+    }
+
+    public static void tearDown() {
+        if (databaseAdapter != null) {
+            databaseAdapter.database().close();
+            databaseAdapter = null;
+        }
+    }
 
     private static DatabaseAdapter create() {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
@@ -43,15 +66,5 @@ public class DatabaseAdapterFactory {
         dbOpenHelper.getWritableDatabase();
         Stetho.initializeWithDefaults(context);
         return new SqLiteDatabaseAdapter(dbOpenHelper);
-    }
-
-    public static DatabaseAdapter get(boolean foreignKeyConstraintsEnabled) {
-        if (databaseAdapter == null) {
-            databaseAdapter = create();
-        }
-
-        databaseAdapter.database().setForeignKeyConstraintsEnabled(foreignKeyConstraintsEnabled);
-
-        return databaseAdapter;
     }
 }

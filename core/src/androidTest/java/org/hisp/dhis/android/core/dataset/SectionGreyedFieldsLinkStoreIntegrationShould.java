@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.dataset.SectionGreyedFieldsLinkSamples;
 import org.junit.runner.RunWith;
@@ -40,8 +40,8 @@ public class SectionGreyedFieldsLinkStoreIntegrationShould
         extends LinkModelStoreAbstractIntegrationShould<SectionGreyedFieldsLink> {
 
     public SectionGreyedFieldsLinkStoreIntegrationShould() {
-        super(SectionGreyedFieldsLinkStore.create(DatabaseAdapterFactory.get(false)),
-                SectionGreyedFieldsLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(SectionGreyedFieldsLinkStore.create(DatabaseAdapterFactory.get()),
+                SectionGreyedFieldsLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

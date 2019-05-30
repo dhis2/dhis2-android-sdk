@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityAttributeSamples;
 import org.junit.runner.RunWith;
@@ -40,8 +40,8 @@ public class TrackedEntityAttributeStoreIntegrationShould
         extends IdentifiableObjectStoreAbstractIntegrationShould<TrackedEntityAttribute> {
 
     public TrackedEntityAttributeStoreIntegrationShould() {
-        super(TrackedEntityAttributeStore.create(DatabaseAdapterFactory.get(false)),
-                TrackedEntityAttributeTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(TrackedEntityAttributeStore.create(DatabaseAdapterFactory.get()),
+                TrackedEntityAttributeTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

@@ -62,4 +62,10 @@ public class DatabaseAdapterFactory {
 
         return databaseAdapter;
     }
+
+    public static void tearDown() {
+        if (databaseAdapter != null) {
+            databaseAdapter.database().close();
+        }
+    }
 }

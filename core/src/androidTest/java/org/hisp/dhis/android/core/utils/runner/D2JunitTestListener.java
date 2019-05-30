@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.utils.runner;
 
 import android.util.Log;
 
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestObjectsFactory;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
@@ -41,9 +42,11 @@ public class D2JunitTestListener extends RunListener {
     public void testRunStarted(Description description) {
         Log.e("D2JunitTestListener", "Test run started");
     }
+
     @Override
     public void testRunFinished(Result result) throws Exception {
         Log.i("D2JunitTestListener", "Test run finished");
+        DatabaseAdapterFactory.tearDown();
         MockIntegrationTestObjectsFactory.tearDown();
     }
 }

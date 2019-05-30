@@ -69,6 +69,14 @@ public abstract class ObjectWithoutUidStoreAbstractIntegrationShould<M extends M
     }
 
     @Test
+    public void insert_and_delete_where() {
+        store.insert(object);
+        assertThat(store.count()).isEqualTo(1);
+        store.deleteWhere(object);
+        assertThat(store.count()).isEqualTo(0);
+    }
+
+    @Test
     public void update_when_call_update_or_insert_where_and_there_is_a_previous_object() {
         store.insert(object);
         HandleAction handleAction = store.updateOrInsertWhere(objectToUpdate);

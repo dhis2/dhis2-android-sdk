@@ -40,7 +40,7 @@ public class SQLStatementBuilder {
     // TODO save TableInfo instead of separate files when architecture 1.0 is ready
     final String tableName;
     public final String[] columns;
-    private final String[] updateWhereColumns;
+    private final String[] whereColumns;
     private final boolean hasSortOrder;
 
     private final static String TEXT = " TEXT";
@@ -55,7 +55,7 @@ public class SQLStatementBuilder {
     SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns, boolean hasSortOrder) {
         this.tableName = tableName;
         this.columns = columns.clone();
-        this.updateWhereColumns = updateWhereColumns.clone();
+        this.whereColumns = updateWhereColumns.clone();
         this.hasSortOrder = hasSortOrder;
     }
 
@@ -182,10 +182,16 @@ public class SQLStatementBuilder {
 
     public String updateWhere() {
         // TODO refactor to only generate for object without uids store.
-        String whereClause = updateWhereColumns.length == 0 ? BaseModel.Columns.ID + " = -1" :
-                andSeparatedColumnEqualInterrogationMark(updateWhereColumns);
+        String whereClause = whereColumns.length == 0 ? BaseModel.Columns.ID + " = -1" :
+                andSeparatedColumnEqualInterrogationMark(whereColumns);
         return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(columns) +
                 WHERE + whereClause + ";";
+    }
+
+    public String deleteWhere() {
+        String whereClause = whereColumns.length == 0 ? BaseModel.Columns.ID + " = -1" :
+                andSeparatedColumnEqualInterrogationMark(whereColumns);
+        return "DELETE" + FROM + tableName + WHERE + whereClause + ";";
     }
 
     @SuppressWarnings("PMD.UseVarargs")

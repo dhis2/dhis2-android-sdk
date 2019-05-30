@@ -49,11 +49,12 @@ public final class ResourceStoreImpl extends ObjectWithoutUidStoreImpl<Resource>
     private static final WhereStatementBinder<Resource> WHERE_UPDATE_BINDER
             = (resource, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 3, resource.resourceType());
 
+    private static final WhereStatementBinder<Resource> WHERE_DELETE_BINDER
+            = (resource, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, resource.resourceType());
+
     private ResourceStoreImpl(DatabaseAdapter databaseAdapter,
                              SQLStatementBuilder builder) {
-        super(databaseAdapter,  databaseAdapter.compileStatement(builder.insert()),
-                databaseAdapter.compileStatement(builder.updateWhere()), builder, BINDER, WHERE_UPDATE_BINDER,
-                Resource::create);
+        super(databaseAdapter, builder, BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, Resource::create);
     }
 
     @Override

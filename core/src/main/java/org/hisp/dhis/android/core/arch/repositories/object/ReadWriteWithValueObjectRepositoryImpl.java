@@ -55,7 +55,23 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends Model, R extends R
     }
 
     public void delete() throws D2Error {
-        // TODO implement delete
+        delete(getWithoutChildren());
+    }
+
+    @SuppressWarnings({"PMD.PreserveStackTrace"})
+    protected void delete(M m) throws D2Error {
+        try {
+            store.deleteWhere(m);
+            propagateState();
+        } catch (Exception e) {
+            throw D2Error
+                    .builder()
+                    .errorComponent(D2ErrorComponent.SDK)
+                    .errorCode(D2ErrorCode.UNEXPECTED)
+                    .errorDescription("Unexpected exception on value delete")
+                    .originalException(e)
+                    .build();
+        }
     }
 
     @SuppressWarnings({"PMD.PreserveStackTrace"})

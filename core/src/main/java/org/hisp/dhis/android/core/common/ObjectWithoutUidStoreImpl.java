@@ -29,37 +29,48 @@
 package org.hisp.dhis.android.core.common;
 
 import android.database.sqlite.SQLiteStatement;
-import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 public class ObjectWithoutUidStoreImpl<M extends Model>
         extends ObjectStoreImpl<M> implements ObjectWithoutUidStore<M> {
     private final SQLiteStatement updateWhereStatement;
-    private final WhereStatementBinder<M> whereBinder;
+    private final SQLiteStatement deleteWhereStatement;
+    private final WhereStatementBinder<M> whereUpdateBinder;
+    private final WhereStatementBinder<M> whereDeleteBinder;
 
     public ObjectWithoutUidStoreImpl(DatabaseAdapter databaseAdapter,
-                                     SQLiteStatement insertStatement,
-                                     SQLiteStatement updateWhereStatement,
                                      SQLStatementBuilder builder,
                                      StatementBinder<M> binder,
-                                     WhereStatementBinder<M> whereBinder,
+                                     WhereStatementBinder<M> whereUpdateBinder,
+                                     WhereStatementBinder<M> whereDeleteBinder,
                                      CursorModelFactory<M> modelFactory) {
-        super(databaseAdapter, insertStatement, builder, binder, modelFactory);
-        this.updateWhereStatement = updateWhereStatement;
-        this.whereBinder = whereBinder;
+        super(databaseAdapter, databaseAdapter.compileStatement(builder.insert()), builder, binder, modelFactory);
+        this.updateWhereStatement = databaseAdapter.compileStatement(builder.updateWhere());
+        this.deleteWhereStatement = databaseAdapter.compileStatement(builder.deleteWhere());
+        this.whereUpdateBinder = whereUpdateBinder;
+        this.whereDeleteBinder = whereDeleteBinder;
     }
 
     @Override
     public void updateWhere(@NonNull M m) throws RuntimeException {
         isNull(m);
         binder.bindToStatement(m, updateWhereStatement);
-        whereBinder.bindToUpdateWhereStatement(m, updateWhereStatement);
+        whereUpdateBinder.bindWhereStatement(m, updateWhereStatement);
         executeUpdateDelete(updateWhereStatement);
+    }
+
+    @Override
+    public void deleteWhere(@NonNull M m) throws RuntimeException {
+        isNull(m);
+        whereDeleteBinder.bindWhereStatement(m, deleteWhereStatement);
+        executeUpdateDelete(deleteWhereStatement);
     }
 
     @Override

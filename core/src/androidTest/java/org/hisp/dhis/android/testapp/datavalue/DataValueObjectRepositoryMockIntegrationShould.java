@@ -28,7 +28,9 @@
 
 package org.hisp.dhis.android.testapp.datavalue;
 
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValueObjectRepository;
+import org.hisp.dhis.android.core.datavalue.DataValueStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -75,6 +77,30 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         assertThat(repository.get().comment(), is(comment));
 
         repository.delete();
+    }
+
+    @Test
+    public void delete_value_if_state_to_post() throws D2Error {
+        DataValueObjectRepository repository = objectRepository();
+
+        repository.set("value");
+        assertThat(repository.exists(), is(Boolean.TRUE));
+        assertThat(repository.get().state(), is(State.TO_POST));
+        repository.delete();
+        assertThat(repository.exists(), is(Boolean.FALSE));
+    }
+
+    @Test
+    public void set_state_to_delete_if_state_is_not_to_post() throws D2Error {
+        DataValueObjectRepository repository = objectRepository();
+
+        repository.set("value");
+        DataValueStore.create(databaseAdapter).setState(repository.get(), State.ERROR);
+        assertThat(repository.exists(), is(Boolean.TRUE));
+        assertThat(repository.get().state(), is(State.ERROR));
+        repository.delete();
+        assertThat(repository.exists(), is(Boolean.TRUE));
+        assertThat(repository.get().state(), is(State.TO_DELETE));
     }
 
     @Test

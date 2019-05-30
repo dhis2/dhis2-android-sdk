@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
-import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
@@ -43,6 +42,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
@@ -64,15 +65,21 @@ public final class TrackedEntityAttributeValueStoreImpl
         sqLiteBind(sqLiteStatement, 7, o.trackedEntityInstance());
     };
 
+
+    private static final WhereStatementBinder<TrackedEntityAttributeValue> WHERE_DELETE_BINDER
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.trackedEntityAttribute());
+        sqLiteBind(sqLiteStatement, 2, o.trackedEntityInstance());
+    };
+
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
             TrackedEntityAttributeValueTableInfo.TABLE_INFO,
             TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE);
 
     private TrackedEntityAttributeValueStoreImpl(DatabaseAdapter databaseAdapter,
                                 SQLStatementBuilder builder) {
-        super(databaseAdapter, databaseAdapter.compileStatement(builder.insert()),
-                databaseAdapter.compileStatement(builder.updateWhere()), builder,
-                BINDER, WHERE_UPDATE_BINDER, TrackedEntityAttributeValue::create);
+        super(databaseAdapter, builder, BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER,
+                TrackedEntityAttributeValue::create);
     }
 
     @Override

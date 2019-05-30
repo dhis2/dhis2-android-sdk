@@ -57,9 +57,18 @@ final class DataApprovalStore {
         sqLiteBind(sqLiteStatement, 9, dataApproval.attributeOptionCombo());
     };
 
+    private static final WhereStatementBinder<DataApproval> WHERE_DELETE_BINDER
+            = (dataApproval, sqLiteStatement) -> {
+
+        sqLiteBind(sqLiteStatement, 1, dataApproval.workflow());
+        sqLiteBind(sqLiteStatement, 2, dataApproval.organisationUnit());
+        sqLiteBind(sqLiteStatement, 3, dataApproval.period());
+        sqLiteBind(sqLiteStatement, 4, dataApproval.attributeOptionCombo());
+    };
+
     public static ObjectWithoutUidStore<DataApproval> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, DataApprovalTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER, DataApproval::create);
+                BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, DataApproval::create);
     }
 
     private DataApprovalStore() {}

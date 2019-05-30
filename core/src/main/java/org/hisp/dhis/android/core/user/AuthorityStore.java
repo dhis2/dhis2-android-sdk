@@ -41,13 +41,13 @@ final class AuthorityStore {
     private static final StatementBinder<Authority> BINDER
             = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.name());
 
-    private static final WhereStatementBinder<Authority> WHERE_UPDATE_BINDER
+    private static final WhereStatementBinder<Authority> WHERE_BINDER
             = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.name());
 
     private AuthorityStore() {}
 
     public static ObjectWithoutUidStore<Authority> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, AuthorityTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER, Authority::create);
+                BINDER, WHERE_BINDER, WHERE_BINDER, Authority::create);
     }
 }

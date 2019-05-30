@@ -46,10 +46,13 @@ final class SystemSettingStore {
     private static final WhereStatementBinder<SystemSetting> WHERE_UPDATE_BINDER
             = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 3, o.key());
 
+    private static final WhereStatementBinder<SystemSetting> WHERE_DELETE_BINDER
+            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.key());
+
     private SystemSettingStore() {}
 
     public static ObjectWithoutUidStore<SystemSetting> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemSettingTableInfo.TABLE_INFO, BINDER,
-                WHERE_UPDATE_BINDER, SystemSetting::create);
+                WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, SystemSetting::create);
     }
 }

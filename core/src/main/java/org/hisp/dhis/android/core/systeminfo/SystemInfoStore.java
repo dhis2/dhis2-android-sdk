@@ -49,11 +49,14 @@ final class SystemInfoStore {
     private static final WhereStatementBinder<SystemInfo> WHERE_UPDATE_BINDER =
             (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 6, o.contextPath());
 
+    private static final WhereStatementBinder<SystemInfo> WHERE_DELETE_BINDER =
+            (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.contextPath());
+
     private SystemInfoStore() {
     }
 
     static ObjectWithoutUidStore<SystemInfo> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemInfoTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER, SystemInfo::create);
+                BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, SystemInfo::create);
     }
 }

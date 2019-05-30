@@ -67,13 +67,12 @@ public final class StoreFactory {
 
     public static <I extends Model> ObjectWithoutUidStore<I> objectWithoutUidStore(
             DatabaseAdapter databaseAdapter, TableInfo tableInfo, StatementBinder<I> binder,
-            WhereStatementBinder<I> whereBinder, CursorModelFactory<I> modelFactory) {
+            WhereStatementBinder<I> whereUpdateBinder,
+            WhereStatementBinder<I> whereDeleteBinder, CursorModelFactory<I> modelFactory) {
         SQLStatementBuilder statementBuilder =
                 new SQLStatementBuilder(tableInfo.name(), tableInfo.columns().all(), tableInfo.columns().whereUpdate());
-        return new ObjectWithoutUidStoreImpl<>(databaseAdapter,
-                databaseAdapter.compileStatement(statementBuilder.insert()),
-                databaseAdapter.compileStatement(statementBuilder.updateWhere()),
-                statementBuilder, binder, whereBinder, modelFactory);
+        return new ObjectWithoutUidStoreImpl<>(databaseAdapter, statementBuilder, binder, whereUpdateBinder,
+                whereDeleteBinder, modelFactory);
     }
 
     public static <I extends Model> LinkModelStore<I> linkModelStore(

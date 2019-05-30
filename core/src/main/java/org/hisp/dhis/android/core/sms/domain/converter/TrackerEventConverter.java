@@ -35,7 +35,7 @@ public class TrackerEventConverter extends Converter<Event> {
             subm.setEvent(e.uid());
             subm.setProgramStage(e.programStage());
             subm.setTimestamp(e.lastUpdated());
-            subm.setTrackedEntityInstance(e.trackedEntityInstance());
+            subm.setTrackedEntityInstance(teiUid);
             subm.setValues(convertDataValues(e.attributeOptionCombo(), e.trackedEntityDataValues()));
             subm.setOrgUnit(e.organisationUnit());
             subm.setUserID(user);
@@ -50,7 +50,7 @@ public class TrackerEventConverter extends Converter<Event> {
 
     @Override
     Single<Event> readItemFromDb() {
-        return getLocalDbRepository().getTrackerEventToSubmit(eventUid, teiUid);
+        return getLocalDbRepository().getTrackerEventToSubmit(eventUid);
     }
 
     @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})

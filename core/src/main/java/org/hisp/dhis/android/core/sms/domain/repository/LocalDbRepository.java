@@ -30,7 +30,7 @@ public interface LocalDbRepository {
 
     Completable setMetadataIds(Metadata metadata);
 
-    Single<Event> getTrackerEventToSubmit(String eventUid, String teiUid);
+    Single<Event> getTrackerEventToSubmit(String eventUid);
 
     Single<Event> getSimpleEventToSubmit(String eventUid);
 

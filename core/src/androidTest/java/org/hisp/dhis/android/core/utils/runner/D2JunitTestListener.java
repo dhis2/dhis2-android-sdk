@@ -38,9 +38,11 @@ import org.junit.runner.notification.RunListener;
 
 public class D2JunitTestListener extends RunListener {
 
+
     @Override
     public void testRunStarted(Description description) {
         Log.e("D2JunitTestListener", "Test run started");
+        DatabaseAdapterFactory.setUp();
     }
 
     @Override

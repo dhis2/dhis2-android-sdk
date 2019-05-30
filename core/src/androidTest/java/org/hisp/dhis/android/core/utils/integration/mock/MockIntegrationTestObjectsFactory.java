@@ -47,10 +47,12 @@ public class MockIntegrationTestObjectsFactory {
     }
 
     public static void tearDown() throws IOException {
-        for (MockIntegrationTestObjects objects : instances.values()) {
-            objects.tearDown();
+        if (!instances.isEmpty()) {
+            for (MockIntegrationTestObjects objects : instances.values()) {
+                objects.tearDown();
+            }
+            instances.clear();
         }
-        instances.clear();
     }
 
     static class IntegrationTestObjectsWithIsNewInstance {

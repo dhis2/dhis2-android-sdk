@@ -30,6 +30,7 @@ package org.hisp.dhis.android.testapp.datavalue;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValueObjectRepository;
+import org.hisp.dhis.android.core.datavalue.DataValueStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -94,9 +95,9 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         DataValueObjectRepository repository = objectRepository();
 
         repository.set("value");
-        repository.set("other_value");
+        DataValueStore.create(databaseAdapter).setState(repository.get(), State.ERROR);
         assertThat(repository.exists(), is(Boolean.TRUE));
-        assertThat(repository.get().state(), is(State.TO_UPDATE));
+        assertThat(repository.get().state(), is(State.ERROR));
         repository.delete();
         assertThat(repository.exists(), is(Boolean.TRUE));
         assertThat(repository.get().state(), is(State.TO_DELETE));

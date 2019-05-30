@@ -93,8 +93,10 @@ public final class DataValueObjectRepository
     private DataValue.Builder setBuilder() {
         Date date = new Date();
         if (exists()) {
-            return getWithoutChildren().toBuilder()
-                    .state(State.TO_UPDATE)
+            DataValue dataValue = getWithoutChildren();
+            State state = dataValue.state() == State.TO_POST ? State.TO_POST : State.TO_UPDATE;
+            return dataValue.toBuilder()
+                    .state(state)
                     .lastUpdated(date);
         } else {
             return DataValue.builder()

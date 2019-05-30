@@ -41,7 +41,7 @@ import java.util.Collection;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
-class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
+public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
 
     private static final StatementBinder<DataValue> BINDER = (dataValue, sqLiteStatement) -> {
         sqLiteBind(sqLiteStatement, 1, dataValue.dataElement());

@@ -67,7 +67,7 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends Model, R extends R
                     .builder()
                     .errorComponent(D2ErrorComponent.SDK)
                     .errorCode(D2ErrorCode.UNEXPECTED)
-                    .errorDescription("Unexpected exception on value set")
+                    .errorDescription("Unexpected exception on value delete")
                     .originalException(e)
                     .build();
         }

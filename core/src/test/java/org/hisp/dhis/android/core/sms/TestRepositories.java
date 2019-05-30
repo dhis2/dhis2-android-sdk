@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.smscompression.models.Metadata;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -121,7 +122,12 @@ public class TestRepositories {
         }
 
         @Override
-        public Single<Event> getEventToSubmit(String eventUid, String teiUid) {
+        public Single<Event> getTrackerEventToSubmit(String eventUid) {
+            return null;
+        }
+
+        @Override
+        public Single<Event> getSimpleEventToSubmit(String eventUid) {
             return null;
         }
 
@@ -163,6 +169,21 @@ public class TestRepositories {
         @Override
         public Single<Boolean> isModuleEnabled() {
             return Single.just(true);
+        }
+
+        @Override
+        public Single<Collection<Integer>> getOngoingSubmissionsIds() {
+            return null;
+        }
+
+        @Override
+        public Completable addOngoingSubmissionsId(Integer id) {
+            return null;
+        }
+
+        @Override
+        public Completable removeOngoingSubmissionsId(Integer id) {
+            return null;
         }
     }
 

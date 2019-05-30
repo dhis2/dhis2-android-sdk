@@ -26,39 +26,45 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteValueObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteWithValueObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.DataStatePropagator;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.Date;
 import java.util.Map;
 
-public final class TrackedEntityDataValueObjectRepository
-        extends ReadWriteWithValueObjectRepositoryImpl<TrackedEntityDataValue, TrackedEntityDataValueObjectRepository>
-        implements ReadWriteValueObjectRepository<TrackedEntityDataValue> {
+public final class DataValueObjectRepository
+        extends ReadWriteWithValueObjectRepositoryImpl<DataValue, DataValueObjectRepository>
+        implements ReadWriteValueObjectRepository<DataValue> {
 
-    private final DataStatePropagator dataStatePropagator;
-    private final String event;
+    private final String period;
+    private final String organisationUnit;
     private final String dataElement;
+    private final String categoryOptionCombo;
+    private final String attributeOptionCombo;
 
-    TrackedEntityDataValueObjectRepository(
-            final TrackedEntityDataValueStore store,
-            final Map<String, ChildrenAppender<TrackedEntityDataValue>> childrenAppenders,
+    DataValueObjectRepository(
+            final DataValueStore store,
+            final Map<String, ChildrenAppender<DataValue>> childrenAppenders,
             final RepositoryScope scope,
-            final DataStatePropagator dataStatePropagator,
-            final String event,
-            final String dataElement) {
-        super(store, childrenAppenders, scope, s -> new TrackedEntityDataValueObjectRepository(
-                store, childrenAppenders, s, dataStatePropagator, event, dataElement));
-        this.dataStatePropagator = dataStatePropagator;
-        this.event = event;
+            final String period,
+            final String organisationUnit,
+            final String dataElement,
+            final String categoryOptionCombo,
+            final String attributeOptionCombo) {
+        super(store, childrenAppenders, scope, s -> new DataValueObjectRepository(store, childrenAppenders, s,
+                period, organisationUnit, dataElement, categoryOptionCombo, attributeOptionCombo));
+        this.period = period;
+        this.organisationUnit = organisationUnit;
         this.dataElement = dataElement;
+        this.categoryOptionCombo = categoryOptionCombo;
+        this.attributeOptionCombo = attributeOptionCombo;
     }
 
     public Unit set(String value) throws D2Error {
@@ -66,23 +72,31 @@ public final class TrackedEntityDataValueObjectRepository
         return setObject(objectWithValue);
     }
 
-    private TrackedEntityDataValue.Builder setBuilder() {
+    public Unit setFollowUp(Boolean followUp) throws D2Error {
+        return setObject(setBuilder().followUp(followUp).build());
+    }
+
+    public Unit setComment(String comment) throws D2Error {
+        return setObject(setBuilder().comment(comment).build());
+    }
+
+    private DataValue.Builder setBuilder() {
         Date date = new Date();
         if (exists()) {
             return getWithoutChildren().toBuilder()
+                    .state(State.TO_UPDATE)
                     .lastUpdated(date);
         } else {
-            return TrackedEntityDataValue.builder()
+            return DataValue.builder()
+                    .state(State.TO_POST)
                     .created(date)
                     .lastUpdated(date)
-                    .providedElsewhere(Boolean.FALSE)
-                    .event(event)
-                    .dataElement(dataElement);
+                    .followUp(Boolean.FALSE)
+                    .period(period)
+                    .organisationUnit(organisationUnit)
+                    .dataElement(dataElement)
+                    .categoryOptionCombo(categoryOptionCombo)
+                    .attributeOptionCombo(attributeOptionCombo);
         }
-    }
-
-    @Override
-    protected void propagateState() {
-        dataStatePropagator.propagateTrackedEntityDataValueUpdate(objectWithValue);
     }
 }

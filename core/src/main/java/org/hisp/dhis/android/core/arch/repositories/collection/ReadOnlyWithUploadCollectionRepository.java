@@ -26,25 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.common.Transformer;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.imports.DataValueImportSummary;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
-import java.util.Date;
+import java.util.concurrent.Callable;
 
-final class TrackedEntityAttributeValueProjectionTransformer
-        implements Transformer<TrackedEntityAttributeValueCreateProjection, TrackedEntityAttributeValue> {
-
-    @Override
-    public TrackedEntityAttributeValue transform(TrackedEntityAttributeValueCreateProjection projection) {
-        Date creationDate = new Date();
-
-        return TrackedEntityAttributeValue.builder()
-                .created(creationDate)
-                .lastUpdated(creationDate)
-                .trackedEntityAttribute(projection.trackedEntityAttribute())
-                .trackedEntityInstance(projection.trackedEntityInstance())
-                .value(projection.value())
-                .build();
-    }
+public interface ReadOnlyWithUploadCollectionRepository<M extends Model> extends ReadOnlyCollectionRepository<M> {
+    Callable<DataValueImportSummary> upload() throws D2Error;
 }

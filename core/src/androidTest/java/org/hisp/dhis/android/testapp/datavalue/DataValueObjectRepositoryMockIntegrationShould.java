@@ -26,10 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.testapp.trackedentity;
+package org.hisp.dhis.android.testapp.datavalue;
 
+import org.hisp.dhis.android.core.datavalue.DataValueObjectRepository;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
@@ -39,15 +39,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(D2JunitRunner.class)
-public class TrackedEntityAttributeValueObjectRepositoryMockIntegrationShould
-        extends BaseMockIntegrationTestFullDispatcher {
+public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
     public void update_value() throws D2Error {
         String value = "new_value";
 
-        TrackedEntityAttributeValueObjectRepository repository = d2.trackedEntityModule().trackedEntityAttributeValues
-                .value("aejWyOfXge6", "nWrB0TfWlvh");
+        DataValueObjectRepository repository = objectRepository();
 
         repository.set(value);
         assertThat(repository.get().value(), is(value));
@@ -56,10 +54,42 @@ public class TrackedEntityAttributeValueObjectRepositoryMockIntegrationShould
     }
 
     @Test
+    public void update_follow_up() throws D2Error {
+        Boolean followUp = Boolean.TRUE;
+
+        DataValueObjectRepository repository = objectRepository();
+
+        repository.setFollowUp(followUp);
+        assertThat(repository.get().followUp(), is(followUp));
+
+        repository.delete();
+    }
+
+    @Test
+    public void update_comment() throws D2Error {
+        String comment = "comment";
+
+        DataValueObjectRepository repository = objectRepository();
+
+        repository.setComment(comment);
+        assertThat(repository.get().comment(), is(comment));
+
+        repository.delete();
+    }
+
+    @Test
     public void return_that_a_value_exists_only_if_it_has_been_created() {
-        assertThat(d2.trackedEntityModule().trackedEntityAttributeValues
-                .value("no_attribute", "no_instance").exists(), is(Boolean.FALSE));
-        assertThat(d2.trackedEntityModule().trackedEntityAttributeValues
-                .value("lZGmxYbs97q", "nWrB0TfWlvh").exists(), is(Boolean.TRUE));
+        assertThat(d2.dataValueModule().dataValues
+                .value("no_period", "no_org_unit", "no_data_element",
+                        "no_category", "no_attribute").exists(), is(Boolean.FALSE));
+        assertThat(d2.dataValueModule().dataValues
+                .value("201809", "DiszpKrYNg8", "g9eOBujte1U",
+                        "Gmbgme7z9BF", "bRowv6yZOF2").exists(), is(Boolean.TRUE));
+    }
+
+    private DataValueObjectRepository objectRepository() {
+        return d2.dataValueModule().dataValues
+                .value("201905", "DiszpKrYNg8", "g9eOBujte1U",
+                        "Gmbgme7z9BF", "bRowv6yZOF2");
     }
 }

@@ -31,6 +31,7 @@ package org.hisp.dhis.android.testapp.datavalue;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValue;
+import org.hisp.dhis.android.core.datavalue.DataValueObjectRepository;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
@@ -185,4 +186,12 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
         assertThat(dataValues.size(), is(3));
     }
 
+    @Test
+    public void return_data_value_object_repository() {
+        DataValueObjectRepository objectRepository = d2.dataValueModule().dataValues
+                .value("201809", "DiszpKrYNg8", "g9eOBujte1U",
+                        "Gmbgme7z9BF", "bRowv6yZOF2");
+        assertThat(objectRepository.exists(), is(Boolean.TRUE));
+        assertThat(objectRepository.get().value(), is("10"));
+    }
 }

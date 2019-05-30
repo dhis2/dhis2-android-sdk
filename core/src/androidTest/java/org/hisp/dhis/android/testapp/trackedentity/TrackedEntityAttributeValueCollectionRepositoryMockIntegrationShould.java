@@ -29,10 +29,9 @@
 package org.hisp.dhis.android.testapp.trackedentity;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCreateProjection;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -102,28 +101,11 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
         assertThat(trackedEntityAttributeValues.size(), is(1));
     }
 
-    // TODO Uncomment when delete method is ready.
-    // @Test
-    public void add_tracked_entity_attribute_values_to_the_repository() throws D2Error {
-        List<TrackedEntityAttributeValue> trackedEntityAttributeValues1 =
-                d2.trackedEntityModule().trackedEntityAttributeValues.get();
-        assertThat(trackedEntityAttributeValues1.size(), is(2));
-
-        TrackedEntityAttributeValue attributeValue = d2.trackedEntityModule().trackedEntityAttributeValues.add(
-                TrackedEntityAttributeValueCreateProjection.create(
-                        "aejWyOfXge6", "nWrB0TfWlvh", "created_value"));
-
-        List<TrackedEntityAttributeValue> trackedEntityAttributeValues2 =
-                d2.trackedEntityModule().trackedEntityAttributeValues.get();
-        assertThat(trackedEntityAttributeValues2.size(), is(3));
-
-        TrackedEntityAttributeValue trackedEntityAttributeValue = d2.trackedEntityModule().trackedEntityAttributeValues
-                .value(attributeValue.trackedEntityAttribute(), attributeValue.trackedEntityInstance()).get();
-        assertThat(trackedEntityAttributeValue.trackedEntityAttribute(), is("aejWyOfXge6"));
-        assertThat(trackedEntityAttributeValue.trackedEntityInstance(), is("nWrB0TfWlvh"));
-        assertThat(trackedEntityAttributeValue.value(), is("created_value"));
-
-        d2.trackedEntityModule().trackedEntityAttributeValues
-                .value(attributeValue.trackedEntityAttribute(), attributeValue.trackedEntityInstance()).delete();
+    @Test
+    public void return_tracked_entity_attribute_value_object_repository() {
+        TrackedEntityAttributeValueObjectRepository objectRepository = d2.trackedEntityModule().trackedEntityAttributeValues
+                .value("lZGmxYbs97q", "nWrB0TfWlvh");
+        assertThat(objectRepository.exists(), is(Boolean.TRUE));
+        assertThat(objectRepository.get().value(), is("4081507"));
     }
 }

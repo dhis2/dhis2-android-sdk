@@ -44,6 +44,7 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends Model, R extends R
         extends ReadOnlyOneObjectRepositoryImpl<M, R> {
 
     private final ObjectWithoutUidStore<M> store;
+    protected M objectWithValue;
 
     public ReadWriteWithValueObjectRepositoryImpl(ObjectWithoutUidStore<M> store,
                                                   Map<String, ChildrenAppender<M>> childrenAppenders,
@@ -58,17 +59,17 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends Model, R extends R
     }
 
     @SuppressWarnings({"PMD.PreserveStackTrace"})
-    protected Unit updateObject(M m) throws D2Error {
+    protected Unit setObject(M m) throws D2Error {
         try {
-            store.updateWhere(m);
+            store.updateOrInsertWhere(m);
             propagateState();
             return new Unit();
         } catch (SQLiteConstraintException e) {
             throw D2Error
                     .builder()
                     .errorComponent(D2ErrorComponent.SDK)
-                    .errorCode(D2ErrorCode.OBJECT_CANT_BE_UPDATED)
-                    .errorDescription("Object property can't be updated")
+                    .errorCode(D2ErrorCode.VALUE_CANT_BE_SET)
+                    .errorDescription("Value can't be set")
                     .originalException(e)
                     .build();
         } catch (Exception e) {
@@ -76,7 +77,7 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends Model, R extends R
                     .builder()
                     .errorComponent(D2ErrorComponent.SDK)
                     .errorCode(D2ErrorCode.UNEXPECTED)
-                    .errorDescription("Unexpected exception on property update")
+                    .errorDescription("Unexpected exception on value set")
                     .originalException(e)
                     .build();
         }

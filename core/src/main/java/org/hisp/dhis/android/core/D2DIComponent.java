@@ -178,7 +178,7 @@ public interface D2DIComponent {
         D2DIComponent build();
     }
 
-    public static D2DIComponent create(Context context, Retrofit retrofit, DatabaseAdapter databaseAdapter) {
+    static D2DIComponent create(Context context, Retrofit retrofit, DatabaseAdapter databaseAdapter) {
         return DaggerD2DIComponent.builder()
                 .appContextDIModule(new AppContextDIModule(context))
                 .databaseDIModule(new DatabaseDIModule(databaseAdapter))

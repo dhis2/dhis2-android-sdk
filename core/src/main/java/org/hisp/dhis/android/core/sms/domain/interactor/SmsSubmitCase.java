@@ -27,7 +27,7 @@ public class SmsSubmitCase {
     private Converter<?> converter;
     private List<String> smsParts;
     private Integer submissionId;
-    private boolean finishedSending = false;
+    private boolean finishedSending;
 
     public SmsSubmitCase(LocalDbRepository localDbRepository, SmsRepository smsRepository,
                          DeviceStateRepository deviceStateRepository) {

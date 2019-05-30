@@ -49,7 +49,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     private static final String KEY_MODULE_ENABLED = "module_enabled";
     private static final String KEY_SUBMISSIONS_IDS = "submissions_ids";
 
-    private Collection<Integer> ongoingSubmissionIds = null;
+    private Collection<Integer> ongoingSubmissionIds;
 
     @Inject
     public LocalDbRepositoryImpl(Context ctx,
@@ -232,7 +232,9 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
                     Set<String> set = context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
                             .getStringSet(KEY_SUBMISSIONS_IDS, new HashSet<>());
                     HashSet<Integer> numSet = new HashSet<>();
-                    if (set == null) return numSet;
+                    if (set == null) {
+                        return numSet;
+                    }
                     for (String val : set) {
                         try {
                             numSet.add(Integer.parseInt(val));
@@ -240,6 +242,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
                             Log.e(TAG, "Failed parsing submission id", e);
                         }
                     }
+                    ongoingSubmissionIds = numSet;
                     return numSet;
                 }
         );

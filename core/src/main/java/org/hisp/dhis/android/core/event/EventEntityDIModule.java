@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueChildrenAppender;
 
@@ -53,6 +54,12 @@ public final class EventEntityDIModule {
     @Reusable
     public SyncHandlerWithTransformer<Event> handler(EventHandler impl) {
         return impl;
+    }
+
+    @Provides
+    @Reusable
+    Transformer<EventCreateProjection, Event> transformer() {
+        return new EventProjectionTransformer();
     }
 
     @Provides

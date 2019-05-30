@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.handlers;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
@@ -37,8 +38,11 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class IdentifiableDataSyncHandlerImpl<O extends DataModel & ObjectWithUidInterface & ObjectWithDeleteInterface>
         extends IdentifiableSyncHandlerImpl<O> {
@@ -52,14 +56,15 @@ public class IdentifiableDataSyncHandlerImpl<O extends DataModel & ObjectWithUid
         List<String> storedObjectUids = storedObjectUids(os);
         List<String> syncedObjectUids = syncedObjectUids(storedObjectUids);
 
-        List<O> syncedObjects = new ArrayList<>();
+        List<O> objectsToStore = new ArrayList<>();
         for (O object : os) {
-            if (!storedObjectUids.contains(object.uid()) || syncedObjectUids.contains(object.uid())) {
-                syncedObjects.add(object);
+            if (!storedObjectUids.contains(object.uid()) || syncedObjectUids.contains(object.uid())
+                    || isDeleted(object)) {
+                objectsToStore.add(object);
             }
         }
 
-        return syncedObjects;
+        return objectsToStore;
     }
 
     private List<String> storedObjectUids(Collection<O> os) {
@@ -77,7 +82,9 @@ public class IdentifiableDataSyncHandlerImpl<O extends DataModel & ObjectWithUid
         if (!storedObjectUids.isEmpty()) {
             String syncedObjectUidsWhereClause2 = new WhereClauseBuilder()
                     .appendInKeyStringValues(BaseIdentifiableObjectModel.Columns.UID, storedObjectUids)
-                    .appendKeyStringValue(BaseDataModel.Columns.STATE, State.SYNCED).build();
+                    .appendInKeyStringValues(BaseDataModel.Columns.STATE,
+                            Arrays.asList(State.SYNCED.name(), State.RELATIONSHIP.name()))
+                    .build();
             return store.selectUidsWhere(syncedObjectUidsWhereClause2);
         }
 

@@ -39,18 +39,13 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.concurrent.TimeUnit;
 
 import androidx.test.InstrumentationRegistry;
-import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 public class D2Factory {
-    public static D2 create(String url, DatabaseAdapter databaseAdapter) {
-        Configuration config = Configuration.builder()
-                .serverUrl(HttpUrl.parse(url))
-                .build();
-
+    public static D2 create(String urlWithoutAPI, DatabaseAdapter databaseAdapter) {
         return new D2.Builder()
-                .configuration(config)
+                .configuration(Configuration.forServerUrlStringWithoutAPI(urlWithoutAPI))
                 .databaseAdapter(databaseAdapter)
                 .okHttpClient(okHttpClient(databaseAdapter))
                 .context(InstrumentationRegistry.getTargetContext().getApplicationContext())

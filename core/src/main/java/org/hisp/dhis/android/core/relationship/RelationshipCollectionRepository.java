@@ -29,14 +29,13 @@ package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.StoreWithState;
 import org.hisp.dhis.android.core.common.UidsHelper;
@@ -61,15 +60,15 @@ import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 @Reusable
 public final class RelationshipCollectionRepository
         extends ReadOnlyCollectionRepositoryImpl<Relationship, RelationshipCollectionRepository>
-        implements ReadWriteIdentifiableCollectionRepository<Relationship> {
+        implements ReadWriteWithUidCollectionRepository<Relationship, Relationship> {
 
-    private final IdentifiableObjectStore<Relationship> store;
+    private final RelationshipStore store;
     private final RelationshipHandler relationshipHandler;
     private final RelationshipItemStore relationshipItemStore;
     private final RelationshipItemElementStoreSelector storeSelector;
 
     @Inject
-    RelationshipCollectionRepository(final IdentifiableObjectStore<Relationship> store,
+    RelationshipCollectionRepository(final RelationshipStore store,
                                      final Map<String, ChildrenAppender<Relationship>> childrenAppenders,
                                      final RepositoryScope scope,
                                      final RelationshipHandler relationshipHandler,
@@ -85,7 +84,7 @@ public final class RelationshipCollectionRepository
     }
 
     @Override
-    public void add(Relationship relationship) throws D2Error {
+    public String add(Relationship relationship) throws D2Error {
         if (relationshipHandler.doesRelationshipExist(relationship)) {
             throw D2Error
                     .builder()
@@ -112,6 +111,7 @@ public final class RelationshipCollectionRepository
                         .build();
             }
         }
+        return relationship.uid();
     }
 
     @Override

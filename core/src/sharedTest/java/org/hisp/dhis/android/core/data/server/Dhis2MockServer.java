@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.data.server;
 
 import org.hisp.dhis.android.core.data.file.IFileReader;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
@@ -77,10 +78,14 @@ public class Dhis2MockServer {
     private MockWebServer server;
     private IFileReader fileReader;
 
-    public Dhis2MockServer(IFileReader fileReader) throws IOException {
+    private Dhis2MockServer(IFileReader fileReader) throws IOException {
         this.fileReader = fileReader;
         this.server = new MockWebServer();
         this.server.start();
+    }
+
+    public Dhis2MockServer() throws IOException {
+        this(new ResourcesFileReader());
     }
 
     public void shutdown() throws IOException {
@@ -114,53 +119,53 @@ public class Dhis2MockServer {
             public MockResponse dispatch(RecordedRequest request) {
 
                 String path = request.getPath();
-                if (path.startsWith("/me?")) {
+                if (path.startsWith("/api/me?")) {
                     return createMockResponse(USER_JSON);
-                } else if (path.equals("/me/authorization")) {
+                } else if (path.equals("/api/me/authorization")) {
                     return createMockResponse(AUTHORITIES_JSON);
-                } else if (path.startsWith("/system/info?")) {
+                } else if (path.startsWith("/api/system/info?")) {
                     return createMockResponse(SYSTEM_INFO_JSON);
-                } else if (path.startsWith("/systemSettings?")) {
+                } else if (path.startsWith("/api/systemSettings?")) {
                     return createMockResponse(SYSTEM_SETTINGS_JSON);
-                } else if (path.startsWith("/programs?")) {
+                } else if (path.startsWith("/api/programs?")) {
                     return createMockResponse(PROGRAMS_JSON);
-                } else if (path.startsWith("/programStages?")) {
+                } else if (path.startsWith("/api/programStages?")) {
                     return createMockResponse(PROGRAM_STAGES_JSON);
-                } else if (path.startsWith("/programRules?")) {
+                } else if (path.startsWith("/api/programRules?")) {
                     return createMockResponse(PROGRAM_RULES_JSON);
-                } else if (path.startsWith("/trackedEntityTypes?")) {
+                } else if (path.startsWith("/api/trackedEntityTypes?")) {
                     return createMockResponse(TRACKED_ENTITY_TYPES_JSON);
-                } else if (path.startsWith("/relationshipTypes?")) {
+                } else if (path.startsWith("/api/relationshipTypes?")) {
                     return createMockResponse(RELATIONSHIP_TYPES_JSON);
-                } else if (path.startsWith("/optionSets?")) {
+                } else if (path.startsWith("/api/optionSets?")) {
                     return createMockResponse(OPTION_SETS_JSON);
-                } else if (path.startsWith("/optionGroups?")) {
+                } else if (path.startsWith("/api/optionGroups?")) {
                     return createMockResponse(OPTION_GROUPS_JSON);
-                } else if (path.startsWith("/dataSets?")) {
+                } else if (path.startsWith("/api/dataSets?")) {
                     return createMockResponse(DATA_SETS_JSON);
-                } else if (path.startsWith("/dataElements?")) {
+                } else if (path.startsWith("/api/dataElements?")) {
                     return createMockResponse(DATA_ELEMENTS_JSON);
-                } else if (path.startsWith("/indicators?")) {
+                } else if (path.startsWith("/api/indicators?")) {
                     return createMockResponse(INDICATORS_JSON);
-                } else if (path.startsWith("/indicatorTypes?")) {
+                } else if (path.startsWith("/api/indicatorTypes?")) {
                     return createMockResponse(INDICATOR_TYPES_JSON);
-                } else if (path.startsWith("/categoryCombos?")) {
+                } else if (path.startsWith("/api/categoryCombos?")) {
                     return createMockResponse(CATEGORY_COMBOS_JSON);
-                } else if (path.startsWith("/categories?")) {
+                } else if (path.startsWith("/api/categories?")) {
                     return createMockResponse(CATEGORIES_JSON);
-                } else if (path.startsWith("/organisationUnits/")) {
+                } else if (path.startsWith("/api/organisationUnits/")) {
                     return createMockResponse(ORGANISATION_UNITS_JSON);
-                } else if (path.startsWith("/organisationUnitLevels?")) {
+                } else if (path.startsWith("/api/organisationUnitLevels?")) {
                     return createMockResponse(ORGANISATION_UNIT_LEVELS_JSON);
-                } else if (path.startsWith("/constants?")) {
+                } else if (path.startsWith("/api/constants?")) {
                     return createMockResponse(CONSTANTS_JSON);
-                } else if (path.startsWith("/trackedEntityInstances?")) {
+                } else if (path.startsWith("/api/trackedEntityInstances?")) {
                     return createMockResponse(TRACKED_ENTITY_INSTANCES_JSON);
-                } else if (path.startsWith("/events?")) {
+                } else if (path.startsWith("/api/events?")) {
                     return createMockResponse(EVENTS_JSON);
-                } else if (path.startsWith("/dataValueSets?")) {
+                } else if (path.startsWith("/api/dataValueSets?")) {
                     return createMockResponse(DATA_VALUES_JSON);
-                } else if (path.startsWith("/completeDataSetRegistrations?")) {
+                } else if (path.startsWith("/api/completeDataSetRegistrations?")) {
                     return createMockResponse(DATA_SET_COMPLETE_REGISTRATIONS_JSON);
                 } else {
                     return new MockResponse().setResponseCode(404).setBody("Path not present in Dhis2MockServer dispatcher");

@@ -28,11 +28,8 @@
 
 package org.hisp.dhis.android.core;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStore;
@@ -44,6 +41,8 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.List;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -59,7 +58,7 @@ public class EventWithLimitCallMockIntegrationShould extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+        dhis2MockServer = new Dhis2MockServer();
 
         d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
     }
@@ -81,7 +80,7 @@ public class EventWithLimitCallMockIntegrationShould extends AbsStoreTestCase {
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("event/events_1.json");
 
-        d2.eventModule().downloadSingleEvents(eventLimitByOrgUnit, false).call();
+        d2.eventModule().downloadSingleEvents(eventLimitByOrgUnit, false, false).call();
 
         EventStore eventStore = EventStoreImpl.create(databaseAdapter());
 

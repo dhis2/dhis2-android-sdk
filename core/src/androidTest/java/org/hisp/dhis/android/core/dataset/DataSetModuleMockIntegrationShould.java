@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
@@ -37,8 +35,9 @@ import org.hisp.dhis.android.core.indicator.Indicator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.text.ParseException;
 import java.util.List;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -111,7 +110,7 @@ public class DataSetModuleMockIntegrationShould extends SyncedDatabaseMockIntegr
     }
 
     @Test
-    public void allow_access_data_input_periods() throws ParseException {
+    public void allow_access_data_input_periods() {
         DataSet dataSet = d2.dataSetModule().dataSets.uid("lyLU2wR22tC").withAllChildren().get();
         List<DataInputPeriod> dataInputPeriods = dataSet.dataInputPeriods();
         assertThat(dataInputPeriods.size(), is(1));

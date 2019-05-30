@@ -28,15 +28,14 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
-import retrofit2.Call;
+import io.reactivex.Single;
 
 @Reusable
 public final class TrackedEntityInstancesEndpointCallFactory {
@@ -49,10 +48,11 @@ public final class TrackedEntityInstancesEndpointCallFactory {
         this.trackedEntityInstanceService = trackedEntityInstanceService;
     }
 
-    public Call<Payload<TrackedEntityInstance>> getCall(final TeiQuery trackerQuery) {
+    public Single<Payload<TrackedEntityInstance>> getCall(final TeiQuery query) {
         return trackedEntityInstanceService.getTrackedEntityInstances(
-                Utils.joinCollectionWithSeparator(trackerQuery.orgUnits(), ";"),
-                trackerQuery.ouMode().name(), TrackedEntityInstanceFields.allFields, Boolean.TRUE,
-                trackerQuery.page(), trackerQuery.pageSize(), trackerQuery.lastUpdatedStartDate(), true);
+                Utils.joinCollectionWithSeparator(query.orgUnits(), ";"),
+                query.ouMode().name(), query.program(), TrackedEntityInstanceFields.allFields, Boolean.TRUE,
+                query.page(), query.pageSize(), query.lastUpdatedStartDate(), true,
+                true);
     }
 }

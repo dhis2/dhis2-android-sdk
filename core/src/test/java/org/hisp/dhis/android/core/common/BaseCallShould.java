@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.resource.Resource;
@@ -90,7 +89,7 @@ public abstract class BaseCallShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+        dhis2MockServer = new Dhis2MockServer();
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(dhis2MockServer.getBaseEndpoint())

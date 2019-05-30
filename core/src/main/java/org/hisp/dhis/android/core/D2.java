@@ -114,7 +114,6 @@ public final class D2 {
         return retrofit;
     }
 
-    @VisibleForTesting
     @NonNull
     public DatabaseAdapter databaseAdapter() {
         return databaseAdapter;

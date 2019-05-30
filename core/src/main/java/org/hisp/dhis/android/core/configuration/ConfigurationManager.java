@@ -31,12 +31,10 @@ package org.hisp.dhis.android.core.configuration;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import okhttp3.HttpUrl;
-
 public interface ConfigurationManager {
 
     @NonNull
-    Configuration configure(@NonNull HttpUrl serverUrl);
+    void configure(@NonNull Configuration configuration);
 
     @Nullable
     Configuration get();

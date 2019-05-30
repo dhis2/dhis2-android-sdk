@@ -25,13 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+package org.hisp.dhis.android.core.trackedentity;
 
-public interface ReadWriteIdentifiableCollectionRepository<M extends Model & ObjectWithUidInterface>
-        extends ReadWriteCollectionRepository<M> {
-    ReadWriteObjectRepository<M> uid(String uid);
+import com.google.auto.value.AutoValue;
+
+import androidx.annotation.NonNull;
+
+@AutoValue
+public abstract class TrackedEntityInstanceCreateProjection {
+
+    @NonNull
+    public abstract String organisationUnit();
+
+    @NonNull
+    public abstract String trackedEntityType();
+
+    public static TrackedEntityInstanceCreateProjection create(String organisationUnit, String trackedEntityType) {
+        return builder()
+                .organisationUnit(organisationUnit)
+                .trackedEntityType(trackedEntityType)
+                .build();
+    }
+
+    public static Builder builder() {
+        return new AutoValue_TrackedEntityInstanceCreateProjection.Builder();
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder organisationUnit(String organisationUnit);
+
+        public abstract Builder trackedEntityType(String trackedEntityType);
+
+        public abstract TrackedEntityInstanceCreateProjection build();
+    }
 }

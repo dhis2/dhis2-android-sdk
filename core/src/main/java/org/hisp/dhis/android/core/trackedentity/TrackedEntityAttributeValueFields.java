@@ -33,10 +33,10 @@ import org.hisp.dhis.android.core.data.api.Fields;
 
 import java.util.Date;
 
-final class TrackedEntityAttributeValueFields {
+public final class TrackedEntityAttributeValueFields {
 
     static final String ATTRIBUTE = "attribute";
-    static final String VALUE = "value";
+    public static final String VALUE = "value";
     final static String CREATED = "created";
     final static String LAST_UPDATED = "lastUpdated";
 

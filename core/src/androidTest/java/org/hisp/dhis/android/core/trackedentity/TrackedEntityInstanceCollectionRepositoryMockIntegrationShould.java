@@ -28,13 +28,14 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -77,5 +78,39 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
         assertThat(tei.trackedEntityAttributeValues().size(), is(1));
         assertThat(tei.trackedEntityAttributeValues().get(0).trackedEntityAttribute(), is("lZGmxYbs97q"));
         assertThat(tei.trackedEntityAttributeValues().get(0).value(), is("4081507"));
+    }
+
+    @Test
+    public void include_relationships_as_children() {
+        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances
+                .withRelationships().uid("nWrB0TfWlvh").get();
+        assertThat(tei.relationships().size(), is(2));
+        assertThat(tei.relationships().get(0).uid(), is("AJOytZW7OaI"));
+    }
+
+    @Test
+    public void include_relationship_items_in_relationships_as_children() {
+        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances
+                .withRelationships().uid("nWrB0TfWlvh").get();
+        assertThat(tei.relationships().size(), is(2));
+        assertThat(tei.relationships().get(0).from().elementUid(), is("nWrB0TfWlvh"));
+        assertThat(tei.relationships().get(0).to().elementUid(), is("nWrB0TfWlvh"));
+    }
+
+    @Test
+    public void add_tracked_entity_instances_to_the_repository() throws D2Error {
+        List<TrackedEntityInstance> trackedEntityInstances1 = d2.trackedEntityModule().trackedEntityInstances.get();
+        assertThat(trackedEntityInstances1.size(), is(2));
+
+        String teiUid = d2.trackedEntityModule().trackedEntityInstances.add(
+                TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp"));
+
+        List<TrackedEntityInstance> trackedEntityInstances2 = d2.trackedEntityModule().trackedEntityInstances.get();
+        assertThat(trackedEntityInstances2.size(), is(3));
+
+        TrackedEntityInstance trackedEntityInstance = d2.trackedEntityModule().trackedEntityInstances.uid(teiUid).get();
+        assertThat(trackedEntityInstance.uid(), is(teiUid));
+
+        d2.trackedEntityModule().trackedEntityInstances.uid(teiUid).delete();
     }
 }

@@ -51,8 +51,8 @@ public final class TrackedEntityAttributeValueTableInfo {
     };
 
     public static class Columns extends BaseModel.Columns {
-        static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
-        static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+        public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+        public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
 
         @Override
         public String[] all() {

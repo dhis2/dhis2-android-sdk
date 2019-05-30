@@ -92,7 +92,7 @@ public class TrackedEntityInstanceImportHandlerShould {
     public void do_nothing_when_passing_null_argument() throws Exception {
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(null);
 
-        verify(trackedEntityInstanceStore, never()).setState(anyString(), any(State.class));
+        verify(trackedEntityInstanceStore, never()).setStateOrDelete(anyString(), any(State.class));
     }
 
     @Test
@@ -104,7 +104,7 @@ public class TrackedEntityInstanceImportHandlerShould {
                 Collections.singletonList(importSummary)
         );
 
-        verify(trackedEntityInstanceStore, times(1)).setState("test_tei_uid", State.SYNCED);
+        verify(trackedEntityInstanceStore, times(1)).setStateOrDelete("test_tei_uid", State.SYNCED);
     }
 
     @Test
@@ -116,7 +116,7 @@ public class TrackedEntityInstanceImportHandlerShould {
                 Collections.singletonList(importSummary)
         );
 
-        verify(trackedEntityInstanceStore, times(1)).setState("test_tei_uid", State.ERROR);
+        verify(trackedEntityInstanceStore, times(1)).setStateOrDelete("test_tei_uid", State.ERROR);
     }
 
     @Test
@@ -131,7 +131,7 @@ public class TrackedEntityInstanceImportHandlerShould {
                 Collections.singletonList(importSummary)
         );
 
-        verify(trackedEntityInstanceStore, times(1)).setState("test_tei_uid", State.SYNCED);
+        verify(trackedEntityInstanceStore, times(1)).setStateOrDelete("test_tei_uid", State.SYNCED);
         verify(enrollmentImportHandler, times(1)).handleEnrollmentImportSummary(
                 eq(enrollmentSummaries), any(TrackerImportConflict.Builder.class), anyString());
     }

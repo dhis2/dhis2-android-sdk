@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
+import org.hisp.dhis.android.core.maintenance.D2ErrorStore;
 
 import java.util.concurrent.Callable;
 
@@ -51,10 +52,12 @@ public final class D2CallExecutor {
             .errorComponent(D2ErrorComponent.SDK);
 
     private final DatabaseAdapter databaseAdapter;
+    private final ObjectStore<D2Error> errorStore;
 
     @Inject
-    public D2CallExecutor(DatabaseAdapter databaseAdapter) {
+    public D2CallExecutor(DatabaseAdapter databaseAdapter, ObjectStore<D2Error> errorStore) {
         this.databaseAdapter = databaseAdapter;
+        this.errorStore = errorStore;
     }
 
     public <C> C executeD2Call(Callable<C> call) throws D2Error {
@@ -69,8 +72,16 @@ public final class D2CallExecutor {
         }
     }
 
-    public <C> C executeD2CallTransactionally(Callable<C> call)
-            throws D2Error {
+    public <C> C executeD2CallTransactionally(Callable<C> call) throws D2Error {
+        try {
+            return innerExecuteD2CallTransactionally(call);
+        } catch (D2Error d2E) {
+            errorStore.insert(d2E);
+            throw d2E;
+        }
+    }
+
+    private <C> C innerExecuteD2CallTransactionally(Callable<C> call) throws D2Error {
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
             C response = call.call();
@@ -86,5 +97,9 @@ public final class D2CallExecutor {
         } finally {
             transaction.end();
         }
+    }
+
+    public static D2CallExecutor create(DatabaseAdapter databaseAdapter) {
+        return new D2CallExecutor(databaseAdapter, D2ErrorStore.create(databaseAdapter));
     }
 }

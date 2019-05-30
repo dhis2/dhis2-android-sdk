@@ -35,12 +35,8 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import okhttp3.HttpUrl;
-
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -48,33 +44,34 @@ import static org.mockito.Mockito.when;
 public class ConfigurationManagerShould {
 
     @Mock
-    private ConfigurationStore configurationStore;
+    private ConfigurationStore store;
 
-    private ConfigurationManager configurationManager;
+    private ConfigurationManager manager;
+
+    private final String SERVER_URL = "http://testserver.org/";
+
+    private final Configuration configuration = Configuration.forServerUrlStringWithoutAPI(SERVER_URL);
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-
-        configurationManager = new ConfigurationManagerImpl(configurationStore);
+        manager = new ConfigurationManagerImpl(store);
     }
 
     @Test
     public void return_correct_values_when_configuration_manager_is_configured_with_saved_store() {
-        HttpUrl httpUrl = HttpUrl.parse("http://testserver.org/");
-        when(configurationStore.selectFirst()).thenReturn(Configuration.builder().id(1L)
-                .serverUrl(HttpUrl.parse("http://testserver.org/api/")).build());
-        Configuration savedConfiguration = configurationManager.configure(httpUrl);
+        when(store.selectFirst()).thenReturn(configuration);
 
-        verify(configurationStore).save(Configuration.builder().serverUrl(httpUrl).build());
-        assertThat(savedConfiguration.id()).isEqualTo(1L);
-        assertThat(savedConfiguration.serverUrl().toString()).isEqualTo("http://testserver.org/api/");
+        Configuration dbConfiguration = manager.get();
+
+        verify(store).selectFirst();
+        assertThat(dbConfiguration).isSameAs(configuration);
     }
 
     @Test
     public void thrown_illegal_argument_exception_after_configure_with_null_argument() {
         try {
-            configurationManager.configure(null);
+            manager.configure(null);
 
             fail("IllegalArgumentException was not thrown");
         } catch (IllegalArgumentException illegalArgumentException) {
@@ -83,66 +80,34 @@ public class ConfigurationManagerShould {
     }
 
     @Test
-    public void invoke_configuration_store_query_when_call_configuration_manager_get_method() {
-        Configuration configuration = mock(Configuration.class);
-        when(configurationStore.selectFirst()).thenReturn(configuration);
-
-        Configuration configurationSaved = configurationManager.get();
-
-        verify(configurationStore).selectFirst();
-        assertThat(configuration).isEqualTo(configurationSaved);
-    }
-
-    @Test
     public void return_null_if_configuration_is_not_persisted() {
-        Configuration configuration = configurationManager.get();
+        Configuration configuration = manager.get();
 
-        verify(configurationStore).selectFirst();
+        verify(store).selectFirst();
         assertThat(configuration).isNull();
     }
 
     @Test
     public void invoke_delete_and_return_zero_when_configuration_manager_is_persisted_and_remove_method_is_called() {
-        when(configurationStore.delete()).thenReturn(1);
+        when(store.delete()).thenReturn(1);
 
-        int removed = configurationManager.remove();
+        int removed = manager.remove();
 
-        verify(configurationStore).delete();
+        verify(store).delete();
         assertThat(removed).isEqualTo(1);
     }
 
     @Test
     public void invoke_delete_and_return_zero_when_configuration_manager_is_not_persisted_and_remove_method_is_called() {
-        int removed = configurationManager.remove();
+        int removed = manager.remove();
 
-        verify(configurationStore).delete();
+        verify(store).delete();
         assertThat(removed).isEqualTo(0);
     }
 
     @Test
-    public void thrown_illegal_argument_exception_when_configure_not_canonized_url() {
-        HttpUrl baseUrlWithoutTrailingSlash = HttpUrl.parse("https://play.dhis2.org/demo");
-
-        try {
-            configurationManager.configure(baseUrlWithoutTrailingSlash);
-
-            fail("illegalArgumentException was expected but nothing was thrown");
-        } catch (IllegalArgumentException illegalArgumentException) {
-        }
-    }
-
-    @Test
-    public void invoke_save_configuration_store_when_configuration_manager_configure_a_valid_base_url() {
-        HttpUrl baseUrl = HttpUrl.parse("https://play.dhis2.org/demo/");
-
-        when(configurationStore.selectFirst()).thenReturn(Configuration.builder().id(1L)
-                .serverUrl(HttpUrl.parse("https://play.dhis2.org/demo/api/")).build());
-
-        Configuration configuration = configurationManager.configure(baseUrl);
-
-        assertThat(configuration.serverUrl().toString())
-                .isEqualTo("https://play.dhis2.org/demo/api/");
-
-        verify(configurationStore).save(any(Configuration.class));
+    public void invoke_save_configuration_store_when_configuring() {
+        manager.configure(configuration);
+        verify(store).save(configuration);
     }
 }

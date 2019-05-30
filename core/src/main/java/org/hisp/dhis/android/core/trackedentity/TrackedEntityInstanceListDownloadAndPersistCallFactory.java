@@ -102,8 +102,8 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
                 List<TrackedEntityInstance> teiList;
                 if (program == null) {
                     Call<Payload<TrackedEntityInstance>> teiCall =
-                            trackedEntityInstanceService.getTrackedEntityInstance(uid,
-                                    TrackedEntityInstanceFields.allFields, true);
+                            trackedEntityInstanceService.getTrackedEntityInstanceAsCall(uid,
+                                    TrackedEntityInstanceFields.allFields, true, true);
                     teiList = apiCallExecutor.executePayloadCall(teiCall);
                 } else {
                     teiList = downloadGlassAware(uid, program);
@@ -115,7 +115,7 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
             d2CallExecutor.executeD2Call(persistenceCallFactory.getCall(teis));
 
             if (!versionManager.is2_29()) {
-                d2CallExecutor.executeD2Call(relationshipsCallFactory.getCall());
+                relationshipsCallFactory.downloadAndPersist().blockingGet();
             }
 
             foreignKeyCleaner.cleanForeignKeyErrors();
@@ -148,6 +148,6 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
 
     private Call<TrackedEntityInstance> getTeiByProgram(String uid, String program) {
         return trackedEntityInstanceService.getTrackedEntityInstanceByProgram(uid, program,
-                TrackedEntityInstanceFields.allFields, true);
+                TrackedEntityInstanceFields.allFields, true, true);
     }
 }

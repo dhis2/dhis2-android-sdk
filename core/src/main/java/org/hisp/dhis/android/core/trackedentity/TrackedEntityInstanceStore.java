@@ -34,6 +34,8 @@ import java.util.List;
 
 public interface TrackedEntityInstanceStore extends IdentifiableObjectWithStateStore<TrackedEntityInstance> {
 
+    List<TrackedEntityInstance> queryTrackedEntityInstancesToSync();
+
     List<TrackedEntityInstance> queryTrackedEntityInstancesToPost();
 
     List<String> querySyncedTrackedEntityInstanceUids();

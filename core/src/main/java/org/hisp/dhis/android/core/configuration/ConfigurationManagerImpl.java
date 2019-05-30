@@ -31,8 +31,6 @@ package org.hisp.dhis.android.core.configuration;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import okhttp3.HttpUrl;
-
 final class ConfigurationManagerImpl implements ConfigurationManager {
 
     @NonNull
@@ -44,19 +42,12 @@ final class ConfigurationManagerImpl implements ConfigurationManager {
 
     @NonNull
     @Override
-    public Configuration configure(@NonNull HttpUrl serverUrl) {
-        if (serverUrl == null) {
-            throw new IllegalArgumentException("serverUrl == null");
-        }
-
-        configurationStore.save(Configuration.builder().serverUrl(serverUrl).build());
-
-        Configuration configuration = get();
+    public void configure(@NonNull Configuration configuration) {
         if (configuration == null) {
             throw new IllegalArgumentException("configuration == null");
         }
 
-        return configuration;
+        configurationStore.save(configuration);
     }
 
     @Nullable

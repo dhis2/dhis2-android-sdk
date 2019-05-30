@@ -39,7 +39,7 @@ import androidx.test.runner.AndroidJUnit4;
 public class RelationshipStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Relationship> {
 
     public RelationshipStoreIntegrationShould() {
-        super(RelationshipStore.create(DatabaseAdapterFactory.get(false)),
+        super(RelationshipStoreImpl.create(DatabaseAdapterFactory.get(false)),
                 RelationshipTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 

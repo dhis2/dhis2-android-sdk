@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreWithState;
 import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
 import org.junit.Before;
@@ -49,7 +48,7 @@ import static org.mockito.Mockito.when;
 public class RelationshipHandlerShould extends RelationshipSamples {
 
     @Mock
-    private IdentifiableObjectStore<Relationship> relationshipStore;
+    private RelationshipStore relationshipStore;
 
     @Mock
     private RelationshipItemStore relationshipItemStore;

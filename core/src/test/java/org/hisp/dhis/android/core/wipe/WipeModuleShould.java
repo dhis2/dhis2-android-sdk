@@ -69,7 +69,7 @@ public class WipeModuleShould {
 
         List<ModuleWiper> wipers = Arrays.asList(moduleWiperA, moduleWiperB);
 
-        wipeModule = new WipeModuleImpl(new D2CallExecutor(databaseAdapter), wipers);
+        wipeModule = new WipeModuleImpl(D2CallExecutor.create(databaseAdapter), wipers);
     }
 
     @Test

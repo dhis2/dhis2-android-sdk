@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitGroupSamples;
 import org.junit.runner.RunWith;
@@ -40,8 +40,8 @@ public class OrganisationUnitGroupStoreIntegrationShould
         extends IdentifiableObjectStoreAbstractIntegrationShould<OrganisationUnitGroup> {
 
     public OrganisationUnitGroupStoreIntegrationShould() {
-        super(OrganisationUnitGroupStore.create(DatabaseAdapterFactory.get(false)),
-                OrganisationUnitGroupTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(OrganisationUnitGroupStore.create(DatabaseAdapterFactory.get()),
+                OrganisationUnitGroupTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

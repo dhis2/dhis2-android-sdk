@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.constant;
 
 import org.hisp.dhis.android.core.data.constant.ConstantSamples;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.junit.runner.RunWith;
 
@@ -40,8 +40,8 @@ public class ConstantStoreIntegrationShould
         extends IdentifiableObjectStoreAbstractIntegrationShould<Constant> {
 
     public ConstantStoreIntegrationShould() {
-        super(ConstantStore.create(DatabaseAdapterFactory.get(false)), ConstantTableInfo.TABLE_INFO,
-                DatabaseAdapterFactory.get(false));
+        super(ConstantStore.create(DatabaseAdapterFactory.get()), ConstantTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get());
     }
 
     @Override

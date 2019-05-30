@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.imports;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.imports.TrackerImportConflictSamples;
 import org.junit.runner.RunWith;
@@ -40,8 +40,8 @@ public class TrackerImportConflictStoreIntegrationShould
         extends ObjectStoreAbstractIntegrationShould<TrackerImportConflict> {
 
     public TrackerImportConflictStoreIntegrationShould() {
-        super(TrackerImportConflictStore.create(DatabaseAdapterFactory.get(false)),
-                TrackerImportConflictTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(TrackerImportConflictStore.create(DatabaseAdapterFactory.get()),
+                TrackerImportConflictTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

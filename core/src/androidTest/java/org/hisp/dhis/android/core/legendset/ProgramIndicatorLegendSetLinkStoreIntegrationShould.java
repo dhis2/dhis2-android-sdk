@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.legendset.ProgramIndicatorLegendSetLinkSamples;
 import org.junit.runner.RunWith;
@@ -40,8 +40,8 @@ public class ProgramIndicatorLegendSetLinkStoreIntegrationShould
         extends LinkModelStoreAbstractIntegrationShould<ProgramIndicatorLegendSetLink> {
 
     public ProgramIndicatorLegendSetLinkStoreIntegrationShould() {
-        super(ProgramIndicatorLegendSetLinkStore.create(DatabaseAdapterFactory.get(false)),
-                ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(ProgramIndicatorLegendSetLinkStore.create(DatabaseAdapterFactory.get()),
+                ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

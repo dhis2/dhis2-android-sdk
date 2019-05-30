@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.option.OptionGroupSamples;
 import org.junit.runner.RunWith;
@@ -39,8 +39,8 @@ import androidx.test.runner.AndroidJUnit4;
 public class OptionGroupStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<OptionGroup> {
 
     public OptionGroupStoreIntegrationShould() {
-        super(OptionGroupStore.create(DatabaseAdapterFactory.get(false)),
-                OptionGroupTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(OptionGroupStore.create(DatabaseAdapterFactory.get()),
+                OptionGroupTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

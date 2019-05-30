@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.configuration;
 import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.data.configuration.ConfigurationSamples;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,10 +54,10 @@ public class ConfigurationStoreIntegrationShould {
     private final DatabaseAdapter databaseAdapter;
 
     public ConfigurationStoreIntegrationShould() {
-        this.store = ConfigurationStoreImpl.create(DatabaseAdapterFactory.get(false));
+        this.store = ConfigurationStoreImpl.create(DatabaseAdapterFactory.get());
         this.configuration = buildObject();
         this.tableInfo = ConfigurationTableInfo.TABLE_INFO;
-        this.databaseAdapter = DatabaseAdapterFactory.get(false);
+        this.databaseAdapter = DatabaseAdapterFactory.get();
     }
 
     @Before
@@ -67,7 +67,7 @@ public class ConfigurationStoreIntegrationShould {
 
     @After
     public void tearDown() {
-        DatabaseAdapterFactory.get(false).database().close();
+        // DatabaseAdapterFactory.get().database().close();
     }
 
     @Test
@@ -96,7 +96,8 @@ public class ConfigurationStoreIntegrationShould {
     @Test
     public void delete_inserted_object_by_id() {
         store.insert(configuration);
-        store.deleteById(configuration);
+        Configuration insertedConfiguration = store.selectFirst();
+        store.deleteById(insertedConfiguration);
         assertThat(store.selectFirst()).isEqualTo(null);
     }
 

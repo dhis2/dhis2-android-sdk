@@ -26,12 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.utils.integration.mock;
 
 import android.content.Context;
 import androidx.test.InstrumentationRegistry;
 
 import com.facebook.stetho.Stetho;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.DbOpenHelper;
+import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
 
 public class DatabaseAdapterFactory {
     private static String dbName = null;
@@ -43,6 +47,10 @@ public class DatabaseAdapterFactory {
         dbOpenHelper.getWritableDatabase();
         Stetho.initializeWithDefaults(context);
         return new SqLiteDatabaseAdapter(dbOpenHelper);
+    }
+
+    public static DatabaseAdapter get() {
+        return get(false);
     }
 
     public static DatabaseAdapter get(boolean foreignKeyConstraintsEnabled) {

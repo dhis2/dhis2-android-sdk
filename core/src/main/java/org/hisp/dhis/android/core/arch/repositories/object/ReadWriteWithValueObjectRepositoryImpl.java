@@ -62,6 +62,7 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends Model, R extends R
     protected void delete(M m) throws D2Error {
         try {
             store.deleteWhere(m);
+            propagateState();
         } catch (Exception e) {
             throw D2Error
                     .builder()

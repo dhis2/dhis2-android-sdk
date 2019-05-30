@@ -28,173 +28,56 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.Cursor;
-
-import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.resource.Resource;
-import org.hisp.dhis.android.core.resource.ResourceTableInfo;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
 import java.util.concurrent.Callable;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
-import static org.hisp.dhis.android.core.utils.UserUtils.base64;
 
 // ToDo: implement integration tests for user authentication task
 // ToDo: more tests to verify correct store behaviour
 // ToDo:    - what will happen if the same user will be inserted twice?
-@RunWith(AndroidJUnit4.class)
-public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase {
+@RunWith(D2JunitRunner.class)
+public class UserAuthenticateCallMockIntegrationShould extends BaseMockIntegrationTestEmptyEnqueable {
 
-    private static final String[] USER_CREDENTIALS_PROJECTION = {
-            BaseIdentifiableObjectModel.Columns.ID,
-            BaseIdentifiableObjectModel.Columns.UID,
-            BaseIdentifiableObjectModel.Columns.CODE,
-            BaseIdentifiableObjectModel.Columns.NAME,
-            BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
-            BaseIdentifiableObjectModel.Columns.CREATED,
-            BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
-            UserCredentialsFields.USERNAME,
-            UserCredentialsTableInfo.Columns.USER,
-    };
-
-    private static final String[] AUTHENTICATED_USERS_PROJECTION = {
-            AuthenticatedUserTableInfo.Columns.ID,
-            AuthenticatedUserTableInfo.Columns.USER,
-            AuthenticatedUserTableInfo.Columns.CREDENTIALS
-    };
-
-    private static String[] RESOURCE_PROJECTION = {
-            ResourceTableInfo.Columns.ID,
-            ResourceTableInfo.Columns.RESOURCE_TYPE,
-            ResourceTableInfo.Columns.LAST_SYNCED
-    };
-
-    private Dhis2MockServer dhis2MockServer;
     private Callable<User> authenticateUserCall;
 
     @Before
-    @Override
-    public void setUp() throws IOException {
-        super.setUp();
-
-        dhis2MockServer = new Dhis2MockServer();
-
-        D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
-
+    public void setUp() throws D2Error {
         dhis2MockServer.enqueueMockResponse("user/user.json");
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
 
         authenticateUserCall = d2.userModule().logIn("test_user", "test_password");
     }
 
+
+
+    @After
+    public void tearDown() {
+        UserStore.create(databaseAdapter).delete();
+    }
+
     @Test
     public void persist_user_in_data_base_when_call() throws Exception {
         authenticateUserCall.call();
 
-        // verify that user is persisted in database with corresponding data
-        Cursor userCursor = database().query(UserTableInfo.TABLE_INFO.name(),
-                UserTableInfo.TABLE_INFO.columns().all(), null, null, null, null, null);
-        Cursor userCredentialsCursor = database().query(UserCredentialsTableInfo.TABLE_INFO.name(),
-                USER_CREDENTIALS_PROJECTION, null, null, null, null, null);
-        Cursor authenticatedUsersCursor = database().query(AuthenticatedUserTableInfo.TABLE_INFO.name(),
-                AUTHENTICATED_USERS_PROJECTION, null, null, null, null, null);
+        User user = d2.userModule().user.get();
+        assertThat(user.uid()).isEqualTo("DXyJmlo9rge");
+        assertThat(user.name()).isEqualTo("John Barnes");
 
-        Cursor resourceCursor = database().query(ResourceTableInfo.TABLE_INFO.name(), RESOURCE_PROJECTION,
-                null, null, null, null, null);
+        UserCredentials userCredentials = d2.userModule().userCredentials.get();
+        assertThat(userCredentials.uid()).isEqualTo("M0fCOxtkURr");
+        assertThat(userCredentials.username()).isEqualTo("android");
 
-        assertThatCursor(userCursor)
-                .hasRow(
-                        "DXyJmlo9rge", // uid
-                        null, // code
-                        "John Barnes", // name
-                        "John Barnes", // displayName
-                        "2015-03-31T13:31:09.324", // created
-                        "2016-04-06T00:05:57.495", // lastUpdated
-                        null, // birthday
-                        null, // education
-                        null, // gender
-                        null, // job title
-                        "Barnes", // surname
-                        "John", // first name
-                        null, // introduction
-                        null, // employer
-                        null, // interests
-                        null, // languages
-                        "john@hmail.com", // email
-                        null, // phone number
-                        null // nationality
-                )
-                .isExhausted();
-
-        assertThatCursor(userCredentialsCursor)
-                .hasRow(
-                        1L, // id
-                        "M0fCOxtkURr", // uid
-                        "android", // code
-                        "John Barnes", // name
-                        "John Barnes", // display name
-                        "2015-03-31T13:31:09.206", // created
-                        "2017-11-29T11:45:37.250", // last updated
-                        "android", // username
-                        "DXyJmlo9rge" // user
-                )
-                .isExhausted();
-
-        assertThatCursor(authenticatedUsersCursor)
-                .hasRow(
-                        1L, // id
-                        "DXyJmlo9rge", // user
-                        base64("test_user", "test_password") // credentials
-                )
-                .isExhausted();
-
-        String dateString = "2017-11-29T11:27:46.935";
-
-        assertThatCursor(resourceCursor)
-                .hasRow(
-                        1L,
-                        Resource.Type.SYSTEM_INFO,
-                        dateString
-                );
-
-        assertThatCursor(resourceCursor)
-                .hasRow(
-                        2L,
-                        Resource.Type.USER,
-                        dateString
-                );
-
-        assertThatCursor(resourceCursor)
-                .hasRow(
-                        3L,
-                        Resource.Type.USER_CREDENTIALS,
-                        dateString
-                );
-
-        assertThatCursor(resourceCursor)
-                .hasRow(
-                        4L,
-                        Resource.Type.AUTHENTICATED_USER,
-                        dateString
-                );
-
-        userCursor.close();
-        userCredentialsCursor.close();
-        authenticatedUsersCursor.close();
-        resourceCursor.close();
+        AuthenticatedUser authenticatedUser = d2.userModule().authenticatedUser.get();
+        assertThat(authenticatedUser.user()).isEqualTo("DXyJmlo9rge");
     }
 
     @Test
@@ -212,13 +95,5 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
         assertThat(user.firstName()).isEqualTo("John");
         assertThat(user.surname()).isEqualTo("Barnes");
         assertThat(user.email()).isEqualTo("john@hmail.com");
-    }
-
-    @After
-    @Override
-    public void tearDown() throws IOException {
-        super.tearDown();
-
-        dhis2MockServer.shutdown();
     }
 }

@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
@@ -34,6 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.DataStatePropagator;
 
 import java.util.Map;
 
@@ -43,18 +45,28 @@ import dagger.Reusable;
 
 @Reusable
 public final class TrackedEntityDataValueCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl<TrackedEntityDataValue,
-                TrackedEntityDataValueCollectionRepository> {
+        extends ReadOnlyCollectionRepositoryImpl<TrackedEntityDataValue, TrackedEntityDataValueCollectionRepository> {
+
+    private final TrackedEntityDataValueStore store;
+    private final DataStatePropagator dataStatePropagator;
 
     @Inject
     TrackedEntityDataValueCollectionRepository(
             final TrackedEntityDataValueStore store,
             final Map<String, ChildrenAppender<TrackedEntityDataValue>> childrenAppenders,
-            final RepositoryScope scope) {
+            final RepositoryScope scope,
+            final DataStatePropagator dataStatePropagator) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new TrackedEntityDataValueCollectionRepository(store, childrenAppenders, s)));
+                s -> new TrackedEntityDataValueCollectionRepository(store, childrenAppenders, s, dataStatePropagator)));
+        this.store = store;
+        this.dataStatePropagator = dataStatePropagator;
     }
 
+    public TrackedEntityDataValueObjectRepository value(String event, String dataElement) {
+        RepositoryScope updatedScope = byEvent().eq(event).byDataElement().eq(dataElement).scope;
+        return new TrackedEntityDataValueObjectRepository(
+                store, childrenAppenders, updatedScope, dataStatePropagator, event, dataElement);
+    }
 
     public StringFilterConnector<TrackedEntityDataValueCollectionRepository> byEvent() {
         return cf.string(TrackedEntityDataValueTableInfo.Columns.EVENT);

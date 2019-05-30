@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventFields;
@@ -60,7 +60,7 @@ import static org.hisp.dhis.android.core.imports.ImportStatus.ERROR;
 import static org.hisp.dhis.android.core.imports.ImportStatus.SUCCESS;
 import static org.hisp.dhis.android.core.imports.ImportStatus.WARNING;
 
-public abstract class EventAPIShould extends AbsStoreTestCase {
+public abstract class EventAPIRealShould extends BaseRealIntegrationTest {
 
     // API version dependant parameters
     private String serverUrl;
@@ -71,7 +71,7 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
 
     private EventService eventService;
 
-    EventAPIShould(String serverUrl, String strategy) {
+    EventAPIRealShould(String serverUrl, String strategy) {
         super();
         this.serverUrl = serverUrl;
         this.strategy = strategy;

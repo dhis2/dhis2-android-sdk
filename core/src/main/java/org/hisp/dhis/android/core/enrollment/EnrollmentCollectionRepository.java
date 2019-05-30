@@ -38,7 +38,9 @@ import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFacto
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
+import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.DataStatePropagator;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.Transformer;
 
 import java.util.Map;
@@ -127,6 +129,10 @@ public final class EnrollmentCollectionRepository extends ReadWriteWithUidCollec
 
     public DoubleFilterConnector<EnrollmentCollectionRepository> byCoordinateLongitude() {
         return cf.doubleC(EnrollmentTableInfo.Columns.LONGITUDE);
+    }
+
+    public EnumFilterConnector<EnrollmentCollectionRepository, State> byState() {
+        return cf.enumC(BaseDataModel.Columns.STATE);
     }
 
     public EnrollmentCollectionRepository withEvents() {

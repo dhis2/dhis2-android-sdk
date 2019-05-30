@@ -66,7 +66,7 @@ public class ConfigurationStoreIntegrationShould {
     }
 
     @After
-    public void tearDown() throws IOException {
+    public void tearDown() {
         DatabaseAdapterFactory.get(false).database().close();
     }
 

@@ -30,14 +30,10 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import com.google.common.collect.Lists;
 
-import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.UidsHelper;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityDataValueSamples;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceSamples;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
@@ -59,51 +55,37 @@ import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInst
 import org.hisp.dhis.android.core.relationship.RelationshipStoreImpl;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.After;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import static com.google.common.truth.Truth.assertThat;
 
-@RunWith(AndroidJUnit4.class)
-public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStoreTestCase {
+@RunWith(D2JunitRunner.class)
+public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
 
-    private Dhis2MockServer dhis2MockServer;
-    private D2 d2;
+    private static TrackedEntityInstancePostCall trackedEntityInstancePostCall;
 
-    private TrackedEntityInstancePostCall trackedEntityInstancePostCall;
-
-    @Override
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
-
-        dhis2MockServer = new Dhis2MockServer();
-        d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
-
-        trackedEntityInstancePostCall = getD2DIComponent(d2).trackedEntityInstancePostCall();
-    }
-
-    @Override
     @After
-    public void tearDown() throws IOException {
-        super.tearDown();
+    public void tearDown() throws D2Error {
+        d2.wipeModule().wipeData();
+    }
 
-        dhis2MockServer.shutdown();
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        BaseMockIntegrationTestMetadataEnqueable.setUpClass();
+        trackedEntityInstancePostCall = objects.d2DIComponent.trackedEntityInstancePostCall();
     }
 
     @Test
-    public void build_payload_with_different_enrollments() throws Exception {
-        givenAMetadataInDatabase();
-
+    public void build_payload_with_different_enrollments() {
         storeTrackedEntityInstance();
 
         List<TrackedEntityInstance> instances = trackedEntityInstancePostCall.queryDataToSync(null);
@@ -121,9 +103,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
     }
 
     @Test
-    public void build_payload_with_the_enrollments_events_and_values_set_for_upload_update_or_delete() throws Exception {
-        givenAMetadataInDatabase();
-
+    public void build_payload_with_the_enrollments_events_and_values_set_for_upload_update_or_delete() {
         storeTrackedEntityInstance();
 
         List<TrackedEntityInstance> instances = trackedEntityInstancePostCall.queryDataToSync(null);
@@ -138,7 +118,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
             }
         }
 
-        EnrollmentStoreImpl.create(databaseAdapter()).setState("enrollment3Id", State.TO_POST);
+        EnrollmentStoreImpl.create(databaseAdapter).setState("enrollment3Id", State.TO_POST);
         instances = trackedEntityInstancePostCall.queryDataToSync(null);
         assertThat(instances.size()).isEqualTo(1);
         for (TrackedEntityInstance instance : instances) {
@@ -152,7 +132,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
             }
         }
 
-        EventStoreImpl.create(databaseAdapter()).setState("event3Id", State.TO_POST);
+        EventStoreImpl.create(databaseAdapter).setState("event3Id", State.TO_POST);
         instances = trackedEntityInstancePostCall.queryDataToSync(null);
         assertThat(instances.size()).isEqualTo(1);
         for (TrackedEntityInstance instance : instances) {
@@ -168,8 +148,6 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
 
     @Test
     public void handle_import_conflicts_correctly() throws Exception {
-        givenAMetadataInDatabase();
-
         storeTrackedEntityInstance();
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
@@ -181,8 +159,6 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
 
     @Test
     public void delete_old_import_conflicts() throws Exception {
-        givenAMetadataInDatabase();
-
         storeTrackedEntityInstance();
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
@@ -190,11 +166,11 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
         assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(3);
 
 
-        TrackedEntityInstanceStoreImpl.create(databaseAdapter()).setState("teiId", State.TO_POST);
-        EnrollmentStoreImpl.create(databaseAdapter()).setState("enrollment1Id", State.TO_POST);
-        EnrollmentStoreImpl.create(databaseAdapter()).setState("enrollment2Id", State.TO_POST);
-        EventStoreImpl.create(databaseAdapter()).setState("event1Id", State.TO_POST);
-        EventStoreImpl.create(databaseAdapter()).setState("event2Id", State.TO_POST);
+        TrackedEntityInstanceStoreImpl.create(databaseAdapter).setState("teiId", State.TO_POST);
+        EnrollmentStoreImpl.create(databaseAdapter).setState("enrollment1Id", State.TO_POST);
+        EnrollmentStoreImpl.create(databaseAdapter).setState("enrollment2Id", State.TO_POST);
+        EventStoreImpl.create(databaseAdapter).setState("event1Id", State.TO_POST);
+        EventStoreImpl.create(databaseAdapter).setState("event2Id", State.TO_POST);
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_3.json");
         d2.trackedEntityModule().trackedEntityInstances.upload().call();
@@ -203,11 +179,9 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
 
     @Test
     public void handle_tei_deletions() throws Exception {
-        givenAMetadataInDatabase();
-
         storeTrackedEntityInstance();
 
-        TrackedEntityInstanceStoreImpl.create(databaseAdapter()).setState("teiId", State.TO_DELETE);
+        TrackedEntityInstanceStoreImpl.create(databaseAdapter).setState("teiId", State.TO_DELETE);
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
 
@@ -221,8 +195,6 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
 
     @Test
     public void recreate_teis_with_filters_and_relationships() throws Exception {
-        givenAMetadataInDatabase();
-
         String tei1 = "tei1";
         String tei2 = "tei2";
         String tei3 = "tei3";
@@ -248,11 +220,6 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
         assertThat(UidsHelper.getUidsList(instances).containsAll(Lists.newArrayList(tei1, tei2, tei3))).isEqualTo(true);
     }
 
-    private void givenAMetadataInDatabase() throws Exception {
-        dhis2MockServer.enqueueMetadataResponses();
-        d2.syncMetaData().call();
-    }
-
     private void storeTrackedEntityInstance() {
         String teiId = "teiId";
         String enrollment1Id = "enrollment1Id";
@@ -262,10 +229,10 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
         String event2Id = "event2Id";
         String event3Id = "event3Id";
 
-        OrganisationUnit orgUnit = OrganisationUnitStore.create(databaseAdapter()).selectFirst();
-        TrackedEntityType teiType = TrackedEntityTypeStore.create(databaseAdapter()).selectFirst();
+        OrganisationUnit orgUnit = OrganisationUnitStore.create(databaseAdapter).selectFirst();
+        TrackedEntityType teiType = TrackedEntityTypeStore.create(databaseAdapter).selectFirst();
         Program program = d2.programModule().programs.one().get();
-        ProgramStage programStage = ProgramStageStore.create(databaseAdapter()).selectFirst();
+        ProgramStage programStage = ProgramStageStore.create(databaseAdapter).selectFirst();
 
         TrackedEntityDataValue dataValue1 = TrackedEntityDataValueSamples.get().toBuilder().event(event1Id).build();
 
@@ -338,25 +305,23 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
                 .enrollments(Arrays.asList(enrollment1, enrollment2, enrollment3))
                 .build();
 
-        TrackedEntityInstanceStoreImpl.create(databaseAdapter()).insert(tei);
-        EnrollmentStoreImpl.create(databaseAdapter()).insert(enrollment1);
-        EnrollmentStoreImpl.create(databaseAdapter()).insert(enrollment2);
-        EnrollmentStoreImpl.create(databaseAdapter()).insert(enrollment3);
-        EventStoreImpl.create(databaseAdapter()).insert(event1);
-        EventStoreImpl.create(databaseAdapter()).insert(event2);
-        EventStoreImpl.create(databaseAdapter()).insert(event3);
-        TrackedEntityDataValueStoreImpl.create(databaseAdapter()).insert(dataValue1);
-        TrackedEntityDataValueStoreImpl.create(databaseAdapter()).insert(dataValue2);
-        TrackedEntityDataValueStoreImpl.create(databaseAdapter()).insert(dataValue3);
-
-        assertThat(d2.trackedEntityModule().trackedEntityInstances.count()).isEqualTo(1);
+        TrackedEntityInstanceStoreImpl.create(databaseAdapter).insert(tei);
+        EnrollmentStoreImpl.create(databaseAdapter).insert(enrollment1);
+        EnrollmentStoreImpl.create(databaseAdapter).insert(enrollment2);
+        EnrollmentStoreImpl.create(databaseAdapter).insert(enrollment3);
+        EventStoreImpl.create(databaseAdapter).insert(event1);
+        EventStoreImpl.create(databaseAdapter).insert(event2);
+        EventStoreImpl.create(databaseAdapter).insert(event3);
+        TrackedEntityDataValueStoreImpl.create(databaseAdapter).insert(dataValue1);
+        TrackedEntityDataValueStoreImpl.create(databaseAdapter).insert(dataValue2);
+        TrackedEntityDataValueStoreImpl.create(databaseAdapter).insert(dataValue3);
     }
 
     private void storeSimpleTrackedEntityInstance(String teiUid, State state) {
-        OrganisationUnit orgUnit = OrganisationUnitStore.create(databaseAdapter()).selectFirst();
-        TrackedEntityType teiType = TrackedEntityTypeStore.create(databaseAdapter()).selectFirst();
+        OrganisationUnit orgUnit = OrganisationUnitStore.create(databaseAdapter).selectFirst();
+        TrackedEntityType teiType = TrackedEntityTypeStore.create(databaseAdapter).selectFirst();
 
-        TrackedEntityInstanceStoreImpl.create(databaseAdapter()).insert(
+        TrackedEntityInstanceStoreImpl.create(databaseAdapter).insert(
                 TrackedEntityInstanceSamples.get().toBuilder()
                         .uid(teiUid)
                         .trackedEntityType(teiType.uid())
@@ -367,15 +332,15 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
 
     private void storeRelationship(String relationshipUid, String fromUid, String toUid) throws D2Error {
 
-        RelationshipType relationshipType = RelationshipTypeStore.create(databaseAdapter()).selectFirst();
-        final D2CallExecutor executor = D2CallExecutor.create(d2.databaseAdapter());
+        RelationshipType relationshipType = RelationshipTypeStore.create(databaseAdapter).selectFirst();
+        final D2CallExecutor executor = D2CallExecutor.create(databaseAdapter);
 
         executor.executeD2CallTransactionally(() -> {
 
-            RelationshipStoreImpl.create(databaseAdapter()).insert(
+            RelationshipStoreImpl.create(databaseAdapter).insert(
                     RelationshipSamples.get230(relationshipUid, fromUid, toUid).toBuilder()
                             .relationshipType(relationshipType.uid()).build());
-            RelationshipItemStoreImpl.create(databaseAdapter()).insert(
+            RelationshipItemStoreImpl.create(databaseAdapter).insert(
                     RelationshipItem.builder()
                             .relationship(Relationship.builder().uid(relationshipUid).build())
                             .relationshipItemType(RelationshipConstraintType.FROM)
@@ -383,7 +348,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
                                     RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance(fromUid).build())
                             .build()
             );
-            RelationshipItemStoreImpl.create(databaseAdapter()).insert(
+            RelationshipItemStoreImpl.create(databaseAdapter).insert(
                     RelationshipItem.builder()
                             .relationship(Relationship.builder().uid(relationshipUid).build())
                             .relationshipItemType(RelationshipConstraintType.TO)
@@ -392,7 +357,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
                             .build()
             );
 
-            ForeignKeyCleanerImpl.create(d2.databaseAdapter()).cleanForeignKeyErrors();
+            ForeignKeyCleanerImpl.create(databaseAdapter).cleanForeignKeyErrors();
 
             return null;
         });

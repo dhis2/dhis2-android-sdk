@@ -29,28 +29,24 @@
 package org.hisp.dhis.android.core.utils.services;
 
 import android.content.ContentValues;
-import androidx.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.AggregationType;
-import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
@@ -70,56 +66,56 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeStore;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
+public class ProgramIndicatorEngineIntegrationShould extends BaseMockIntegrationTestEmptyDispatcher {
 
-    private String teiUid = "H87GEVeG3JH";
-    private String enrollmentUid = "la16vwCoFM8";
-    private String event1 = "gphKB0UjOrX";
-    private String event2 = "EAZOUgr2Ksv";
-    private String event3 = "BVL4LcEEDdU";
+    private static String teiUid = "H87GEVeG3JH";
+    private static String enrollmentUid = "la16vwCoFM8";
+    private static String event1 = "gphKB0UjOrX";
+    private static String event2 = "EAZOUgr2Ksv";
+    private static String event3 = "BVL4LcEEDdU";
 
-    private String dataElement1 = "ddaBs9lgZyP";
-    private String dataElement2 = "Kb9hZ428FyH";
-    private String attribute1 = "Kmtdopp5GC1";
-    private String programIndicatorUid = "rg3JkCv0skl";
+    private static String dataElement1 = "ddaBs9lgZyP";
+    private static String dataElement2 = "Kb9hZ428FyH";
+    private static String attribute1 = "Kmtdopp5GC1";
+    private static String programIndicatorUid = "rg3JkCv0skl";
 
     // Auxiliary variables
-    private String orgunitUid = "orgunit_uid";
-    private String teiTypeUid = "tei_type_uid";
-    private String programUid = "program_uid";
-    private String programStage1 = "iM4svLr2hlO";
-    private String programStage2 = "RXFTSe1oefv";
+    private static String orgunitUid = "orgunit_uid";
+    private static String teiTypeUid = "tei_type_uid";
+    private static String programUid = "program_uid";
+    private static String programStage1 = "iM4svLr2hlO";
+    private static String programStage2 = "RXFTSe1oefv";
 
-    private ProgramIndicatorEngine programIndicatorEngine;
+    private static ProgramIndicatorEngine programIndicatorEngine;
 
-    @Override
     @Before
-    public void setUp() throws IOException {
-        super.setUp();
-
-        D2 d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+    public void setUp() throws Exception {
+        BaseMockIntegrationTestEmptyDispatcher.setUpClass();
 
         programIndicatorEngine = d2.programModule().programIndicatorEngine;
         
         OrganisationUnit orgunit = OrganisationUnit.builder().uid(orgunitUid).build();
-        OrganisationUnitStore.create(databaseAdapter()).insert(orgunit);
+        OrganisationUnitStore.create(databaseAdapter).insert(orgunit);
 
         TrackedEntityType trackedEntityType = TrackedEntityType.builder().uid(teiTypeUid).build();
-        TrackedEntityTypeStore.create(databaseAdapter()).insert(trackedEntityType);
+        TrackedEntityTypeStore.create(databaseAdapter).insert(trackedEntityType);
 
-        TrackedEntityInstanceStore teiStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter());
+        TrackedEntityInstanceStore teiStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter);
         TrackedEntityInstance trackedEntityInstance = TrackedEntityInstance.builder()
                 .uid(teiUid)
                 .created(new Date())
@@ -131,7 +127,7 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
         teiStore.insert(trackedEntityInstance);
 
         ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, CategoryCombo.DEFAULT_UID);
-        database().insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo);
+        database.insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo);
 
         Access access = Access.create(true, null, null, null, null, null,
                 DataAccess.create(true, true));
@@ -139,25 +135,30 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
                 .access(access)
                 .trackedEntityType(TrackedEntityType.builder().uid(teiTypeUid).build())
                 .build();
-        ProgramStore.create(databaseAdapter()).insert(program);
+        ProgramStore.create(databaseAdapter).insert(program);
 
         ProgramStage stage1 = ProgramStage.builder().uid(programStage1).program(ObjectWithUid.create(programUid))
                 .formType(FormType.CUSTOM).build();
         ProgramStage stage2 = ProgramStage.builder().uid(programStage2).program(ObjectWithUid.create(programUid))
                 .formType(FormType.CUSTOM).build();
 
-        IdentifiableObjectStore<ProgramStage> programStageStore = ProgramStageStore.create(databaseAdapter());
+        IdentifiableObjectStore<ProgramStage> programStageStore = ProgramStageStore.create(databaseAdapter);
         programStageStore.insert(stage1);
         programStageStore.insert(stage2);
 
         DataElement de1 = DataElement.builder().uid(dataElement1).valueType(ValueType.NUMBER).build();
         DataElement de2 = DataElement.builder().uid(dataElement2).valueType(ValueType.NUMBER).build();
-        IdentifiableObjectStore<DataElement> dataElementStore = DataElementStore.create(databaseAdapter());
+        IdentifiableObjectStore<DataElement> dataElementStore = DataElementStore.create(databaseAdapter);
         dataElementStore.insert(de1);
         dataElementStore.insert(de2);
 
         TrackedEntityAttribute tea = TrackedEntityAttribute.builder().uid(attribute1).build();
-        TrackedEntityAttributeStore.create(databaseAdapter()).insert(tea);
+        TrackedEntityAttributeStore.create(databaseAdapter).insert(tea);
+    }
+
+    @After
+    public void tearDown() throws D2Error {
+        d2.wipeModule().wipeEverything();
     }
 
     @Test
@@ -304,7 +305,7 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
     private void createEnrollment(Date enrollmentDate, Date incidentDate) {
         Enrollment enrollment = Enrollment.builder().uid(enrollmentUid).organisationUnit(orgunitUid).program(programUid)
                 .enrollmentDate(enrollmentDate).incidentDate(incidentDate).trackedEntityInstance(teiUid).build();
-        EnrollmentStoreImpl.create(databaseAdapter()).insert(enrollment);
+        EnrollmentStoreImpl.create(databaseAdapter).insert(enrollment);
     }
 
     private void createEvent(String eventUid, String programStageUid, Date eventDate, Date lastUpdated) {
@@ -312,7 +313,7 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
                 .program(programUid).programStage(programStageUid).organisationUnit(orgunitUid)
                 .eventDate(eventDate).build();
 
-        EventStoreImpl.create(databaseAdapter()).insert(event);
+        EventStoreImpl.create(databaseAdapter).insert(event);
     }
 
     private void createEvent(String eventUid, String programStageUid, Date eventDate) {
@@ -330,7 +331,7 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
     private void insertProgramIndicator(String expression, AggregationType aggregationType) {
         ProgramIndicator programIndicator = ProgramIndicator.builder().uid(programIndicatorUid)
                 .program(ObjectWithUid.create(programUid)).expression(expression).aggregationType(aggregationType).build();
-        ProgramIndicatorStore.create(databaseAdapter()).insert(programIndicator);
+        ProgramIndicatorStore.create(databaseAdapter).insert(programIndicator);
     }
 
     private void insertTrackedEntityDataValue(String eventUid, String dataElementUid, String value) {
@@ -339,13 +340,13 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
                 .dataElement(dataElementUid)
                 .value(value).build();
 
-        TrackedEntityDataValueStoreImpl.create(databaseAdapter()).insert(trackedEntityDataValue);
+        TrackedEntityDataValueStoreImpl.create(databaseAdapter).insert(trackedEntityDataValue);
     }
 
     private void insertTrackedEntityAttributeValue(String attributeUid, String value) {
         TrackedEntityAttributeValue trackedEntityAttributeValue = TrackedEntityAttributeValue.builder()
                 .value(value).trackedEntityAttribute(attributeUid).trackedEntityInstance(teiUid).build();
-        TrackedEntityAttributeValueStoreImpl.create(databaseAdapter()).insert(trackedEntityAttributeValue);
+        TrackedEntityAttributeValueStoreImpl.create(databaseAdapter).insert(trackedEntityAttributeValue);
     }
 
     private String de(String programStageUid, String dataElementUid) {

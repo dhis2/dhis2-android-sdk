@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-public class DataElementEndpointCallRealIntegrationShould extends AbsStoreTestCase {
+public class DataElementEndpointCallRealIntegrationShould extends BaseRealIntegrationTest {
     /**
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
      * metadataSyncCall. It works against the demo server.

@@ -32,7 +32,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +45,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
-public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
+public class CategoryCategoryComboLinkStoreShould extends BaseRealIntegrationTest {
 
     private LinkModelStore<CategoryCategoryComboLink> store;
     private Category newCategory;

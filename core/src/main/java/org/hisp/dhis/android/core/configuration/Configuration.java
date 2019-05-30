@@ -66,6 +66,6 @@ public abstract class Configuration implements Model {
     }
 
     public static Configuration forServerUrlStringWithoutAPI(String urlWithoutAPI) {
-        return Configuration.builder().serverUrl(HttpUrl.parse(urlWithoutAPI + "api/")).build();
+        return Configuration.builder().serverUrl(ConfigurationHelper.getCanonicalServerUrl(urlWithoutAPI)).build();
     }
 }

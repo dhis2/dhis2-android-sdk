@@ -28,18 +28,17 @@
 
 package org.hisp.dhis.android.testapp.user;
 
-import androidx.test.runner.AndroidJUnit4;
-
-import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.user.UserCredentials;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-@RunWith(AndroidJUnit4.class)
-public class UserCredentialsObjectRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+@RunWith(D2JunitRunner.class)
+public class UserCredentialsObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
     public void find_user() {

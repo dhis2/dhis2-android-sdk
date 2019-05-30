@@ -37,9 +37,8 @@ import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.Random;
 
 import androidx.test.InstrumentationRegistry;
 
@@ -47,12 +46,12 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class D2ManagerRealIntegrationShould {
 
+    private static D2Configuration d2Configuration;
     private D2Manager d2Manager;
 
-    @Before
-    public void setUp() {
-        D2Configuration d2Configuration = D2Configuration.builder()
-                .databaseName(generateDatabaseName() + ".db")
+    @BeforeClass
+    public static void setUpClass() {
+        d2Configuration = D2Configuration.builder()
                 .appName("app_name")
                 .appVersion("1.0.0")
                 .readTimeoutInSeconds(100)
@@ -61,7 +60,10 @@ public class D2ManagerRealIntegrationShould {
                 .networkInterceptors(Lists.newArrayList(new StethoInterceptor()))
                 .context(InstrumentationRegistry.getTargetContext().getApplicationContext())
                 .build();
+    }
 
+    @Before
+    public void setUp() {
         d2Manager = new D2Manager(d2Configuration);
     }
 
@@ -114,21 +116,5 @@ public class D2ManagerRealIntegrationShould {
 
         UserCredentialsStoreImpl.create(d2Manager.getD2().databaseAdapter()).insert(UserCredentials.builder()
                 .user(User.builder().uid("user").build()).uid("uid").username("username").build());
-    }
-
-    private String generateDatabaseName() {
-
-        int leftLimit = 97; // letter 'a'
-        int rightLimit = 122; // letter 'z'
-        int targetStringLength = 10;
-        Random random = new Random();
-        StringBuilder buffer = new StringBuilder(targetStringLength);
-        for (int i = 0; i < targetStringLength; i++) {
-            int randomLimitedInt = leftLimit + (int)
-                    (random.nextFloat() * (rightLimit - leftLimit + 1));
-            buffer.append((char) randomLimitedInt);
-        }
-
-        return buffer.toString();
     }
 }

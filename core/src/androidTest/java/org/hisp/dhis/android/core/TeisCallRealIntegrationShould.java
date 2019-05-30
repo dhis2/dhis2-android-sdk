@@ -32,7 +32,7 @@ import android.util.Log;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 import org.junit.Before;
@@ -43,7 +43,7 @@ import io.reactivex.observers.TestObserver;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public class TeisCallRealIntegrationShould extends AbsStoreTestCase {
+public class TeisCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     private D2 d2;
 

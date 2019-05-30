@@ -29,10 +29,15 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.junit.After;
+import org.hisp.dhis.android.core.data.api.RetrofitFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -41,23 +46,36 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 
 import okhttp3.mockwebserver.RecordedRequest;
+import retrofit2.Retrofit;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
-public class EventEndpointCallShould extends BaseCallShould {
+public class EventEndpointCallShould {
 
-    @Before
-    @SuppressWarnings("unchecked")
-    public void setUp() throws Exception {
-        super.setUp();
+    private static Retrofit retrofit;
+
+    private static Dhis2MockServer mockWebServer;
+
+    @Mock
+    protected DatabaseAdapter databaseAdapter;
+
+    @BeforeClass
+    public static void setUpClass() throws IOException {
+        mockWebServer = new Dhis2MockServer();
+        retrofit = RetrofitFactory.fromDHIS2MockServer(mockWebServer);
     }
 
-    @After
-    public void tearDown() throws IOException {
-        super.tearDown();
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws IOException {
+        mockWebServer.shutdown();
     }
 
     @Test
@@ -67,29 +85,27 @@ public class EventEndpointCallShould extends BaseCallShould {
     }
 
     @Test
-    public void realize_request_with_page_filters_when_included_in_query()
-            throws Exception {
+    public void realize_request_with_page_filters_when_included_in_query() throws Exception {
         Callable<List<Event>> eventEndpointCall = givenAEventCallByPagination(2, 32);
 
-        dhis2MockServer.enqueueMockResponse();
+        mockWebServer.enqueueMockResponse();
 
         eventEndpointCall.call();
 
-        RecordedRequest request = dhis2MockServer.takeRequest();
+        RecordedRequest request = mockWebServer.takeRequest();
 
         assertThat(request.getPath(), containsString("paging=true&page=2&pageSize=32"));
     }
 
     @Test
-    public void realize_request_with_orgUnit_program_filters_when_included_in_query()
-            throws Exception {
+    public void realize_request_with_orgUnit_program_filters_when_included_in_query() throws Exception {
         Callable<List<Event>> eventEndpointCall = givenAEventCallByOrgUnitAndProgram("OU", "P");
 
-        dhis2MockServer.enqueueMockResponse();
+        mockWebServer.enqueueMockResponse();
 
         eventEndpointCall.call();
 
-        RecordedRequest request = dhis2MockServer.takeRequest();
+        RecordedRequest request = mockWebServer.takeRequest();
 
         assertThat(request.getPath(), containsString("orgUnit=OU&program=P"));
     }
@@ -105,7 +121,7 @@ public class EventEndpointCallShould extends BaseCallShould {
                 .uIds(uIds)
                 .build();
 
-        return new EventEndpointCallFactory(genericCallData.retrofit().create(EventService.class), APICallExecutorImpl.create(databaseAdapter)).getCall(eventQuery);
+        return new EventEndpointCallFactory(retrofit.create(EventService.class), APICallExecutorImpl.create(databaseAdapter)).getCall(eventQuery);
     }
 
     private Callable<List<Event>> givenAEventCallByPagination(int page, int pageCount) {
@@ -115,7 +131,7 @@ public class EventEndpointCallShould extends BaseCallShould {
                 .paging(true)
                 .build();
 
-        return new EventEndpointCallFactory(genericCallData.retrofit().create(EventService.class), APICallExecutorImpl.create(databaseAdapter)).getCall(eventQuery);
+        return new EventEndpointCallFactory(retrofit.create(EventService.class), APICallExecutorImpl.create(databaseAdapter)).getCall(eventQuery);
     }
 
     private Callable<List<Event>> givenAEventCallByOrgUnitAndProgram(String orgUnit, String program) {
@@ -124,6 +140,6 @@ public class EventEndpointCallShould extends BaseCallShould {
                 .program(program)
                 .build();
 
-        return new EventEndpointCallFactory(genericCallData.retrofit().create(EventService.class), APICallExecutorImpl.create(databaseAdapter)).getCall(eventQuery);
+        return new EventEndpointCallFactory(retrofit.create(EventService.class), APICallExecutorImpl.create(databaseAdapter)).getCall(eventQuery);
     }
 }

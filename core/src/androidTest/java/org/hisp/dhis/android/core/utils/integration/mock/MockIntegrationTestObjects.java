@@ -34,16 +34,10 @@ import android.util.Log;
 
 import com.facebook.stetho.Stetho;
 
-import org.hisp.dhis.android.core.AppContextDIModule;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2DIComponent;
-import org.hisp.dhis.android.core.DaggerD2DIComponent;
-import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
@@ -72,23 +66,20 @@ public class MockIntegrationTestObjects {
 
         deleteDatabase();
 
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext(),
-                dbName);
-        database = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
-        resourceHandler = new ResourceHandler(ResourceStoreImpl.create(databaseAdapter));
-        resourceHandler.setServerDate(serverDate);
-        Stetho.initializeWithDefaults(InstrumentationRegistry.getTargetContext().getApplicationContext());
+        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        Stetho.initializeWithDefaults(context);
 
         dhis2MockServer = new Dhis2MockServer();
 
-        d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter);
+        d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), dbName);
 
-        d2DIComponent = DaggerD2DIComponent.builder()
-                .databaseDIModule(new DatabaseDIModule(databaseAdapter))
-                .apiClientDIModule(new APIClientDIModule(d2.retrofit()))
-                .appContextDIModule(new AppContextDIModule(InstrumentationRegistry.getTargetContext().getApplicationContext()))
-                .build();
+        database = d2.databaseAdapter().database();
+        databaseAdapter = d2.databaseAdapter();
+
+        d2DIComponent = D2DIComponent.create(context, d2.retrofit(), databaseAdapter);
+
+        resourceHandler = new ResourceHandler(ResourceStoreImpl.create(databaseAdapter));
+        resourceHandler.setServerDate(serverDate);
     }
 
     private void deleteDatabase() {

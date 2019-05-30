@@ -25,42 +25,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration;
 
-package org.hisp.dhis.android.core.wipe;
-
-import org.hisp.dhis.android.core.configuration.ConfigurationTableInfo;
-import org.hisp.dhis.android.core.data.database.DatabaseAssert;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmptyDispatcher {
+
+@RunWith(JUnit4.class)
+public class ConfigurationHelperShould {
+
+    @Test(expected = IllegalArgumentException.class)
+    public void validate_error_empty_string() {
+        ConfigurationHelper.validateServerUrl("");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void validate_error_url_with_api() {
+        ConfigurationHelper.validateServerUrl("http://dhis2.org/api/");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void validate_error_url_without_slash() {
+        ConfigurationHelper.validateServerUrl("http://dhis2.org");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void validate_error_url_with_api_without_slash() {
+        ConfigurationHelper.validateServerUrl("http://dhis2.org/api");
+    }
 
     @Test
-    public void have_empty_database_when_wipe_db_after_sync_data() throws Exception {
-        givenALoginInDatabase();
-
-        givenAMetadataInDatabase();
-
-        givenAEventInDatabase();
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter).isNotEmpty();
-
-        databaseAdapter.delete(ConfigurationTableInfo.TABLE_INFO.name());
-
-        d2.wipeModule().wipeEverything();
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter).isEmpty();
-    }
-
-    private void givenALoginInDatabase() throws Exception {
-        d2.userModule().logIn("user", "password").call();
-    }
-
-    private void givenAMetadataInDatabase() throws Exception {
-        d2.syncMetaData().call();
-    }
-
-    private void givenAEventInDatabase() {
-        d2.eventModule().downloadSingleEvents(1, false, false);
+    public void validate_ok_correct_api() {
+        ConfigurationHelper.validateServerUrl("http://dhis2.org/");
     }
 }

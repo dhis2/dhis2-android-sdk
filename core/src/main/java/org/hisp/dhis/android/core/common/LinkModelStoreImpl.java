@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.common;
 import android.database.sqlite.SQLiteStatement;
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class LinkModelStoreImpl<M extends Model>

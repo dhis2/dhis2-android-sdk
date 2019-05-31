@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.arch.db.stores.internal;
 
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorExecutorImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;

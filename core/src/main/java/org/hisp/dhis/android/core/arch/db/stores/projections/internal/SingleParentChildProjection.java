@@ -25,25 +25,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.stores.projections.internal;
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 
-import android.database.sqlite.SQLiteStatement;
-import androidx.annotation.NonNull;
+public class SingleParentChildProjection {
 
-import org.hisp.dhis.android.core.common.IdentifiableObject;
+    public final TableInfo childTableInfo;
+    public final String parentColumn;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-
-public abstract class IdentifiableStatementBinder<O extends IdentifiableObject> implements StatementBinder<O> {
-
-    @Override
-    public void bindToStatement(@NonNull O o, @NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, o.uid());
-        sqLiteBind(sqLiteStatement, 2, o.code());
-        sqLiteBind(sqLiteStatement, 3, o.name());
-        sqLiteBind(sqLiteStatement, 4, o.displayName());
-        sqLiteBind(sqLiteStatement, 5, o.created());
-        sqLiteBind(sqLiteStatement, 6, o.lastUpdated());
+    public SingleParentChildProjection(TableInfo childTableInfo,
+                                       String parentColumn) {
+        this.childTableInfo = childTableInfo;
+        this.parentColumn = parentColumn;
     }
 }

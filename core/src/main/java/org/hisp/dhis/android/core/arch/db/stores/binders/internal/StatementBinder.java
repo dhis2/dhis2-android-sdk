@@ -25,18 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.stores.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+package org.hisp.dhis.android.core.arch.db.stores.binders.internal;
 
-public class SingleParentChildProjection {
+import android.database.sqlite.SQLiteStatement;
+import androidx.annotation.NonNull;
 
-    public final TableInfo childTableInfo;
-    public final String parentColumn;
-
-    public SingleParentChildProjection(TableInfo childTableInfo,
-                                       String parentColumn) {
-        this.childTableInfo = childTableInfo;
-        this.parentColumn = parentColumn;
-    }
+public interface StatementBinder<O> {
+    void bindToStatement(@NonNull O object, @NonNull SQLiteStatement sqLiteStatement);
 }

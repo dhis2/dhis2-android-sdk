@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.common;
 
 import android.database.sqlite.SQLiteStatement;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import androidx.annotation.NonNull;

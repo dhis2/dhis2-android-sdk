@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorExecutor;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.imports;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;

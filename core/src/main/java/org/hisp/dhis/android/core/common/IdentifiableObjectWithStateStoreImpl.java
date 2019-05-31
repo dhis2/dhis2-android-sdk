@@ -32,7 +32,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import androidx.annotation.NonNull;

@@ -31,9 +31,9 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.database.Cursor;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.WhereStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildProjection;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;

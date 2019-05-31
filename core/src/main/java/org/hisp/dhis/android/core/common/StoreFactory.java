@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorExecutorImpl;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStoreImpl;
@@ -38,8 +38,8 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStor
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStoreImpl;
 import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStoreImpl;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkTableChildProjection;
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildProjection;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class StoreFactory {

@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.DataOrphanCleanerImpl;
-import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.DataOrphanCleanerImpl;
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;

@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransfor
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 
 import javax.inject.Inject;
 

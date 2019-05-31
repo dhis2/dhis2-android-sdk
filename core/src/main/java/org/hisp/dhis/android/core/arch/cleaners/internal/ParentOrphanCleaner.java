@@ -26,10 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.cleaners.internal;
 
-import java.util.Collection;
+import org.hisp.dhis.android.core.common.IdentifiableObject;
 
-public interface OrphanCleaner<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface> {
-    boolean deleteOrphan(P parent, Collection<C> children);
+public interface ParentOrphanCleaner<P extends IdentifiableObject> {
+    void deleteOrphan(P parent);
 }

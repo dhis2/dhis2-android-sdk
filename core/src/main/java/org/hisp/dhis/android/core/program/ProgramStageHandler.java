@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.common.CollectionCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 

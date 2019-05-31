@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.common.CollectionCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.common.ParentOrphanCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.ParentOrphanCleaner;
 
 import java.util.ArrayList;
 import java.util.Collection;

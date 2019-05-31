@@ -26,8 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.cleaners.internal;
 
-public interface ParentOrphanCleaner<P extends IdentifiableObject> {
-    void deleteOrphan(P parent);
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.common.UidsHelper;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collection;
+
+public class OrphanCleanerImpl<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface>
+        implements OrphanCleaner<P, C> {
+
+    private final String tableName;
+    private final String parentColumn;
+    private final DatabaseAdapter databaseAdapter;
+
+    public OrphanCleanerImpl(String tableName, String parentColumn, DatabaseAdapter databaseAdapter) {
+        this.tableName = tableName;
+        this.parentColumn = parentColumn;
+        this.databaseAdapter = databaseAdapter;
+    }
+
+    public boolean deleteOrphan(P parent, Collection<C> children) {
+        if (parent == null || children == null) {
+            return false;
+        }
+
+        String childrenUids = UidsHelper.commaSeparatedUidsWithSingleQuotationMarks(children);
+        String clause =
+                parentColumn + "='" + parent.uid() + "'"
+                + " AND "
+                + BaseIdentifiableObjectModel.Columns.UID + " NOT IN (" + childrenUids + ");";
+        return databaseAdapter.database().delete(tableName, clause, null) > 0;
+    }
 }

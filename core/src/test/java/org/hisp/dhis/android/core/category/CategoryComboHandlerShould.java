@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
 import org.hisp.dhis.android.core.common.OrderedLinkTransformer;
-import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.common.Transformer;
 import org.junit.Before;
 import org.junit.Test;

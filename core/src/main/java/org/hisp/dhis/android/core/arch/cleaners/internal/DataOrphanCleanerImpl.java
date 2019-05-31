@@ -26,22 +26,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.cleaners.internal;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collection;
 
-public class OrphanCleanerImpl<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface>
+public class DataOrphanCleanerImpl<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface>
         implements OrphanCleaner<P, C> {
 
     private final String tableName;
     private final String parentColumn;
+    private final String stateColumn;
     private final DatabaseAdapter databaseAdapter;
 
-    public OrphanCleanerImpl(String tableName, String parentColumn, DatabaseAdapter databaseAdapter) {
+    public DataOrphanCleanerImpl(String tableName, String parentColumn, String stateColumn,
+                                 DatabaseAdapter databaseAdapter) {
         this.tableName = tableName;
         this.parentColumn = parentColumn;
+        this.stateColumn = stateColumn;
         this.databaseAdapter = databaseAdapter;
     }
 
@@ -53,8 +60,10 @@ public class OrphanCleanerImpl<P extends ObjectWithUidInterface, C extends Objec
         String childrenUids = UidsHelper.commaSeparatedUidsWithSingleQuotationMarks(children);
         String clause =
                 parentColumn + "='" + parent.uid() + "'"
-                + " AND "
-                + BaseIdentifiableObjectModel.Columns.UID + " NOT IN (" + childrenUids + ");";
+                        + " AND "
+                        + stateColumn + "!='" + State.TO_POST + "'"
+                        + " AND "
+                        + BaseIdentifiableObjectModel.Columns.UID + " NOT IN (" + childrenUids + ");";
         return databaseAdapter.database().delete(tableName, clause, null) > 0;
     }
 }

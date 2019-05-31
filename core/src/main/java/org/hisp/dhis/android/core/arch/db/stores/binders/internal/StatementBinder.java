@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.arch.db.stores.binders.internal;
 
 import android.database.sqlite.SQLiteStatement;
+
 import androidx.annotation.NonNull;
 
 public interface StatementBinder<O> {

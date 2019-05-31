@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
 public final class EnumFilterConnector<R extends ReadOnlyCollectionRepository<?>, E extends Enum<E>>

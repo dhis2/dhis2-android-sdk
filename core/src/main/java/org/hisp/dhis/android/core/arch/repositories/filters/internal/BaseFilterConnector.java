@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeComplexFilterItem;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;

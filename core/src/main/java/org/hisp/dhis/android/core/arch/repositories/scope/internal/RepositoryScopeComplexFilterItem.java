@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.arch.repositories.scope.internal;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.repositories.scope.AutoValue_RepositoryScopeComplexFilterItem;
-
 @AutoValue
 public abstract class RepositoryScopeComplexFilterItem {
 

@@ -29,9 +29,10 @@
 package org.hisp.dhis.android.core.arch.db.stores.binders.internal;
 
 import android.database.sqlite.SQLiteStatement;
-import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.NameableObject;
+
+import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 

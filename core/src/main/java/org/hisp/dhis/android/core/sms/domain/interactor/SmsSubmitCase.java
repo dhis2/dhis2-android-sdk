@@ -66,7 +66,8 @@ public class SmsSubmitCase {
     }
 
     private Single<Integer> generateSubmissionId() {
-        return localDbRepository.getOngoingSubmissionsIds().flatMap(ids -> {
+        return localDbRepository.getOngoingSubmissions().flatMap(submissions -> {
+            Collection<Integer> ids = submissions.keySet();
             for (int i = 0; i <= 255; i++) {
                 if (!ids.contains(i)) {
                     submissionId = i;
@@ -84,7 +85,7 @@ public class SmsSubmitCase {
         }
         return checkPreconditions(
         ).andThen(
-                localDbRepository.addOngoingSubmissionsId(submissionId)
+                localDbRepository.addOngoingSubmission(submissionId, getSubmissionType())
         ).andThen(
                 localDbRepository.getGatewayNumber()
         ).flatMapObservable(number ->
@@ -93,11 +94,24 @@ public class SmsSubmitCase {
             if (!finishedSending && state.getSent() == state.getTotal()) {
                 finishedSending = true;
                 return converter.updateSubmissionState(State.SENT_VIA_SMS).andThen(
-                        localDbRepository.removeOngoingSubmissionsId(submissionId)
+                        localDbRepository.removeOngoingSubmission(submissionId)
                 ).andThen(Observable.just(state));
             }
             return Observable.just(state);
         });
+    }
+
+    private LocalDbRepository.SubmissionType getSubmissionType() {
+        if (converter instanceof TrackerEventConverter) {
+            return LocalDbRepository.SubmissionType.TRACKER_EVENT;
+        }
+        if (converter instanceof SimpleEventConverter) {
+            return LocalDbRepository.SubmissionType.SIMPLE_EVENT;
+        }
+        if (converter instanceof EnrollmentConverter) {
+            return LocalDbRepository.SubmissionType.ENROLLMENT;
+        }
+        return null;
     }
 
     public <T extends BaseDataModel> Completable checkConfirmationSms(final boolean searchReceived,

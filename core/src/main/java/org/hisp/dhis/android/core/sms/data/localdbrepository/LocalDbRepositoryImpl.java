@@ -1,8 +1,8 @@
-package org.hisp.dhis.android.core.sms.data;
+package org.hisp.dhis.android.core.sms.data.localdbrepository;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import org.hisp.dhis.android.core.ObjectMapperFactory;
 import org.hisp.dhis.android.core.common.State;
@@ -20,19 +20,15 @@ import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.smscompression.models.Metadata;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
-import io.reactivex.functions.Consumer;
 
 public class LocalDbRepositoryImpl implements LocalDbRepository {
-    private static final String TAG = LocalDbRepositoryImpl.class.getSimpleName();
     private final Context context;
     private final UserModule userModule;
     private final TrackedEntityModule trackedEntityModule;
@@ -40,16 +36,15 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     private final EnrollmentModule enrollmentModule;
     private final EventStore eventStore;
     private final EnrollmentStore enrollmentStore;
-    private final static String METADATA_FILE = "metadata_ids";
     private final static String CONFIG_FILE = "smsconfig";
     private final static String KEY_GATEWAY = "gateway";
     private final static String KEY_CONFIRMATION_SENDER = "confirmationsender";
     private final static String KEY_WAITING_RESULT_TIMEOUT = "reading_timeout";
     private static final String KEY_METADATA_CONFIG = "metadata_conf";
     private static final String KEY_MODULE_ENABLED = "module_enabled";
-    private static final String KEY_SUBMISSIONS_IDS = "submissions_ids";
 
-    private Collection<Integer> ongoingSubmissionIds;
+    private MetadataIdsStore metadataIdsStore;
+    private OngoingSubmissionsStore ongoingSubmissionsStore;
 
     @Inject
     public LocalDbRepositoryImpl(Context ctx,
@@ -66,8 +61,9 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
         this.enrollmentModule = enrollmentModule;
         this.eventStore = eventStore;
         this.enrollmentStore = enrollmentStore;
+        metadataIdsStore = new MetadataIdsStore(context);
+        ongoingSubmissionsStore = new OngoingSubmissionsStore(context);
     }
-
 
     @Override
     public Single<String> getUserName() {
@@ -133,18 +129,12 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     @Override
     public Single<Metadata> getMetadataIds() {
-        return Single.fromCallable(() ->
-                ObjectMapperFactory.objectMapper().readValue(
-                        context.openFileInput(METADATA_FILE), Metadata.class
-                ));
+        return metadataIdsStore.getMetadataIds();
     }
 
     @Override
     public Completable setMetadataIds(final Metadata metadata) {
-        return Completable.fromAction(() ->
-                ObjectMapperFactory.objectMapper().writeValue(
-                        context.openFileOutput(METADATA_FILE, Context.MODE_PRIVATE), metadata
-                ));
+        return metadataIdsStore.setMetadataIds(metadata);
     }
 
     @Override
@@ -223,62 +213,19 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
         );
     }
 
+    @SuppressLint("UseSparseArrays")
     @Override
-    public Single<Collection<Integer>> getOngoingSubmissionsIds() {
-        if (ongoingSubmissionIds != null) {
-            return Single.just(ongoingSubmissionIds);
-        }
-        return Single.fromCallable(() -> {
-                    Set<String> set = context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
-                            .getStringSet(KEY_SUBMISSIONS_IDS, new HashSet<>());
-                    HashSet<Integer> numSet = new HashSet<>();
-                    if (set == null) {
-                        return numSet;
-                    }
-                    for (String val : set) {
-                        try {
-                            numSet.add(Integer.parseInt(val));
-                        } catch (NumberFormatException e) {
-                            Log.e(TAG, "Failed parsing submission id", e);
-                        }
-                    }
-                    ongoingSubmissionIds = numSet;
-                    return numSet;
-                }
-        );
+    public Single<Map<Integer, SubmissionType>> getOngoingSubmissions() {
+        return ongoingSubmissionsStore.getOngoingSubmissions();
     }
 
     @Override
-    public Completable addOngoingSubmissionsId(Integer id) {
-        return getOngoingSubmissionsIds().map(ids -> {
-            ids.add(id);
-            return ids;
-        }).doOnSuccess(
-                saveOngoingSubmissionsIds()
-        ).ignoreElement();
+    public Completable addOngoingSubmission(Integer id, SubmissionType type) {
+        return ongoingSubmissionsStore.addOngoingSubmission(id, type);
     }
 
     @Override
-    public Completable removeOngoingSubmissionsId(Integer id) {
-        return getOngoingSubmissionsIds().map(ids -> {
-            ids.remove(id);
-            return ids;
-        }).doOnSuccess(
-                saveOngoingSubmissionsIds()
-        ).ignoreElement();
-    }
-
-    private Consumer<Collection<Integer>> saveOngoingSubmissionsIds() {
-        return ids -> {
-            HashSet<String> set = new HashSet<>();
-            for (Integer id : ids) {
-                set.add(Integer.toString(id));
-            }
-            boolean result = context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
-                    .edit().putStringSet(KEY_SUBMISSIONS_IDS, set).commit();
-            if (!result) {
-                throw new IOException("Failed writing submission ids to local storage");
-            }
-        };
+    public Completable removeOngoingSubmission(Integer id) {
+        return ongoingSubmissionsStore.removeOngoingSubmission(id);
     }
 }

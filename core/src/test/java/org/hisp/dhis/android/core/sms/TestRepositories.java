@@ -38,10 +38,10 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.smscompression.models.Metadata;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -172,17 +172,17 @@ public class TestRepositories {
         }
 
         @Override
-        public Single<Collection<Integer>> getOngoingSubmissionsIds() {
+        public Single<Map<Integer, SubmissionType>> getOngoingSubmissions() {
             return null;
         }
 
         @Override
-        public Completable addOngoingSubmissionsId(Integer id) {
+        public Completable addOngoingSubmission(Integer id, SubmissionType type) {
             return null;
         }
 
         @Override
-        public Completable removeOngoingSubmissionsId(Integer id) {
+        public Completable removeOngoingSubmission(Integer id) {
             return null;
         }
     }

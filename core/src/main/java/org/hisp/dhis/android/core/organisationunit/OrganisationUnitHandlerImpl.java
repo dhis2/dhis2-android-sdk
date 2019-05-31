@@ -172,7 +172,7 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
         UserOrganisationUnitLink.Builder builder = UserOrganisationUnitLink.builder()
                 .organisationUnitScope(scope.name()).user(user.uid());
 
-        userOrganisationUnitLinkHandler.handleMany(user.uid(), userOrganisationUnitsToAdd,
+        userOrganisationUnitLinkHandler.handleMany(scope.name(), userOrganisationUnitsToAdd,
                 organisationUnit -> builder
                         .organisationUnit(organisationUnit.uid())
                         .root(UserOrganisationUnitLinkHelper.isRoot(scope, user, organisationUnit))

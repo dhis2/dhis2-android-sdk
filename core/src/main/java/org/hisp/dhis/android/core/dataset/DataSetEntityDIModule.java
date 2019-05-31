@@ -70,7 +70,7 @@ public final class DataSetEntityDIModule {
 
     @Provides
     @Reusable
-    CollectionCleaner<DataSet> collectionCleaner(DatabaseAdapter databaseAdapter) {
+    public CollectionCleaner<DataSet> collectionCleaner(DatabaseAdapter databaseAdapter) {
         return new CollectionCleanerImpl<>(DataSetTableInfo.TABLE_INFO.name(), databaseAdapter);
     }
 

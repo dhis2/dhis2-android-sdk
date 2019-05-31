@@ -31,7 +31,6 @@ import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -60,18 +59,19 @@ class OrganisationUnitCallFactory {
 
     private final APICallExecutor apiCallExecutor;
     private final ResourceHandler resourceHandler;
-    private final CollectionCleaner<ObjectWithUid> programCollectionCleaner;
-    private final CollectionCleaner<ObjectWithUid> dataSetCollectionCleaner;
-    private final CollectionCleaner<ObjectWithUid> organisationUnitGroupCollectionCleaner;
+    private final CollectionCleaner<Program> programCollectionCleaner;
+    private final CollectionCleaner<DataSet> dataSetCollectionCleaner;
+    private final CollectionCleaner<OrganisationUnitGroup> organisationUnitGroupCollectionCleaner;
 
     @Inject
     OrganisationUnitCallFactory(@NonNull OrganisationUnitService organisationUnitService,
                                 @NonNull OrganisationUnitHandler handler,
                                 @NonNull APICallExecutor apiCallExecutor,
                                 @NonNull ResourceHandler resourceHandler,
-                                @NonNull CollectionCleaner<ObjectWithUid> programCollectionCleaner,
-                                @NonNull CollectionCleaner<ObjectWithUid> dataSetCollectionCleaner,
-                                @NonNull CollectionCleaner<ObjectWithUid> organisationUnitGroupCollectionCleaner) {
+                                @NonNull CollectionCleaner<Program> programCollectionCleaner,
+                                @NonNull CollectionCleaner<DataSet> dataSetCollectionCleaner,
+                                @NonNull CollectionCleaner<OrganisationUnitGroup>
+                                        organisationUnitGroupCollectionCleaner) {
         this.organisationUnitService = organisationUnitService;
         this.handler = handler;
         this.apiCallExecutor = apiCallExecutor;
@@ -144,15 +144,15 @@ class OrganisationUnitCallFactory {
                 uid, OrganisationUnitFields.allFields, true, false);
     }
 
-    private Set<ObjectWithUid> getLinkedPrograms(Set<OrganisationUnit> capture, Set<String> programUids) {
-        Set<ObjectWithUid> linkedPrograms = new HashSet<>();
+    private Set<Program> getLinkedPrograms(Set<OrganisationUnit> capture, Set<String> programUids) {
+        Set<Program> linkedPrograms = new HashSet<>();
         if(programUids != null) {
             for(OrganisationUnit orgunit : capture) {
                 List<Program> orgUnitPrograms = orgunit.programs();
                 if (orgUnitPrograms != null) {
                     for (Program program : orgUnitPrograms) {
                         if (programUids.contains(program.uid())) {
-                            linkedPrograms.add(ObjectWithUid.create(program.uid()));
+                            linkedPrograms.add(program);
                         }
                     }
                 }
@@ -161,15 +161,15 @@ class OrganisationUnitCallFactory {
         return linkedPrograms;
     }
 
-    private Set<ObjectWithUid> getLinkedDatasets(Set<OrganisationUnit> capture, Set<String> dataSetUids) {
-        Set<ObjectWithUid> linkedDatasets = new HashSet<>();
+    private Set<DataSet> getLinkedDatasets(Set<OrganisationUnit> capture, Set<String> dataSetUids) {
+        Set<DataSet> linkedDatasets = new HashSet<>();
         if(dataSetUids != null) {
             for(OrganisationUnit orgunit : capture) {
                 List<DataSet> orgUnitPrograms = orgunit.dataSets();
                 if (orgUnitPrograms != null) {
                     for (DataSet dataSet : orgUnitPrograms) {
                         if (dataSetUids.contains(dataSet.uid())) {
-                            linkedDatasets.add(ObjectWithUid.create(dataSet.uid()));
+                            linkedDatasets.add(dataSet);
                         }
                     }
                 }
@@ -178,14 +178,12 @@ class OrganisationUnitCallFactory {
         return linkedDatasets;
     }
 
-    private Set<ObjectWithUid> getLinkedGroups(Set<OrganisationUnit> capture) {
-        Set<ObjectWithUid> linkedGroups = new HashSet<>();
+    private Set<OrganisationUnitGroup> getLinkedGroups(Set<OrganisationUnit> capture) {
+        Set<OrganisationUnitGroup> linkedGroups = new HashSet<>();
         for(OrganisationUnit orgunit : capture) {
             List<OrganisationUnitGroup> orgUnitGroups = orgunit.organisationUnitGroups();
             if (orgUnitGroups != null) {
-                for (OrganisationUnitGroup group : orgUnitGroups) {
-                    linkedGroups.add(ObjectWithUid.create(group.uid()));
-                }
+                linkedGroups.addAll(orgUnitGroups);
             }
         }
         return linkedGroups;

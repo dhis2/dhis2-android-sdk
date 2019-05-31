@@ -62,7 +62,7 @@ class OrganisationUnitCallFactory {
     private final ResourceHandler resourceHandler;
     private final CollectionCleaner<ObjectWithUid> programCollectionCleaner;
     private final CollectionCleaner<ObjectWithUid> dataSetCollectionCleaner;
-
+    private final CollectionCleaner<ObjectWithUid> organisationUnitGroupCollectionCleaner;
 
     @Inject
     OrganisationUnitCallFactory(@NonNull OrganisationUnitService organisationUnitService,
@@ -70,13 +70,15 @@ class OrganisationUnitCallFactory {
                                 @NonNull APICallExecutor apiCallExecutor,
                                 @NonNull ResourceHandler resourceHandler,
                                 @NonNull CollectionCleaner<ObjectWithUid> programCollectionCleaner,
-                                @NonNull CollectionCleaner<ObjectWithUid> dataSetCollectionCleaner) {
+                                @NonNull CollectionCleaner<ObjectWithUid> dataSetCollectionCleaner,
+                                @NonNull CollectionCleaner<ObjectWithUid> organisationUnitGroupCollectionCleaner) {
         this.organisationUnitService = organisationUnitService;
         this.handler = handler;
         this.apiCallExecutor = apiCallExecutor;
         this.resourceHandler = resourceHandler;
         this.programCollectionCleaner = programCollectionCleaner;
         this.dataSetCollectionCleaner = dataSetCollectionCleaner;
+        this.organisationUnitGroupCollectionCleaner = organisationUnitGroupCollectionCleaner;
     }
 
     public Callable<List<OrganisationUnit>> create(final User user,
@@ -93,6 +95,7 @@ class OrganisationUnitCallFactory {
 
             programCollectionCleaner.deleteNotPresent(getLinkedPrograms(allOrgunits, programUids));
             dataSetCollectionCleaner.deleteNotPresent(getLinkedDatasets(allOrgunits, dataSetUids));
+            organisationUnitGroupCollectionCleaner.deleteNotPresent(getLinkedGroups(allOrgunits));
 
             resourceHandler.handleResource(Resource.Type.ORGANISATION_UNIT);
 
@@ -143,12 +146,14 @@ class OrganisationUnitCallFactory {
 
     private Set<ObjectWithUid> getLinkedPrograms(Set<OrganisationUnit> capture, Set<String> programUids) {
         Set<ObjectWithUid> linkedPrograms = new HashSet<>();
-        for(OrganisationUnit orgunit : capture) {
-            List<Program> orgUnitPrograms = orgunit.programs();
-            if (orgUnitPrograms != null && programUids != null) {
-                for (Program program : orgUnitPrograms) {
-                    if (programUids.contains(program.uid())) {
-                        linkedPrograms.add(ObjectWithUid.create(program.uid()));
+        if(programUids != null) {
+            for(OrganisationUnit orgunit : capture) {
+                List<Program> orgUnitPrograms = orgunit.programs();
+                if (orgUnitPrograms != null) {
+                    for (Program program : orgUnitPrograms) {
+                        if (programUids.contains(program.uid())) {
+                            linkedPrograms.add(ObjectWithUid.create(program.uid()));
+                        }
                     }
                 }
             }
@@ -158,16 +163,31 @@ class OrganisationUnitCallFactory {
 
     private Set<ObjectWithUid> getLinkedDatasets(Set<OrganisationUnit> capture, Set<String> dataSetUids) {
         Set<ObjectWithUid> linkedDatasets = new HashSet<>();
-        for(OrganisationUnit orgunit : capture) {
-            List<DataSet> orgUnitPrograms = orgunit.dataSets();
-            if (orgUnitPrograms != null && dataSetUids != null) {
-                for (DataSet dataSet : orgUnitPrograms) {
-                    if (dataSetUids.contains(dataSet.uid())) {
-                        linkedDatasets.add(ObjectWithUid.create(dataSet.uid()));
+        if(dataSetUids != null) {
+            for(OrganisationUnit orgunit : capture) {
+                List<DataSet> orgUnitPrograms = orgunit.dataSets();
+                if (orgUnitPrograms != null) {
+                    for (DataSet dataSet : orgUnitPrograms) {
+                        if (dataSetUids.contains(dataSet.uid())) {
+                            linkedDatasets.add(ObjectWithUid.create(dataSet.uid()));
+                        }
                     }
                 }
             }
         }
         return linkedDatasets;
+    }
+
+    private Set<ObjectWithUid> getLinkedGroups(Set<OrganisationUnit> capture) {
+        Set<ObjectWithUid> linkedGroups = new HashSet<>();
+        for(OrganisationUnit orgunit : capture) {
+            List<OrganisationUnitGroup> orgUnitGroups = orgunit.organisationUnitGroups();
+            if (orgUnitGroups != null) {
+                for (OrganisationUnitGroup group : orgUnitGroups) {
+                    linkedGroups.add(ObjectWithUid.create(group.uid()));
+                }
+            }
+        }
+        return linkedGroups;
     }
 }

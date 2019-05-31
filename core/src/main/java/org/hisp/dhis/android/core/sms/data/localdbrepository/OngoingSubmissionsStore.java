@@ -38,11 +38,13 @@ class OngoingSubmissionsStore {
             }
             Type mapType = new TypeToken<Map<Integer, LocalDbRepository.SubmissionType>>() {
             }.getType();
-            return new GsonBuilder().create().fromJson(
-                    new InputStreamReader(
-                            context.openFileInput(ONGOING_SUBMISSIONS_FILE),
-                            StandardCharsets.UTF_8),
-                    mapType);
+            InputStreamReader reader = new InputStreamReader(
+                    context.openFileInput(ONGOING_SUBMISSIONS_FILE),
+                    StandardCharsets.UTF_8);
+            Map<Integer, LocalDbRepository.SubmissionType> submissions =
+                    new GsonBuilder().create().fromJson(reader, mapType);
+            reader.close();
+            return submissions;
         }).onErrorReturn(throwable -> {
             Log.e(TAG, throwable.getMessage(), throwable);
             return new HashMap<>();
@@ -83,6 +85,7 @@ class OngoingSubmissionsStore {
                     StandardCharsets.UTF_8
             );
             new GsonBuilder().create().toJson(ongoingSubmissions, writer);
+            writer.close();
         });
     }
 }

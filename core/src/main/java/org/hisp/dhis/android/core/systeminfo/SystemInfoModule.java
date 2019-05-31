@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyWithDownloadObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 
 import javax.inject.Inject;
 

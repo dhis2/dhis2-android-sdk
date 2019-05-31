@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 import android.database.sqlite.SQLiteConstraintException;
 
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;

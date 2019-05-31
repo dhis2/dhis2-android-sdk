@@ -25,11 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection.internal;
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.IdentifiableFilters;
+import org.hisp.dhis.android.core.common.IdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 
-public interface ReadWriteCollectionRepository<M extends Model> extends ReadOnlyCollectionRepository<M> {
-    void add(M m) throws D2Error;
+public interface ReadOnlyIdentifiableCollectionRepository
+        <M extends Model & IdentifiableObject, R extends ReadOnlyCollectionRepository<?>>
+        extends ReadOnlyWithUidCollectionRepository<M>,
+        IdentifiableFilters<R> {
 }

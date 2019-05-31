@@ -35,7 +35,7 @@ import androidx.paging.PagedList;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
 import org.hisp.dhis.android.core.maintenance.D2Error;

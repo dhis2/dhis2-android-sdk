@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 
 public interface IdentifiableFilters<R extends ReadOnlyCollectionRepository<?>>  {
     StringFilterConnector<R> byUid();

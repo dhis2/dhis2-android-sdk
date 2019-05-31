@@ -25,14 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection.internal;
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.IdentifiableFilters;
-import org.hisp.dhis.android.core.common.IdentifiableObject;
+import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-public interface ReadOnlyIdentifiableCollectionRepository
-        <M extends Model & IdentifiableObject, R extends ReadOnlyCollectionRepository<?>>
-        extends ReadOnlyWithUidCollectionRepository<M>,
-        IdentifiableFilters<R> {
+public interface ReadOnlyWithUidCollectionRepository<M extends Model & ObjectWithUidInterface>
+        extends ReadOnlyCollectionRepository<M> {
+
+    ReadOnlyObjectRepository<M> uid(String uid);
 }

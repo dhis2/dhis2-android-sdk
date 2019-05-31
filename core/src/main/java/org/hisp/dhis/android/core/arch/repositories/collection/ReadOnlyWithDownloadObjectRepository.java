@@ -25,17 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection.internal;
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 
-public interface ReadWriteWithUidCollectionRepository<M extends Model & ObjectWithUidInterface, C>
-        extends ReadOnlyCollectionRepository<M> {
+import io.reactivex.Completable;
 
-    ReadWriteObjectRepository<M> uid(String uid);
-
-    String add(C c) throws D2Error;
+public interface ReadOnlyWithDownloadObjectRepository<M extends Model> extends ReadOnlyObjectRepository<M> {
+    Completable download();
 }

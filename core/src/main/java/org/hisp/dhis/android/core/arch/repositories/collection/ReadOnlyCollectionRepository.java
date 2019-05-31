@@ -25,16 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection.internal;
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
+import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.imports.WebResponse;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 
-import java.util.concurrent.Callable;
+import java.util.List;
 
-public interface ReadWriteWithUploadWithUidCollectionRepository<M extends Model & ObjectWithUidInterface, C>
-        extends ReadWriteWithUidCollectionRepository<M, C> {
-    Callable<WebResponse> upload() throws D2Error;
+import androidx.lifecycle.LiveData;
+import androidx.paging.PagedList;
+
+public interface ReadOnlyCollectionRepository<M extends Model> {
+    List<M> get();
+    LiveData<PagedList<M>> getPaged(int pageSize);
+    int count();
+    ReadOnlyObjectRepository<M> one();
 }

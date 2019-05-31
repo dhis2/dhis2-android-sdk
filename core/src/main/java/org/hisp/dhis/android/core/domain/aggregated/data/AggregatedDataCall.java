@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.api.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyWithDownloadObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.dataset.DataSet;

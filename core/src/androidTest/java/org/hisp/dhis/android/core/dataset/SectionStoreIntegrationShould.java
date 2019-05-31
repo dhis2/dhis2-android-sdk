@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.dataset.SectionSamples;
 import org.junit.runner.RunWith;
@@ -39,8 +39,8 @@ import androidx.test.runner.AndroidJUnit4;
 public class SectionStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Section> {
 
     public SectionStoreIntegrationShould() {
-        super(SectionStore.create(DatabaseAdapterFactory.get(false)), SectionTableInfo.TABLE_INFO,
-                DatabaseAdapterFactory.get(false));
+        super(SectionStore.create(DatabaseAdapterFactory.get()), SectionTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get());
     }
 
     @Override

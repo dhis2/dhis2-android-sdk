@@ -65,7 +65,7 @@ public final class UserOrganisationUnitLinkStoreImpl extends LinkModelStoreImpl<
         return new UserOrganisationUnitLinkStoreImpl(
                 databaseAdapter,
                 databaseAdapter.compileStatement(statementBuilder.insert()),
-                UserOrganisationUnitLinkTableInfo.Columns.USER,
+                Columns.ORGANISATION_UNIT_SCOPE,
                 statementBuilder,
                 BINDER);
     }

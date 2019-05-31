@@ -36,8 +36,13 @@ import com.google.common.collect.Sets;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.CollectionCleaner;
+import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
+import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
+import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
@@ -98,8 +103,16 @@ public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrati
                 OrganisationUnitHandlerImpl.create(databaseAdapter);
 
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter);
+        CollectionCleaner<Program> programCollectionCleaner =
+                new CollectionCleanerImpl<>(ProgramTableInfo.TABLE_INFO.name(), databaseAdapter);
+        CollectionCleaner<DataSet> dataSetCollectionCleaner =
+                new CollectionCleanerImpl<>(DataSetTableInfo.TABLE_INFO.name(), databaseAdapter);
+        CollectionCleaner<OrganisationUnitGroup> organisationUnitGroupCollectionCleaner =
+                new CollectionCleanerImpl<>(OrganisationUnitGroupTableInfo.TABLE_INFO.name(), databaseAdapter);
+
         organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService,
-                organisationUnitHandler, apiCallExecutor, objects.resourceHandler).create(user, programUids, null);
+                organisationUnitHandler, apiCallExecutor, objects.resourceHandler, programCollectionCleaner,
+                dataSetCollectionCleaner, organisationUnitGroupCollectionCleaner).create(user, programUids, null);
     }
 
     private void insertProgramWithUid(String uid) {

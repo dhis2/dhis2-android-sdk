@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.program.ProgramStageSamples;
 import org.junit.runner.RunWith;
@@ -39,8 +39,8 @@ import androidx.test.runner.AndroidJUnit4;
 public class ProgramStageStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramStage> {
 
     public ProgramStageStoreIntegrationShould() {
-        super(ProgramStageStore.create(DatabaseAdapterFactory.get(false)),
-                ProgramStageTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(ProgramStageStore.create(DatabaseAdapterFactory.get()),
+                ProgramStageTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

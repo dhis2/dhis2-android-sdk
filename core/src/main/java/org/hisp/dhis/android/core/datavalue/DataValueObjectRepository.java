@@ -80,11 +80,23 @@ public final class DataValueObjectRepository
         return setObject(setBuilder().comment(comment).build());
     }
 
+    @Override
+    public void delete() throws D2Error {
+        DataValue dataValue = getWithoutChildren();
+        if (dataValue.state() == State.TO_POST) {
+            super.delete(dataValue);
+        } else {
+            setObject(dataValue.toBuilder().state(State.TO_DELETE).build());
+        }
+    }
+
     private DataValue.Builder setBuilder() {
         Date date = new Date();
         if (exists()) {
-            return getWithoutChildren().toBuilder()
-                    .state(State.TO_UPDATE)
+            DataValue dataValue = getWithoutChildren();
+            State state = dataValue.state() == State.TO_POST ? State.TO_POST : State.TO_UPDATE;
+            return dataValue.toBuilder()
+                    .state(state)
                     .lastUpdated(date);
         } else {
             return DataValue.builder()

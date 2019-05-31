@@ -67,11 +67,15 @@ public final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<R
         sqLiteBind(sqLiteStatement, 7, o.relationshipItemType());
     };
 
+    private static final WhereStatementBinder<RelationshipItem> WHERE_DELETE_BINDER
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull(o.relationship()));
+        sqLiteBind(sqLiteStatement, 2, o.relationshipItemType());
+    };
+
     private RelationshipItemStoreImpl(DatabaseAdapter databaseAdapter,
                                       SQLStatementBuilder builder) {
-        super(databaseAdapter, databaseAdapter.compileStatement(builder.insert()),
-                databaseAdapter.compileStatement(builder.updateWhere()), builder, BINDER, WHERE_UPDATE_BINDER,
-                RelationshipItem::create);
+        super(databaseAdapter, builder, BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, RelationshipItem::create);
     }
 
     @Override

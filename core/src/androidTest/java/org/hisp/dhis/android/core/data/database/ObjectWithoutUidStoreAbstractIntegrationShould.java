@@ -65,7 +65,15 @@ public abstract class ObjectWithoutUidStoreAbstractIntegrationShould<M extends M
         store.insert(object);
         store.updateWhere(objectToUpdate);
         M objectFromDb = store.selectFirst();
-        assertThat(objectFromDb).isEqualTo(objectToUpdate);
+        assertEqualsIgnoreId(objectFromDb, objectToUpdate);
+    }
+
+    @Test
+    public void insert_and_delete_where() {
+        store.insert(object);
+        assertThat(store.count()).isEqualTo(1);
+        store.deleteWhere(object);
+        assertThat(store.count()).isEqualTo(0);
     }
 
     @Test
@@ -74,7 +82,7 @@ public abstract class ObjectWithoutUidStoreAbstractIntegrationShould<M extends M
         HandleAction handleAction = store.updateOrInsertWhere(objectToUpdate);
         assertThat(handleAction).isEqualTo(HandleAction.Update);
         M objectFromDb = store.selectFirst();
-        assertThat(objectFromDb).isEqualTo(objectToUpdate);
+        assertEqualsIgnoreId(objectFromDb, objectToUpdate);
     }
 
     @Test
@@ -82,6 +90,6 @@ public abstract class ObjectWithoutUidStoreAbstractIntegrationShould<M extends M
         HandleAction handleAction = store.updateOrInsertWhere(objectToUpdate);
         assertThat(handleAction).isEqualTo(HandleAction.Insert);
         M objectFromDb = store.selectFirst();
-        assertThat(objectFromDb).isEqualTo(objectToUpdate);
+        assertEqualsIgnoreId(objectFromDb, objectToUpdate);
     }
 }

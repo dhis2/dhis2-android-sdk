@@ -53,15 +53,12 @@ public final class PeriodStoreImpl extends ObjectWithoutUidStoreImpl<Period> imp
     private static final WhereStatementBinder<Period> WHERE_UPDATE_BINDER
             = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 5, o.periodId());
 
+    private static final WhereStatementBinder<Period> WHERE_DELETE_BINDER
+            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.periodId());
+
     private PeriodStoreImpl(DatabaseAdapter databaseAdapter,
                             SQLStatementBuilder builder) {
-        super(databaseAdapter,
-                databaseAdapter.compileStatement(builder.insert()),
-                databaseAdapter.compileStatement(builder.updateWhere()),
-                builder,
-                BINDER,
-                WHERE_UPDATE_BINDER,
-                Period::create);
+        super(databaseAdapter, builder, BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, Period::create);
     }
 
     @Override

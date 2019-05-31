@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.maintenance;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.maintenance.ForeignKeyViolationSamples;
 import org.junit.runner.RunWith;
@@ -40,8 +40,8 @@ public class ForeignKeyViolationStoreIntegrationShould
         extends ObjectStoreAbstractIntegrationShould<ForeignKeyViolation> {
 
     public ForeignKeyViolationStoreIntegrationShould() {
-        super(ForeignKeyViolationStore.create(DatabaseAdapterFactory.get(false)),
-                ForeignKeyViolationTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(ForeignKeyViolationStore.create(DatabaseAdapterFactory.get()),
+                ForeignKeyViolationTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

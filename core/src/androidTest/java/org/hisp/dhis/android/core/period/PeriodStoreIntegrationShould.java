@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.period;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.period.PeriodSamples;
 import org.junit.Test;
@@ -48,9 +48,9 @@ public class PeriodStoreIntegrationShould extends ObjectWithoutUidStoreAbstractI
     private PeriodStore periodStore;
 
     public PeriodStoreIntegrationShould() {
-        super(PeriodStoreImpl.create(DatabaseAdapterFactory.get(false)), PeriodTableInfo.TABLE_INFO,
-                DatabaseAdapterFactory.get(false));
-        this.periodStore = PeriodStoreImpl.create(DatabaseAdapterFactory.get(false));
+        super(PeriodStoreImpl.create(DatabaseAdapterFactory.get()), PeriodTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get());
+        this.periodStore = PeriodStoreImpl.create(DatabaseAdapterFactory.get());
     }
 
     @Override

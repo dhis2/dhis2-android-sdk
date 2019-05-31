@@ -26,10 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.testapp.trackedentity;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -37,14 +40,12 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(D2JunitRunner.class)
 public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShould
-        extends SyncedDatabaseMockIntegrationShould {
+        extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
     public void allow_access_to_all_tracked_entity_data_values() {
@@ -98,5 +99,13 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
                         .byTrackedEntityInstance().eq("nWrB0TfWlvh")
                         .get();
         assertThat(trackedEntityAttributeValues.size(), is(1));
+    }
+
+    @Test
+    public void return_tracked_entity_attribute_value_object_repository() {
+        TrackedEntityAttributeValueObjectRepository objectRepository = d2.trackedEntityModule().trackedEntityAttributeValues
+                .value("lZGmxYbs97q", "nWrB0TfWlvh");
+        assertThat(objectRepository.exists(), is(Boolean.TRUE));
+        assertThat(objectRepository.get().value(), is("4081507"));
     }
 }

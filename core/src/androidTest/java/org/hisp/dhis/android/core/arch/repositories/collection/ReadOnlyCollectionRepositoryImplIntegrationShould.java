@@ -28,23 +28,18 @@
 
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionRepository;
-import org.junit.Before;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
-import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.arch.repositories.collection.RelationshipTypeAsserts.assertTypesWithoutConstraints;
@@ -52,27 +47,24 @@ import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSampl
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_2;
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_UID_1;
 
-@RunWith(AndroidJUnit4.class)
-public class ReadOnlyCollectionRepositoryImplIntegrationShould extends AbsStoreTestCase {
+@RunWith(D2JunitRunner.class)
+public class ReadOnlyCollectionRepositoryImplIntegrationShould extends BaseMockIntegrationTestEmptyDispatcher {
 
-    private Map<String, RelationshipType> typeMap;
-    private RelationshipTypeCollectionRepository relationshipTypeCollectionRepository;
+    private static Map<String, RelationshipType> typeMap;
+    private static RelationshipTypeCollectionRepository relationshipTypeCollectionRepository;
 
-    @Override
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        BaseMockIntegrationTestEmptyDispatcher.setUpClass();
 
         typeMap = RelationshipTypeSamples.typeMap();
 
-        D2 d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
-
-        SyncHandler<RelationshipType> handler = getD2DIComponent(d2).relationshipTypeHandler();
+        SyncHandler<RelationshipType> handler = objects.d2DIComponent.relationshipTypeHandler();
 
         handler.handle(RELATIONSHIP_TYPE_1);
         handler.handle(RELATIONSHIP_TYPE_2);
 
-        this.relationshipTypeCollectionRepository = d2.relationshipModule().relationshipTypes;
+        relationshipTypeCollectionRepository = d2.relationshipModule().relationshipTypes;
     }
 
     @Test

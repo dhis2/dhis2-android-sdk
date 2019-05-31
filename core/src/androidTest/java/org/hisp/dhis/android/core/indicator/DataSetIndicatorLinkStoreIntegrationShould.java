@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.indicator.DataSetIndicatorLinkSamples;
 import org.junit.runner.RunWith;
@@ -40,8 +40,8 @@ public class DataSetIndicatorLinkStoreIntegrationShould
         extends LinkModelStoreAbstractIntegrationShould<DataSetIndicatorLink> {
 
     public DataSetIndicatorLinkStoreIntegrationShould() {
-        super(DataSetIndicatorLinkStore.create(DatabaseAdapterFactory.get(false)),
-                DataSetIndicatorLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(DataSetIndicatorLinkStore.create(DatabaseAdapterFactory.get()),
+                DataSetIndicatorLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

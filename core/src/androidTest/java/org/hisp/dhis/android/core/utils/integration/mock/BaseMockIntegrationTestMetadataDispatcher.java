@@ -26,32 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.utils.integration.mock;
 
-import android.content.Context;
-import androidx.test.InstrumentationRegistry;
+import org.junit.BeforeClass;
 
-import com.facebook.stetho.Stetho;
+public abstract class BaseMockIntegrationTestMetadataDispatcher extends BaseMockIntegrationTest {
 
-public class DatabaseAdapterFactory {
-    private static String dbName = null;
-    private static DatabaseAdapter databaseAdapter = null;
-
-    private static DatabaseAdapter create() {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(context, dbName);
-        dbOpenHelper.getWritableDatabase();
-        Stetho.initializeWithDefaults(context);
-        return new SqLiteDatabaseAdapter(dbOpenHelper);
-    }
-
-    public static DatabaseAdapter get(boolean foreignKeyConstraintsEnabled) {
-        if (databaseAdapter == null) {
-            databaseAdapter = create();
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        boolean isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.MetadataDispatcher);
+        if (isNewInstance) {
+            objects.dhis2MockServer.setRequestDispatcher();
+            objects.d2.syncMetaData().call();
         }
-
-        databaseAdapter.database().setForeignKeyConstraintsEnabled(foreignKeyConstraintsEnabled);
-
-        return databaseAdapter;
     }
 }

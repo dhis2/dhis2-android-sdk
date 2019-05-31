@@ -28,20 +28,19 @@
 
 package org.hisp.dhis.android.testapp.indicator;
 
-import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.indicator.IndicatorType;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-@RunWith(AndroidJUnit4.class)
-public class IndicatorTypeCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+@RunWith(D2JunitRunner.class)
+public class IndicatorTypeCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
     public void find_all() {

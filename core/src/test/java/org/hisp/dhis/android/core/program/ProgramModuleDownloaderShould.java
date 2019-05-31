@@ -35,14 +35,12 @@ import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -170,11 +168,6 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 optionSetCallFactory,
                 optionGroupCallFactory,
                 versionManager).downloadMetadata();
-    }
-
-    @After
-    public void tearDown() throws IOException {
-        super.tearDown();
     }
 
     @Test

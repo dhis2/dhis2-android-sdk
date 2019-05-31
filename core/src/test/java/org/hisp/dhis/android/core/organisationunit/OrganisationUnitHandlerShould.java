@@ -86,15 +86,6 @@ public class OrganisationUnitHandlerShould {
     private LinkSyncHandler<OrganisationUnitGroup, OrganisationUnitOrganisationUnitGroupLink>
             organisationUnitGroupLinkHandler;
 
-    @Mock
-    private CollectionCleaner<ObjectWithUid> programCollectionCleaner;
-
-    @Mock
-    private CollectionCleaner<ObjectWithUid> dataSetCollectionCleaner;
-
-    @Mock
-    private CollectionCleaner<ObjectWithUid> organisationUnitGroupCollectionCleaner;
-
     private OrganisationUnit organisationUnitWithoutGroups;
 
     @Mock
@@ -124,8 +115,8 @@ public class OrganisationUnitHandlerShould {
 
         organisationUnitHandler = new OrganisationUnitHandlerImpl(
                 organisationUnitStore, userOrganisationUnitLinkHandler, organisationUnitProgramLinkHandler,
-                dataSetDataSetOrganisationUnitLinkHandler, programCollectionCleaner, dataSetCollectionCleaner,
-                organisationUnitGroupCollectionCleaner, organisationUnitGroupHandler, organisationUnitGroupLinkHandler);
+                dataSetDataSetOrganisationUnitLinkHandler, organisationUnitGroupHandler,
+                organisationUnitGroupLinkHandler);
 
         when(user.uid()).thenReturn("test_user_uid");
         when(program.uid()).thenReturn(programUid);
@@ -149,13 +140,13 @@ public class OrganisationUnitHandlerShould {
 
     @Test
     public void persist_user_organisation_unit_link() {
-        organisationUnitHandler.setData(programUids, dataSetUids, user);
+        organisationUnitHandler.setData(programUids, dataSetUids, user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
         organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
     }
 
     @Test
     public void persist_program_organisation_unit_link_when_programs_uids() {
-        organisationUnitHandler.setData(programUids, dataSetUids, user);
+        organisationUnitHandler.setData(programUids, dataSetUids, user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
         organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
         verify(organisationUnitProgramLinkHandler).handleMany(anyString(), anyListOf(Program.class),
                 any(Transformer.class));
@@ -163,7 +154,8 @@ public class OrganisationUnitHandlerShould {
 
     @Test
     public void persist_program_organisation_unit_link_when_no_programs_uids() {
-        organisationUnitHandler.setData(null, null, user);
+        organisationUnitHandler.setData(null, null, user,
+                OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
         organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
 
         verifyNoMoreInteractions(organisationUnitProgramLinkStore);
@@ -171,7 +163,7 @@ public class OrganisationUnitHandlerShould {
 
     @Test
     public void persist_organisation_unit_groups() {
-        organisationUnitHandler.setData(programUids, dataSetUids, user);
+        organisationUnitHandler.setData(programUids, dataSetUids, user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
         organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
 
         verify(organisationUnitGroupHandler).handleMany(anyListOf(OrganisationUnitGroup.class));
@@ -179,7 +171,7 @@ public class OrganisationUnitHandlerShould {
 
     @Test
     public void persist_organisation_unit_organisation_unit_group_link() {
-        organisationUnitHandler.setData(programUids, dataSetUids, user);
+        organisationUnitHandler.setData(programUids, dataSetUids, user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
         organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
 
         verify(organisationUnitGroupLinkHandler).handleMany(anyString(), anyListOf(OrganisationUnitGroup.class),
@@ -188,21 +180,11 @@ public class OrganisationUnitHandlerShould {
 
     @Test
     public void dont_persist_organisation_unit_organisation_unit_group_link_when_no_organisation_unit_groups() {
-        organisationUnitHandler.setData(programUids, dataSetUids, user);
+        organisationUnitHandler.setData(programUids, dataSetUids, user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
 
         organisationUnitHandler.handleMany(Lists.newArrayList(organisationUnitWithoutGroups), new OrganisationUnitDisplayPathTransformer());
 
         verify(organisationUnitGroupLinkHandler, never()).handleMany(anyString(),
                 anyListOf(OrganisationUnitGroup.class), any(Transformer.class));
-    }
-
-    @Test
-    public void call_collection_cleaners() {
-        organisationUnitHandler.setData(programUids, dataSetUids, user);
-        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
-
-        verify(programCollectionCleaner).deleteNotPresent(anyCollectionOf(ObjectWithUid.class));
-        verify(dataSetCollectionCleaner).deleteNotPresent(anyCollectionOf(ObjectWithUid.class));
-        verify(organisationUnitGroupCollectionCleaner).deleteNotPresent(anyCollectionOf(ObjectWithUid.class));
     }
 }

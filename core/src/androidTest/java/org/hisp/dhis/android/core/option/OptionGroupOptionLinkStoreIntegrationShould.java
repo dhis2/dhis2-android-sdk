@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.option.OptionGroupOptionLinkSamples;
 import org.junit.runner.RunWith;
@@ -40,8 +40,8 @@ public class OptionGroupOptionLinkStoreIntegrationShould
         extends LinkModelStoreAbstractIntegrationShould<OptionGroupOptionLink> {
 
     public OptionGroupOptionLinkStoreIntegrationShould() {
-        super(OptionGroupOptionLinkStore.create(DatabaseAdapterFactory.get(false)),
-                OptionGroupOptionLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(OptionGroupOptionLinkStore.create(DatabaseAdapterFactory.get()),
+                OptionGroupOptionLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

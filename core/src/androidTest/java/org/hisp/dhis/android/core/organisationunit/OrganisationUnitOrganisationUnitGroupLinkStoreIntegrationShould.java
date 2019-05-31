@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitOrganisationUnitGroupLinkSamples;
 import org.junit.runner.RunWith;
@@ -40,8 +40,8 @@ public class OrganisationUnitOrganisationUnitGroupLinkStoreIntegrationShould
         extends LinkModelStoreAbstractIntegrationShould<OrganisationUnitOrganisationUnitGroupLink> {
 
     public OrganisationUnitOrganisationUnitGroupLinkStoreIntegrationShould() {
-        super(OrganisationUnitOrganisationUnitGroupLinkStore.create(DatabaseAdapterFactory.get(false)),
-                OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(OrganisationUnitOrganisationUnitGroupLinkStore.create(DatabaseAdapterFactory.get()),
+                OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

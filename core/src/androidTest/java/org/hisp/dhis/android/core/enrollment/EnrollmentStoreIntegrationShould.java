@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableDataObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.enrollment.EnrollmentSamples;
 import org.junit.runner.RunWith;
@@ -40,8 +40,8 @@ import androidx.test.runner.AndroidJUnit4;
 public class EnrollmentStoreIntegrationShould extends IdentifiableDataObjectStoreAbstractIntegrationShould<Enrollment> {
 
     public EnrollmentStoreIntegrationShould() {
-        super(EnrollmentStoreImpl.create(DatabaseAdapterFactory.get(false)),
-                EnrollmentTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(EnrollmentStoreImpl.create(DatabaseAdapterFactory.get()),
+                EnrollmentTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

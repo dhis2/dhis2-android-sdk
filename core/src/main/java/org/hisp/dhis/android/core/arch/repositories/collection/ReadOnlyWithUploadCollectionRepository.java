@@ -26,17 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event.api;
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.imports.DataValueImportSummary;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
-public class EventAPI30Should extends EventAPIShould {
+import java.util.concurrent.Callable;
 
-    public EventAPI30Should() {
-        super(RealServerMother.url2_30, "CREATE_AND_UPDATE");
-    }
-
-    //@Test
-    public void stub() {
-    }
+public interface ReadOnlyWithUploadCollectionRepository<M extends Model> extends ReadOnlyCollectionRepository<M> {
+    Callable<DataValueImportSummary> upload() throws D2Error;
 }

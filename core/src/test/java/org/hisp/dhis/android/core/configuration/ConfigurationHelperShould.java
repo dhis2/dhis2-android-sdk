@@ -25,16 +25,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
+package org.hisp.dhis.android.core.configuration;
 
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.imports.WebResponse;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import java.util.concurrent.Callable;
 
-public interface ReadOnlyWithUploadWithUidCollectionRepository<M extends Model & ObjectWithUidInterface>
-        extends ReadOnlyWithUidCollectionRepository<M> {
-    Callable<WebResponse> upload() throws D2Error;
+@RunWith(JUnit4.class)
+public class ConfigurationHelperShould {
+
+    @Test(expected = IllegalArgumentException.class)
+    public void validate_error_empty_string() {
+        ConfigurationHelper.validateServerUrl("");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void validate_error_url_with_api() {
+        ConfigurationHelper.validateServerUrl("http://dhis2.org/api/");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void validate_error_url_without_slash() {
+        ConfigurationHelper.validateServerUrl("http://dhis2.org");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void validate_error_url_with_api_without_slash() {
+        ConfigurationHelper.validateServerUrl("http://dhis2.org/api");
+    }
+
+    @Test
+    public void validate_ok_correct_api() {
+        ConfigurationHelper.validateServerUrl("http://dhis2.org/");
+    }
 }

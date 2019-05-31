@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.program.ProgramStageSectionSamples;
 import org.junit.runner.RunWith;
@@ -40,7 +40,7 @@ public class ProgramStageSectionStoreIntegrationShould
         extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramStageSection> {
 
     public ProgramStageSectionStoreIntegrationShould() {
-        super(ProgramStageSectionStore.create(DatabaseAdapterFactory.get(false)), ProgramStageSectionTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(ProgramStageSectionStore.create(DatabaseAdapterFactory.get()), ProgramStageSectionTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

@@ -28,26 +28,16 @@
 
 package org.hisp.dhis.android.core.option;
 
-import android.database.Cursor;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleanerImpl;
-import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
-import org.junit.After;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -56,104 +46,37 @@ import java.util.concurrent.Callable;
 import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class OptionSetCallShould extends AbsStoreTestCase {
+public class OptionSetCallShould extends BaseMockIntegrationTestEmptyEnqueable {
 
-    private Dhis2MockServer dhis2MockServer;
     private Callable<List<OptionSet>> optionSetCall;
     private D2CallExecutor d2CallExecutor;
 
-    @Override
     @Before
-    public void setUp() throws IOException {
-        super.setUp();
-        dhis2MockServer = new Dhis2MockServer();
+    public void setUp() throws D2Error {
         dhis2MockServer.enqueueMockResponse("option/option_sets.json");
-
-        // ToDo: consider moving this out
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());
-        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         Set<String> uids = new HashSet<>();
         uids.add("POc7DkGU3QU");
 
-        D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
+        optionSetCall = objects.d2DIComponent.optionSetCallFactory().create(uids);
 
-        optionSetCall = getD2DIComponent(d2).optionSetCallFactory().create(uids);
-
-        d2CallExecutor = D2CallExecutor.create(databaseAdapter());
-
+        d2CallExecutor = D2CallExecutor.create(databaseAdapter);
     }
 
     @Test
     public void persist_option_set_with_options_in_data_base_when_call() throws Exception {
         executeOptionSetCall();
 
-        Cursor optionSetCursor = database().query(OptionSetTableInfo.TABLE_INFO.name(),
-                ColumnsArrayUtils.getColumnsWithId(OptionSetTableInfo.TABLE_INFO.columns().all()),
-                null, null, null,null, null);
-        Cursor optionCursor = database().query(OptionTableInfo.TABLE_INFO.name(),
-                ColumnsArrayUtils.getColumnsWithId(OptionTableInfo.TABLE_INFO.columns().all()),
-                null, null, null, null, null);
+        OptionSetCollectionRepository optionSets = d2.optionModule().optionSets;
+        assertThat(optionSets.count()).isEqualTo(2);
+        assertThat(optionSets.uid("VQ2lai3OfVG").exists()).isTrue();
+        assertThat(optionSets.uid("TQ2lai3OfVG").exists()).isTrue();
 
-        assertThatCursor(optionSetCursor)
-                .hasRow(
-                        1L, // id
-                        "VQ2lai3OfVG", // uid
-                        null, // code
-                        "Age category", // name
-                        "Age category", // displayName
-                        "2014-06-22T10:59:26.564", // created
-                        "2015-08-06T14:23:38.789", // lastUpdated
-                        1, // version
-                        "TEXT" // valueType
-                ).hasRow(
-                        2L, // id
-                        "TQ2lai3OfVG", // uid
-                        null, // code
-                        "One option", // name
-                        "One option", // displayName
-                        "2014-06-22T10:59:26.564", // created
-                        "2015-08-06T14:23:38.789", // lastUpdated
-                        2, // version
-                        "NUMBER" // valueType
-                ).isExhausted();
-
-        assertThatCursor(optionCursor)
-                .hasRow(
-                        1L, // id
-                        "Y1ILwhy5VDY", // uid
-                        "0-14 years", // code
-                        "0-14 years", // name
-                        "0-14 years", // displayName
-                        "2014-08-18T12:39:16.000", // created
-                        "2014-08-18T12:39:16.000", // lastUpdated
-                        1, // sortOrder
-                        "VQ2lai3OfVG"  // optionSet
-                ).hasRow(
-                        2L, // id
-                        "egT1YqFWsVk", // uid
-                        "15-19 years", // code
-                        "15-19 years", // name
-                        "15-19 years", // displayName
-                        "2014-08-18T12:39:16.000", // created
-                        "2014-08-18T12:39:16.000", // lastUpdated
-                        2, // sortOrder
-                        "VQ2lai3OfVG"  // optionSet
-                ).hasRow(
-                        4L, // id
-                        "Z1ILwhy5VDY", // uid
-                        "First option", // code
-                        "First option", // name
-                        "First option", // displayName
-                        "2014-08-18T12:39:16.000", // created
-                        "2014-08-18T12:39:16.000", // lastUpdated
-                        1, // sortOrder
-                        "TQ2lai3OfVG"  // optionSet
-                ).isExhausted();
-
+        OptionCollectionRepository options = d2.optionModule().options;
+        assertThat(options.uid("Y1ILwhy5VDY").exists()).isTrue();
+        assertThat(options.uid("egT1YqFWsVk").exists()).isTrue();
+        assertThat(options.uid("Z1ILwhy5VDY").exists()).isTrue();
     }
 
     @Test
@@ -187,15 +110,8 @@ public class OptionSetCallShould extends AbsStoreTestCase {
             } catch (Exception ignored) {
             }
 
-            ForeignKeyCleanerImpl.create(databaseAdapter()).cleanForeignKeyErrors();
+            ForeignKeyCleanerImpl.create(databaseAdapter).cleanForeignKeyErrors();
             return optionSets;
         });
-    }
-
-    @After
-    @Override
-    public void tearDown() throws IOException {
-        super.tearDown();
-        dhis2MockServer.shutdown();
     }
 }

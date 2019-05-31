@@ -26,20 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.utils.integration.real;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import androidx.test.InstrumentationRegistry;
 
 import com.facebook.stetho.Stetho;
 
-import org.hisp.dhis.android.core.AppContextDIModule;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2DIComponent;
-import org.hisp.dhis.android.core.DaggerD2DIComponent;
-import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.DbOpenHelper;
+import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.After;
@@ -48,9 +47,11 @@ import org.junit.Before;
 import java.io.IOException;
 import java.util.Date;
 
+import androidx.test.InstrumentationRegistry;
+
 import static com.google.common.truth.Truth.assertThat;
 
-public abstract class AbsStoreTestCase {
+public abstract class BaseRealIntegrationTest {
     private SQLiteDatabase sqLiteDatabase;
     private DatabaseAdapter databaseAdapter;
 
@@ -95,10 +96,7 @@ public abstract class AbsStoreTestCase {
     }
 
     protected D2DIComponent getD2DIComponent(D2 d2) {
-        return DaggerD2DIComponent.builder()
-                .databaseDIModule(new DatabaseDIModule(databaseAdapter()))
-                .apiClientDIModule(new APIClientDIModule(d2.retrofit()))
-                .appContextDIModule(new AppContextDIModule(InstrumentationRegistry.getTargetContext().getApplicationContext()))
-                .build();
+        return D2DIComponent.create(InstrumentationRegistry.getTargetContext().getApplicationContext(), d2.retrofit(),
+                databaseAdapter);
     }
 }

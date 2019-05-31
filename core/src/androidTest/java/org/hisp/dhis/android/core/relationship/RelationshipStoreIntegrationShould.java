@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
 import org.junit.runner.RunWith;
@@ -39,8 +39,8 @@ import androidx.test.runner.AndroidJUnit4;
 public class RelationshipStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Relationship> {
 
     public RelationshipStoreIntegrationShould() {
-        super(RelationshipStoreImpl.create(DatabaseAdapterFactory.get(false)),
-                RelationshipTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(RelationshipStoreImpl.create(DatabaseAdapterFactory.get()),
+                RelationshipTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

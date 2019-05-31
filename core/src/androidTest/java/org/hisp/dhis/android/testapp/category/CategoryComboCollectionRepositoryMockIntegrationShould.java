@@ -31,7 +31,8 @@ package org.hisp.dhis.android.testapp.category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboCollectionRepository;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,13 +40,11 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-@RunWith(AndroidJUnit4.class)
-public class CategoryComboCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+@RunWith(D2JunitRunner.class)
+public class CategoryComboCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     private final String BEFORE_DATE = "2007-12-24T12:24:25.203";
     private final String IN_BETWEEN_DATE = "2016-04-16T18:04:34.745";

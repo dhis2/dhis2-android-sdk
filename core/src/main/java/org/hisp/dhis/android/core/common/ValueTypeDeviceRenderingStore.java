@@ -54,10 +54,17 @@ public final class ValueTypeDeviceRenderingStore {
         sqLiteBind(sqLiteStatement, 10, o.deviceType());
     };
 
+
+    private static final WhereStatementBinder<ValueTypeDeviceRendering> WHERE_DELETE_BINDER
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.uid());
+        sqLiteBind(sqLiteStatement, 2, o.deviceType());
+    };
+
     private ValueTypeDeviceRenderingStore() {}
 
     public static ObjectWithoutUidStore<ValueTypeDeviceRendering> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, ValueTypeDeviceRenderingTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER, ValueTypeDeviceRendering::create);
+                BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, ValueTypeDeviceRendering::create);
     }
 }

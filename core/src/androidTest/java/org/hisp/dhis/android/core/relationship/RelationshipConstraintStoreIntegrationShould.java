@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.relationship.RelationshipConstraintSamples;
 import org.junit.runner.RunWith;
@@ -40,8 +40,8 @@ public class RelationshipConstraintStoreIntegrationShould extends
         ObjectWithoutUidStoreAbstractIntegrationShould<RelationshipConstraint> {
 
     public RelationshipConstraintStoreIntegrationShould() {
-        super(RelationshipConstraintStore.create(DatabaseAdapterFactory.get(false)),
-                RelationshipConstraintTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(RelationshipConstraintStore.create(DatabaseAdapterFactory.get()),
+                RelationshipConstraintTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

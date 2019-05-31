@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.settings.SystemSettingSamples;
 import org.junit.runner.RunWith;
@@ -39,8 +39,8 @@ import androidx.test.runner.AndroidJUnit4;
 public class SystemSettingStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<SystemSetting> {
 
     public SystemSettingStoreIntegrationShould() {
-        super(SystemSettingStore.create(DatabaseAdapterFactory.get(false)), SystemSettingTableInfo.TABLE_INFO,
-                DatabaseAdapterFactory.get(false));
+        super(SystemSettingStore.create(DatabaseAdapterFactory.get()), SystemSettingTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get());
     }
 
     @Override

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.relationship.RelationshipItemSamples;
 import org.junit.runner.RunWith;
@@ -40,8 +40,8 @@ public class RelationshipItemStoreIntegrationShould extends
         ObjectWithoutUidStoreAbstractIntegrationShould<RelationshipItem> {
 
     public RelationshipItemStoreIntegrationShould() {
-        super(RelationshipItemStoreImpl.create(DatabaseAdapterFactory.get(false)),
-                RelationshipItemTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(RelationshipItemStoreImpl.create(DatabaseAdapterFactory.get()),
+                RelationshipItemTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

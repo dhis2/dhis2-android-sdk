@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.wipe;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.data.database.DatabaseAssert;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.event.Event;
@@ -45,7 +45,7 @@ import java.util.concurrent.Callable;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public class WipeDBCallRealIntegrationShould extends AbsStoreTestCase {
+public class WipeDBCallRealIntegrationShould extends BaseRealIntegrationTest {
     private D2 d2;
 
     @Before

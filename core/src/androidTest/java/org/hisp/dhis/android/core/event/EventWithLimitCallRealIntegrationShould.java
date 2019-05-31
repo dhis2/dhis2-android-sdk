@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
 
@@ -38,7 +38,7 @@ import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public class EventWithLimitCallRealIntegrationShould extends AbsStoreTestCase {
+public class EventWithLimitCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     private D2 d2;
 

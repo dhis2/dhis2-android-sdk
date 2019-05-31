@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableDataObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.trackedentity.EventSamples;
 import org.junit.runner.RunWith;
@@ -40,8 +40,8 @@ import androidx.test.runner.AndroidJUnit4;
 public class EventStoreIntegrationShould extends IdentifiableDataObjectStoreAbstractIntegrationShould<Event> {
 
     public EventStoreIntegrationShould() {
-        super(EventStoreImpl.create(DatabaseAdapterFactory.get(false)),
-                EventTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(EventStoreImpl.create(DatabaseAdapterFactory.get()),
+                EventTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

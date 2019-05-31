@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.program.ProgramIndicatorSamples;
 import org.junit.runner.RunWith;
@@ -39,7 +39,7 @@ import androidx.test.runner.AndroidJUnit4;
 public class ProgramIndicatorStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramIndicator> {
 
     public ProgramIndicatorStoreIntegrationShould() {
-        super(ProgramIndicatorStore.create(DatabaseAdapterFactory.get(false)), ProgramIndicatorTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(ProgramIndicatorStore.create(DatabaseAdapterFactory.get()), ProgramIndicatorTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

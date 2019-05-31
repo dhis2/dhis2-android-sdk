@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.program.ProgramTrackedEntityAttributeSamples;
 import org.junit.runner.RunWith;
@@ -40,8 +40,8 @@ public class ProgramTrackedEntityAttributeStoreIntegrationShould
         extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramTrackedEntityAttribute> {
 
     public ProgramTrackedEntityAttributeStoreIntegrationShould() {
-        super(ProgramTrackedEntityAttributeStore.create(DatabaseAdapterFactory.get(false)),
-                ProgramTrackedEntityAttributeTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(ProgramTrackedEntityAttributeStore.create(DatabaseAdapterFactory.get()),
+                ProgramTrackedEntityAttributeTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

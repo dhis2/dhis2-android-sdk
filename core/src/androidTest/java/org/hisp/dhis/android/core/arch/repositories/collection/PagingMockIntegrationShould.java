@@ -34,7 +34,8 @@ import org.hisp.dhis.android.core.arch.db.OrderByClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -47,10 +48,9 @@ import java.util.List;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.LiveData;
 import androidx.paging.PagedList;
-import androidx.test.runner.AndroidJUnit4;
 
-@RunWith(AndroidJUnit4.class)
-public class PagingMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+@RunWith(D2JunitRunner.class)
+public class PagingMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Rule
     public TestRule rule = new InstantTaskExecutorRule();
@@ -61,7 +61,7 @@ public class PagingMockIntegrationShould extends SyncedDatabaseMockIntegrationSh
 
     @Before
     public void setUp() {
-        store = getD2DIComponent().categoryOptionStore();
+        store = objects.d2DIComponent.categoryOptionStore();
         allValues = store.selectWhere("1", orderByClause, 8);
     }
 

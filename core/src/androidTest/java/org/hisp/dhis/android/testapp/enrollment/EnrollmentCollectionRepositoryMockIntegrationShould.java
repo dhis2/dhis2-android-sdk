@@ -26,10 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment;
+package org.hisp.dhis.android.testapp.enrollment;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -37,13 +43,11 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-@RunWith(AndroidJUnit4.class)
-public class EnrollmentCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+@RunWith(D2JunitRunner.class)
+public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
     public void allow_access_to_all_enrollments_without_children() {
@@ -199,5 +203,30 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends SyncedD
                 .byCoordinateLongitude().eq(4.1)
                 .get();
         assertThat(enrollments.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_state() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments
+                .byState().eq(State.SYNCED)
+                .get();
+        assertThat(enrollments.size(), is(2));
+    }
+
+    @Test
+    public void add_enrollments_to_the_repository() throws D2Error {
+        List<Enrollment> enrollments1 = d2.enrollmentModule().enrollments.get();
+        assertThat(enrollments1.size(), is(2));
+
+        String enrolmentUid = d2.enrollmentModule().enrollments.add(EnrollmentCreateProjection.create(
+                "DiszpKrYNg8", "lxAQ7Zs9VYR", "nWrB0TfWlvh"));
+
+        List<Enrollment> enrollments2 = d2.enrollmentModule().enrollments.get();
+        assertThat(enrollments2.size(), is(3));
+
+        Enrollment enrollment = d2.enrollmentModule().enrollments.uid(enrolmentUid).get();
+        assertThat(enrollment.uid(), is(enrolmentUid));
+
+        d2.enrollmentModule().enrollments.uid(enrolmentUid).delete();
     }
 }

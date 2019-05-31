@@ -91,7 +91,7 @@ public final class ProgramEntityDIModule {
 
     @Provides
     @Reusable
-    CollectionCleaner<Program> collectionCleaner(DatabaseAdapter databaseAdapter) {
+    public CollectionCleaner<Program> collectionCleaner(DatabaseAdapter databaseAdapter) {
         return new CollectionCleanerImpl<>(ProgramTableInfo.TABLE_INFO.name(), databaseAdapter);
     }
 

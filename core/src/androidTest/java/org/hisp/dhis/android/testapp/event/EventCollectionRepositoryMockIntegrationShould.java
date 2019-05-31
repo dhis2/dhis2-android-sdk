@@ -31,22 +31,23 @@ package org.hisp.dhis.android.testapp.event;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventCreateProjection;
 import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.text.ParseException;
 import java.util.List;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-@RunWith(AndroidJUnit4.class)
-public class EventCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+@RunWith(D2JunitRunner.class)
+public class EventCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
     public void find_all() {
@@ -301,5 +302,23 @@ public class EventCollectionRepositoryMockIntegrationShould extends SyncedDataba
         assertThat(events.get(1).uid(), is("single1"));
         assertThat(events.get(2).uid(), is("single2"));
         assertThat(events.get(3).uid(), is("event1"));
+    }
+
+    @Test
+    public void add_events_to_the_repository() throws D2Error {
+        List<Event> events1 = d2.eventModule().events.get();
+        assertThat(events1.size(), is(4));
+
+        String eventUid = d2.eventModule().events.add(
+                EventCreateProjection.create("enroll1", "lxAQ7Zs9VYR", "dBwrot7S420",
+                        "DiszpKrYNg8", "bRowv6yZOF2"));
+
+        List<Event> events2 = d2.eventModule().events.get();
+        assertThat(events2.size(), is(5));
+
+        Event event = d2.eventModule().events.uid(eventUid).get();
+        assertThat(event.uid(), is(eventUid));
+
+        d2.eventModule().events.uid(eventUid).delete();
     }
 }

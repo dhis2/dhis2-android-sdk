@@ -25,33 +25,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.children;
+package org.hisp.dhis.android.core.arch.repositories.children.internal;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
 
-public final class ChildrenSelection {
+public abstract class ChildrenAppender<M> {
 
-    public final Set<String> children;
-    public final boolean areAllChildrenSelected;
-
-    public ChildrenSelection(Set<String> children, boolean areAllChildrenSelected) {
-        this.children = Collections.unmodifiableSet(children);
-        this.areAllChildrenSelected = areAllChildrenSelected;
+    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+    protected void prepareChildren(Collection<M> collection) {
+        /* Method is not abstract since empty action is the default action and we don't want it to
+         * be unnecessarily written in every child.
+         */
     }
 
-    public ChildrenSelection withChild(String child) {
-        Set<String> newSet = new HashSet<>(children);
-        newSet.add(child);
-        return new ChildrenSelection(newSet, areAllChildrenSelected);
-    }
-
-    public ChildrenSelection selectAllChildren() {
-        return new ChildrenSelection(children, true);
-    }
-
-    public static ChildrenSelection empty() {
-        return new ChildrenSelection(Collections.emptySet(), false);
-    }
+    protected abstract M appendChildren(M m);
 }

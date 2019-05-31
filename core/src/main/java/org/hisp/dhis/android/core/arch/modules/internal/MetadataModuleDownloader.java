@@ -25,30 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers;
 
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.Transformer;
+package org.hisp.dhis.android.core.arch.modules.internal;
 
-import java.util.Collection;
+import java.util.concurrent.Callable;
 
-public class LinkSyncHandlerImpl<S, O extends Model> implements LinkSyncHandler<S, O> {
-
-    private final LinkModelStore<O> store;
-
-    public LinkSyncHandlerImpl(LinkModelStore<O> store) {
-        this.store = store;
-    }
-
-    @Override
-    public void handleMany(String masterUid, Collection<S> slaves, Transformer<S, O> transformer) {
-        store.deleteLinksForMasterUid(masterUid);
-        if (slaves != null) {
-            for (S slave : slaves) {
-                O oTransformed = transformer.transform(slave);
-                store.insert(oTransformed);
-            }
-        }
-    }
+public interface MetadataModuleDownloader<O> {
+   Callable<O> downloadMetadata();
 }

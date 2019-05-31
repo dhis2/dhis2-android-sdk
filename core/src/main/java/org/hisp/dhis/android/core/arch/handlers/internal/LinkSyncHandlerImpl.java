@@ -25,18 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.children;
+package org.hisp.dhis.android.core.arch.handlers.internal;
+
+import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.Transformer;
 
 import java.util.Collection;
 
-public abstract class ChildrenAppender<M> {
+public class LinkSyncHandlerImpl<S, O extends Model> implements LinkSyncHandler<S, O> {
 
-    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-    protected void prepareChildren(Collection<M> collection) {
-        /* Method is not abstract since empty action is the default action and we don't want it to
-         * be unnecessarily written in every child.
-         */
+    private final LinkModelStore<O> store;
+
+    public LinkSyncHandlerImpl(LinkModelStore<O> store) {
+        this.store = store;
     }
 
-    protected abstract M appendChildren(M m);
+    @Override
+    public void handleMany(String masterUid, Collection<S> slaves, Transformer<S, O> transformer) {
+        store.deleteLinksForMasterUid(masterUid);
+        if (slaves != null) {
+            for (S slave : slaves) {
+                O oTransformed = transformer.transform(slave);
+                store.insert(oTransformed);
+            }
+        }
+    }
 }

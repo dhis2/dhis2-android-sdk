@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.di.internal;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
 public interface ObjectWithoutUidEntityDIModule<O> extends ObjectWithoutUidStoreProvider<O> {

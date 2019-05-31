@@ -25,22 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers;
+package org.hisp.dhis.android.core.arch.repositories.children.internal;
 
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
-public class ObjectWithoutUidSyncHandlerImpl<O extends Model> extends SyncHandlerBaseImpl<O> {
+public final class ChildrenSelection {
 
-    private final ObjectWithoutUidStore<O> store;
+    public final Set<String> children;
+    public final boolean areAllChildrenSelected;
 
-    public ObjectWithoutUidSyncHandlerImpl(ObjectWithoutUidStore<O> store) {
-        this.store = store;
+    public ChildrenSelection(Set<String> children, boolean areAllChildrenSelected) {
+        this.children = Collections.unmodifiableSet(children);
+        this.areAllChildrenSelected = areAllChildrenSelected;
     }
 
-    @Override
-    protected HandleAction deleteOrPersist(O o) {
-        return store.updateOrInsertWhere(o);
+    public ChildrenSelection withChild(String child) {
+        Set<String> newSet = new HashSet<>(children);
+        newSet.add(child);
+        return new ChildrenSelection(newSet, areAllChildrenSelected);
+    }
+
+    public ChildrenSelection selectAllChildren() {
+        return new ChildrenSelection(children, true);
+    }
+
+    public static ChildrenSelection empty() {
+        return new ChildrenSelection(Collections.emptySet(), false);
     }
 }

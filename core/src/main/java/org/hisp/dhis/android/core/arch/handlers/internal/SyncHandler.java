@@ -25,36 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers;
+package org.hisp.dhis.android.core.arch.handlers.internal;
 
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import java.util.Collection;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+public interface SyncHandler<O> {
 
-public class IdentifiableSyncHandlerImpl<O extends ObjectWithUidInterface & ObjectWithDeleteInterface>
-        extends SyncHandlerBaseImpl<O> {
+    void handle(O o);
 
-    final IdentifiableObjectStore<O> store;
-
-    public IdentifiableSyncHandlerImpl(IdentifiableObjectStore<O> store) {
-        this.store = store;
-    }
-
-    @Override
-    protected HandleAction deleteOrPersist(O o) {
-        String modelUid = o.uid();
-        if ((isDeleted(o) || deleteIfCondition(o)) && modelUid != null) {
-            store.deleteIfExists(modelUid);
-            return HandleAction.Delete;
-        } else {
-            return store.updateOrInsert(o);
-        }
-    }
-
-    protected boolean deleteIfCondition(O o) {
-        return false;
-    }
+    void handleMany(Collection<O> oCollection);
 }

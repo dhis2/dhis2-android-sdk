@@ -26,10 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.modules;
+package org.hisp.dhis.android.core.arch.modules.internal;
 
-import java.util.concurrent.Callable;
+import io.reactivex.Completable;
 
-public interface MetadataModuleDownloader<O> {
-   Callable<O> downloadMetadata();
+public interface RxMetadataModuleDownloader {
+   Completable downloadMetadata();
 }

@@ -25,21 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.handlers.internal;
 
-package org.hisp.dhis.android.core.arch.repositories.di;
+import org.hisp.dhis.android.core.common.Transformer;
 
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import java.util.Collection;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+public interface SyncHandlerWithTransformer<O> extends SyncHandler<O> {
 
-@Module()
-public final class RepositoriesDIModule {
+    void handle(O o, Transformer<O, O> transformer);
 
-    @Provides
-    @Reusable
-    RepositoryScope emptyScope() {
-        return RepositoryScope.empty();
-    }
+    void handleMany(Collection<O> oCollection, Transformer<O, O> transformer);
 }

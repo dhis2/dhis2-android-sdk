@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.repositories.scope;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
 
 import java.util.Collections;
 import java.util.List;

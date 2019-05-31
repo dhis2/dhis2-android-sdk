@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import android.content.ContentValues;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.paging.RepositoryDataSource;
 import org.hisp.dhis.android.core.arch.repositories.paging.RepositoryPagingConfig;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;

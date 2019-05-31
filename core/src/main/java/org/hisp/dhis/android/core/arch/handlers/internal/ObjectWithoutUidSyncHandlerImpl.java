@@ -25,11 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.handlers.internal;
 
-package org.hisp.dhis.android.core.arch.modules;
+import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
-import io.reactivex.Completable;
+public class ObjectWithoutUidSyncHandlerImpl<O extends Model> extends SyncHandlerBaseImpl<O> {
 
-public interface RxMetadataModuleDownloader {
-   Completable downloadMetadata();
+    private final ObjectWithoutUidStore<O> store;
+
+    public ObjectWithoutUidSyncHandlerImpl(ObjectWithoutUidStore<O> store) {
+        this.store = store;
+    }
+
+    @Override
+    protected HandleAction deleteOrPersist(O o) {
+        return store.updateOrInsertWhere(o);
+    }
 }

@@ -1,6 +1,5 @@
 package org.hisp.dhis.android.core.sms.data.localdbrepository;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -43,8 +42,8 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     private static final String KEY_METADATA_CONFIG = "metadata_conf";
     private static final String KEY_MODULE_ENABLED = "module_enabled";
 
-    private MetadataIdsStore metadataIdsStore;
-    private OngoingSubmissionsStore ongoingSubmissionsStore;
+    private final MetadataIdsStore metadataIdsStore;
+    private final OngoingSubmissionsStore ongoingSubmissionsStore;
 
     @Inject
     public LocalDbRepositoryImpl(Context ctx,
@@ -213,7 +212,6 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
         );
     }
 
-    @SuppressLint("UseSparseArrays")
     @Override
     public Single<Map<Integer, SubmissionType>> getOngoingSubmissions() {
         return ongoingSubmissionsStore.getOngoingSubmissions();

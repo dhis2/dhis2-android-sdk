@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidEntityDIModule;
+import org.hisp.dhis.android.core.arch.di.internal.ObjectWithoutUidEntityDIModule;
 import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;

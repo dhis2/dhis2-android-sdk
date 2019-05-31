@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.period;
 
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
 import java.util.List;

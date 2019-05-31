@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.common;
 import android.database.Cursor;
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.List;

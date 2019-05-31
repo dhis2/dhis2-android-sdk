@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.repositories.scope;
 
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 
 public class WhereClauseFromScopeBuilder {
 

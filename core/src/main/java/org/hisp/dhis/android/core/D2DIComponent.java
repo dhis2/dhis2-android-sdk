@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core;
 
 import android.content.Context;
 
-import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
+import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.di.RepositoriesDIModule;
 import org.hisp.dhis.android.core.calls.MetadataCall;

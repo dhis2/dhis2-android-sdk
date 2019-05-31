@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.db;
 
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder;
 import org.junit.Test;
 
 import java.util.Arrays;

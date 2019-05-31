@@ -46,20 +46,17 @@ import dagger.Reusable;
 public class OrganisationUnitModuleDownloader {
 
     private final OrganisationUnitCallFactory organisationUnitCallFactory;
-    private final SearchOrganisationUnitCallFactory searchOrganisationUnitCallFactory;
     private final SearchOrganisationUnitOnDemandCallFactory searchOrganisationUnitOnDemandCallFactory;
     private final OrganisationUnitLevelEndpointCallFactory organisationUnitLevelEndpointCallFactory;
 
 
     @Inject
     OrganisationUnitModuleDownloader(OrganisationUnitCallFactory organisationUnitCallFactory,
-                                     SearchOrganisationUnitCallFactory searchOrganisationUnitCallFactory,
                                      SearchOrganisationUnitOnDemandCallFactory
                                              searchOrganisationUnitOnDemandCallFactory,
                                      OrganisationUnitLevelEndpointCallFactory
                                              organisationUnitLevelEndpointCallFactory) {
         this.organisationUnitCallFactory = organisationUnitCallFactory;
-        this.searchOrganisationUnitCallFactory = searchOrganisationUnitCallFactory;
         this.searchOrganisationUnitOnDemandCallFactory = searchOrganisationUnitOnDemandCallFactory;
         this.organisationUnitLevelEndpointCallFactory = organisationUnitLevelEndpointCallFactory;
     }
@@ -70,7 +67,6 @@ public class OrganisationUnitModuleDownloader {
         return () -> {
             organisationUnitCallFactory.create(
                     user, UidsHelper.getUids(programs), UidsHelper.getUids(dataSets)).call();
-            searchOrganisationUnitCallFactory.create(user).call();
             organisationUnitLevelEndpointCallFactory.create().call();
 
             return new Unit();

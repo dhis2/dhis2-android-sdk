@@ -93,8 +93,12 @@ class OrganisationUnitCallFactory {
             allOrgunits.addAll(capture);
             allOrgunits.addAll(search);
 
-            programCollectionCleaner.deleteNotPresent(getLinkedPrograms(allOrgunits, programUids));
-            dataSetCollectionCleaner.deleteNotPresent(getLinkedDatasets(allOrgunits, dataSetUids));
+            if (programUids != null) {
+                programCollectionCleaner.deleteNotPresent(getLinkedPrograms(allOrgunits, programUids));
+            }
+            if (dataSetUids != null) {
+                dataSetCollectionCleaner.deleteNotPresent(getLinkedDatasets(allOrgunits, dataSetUids));
+            }
             organisationUnitGroupCollectionCleaner.deleteNotPresent(getLinkedGroups(allOrgunits));
 
             resourceHandler.handleResource(Resource.Type.ORGANISATION_UNIT);
@@ -144,16 +148,14 @@ class OrganisationUnitCallFactory {
                 uid, OrganisationUnitFields.allFields, true, false);
     }
 
-    private Set<Program> getLinkedPrograms(Set<OrganisationUnit> capture, Set<String> programUids) {
+    private Set<Program> getLinkedPrograms(Set<OrganisationUnit> capture, @NonNull Set<String> programUids) {
         Set<Program> linkedPrograms = new HashSet<>();
-        if(programUids != null) {
-            for(OrganisationUnit orgunit : capture) {
-                List<Program> orgUnitPrograms = orgunit.programs();
-                if (orgUnitPrograms != null) {
-                    for (Program program : orgUnitPrograms) {
-                        if (programUids.contains(program.uid())) {
-                            linkedPrograms.add(program);
-                        }
+        for (OrganisationUnit orgunit : capture) {
+            List<Program> orgUnitPrograms = orgunit.programs();
+            if (orgUnitPrograms != null) {
+                for (Program program : orgUnitPrograms) {
+                    if (programUids.contains(program.uid())) {
+                        linkedPrograms.add(program);
                     }
                 }
             }
@@ -161,16 +163,14 @@ class OrganisationUnitCallFactory {
         return linkedPrograms;
     }
 
-    private Set<DataSet> getLinkedDatasets(Set<OrganisationUnit> capture, Set<String> dataSetUids) {
+    private Set<DataSet> getLinkedDatasets(Set<OrganisationUnit> capture, @NonNull Set<String> dataSetUids) {
         Set<DataSet> linkedDatasets = new HashSet<>();
-        if(dataSetUids != null) {
-            for(OrganisationUnit orgunit : capture) {
-                List<DataSet> orgUnitPrograms = orgunit.dataSets();
-                if (orgUnitPrograms != null) {
-                    for (DataSet dataSet : orgUnitPrograms) {
-                        if (dataSetUids.contains(dataSet.uid())) {
-                            linkedDatasets.add(dataSet);
-                        }
+        for (OrganisationUnit orgunit : capture) {
+            List<DataSet> orgUnitPrograms = orgunit.dataSets();
+            if (orgUnitPrograms != null) {
+                for (DataSet dataSet : orgUnitPrograms) {
+                    if (dataSetUids.contains(dataSet.uid())) {
+                        linkedDatasets.add(dataSet);
                     }
                 }
             }
@@ -180,7 +180,7 @@ class OrganisationUnitCallFactory {
 
     private Set<OrganisationUnitGroup> getLinkedGroups(Set<OrganisationUnit> capture) {
         Set<OrganisationUnitGroup> linkedGroups = new HashSet<>();
-        for(OrganisationUnit orgunit : capture) {
+        for (OrganisationUnit orgunit : capture) {
             List<OrganisationUnitGroup> orgUnitGroups = orgunit.organisationUnitGroups();
             if (orgUnitGroups != null) {
                 linkedGroups.addAll(orgUnitGroups);

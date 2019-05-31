@@ -25,35 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.object;
+package org.hisp.dhis.android.core.arch.repositories.object.internal;
 
-import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
 
 import java.util.Map;
 
-import io.reactivex.Completable;
+public final class ReadOnlyOneObjectRepositoryFinalImpl<M extends Model>
+        extends ReadOnlyOneObjectRepositoryImpl<M, ReadOnlyOneObjectRepositoryFinalImpl<M>> {
 
-public class ReadOnlyFirstObjectWithDownloadRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
-        extends ReadOnlyOneObjectRepositoryImpl<M, R> implements ReadOnlyWithDownloadObjectRepository<M> {
-
-    private final CompletableProvider downloadCompletableProvider;
-
-    public ReadOnlyFirstObjectWithDownloadRepositoryImpl(ObjectStore<M> store,
-                                                         Map<String, ChildrenAppender<M>> childrenAppenders,
-                                                         RepositoryScope scope,
-                                                         CompletableProvider downloadCompletableProvider,
-                                                         ObjectRepositoryFactory<R> repositoryFactory) {
-        super(store, childrenAppenders, scope, repositoryFactory);
-        this.downloadCompletableProvider = downloadCompletableProvider;
-    }
-
-    @Override
-    public Completable download() {
-        return downloadCompletableProvider.getCompletable();
+    public ReadOnlyOneObjectRepositoryFinalImpl(ObjectStore<M> store,
+                                                Map<String, ChildrenAppender<M>> childrenAppenders,
+                                                RepositoryScope scope) {
+        super(store, childrenAppenders, scope,
+                s -> new ReadOnlyOneObjectRepositoryFinalImpl<>(store, childrenAppenders, s));
     }
 }

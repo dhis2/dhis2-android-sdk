@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 

@@ -25,32 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.object;
+package org.hisp.dhis.android.core.arch.repositories.object.internal;
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
-import java.util.Map;
-
-public class ReadOnlyOneObjectRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
-        extends ReadOnlyObjectRepositoryImpl<M, R> {
-
-    private final ObjectStore<M> store;
-
-    public ReadOnlyOneObjectRepositoryImpl(ObjectStore<M> store,
-                                           Map<String, ChildrenAppender<M>> childrenAppenders,
-                                           RepositoryScope scope,
-                                           ObjectRepositoryFactory<R> repositoryFactory) {
-        super(childrenAppenders, scope, repositoryFactory);
-        this.store = store;
-    }
-
-    public M getWithoutChildren() {
-        WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
-        return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope));
-    }
+public interface ReadWriteObjectRepository<M extends Model> extends ReadOnlyObjectRepository<M> {
+    void delete() throws D2Error;
 }

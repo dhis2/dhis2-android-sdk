@@ -26,12 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.object;
+package org.hisp.dhis.android.core.arch.repositories.object.internal;
 
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.Unit;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-public interface ReadWriteValueObjectRepository<M extends Model> extends ReadWriteObjectRepository<M> {
-    Unit set(String value) throws D2Error;
+public interface ObjectRepositoryFactory<R extends ReadOnlyObjectRepository<?>> {
+    R updated(RepositoryScope updatedScope);
 }

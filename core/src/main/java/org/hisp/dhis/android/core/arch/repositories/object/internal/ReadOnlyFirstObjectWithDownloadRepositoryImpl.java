@@ -25,44 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.object;
+package org.hisp.dhis.android.core.arch.repositories.object.internal;
 
+import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectStore;
 
 import java.util.Map;
 
-public abstract class ReadOnlyObjectRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
-        implements ReadOnlyObjectRepository<M> {
+import io.reactivex.Completable;
 
-    private final Map<String, ChildrenAppender<M>> childrenAppenders;
-    protected final RepositoryScope scope;
-    protected final ObjectRepositoryFactory<R> repositoryFactory;
+public class ReadOnlyFirstObjectWithDownloadRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
+        extends ReadOnlyOneObjectRepositoryImpl<M, R> implements ReadOnlyWithDownloadObjectRepository<M> {
 
-    ReadOnlyObjectRepositoryImpl(Map<String, ChildrenAppender<M>> childrenAppenders,
-                                 RepositoryScope scope,
-                                 ObjectRepositoryFactory<R> repositoryFactory) {
-        this.childrenAppenders = childrenAppenders;
-        this.scope = scope;
-        this.repositoryFactory = repositoryFactory;
-    }
+    private final CompletableProvider downloadCompletableProvider;
 
-    abstract M getWithoutChildren();
-
-    @Override
-    public final M get() {
-        return ChildrenAppenderExecutor.appendInObject(getWithoutChildren(), childrenAppenders, scope.children());
+    public ReadOnlyFirstObjectWithDownloadRepositoryImpl(ObjectStore<M> store,
+                                                         Map<String, ChildrenAppender<M>> childrenAppenders,
+                                                         RepositoryScope scope,
+                                                         CompletableProvider downloadCompletableProvider,
+                                                         ObjectRepositoryFactory<R> repositoryFactory) {
+        super(store, childrenAppenders, scope, repositoryFactory);
+        this.downloadCompletableProvider = downloadCompletableProvider;
     }
 
     @Override
-    public boolean exists() {
-        return getWithoutChildren() != null;
-    }
-
-    public R withAllChildren() {
-        return repositoryFactory.updated(RepositoryScopeHelper.withAllChildren(scope));
+    public Completable download() {
+        return downloadCompletableProvider.getCompletable();
     }
 }

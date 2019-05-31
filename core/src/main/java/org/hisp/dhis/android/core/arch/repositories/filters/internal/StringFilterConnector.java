@@ -25,14 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.imports.DataValueImportSummary;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-import java.util.concurrent.Callable;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-public interface ReadWriteWithUploadCollectionRepository<M extends Model> extends ReadWriteCollectionRepository<M> {
-    Callable<DataValueImportSummary> upload() throws D2Error;
+public final class StringFilterConnector<R extends ReadOnlyCollectionRepository<?>>
+        extends BaseFilterConnector<R, String> {
+
+    StringFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
+                          RepositoryScope scope,
+                          String key) {
+        super(repositoryFactory, scope, key);
+    }
+
+    public R like(String value) {
+        return newWithWrappedScope("LIKE", value);
+    }
+
+    String wrapValue(String value) {
+        return "'" + value + "'";
+    }
 }

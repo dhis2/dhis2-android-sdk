@@ -26,10 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.collection;
+package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-public interface CollectionRepositoryFactory<R extends ReadOnlyCollectionRepository<?>> {
-    R updated(RepositoryScope updatedScope);
+public final class DoubleFilterConnector<R extends ReadOnlyCollectionRepository<?>>
+        extends BaseFilterConnector<R, Double> {
+
+    DoubleFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
+                          RepositoryScope scope,
+                          String key) {
+        super(repositoryFactory, scope, key);
+    }
+
+    public R smallerThan(double value) {
+        return newWithWrappedScope("<", value);
+    }
+
+    public R biggerThan(double value) {
+        return newWithWrappedScope(">", value);
+    }
+
+    String wrapValue(Double value) {
+        return value.toString();
+    }
 }

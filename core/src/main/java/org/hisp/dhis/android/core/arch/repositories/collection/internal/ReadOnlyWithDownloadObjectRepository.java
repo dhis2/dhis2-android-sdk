@@ -25,15 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.filters;
+package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.common.Model;
 
-public interface IdentifiableFilters<R extends ReadOnlyCollectionRepository<?>>  {
-    StringFilterConnector<R> byUid();
-    StringFilterConnector<R> byCode();
-    StringFilterConnector<R> byName();
-    StringFilterConnector<R> byDisplayName();
-    DateFilterConnector<R> byCreated();
-    DateFilterConnector<R> byLastUpdated();
+import io.reactivex.Completable;
+
+public interface ReadOnlyWithDownloadObjectRepository<M extends Model> extends ReadOnlyObjectRepository<M> {
+    Completable download();
 }

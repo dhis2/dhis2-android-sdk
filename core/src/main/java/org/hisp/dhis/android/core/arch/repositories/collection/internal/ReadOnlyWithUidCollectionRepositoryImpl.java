@@ -25,14 +25,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
+package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-public interface ReadOnlyWithUidCollectionRepository<M extends Model & ObjectWithUidInterface>
-        extends ReadOnlyCollectionRepository<M> {
+import java.util.Map;
 
-    ReadOnlyObjectRepository<M> uid(String uid);
+public class ReadOnlyWithUidCollectionRepositoryImpl<M extends Model & ObjectWithUidInterface,
+        R extends ReadOnlyCollectionRepository<M>>
+        extends ReadOnlyCollectionRepositoryImpl<M, R>
+        implements ReadOnlyWithUidCollectionRepository<M> {
+
+    protected final IdentifiableObjectStore<M> store;
+
+    public ReadOnlyWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
+                                                   Map<String, ChildrenAppender<M>> childrenAppenders,
+                                                   RepositoryScope scope,
+                                                   FilterConnectorFactory<R> cf) {
+        super(store, childrenAppenders, scope, cf);
+        this.store = store;
+    }
+
+    @Override
+    public ReadOnlyOneObjectRepositoryFinalImpl<M> uid(String uid) {
+        RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
+        return new ReadOnlyOneObjectRepositoryFinalImpl<>(store, childrenAppenders, updatedScope);
+    }
 }

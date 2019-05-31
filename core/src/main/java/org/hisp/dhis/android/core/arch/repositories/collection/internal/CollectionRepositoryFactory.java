@@ -25,11 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
-public interface ReadWriteCollectionRepository<M extends Model> extends ReadOnlyCollectionRepository<M> {
-    void add(M m) throws D2Error;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+
+public interface CollectionRepositoryFactory<R extends ReadOnlyCollectionRepository<?>> {
+    R updated(RepositoryScope updatedScope);
 }

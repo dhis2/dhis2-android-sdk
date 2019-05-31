@@ -25,16 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.imports.WebResponse;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-import java.util.concurrent.Callable;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-public interface ReadWriteWithUploadWithUidCollectionRepository<M extends Model & ObjectWithUidInterface, C>
-        extends ReadWriteWithUidCollectionRepository<M, C> {
-    Callable<WebResponse> upload() throws D2Error;
+public final class IntegerFilterConnector<R extends ReadOnlyCollectionRepository<?>>
+        extends BaseFilterConnector<R, Integer> {
+
+    IntegerFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
+                           RepositoryScope scope,
+                           String key) {
+        super(repositoryFactory, scope, key);
+    }
+
+    public R smallerThan(int value) {
+        return newWithWrappedScope("<", value);
+    }
+
+    public R biggerThan(int value) {
+        return newWithWrappedScope(">", value);
+    }
+
+    String wrapValue(Integer value) {
+        return value.toString();
+    }
 }

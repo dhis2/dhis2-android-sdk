@@ -25,31 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
-package org.hisp.dhis.android.core.arch.repositories.filters;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.IdentifiableFilters;
+import org.hisp.dhis.android.core.common.IdentifiableObject;
+import org.hisp.dhis.android.core.common.Model;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-
-public final class DoubleFilterConnector<R extends ReadOnlyCollectionRepository<?>>
-        extends BaseFilterConnector<R, Double> {
-
-    DoubleFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
-                          RepositoryScope scope,
-                          String key) {
-        super(repositoryFactory, scope, key);
-    }
-
-    public R smallerThan(double value) {
-        return newWithWrappedScope("<", value);
-    }
-
-    public R biggerThan(double value) {
-        return newWithWrappedScope(">", value);
-    }
-
-    String wrapValue(Double value) {
-        return value.toString();
-    }
+public interface ReadOnlyIdentifiableCollectionRepository
+        <M extends Model & IdentifiableObject, R extends ReadOnlyCollectionRepository<?>>
+        extends ReadOnlyWithUidCollectionRepository<M>,
+        IdentifiableFilters<R> {
 }

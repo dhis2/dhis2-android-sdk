@@ -25,19 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
+package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
-import java.util.List;
-
-import androidx.lifecycle.LiveData;
-import androidx.paging.PagedList;
-
-public interface ReadOnlyCollectionRepository<M extends Model> {
-    List<M> get();
-    LiveData<PagedList<M>> getPaged(int pageSize);
-    int count();
-    ReadOnlyObjectRepository<M> one();
+public interface ReadWriteCollectionRepository<M extends Model> extends ReadOnlyCollectionRepository<M> {
+    void add(M m) throws D2Error;
 }

@@ -26,51 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.filters;
+package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.period.DatePeriod;
-import org.hisp.dhis.android.core.period.InPeriodQueryHelper;
-import org.hisp.dhis.android.core.period.Period;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+public final class EnumFilterConnector<R extends ReadOnlyCollectionRepository<?>, E extends Enum<E>>
+        extends BaseFilterConnector<R, E> {
 
-import androidx.annotation.NonNull;
-
-public final class DateFilterConnector<R extends ReadOnlyCollectionRepository<?>> extends BaseFilterConnector<R, Date> {
-
-    DateFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
+    EnumFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
                         RepositoryScope scope,
                         String key) {
         super(repositoryFactory, scope, key);
     }
 
-    public R before(Date value) {
-        return newWithWrappedScope("<", value);
-    }
-
-    public R after(Date value) {
-        return newWithWrappedScope(">", value);
-    }
-
-    public R inDatePeriods(@NonNull List<DatePeriod> datePeriods) {
-        return newWithWrappedScope(InPeriodQueryHelper.buildInPeriodsQuery(key, datePeriods));
-    }
-
-    public R inPeriods(@NonNull List<Period> periods) {
-        List<DatePeriod> datePeriods = new ArrayList<>();
-        for (Period period : periods) {
-            datePeriods.add(DatePeriod.builder().startDate(period.startDate()).endDate(period.endDate()).build());
-        }
-        return inDatePeriods(datePeriods);
-    }
-
-    protected String wrapValue(Date value) {
-        return "'" + BaseIdentifiableObject.DATE_FORMAT.format(value) + "'";
+    String wrapValue(E value) {
+        return "'" + value.name() + "'";
     }
 }

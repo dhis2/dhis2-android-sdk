@@ -25,17 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
+package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepository;
 
-public interface ReadWriteWithUidCollectionRepository<M extends Model & ObjectWithUidInterface, C>
-        extends ReadOnlyCollectionRepository<M> {
-
-    ReadWriteObjectRepository<M> uid(String uid);
-
-    String add(C c) throws D2Error;
+public interface IdentifiableFilters<R extends ReadOnlyCollectionRepository<?>>  {
+    StringFilterConnector<R> byUid();
+    StringFilterConnector<R> byCode();
+    StringFilterConnector<R> byName();
+    StringFilterConnector<R> byDisplayName();
+    DateFilterConnector<R> byCreated();
+    DateFilterConnector<R> byLastUpdated();
 }

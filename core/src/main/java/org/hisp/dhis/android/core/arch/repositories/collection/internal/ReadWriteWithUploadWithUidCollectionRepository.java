@@ -25,27 +25,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
-package org.hisp.dhis.android.core.arch.repositories.filters;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import java.util.concurrent.Callable;
 
-public final class StringFilterConnector<R extends ReadOnlyCollectionRepository<?>>
-        extends BaseFilterConnector<R, String> {
-
-    StringFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
-                          RepositoryScope scope,
-                          String key) {
-        super(repositoryFactory, scope, key);
-    }
-
-    public R like(String value) {
-        return newWithWrappedScope("LIKE", value);
-    }
-
-    String wrapValue(String value) {
-        return "'" + value + "'";
-    }
+public interface ReadWriteWithUploadWithUidCollectionRepository<M extends Model & ObjectWithUidInterface, C>
+        extends ReadWriteWithUidCollectionRepository<M, C> {
+    Callable<WebResponse> upload() throws D2Error;
 }

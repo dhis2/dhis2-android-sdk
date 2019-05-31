@@ -25,13 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.filters;
+package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.common.Model;
 
-public interface NameableFilters<R extends ReadOnlyCollectionRepository<?>> extends IdentifiableFilters<R> {
-    StringFilterConnector<R> byShortName();
-    StringFilterConnector<R> byDisplayShortName();
-    StringFilterConnector<R> byDescription();
-    StringFilterConnector<R> byDisplayDescription();
+import java.util.List;
+
+import androidx.lifecycle.LiveData;
+import androidx.paging.PagedList;
+
+public interface ReadOnlyCollectionRepository<M extends Model> {
+    List<M> get();
+    LiveData<PagedList<M>> getPaged(int pageSize);
+    int count();
+    ReadOnlyObjectRepository<M> one();
 }

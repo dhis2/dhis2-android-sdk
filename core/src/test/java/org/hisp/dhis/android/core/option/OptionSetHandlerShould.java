@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.option;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.junit.Before;
 import org.junit.Test;

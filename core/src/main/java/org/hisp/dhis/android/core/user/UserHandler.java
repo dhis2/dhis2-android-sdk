@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 
 import javax.inject.Inject;
 

@@ -26,25 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.db.statementwrapper.internal;
 
-import androidx.annotation.NonNull;
+import android.database.sqlite.SQLiteStatement;
 
-import java.util.List;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public interface IdentifiableObjectStore<O extends ObjectWithUidInterface> extends ObjectStore<O> {
+public class SQLStatementWrapper {
+    public final SQLiteStatement insert;
+    public final SQLiteStatement update;
+    public final SQLiteStatement deleteById;
+    public final String selectUids;
 
-    void delete(@NonNull String uid) throws RuntimeException;
-
-    void deleteIfExists(@NonNull String uid) throws RuntimeException;
-
-    void update(@NonNull O o) throws RuntimeException;
-
-    HandleAction updateOrInsert(@NonNull O o) throws RuntimeException;
-
-    List<String> selectUids() throws RuntimeException;
-
-    List<String> selectUidsWhere(String whereClause) throws RuntimeException;
-
-    O selectByUid(String uid) throws RuntimeException;
+    public SQLStatementWrapper(SQLStatementBuilder builder, DatabaseAdapter databaseAdapter) {
+        this.insert = databaseAdapter.compileStatement(builder.insert());
+        this.update = databaseAdapter.compileStatement(builder.update());
+        this.deleteById = databaseAdapter.compileStatement(builder.deleteById());
+        this.selectUids = builder.selectUids();
+    }
 }

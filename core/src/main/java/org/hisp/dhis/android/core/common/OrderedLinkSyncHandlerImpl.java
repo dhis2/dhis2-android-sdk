@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+
 import java.util.List;
 
 public class OrderedLinkSyncHandlerImpl<S, M extends Model> implements OrderedLinkSyncHandler<S, M> {

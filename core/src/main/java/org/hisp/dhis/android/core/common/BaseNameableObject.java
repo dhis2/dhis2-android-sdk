@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.common;
 
-import androidx.annotation.Nullable;
-
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+
+import androidx.annotation.Nullable;
 
 public abstract class BaseNameableObject extends BaseIdentifiableObject implements NameableObject {
     public static final String SHORT_NAME = "shortName";

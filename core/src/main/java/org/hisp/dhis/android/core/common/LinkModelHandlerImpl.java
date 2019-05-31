@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+
 import java.util.Collection;
 
 public final class LinkModelHandlerImpl<S, M extends BaseModel> implements LinkModelHandler<S, M> {

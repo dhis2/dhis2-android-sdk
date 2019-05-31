@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 
 import java.util.Date;
 

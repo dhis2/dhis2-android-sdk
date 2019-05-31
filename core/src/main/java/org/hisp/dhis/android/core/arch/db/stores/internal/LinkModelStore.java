@@ -26,22 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.db.stores.internal;
 
-import android.database.sqlite.SQLiteStatement;
+import org.hisp.dhis.android.core.common.Model;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import androidx.annotation.NonNull;
 
-public class SQLStatementWrapper {
-    public final SQLiteStatement insert;
-    public final SQLiteStatement update;
-    final SQLiteStatement deleteById;
-    final String selectUids;
-
-    public SQLStatementWrapper(SQLStatementBuilder builder, DatabaseAdapter databaseAdapter) {
-        this.insert = databaseAdapter.compileStatement(builder.insert());
-        this.update = databaseAdapter.compileStatement(builder.update());
-        this.deleteById = databaseAdapter.compileStatement(builder.deleteById());
-        this.selectUids = builder.selectUids();
-    }
+public interface LinkModelStore<M extends Model> extends ObjectStore<M> {
+    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
 }

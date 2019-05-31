@@ -32,6 +32,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import androidx.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetStore;

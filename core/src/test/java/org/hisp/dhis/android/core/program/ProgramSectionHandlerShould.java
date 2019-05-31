@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.program;
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;

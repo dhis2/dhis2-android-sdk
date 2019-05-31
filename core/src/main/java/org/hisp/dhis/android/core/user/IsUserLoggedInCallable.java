@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.user;
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
 
 final class IsUserLoggedInCallable implements Callable<Boolean> {
 

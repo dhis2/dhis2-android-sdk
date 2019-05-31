@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 
 interface ObjectStyleStore extends ObjectWithoutUidStore<ObjectStyle> {

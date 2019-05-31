@@ -26,10 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.db.querybuilders.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.common.SQLOrderType;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo.SORT_ORDER;
@@ -38,7 +42,7 @@ import static org.hisp.dhis.android.core.utils.Utils.commaAndSpaceSeparatedArray
 
 public class SQLStatementBuilder {
     // TODO save TableInfo instead of separate files when architecture 1.0 is ready
-    final String tableName;
+    public final String tableName;
     public final String[] columns;
     private final String[] whereColumns;
     private final boolean hasSortOrder;
@@ -60,7 +64,7 @@ public class SQLStatementBuilder {
     }
 
     @SuppressWarnings("PMD.UseVarargs")
-    SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns) {
+    public SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns) {
         this(tableName, columns, updateWhereColumns, false);
     }
 
@@ -103,19 +107,19 @@ public class SQLStatementBuilder {
                 "VALUES (" + commaSeparatedInterrogationMarks() + ");";
     }
 
-    String deleteById() {
+    public String deleteById() {
         return "DELETE" + FROM + tableName + WHERE + UID + "=?;";
     }
 
-    String selectUids() {
+    public String selectUids() {
         return SELECT + UID + FROM + tableName;
     }
 
-    String selectUidsWhere(String whereClause) {
+    public String selectUidsWhere(String whereClause) {
         return SELECT + UID + FROM + tableName + WHERE + whereClause + ";";
     }
 
-    String selectColumnWhere(String column, String whereClause) {
+    public String selectColumnWhere(String column, String whereClause) {
         return SELECT + column + FROM + tableName + WHERE + whereClause + ";";
     }
 
@@ -143,7 +147,7 @@ public class SQLStatementBuilder {
         return hasSortOrder ? ORDER_BY + SORT_ORDER : "";
     }
 
-    String selectByUid() {
+    public String selectByUid() {
         return selectWhere(andSeparatedColumnEqualInterrogationMark(UID));
     }
 
@@ -151,27 +155,27 @@ public class SQLStatementBuilder {
         return SELECT + "*" + FROM + tableName + WHERE + whereClause + ";";
     }
 
-    String selectWhere(String whereClause, int limit) {
+    public String selectWhere(String whereClause, int limit) {
         return selectWhere(whereClause + LIMIT + limit);
     }
 
-    String selectWhere(String whereClause, String orderByClause) {
+    public String selectWhere(String whereClause, String orderByClause) {
         return selectWhere(whereClause + ORDER_BY + orderByClause);
     }
 
-    String selectWhere(String whereClause, String orderByClause, int limit) {
+    public String selectWhere(String whereClause, String orderByClause, int limit) {
         return selectWhere(whereClause + ORDER_BY + orderByClause + LIMIT + limit);
     }
 
-    String selectAll() {
+    public String selectAll() {
         return  SELECT + "*" + FROM + tableName;
     }
 
-    String count() {
+    public String count() {
         return SELECT + "COUNT(*)" + FROM + tableName + ";";
     }
 
-    String countWhere(String whereClause) {
+    public String countWhere(String whereClause) {
         return SELECT + "COUNT(*)" + FROM + tableName + WHERE + whereClause + ";";
     }
 

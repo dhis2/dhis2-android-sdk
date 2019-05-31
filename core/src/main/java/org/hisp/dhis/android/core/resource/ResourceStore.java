@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.resource;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 
 public interface ResourceStore extends ObjectWithoutUidStore<Resource> {
 

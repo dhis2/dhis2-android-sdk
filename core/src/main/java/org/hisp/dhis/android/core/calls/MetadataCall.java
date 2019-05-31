@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.calls;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.category.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.Unit;
@@ -50,6 +48,7 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable

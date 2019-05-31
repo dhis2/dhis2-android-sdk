@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectWithStateStore;
 
 import java.util.List;
 import java.util.Map;

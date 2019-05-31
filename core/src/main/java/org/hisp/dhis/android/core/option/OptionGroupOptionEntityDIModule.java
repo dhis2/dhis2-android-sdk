@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 

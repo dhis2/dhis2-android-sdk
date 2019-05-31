@@ -26,8 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.db.stores.internal;
 
-public interface IdentifiableObjectWithStateStore<O extends ObjectWithUidInterface>
-        extends IdentifiableObjectStore<O>, StoreWithState {
+import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+
+import java.util.List;
+
+import androidx.annotation.NonNull;
+
+public interface IdentifiableObjectStore<O extends ObjectWithUidInterface> extends ObjectStore<O> {
+
+    void delete(@NonNull String uid) throws RuntimeException;
+
+    void deleteIfExists(@NonNull String uid) throws RuntimeException;
+
+    void update(@NonNull O o) throws RuntimeException;
+
+    HandleAction updateOrInsert(@NonNull O o) throws RuntimeException;
+
+    List<String> selectUids() throws RuntimeException;
+
+    List<String> selectUidsWhere(String whereClause) throws RuntimeException;
+
+    O selectByUid(String uid) throws RuntimeException;
 }

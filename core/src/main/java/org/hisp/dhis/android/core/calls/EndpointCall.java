@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.calls;
 
-import androidx.annotation.VisibleForTesting;
-
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import androidx.annotation.VisibleForTesting;
 
 public final class EndpointCall<P> implements Callable<List<P>> {
 

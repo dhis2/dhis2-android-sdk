@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.common;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.data.database.EnumColumnAdapter;
+
+import androidx.annotation.NonNull;
 
 public class AggregationTypeColumnAdapter extends EnumColumnAdapter<AggregationType> {
 

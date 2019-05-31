@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.imports;
 
-import androidx.annotation.NonNull;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
+
+import androidx.annotation.NonNull;
 
 @AutoValue
 public abstract class ImportCount {

@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.event;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
 import org.hisp.dhis.android.core.common.Payload;
 
@@ -38,6 +36,7 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 import retrofit2.Call;
 

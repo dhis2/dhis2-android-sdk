@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.utils;
 
 import android.database.sqlite.SQLiteStatement;
-import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
@@ -37,6 +36,8 @@ import org.hisp.dhis.android.core.imports.ImportStatus;
 
 import java.text.ParseException;
 import java.util.Date;
+
+import androidx.annotation.NonNull;
 
 /**
  * Provides helper functions to handle null checks and type conversions.

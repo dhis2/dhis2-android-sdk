@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.data.api;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.junit.After;
 import org.junit.Before;

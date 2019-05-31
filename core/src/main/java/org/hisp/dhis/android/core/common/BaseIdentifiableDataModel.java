@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.android.core.common;
 
-import androidx.annotation.Nullable;
-
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
+
+import androidx.annotation.Nullable;
 
 public abstract class BaseIdentifiableDataModel extends BaseDataModel {
 

@@ -26,10 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.db.stores.internal;
+
+import android.database.sqlite.SQLiteStatement;
+
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import androidx.annotation.NonNull;
 
-public interface LinkModelStore<M extends Model> extends ObjectStore<M> {
-    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
+public class LinkModelStoreImpl<M extends Model>
+        extends ObjectStoreImpl<M> implements LinkModelStore<M> {
+
+    private final String masterColumn;
+
+    protected LinkModelStoreImpl(DatabaseAdapter databaseAdapter,
+                       SQLiteStatement insertStatement,
+                       SQLStatementBuilder builder,
+                       String masterColumn,
+                       StatementBinder<M> binder,
+                       CursorModelFactory<M> modelFactory) {
+        super(databaseAdapter, insertStatement, builder, binder, modelFactory);
+        this.masterColumn = masterColumn;
+    }
+
+    @Override
+    public void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException {
+        deleteWhere(masterColumn + "='" + masterUid + "';");
+    }
 }

@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.common;
 
-import androidx.annotation.NonNull;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
 
 public class SafeDateFormat {
 

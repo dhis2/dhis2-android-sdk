@@ -26,15 +26,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.db.stores.internal;
+
+import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.SQLOrderType;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 
-public interface ObjectWithoutUidStore<M> extends ObjectStore<M> {
+public interface ObjectStore<M> extends DeletableStore {
 
-    void updateWhere(@NonNull M m) throws RuntimeException;
+    long insert(@NonNull M m) throws RuntimeException;
 
-    void deleteWhere(@NonNull M m) throws RuntimeException;
+    List<M> selectAll();
 
-    HandleAction updateOrInsertWhere(@NonNull M m) throws RuntimeException;
+    List<M> selectWhere(String whereClause);
+
+    List<M> selectWhere(String filterWhereClause, String orderByClause);
+
+    List<M> selectWhere(String filterWhereClause, String orderByClause, int limit);
+
+    List<M> selectRawQuery(String sqlRawQuery);
+
+    M selectOneWhere(String whereClause);
+
+    M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
+
+    M selectFirst();
+
+    List<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
+
+    boolean deleteById(@NonNull M m);
+
+    boolean deleteWhere(String whereClause);
+
+    void deleteWhereIfExists(@NonNull String whereClause) throws RuntimeException;
+
+    int count();
+
+    int countWhere(String whereClause);
 }

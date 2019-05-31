@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.android.core.user;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 abstract class AuthorityCallFetcher implements CallFetcher<Authority> {
 

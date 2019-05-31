@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.core.event;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseQuery;
@@ -38,6 +35,9 @@ import org.hisp.dhis.android.core.data.api.OuMode;
 
 import java.util.Collection;
 import java.util.Collections;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 @AutoValue
 public abstract class EventQuery extends BaseQuery {

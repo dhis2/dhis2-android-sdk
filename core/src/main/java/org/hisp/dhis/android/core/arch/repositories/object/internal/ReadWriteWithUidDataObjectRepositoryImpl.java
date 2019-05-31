@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.repositories.object.internal;
 
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.DataModel;
 import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStore;

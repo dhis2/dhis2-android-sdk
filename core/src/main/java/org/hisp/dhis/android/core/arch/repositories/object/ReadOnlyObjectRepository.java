@@ -25,13 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package org.hisp.dhis.android.core.arch.repositories.object.internal;
+package org.hisp.dhis.android.core.arch.repositories.object;
 
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.Unit;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 
-public interface ReadWriteValueObjectRepository<M extends Model> extends ReadWriteObjectRepository<M> {
-    Unit set(String value) throws D2Error;
+public interface ReadOnlyObjectRepository<M extends Model> {
+    M get();
+    boolean exists();
 }

@@ -31,6 +31,9 @@ package org.hisp.dhis.android.core.arch.repositories.scope;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeComplexFilterItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem;
 
 import java.util.Collections;
 import java.util.List;

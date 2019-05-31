@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.search;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
 
 import androidx.annotation.NonNull;
 

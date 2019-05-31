@@ -43,9 +43,9 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import androidx.paging.ItemKeyedDataSource;
 
-import static org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode.OFFLINE_FIRST;
-import static org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode.OFFLINE_ONLY;
-import static org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode.ONLINE_FIRST;
+import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.OFFLINE_FIRST;
+import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.OFFLINE_ONLY;
+import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.ONLINE_FIRST;
 
 public final class TrackedEntityInstanceQueryDataSource
         extends ItemKeyedDataSource<TrackedEntityInstance, TrackedEntityInstance> {

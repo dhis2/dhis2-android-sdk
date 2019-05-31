@@ -25,32 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.paging.internal;
 
-package org.hisp.dhis.android.core.arch.repositories.scope;
+import org.hisp.dhis.android.core.common.BaseModel;
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+public final class RepositoryPagingConfig {
+    public static final String PAGING_KEY = BaseModel.Columns.ID;
 
-public class WhereClauseFromScopeBuilder {
-
-    private final WhereClauseBuilder builder;
-
-    public WhereClauseFromScopeBuilder(WhereClauseBuilder builder) {
-        this.builder = builder;
-    }
-
-    public String getWhereClause(RepositoryScope scope) {
-        if (!scope.hasFilters() && builder.isEmpty()) {
-            return "1";
-        }
-
-        for (RepositoryScopeFilterItem item: scope.filters()) {
-            builder.appendKeyOperatorValue(item.key(), item.operator(), item.value());
-        }
-
-        for (RepositoryScopeComplexFilterItem item: scope.complexFilters()) {
-            builder.appendComplexQuery(item.whereQuery());
-        }
-
-        return builder.build();
+    private RepositoryPagingConfig() {
     }
 }

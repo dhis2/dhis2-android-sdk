@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.repositories.object.internal;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
 

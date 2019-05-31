@@ -26,8 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.scope;
+package org.hisp.dhis.android.core.arch.repositories.scope.internal;
 
-public enum RepositoryMode {
-        ONLINE_ONLY, OFFLINE_ONLY, ONLINE_FIRST, OFFLINE_FIRST
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+
+public class WhereClauseFromScopeBuilder {
+
+    private final WhereClauseBuilder builder;
+
+    public WhereClauseFromScopeBuilder(WhereClauseBuilder builder) {
+        this.builder = builder;
+    }
+
+    public String getWhereClause(RepositoryScope scope) {
+        if (!scope.hasFilters() && builder.isEmpty()) {
+            return "1";
+        }
+
+        for (RepositoryScopeFilterItem item: scope.filters()) {
+            builder.appendKeyOperatorValue(item.key(), item.operator(), item.value());
+        }
+
+        for (RepositoryScopeComplexFilterItem item: scope.complexFilters()) {
+            builder.appendComplexQuery(item.whereQuery());
+        }
+
+        return builder.build();
+    }
 }

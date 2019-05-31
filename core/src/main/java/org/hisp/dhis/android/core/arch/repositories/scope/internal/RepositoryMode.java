@@ -26,32 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.scope;
+package org.hisp.dhis.android.core.arch.repositories.scope.internal;
 
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class RepositoryScopeFilterItem {
-
-    public abstract String key();
-
-    public abstract String operator();
-
-    public abstract String value();
-
-    public static Builder builder() {
-        return new AutoValue_RepositoryScopeFilterItem.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder key(String key);
-
-        public abstract Builder operator(String operator);
-
-        public abstract Builder value(String value);
-
-        public abstract RepositoryScopeFilterItem build();
-    }
+public enum RepositoryMode {
+        ONLINE_ONLY, OFFLINE_ONLY, ONLINE_FIRST, OFFLINE_FIRST
 }

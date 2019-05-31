@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.user;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyOneObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 
 import java.util.Map;
 

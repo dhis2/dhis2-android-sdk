@@ -25,14 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.paging;
+package org.hisp.dhis.android.core.arch.repositories.paging.internal;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
 

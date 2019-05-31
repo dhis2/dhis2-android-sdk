@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.arch.repositories.scope;
 
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

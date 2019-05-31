@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFields;

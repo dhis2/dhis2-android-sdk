@@ -26,8 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.scope;
+package org.hisp.dhis.android.core.arch.repositories.scope.internal;
 
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 
 import java.util.ArrayList;

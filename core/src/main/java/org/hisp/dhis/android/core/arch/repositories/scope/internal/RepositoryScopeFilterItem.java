@@ -25,13 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.paging;
 
-import org.hisp.dhis.android.core.common.BaseModel;
+package org.hisp.dhis.android.core.arch.repositories.scope.internal;
 
-public final class RepositoryPagingConfig {
-    public static final String PAGING_KEY = BaseModel.Columns.ID;
+import com.google.auto.value.AutoValue;
 
-    private RepositoryPagingConfig() {
+import org.hisp.dhis.android.core.arch.repositories.scope.AutoValue_RepositoryScopeFilterItem;
+
+@AutoValue
+public abstract class RepositoryScopeFilterItem {
+
+    public abstract String key();
+
+    public abstract String operator();
+
+    public abstract String value();
+
+    public static Builder builder() {
+        return new AutoValue_RepositoryScopeFilterItem.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+        public abstract Builder key(String key);
+
+        public abstract Builder operator(String operator);
+
+        public abstract Builder value(String value);
+
+        public abstract RepositoryScopeFilterItem build();
     }
 }

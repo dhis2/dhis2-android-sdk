@@ -43,9 +43,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkStore;
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkHelper;
@@ -66,16 +64,14 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
     private final SyncHandler<OrganisationUnitGroup> organisationUnitGroupHandler;
     private final LinkSyncHandler<OrganisationUnitGroup, OrganisationUnitOrganisationUnitGroupLink>
             organisationUnitGroupLinkHandler;
-    private final CollectionCleaner<ObjectWithUid> programCollectionCleaner;
-    private final CollectionCleaner<ObjectWithUid> dataSetCollectionCleaner;
     private final CollectionCleaner<ObjectWithUid> organisationUnitGroupCollectionCleaner;
-    private final Set<ObjectWithUid> orgUnitLinkedProgramUids;
-    private final Set<ObjectWithUid> orgUnitLinkedDataSetUids;
     private final Set<ObjectWithUid> organisationUnitGroupUids;
 
     private User user;
     private Set<String> programUids;
     private Set<String> dataSetUids;
+    private OrganisationUnit.Scope scope;
+
     private Set<String> userOrganisationUnitUids;
 
     private Set<OrganisationUnit> userOrganisationUnitsToAdd;
@@ -87,8 +83,6 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
                                     organisationUnitProgramLinkHandler,
                                 @NonNull LinkSyncHandler<DataSet, DataSetOrganisationUnitLink>
                                     dataSetOrganisationUnitLinkHandler,
-                                @NonNull CollectionCleaner<ObjectWithUid> programCollectionCleaner,
-                                @NonNull CollectionCleaner<ObjectWithUid> dataSetCollectionCleaner,
                                 @NonNull CollectionCleaner<ObjectWithUid> organisationUnitGroupCollectionCleaner,
                                 @Nullable SyncHandler<OrganisationUnitGroup> organisationUnitGroupHandler,
                                 @NonNull LinkSyncHandler<OrganisationUnitGroup,
@@ -101,21 +95,18 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
         this.organisationUnitGroupLinkHandler = organisationUnitGroupLinkHandler;
         this.organisationUnitProgramLinkHandler = organisationUnitProgramLinkHandler;
         this.dataSetOrganisationUnitLinkHandler = dataSetOrganisationUnitLinkHandler;
-        this.programCollectionCleaner = programCollectionCleaner;
-        this.dataSetCollectionCleaner = dataSetCollectionCleaner;
         this.organisationUnitGroupCollectionCleaner = organisationUnitGroupCollectionCleaner;
-        this.orgUnitLinkedProgramUids = new HashSet<>();
-        this.orgUnitLinkedDataSetUids = new HashSet<>();
         this.organisationUnitGroupUids = new HashSet<>();
         this.userOrganisationUnitUids = new HashSet<>();
         this.userOrganisationUnitsToAdd = new HashSet<>();
     }
 
     @Override
-    public void setData(Set<String> programUids, Set<String> dataSetUids, User user) {
+    public void setData(Set<String> programUids, Set<String> dataSetUids, User user, OrganisationUnit.Scope scope) {
         this.programUids = programUids;
         this.dataSetUids = dataSetUids;
         this.user = user;
+        this.scope = scope;
     }
 
     @Override
@@ -137,7 +128,6 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
             for (Program program : orgUnitPrograms) {
                 if (programUids.contains(program.uid())) {
                     programsToAdd.add(program);
-                    orgUnitLinkedProgramUids.add(ObjectWithUid.create(program.uid()));
                 }
             }
 
@@ -154,7 +144,6 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
             for (DataSet dataSet : orgUnitDataSets) {
                 if (dataSetUids.contains(dataSet.uid())) {
                     dataSetsToAdd.add(dataSet);
-                    orgUnitLinkedDataSetUids.add(ObjectWithUid.create(dataSet.uid()));
                 }
             }
 
@@ -197,7 +186,6 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
     }
 
     private void handleUserOrganisationUnitLinks() {
-        OrganisationUnit.Scope scope = OrganisationUnit.Scope.SCOPE_DATA_CAPTURE;
         UserOrganisationUnitLink.Builder builder = UserOrganisationUnitLink.builder()
                 .organisationUnitScope(scope.name()).user(user.uid());
 
@@ -215,8 +203,6 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
     @Override
     protected void afterCollectionHandled(Collection<OrganisationUnit> organisationUnits) {
 
-        programCollectionCleaner.deleteNotPresent(orgUnitLinkedProgramUids);
-        dataSetCollectionCleaner.deleteNotPresent(orgUnitLinkedDataSetUids);
         organisationUnitGroupCollectionCleaner.deleteNotPresent(organisationUnitGroupUids);
 
         handleUserOrganisationUnitLinks();
@@ -228,8 +214,6 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
                 new LinkSyncHandlerImpl<>(UserOrganisationUnitLinkStoreImpl.create(databaseAdapter)),
                 new LinkSyncHandlerImpl<>(OrganisationUnitProgramLinkStore.create(databaseAdapter)),
                 new LinkSyncHandlerImpl<>(DataSetOrganisationUnitLinkStore.create(databaseAdapter)),
-                new CollectionCleanerImpl<>(ProgramTableInfo.TABLE_INFO.name(), databaseAdapter),
-                new CollectionCleanerImpl<>(DataSetTableInfo.TABLE_INFO.name(), databaseAdapter),
                 new CollectionCleanerImpl<>(OrganisationUnitGroupTableInfo.TABLE_INFO.name(), databaseAdapter),
                 new IdentifiableSyncHandlerImpl<>(OrganisationUnitGroupStore.create(databaseAdapter)),
                 new LinkSyncHandlerImpl<>(OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter)));

@@ -18,11 +18,11 @@ public class QrCodeCase {
         return new SimpleEventConverter(localDbRepository, eventUid).readAndConvert();
     }
 
-    public Single<String> generateTrackerEventCode(String eventUid, String teiUid) {
-        return new TrackerEventConverter(localDbRepository, eventUid, teiUid).readAndConvert();
+    public Single<String> generateTrackerEventCode(String eventUid) {
+        return new TrackerEventConverter(localDbRepository, eventUid).readAndConvert();
     }
 
-    public Single<String> generateEnrollmentCode(String enrollmentUid, String teiUid) {
-        return new EnrollmentConverter(localDbRepository, enrollmentUid, teiUid).readAndConvert();
+    public Single<String> generateEnrollmentCode(String enrollmentUid) {
+        return new EnrollmentConverter(localDbRepository, enrollmentUid).readAndConvert();
     }
 }

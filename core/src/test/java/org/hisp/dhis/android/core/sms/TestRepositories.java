@@ -132,7 +132,7 @@ public class TestRepositories {
         }
 
         @Override
-        public Single<TrackedEntityInstance> getTeiEnrollmentToSubmit(String enrollmentUid, String teiUid) {
+        public Single<TrackedEntityInstance> getTeiEnrollmentToSubmit(String enrollmentUid) {
             return Single.just(TrackedEntityInstance.builder()
                     .uid(teiUid)
                     .trackedEntityType(trackedEntityType)

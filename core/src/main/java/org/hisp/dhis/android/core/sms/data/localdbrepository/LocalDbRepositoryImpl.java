@@ -138,7 +138,14 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     @Override
     public Single<Event> getTrackerEventToSubmit(String eventUid) {
-        return getSimpleEventToSubmit(eventUid); // no difference at the moment
+        return getSimpleEventToSubmit(eventUid).map(event -> {
+            // TODO teiUid should not be needed
+            Enrollment enrollment = enrollmentModule.enrollments.byUid().eq(event.enrollment()).one().get();
+            return event.toBuilder()
+                    .trackedEntityInstance(enrollment.trackedEntityInstance())
+                    .build();
+
+        });
     }
 
     @Override
@@ -150,11 +157,11 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
-    public Single<TrackedEntityInstance> getTeiEnrollmentToSubmit(String enrollmentUid, String teiUid) {
+    public Single<TrackedEntityInstance> getTeiEnrollmentToSubmit(String enrollmentUid) {
         return Single.fromCallable(() -> {
             Enrollment enrollment = enrollmentModule.enrollments.byUid().eq(enrollmentUid).one().get();
             return trackedEntityModule.trackedEntityInstances.withTrackedEntityAttributeValues()
-                    .byUid().eq(teiUid).one().get().toBuilder()
+                    .byUid().eq(enrollment.trackedEntityInstance()).one().get().toBuilder()
                     .enrollments(Collections.singletonList(enrollment))
                     .build();
         });

@@ -34,7 +34,7 @@ public interface LocalDbRepository {
 
     Single<Event> getSimpleEventToSubmit(String eventUid);
 
-    Single<TrackedEntityInstance> getTeiEnrollmentToSubmit(String enrollmentUid, String teiUid);
+    Single<TrackedEntityInstance> getTeiEnrollmentToSubmit(String enrollmentUid);
 
     Completable updateEventSubmissionState(String eventUid, State state);
 

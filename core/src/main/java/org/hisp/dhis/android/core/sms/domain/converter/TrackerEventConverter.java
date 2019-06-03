@@ -18,12 +18,10 @@ import io.reactivex.Single;
 
 public class TrackerEventConverter extends Converter<Event> {
     private final String eventUid;
-    private final String teiUid;
 
-    public TrackerEventConverter(LocalDbRepository localDbRepository, String eventUid, String teiUid) {
+    public TrackerEventConverter(LocalDbRepository localDbRepository, String eventUid) {
         super(localDbRepository);
         this.eventUid = eventUid;
-        this.teiUid = teiUid;
     }
 
     @Override
@@ -35,7 +33,7 @@ public class TrackerEventConverter extends Converter<Event> {
             subm.setEvent(e.uid());
             subm.setProgramStage(e.programStage());
             subm.setTimestamp(e.lastUpdated());
-            subm.setTrackedEntityInstance(teiUid);
+            subm.setTrackedEntityInstance(e.trackedEntityInstance()); // TODO teiUid should not be needed
             subm.setValues(convertDataValues(e.attributeOptionCombo(), e.trackedEntityDataValues()));
             subm.setOrgUnit(e.organisationUnit());
             subm.setUserID(user);

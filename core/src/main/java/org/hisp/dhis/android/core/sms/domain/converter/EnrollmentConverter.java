@@ -21,12 +21,10 @@ import io.reactivex.Single;
 public class EnrollmentConverter extends Converter<TrackedEntityInstance> {
 
     private final String enrollmentUid;
-    private final String teiUid;
 
-    public EnrollmentConverter(LocalDbRepository localDbRepository, String enrollmentUid, String teiUid) {
+    public EnrollmentConverter(LocalDbRepository localDbRepository, String enrollmentUid) {
         super(localDbRepository);
         this.enrollmentUid = enrollmentUid;
-        this.teiUid = teiUid;
     }
 
     @Override
@@ -72,7 +70,7 @@ public class EnrollmentConverter extends Converter<TrackedEntityInstance> {
 
     @Override
     public Single<TrackedEntityInstance> readItemFromDb() {
-        return getLocalDbRepository().getTeiEnrollmentToSubmit(enrollmentUid, teiUid);
+        return getLocalDbRepository().getTeiEnrollmentToSubmit(enrollmentUid);
     }
 
     private AttributeValue createAttributeValue(String attribute, String value) {

@@ -36,18 +36,16 @@ public class SmsSubmitCase {
         this.deviceStateRepository = deviceStateRepository;
     }
 
-    public Single<Integer> convertTrackerEvent(String eventUid,
-                                               String teiUid) {
-        return convert(new TrackerEventConverter(localDbRepository, eventUid, teiUid));
+    public Single<Integer> convertTrackerEvent(String eventUid) {
+        return convert(new TrackerEventConverter(localDbRepository, eventUid));
     }
 
     public Single<Integer> convertSimpleEvent(String eventUid) {
         return convert(new SimpleEventConverter(localDbRepository, eventUid));
     }
 
-    public Single<Integer> convertEnrollment(String enrollmentUid,
-                                             String teiUid) {
-        return convert(new EnrollmentConverter(localDbRepository, enrollmentUid, teiUid));
+    public Single<Integer> convertEnrollment(String enrollmentUid) {
+        return convert(new EnrollmentConverter(localDbRepository, enrollmentUid));
     }
 
     private Single<Integer> convert(Converter<?> converter) {

@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleTableInfo;
-import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
 import org.hisp.dhis.android.core.common.Transformer;
 
 public class ObjectStyleHandlerImpl extends ObjectWithoutUidHandlerImpl<ObjectStyle> implements ObjectStyleHandler {

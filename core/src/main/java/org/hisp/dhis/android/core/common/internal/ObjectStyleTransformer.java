@@ -26,12 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.common.internal;
 
-import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.Transformer;
 
-import java.util.List;
+public class ObjectStyleTransformer implements Transformer<ObjectStyle, ObjectStyle> {
 
-public interface ListPersistor<P> {
-    void persist(List<P> objectList) throws D2Error;
+    private final ObjectStyle.Builder builder;
+
+    public ObjectStyleTransformer(String uid, String objectTable) {
+        builder = ObjectStyle.builder()
+                .uid(uid)
+                .objectTable(objectTable);
+    }
+
+    @Override
+    public ObjectStyle transform(ObjectStyle objectStyle) {
+        return builder
+                .color(objectStyle.color())
+                .icon(objectStyle.icon()).build();
+    }
 }

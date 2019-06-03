@@ -26,12 +26,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.processors;
+package org.hisp.dhis.android.core.arch.call.fetchers.internal;
 
+import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
+import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
-public interface CallProcessor<P> {
-    void process(List<P> objectList) throws D2Error;
+public abstract class UidsNoResourceCallFetcher<P> implements CallFetcher<P> {
+
+    private final Set<String> uids;
+    private final int limit;
+    private final APICallExecutor apiCallExecutor;
+
+    protected UidsNoResourceCallFetcher(Set<String> uids, int limit, APICallExecutor apiCallExecutor) {
+        this.uids = uids;
+        this.limit = limit;
+        this.apiCallExecutor = apiCallExecutor;
+    }
+
+    protected abstract retrofit2.Call<Payload<P>> getCall(UidsQuery query);
+
+    @Override
+    public final List<P> fetch() throws D2Error {
+        if (uids.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<P> objects = new ArrayList<>();
+        if (!uids.isEmpty()) {
+            List<Set<String>> partitions = Utils.setPartition(uids, limit);
+
+            for (Set<String> partitionUids : partitions) {
+                UidsQuery uidQuery = UidsQuery.create(partitionUids);
+                List<P> callObjects = apiCallExecutor.executePayloadCall(getCall(uidQuery));
+                objects.addAll(callObjects);
+            }
+        }
+        return objects;
+    }
 }

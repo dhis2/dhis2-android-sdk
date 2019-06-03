@@ -26,32 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.processors;
+package org.hisp.dhis.android.core.arch.call.fetchers.internal;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.List;
 
-public class TransactionalNoResourceSyncCallProcessor<O> implements CallProcessor<O> {
-    private final DatabaseAdapter databaseAdapter;
-    private final SyncHandler<O> handler;
+public abstract class ListNoResourceCallFetcher<P> implements CallFetcher<P> {
 
-    public TransactionalNoResourceSyncCallProcessor(DatabaseAdapter databaseAdapter,
-                                                    SyncHandler<O> handler) {
-        this.databaseAdapter = databaseAdapter;
-        this.handler = handler;
+    private final APICallExecutor apiCallExecutor;
+
+    protected ListNoResourceCallFetcher(APICallExecutor apiCallExecutor) {
+        this.apiCallExecutor = apiCallExecutor;
     }
 
+    protected abstract retrofit2.Call<List<P>> getCall();
+
     @Override
-    public final void process(final List<O> objectList) throws D2Error {
-        if (objectList != null && !objectList.isEmpty()) {
-            D2CallExecutor.create(databaseAdapter).executeD2CallTransactionally(() -> {
-                handler.handleMany(objectList);
-                return null;
-            });
-        }
+    public final List<P> fetch() throws D2Error {
+        return apiCallExecutor.executeObjectCall(getCall());
     }
 }

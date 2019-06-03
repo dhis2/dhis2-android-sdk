@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.common;
 
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
-import org.hisp.dhis.android.core.calls.MetadataCall;
+import org.hisp.dhis.android.core.domain.metadata.MetadataCall;
 import org.hisp.dhis.android.core.category.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.constant.ConstantModuleDownloader;

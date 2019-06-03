@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.ArrayList;

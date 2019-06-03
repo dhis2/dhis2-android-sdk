@@ -26,49 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.fetchers;
+package org.hisp.dhis.android.core.arch.call.factories.internal;
 
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.call.internal.EndpointCall;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
+import org.hisp.dhis.android.core.common.GenericCallData;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.Callable;
 
-public abstract class UidsNoResourceCallFetcher<P> implements CallFetcher<P> {
+public abstract class QueryCallFactoryImpl<P, Q extends BaseQuery> implements QueryCallFactory<P, Q> {
 
-    private final Set<String> uids;
-    private final int limit;
-    private final APICallExecutor apiCallExecutor;
+    protected final GenericCallData data;
+    protected final APICallExecutor apiCallExecutor;
 
-    protected UidsNoResourceCallFetcher(Set<String> uids, int limit, APICallExecutor apiCallExecutor) {
-        this.uids = uids;
-        this.limit = limit;
+    protected QueryCallFactoryImpl(GenericCallData data, APICallExecutor apiCallExecutor) {
+        this.data = data;
         this.apiCallExecutor = apiCallExecutor;
     }
 
-    protected abstract retrofit2.Call<Payload<P>> getCall(UidsQuery query);
-
     @Override
-    public final List<P> fetch() throws D2Error {
-        if (uids.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        List<P> objects = new ArrayList<>();
-        if (!uids.isEmpty()) {
-            List<Set<String>> partitions = Utils.setPartition(uids, limit);
-
-            for (Set<String> partitionUids : partitions) {
-                UidsQuery uidQuery = UidsQuery.create(partitionUids);
-                List<P> callObjects = apiCallExecutor.executePayloadCall(getCall(uidQuery));
-                objects.addAll(callObjects);
-            }
-        }
-        return objects;
+    public final Callable<List<P>> create(Q query) {
+        return new EndpointCall<>(fetcher(query), processor(query));
     }
+
+    protected abstract CallFetcher<P> fetcher(Q query);
+    protected abstract CallProcessor<P> processor(Q query);
 }

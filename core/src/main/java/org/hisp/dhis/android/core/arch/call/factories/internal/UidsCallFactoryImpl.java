@@ -26,13 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.factories;
+package org.hisp.dhis.android.core.arch.call.factories.internal;
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
+import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.call.internal.EndpointCall;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
+import org.hisp.dhis.android.core.common.GenericCallData;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
-public interface QueryCallFactory<P, Q extends BaseQuery> {
-    Callable<List<P>> create(Q query);
+public abstract class UidsCallFactoryImpl<P> implements UidsCallFactory<P> {
+
+    protected final GenericCallData data;
+    protected final APICallExecutor apiCallExecutor;
+
+    protected UidsCallFactoryImpl(GenericCallData data, APICallExecutor apiCallExecutor) {
+        this.data = data;
+        this.apiCallExecutor = apiCallExecutor;
+    }
+
+    @Override
+    public final Callable<List<P>> create(Set<String> uids) {
+        return new EndpointCall<>(fetcher(uids), processor());
+    }
+
+    protected abstract CallFetcher<P> fetcher(Set<String> uids);
+    protected abstract CallProcessor<P> processor();
 }

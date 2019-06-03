@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
 
 import dagger.Module;
 import dagger.Provides;

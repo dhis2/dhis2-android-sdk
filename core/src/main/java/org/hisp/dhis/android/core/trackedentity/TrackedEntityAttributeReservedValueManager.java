@@ -31,7 +31,7 @@ import android.database.Cursor;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;

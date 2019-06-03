@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.category;
 
 import androidx.annotation.VisibleForTesting;
 
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 
 import javax.inject.Inject;
 

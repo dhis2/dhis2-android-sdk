@@ -26,29 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.fetchers;
+package org.hisp.dhis.android.core.arch.call.factories.internal;
 
-import org.hisp.dhis.android.core.arch.api.internal.APICallErrorCatcher;
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.arch.call.internal.EndpointCall;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
+import org.hisp.dhis.android.core.common.GenericCallData;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
-public abstract class ListNoResourceWithErrorCatcherCallFetcher<P> implements CallFetcher<P> {
+public abstract class ListCallFactoryImpl<P> implements ListCallFactory<P> {
 
-    private final APICallExecutor apiCallExecutor;
-    private final APICallErrorCatcher errorCatcher;
+    protected final GenericCallData data;
+    protected final APICallExecutor apiCallExecutor;
 
-    protected ListNoResourceWithErrorCatcherCallFetcher(APICallExecutor apiCallExecutor,
-                                                        APICallErrorCatcher errorCatcher) {
+    protected ListCallFactoryImpl(GenericCallData data, APICallExecutor apiCallExecutor) {
+        this.data = data;
         this.apiCallExecutor = apiCallExecutor;
-        this.errorCatcher = errorCatcher;
     }
-
-    protected abstract retrofit2.Call<List<P>> getCall();
 
     @Override
-    public final List<P> fetch() throws D2Error {
-        return apiCallExecutor.executeObjectCallWithErrorCatcher(getCall(), errorCatcher);
+    public final Callable<List<P>> create() {
+        return new EndpointCall<>(fetcher(), processor());
     }
+
+    protected abstract CallFetcher<P> fetcher();
+    protected abstract CallProcessor<P> processor();
 }

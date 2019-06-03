@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
-import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
-import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactoryImpl;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.PayloadResourceCallFetcher;
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
+import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.resource.Resource;

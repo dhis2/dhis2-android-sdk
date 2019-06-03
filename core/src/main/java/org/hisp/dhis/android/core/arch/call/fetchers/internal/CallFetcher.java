@@ -26,12 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.factories;
+package org.hisp.dhis.android.core.arch.call.fetchers.internal;
+
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
 
-public interface UidsCallFactory<P> {
-    Callable<List<P>> create(Set<String> uids);
+public interface CallFetcher<P> {
+    List<P> fetch() throws D2Error;
 }

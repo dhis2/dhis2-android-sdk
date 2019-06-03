@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.calls.processors.CallProcessor;
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;

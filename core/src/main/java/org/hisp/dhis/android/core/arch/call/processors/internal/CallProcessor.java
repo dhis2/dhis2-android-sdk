@@ -26,37 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.processors;
+package org.hisp.dhis.android.core.arch.call.processors.internal;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.resource.Resource;
 
 import java.util.List;
 
-public class TransactionalResourceSyncCallProcessor<O> implements CallProcessor<O> {
-    private final GenericCallData data;
-    private final SyncHandler<O> handler;
-    private final Resource.Type resourceType;
-
-    public TransactionalResourceSyncCallProcessor(GenericCallData data,
-                                                  SyncHandler<O> handler,
-                                                  Resource.Type resourceType) {
-        this.data = data;
-        this.handler = handler;
-        this.resourceType = resourceType;
-    }
-
-    @Override
-    public final void process(final List<O> objectList) throws D2Error {
-        if (objectList != null && !objectList.isEmpty()) {
-            D2CallExecutor.create(data.databaseAdapter()).executeD2CallTransactionally(() -> {
-                handler.handleMany(objectList);
-                data.handleResource(resourceType);
-                return null;
-            });
-        }
-    }
+public interface CallProcessor<P> {
+    void process(List<P> objectList) throws D2Error;
 }

@@ -26,41 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls;
+package org.hisp.dhis.android.core.arch.call.processors.internal;
 
-import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.processors.CallProcessor;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.resource.Resource;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
-import androidx.annotation.VisibleForTesting;
+public class TransactionalResourceSyncCallProcessor<O> implements CallProcessor<O> {
+    private final GenericCallData data;
+    private final SyncHandler<O> handler;
+    private final Resource.Type resourceType;
 
-public final class EndpointCall<P> implements Callable<List<P>> {
-
-    private final CallFetcher<P> fetcher;
-    private final CallProcessor<P> processor;
-
-    public EndpointCall(CallFetcher<P> fetcher,
-                        CallProcessor<P> processor) {
-        this.fetcher = fetcher;
-        this.processor = processor;
+    public TransactionalResourceSyncCallProcessor(GenericCallData data,
+                                                  SyncHandler<O> handler,
+                                                  Resource.Type resourceType) {
+        this.data = data;
+        this.handler = handler;
+        this.resourceType = resourceType;
     }
 
     @Override
-    public List<P> call() throws Exception {
-        List<P> objects = fetcher.fetch();
-        processor.process(objects);
-        return objects;
-    }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    public CallFetcher<P> getFetcher() {
-        return fetcher;
-    }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    public CallProcessor<P> getProcessor() {
-        return processor;
+    public final void process(final List<O> objectList) throws D2Error {
+        if (objectList != null && !objectList.isEmpty()) {
+            D2CallExecutor.create(data.databaseAdapter()).executeD2CallTransactionally(() -> {
+                handler.handleMany(objectList);
+                data.handleResource(resourceType);
+                return null;
+            });
+        }
     }
 }

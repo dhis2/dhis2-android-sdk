@@ -26,32 +26,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.factories;
+package org.hisp.dhis.android.core.arch.call.internal;
 
-import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.calls.EndpointCall;
-import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public abstract class ListCallFactoryImpl<P> implements ListCallFactory<P> {
+import androidx.annotation.VisibleForTesting;
 
-    protected final GenericCallData data;
-    protected final APICallExecutor apiCallExecutor;
+public final class EndpointCall<P> implements Callable<List<P>> {
 
-    protected ListCallFactoryImpl(GenericCallData data, APICallExecutor apiCallExecutor) {
-        this.data = data;
-        this.apiCallExecutor = apiCallExecutor;
+    private final CallFetcher<P> fetcher;
+    private final CallProcessor<P> processor;
+
+    public EndpointCall(CallFetcher<P> fetcher,
+                        CallProcessor<P> processor) {
+        this.fetcher = fetcher;
+        this.processor = processor;
     }
 
     @Override
-    public final Callable<List<P>> create() {
-        return new EndpointCall<>(fetcher(), processor());
+    public List<P> call() throws Exception {
+        List<P> objects = fetcher.fetch();
+        processor.process(objects);
+        return objects;
     }
 
-    protected abstract CallFetcher<P> fetcher();
-    protected abstract CallProcessor<P> processor();
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    public CallFetcher<P> getFetcher() {
+        return fetcher;
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    public CallProcessor<P> getProcessor() {
+        return processor;
+    }
 }

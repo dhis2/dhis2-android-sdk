@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleDownloader;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.indicator.IndicatorType;

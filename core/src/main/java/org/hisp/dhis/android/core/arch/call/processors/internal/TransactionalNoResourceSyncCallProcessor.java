@@ -26,33 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.factories;
+package org.hisp.dhis.android.core.arch.call.processors.internal;
 
-import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.calls.EndpointCall;
-import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
 
-public abstract class UidsCallFactoryImpl<P> implements UidsCallFactory<P> {
+public class TransactionalNoResourceSyncCallProcessor<O> implements CallProcessor<O> {
+    private final DatabaseAdapter databaseAdapter;
+    private final SyncHandler<O> handler;
 
-    protected final GenericCallData data;
-    protected final APICallExecutor apiCallExecutor;
-
-    protected UidsCallFactoryImpl(GenericCallData data, APICallExecutor apiCallExecutor) {
-        this.data = data;
-        this.apiCallExecutor = apiCallExecutor;
+    public TransactionalNoResourceSyncCallProcessor(DatabaseAdapter databaseAdapter,
+                                                    SyncHandler<O> handler) {
+        this.databaseAdapter = databaseAdapter;
+        this.handler = handler;
     }
 
     @Override
-    public final Callable<List<P>> create(Set<String> uids) {
-        return new EndpointCall<>(fetcher(uids), processor());
+    public final void process(final List<O> objectList) throws D2Error {
+        if (objectList != null && !objectList.isEmpty()) {
+            D2CallExecutor.create(databaseAdapter).executeD2CallTransactionally(() -> {
+                handler.handleMany(objectList);
+                return null;
+            });
+        }
     }
-
-    protected abstract CallFetcher<P> fetcher(Set<String> uids);
-    protected abstract CallProcessor<P> processor();
 }

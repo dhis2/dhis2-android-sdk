@@ -26,12 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.fetchers;
+package org.hisp.dhis.android.core.arch.call.fetchers.internal;
 
+import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
+import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.resource.Resource;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 
 import java.util.List;
 
-public interface CallFetcher<P> {
-    List<P> fetch() throws D2Error;
+public abstract class PayloadResourceCallFetcher<P> implements CallFetcher<P> {
+
+    private final ResourceHandler resourceHandler;
+    private final Resource.Type resourceType;
+    private final APICallExecutor apiCallExecutor;
+
+    protected PayloadResourceCallFetcher(ResourceHandler resourceHandler,
+                                         Resource.Type resourceType,
+                                         APICallExecutor apiCallExecutor) {
+        this.resourceHandler = resourceHandler;
+        this.resourceType = resourceType;
+        this.apiCallExecutor = apiCallExecutor;
+    }
+
+    protected abstract retrofit2.Call<Payload<P>> getCall(String lastUpdated);
+
+    @Override
+    public final List<P> fetch() throws D2Error {
+        String lastUpdated = resourceType == null ? null : resourceHandler.getLastUpdated(resourceType);
+        return apiCallExecutor.executePayloadCall(getCall(lastUpdated));
+    }
 }

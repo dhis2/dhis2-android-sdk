@@ -26,35 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.fetchers;
-
-import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.resource.Resource;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
+package org.hisp.dhis.android.core.arch.call.factories.internal;
 
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
 
-public abstract class PayloadResourceCallFetcher<P> implements CallFetcher<P> {
-
-    private final ResourceHandler resourceHandler;
-    private final Resource.Type resourceType;
-    private final APICallExecutor apiCallExecutor;
-
-    protected PayloadResourceCallFetcher(ResourceHandler resourceHandler,
-                                         Resource.Type resourceType,
-                                         APICallExecutor apiCallExecutor) {
-        this.resourceHandler = resourceHandler;
-        this.resourceType = resourceType;
-        this.apiCallExecutor = apiCallExecutor;
-    }
-
-    protected abstract retrofit2.Call<Payload<P>> getCall(String lastUpdated);
-
-    @Override
-    public final List<P> fetch() throws D2Error {
-        String lastUpdated = resourceType == null ? null : resourceHandler.getLastUpdated(resourceType);
-        return apiCallExecutor.executePayloadCall(getCall(lastUpdated));
-    }
+public interface UidsCallFactory<P> {
+    Callable<List<P>> create(Set<String> uids);
 }

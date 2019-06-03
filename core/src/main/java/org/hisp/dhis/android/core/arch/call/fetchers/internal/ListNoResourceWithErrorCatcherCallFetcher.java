@@ -26,33 +26,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.factories;
+package org.hisp.dhis.android.core.arch.call.fetchers.internal;
 
+import org.hisp.dhis.android.core.arch.api.internal.APICallErrorCatcher;
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.calls.EndpointCall;
-import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
-public abstract class QueryCallFactoryImpl<P, Q extends BaseQuery> implements QueryCallFactory<P, Q> {
+public abstract class ListNoResourceWithErrorCatcherCallFetcher<P> implements CallFetcher<P> {
 
-    protected final GenericCallData data;
-    protected final APICallExecutor apiCallExecutor;
+    private final APICallExecutor apiCallExecutor;
+    private final APICallErrorCatcher errorCatcher;
 
-    protected QueryCallFactoryImpl(GenericCallData data, APICallExecutor apiCallExecutor) {
-        this.data = data;
+    protected ListNoResourceWithErrorCatcherCallFetcher(APICallExecutor apiCallExecutor,
+                                                        APICallErrorCatcher errorCatcher) {
         this.apiCallExecutor = apiCallExecutor;
+        this.errorCatcher = errorCatcher;
     }
+
+    protected abstract retrofit2.Call<List<P>> getCall();
 
     @Override
-    public final Callable<List<P>> create(Q query) {
-        return new EndpointCall<>(fetcher(query), processor(query));
+    public final List<P> fetch() throws D2Error {
+        return apiCallExecutor.executeObjectCallWithErrorCatcher(getCall(), errorCatcher);
     }
-
-    protected abstract CallFetcher<P> fetcher(Q query);
-    protected abstract CallProcessor<P> processor(Q query);
 }

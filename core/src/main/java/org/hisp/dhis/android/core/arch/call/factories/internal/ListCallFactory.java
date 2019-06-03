@@ -26,25 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.fetchers;
-
-import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+package org.hisp.dhis.android.core.arch.call.factories.internal;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
-public abstract class ListNoResourceCallFetcher<P> implements CallFetcher<P> {
-
-    private final APICallExecutor apiCallExecutor;
-
-    protected ListNoResourceCallFetcher(APICallExecutor apiCallExecutor) {
-        this.apiCallExecutor = apiCallExecutor;
-    }
-
-    protected abstract retrofit2.Call<List<P>> getCall();
-
-    @Override
-    public final List<P> fetch() throws D2Error {
-        return apiCallExecutor.executeObjectCall(getCall());
-    }
+public interface ListCallFactory<P> {
+    Callable<List<P>> create();
 }

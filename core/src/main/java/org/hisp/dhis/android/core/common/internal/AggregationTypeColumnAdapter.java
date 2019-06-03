@@ -26,8 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.common.internal;
 
+import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.data.database.EnumColumnAdapter;
 
 import androidx.annotation.NonNull;

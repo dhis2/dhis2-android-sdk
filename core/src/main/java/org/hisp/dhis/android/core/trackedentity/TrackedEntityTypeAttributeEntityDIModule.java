@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
-import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
-import org.hisp.dhis.android.core.common.OrderedLinkSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkSyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkSyncHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collections;

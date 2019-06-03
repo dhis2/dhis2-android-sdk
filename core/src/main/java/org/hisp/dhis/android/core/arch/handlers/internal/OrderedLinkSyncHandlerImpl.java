@@ -25,10 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.handlers.internal;
 
-import java.util.Collection;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.OrderedLinkTransformer;
 
-public interface LinkModelHandler<S, M extends Model> {
-    void handleMany(String masterUid, Collection<S> slaveCollection, Transformer<S, M> transformer);
+import java.util.List;
+
+public class OrderedLinkSyncHandlerImpl<S, M extends Model> implements OrderedLinkSyncHandler<S, M> {
+
+    private final LinkModelStore<M> store;
+
+    public OrderedLinkSyncHandlerImpl(LinkModelStore<M> store) {
+        this.store = store;
+    }
+
+    @Override
+    public void handleMany(String masterUid, List<S> slaves, OrderedLinkTransformer<S, M> transformer) {
+        store.deleteLinksForMasterUid(masterUid);
+        if (slaves != null) {
+            for (int i = 0; i < slaves.size(); i++) {
+                store.insert(transformer.transform(slaves.get(i), i + 1));
+            }
+        }
+    }
 }

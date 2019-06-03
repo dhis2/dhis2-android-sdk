@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
-import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
-import org.hisp.dhis.android.core.common.OrderedLinkSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkSyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkSyncHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 

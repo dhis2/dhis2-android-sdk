@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkSyncHandler;
 
 import javax.inject.Inject;
 

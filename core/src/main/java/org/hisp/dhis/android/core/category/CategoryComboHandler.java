@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkSyncHandler;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 
 import javax.inject.Inject;

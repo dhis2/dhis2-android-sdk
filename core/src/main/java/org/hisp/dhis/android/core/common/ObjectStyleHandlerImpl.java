@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidSyncHandlerImpl;
 
 public class ObjectStyleHandlerImpl extends ObjectWithoutUidSyncHandlerImpl<ObjectStyle> implements ObjectStyleHandler {
 

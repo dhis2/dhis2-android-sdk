@@ -145,8 +145,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
         trackedEntityInstanceStore.setState(teiUid, state);
         enrollmentStore.setState(enrolmentUid, state);
 
-        propagator.propagateEventUpdate(Event.builder()
-                .trackedEntityInstance(teiUid).enrollment(enrolmentUid).build());
+        propagator.propagateEventUpdate(Event.builder().enrollment(enrolmentUid).build());
 
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(State.TO_UPDATE));
         assertThat(enrollmentStore.selectByUid(enrolmentUid).state(), is(State.TO_UPDATE));
@@ -162,8 +161,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
         trackedEntityInstanceStore.setState(teiUid, state);
         enrollmentStore.setState(enrolmentUid, state);
 
-        propagator.propagateEventUpdate(Event.builder()
-                .trackedEntityInstance(teiUid).enrollment(enrolmentUid).build());
+        propagator.propagateEventUpdate(Event.builder().enrollment(enrolmentUid).build());
 
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(state));
         assertThat(enrollmentStore.selectByUid(enrolmentUid).state(), is(state));

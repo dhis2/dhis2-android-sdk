@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.event;
 
 import android.util.Log;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableDataSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 

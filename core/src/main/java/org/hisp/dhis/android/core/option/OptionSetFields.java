@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;

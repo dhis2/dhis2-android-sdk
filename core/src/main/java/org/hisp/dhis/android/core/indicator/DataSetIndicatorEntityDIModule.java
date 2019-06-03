@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidStoreProvider;
+import org.hisp.dhis.android.core.arch.di.internal.ObjectWithoutUidStoreProvider;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;

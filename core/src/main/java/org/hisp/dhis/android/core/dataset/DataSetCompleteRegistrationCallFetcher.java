@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.dataset;
 
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;

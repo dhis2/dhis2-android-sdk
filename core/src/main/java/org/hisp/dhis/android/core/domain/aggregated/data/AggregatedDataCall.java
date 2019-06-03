@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.domain.aggregated.data;
 
-import org.hisp.dhis.android.core.arch.api.executors.RxAPICallExecutor;
+import org.hisp.dhis.android.core.arch.api.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.arch.call.D2ProgressManager;
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;

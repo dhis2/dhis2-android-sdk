@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 import org.hisp.dhis.android.core.maintenance.D2Error;

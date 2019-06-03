@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.modules.MetadataModuleDownloader;
+import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleDownloader;
 
 import java.util.concurrent.Callable;
 

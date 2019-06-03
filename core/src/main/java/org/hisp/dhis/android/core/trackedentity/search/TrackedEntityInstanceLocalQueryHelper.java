@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.api.OuMode;

@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;

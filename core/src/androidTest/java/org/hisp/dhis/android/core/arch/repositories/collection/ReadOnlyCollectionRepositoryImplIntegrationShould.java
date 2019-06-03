@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
 import org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionRepository;

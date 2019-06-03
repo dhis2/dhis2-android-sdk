@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.event;
 
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
 import org.hisp.dhis.android.core.common.Payload;
 
 import java.util.List;

@@ -130,10 +130,6 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
     public abstract String attributeOptionCombo();
 
     @Nullable
-    @JsonIgnore()
-    public abstract String trackedEntityInstance();
-
-    @Nullable
     @JsonProperty(EventFields.TRACKED_ENTITY_DATA_VALUES)
     @ColumnAdapter(IgnoreTrackedEntityDataValueListColumnAdapter.class)
     public abstract List<TrackedEntityDataValue> trackedEntityDataValues();
@@ -186,8 +182,6 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
         public abstract Builder deleted(Boolean deleted);
 
         public abstract Builder attributeOptionCombo(String attributeOptionCombo);
-
-        public abstract Builder trackedEntityInstance(String trackedEntityInstance);
 
         @JsonProperty(EventFields.TRACKED_ENTITY_DATA_VALUES)
         public abstract Builder trackedEntityDataValues(List<TrackedEntityDataValue> trackedEntityDataValues);

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.State;

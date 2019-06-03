@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.common.SQLStatementWrapper;

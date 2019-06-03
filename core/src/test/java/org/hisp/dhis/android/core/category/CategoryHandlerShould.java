@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;

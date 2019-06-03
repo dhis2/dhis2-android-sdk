@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -121,7 +122,12 @@ public class TestRepositories {
         }
 
         @Override
-        public Single<Event> getEventToSubmit(String eventUid, String teiUid) {
+        public Single<Event> getTrackerEventToSubmit(String eventUid) {
+            return null;
+        }
+
+        @Override
+        public Single<Event> getSimpleEventToSubmit(String eventUid) {
             return null;
         }
 
@@ -163,6 +169,21 @@ public class TestRepositories {
         @Override
         public Single<Boolean> isModuleEnabled() {
             return Single.just(true);
+        }
+
+        @Override
+        public Single<Map<Integer, SubmissionType>> getOngoingSubmissions() {
+            return null;
+        }
+
+        @Override
+        public Completable addOngoingSubmission(Integer id, SubmissionType type) {
+            return null;
+        }
+
+        @Override
+        public Completable removeOngoingSubmission(Integer id) {
+            return null;
         }
     }
 

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -58,7 +58,6 @@ public final class EventTableInfo {
         public static final String LATITUDE = "latitude";
         public static final String LONGITUDE = "longitude";
         public static final String ORGANISATION_UNIT = "organisationUnit";
-        public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
 
         @Override
         public String[] all() {
@@ -79,8 +78,7 @@ public final class EventTableInfo {
                     EventFields.COMPLETE_DATE,
                     EventFields.DUE_DATE,
                     BaseDataModel.Columns.STATE,
-                    EventFields.ATTRIBUTE_OPTION_COMBO,
-                    TRACKED_ENTITY_INSTANCE
+                    EventFields.ATTRIBUTE_OPTION_COMBO
             );
         }
 

@@ -29,12 +29,10 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Sets;
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.CollectionCleaner;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
@@ -53,7 +51,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;

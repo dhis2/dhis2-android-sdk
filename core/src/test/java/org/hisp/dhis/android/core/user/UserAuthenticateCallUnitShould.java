@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallErrorCatcher;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.retrofit.APIUrlProvider;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.api.internal.APICallErrorCatcher;
+import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.internal.APIUrlProvider;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;

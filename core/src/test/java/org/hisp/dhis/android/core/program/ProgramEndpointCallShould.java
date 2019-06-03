@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.internal.APICallExecutorImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
 import org.hisp.dhis.android.core.calls.EndpointCall;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;

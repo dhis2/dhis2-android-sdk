@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.modules.MetadataModuleDownloader;
+import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleDownloader;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.common.Unit;
 

@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
@@ -479,7 +479,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 .status(EventStatus.ACTIVE).coordinate(Coordinates.create(13.21, 12.21)).program(programUid)
                 .programStage(programStageUid).organisationUnit(orgUnitUid).eventDate(refDate).dueDate(refDate)
                 .completedDate(refDate).state(State.TO_POST).attributeOptionCombo(categoryComboOptionUid)
-                .trackedEntityInstance(trackedEntityInstanceUid).build();
+                .build();
 
         eventStore.insert(event);
 

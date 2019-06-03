@@ -34,7 +34,7 @@ import android.database.Cursor;
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
 import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.AccessHelper;
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 
 public class AccessColumnAdapter implements ColumnTypeAdapter<Access> {
 

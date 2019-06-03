@@ -25,17 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.helpers;
 
-public final class CoordinateHelper {
+import org.hisp.dhis.android.core.common.Access;
 
-    private CoordinateHelper() {}
+public final class AccessHelper {
 
-    public static Double getLatitude(Coordinates coordinates) {
-        return coordinates == null ? null : coordinates.latitude();
-    }
+    private AccessHelper() {}
 
-    public static Double getLongitude(Coordinates coordinates) {
-        return coordinates == null ? null : coordinates.longitude();
+    public static Integer getAccessDataWrite(Access access) {
+        return access != null && access.data() != null && access.data().write() ? 1 : 0;
     }
 }

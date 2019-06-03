@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.Transformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 
 import java.util.Date;

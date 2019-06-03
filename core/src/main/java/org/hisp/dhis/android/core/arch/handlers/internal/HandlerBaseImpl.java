@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.handlers.internal;
 
-import org.hisp.dhis.android.core.common.Transformer;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

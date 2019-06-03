@@ -37,11 +37,15 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.DataStatePropagator;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.Transformer;
+import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.imports.WebResponse;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -156,8 +160,13 @@ public final class EventCollectionRepository
         return cf.string(EventFields.ATTRIBUTE_OPTION_COMBO);
     }
 
-    public StringFilterConnector<EventCollectionRepository> byTrackedEntityInstaceUid() {
-        return cf.string(EventTableInfo.Columns.TRACKED_ENTITY_INSTANCE);
+    public EventCollectionRepository byTrackedEntityInstanceUids(List<String> uids) {
+        return cf.subQuery(EventFields.ENROLLMENT).inLinkTable(
+                EnrollmentTableInfo.TABLE_INFO.name(),
+                BaseIdentifiableObjectModel.Columns.UID,
+                EnrollmentFields.TRACKED_ENTITY_INSTANCE,
+                uids
+        );
     }
 
     public EventCollectionRepository withTrackedEntityDataValues() {

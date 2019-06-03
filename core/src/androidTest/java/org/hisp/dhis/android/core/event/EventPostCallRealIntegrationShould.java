@@ -94,7 +94,7 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
         downloadMetadata();
 
         createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid1,
-                dataElementUid, attributeOptionCombo, null);
+                dataElementUid, attributeOptionCombo);
 
         d2.eventModule().events.upload().call();
     }
@@ -105,7 +105,7 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
         downloadMetadata();
 
         createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid1, dataElementUid,
-                attributeOptionCombo, null);
+                attributeOptionCombo);
 
         pushDummyEvent();
 
@@ -126,10 +126,10 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
         downloadMetadata();
 
         createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid1, dataElementUid,
-                attributeOptionCombo, null);
+                attributeOptionCombo);
 
         createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid2, dataElementUid,
-                attributeOptionCombo, null);
+                attributeOptionCombo);
 
         pushDummyEvent();
 
@@ -146,13 +146,13 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
 
     private void createDummyDataToPost(String orgUnitUid, String programUid,
             String programStageUid, String eventUid,
-            String dataElementUid, String attributeOptionCombo, String trackedEntityInstance) {
+            String dataElementUid, String attributeOptionCombo) {
 
         eventStore.insert(Event.builder().uid(eventUid).created(new Date()).lastUpdated(new Date())
                 .status(EventStatus.ACTIVE).coordinate(Coordinates.create(13.21, 12.21)).program(programUid)
                 .programStage(programStageUid).organisationUnit(orgUnitUid).eventDate(new Date())
                 .completedDate(new Date()).dueDate(new Date()).state(State.TO_POST)
-                .attributeOptionCombo(attributeOptionCombo).trackedEntityInstance(trackedEntityInstance).build());
+                .attributeOptionCombo(attributeOptionCombo).build());
 
         TrackedEntityDataValue trackedEntityDataValue = TrackedEntityDataValue.builder()
                 .event(eventUid)

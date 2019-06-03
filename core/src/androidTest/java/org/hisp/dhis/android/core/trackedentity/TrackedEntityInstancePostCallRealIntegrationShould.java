@@ -479,7 +479,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 .status(EventStatus.ACTIVE).coordinate(Coordinates.create(13.21, 12.21)).program(programUid)
                 .programStage(programStageUid).organisationUnit(orgUnitUid).eventDate(refDate).dueDate(refDate)
                 .completedDate(refDate).state(State.TO_POST).attributeOptionCombo(categoryComboOptionUid)
-                .trackedEntityInstance(trackedEntityInstanceUid).build();
+                .build();
 
         eventStore.insert(event);
 

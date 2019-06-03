@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+
 import androidx.annotation.NonNull;
 
 public interface StoreWithState {

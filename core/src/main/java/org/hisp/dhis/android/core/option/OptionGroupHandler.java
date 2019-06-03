@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.option;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
-import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 

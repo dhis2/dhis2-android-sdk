@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.junit.Before;
 import org.junit.Test;

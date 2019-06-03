@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.resource;
 
-import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

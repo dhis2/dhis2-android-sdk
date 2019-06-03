@@ -26,30 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.handlers.internal;
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.resource.Resource;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-
-import retrofit2.Retrofit;
-
-@AutoValue
-public abstract class GenericCallData {
-    public abstract DatabaseAdapter databaseAdapter();
-    public abstract Retrofit retrofit();
-    public abstract ResourceHandler resourceHandler();
-    public abstract DHISVersionManager versionManager();
-
-    public static GenericCallData create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
-                                         ResourceHandler resourceHandler, DHISVersionManager versionManager) {
-        return new AutoValue_GenericCallData(databaseAdapter, retrofit, resourceHandler, versionManager);
-    }
-
-    public void handleResource(Resource.Type type) {
-        resourceHandler().handleResource(type);
-    }
+public enum HandleAction {
+    Insert, Update, Delete
 }

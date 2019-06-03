@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.handlers.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.Model;
 
 public class ObjectWithoutUidSyncHandlerImpl<O extends Model> extends SyncHandlerBaseImpl<O> {

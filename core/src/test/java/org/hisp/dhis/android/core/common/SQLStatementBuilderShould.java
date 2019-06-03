@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.category.CategoryTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo;

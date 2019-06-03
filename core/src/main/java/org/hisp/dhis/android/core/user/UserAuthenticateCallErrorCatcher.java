@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallErrorCatcher;
+import org.hisp.dhis.android.core.arch.api.internal.APICallErrorCatcher;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 
 import java.io.IOException;

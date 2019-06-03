@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.utils.Utils;
 
-import static org.hisp.dhis.android.core.arch.db.TableInfo.SORT_ORDER;
+import static org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo.SORT_ORDER;
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
 import static org.hisp.dhis.android.core.utils.Utils.commaAndSpaceSeparatedArrayValues;
 

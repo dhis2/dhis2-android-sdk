@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.legendset;
 import android.database.sqlite.SQLiteStatement;
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;

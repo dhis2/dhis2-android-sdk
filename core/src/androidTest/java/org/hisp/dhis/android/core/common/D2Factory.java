@@ -33,7 +33,7 @@ import android.content.Context;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.arch.api.retrofit.PreventURLDecodeInterceptor;
+import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor;
 import org.hisp.dhis.android.core.configuration.Configuration;
 import org.hisp.dhis.android.core.d2manager.D2Configuration;
 import org.hisp.dhis.android.core.d2manager.D2Manager;

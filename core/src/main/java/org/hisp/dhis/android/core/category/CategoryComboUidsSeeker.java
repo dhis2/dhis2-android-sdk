@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.category;
 
 import android.database.Cursor;
 
-import org.hisp.dhis.android.core.arch.db.MultipleTableQueryBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo;

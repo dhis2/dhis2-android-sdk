@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.db.stores.ObjectWithUidChildStore;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 

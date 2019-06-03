@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import com.jraska.livedata.TestObserver;
 
-import org.hisp.dhis.android.core.arch.db.OrderByClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;

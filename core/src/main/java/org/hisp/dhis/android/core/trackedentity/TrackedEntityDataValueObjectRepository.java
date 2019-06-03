@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteValueObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteWithValueObjectRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithValueObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.DataStatePropagator;
 import org.hisp.dhis.android.core.common.Unit;

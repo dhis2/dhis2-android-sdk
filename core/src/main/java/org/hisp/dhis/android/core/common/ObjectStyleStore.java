@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 
 interface ObjectStyleStore extends ObjectWithoutUidStore<ObjectStyle> {
     <O extends ObjectWithStyle<?, ?> & ObjectWithUidInterface> ObjectStyle getStyle(O objectWithStyle,

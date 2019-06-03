@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.category;
 
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 
 import javax.inject.Inject;
@@ -38,14 +38,14 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class CategoryOptionComboHandler extends IdentifiableSyncHandlerImpl<CategoryOptionCombo> {
+final class CategoryOptionComboHandler extends IdentifiableHandlerImpl<CategoryOptionCombo> {
 
-    private final LinkSyncHandler<CategoryOption, CategoryOptionComboCategoryOptionLink>
+    private final LinkHandler<CategoryOption, CategoryOptionComboCategoryOptionLink>
             categoryOptionComboCategoryOptionLinkHandler;
 
     @Inject
     CategoryOptionComboHandler(CategoryOptionComboStore store,
-                               LinkSyncHandler<CategoryOption, CategoryOptionComboCategoryOptionLink>
+                               LinkHandler<CategoryOption, CategoryOptionComboCategoryOptionLink>
                                        categoryOptionComboCategoryOptionLinkHandler) {
         super(store);
         this.categoryOptionComboCategoryOptionLinkHandler = categoryOptionComboCategoryOptionLinkHandler;

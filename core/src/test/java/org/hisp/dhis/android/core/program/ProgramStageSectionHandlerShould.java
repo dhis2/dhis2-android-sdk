@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkSyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 import org.hisp.dhis.android.core.common.OrderedLinkTransformer;
 import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.dataelement.DataElement;
@@ -58,14 +58,14 @@ public class ProgramStageSectionHandlerShould {
     private IdentifiableObjectStore<ProgramStageSection> programStageSectionStore;
 
     @Mock
-    private SyncHandler<ProgramIndicator> programIndicatorHandler;
+    private Handler<ProgramIndicator> programIndicatorHandler;
 
     @Mock
-    private LinkSyncHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLink>
+    private LinkHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLink>
             programStageSectionProgramIndicatorLinkHandler;
 
     @Mock
-    private OrderedLinkSyncHandler<DataElement, ProgramStageSectionDataElementLink>
+    private OrderedLinkHandler<DataElement, ProgramStageSectionDataElementLink>
             programStageSectionDataElementLinkHandler;
 
     @Mock

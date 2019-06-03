@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
@@ -49,8 +49,8 @@ public final class SectionGreyedFieldsEntityDIModule {
 
     @Provides
     @Reusable
-    LinkSyncHandler<DataElementOperand, SectionGreyedFieldsLink> handler(
+    LinkHandler<DataElementOperand, SectionGreyedFieldsLink> handler(
             LinkModelStore<SectionGreyedFieldsLink> store) {
-        return  new LinkSyncHandlerImpl<>(store);
+        return  new LinkHandlerImpl<>(store);
     }
 }

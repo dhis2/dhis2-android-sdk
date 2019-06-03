@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
@@ -38,15 +38,15 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class UserHandler extends IdentifiableSyncHandlerImpl<User> {
-    private final SyncHandler<UserCredentials> userCredentialsHandler;
-    private final SyncHandler<UserRole> userRoleHandler;
+final class UserHandler extends IdentifiableHandlerImpl<User> {
+    private final Handler<UserCredentials> userCredentialsHandler;
+    private final Handler<UserRole> userRoleHandler;
     private final CollectionCleaner<UserRole> userRoleCollectionCleaner;
 
     @Inject
     UserHandler(IdentifiableObjectStore<User> userStore,
-                SyncHandler<UserCredentials> userCredentialsHandler,
-                SyncHandler<UserRole> userRoleHandler,
+                Handler<UserCredentials> userCredentialsHandler,
+                Handler<UserRole> userRoleHandler,
                 CollectionCleaner<UserRole> userRoleCollectionCleaner) {
         super(userStore);
         this.userCredentialsHandler = userCredentialsHandler;

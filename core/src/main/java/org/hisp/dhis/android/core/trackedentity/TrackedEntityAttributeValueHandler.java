@@ -28,15 +28,15 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-final class TrackedEntityAttributeValueHandler extends ObjectWithoutUidSyncHandlerImpl<TrackedEntityAttributeValue> {
+final class TrackedEntityAttributeValueHandler extends ObjectWithoutUidHandlerImpl<TrackedEntityAttributeValue> {
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
     TrackedEntityAttributeValueHandler(TrackedEntityAttributeValueStore trackedEntityAttributeValueStore) {
@@ -65,7 +65,7 @@ final class TrackedEntityAttributeValueHandler extends ObjectWithoutUidSyncHandl
         trackedEntityAttributeValueStore.deleteByInstanceAndNotInAttributes(teiUid, attributeUids);
     }
 
-    public static SyncHandlerWithTransformer<TrackedEntityAttributeValue> create(DatabaseAdapter databaseAdapter) {
+    public static HandlerWithTransformer<TrackedEntityAttributeValue> create(DatabaseAdapter databaseAdapter) {
         return new TrackedEntityAttributeValueHandler(TrackedEntityAttributeValueStoreImpl.create(databaseAdapter));
     }
 }

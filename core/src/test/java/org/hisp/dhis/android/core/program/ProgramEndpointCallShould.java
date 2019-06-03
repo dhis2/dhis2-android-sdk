@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutorImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.call.internal.EndpointCall;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.PayloadNoResourceCallFetcher;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
@@ -62,7 +62,7 @@ public class ProgramEndpointCallShould extends BaseCallShould {
     private ProgramService programService;
 
     @Mock
-    private SyncHandler<Program> programHandler;
+    private Handler<Program> programHandler;
 
     @Captor
     private ArgumentCaptor<Fields<Program>> fieldsCaptor;

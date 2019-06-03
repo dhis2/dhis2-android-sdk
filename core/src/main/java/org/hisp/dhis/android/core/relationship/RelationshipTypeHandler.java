@@ -27,22 +27,22 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import javax.inject.Inject;
 
-final class RelationshipTypeHandler extends IdentifiableSyncHandlerImpl<RelationshipType> {
+final class RelationshipTypeHandler extends IdentifiableHandlerImpl<RelationshipType> {
 
-    private final SyncHandler<RelationshipConstraint> relationshipConstraintHandler;
+    private final Handler<RelationshipConstraint> relationshipConstraintHandler;
 
     @Inject
     RelationshipTypeHandler(
             IdentifiableObjectStore<RelationshipType> relationshipTypeStore,
-            SyncHandler<RelationshipConstraint> relationshipConstraintHandler) {
+            Handler<RelationshipConstraint> relationshipConstraintHandler) {
         super(relationshipTypeStore);
         this.relationshipConstraintHandler = relationshipConstraintHandler;
     }

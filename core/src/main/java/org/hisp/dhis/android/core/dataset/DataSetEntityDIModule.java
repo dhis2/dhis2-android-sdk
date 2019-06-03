@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl;
@@ -58,7 +58,7 @@ public final class DataSetEntityDIModule {
 
     @Provides
     @Reusable
-    SyncHandler<DataSet> handler(DataSetHandler impl) {
+    Handler<DataSet> handler(DataSetHandler impl) {
         return impl;
     }
 

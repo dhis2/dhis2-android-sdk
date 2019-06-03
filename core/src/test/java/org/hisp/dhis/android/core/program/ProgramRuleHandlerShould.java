@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
@@ -51,7 +51,7 @@ public class ProgramRuleHandlerShould {
     private IdentifiableObjectStore<ProgramRule> programRuleStore;
 
     @Mock
-    private SyncHandler<ProgramRuleAction> programRuleActionHandler;
+    private Handler<ProgramRuleAction> programRuleActionHandler;
 
     @Mock
     private ProgramRule programRule;
@@ -63,7 +63,7 @@ public class ProgramRuleHandlerShould {
     private List<ProgramRuleAction> programRuleActions;
 
     // object to test
-    private IdentifiableSyncHandlerImpl<ProgramRule> programRuleHandler;
+    private IdentifiableHandlerImpl<ProgramRule> programRuleHandler;
 
     @Before
     public void setUp() throws Exception {
@@ -77,7 +77,7 @@ public class ProgramRuleHandlerShould {
 
     @Test
     public void extend_identifiable_sync_handler_impl() {
-        IdentifiableSyncHandlerImpl<ProgramRule> genericHandler = new ProgramRuleHandler(null, null, null);
+        IdentifiableHandlerImpl<ProgramRule> genericHandler = new ProgramRuleHandler(null, null, null);
     }
 
     @Test

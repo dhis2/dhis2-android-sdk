@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.call.processors.internal;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -38,11 +38,11 @@ import java.util.List;
 
 public class TransactionalResourceSyncCallProcessor<O> implements CallProcessor<O> {
     private final GenericCallData data;
-    private final SyncHandler<O> handler;
+    private final Handler<O> handler;
     private final Resource.Type resourceType;
 
     public TransactionalResourceSyncCallProcessor(GenericCallData data,
-                                                  SyncHandler<O> handler,
+                                                  Handler<O> handler,
                                                   Resource.Type resourceType) {
         this.data = data;
         this.handler = handler;

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
@@ -52,7 +52,7 @@ import dagger.Reusable;
 @Reusable
 final class EventPersistenceCallFactory {
 
-    private final SyncHandlerWithTransformer<Event> eventHandler;
+    private final HandlerWithTransformer<Event> eventHandler;
     private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
     private final OrganisationUnitModuleDownloader organisationUnitDownloader;
@@ -60,7 +60,7 @@ final class EventPersistenceCallFactory {
 
     @Inject
     EventPersistenceCallFactory(
-            @NonNull SyncHandlerWithTransformer<Event> eventHandler,
+            @NonNull HandlerWithTransformer<Event> eventHandler,
             @NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore,
             @NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
             @NonNull OrganisationUnitModuleDownloader organisationUnitDownloader,

@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 
-public class ObjectStyleHandlerImpl extends ObjectWithoutUidSyncHandlerImpl<ObjectStyle> implements ObjectStyleHandler {
+public class ObjectStyleHandlerImpl extends ObjectWithoutUidHandlerImpl<ObjectStyle> implements ObjectStyleHandler {
 
     private final ObjectWithoutUidStore<ObjectStyle> store;
 

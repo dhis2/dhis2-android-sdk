@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
@@ -66,10 +66,10 @@ public class ProgramStageHandlerShould {
     private IdentifiableObjectStore<ProgramStage> programStageStore;
 
     @Mock
-    private SyncHandlerWithTransformer<ProgramStageSection> programStageSectionHandler;
+    private HandlerWithTransformer<ProgramStageSection> programStageSectionHandler;
 
     @Mock
-    private SyncHandler<ProgramStageDataElement> programStageDataElementHandler;
+    private Handler<ProgramStageDataElement> programStageDataElementHandler;
 
     @Mock
     private ProgramStage programStage;

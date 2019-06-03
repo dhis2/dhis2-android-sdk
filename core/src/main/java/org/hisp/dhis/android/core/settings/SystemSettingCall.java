@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.settings;
 
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -45,14 +45,14 @@ import dagger.Reusable;
 final class SystemSettingCall implements Callable<Unit> {
     private final APICallExecutor apiCallExecutor;
     private final DatabaseAdapter databaseAdapter;
-    private final SyncHandler<SystemSetting> handler;
+    private final Handler<SystemSetting> handler;
     private final SystemSettingService service;
     private final SystemSettingsSplitter settingsSplitter;
 
     @Inject
     SystemSettingCall(APICallExecutor apiCallExecutor,
                       DatabaseAdapter databaseAdapter,
-                      SyncHandler<SystemSetting> handler,
+                      Handler<SystemSetting> handler,
                       SystemSettingService service,
                       SystemSettingsSplitter settingsSplitter) {
         this.apiCallExecutor = apiCallExecutor;

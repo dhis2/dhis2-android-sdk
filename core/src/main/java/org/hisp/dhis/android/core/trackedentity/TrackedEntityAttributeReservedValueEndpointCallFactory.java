@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactoryImpl;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.ListNoResourceWithErrorCatcherCallFetcher;
@@ -48,14 +48,14 @@ public final class TrackedEntityAttributeReservedValueEndpointCallFactory
         TrackedEntityAttributeReservedValueQuery> {
 
     private final TrackedEntityAttributeReservedValueService service;
-    private final SyncHandler<TrackedEntityAttributeReservedValue> handler;
+    private final Handler<TrackedEntityAttributeReservedValue> handler;
 
     @Inject
     TrackedEntityAttributeReservedValueEndpointCallFactory(
             GenericCallData data,
             APICallExecutor apiCallExecutor,
             TrackedEntityAttributeReservedValueService service,
-            SyncHandler<TrackedEntityAttributeReservedValue> handler) {
+            Handler<TrackedEntityAttributeReservedValue> handler) {
         super(data, apiCallExecutor);
         this.service = service;
         this.handler = handler;

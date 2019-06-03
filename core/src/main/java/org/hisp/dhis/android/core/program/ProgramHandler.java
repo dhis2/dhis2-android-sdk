@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
@@ -44,13 +44,13 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
+final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
 
-    private final SyncHandler<ProgramRuleVariable> programRuleVariableHandler;
-    private final SyncHandler<ProgramIndicator> programIndicatorHandler;
-    private final SyncHandler<ProgramRule> programRuleHandler;
-    private final SyncHandler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler;
-    private final SyncHandler<ProgramSection> programSectionHandler;
+    private final Handler<ProgramRuleVariable> programRuleVariableHandler;
+    private final Handler<ProgramIndicator> programIndicatorHandler;
+    private final Handler<ProgramRule> programRuleHandler;
+    private final Handler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler;
+    private final Handler<ProgramSection> programSectionHandler;
     private final ObjectStyleHandler styleHandler;
     private final ParentOrphanCleaner<Program> orphanCleaner;
     private final CollectionCleaner<Program> collectionCleaner;
@@ -58,11 +58,11 @@ final class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
 
     @Inject
     ProgramHandler(ProgramStoreInterface programStore,
-                   SyncHandler<ProgramRuleVariable> programRuleVariableHandler,
-                   SyncHandler<ProgramIndicator> programIndicatorHandler,
-                   SyncHandler<ProgramRule> programRuleHandler,
-                   SyncHandler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler,
-                   SyncHandler<ProgramSection> programSectionHandler,
+                   Handler<ProgramRuleVariable> programRuleVariableHandler,
+                   Handler<ProgramIndicator> programIndicatorHandler,
+                   Handler<ProgramRule> programRuleHandler,
+                   Handler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler,
+                   Handler<ProgramSection> programSectionHandler,
                    ObjectStyleHandler styleHandler,
                    ParentOrphanCleaner<Program> orphanCleaner,
                    CollectionCleaner<Program> collectionCleaner,

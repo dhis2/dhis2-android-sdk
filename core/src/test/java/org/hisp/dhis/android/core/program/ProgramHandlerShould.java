@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
@@ -62,19 +62,19 @@ public class ProgramHandlerShould {
     private ProgramStoreInterface programStore;
 
     @Mock
-    private SyncHandler<ProgramRuleVariable> programRuleVariableHandler;
+    private Handler<ProgramRuleVariable> programRuleVariableHandler;
 
     @Mock
-    private SyncHandler<ProgramIndicator> programIndicatorHandler;
+    private Handler<ProgramIndicator> programIndicatorHandler;
 
     @Mock
-    private SyncHandler<ProgramRule> programRuleHandler;
+    private Handler<ProgramRule> programRuleHandler;
 
     @Mock
-    private SyncHandler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler;
+    private Handler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler;
 
     @Mock
-    private SyncHandler<ProgramSection> programSectionHandler;
+    private Handler<ProgramSection> programSectionHandler;
 
     @Mock
     private ObjectStyleHandler styleHandler;

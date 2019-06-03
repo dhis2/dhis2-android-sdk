@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 
 import javax.inject.Inject;
 
@@ -36,10 +36,10 @@ import dagger.Reusable;
 @Reusable
 final class ValueTypeRenderingHandler implements DictionaryTableHandler<ValueTypeRendering> {
 
-    private final SyncHandlerWithTransformer<ValueTypeDeviceRendering> valueTypeDeviceRenderingHandler;
+    private final HandlerWithTransformer<ValueTypeDeviceRendering> valueTypeDeviceRenderingHandler;
 
     @Inject
-    ValueTypeRenderingHandler(SyncHandlerWithTransformer<ValueTypeDeviceRendering> valueTypeDeviceRenderingHandler) {
+    ValueTypeRenderingHandler(HandlerWithTransformer<ValueTypeDeviceRendering> valueTypeDeviceRenderingHandler) {
         this.valueTypeDeviceRenderingHandler = valueTypeDeviceRenderingHandler;
     }
 

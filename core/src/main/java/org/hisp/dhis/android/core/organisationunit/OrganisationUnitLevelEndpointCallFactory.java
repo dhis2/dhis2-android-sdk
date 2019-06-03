@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.organisationunit;
 
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactoryImpl;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.PayloadNoResourceCallFetcher;
@@ -46,13 +46,13 @@ import dagger.Reusable;
 final class OrganisationUnitLevelEndpointCallFactory extends ListCallFactoryImpl<OrganisationUnitLevel> {
 
     private final OrganisationUnitLevelService service;
-    private final SyncHandler<OrganisationUnitLevel> handler;
+    private final Handler<OrganisationUnitLevel> handler;
 
     @Inject
     OrganisationUnitLevelEndpointCallFactory(GenericCallData data,
                                              APICallExecutor apiCallExecutor,
                                              OrganisationUnitLevelService service,
-                                             SyncHandler<OrganisationUnitLevel> handler) {
+                                             Handler<OrganisationUnitLevel> handler) {
         super(data, apiCallExecutor);
         this.service = service;
         this.handler = handler;

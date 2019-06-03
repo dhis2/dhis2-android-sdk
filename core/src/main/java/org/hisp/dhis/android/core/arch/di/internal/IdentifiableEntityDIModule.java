@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.arch.di.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 public interface IdentifiableEntityDIModule<O extends ObjectWithUidInterface> extends IdentifiableStoreProvider<O> {
-    SyncHandler<O> handler(IdentifiableObjectStore<O> store);
+    Handler<O> handler(IdentifiableObjectStore<O> store);
 }

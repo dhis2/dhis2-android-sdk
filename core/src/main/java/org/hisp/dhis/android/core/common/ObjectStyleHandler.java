@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 
-public interface ObjectStyleHandler extends SyncHandlerWithTransformer<ObjectStyle> {
+public interface ObjectStyleHandler extends HandlerWithTransformer<ObjectStyle> {
 
     void handle(ObjectStyle objectStyle, String uid, String objectTable);
 }

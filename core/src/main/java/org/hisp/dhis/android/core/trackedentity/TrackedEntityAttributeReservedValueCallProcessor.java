@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -41,12 +41,12 @@ import java.util.List;
 class TrackedEntityAttributeReservedValueCallProcessor implements CallProcessor<TrackedEntityAttributeReservedValue> {
 
     private final DatabaseAdapter databaseAdapter;
-    private final SyncHandler<TrackedEntityAttributeReservedValue> handler;
+    private final Handler<TrackedEntityAttributeReservedValue> handler;
     private final String organisationUnitUid;
     private final Date temporalValidityDate;
 
     TrackedEntityAttributeReservedValueCallProcessor(DatabaseAdapter databaseAdapter,
-                                                     SyncHandler<TrackedEntityAttributeReservedValue> handler,
+                                                     Handler<TrackedEntityAttributeReservedValue> handler,
                                                      OrganisationUnit organisationUnit,
                                                      String pattern) {
             this.databaseAdapter = databaseAdapter;

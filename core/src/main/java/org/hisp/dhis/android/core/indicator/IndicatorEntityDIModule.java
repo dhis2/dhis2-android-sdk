@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.indicator;
 
 import org.hisp.dhis.android.core.arch.di.internal.IdentifiableEntityDIModule;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -55,8 +55,8 @@ public final class IndicatorEntityDIModule implements IdentifiableEntityDIModule
     @Override
     @Provides
     @Reusable
-    public SyncHandler<Indicator> handler(IdentifiableObjectStore<Indicator> store) {
-        return new IdentifiableSyncHandlerImpl<>(store);
+    public Handler<Indicator> handler(IdentifiableObjectStore<Indicator> store) {
+        return new IdentifiableHandlerImpl<>(store);
     }
 
     @Provides

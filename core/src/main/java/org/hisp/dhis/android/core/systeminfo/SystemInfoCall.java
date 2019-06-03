@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.arch.api.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -47,7 +47,7 @@ import io.reactivex.Completable;
 @Reusable
 class SystemInfoCall implements CompletableProvider {
     private final DatabaseAdapter databaseAdapter;
-    private final SyncHandler<SystemInfo> systemInfoHandler;
+    private final Handler<SystemInfo> systemInfoHandler;
     private final SystemInfoService systemInfoService;
     private final ResourceHandler resourceHandler;
     private final DHISVersionManager versionManager;
@@ -55,7 +55,7 @@ class SystemInfoCall implements CompletableProvider {
 
     @Inject
     SystemInfoCall(DatabaseAdapter databaseAdapter,
-                   SyncHandler<SystemInfo> systemInfoHandler,
+                   Handler<SystemInfo> systemInfoHandler,
                    SystemInfoService systemInfoService,
                    ResourceHandler resourceHandler,
                    DHISVersionManager versionManager,

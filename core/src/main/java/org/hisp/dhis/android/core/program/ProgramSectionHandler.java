@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
@@ -40,14 +40,14 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class ProgramSectionHandler extends IdentifiableSyncHandlerImpl<ProgramSection> {
-    private final LinkSyncHandler<TrackedEntityAttribute, ProgramSectionAttributeLink>
+final class ProgramSectionHandler extends IdentifiableHandlerImpl<ProgramSection> {
+    private final LinkHandler<TrackedEntityAttribute, ProgramSectionAttributeLink>
             programSectionAttributeLinkHandler;
     private final ObjectStyleHandler styleHandler;
 
     @Inject
     ProgramSectionHandler(IdentifiableObjectStore<ProgramSection> programSectionStore,
-                          LinkSyncHandler<TrackedEntityAttribute, ProgramSectionAttributeLink>
+                          LinkHandler<TrackedEntityAttribute, ProgramSectionAttributeLink>
                                   programSectionAttributeLinkHandler,
                           ObjectStyleHandler styleHandler) {
         super(programSectionStore);

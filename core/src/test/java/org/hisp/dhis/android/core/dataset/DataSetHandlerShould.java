@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
@@ -71,20 +71,20 @@ public class DataSetHandlerShould {
     private ObjectStyleHandler styleHandler;
 
     @Mock
-    private SyncHandler<Section> sectionHandler;
+    private Handler<Section> sectionHandler;
 
     @Mock
     private OrphanCleaner<DataSet, Section> sectionOrphanCleaner;
 
     @Mock
-    private SyncHandler<DataElementOperand> compulsoryDataElementOperandHandler;
+    private Handler<DataElementOperand> compulsoryDataElementOperandHandler;
 
     @Mock
-    private LinkSyncHandler<DataElementOperand, DataSetCompulsoryDataElementOperandLink>
+    private LinkHandler<DataElementOperand, DataSetCompulsoryDataElementOperandLink>
             dataSetCompulsoryDataElementOperandLinkHandler;
 
     @Mock
-    private LinkSyncHandler<DataInputPeriod, DataInputPeriod> dataInputPeriodHandler;
+    private LinkHandler<DataInputPeriod, DataInputPeriod> dataInputPeriodHandler;
 
     @Mock
     private DataSet dataSet;
@@ -114,10 +114,10 @@ public class DataSetHandlerShould {
     private DataInputPeriod dataInputPeriod;
 
     @Mock
-    private LinkSyncHandler<DataSetElement, DataSetElement> dataSetElementLinkHandler;
+    private LinkHandler<DataSetElement, DataSetElement> dataSetElementLinkHandler;
 
     @Mock
-    private LinkSyncHandler<Indicator, DataSetIndicatorLink> dataSetIndicatorLinkHandler;
+    private LinkHandler<Indicator, DataSetIndicatorLink> dataSetIndicatorLinkHandler;
 
     @Mock
     private CollectionCleaner<DataSet> collectionCleaner;

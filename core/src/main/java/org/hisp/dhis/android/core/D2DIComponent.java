@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core;
 import android.content.Context;
 
 import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.di.internal.RepositoriesDIModule;
 import org.hisp.dhis.android.core.domain.metadata.MetadataCall;
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
@@ -136,7 +136,7 @@ public interface D2DIComponent {
     @VisibleForTesting
     UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory();
     @VisibleForTesting
-    SyncHandler<RelationshipType> relationshipTypeHandler();
+    Handler<RelationshipType> relationshipTypeHandler();
     @VisibleForTesting
     TrackedEntityInstancePostCall trackedEntityInstancePostCall();
     @VisibleForTesting

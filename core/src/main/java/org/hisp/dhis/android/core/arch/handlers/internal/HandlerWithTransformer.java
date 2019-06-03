@@ -27,11 +27,13 @@
  */
 package org.hisp.dhis.android.core.arch.handlers.internal;
 
+import org.hisp.dhis.android.core.common.Transformer;
+
 import java.util.Collection;
 
-public interface SyncHandler<O> {
+public interface HandlerWithTransformer<O> extends Handler<O> {
 
-    void handle(O o);
+    void handle(O o, Transformer<O, O> transformer);
 
-    void handleMany(Collection<O> oCollection);
+    void handleMany(Collection<O> oCollection, Transformer<O, O> transformer);
 }

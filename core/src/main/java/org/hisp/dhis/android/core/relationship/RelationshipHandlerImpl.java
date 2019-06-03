@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 
 import java.util.Collection;
 import java.util.List;
@@ -44,7 +44,7 @@ final class RelationshipHandlerImpl implements RelationshipHandler {
 
     private final RelationshipStore relationshipStore;
     private final RelationshipItemStore relationshipItemStore;
-    private final SyncHandler<RelationshipItem> relationshipItemHandler;
+    private final Handler<RelationshipItem> relationshipItemHandler;
     private final RelationshipItemElementStoreSelector storeSelector;
     private final RelationshipDHISVersionManager versionManager;
 
@@ -52,7 +52,7 @@ final class RelationshipHandlerImpl implements RelationshipHandler {
     RelationshipHandlerImpl(
             RelationshipStore relationshipStore,
             RelationshipItemStore relationshipItemStore,
-            SyncHandler<RelationshipItem> relationshipItemHandler,
+            Handler<RelationshipItem> relationshipItemHandler,
             RelationshipItemElementStoreSelector storeSelector,
             RelationshipDHISVersionManager versionManager) {
         this.relationshipStore = relationshipStore;

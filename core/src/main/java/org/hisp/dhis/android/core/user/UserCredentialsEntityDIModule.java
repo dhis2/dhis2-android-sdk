@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -51,8 +51,8 @@ public final class UserCredentialsEntityDIModule {
 
     @Provides
     @Reusable
-    SyncHandler<UserCredentials> handler(UserCredentialsStore store) {
-        return new IdentifiableSyncHandlerImpl<>(store);
+    Handler<UserCredentials> handler(UserCredentialsStore store) {
+        return new IdentifiableHandlerImpl<>(store);
     }
 
     @Provides

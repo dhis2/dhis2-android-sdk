@@ -44,10 +44,10 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
-public class IdentifiableDataSyncHandlerImpl<O extends DataModel & ObjectWithUidInterface & ObjectWithDeleteInterface>
-        extends IdentifiableSyncHandlerImpl<O> {
+public class IdentifiableDataHandlerImpl<O extends DataModel & ObjectWithUidInterface & ObjectWithDeleteInterface>
+        extends IdentifiableHandlerImpl<O> {
 
-    public IdentifiableDataSyncHandlerImpl(IdentifiableObjectStore<O> store) {
+    public IdentifiableDataHandlerImpl(IdentifiableObjectStore<O> store) {
         super(store);
     }
 

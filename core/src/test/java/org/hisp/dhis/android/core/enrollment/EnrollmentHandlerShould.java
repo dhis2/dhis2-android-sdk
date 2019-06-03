@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.common.Transformer;
@@ -63,10 +63,10 @@ public class EnrollmentHandlerShould {
     private EnrollmentStore enrollmentStore;
 
     @Mock
-    private SyncHandlerWithTransformer<Event> eventHandler;
+    private HandlerWithTransformer<Event> eventHandler;
 
     @Mock
-    private SyncHandler<Note> noteHandler;
+    private Handler<Note> noteHandler;
 
     @Mock
     private NoteUniquenessManager noteUniquenessManager;

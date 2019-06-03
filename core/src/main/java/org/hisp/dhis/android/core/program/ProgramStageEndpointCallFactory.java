@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher;
@@ -52,13 +52,13 @@ public final class ProgramStageEndpointCallFactory extends UidsCallFactoryImpl<P
     private static final int MAX_UID_LIST_SIZE = 64;
 
     private final ProgramStageService service;
-    private final SyncHandler<ProgramStage> handler;
+    private final Handler<ProgramStage> handler;
 
     @Inject
     ProgramStageEndpointCallFactory(GenericCallData data,
                                     APICallExecutor apiCallExecutor,
                                     ProgramStageService service,
-                                    SyncHandler<ProgramStage> handler) {
+                                    Handler<ProgramStage> handler) {
         super(data, apiCallExecutor);
         this.service = service;
         this.handler = handler;

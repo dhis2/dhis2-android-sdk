@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -47,7 +47,7 @@ public final class ProgramStageDataElementEntityDIModule {
 
     @Provides
     @Reusable
-    public SyncHandler<ProgramStageDataElement> handler(ProgramStageDataElementHandler impl) {
+    public Handler<ProgramStageDataElement> handler(ProgramStageDataElementHandler impl) {
         return impl;
     }
 }

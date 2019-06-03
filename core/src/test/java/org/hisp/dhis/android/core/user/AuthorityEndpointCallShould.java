@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutorImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.call.internal.EndpointCall;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.junit.Before;
@@ -53,7 +53,7 @@ public class AuthorityEndpointCallShould extends BaseCallShould {
     private AuthorityService authorityService;
 
     @Mock
-    private SyncHandler<Authority> handler;
+    private Handler<Authority> handler;
 
     @Mock
     private retrofit2.Call<List<String>> retrofitCall;

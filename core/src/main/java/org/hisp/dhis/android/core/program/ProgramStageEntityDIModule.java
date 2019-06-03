@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl;
@@ -59,7 +59,7 @@ public final class ProgramStageEntityDIModule implements IdentifiableStoreProvid
 
     @Provides
     @Reusable
-    public SyncHandler<ProgramStage> handler(ProgramStageHandler impl) {
+    public Handler<ProgramStage> handler(ProgramStageHandler impl) {
         return impl;
     }
 

@@ -27,33 +27,27 @@
  */
 package org.hisp.dhis.android.core.arch.handlers.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.OrderedLinkTransformer;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+import java.util.List;
 
-public class IdentifiableSyncHandlerImpl<O extends ObjectWithUidInterface & ObjectWithDeleteInterface>
-        extends SyncHandlerBaseImpl<O> {
+public class OrderedLinkHandlerImpl<S, M extends Model> implements OrderedLinkHandler<S, M> {
 
-    final IdentifiableObjectStore<O> store;
+    private final LinkModelStore<M> store;
 
-    public IdentifiableSyncHandlerImpl(IdentifiableObjectStore<O> store) {
+    public OrderedLinkHandlerImpl(LinkModelStore<M> store) {
         this.store = store;
     }
 
     @Override
-    protected HandleAction deleteOrPersist(O o) {
-        String modelUid = o.uid();
-        if ((isDeleted(o) || deleteIfCondition(o)) && modelUid != null) {
-            store.deleteIfExists(modelUid);
-            return HandleAction.Delete;
-        } else {
-            return store.updateOrInsert(o);
+    public void handleMany(String masterUid, List<S> slaves, OrderedLinkTransformer<S, M> transformer) {
+        store.deleteLinksForMasterUid(masterUid);
+        if (slaves != null) {
+            for (int i = 0; i < slaves.size(); i++) {
+                store.insert(transformer.transform(slaves.get(i), i + 1));
+            }
         }
-    }
-
-    protected boolean deleteIfCondition(O o) {
-        return false;
     }
 }

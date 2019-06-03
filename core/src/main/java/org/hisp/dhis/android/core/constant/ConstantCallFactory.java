@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.constant;
 
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactoryImpl;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.PayloadNoResourceCallFetcher;
@@ -46,13 +46,13 @@ import dagger.Reusable;
 final class ConstantCallFactory extends ListCallFactoryImpl<Constant> {
 
     private final ConstantService service;
-    private final SyncHandler<Constant> handler;
+    private final Handler<Constant> handler;
 
     @Inject
     ConstantCallFactory(GenericCallData data,
                         APICallExecutor apiCallExecutor,
                         ConstantService service,
-                        SyncHandler<Constant> handler) {
+                        Handler<Constant> handler) {
         super(data, apiCallExecutor);
         this.service = service;
         this.handler = handler;

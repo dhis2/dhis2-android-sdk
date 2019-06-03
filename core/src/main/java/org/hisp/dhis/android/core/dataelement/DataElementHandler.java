@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
@@ -38,7 +38,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class DataElementHandler extends IdentifiableSyncHandlerImpl<DataElement> {
+final class DataElementHandler extends IdentifiableHandlerImpl<DataElement> {
     private final ObjectStyleHandler styleHandler;
 
     @Inject

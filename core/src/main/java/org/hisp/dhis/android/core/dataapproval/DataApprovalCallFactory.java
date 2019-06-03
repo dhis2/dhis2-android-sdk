@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.dataapproval;
 
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactoryImpl;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.ListNoResourceCallFetcher;
@@ -51,7 +51,7 @@ import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionVal
 final class DataApprovalCallFactory extends QueryCallFactoryImpl<DataApproval,
         DataApprovalQuery> {
 
-    private final SyncHandler<DataApproval> handler;
+    private final Handler<DataApproval> handler;
     private final DataApprovalService service;
 
     private final SimpleDateFormat simpleDateFormat =
@@ -60,7 +60,7 @@ final class DataApprovalCallFactory extends QueryCallFactoryImpl<DataApproval,
     @Inject
     DataApprovalCallFactory(GenericCallData genericCallData,
                                            APICallExecutor apiCallExecutor,
-                                           SyncHandler<DataApproval> handler,
+                                           Handler<DataApproval> handler,
                                            DataApprovalService service) {
         super(genericCallData, apiCallExecutor);
         this.handler = handler;

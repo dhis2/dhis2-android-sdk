@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
+abstract class HandlerBaseImpl<O> implements HandlerWithTransformer<O> {
 
     @Override
     public final void handle(O o) {

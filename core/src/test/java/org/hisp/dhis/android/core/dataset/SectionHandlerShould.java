@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkSyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 import org.hisp.dhis.android.core.common.OrderedLinkTransformer;
 import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.dataelement.DataElement;
@@ -60,13 +60,13 @@ public class SectionHandlerShould {
     private IdentifiableObjectStore<Section> sectionStore;
 
     @Mock
-    private OrderedLinkSyncHandler<DataElement, SectionDataElementLink> sectionDataElementLinkHandler;
+    private OrderedLinkHandler<DataElement, SectionDataElementLink> sectionDataElementLinkHandler;
 
     @Mock
-    private SyncHandler<DataElementOperand> greyedFieldsHandler;
+    private Handler<DataElementOperand> greyedFieldsHandler;
 
     @Mock
-    private LinkSyncHandler<DataElementOperand, SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler;
+    private LinkHandler<DataElementOperand, SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler;
 
     @Mock
     private Section section;

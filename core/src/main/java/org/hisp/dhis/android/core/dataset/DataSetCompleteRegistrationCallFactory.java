@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactoryImpl;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
@@ -47,13 +47,13 @@ import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionVal
 final class DataSetCompleteRegistrationCallFactory extends QueryCallFactoryImpl<DataSetCompleteRegistration,
         DataSetCompleteRegistrationQuery> {
 
-    private final SyncHandler<DataSetCompleteRegistration> handler;
+    private final Handler<DataSetCompleteRegistration> handler;
     private final DataSetCompleteRegistrationService service;
 
     @Inject
     DataSetCompleteRegistrationCallFactory(GenericCallData genericCallData,
                                            APICallExecutor apiCallExecutor,
-                                           SyncHandler<DataSetCompleteRegistration> handler,
+                                           Handler<DataSetCompleteRegistration> handler,
                                            DataSetCompleteRegistrationService service) {
         super(genericCallData, apiCallExecutor);
         this.handler = handler;

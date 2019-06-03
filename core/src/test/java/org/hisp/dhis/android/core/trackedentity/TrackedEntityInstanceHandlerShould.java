@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.common.State;
@@ -69,10 +69,10 @@ public class TrackedEntityInstanceHandlerShould {
     private TrackedEntityInstanceStore trackedEntityInstanceStore;
 
     @Mock
-    private SyncHandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler;
+    private HandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler;
 
     @Mock
-    private SyncHandlerWithTransformer<Enrollment> enrollmentHandler;
+    private HandlerWithTransformer<Enrollment> enrollmentHandler;
 
     @Mock
     private TrackedEntityInstance trackedEntityInstance;

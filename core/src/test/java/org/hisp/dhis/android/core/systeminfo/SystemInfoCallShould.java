@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.arch.api.internal.RxAPICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -71,7 +71,7 @@ public class SystemInfoCallShould {
     private D2Error d2Error;
 
     @Mock
-    private SyncHandler<SystemInfo> systemInfoHandler;
+    private Handler<SystemInfo> systemInfoHandler;
 
     @Mock
     private ResourceHandler resourceHandler;

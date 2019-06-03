@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl;
@@ -55,7 +55,7 @@ public final class ProgramEntityDIModule {
 
     @Provides
     @Reusable
-    public SyncHandler<Program> handler(ProgramHandler impl) {
+    public Handler<Program> handler(ProgramHandler impl) {
         return impl;
     }
 

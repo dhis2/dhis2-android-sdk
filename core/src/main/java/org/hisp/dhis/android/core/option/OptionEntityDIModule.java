@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
@@ -53,7 +53,7 @@ public final class OptionEntityDIModule {
 
     @Provides
     @Reusable
-    SyncHandler<Option> handler(OptionHandler impl) {
+    Handler<Option> handler(OptionHandler impl) {
         return impl;
     }
 

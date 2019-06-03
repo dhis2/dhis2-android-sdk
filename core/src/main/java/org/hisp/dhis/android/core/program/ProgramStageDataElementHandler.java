@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
@@ -40,16 +40,16 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class ProgramStageDataElementHandler extends IdentifiableSyncHandlerImpl<ProgramStageDataElement> {
+final class ProgramStageDataElementHandler extends IdentifiableHandlerImpl<ProgramStageDataElement> {
 
-    private final SyncHandler<DataElement> dataElementHandler;
+    private final Handler<DataElement> dataElementHandler;
 
     private final DictionaryTableHandler<ValueTypeRendering> valueTypeRenderingHandler;
 
     @Inject
     ProgramStageDataElementHandler(
             IdentifiableObjectStore<ProgramStageDataElement> programStageDataElementStore,
-            SyncHandler<DataElement> dataElementHandler,
+            Handler<DataElement> dataElementHandler,
             DictionaryTableHandler<ValueTypeRendering> valueTypeRenderingHandler) {
 
         super(programStageDataElementStore);

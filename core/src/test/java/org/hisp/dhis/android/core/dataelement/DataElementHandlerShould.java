@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -78,7 +78,7 @@ public class DataElementHandlerShould {
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableSyncHandlerImpl<DataElement> genericHandler =
+        IdentifiableHandlerImpl<DataElement> genericHandler =
                 new DataElementHandler(null, null);
     }
 }

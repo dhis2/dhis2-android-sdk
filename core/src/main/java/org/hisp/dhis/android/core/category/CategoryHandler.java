@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.category;
 
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkSyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,16 +44,16 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class CategoryHandler extends IdentifiableSyncHandlerImpl<Category> {
+final class CategoryHandler extends IdentifiableHandlerImpl<Category> {
 
-    private final SyncHandler<CategoryOption> categoryOptionHandler;
-    private final OrderedLinkSyncHandler<CategoryOption, CategoryCategoryOptionLink> categoryCategoryOptionLinkHandler;
+    private final Handler<CategoryOption> categoryOptionHandler;
+    private final OrderedLinkHandler<CategoryOption, CategoryCategoryOptionLink> categoryCategoryOptionLinkHandler;
 
     @Inject
     CategoryHandler(
             @NonNull IdentifiableObjectStore<Category> categoryStore,
-            @NonNull SyncHandler<CategoryOption> categoryOptionHandler,
-            @NonNull OrderedLinkSyncHandler<CategoryOption, CategoryCategoryOptionLink>
+            @NonNull Handler<CategoryOption> categoryOptionHandler,
+            @NonNull OrderedLinkHandler<CategoryOption, CategoryCategoryOptionLink>
                     categoryCategoryOptionLinkHandler) {
         super(categoryStore);
         this.categoryOptionHandler = categoryOptionHandler;

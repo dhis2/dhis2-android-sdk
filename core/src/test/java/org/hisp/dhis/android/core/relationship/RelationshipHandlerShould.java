@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.StoreWithState;
 import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
 import org.junit.Before;
@@ -54,7 +54,7 @@ public class RelationshipHandlerShould extends RelationshipSamples {
     private RelationshipItemStore relationshipItemStore;
 
     @Mock
-    private SyncHandler<RelationshipItem> relationshipItemHandler;
+    private Handler<RelationshipItem> relationshipItemHandler;
 
     @Mock
     private RelationshipItemElementStoreSelector storeSelector;

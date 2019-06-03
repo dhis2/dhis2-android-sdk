@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.call.processors.internal;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -37,10 +37,10 @@ import java.util.List;
 
 public class TransactionalNoResourceSyncCallProcessor<O> implements CallProcessor<O> {
     private final DatabaseAdapter databaseAdapter;
-    private final SyncHandler<O> handler;
+    private final Handler<O> handler;
 
     public TransactionalNoResourceSyncCallProcessor(DatabaseAdapter databaseAdapter,
-                                                    SyncHandler<O> handler) {
+                                                    Handler<O> handler) {
         this.databaseAdapter = databaseAdapter;
         this.handler = handler;
     }

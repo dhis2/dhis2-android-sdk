@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher;
@@ -50,14 +50,14 @@ public final class TrackedEntityTypeCallFactory extends UidsCallFactoryImpl<Trac
     private static final int MAX_UID_LIST_SIZE = 140;
 
     private final TrackedEntityTypeService service;
-    private final SyncHandler<TrackedEntityType> handler;
+    private final Handler<TrackedEntityType> handler;
 
 
     @Inject
     public TrackedEntityTypeCallFactory(GenericCallData data,
                                         APICallExecutor apiCallExecutor,
                                         TrackedEntityTypeService service,
-                                        SyncHandler<TrackedEntityType> handler) {
+                                        Handler<TrackedEntityType> handler) {
         super(data, apiCallExecutor);
         this.service = service;
         this.handler = handler;

@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 
-public interface RelationshipHandler extends SyncHandler<Relationship> {
+public interface RelationshipHandler extends Handler<Relationship> {
     boolean doesRelationshipExist(Relationship relationship);
 }

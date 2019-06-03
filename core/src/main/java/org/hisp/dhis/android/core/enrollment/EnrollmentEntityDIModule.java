@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.arch.cleaners.internal.DataOrphanCleanerImpl;
@@ -59,7 +59,7 @@ public final class EnrollmentEntityDIModule {
 
     @Provides
     @Reusable
-    public SyncHandlerWithTransformer<Enrollment> handler(EnrollmentHandler impl) {
+    public HandlerWithTransformer<Enrollment> handler(EnrollmentHandler impl) {
         return impl;
     }
 

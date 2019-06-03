@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.category;
 
 
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher;
@@ -51,13 +51,13 @@ final class CategoryEndpointCallFactory extends UidsCallFactoryImpl<Category> {
 
     private static final int MAX_UID_LIST_SIZE = 90;
 
-    private final SyncHandler<Category> handler;
+    private final Handler<Category> handler;
     private final CategoryService service;
 
     @Inject
     CategoryEndpointCallFactory(GenericCallData data,
                                 APICallExecutor apiCallExecutor,
-                                SyncHandler<Category> handler,
+                                Handler<Category> handler,
                                 CategoryService service) {
         super(data, apiCallExecutor);
         this.handler = handler;

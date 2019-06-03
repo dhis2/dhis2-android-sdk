@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher;
@@ -52,13 +52,13 @@ final class DataElementEndpointCallFactory extends UidsCallFactoryImpl<DataEleme
     private static final int MAX_UID_LIST_SIZE = 100;
 
     private final DataElementService service;
-    private final SyncHandler<DataElement> handler;
+    private final Handler<DataElement> handler;
 
     @Inject
     DataElementEndpointCallFactory(GenericCallData data,
                                    APICallExecutor apiCallExecutor,
                                    DataElementService service,
-                                   SyncHandler<DataElement> handler) {
+                                   Handler<DataElement> handler) {
         super(data, apiCallExecutor);
         this.service = service;
         this.handler = handler;

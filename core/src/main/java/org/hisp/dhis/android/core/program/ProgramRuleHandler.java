@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
@@ -38,13 +38,13 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class ProgramRuleHandler extends IdentifiableSyncHandlerImpl<ProgramRule> {
-    private final SyncHandler<ProgramRuleAction> programRuleActionHandler;
+final class ProgramRuleHandler extends IdentifiableHandlerImpl<ProgramRule> {
+    private final Handler<ProgramRuleAction> programRuleActionHandler;
     private final OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner;
 
     @Inject
     ProgramRuleHandler(IdentifiableObjectStore<ProgramRule> programRuleStore,
-                       SyncHandler<ProgramRuleAction> programRuleActionHandler,
+                       Handler<ProgramRuleAction> programRuleActionHandler,
                        OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner) {
         super(programRuleStore);
         this.programRuleActionHandler = programRuleActionHandler;

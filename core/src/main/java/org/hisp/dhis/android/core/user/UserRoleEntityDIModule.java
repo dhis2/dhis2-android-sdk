@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.di.internal.IdentifiableEntityDIModule;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl;
@@ -57,8 +57,8 @@ public final class UserRoleEntityDIModule implements IdentifiableEntityDIModule<
     @Override
     @Provides
     @Reusable
-    public SyncHandler<UserRole> handler(IdentifiableObjectStore<UserRole> store) {
-        return new IdentifiableSyncHandlerImpl<>(store);
+    public Handler<UserRole> handler(IdentifiableObjectStore<UserRole> store) {
+        return new IdentifiableHandlerImpl<>(store);
     }
 
     @Provides

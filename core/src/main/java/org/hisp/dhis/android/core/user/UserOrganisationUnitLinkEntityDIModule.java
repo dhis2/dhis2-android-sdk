@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
@@ -48,7 +48,7 @@ public final class UserOrganisationUnitLinkEntityDIModule {
 
     @Provides
     @Reusable
-    LinkSyncHandler<OrganisationUnit, UserOrganisationUnitLink> handler(UserOrganisationUnitLinkStore store) {
-        return new LinkSyncHandlerImpl<>(store);
+    LinkHandler<OrganisationUnit, UserOrganisationUnitLink> handler(UserOrganisationUnitLinkStore store) {
+        return new LinkHandlerImpl<>(store);
     }
 }

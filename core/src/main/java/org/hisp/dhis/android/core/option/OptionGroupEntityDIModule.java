@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl;
@@ -53,7 +53,7 @@ public final class OptionGroupEntityDIModule {
 
     @Provides
     @Reusable
-    SyncHandler<OptionGroup> handler(OptionGroupHandler impl) {
+    Handler<OptionGroup> handler(OptionGroupHandler impl) {
         return impl;
     }
 

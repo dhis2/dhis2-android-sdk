@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.datavalue;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutorImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
@@ -63,7 +63,7 @@ public class DataValueEndpointCallRealIntegrationShould extends BaseRealIntegrat
 
     private Callable<List<DataValue>> createCall() {
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter());
-        SyncHandler<DataValue> dataValueHandler =  new ObjectWithoutUidSyncHandlerImpl<>(
+        Handler<DataValue> dataValueHandler =  new ObjectWithoutUidHandlerImpl<>(
                 DataValueStore.create(databaseAdapter()));
         return new DataValueEndpointCallFactory(getGenericCallData(d2), apiCallExecutor, dataValueHandler).create(
                 DataValueQuery.create(getDataSetUids(), getPeriodIds(), getOrgUnitUids()));

@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
@@ -56,7 +56,7 @@ public class LegendSetHandlerShould {
     private IdentifiableObjectStore<LegendSet> legendSetStore;
 
     @Mock
-    private SyncHandlerWithTransformer<Legend> legendHandler;
+    private HandlerWithTransformer<Legend> legendHandler;
 
     @Mock
     private Legend legend;
@@ -84,7 +84,7 @@ public class LegendSetHandlerShould {
 
     @Test
     public void extend_identifiable_sync_handler_impl() {
-        IdentifiableSyncHandlerImpl<LegendSet> genericHandler = new LegendSetHandler
+        IdentifiableHandlerImpl<LegendSet> genericHandler = new LegendSetHandler
                 (null, null, null);
     }
 

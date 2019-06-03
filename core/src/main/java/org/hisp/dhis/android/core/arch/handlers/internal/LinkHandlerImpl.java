@@ -27,13 +27,28 @@
  */
 package org.hisp.dhis.android.core.arch.handlers.internal;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.Transformer;
 
 import java.util.Collection;
 
-public interface SyncHandlerWithTransformer<O> extends SyncHandler<O> {
+public class LinkHandlerImpl<S, O extends Model> implements LinkHandler<S, O> {
 
-    void handle(O o, Transformer<O, O> transformer);
+    private final LinkModelStore<O> store;
 
-    void handleMany(Collection<O> oCollection, Transformer<O, O> transformer);
+    public LinkHandlerImpl(LinkModelStore<O> store) {
+        this.store = store;
+    }
+
+    @Override
+    public void handleMany(String masterUid, Collection<S> slaves, Transformer<S, O> transformer) {
+        store.deleteLinksForMasterUid(masterUid);
+        if (slaves != null) {
+            for (S slave : slaves) {
+                O oTransformed = transformer.transform(slave);
+                store.insert(oTransformed);
+            }
+        }
+    }
 }

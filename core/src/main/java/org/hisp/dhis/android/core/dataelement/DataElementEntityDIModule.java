@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
@@ -53,7 +53,7 @@ public final class DataElementEntityDIModule {
 
     @Provides
     @Reusable
-    SyncHandler<DataElement> handler(DataElementHandler impl) {
+    Handler<DataElement> handler(DataElementHandler impl) {
         return impl;
     }
 

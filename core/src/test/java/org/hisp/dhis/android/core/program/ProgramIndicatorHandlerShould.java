@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.legendset.LegendSet;
@@ -57,10 +57,10 @@ public class ProgramIndicatorHandlerShould {
     private IdentifiableObjectStore<ProgramIndicator> programIndicatorStore;
 
     @Mock
-    private LinkSyncHandler<LegendSet, ProgramIndicatorLegendSetLink> programIndicatorLegendSetLinkHandler;
+    private LinkHandler<LegendSet, ProgramIndicatorLegendSetLink> programIndicatorLegendSetLinkHandler;
 
     @Mock
-    private SyncHandler<LegendSet> legendSetHandler;
+    private Handler<LegendSet> legendSetHandler;
 
     @Mock
     private ProgramIndicator programIndicator;
@@ -72,7 +72,7 @@ public class ProgramIndicatorHandlerShould {
     private ObjectWithUid program;
 
     // object to test
-    private SyncHandler<ProgramIndicator> programIndicatorHandler;
+    private Handler<ProgramIndicator> programIndicatorHandler;
 
     // list of program indicators
     private List<ProgramIndicator> programIndicators;

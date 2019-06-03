@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -48,7 +48,7 @@ public final class RelationshipConstraintEntityDIModule {
 
     @Provides
     @Reusable
-    SyncHandler<RelationshipConstraint> handler(ObjectWithoutUidStore<RelationshipConstraint> store) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(store);
+    Handler<RelationshipConstraint> handler(ObjectWithoutUidStore<RelationshipConstraint> store) {
+        return new ObjectWithoutUidHandlerImpl<>(store);
     }
 }

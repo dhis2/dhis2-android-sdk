@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
@@ -55,7 +55,7 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     private IdentifiableObjectStore<ProgramTrackedEntityAttribute> store;
 
     @Mock
-    private IdentifiableSyncHandlerImpl<TrackedEntityAttribute> trackedEntityAttributeHandler;
+    private IdentifiableHandlerImpl<TrackedEntityAttribute> trackedEntityAttributeHandler;
 
     @Mock
     private List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes;
@@ -79,7 +79,7 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     private TrackedEntityAttribute trackedEntityAttribute;
 
     // object to test
-    private SyncHandler<ProgramTrackedEntityAttribute> handler;
+    private Handler<ProgramTrackedEntityAttribute> handler;
 
     @Before
     public void setUp() throws Exception {
@@ -101,7 +101,7 @@ public class ProgramTrackedEntityAttributeHandlerShould {
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableSyncHandlerImpl<ProgramTrackedEntityAttribute> syncHandler =
+        IdentifiableHandlerImpl<ProgramTrackedEntityAttribute> syncHandler =
                 new ProgramTrackedEntityAttributeHandler(null, null, null);
     }
 

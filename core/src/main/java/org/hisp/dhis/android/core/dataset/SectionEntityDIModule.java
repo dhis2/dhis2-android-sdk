@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -51,7 +51,7 @@ public final class SectionEntityDIModule {
 
     @Provides
     @Reusable
-    SyncHandler<Section> handler(SectionHandler impl) {
+    Handler<Section> handler(SectionHandler impl) {
         return impl;
     }
 

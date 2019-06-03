@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
@@ -55,7 +55,7 @@ public final class TrackedEntityTypeEntityDIModule implements IdentifiableStoreP
 
     @Provides
     @Reusable
-    public SyncHandler<TrackedEntityType> handler(TrackedEntityTypeHandler impl) {
+    public Handler<TrackedEntityType> handler(TrackedEntityTypeHandler impl) {
         return impl;
     }
 

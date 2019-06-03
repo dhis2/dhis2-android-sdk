@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher;
@@ -51,13 +51,13 @@ final class OptionSetCallFactory extends UidsCallFactoryImpl<OptionSet> {
     private static final int MAX_UID_LIST_SIZE = 130;
 
     private final OptionSetService service;
-    private final SyncHandler<OptionSet> handler;
+    private final Handler<OptionSet> handler;
 
     @Inject
     OptionSetCallFactory(GenericCallData data,
                                 APICallExecutor apiCallExecutor,
                                 OptionSetService service,
-                                SyncHandler<OptionSet> handler) {
+                                Handler<OptionSet> handler) {
         super(data, apiCallExecutor);
         this.service = service;
         this.handler = handler;

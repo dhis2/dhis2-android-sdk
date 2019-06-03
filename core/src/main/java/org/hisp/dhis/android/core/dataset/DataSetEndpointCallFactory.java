@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactoryImpl;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.PayloadResourceCallFetcher;
@@ -49,14 +49,14 @@ import retrofit2.Call;
 final class DataSetEndpointCallFactory extends ListCallFactoryImpl<DataSet> {
 
     private final DataSetService dataSetService;
-    private final SyncHandler<DataSet> dataSetHandler;
+    private final Handler<DataSet> dataSetHandler;
     private final Resource.Type resourceType = Resource.Type.DATA_SET;
 
     @Inject
     DataSetEndpointCallFactory(GenericCallData data,
                                APICallExecutor apiCallExecutor,
                                DataSetService dataSetService,
-                               SyncHandler<DataSet> dataSetHandler) {
+                               Handler<DataSet> dataSetHandler) {
         super(data, apiCallExecutor);
         this.dataSetService = dataSetService;
         this.dataSetHandler = dataSetHandler;

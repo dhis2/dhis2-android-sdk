@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
@@ -47,33 +47,33 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
+final class DataSetHandler extends IdentifiableHandlerImpl<DataSet> {
 
     private final ObjectStyleHandler styleHandler;
 
-    private final SyncHandler<Section> sectionHandler;
+    private final Handler<Section> sectionHandler;
     private final OrphanCleaner<DataSet, Section> sectionOrphanCleaner;
 
-    private final SyncHandler<DataElementOperand> compulsoryDataElementOperandHandler;
-    private final LinkSyncHandler<DataElementOperand, DataSetCompulsoryDataElementOperandLink>
+    private final Handler<DataElementOperand> compulsoryDataElementOperandHandler;
+    private final LinkHandler<DataElementOperand, DataSetCompulsoryDataElementOperandLink>
             dataSetCompulsoryDataElementOperandLinkHandler;
 
-    private final LinkSyncHandler<DataInputPeriod, DataInputPeriod> dataInputPeriodHandler;
-    private final LinkSyncHandler<DataSetElement, DataSetElement> dataSetElementLinkHandler;
-    private final LinkSyncHandler<Indicator, DataSetIndicatorLink> dataSetIndicatorLinkHandler;
+    private final LinkHandler<DataInputPeriod, DataInputPeriod> dataInputPeriodHandler;
+    private final LinkHandler<DataSetElement, DataSetElement> dataSetElementLinkHandler;
+    private final LinkHandler<Indicator, DataSetIndicatorLink> dataSetIndicatorLinkHandler;
     private final CollectionCleaner<DataSet> collectionCleaner;
 
     @Inject
     DataSetHandler(IdentifiableObjectStore<DataSet> dataSetStore,
                    ObjectStyleHandler styleHandler,
-                   SyncHandler<Section> sectionHandler,
+                   Handler<Section> sectionHandler,
                    OrphanCleaner<DataSet, Section> sectionOrphanCleaner,
-                   SyncHandler<DataElementOperand> compulsoryDataElementOperandHandler,
-                   LinkSyncHandler<DataElementOperand, DataSetCompulsoryDataElementOperandLink>
+                   Handler<DataElementOperand> compulsoryDataElementOperandHandler,
+                   LinkHandler<DataElementOperand, DataSetCompulsoryDataElementOperandLink>
                            dataSetCompulsoryDataElementOperandLinkHandler,
-                   LinkSyncHandler<DataInputPeriod, DataInputPeriod> dataInputPeriodHandler,
-                   LinkSyncHandler<DataSetElement, DataSetElement> dataSetElementLinkHandler,
-                   LinkSyncHandler<Indicator, DataSetIndicatorLink> dataSetIndicatorLinkHandler,
+                   LinkHandler<DataInputPeriod, DataInputPeriod> dataInputPeriodHandler,
+                   LinkHandler<DataSetElement, DataSetElement> dataSetElementLinkHandler,
+                   LinkHandler<Indicator, DataSetIndicatorLink> dataSetIndicatorLinkHandler,
                    CollectionCleaner<DataSet> collectionCleaner) {
 
         super(dataSetStore);

@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
@@ -111,7 +111,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 
         manager = d2.trackedEntityModule().reservedValueManager;
 
-        SyncHandler<TrackedEntityAttributeReservedValue> handler = new ObjectWithoutUidSyncHandlerImpl<>(store);
+        Handler<TrackedEntityAttributeReservedValue> handler = new ObjectWithoutUidHandlerImpl<>(store);
 
         List<TrackedEntityAttributeReservedValue> trackedEntityAttributeReservedValues = new ArrayList<>();
 

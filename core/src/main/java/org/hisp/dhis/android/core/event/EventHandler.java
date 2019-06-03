@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.event;
 
 import android.util.Log;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
@@ -40,12 +40,12 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class EventHandler extends IdentifiableDataSyncHandlerImpl<Event> {
-    private final SyncHandlerWithTransformer<TrackedEntityDataValue> trackedEntityDataValueHandler;
+final class EventHandler extends IdentifiableDataHandlerImpl<Event> {
+    private final HandlerWithTransformer<TrackedEntityDataValue> trackedEntityDataValueHandler;
 
     @Inject
     EventHandler(EventStore eventStore,
-                 SyncHandlerWithTransformer<TrackedEntityDataValue> trackedEntityDataValueHandler) {
+                 HandlerWithTransformer<TrackedEntityDataValue> trackedEntityDataValueHandler) {
         super(eventStore);
         this.trackedEntityDataValueHandler = trackedEntityDataValueHandler;
     }

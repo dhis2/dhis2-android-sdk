@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
@@ -40,15 +40,15 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class ProgramTrackedEntityAttributeHandler extends IdentifiableSyncHandlerImpl<ProgramTrackedEntityAttribute> {
+final class ProgramTrackedEntityAttributeHandler extends IdentifiableHandlerImpl<ProgramTrackedEntityAttribute> {
 
-    private final SyncHandler<TrackedEntityAttribute> trackedEntityAttributeHandler;
+    private final Handler<TrackedEntityAttribute> trackedEntityAttributeHandler;
     private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     @Inject
     ProgramTrackedEntityAttributeHandler(
             IdentifiableObjectStore<ProgramTrackedEntityAttribute> store,
-            SyncHandler<TrackedEntityAttribute> trackedEntityAttributeHandler,
+            Handler<TrackedEntityAttribute> trackedEntityAttributeHandler,
             DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
         super(store);
         this.trackedEntityAttributeHandler = trackedEntityAttributeHandler;

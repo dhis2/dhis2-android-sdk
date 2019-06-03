@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkSyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 import org.hisp.dhis.android.core.common.OrderedLinkTransformer;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,10 +58,10 @@ public class CategoryHandlerShould {
     private IdentifiableObjectStore<Category> categoryStore;
 
     @Mock
-    private OrderedLinkSyncHandler<CategoryOption, CategoryCategoryOptionLink> categoryCategoryOptionLinkHandler;
+    private OrderedLinkHandler<CategoryOption, CategoryCategoryOptionLink> categoryCategoryOptionLinkHandler;
 
     @Mock
-    private SyncHandler<CategoryOption> categoryOptionHandler;
+    private Handler<CategoryOption> categoryOptionHandler;
 
     private final String categoryUid = "cId";
 
@@ -79,7 +79,7 @@ public class CategoryHandlerShould {
     @Mock
     private DataAccess dataAccess;
 
-    private SyncHandler<Category> categoryHandler;
+    private Handler<Category> categoryHandler;
 
     @Before
     public void setUp() throws Exception {

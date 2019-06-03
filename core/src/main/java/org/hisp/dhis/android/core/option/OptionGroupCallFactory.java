@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher;
@@ -51,13 +51,13 @@ final class OptionGroupCallFactory extends UidsCallFactoryImpl<OptionGroup> {
     private static final int MAX_UID_LIST_SIZE = 130;
 
     private final OptionGroupService service;
-    private final SyncHandler<OptionGroup> handler;
+    private final Handler<OptionGroup> handler;
 
     @Inject
     OptionGroupCallFactory(GenericCallData data,
                                   APICallExecutor apiCallExecutor,
                                   OptionGroupService service,
-                                  SyncHandler<OptionGroup> handler) {
+                                  Handler<OptionGroup> handler) {
         super(data, apiCallExecutor);
         this.service = service;
         this.handler = handler;

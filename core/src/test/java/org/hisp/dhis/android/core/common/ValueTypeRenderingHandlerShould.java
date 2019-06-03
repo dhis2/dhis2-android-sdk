@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +48,7 @@ public class ValueTypeRenderingHandlerShould {
     private static final String TABLE = "table";
     
     @Mock
-    private SyncHandlerWithTransformer<ValueTypeDeviceRendering> deviceRenderingHandler;
+    private HandlerWithTransformer<ValueTypeDeviceRendering> deviceRenderingHandler;
     
     @Mock
     private ValueTypeDeviceRendering desktopRenderType;

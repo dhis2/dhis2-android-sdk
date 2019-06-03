@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
-import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;

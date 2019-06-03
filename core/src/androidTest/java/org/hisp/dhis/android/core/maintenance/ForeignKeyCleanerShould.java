@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;

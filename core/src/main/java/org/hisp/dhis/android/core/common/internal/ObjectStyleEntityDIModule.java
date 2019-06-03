@@ -38,7 +38,7 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-final class ObjectStyleEntityDIModule implements ObjectWithoutUidStoreProvider<ObjectStyle> {
+public final class ObjectStyleEntityDIModule implements ObjectWithoutUidStoreProvider<ObjectStyle> {
 
     @Override
     @Provides

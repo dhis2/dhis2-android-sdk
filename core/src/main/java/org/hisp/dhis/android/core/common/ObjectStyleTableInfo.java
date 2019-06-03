@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.common.internal.ObjectStyleFields;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public final class ObjectStyleTableInfo {
@@ -49,10 +50,10 @@ public final class ObjectStyleTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
 
-        static final String UID = BaseIdentifiableObjectModel.Columns.UID;
-        static final String OBJECT_TABLE = "objectTable";
+        public static final String UID = BaseIdentifiableObjectModel.Columns.UID;
+        public static final String OBJECT_TABLE = "objectTable";
 
         @Override
         public String[] all() {

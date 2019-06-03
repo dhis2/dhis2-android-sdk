@@ -25,13 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common.internal;
 
-package org.hisp.dhis.android.core.common;
-
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectWithStyle;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-interface ObjectStyleStore extends ObjectWithoutUidStore<ObjectStyle> {
-    <O extends ObjectWithStyle<?, ?> & ObjectWithUidInterface> ObjectStyle getStyle(O objectWithStyle,
-                                                                                    TableInfo tableInfo);
+public final class ObjectStyleChildrenAppender<O extends ObjectWithUidInterface & ObjectWithStyle<O, B>,
+        B extends ObjectWithStyle.Builder<O, B>> extends ChildrenAppender<O> {
+
+    private final ObjectStyleStore objectStyleStore;
+    private final TableInfo objectWithStyleTableInfo;
+
+
+    public ObjectStyleChildrenAppender(ObjectStyleStore objectStyleStore,
+                                TableInfo objectWithStyleTableInfo) {
+        this.objectStyleStore = objectStyleStore;
+        this.objectWithStyleTableInfo = objectWithStyleTableInfo;
+    }
+
+    @Override
+    protected O appendChildren(O objectWithStyle) {
+        B builder = objectWithStyle.toBuilder();
+        ObjectStyle style = objectStyleStore.getStyle(objectWithStyle, objectWithStyleTableInfo);
+        return builder.style(style).build();
+    }
 }

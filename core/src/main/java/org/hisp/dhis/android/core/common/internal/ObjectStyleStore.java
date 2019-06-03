@@ -26,29 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.common.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.di.internal.ObjectWithoutUidStoreProvider;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectWithStyle;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class ObjectStyleEntityDIModule implements ObjectWithoutUidStoreProvider<ObjectStyle> {
-
-    @Override
-    @Provides
-    @Reusable
-    public ObjectWithoutUidStore<ObjectStyle> store(DatabaseAdapter databaseAdapter) {
-        return ObjectStyleStoreImpl.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    public ObjectStyleHandler handler(ObjectWithoutUidStore<ObjectStyle> store) {
-        return new ObjectStyleHandlerImpl(store);
-    }
+interface ObjectStyleStore extends ObjectWithoutUidStore<ObjectStyle> {
+    <O extends ObjectWithStyle<?, ?> & ObjectWithUidInterface> ObjectStyle getStyle(O objectWithStyle,
+                                                                                    TableInfo tableInfo);
 }

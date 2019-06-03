@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import android.content.ContentValues;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.paging.internal.RepositoryDataSource;
 import org.hisp.dhis.android.core.arch.repositories.paging.internal.RepositoryPagingConfig;
@@ -38,7 +39,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem;
 import org.hisp.dhis.android.core.category.CategoryOption;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.junit.Before;
 import org.junit.Test;

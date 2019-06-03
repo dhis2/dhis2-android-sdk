@@ -81,6 +81,9 @@ public final class DatabaseAssert {
 
                 if (tableCount(tableName) > 0) {
                     isEmpty = false;
+                    if (expectedEmpty) {
+                        break;
+                    }
                 }
             }
         }
@@ -90,11 +93,12 @@ public final class DatabaseAssert {
 
     private int tableCount(String tableName) {
         Cursor cursor = null;
-        int count = 0;
+        int count;
 
         try {
-            cursor = databaseAdapter.query("SELECT * from " + tableName);
-            count = cursor.getCount();
+            cursor = databaseAdapter.query("SELECT COUNT(*) from " + tableName, null);
+            cursor.moveToFirst();
+            count = cursor.getInt(0);
         } finally {
             if (cursor != null) {
                 cursor.close();

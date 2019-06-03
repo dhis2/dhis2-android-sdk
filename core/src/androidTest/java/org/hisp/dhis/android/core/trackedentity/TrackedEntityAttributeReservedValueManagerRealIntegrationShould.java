@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -69,7 +69,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould extends AbsStoreTestCase {
+public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould extends BaseRealIntegrationTest {
 
     private TrackedEntityAttributeReservedValueStoreInterface store;
     private String organisationUnitUid = "org_unit_uid";

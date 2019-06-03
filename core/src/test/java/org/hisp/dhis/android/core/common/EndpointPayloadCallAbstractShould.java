@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.resource.Resource;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
@@ -71,11 +70,6 @@ public abstract class EndpointPayloadCallAbstractShould<P> extends BaseCallShoul
 
         when(payload.items()).thenReturn(pojoList);
         when(retrofitCall.execute()).thenReturn(Response.success(payload));
-    }
-
-    @After
-    public void tearDown() throws IOException {
-        super.tearDown();
     }
 
     @Test(expected = D2Error.class)

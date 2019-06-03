@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.arch.api.internal.APICallExecutorImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.List;

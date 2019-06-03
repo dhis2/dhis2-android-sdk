@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
 import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;

@@ -32,7 +32,6 @@ import android.content.Context;
 import android.os.StrictMode;
 
 import org.hisp.dhis.android.BuildConfig;
-import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.category.CategoryModule;
 import org.hisp.dhis.android.core.common.SSLContextInitializer;
 import org.hisp.dhis.android.core.common.Unit;
@@ -41,7 +40,6 @@ import org.hisp.dhis.android.core.constant.ConstantModule;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetModule;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
@@ -97,14 +95,7 @@ public final class D2 {
 
         this.retrofit = retrofit;
         this.databaseAdapter = databaseAdapter;
-
-        this.d2DIComponent = DaggerD2DIComponent.builder()
-                .appContextDIModule(new AppContextDIModule(context))
-                .databaseDIModule(new DatabaseDIModule(databaseAdapter))
-                .apiClientDIModule(new APIClientDIModule(retrofit))
-                .build();
-
-
+        this.d2DIComponent = D2DIComponent.create(context, retrofit, databaseAdapter);
         this.modules = d2DIComponent.modules();
     }
 

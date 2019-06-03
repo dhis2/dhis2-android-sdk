@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.period;
 
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLOrderType;
@@ -53,15 +53,12 @@ public final class PeriodStoreImpl extends ObjectWithoutUidStoreImpl<Period> imp
     private static final WhereStatementBinder<Period> WHERE_UPDATE_BINDER
             = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 5, o.periodId());
 
+    private static final WhereStatementBinder<Period> WHERE_DELETE_BINDER
+            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.periodId());
+
     private PeriodStoreImpl(DatabaseAdapter databaseAdapter,
                             SQLStatementBuilder builder) {
-        super(databaseAdapter,
-                databaseAdapter.compileStatement(builder.insert()),
-                databaseAdapter.compileStatement(builder.updateWhere()),
-                builder,
-                BINDER,
-                WHERE_UPDATE_BINDER,
-                Period::create);
+        super(databaseAdapter, builder, BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, Period::create);
     }
 
     @Override

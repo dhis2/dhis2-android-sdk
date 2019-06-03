@@ -28,9 +28,8 @@
 
 package org.hisp.dhis.android.core.user;
 
-import androidx.test.runner.AndroidJUnit4;
-
-import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,8 +38,8 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-@RunWith(AndroidJUnit4.class)
-public class UserModuleMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+@RunWith(D2JunitRunner.class)
+public class UserModuleMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
     public void allow_access_to_authenticated_user() {

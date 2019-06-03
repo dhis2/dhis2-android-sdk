@@ -31,11 +31,11 @@ package org.hisp.dhis.android.core.trackedentity.api;
 import junit.framework.Assert;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.internal.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.EventStatus;
@@ -71,7 +71,7 @@ import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstance
 import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithEnrollmentAndEvent;
 import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithFutureEnrollment;
 
-public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
+public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegrationTest {
 
     // API version dependant parameters
     private String serverUrl;

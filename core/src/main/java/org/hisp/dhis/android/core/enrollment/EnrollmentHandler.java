@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableDataSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.State;

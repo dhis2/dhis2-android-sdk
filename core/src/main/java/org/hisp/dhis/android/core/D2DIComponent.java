@@ -28,9 +28,11 @@
 
 package org.hisp.dhis.android.core;
 
-import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.di.RepositoriesDIModule;
+import android.content.Context;
+
+import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.di.internal.RepositoriesDIModule;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
@@ -39,6 +41,7 @@ import org.hisp.dhis.android.core.category.CategoryPackageDIModule;
 import org.hisp.dhis.android.core.common.CommonPackageDIModule;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.constant.ConstantPackageDIModule;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
 import org.hisp.dhis.android.core.dataapproval.DataApprovalPackageDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElement;
@@ -77,6 +80,7 @@ import javax.inject.Singleton;
 
 import androidx.annotation.VisibleForTesting;
 import dagger.Component;
+import retrofit2.Retrofit;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 @Singleton
@@ -172,5 +176,13 @@ public interface D2DIComponent {
         Builder trackedEntityPackageDIModule(TrackedEntityPackageDIModule trackedEntityPackageDIModule);
         Builder userPackageDIModule(UserPackageDIModule userPackageDIModule);
         D2DIComponent build();
+    }
+
+    static D2DIComponent create(Context context, Retrofit retrofit, DatabaseAdapter databaseAdapter) {
+        return DaggerD2DIComponent.builder()
+                .appContextDIModule(new AppContextDIModule(context))
+                .databaseDIModule(new DatabaseDIModule(databaseAdapter))
+                .apiClientDIModule(new APIClientDIModule(retrofit))
+                .build();
     }
 }

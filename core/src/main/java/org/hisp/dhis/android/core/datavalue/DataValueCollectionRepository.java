@@ -28,20 +28,18 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.DataValueImportSummary;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -53,39 +51,20 @@ import dagger.Reusable;
 @Reusable
 public final class DataValueCollectionRepository
         extends ReadOnlyCollectionRepositoryImpl<DataValue, DataValueCollectionRepository>
-        implements ReadWriteWithUploadCollectionRepository<DataValue> {
+        implements ReadOnlyWithUploadCollectionRepository<DataValue> {
 
-    private final DataValueStore dataValueStore;
-    private final SyncHandler<DataValue> dataValueHandler;
+    private final DataValueStore store;
     private final DataValuePostCall postCall;
 
     @Inject
-    DataValueCollectionRepository(final DataValueStore dataValueStore,
+    DataValueCollectionRepository(final DataValueStore store,
                                   final Map<String, ChildrenAppender<DataValue>> childrenAppenders,
                                   final RepositoryScope scope,
-                                  final SyncHandler<DataValue> dataValueHandler,
                                   final DataValuePostCall postCall) {
-        super(dataValueStore, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new DataValueCollectionRepository(dataValueStore, childrenAppenders, s,
-                        dataValueHandler, postCall)));
-        this.dataValueHandler = dataValueHandler;
-        this.dataValueStore = dataValueStore;
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                s -> new DataValueCollectionRepository(store, childrenAppenders, s, postCall)));
+        this.store = store;
         this.postCall = postCall;
-    }
-
-    @Override
-    public void add(DataValue dataValue) throws D2Error {
-
-        if (dataValueStore.exists(dataValue)) {
-            throw D2Error
-                    .builder()
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
-                    .errorDescription("Tried to create already existing DataValue: " + dataValue)
-                    .build();
-        }
-
-        dataValueHandler.handle(dataValue.toBuilder().state(State.TO_POST).build());
     }
 
     @Override
@@ -93,6 +72,20 @@ public final class DataValueCollectionRepository
         return postCall;
     }
 
+    public DataValueObjectRepository value(String period,
+                                           String organisationUnit,
+                                           String dataElement,
+                                           String categoryOptionCombo,
+                                           String attributeOptionCombo) {
+        RepositoryScope updatedScope = byPeriod().eq(period)
+                .byOrganisationUnitUid().eq(organisationUnit)
+                .byDataElementUid().eq(dataElement)
+                .byCategoryOptionComboUid().eq(categoryOptionCombo)
+                .byAttributeOptionComboUid().eq(attributeOptionCombo)
+                .scope;
+        return new DataValueObjectRepository(store, childrenAppenders, updatedScope, period, organisationUnit,
+                dataElement, categoryOptionCombo, attributeOptionCombo);
+    }
 
     public StringFilterConnector<DataValueCollectionRepository> byDataElementUid() {
         return cf.string(DataValueFields.DATA_ELEMENT);
@@ -136,5 +129,9 @@ public final class DataValueCollectionRepository
 
     public BooleanFilterConnector<DataValueCollectionRepository> byFollowUp() {
         return cf.bool(DataValueFields.FOLLOW_UP);
+    }
+
+    public EnumFilterConnector<DataValueCollectionRepository, State> byState() {
+        return cf.enumC(BaseDataModel.Columns.STATE);
     }
 }

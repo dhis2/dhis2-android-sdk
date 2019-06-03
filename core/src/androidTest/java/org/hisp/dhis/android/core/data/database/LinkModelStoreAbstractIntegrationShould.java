@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.Model;
 import org.junit.Before;
@@ -76,6 +76,6 @@ public abstract class LinkModelStoreAbstractIntegrationShould<M extends Model>
         store.insert(object);
         store.deleteLinksForMasterUid(masterUid);
         M objectFromDb = store.selectFirst();
-        assertThat(objectFromDb).isEqualTo(objectWithOtherMasterUid);
+        assertEqualsIgnoreId(objectFromDb, objectWithOtherMasterUid);
     }
 }

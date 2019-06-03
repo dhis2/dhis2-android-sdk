@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.internal.APICallExecutorImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
 import org.hisp.dhis.android.core.calls.EndpointCall;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +44,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -93,11 +91,6 @@ public class ProgramEndpointCallShould extends BaseCallShould {
 
         when(programService.getPrograms(any(Fields.class), anyString(), anyBoolean())
         ).thenReturn(retrofitCall);
-    }
-
-    @After
-    public void tearDown() throws IOException {
-        super.tearDown();
     }
 
     private EndpointCall<Program> castedEndpointCall() {

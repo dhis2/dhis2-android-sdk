@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.resource;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.resource.ResourceSamples;
 import org.junit.Test;
@@ -47,9 +47,9 @@ public class ResourceStoreIntegrationShould extends ObjectWithoutUidStoreAbstrac
     private ResourceStore store;
 
     public ResourceStoreIntegrationShould() {
-        super(ResourceStoreImpl.create(DatabaseAdapterFactory.get(false)), ResourceTableInfo.TABLE_INFO,
-                DatabaseAdapterFactory.get(false));
-        this.store = ResourceStoreImpl.create(DatabaseAdapterFactory.get(false));
+        super(ResourceStoreImpl.create(DatabaseAdapterFactory.get()), ResourceTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get());
+        this.store = ResourceStoreImpl.create(DatabaseAdapterFactory.get());
     }
 
     @Override

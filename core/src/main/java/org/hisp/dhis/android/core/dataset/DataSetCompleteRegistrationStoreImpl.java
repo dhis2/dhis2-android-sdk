@@ -28,11 +28,9 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.database.sqlite.SQLiteStatement;
-
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.common.State;
@@ -64,10 +62,18 @@ final class DataSetCompleteRegistrationStoreImpl extends
                 sqLiteBind(sqLiteStatement, 11, dataSetCompleteRegistration.attributeOptionCombo());
             };
 
-    private DataSetCompleteRegistrationStoreImpl(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
-                                                 SQLiteStatement updateWhereStatement, SQLStatementBuilder builder) {
-        super(databaseAdapter, insertStatement, updateWhereStatement,
-                builder, BINDER, WHERE_UPDATE_BINDER, DataSetCompleteRegistration::create);
+    private static final WhereStatementBinder<DataSetCompleteRegistration> WHERE_DELETE_BINDER =
+            (dataSetCompleteRegistration, sqLiteStatement) -> {
+                sqLiteBind(sqLiteStatement, 1, dataSetCompleteRegistration.period());
+                sqLiteBind(sqLiteStatement, 2, dataSetCompleteRegistration.dataSet());
+                sqLiteBind(sqLiteStatement, 3, dataSetCompleteRegistration.organisationUnit());
+                sqLiteBind(sqLiteStatement, 4, dataSetCompleteRegistration.attributeOptionCombo());
+            };
+
+    private DataSetCompleteRegistrationStoreImpl(DatabaseAdapter databaseAdapter,
+                                                 SQLStatementBuilder builder) {
+        super(databaseAdapter, builder, BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER,
+                DataSetCompleteRegistration::create);
     }
 
     public static DataSetCompleteRegistrationStoreImpl create(DatabaseAdapter databaseAdapter) {
@@ -76,10 +82,7 @@ final class DataSetCompleteRegistrationStoreImpl extends
                 new SQLStatementBuilder(DataSetCompleteRegistrationTableInfo.TABLE_INFO.name(),
                         DataSetCompleteRegistrationTableInfo.TABLE_INFO.columns());
 
-        return new DataSetCompleteRegistrationStoreImpl(databaseAdapter, databaseAdapter.compileStatement(
-                sqlStatementBuilder.insert()),
-                databaseAdapter.compileStatement(sqlStatementBuilder.updateWhere()),
-                sqlStatementBuilder);
+        return new DataSetCompleteRegistrationStoreImpl(databaseAdapter, sqlStatementBuilder);
     }
 
     @Override

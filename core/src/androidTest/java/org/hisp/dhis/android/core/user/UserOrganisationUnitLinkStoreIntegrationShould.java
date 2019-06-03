@@ -28,9 +28,10 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.user.UserOrganisationUnitLinkSamples;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.junit.runner.RunWith;
 
 import androidx.test.runner.AndroidJUnit4;
@@ -40,13 +41,13 @@ public class UserOrganisationUnitLinkStoreIntegrationShould
         extends LinkModelStoreAbstractIntegrationShould<UserOrganisationUnitLink> {
 
     public UserOrganisationUnitLinkStoreIntegrationShould() {
-        super(UserOrganisationUnitLinkStoreImpl.create(DatabaseAdapterFactory.get(false)),
-                UserOrganisationUnitLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(UserOrganisationUnitLinkStoreImpl.create(DatabaseAdapterFactory.get()),
+                UserOrganisationUnitLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override
     protected String addMasterUid() {
-        return UserOrganisationUnitLinkSamples.getUserOrganisationUnitLink().user();
+        return UserOrganisationUnitLinkSamples.getUserOrganisationUnitLink().organisationUnitScope();
     }
 
     @Override
@@ -57,7 +58,7 @@ public class UserOrganisationUnitLinkStoreIntegrationShould
     @Override
     protected UserOrganisationUnitLink buildObjectWithOtherMasterUid() {
         return buildObject().toBuilder()
-                .user("new_user")
+                .organisationUnitScope("other-scope")
                 .build();
     }
 }

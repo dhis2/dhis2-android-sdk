@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
+import android.content.ContentValues;
+
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -63,16 +64,11 @@ public abstract class ObjectStoreAbstractIntegrationShould<M extends Model> {
         store.delete();
     }
 
-    @After
-    public void tearDown() throws IOException {
-        DatabaseAdapterFactory.get(false).database().close();
-    }
-
     @Test
     public void insert_and_select_first_object() {
         store.insert(object);
         M objectFromDb = store.selectFirst();
-        assertThat(objectFromDb).isEqualTo(object);
+        assertEqualsIgnoreId(objectFromDb);
     }
 
     @Test
@@ -81,30 +77,36 @@ public abstract class ObjectStoreAbstractIntegrationShould<M extends Model> {
                 .insert(tableInfo.name(), null, object.toContentValues());
         assertThat(rowsInserted).isEqualTo(1);
         M objectFromDb = store.selectFirst();
-        assertThat(objectFromDb).isEqualTo(object);
+        assertEqualsIgnoreId(objectFromDb);
     }
 
     @Test
     public void insert_and_select_all_objects() {
         store.insert(object);
         List<M> objectsFromDb = store.selectAll();
-        assertThat(objectsFromDb.iterator().next()).isEqualTo(object);
+        assertEqualsIgnoreId(objectsFromDb.iterator().next());
     }
 
     @Test
     public void delete_inserted_object_by_id() {
         store.insert(object);
-        store.deleteById(object);
+        M m = store.selectFirst();
+        store.deleteById(m);
         assertThat(store.selectFirst()).isEqualTo(null);
     }
 
-    @Test
-    public void select_inserted_object_where_clause() {
-        // TODO Implement test for store.selectWhere() method
+
+    void assertEqualsIgnoreId(M localObject) {
+        assertEqualsIgnoreId(localObject, object);
     }
 
-    @Test
-    public void select_inserted_string_columns_where_clause() {
-        // TODO Implement test for store.selectStringColumnsWhereClause() method
+    void assertEqualsIgnoreId(M m1, M m2) {
+        ContentValues cv1 = m1.toContentValues();
+        cv1.remove("_id");
+
+        ContentValues cv2 = m2.toContentValues();
+        cv2.remove("_id");
+
+        assertThat(cv1).isEqualTo(cv2);
     }
 }

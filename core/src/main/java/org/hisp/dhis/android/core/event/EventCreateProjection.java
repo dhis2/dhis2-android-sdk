@@ -30,24 +30,24 @@ package org.hisp.dhis.android.core.event;
 
 import com.google.auto.value.AutoValue;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 @AutoValue
 public abstract class EventCreateProjection {
 
-    @Nullable
+    @NonNull
     public abstract String enrollment();
 
-    @Nullable
+    @NonNull
     public abstract String program();
 
-    @Nullable
+    @NonNull
     public abstract String programStage();
 
-    @Nullable
+    @NonNull
     public abstract String organisationUnit();
 
-    @Nullable
+    @NonNull
     public abstract String attributeOptionCombo();
 
     public static EventCreateProjection create(

@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.data.common.ValueTypeDeviceRenderingSamples;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.junit.runner.RunWith;
 
@@ -40,8 +40,8 @@ public class ValueTypeDeviceRenderingStoreIntegrationShould
         extends ObjectWithoutUidStoreAbstractIntegrationShould<ValueTypeDeviceRendering> {
 
     public ValueTypeDeviceRenderingStoreIntegrationShould() {
-        super(ValueTypeDeviceRenderingStore.create(DatabaseAdapterFactory.get(false)),
-                ValueTypeDeviceRenderingTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(ValueTypeDeviceRenderingStore.create(DatabaseAdapterFactory.get()),
+                ValueTypeDeviceRenderingTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

@@ -29,12 +29,11 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
 
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
@@ -63,24 +62,28 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
         sqLiteBind(sqLiteStatement, 7, o.providedElsewhere());
     };
 
-
     private static final WhereStatementBinder<TrackedEntityDataValue> WHERE_UPDATE_BINDER
             = (o, sqLiteStatement) -> {
         sqLiteBind(sqLiteStatement, 8, o.event());
         sqLiteBind(sqLiteStatement, 9, o.dataElement());
     };
 
+    private static final WhereStatementBinder<TrackedEntityDataValue> WHERE_DELETE_BINDER
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.event());
+        sqLiteBind(sqLiteStatement, 2, o.dataElement());
+    };
+
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
             TrackedEntityDataValueTableInfo.TABLE_INFO, TrackedEntityDataValueTableInfo.Columns.EVENT);
 
     private TrackedEntityDataValueStoreImpl(DatabaseAdapter databaseAdapter,
-                                            SQLiteStatement insertStatement,
-                                            SQLiteStatement updateWhereStatement,
                                             SQLStatementBuilder builder,
                                             StatementBinder<TrackedEntityDataValue> binder,
-                                            WhereStatementBinder<TrackedEntityDataValue> whereBinder,
+                                            WhereStatementBinder<TrackedEntityDataValue> whereUpdateBinder,
+                                            WhereStatementBinder<TrackedEntityDataValue> whereDeleteBinder,
                                             CursorModelFactory<TrackedEntityDataValue> modelFactory) {
-        super(databaseAdapter, insertStatement, updateWhereStatement, builder, binder, whereBinder, modelFactory);
+        super(databaseAdapter, builder, binder, whereUpdateBinder, whereDeleteBinder, modelFactory);
     }
 
     @Override
@@ -150,14 +153,8 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
                 TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
                 TrackedEntityDataValueTableInfo.TABLE_INFO.columns());
 
-        return new TrackedEntityDataValueStoreImpl(
-                databaseAdapter,
-                databaseAdapter.compileStatement(statementBuilder.insert()),
-                databaseAdapter.compileStatement(statementBuilder.updateWhere()),
-                statementBuilder,
-                BINDER,
-                WHERE_UPDATE_BINDER,
-                TrackedEntityDataValue::create
+        return new TrackedEntityDataValueStoreImpl(databaseAdapter, statementBuilder, BINDER, WHERE_UPDATE_BINDER,
+                WHERE_DELETE_BINDER, TrackedEntityDataValue::create
         );
     }
 }

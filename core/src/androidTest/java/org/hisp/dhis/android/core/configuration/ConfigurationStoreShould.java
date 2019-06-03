@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.configuration;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,11 +42,14 @@ import okhttp3.HttpUrl;
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
-public class ConfigurationStoreShould extends AbsStoreTestCase {
+public class ConfigurationStoreShould extends BaseRealIntegrationTest {
     private static final String[] PROJECTION = {ConfigurationTableInfo.Columns.ID,
             ConfigurationTableInfo.Columns.SERVER_URL};
 
     private ConfigurationStore store;
+
+    private static final String URL1 = "http://testserver.org/api/";
+    private static final String URL2 = "http://othertestserver.org/api/";
 
     @Before
     @Override
@@ -57,54 +60,54 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
 
     @Test
     public void persist_row_in_database_when_save() {
-        store.save(Configuration.builder().serverUrl(HttpUrl.parse("http://testserver.org/")).build());
+        store.save(Configuration.builder().serverUrl(HttpUrl.parse(URL1)).build());
 
         Cursor cursor = database().query(ConfigurationTableInfo.TABLE_INFO.name(),
                 PROJECTION, null, null, null, null, null);
 
         assertThatCursor(cursor)
-                .hasRow(1L, "http://testserver.org/api/")
+                .hasRow(1L, URL1)
                 .isExhausted();
     }
 
     @Test
     public void not_thrown_on_save_conflict() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ConfigurationTableInfo.Columns.SERVER_URL, "http://testserver.org/");
+        contentValues.put(ConfigurationTableInfo.Columns.SERVER_URL, URL1);
 
         database().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
 
         // trying to configure configuration with server url (which is set to be unique in the table)
-        store.save(Configuration.builder().serverUrl(HttpUrl.parse("http://testserver.org/")).build());
+        store.save(Configuration.builder().serverUrl(HttpUrl.parse(URL1)).build());
 
         Cursor cursor = database().query(ConfigurationTableInfo.TABLE_INFO.name(),
                 PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor)
-                .hasRow(2L, "http://testserver.org/api/")
+                .hasRow(2L, URL1)
                 .isExhausted();
     }
 
     @Test
     public void not_persist_more_than_one_url_on_save() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ConfigurationTableInfo.Columns.SERVER_URL, "http://testserver.org/");
+        contentValues.put(ConfigurationTableInfo.Columns.SERVER_URL, URL1);
 
         database().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
 
-        HttpUrl url = HttpUrl.parse("http://othertestserver.org/");
+        HttpUrl url = HttpUrl.parse(URL2);
         store.save(Configuration.builder().serverUrl(url).build());
 
         Cursor cursor = database().query(ConfigurationTableInfo.TABLE_INFO.name(),
                 PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor)
-                .hasRow(2L, "http://othertestserver.org/api/")
+                .hasRow(2L, URL2)
                 .isExhausted();
     }
 
     @Test
     public void delete_persisted_rows_on_delete() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ConfigurationTableInfo.Columns.SERVER_URL, "http://testserver.org/");
+        contentValues.put(ConfigurationTableInfo.Columns.SERVER_URL, URL1);
 
         database().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
 
@@ -125,15 +128,15 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
     @Test
     public void return_persisted_row_when_query() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ConfigurationTableInfo.Columns.SERVER_URL, "http://testserver.org/");
+        contentValues.put(ConfigurationTableInfo.Columns.SERVER_URL, URL1);
 
         database().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
 
-        HttpUrl url = HttpUrl.parse("http://othertestserver.org/");
+        HttpUrl url = HttpUrl.parse(URL2);
         store.save(Configuration.builder().serverUrl(url).build());
 
         Configuration persistedConfiguration = store.selectFirst();
-        assertThat(persistedConfiguration.serverUrl().toString()).isEqualTo("http://othertestserver.org/api/");
+        assertThat(persistedConfiguration.serverUrl().toString()).isEqualTo(URL2);
     }
 
     @Test

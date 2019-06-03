@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.user.User;
 
 import java.util.Set;
 
 interface OrganisationUnitHandler extends SyncHandlerWithTransformer<OrganisationUnit> {
-    void setData(Set<String> programUids, Set<String> dataSetUids, User user);
+    void setData(Set<String> programUids, Set<String> dataSetUids, User user, OrganisationUnit.Scope scope);
 }

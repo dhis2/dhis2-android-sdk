@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteWithUidDataObjectRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithUidDataObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Coordinates;
@@ -99,6 +99,6 @@ public final class EventObjectRepository
 
     @Override
     protected void propagateState() {
-        dataStatePropagator.propagateEventState(event);
+        dataStatePropagator.propagateEventUpdate(event);
     }
 }

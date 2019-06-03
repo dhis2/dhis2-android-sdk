@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -48,10 +48,13 @@ public final class AuthenticatedUserStore {
     private static final WhereStatementBinder<AuthenticatedUser> WHERE_UPDATE_BINDER
             = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 4, o.user());
 
+    private static final WhereStatementBinder<AuthenticatedUser> WHERE_DELETE_BINDER
+            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.user());
+
     private AuthenticatedUserStore() {}
 
     public static ObjectWithoutUidStore<AuthenticatedUser> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, AuthenticatedUserTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER, AuthenticatedUser::create);
+                BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, AuthenticatedUser::create);
     }
 }

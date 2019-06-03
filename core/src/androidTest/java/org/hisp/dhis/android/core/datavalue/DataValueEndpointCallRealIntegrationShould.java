@@ -29,12 +29,12 @@
 package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.internal.APICallExecutorImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -45,7 +45,7 @@ import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getDataSe
 import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getOrgUnitUids;
 import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getPeriodIds;
 
-public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase {
+public class DataValueEndpointCallRealIntegrationShould extends BaseRealIntegrationTest {
     /**
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
      * metadataSyncCall. It works against the demo server.

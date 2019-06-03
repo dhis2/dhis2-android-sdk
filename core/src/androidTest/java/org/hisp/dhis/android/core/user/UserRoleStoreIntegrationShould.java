@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.user.UserRoleSamples;
 import org.junit.runner.RunWith;
@@ -40,8 +40,8 @@ public class UserRoleStoreIntegrationShould extends
         IdentifiableObjectStoreAbstractIntegrationShould<UserRole> {
 
     public UserRoleStoreIntegrationShould() {
-        super(UserRoleStore.create(DatabaseAdapterFactory.get(false)),
-                UserRoleTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(UserRoleStore.create(DatabaseAdapterFactory.get()),
+                UserRoleTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

@@ -28,14 +28,19 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.content.Context;
+
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.arch.api.retrofit.PreventURLDecodeInterceptor;
+import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor;
 import org.hisp.dhis.android.core.configuration.Configuration;
+import org.hisp.dhis.android.core.d2manager.D2Configuration;
+import org.hisp.dhis.android.core.d2manager.D2Manager;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import androidx.test.InstrumentationRegistry;
@@ -43,6 +48,33 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 public class D2Factory {
+
+    public static D2 create(String urlWithoutAPI, String databaseName) {
+        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+
+        D2Configuration d2Configuration = D2Configuration.builder()
+                .databaseName(databaseName)
+                .appName("d2_integration_tests")
+                .appVersion("1.0.0")
+                .readTimeoutInSeconds(30)
+                .connectTimeoutInSeconds(30)
+                .writeTimeoutInSeconds(30)
+                .networkInterceptors(Collections.singletonList(new StethoInterceptor()))
+                .interceptors(Collections.singletonList(loggingInterceptor))
+                .context(context)
+                .build();
+
+        D2Manager d2Manager = new D2Manager(d2Configuration);
+
+        if (!d2Manager.isD2Configured()) {
+            d2Manager.configureD2(urlWithoutAPI);
+        }
+
+        return d2Manager.getD2();
+    }
+
     public static D2 create(String urlWithoutAPI, DatabaseAdapter databaseAdapter) {
         return new D2.Builder()
                 .configuration(Configuration.forServerUrlStringWithoutAPI(urlWithoutAPI))

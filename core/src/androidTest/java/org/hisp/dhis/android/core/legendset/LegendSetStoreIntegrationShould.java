@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.legendset.LegendSetSamples;
 import org.junit.runner.RunWith;
@@ -39,7 +39,7 @@ import androidx.test.runner.AndroidJUnit4;
 public class LegendSetStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<LegendSet> {
 
     public LegendSetStoreIntegrationShould() {
-        super(LegendSetStore.create(DatabaseAdapterFactory.get(false)), LegendSetTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(LegendSetStore.create(DatabaseAdapterFactory.get()), LegendSetTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

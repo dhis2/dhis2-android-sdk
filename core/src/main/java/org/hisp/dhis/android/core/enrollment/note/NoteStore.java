@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.enrollment.note;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -56,6 +56,14 @@ public final class NoteStore {
         sqLiteBind(sqLiteStatement, 10, o.storedDate());
     };
 
+    private static final WhereStatementBinder<Note> WHERE_DELETE_BINDER
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.enrollment());
+        sqLiteBind(sqLiteStatement, 2, o.value());
+        sqLiteBind(sqLiteStatement, 3, o.storedBy());
+        sqLiteBind(sqLiteStatement, 4, o.storedDate());
+    };
+
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
             NoteTableInfo.TABLE_INFO, NoteTableInfo.Columns.ENROLLMENT);
 
@@ -63,6 +71,6 @@ public final class NoteStore {
 
     public static ObjectWithoutUidStore<Note> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, NoteTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER, Note::create);
+                BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, Note::create);
     }
 }

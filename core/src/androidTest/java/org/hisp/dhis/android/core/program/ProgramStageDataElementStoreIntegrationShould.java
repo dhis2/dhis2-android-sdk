@@ -28,15 +28,15 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.program.ProgramStageDataElementSamples;
 
 public class ProgramStageDataElementStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramStageDataElement> {
 
     public ProgramStageDataElementStoreIntegrationShould() {
-        super(ProgramStageDataElementStore.create(DatabaseAdapterFactory.get(false)),
-                ProgramStageDataElementTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(ProgramStageDataElementStore.create(DatabaseAdapterFactory.get()),
+                ProgramStageDataElementTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override

@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 
 import javax.inject.Inject;
 

@@ -28,18 +28,18 @@
 
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.arch.db.executors.CursorExecutorImpl;
-import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStoreImpl;
-import org.hisp.dhis.android.core.arch.db.stores.ObjectWithUidChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.ObjectWithUidChildStoreImpl;
-import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStoreImpl;
-import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
-import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorExecutorImpl;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStoreImpl;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStoreImpl;
+import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStoreImpl;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class StoreFactory {
@@ -67,13 +67,12 @@ public final class StoreFactory {
 
     public static <I extends Model> ObjectWithoutUidStore<I> objectWithoutUidStore(
             DatabaseAdapter databaseAdapter, TableInfo tableInfo, StatementBinder<I> binder,
-            WhereStatementBinder<I> whereBinder, CursorModelFactory<I> modelFactory) {
+            WhereStatementBinder<I> whereUpdateBinder,
+            WhereStatementBinder<I> whereDeleteBinder, CursorModelFactory<I> modelFactory) {
         SQLStatementBuilder statementBuilder =
                 new SQLStatementBuilder(tableInfo.name(), tableInfo.columns().all(), tableInfo.columns().whereUpdate());
-        return new ObjectWithoutUidStoreImpl<>(databaseAdapter,
-                databaseAdapter.compileStatement(statementBuilder.insert()),
-                databaseAdapter.compileStatement(statementBuilder.updateWhere()),
-                statementBuilder, binder, whereBinder, modelFactory);
+        return new ObjectWithoutUidStoreImpl<>(databaseAdapter, statementBuilder, binder, whereUpdateBinder,
+                whereDeleteBinder, modelFactory);
     }
 
     public static <I extends Model> LinkModelStore<I> linkModelStore(

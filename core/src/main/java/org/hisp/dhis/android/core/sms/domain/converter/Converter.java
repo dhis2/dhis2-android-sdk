@@ -22,13 +22,17 @@ public abstract class Converter<P> {
     }
 
     public Single<String> readAndConvert() {
+        return readAndConvert(0);
+    }
+
+    public Single<String> readAndConvert(int submissionId) {
         return Single.zip(
                 localDbRepository.getMetadataIds(),
                 localDbRepository.getUserName(),
                 readItemFromDb(),
                 CompressionData::new
         ).flatMap(
-                d -> convert(d.item, d.metadata, d.user)
+                d -> convert(d.item, d.metadata, d.user, submissionId)
         );
     }
 
@@ -36,8 +40,8 @@ public abstract class Converter<P> {
      * @param dataItem object to convert
      * @return text ready to be sent by sms
      */
-    private Single<String> convert(@NonNull P dataItem, Metadata metadata, String user) {
-        return convert(dataItem, user).map(submission -> {
+    private Single<String> convert(@NonNull P dataItem, Metadata metadata, String user, Integer submissionId) {
+        return convert(dataItem, user, submissionId).map(submission -> {
             SMSSubmissionWriter writer = new SMSSubmissionWriter(metadata);
             return base64(writer.compress(submission));
         });
@@ -62,7 +66,7 @@ public abstract class Converter<P> {
         return localDbRepository;
     }
 
-    abstract Single<? extends SMSSubmission> convert(@NonNull P dataItem, String user);
+    abstract Single<? extends SMSSubmission> convert(@NonNull P dataItem, String user, int submissionId);
 
     public abstract Completable updateSubmissionState(State state);
 

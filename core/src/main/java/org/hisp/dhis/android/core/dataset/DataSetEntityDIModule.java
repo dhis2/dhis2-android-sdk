@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -70,7 +70,7 @@ public final class DataSetEntityDIModule {
 
     @Provides
     @Reusable
-    CollectionCleaner<DataSet> collectionCleaner(DatabaseAdapter databaseAdapter) {
+    public CollectionCleaner<DataSet> collectionCleaner(DatabaseAdapter databaseAdapter) {
         return new CollectionCleanerImpl<>(DataSetTableInfo.TABLE_INFO.name(), databaseAdapter);
     }
 

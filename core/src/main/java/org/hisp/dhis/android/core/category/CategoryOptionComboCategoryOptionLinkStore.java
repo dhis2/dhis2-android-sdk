@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.category;
 
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;

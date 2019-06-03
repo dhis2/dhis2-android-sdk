@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
@@ -55,10 +55,16 @@ public final class RelationshipConstraintStore {
         sqLiteBind(sqLiteStatement, 8, o.constraintType());
     };
 
+    private static final WhereStatementBinder<RelationshipConstraint> WHERE_DELETE_BINDER
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull(o.relationshipType()));
+        sqLiteBind(sqLiteStatement, 2, o.constraintType());
+    };
+
     private RelationshipConstraintStore() {}
 
     public static ObjectWithoutUidStore<RelationshipConstraint> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, RelationshipConstraintTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER, RelationshipConstraint::create);
+                BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, RelationshipConstraint::create);
     }
 }

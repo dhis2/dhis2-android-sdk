@@ -28,12 +28,10 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.database.sqlite.SQLiteStatement;
-
-import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -51,14 +49,16 @@ public final class ObjectStyleStoreImpl extends ObjectWithoutUidStoreImpl<Object
     private static final WhereStatementBinder<ObjectStyle> WHERE_UPDATE_BINDER
             = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 5, o.uid());
 
+    private static final WhereStatementBinder<ObjectStyle> WHERE_DELETE_BINDER
+            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.uid());
+
     private ObjectStyleStoreImpl(DatabaseAdapter databaseAdapter,
-                                 SQLiteStatement insertStatement,
-                                 SQLiteStatement updateWhereStatement,
                                  SQLStatementBuilder builder,
                                  StatementBinder<ObjectStyle> binder,
-                                 WhereStatementBinder<ObjectStyle> whereBinder,
+                                 WhereStatementBinder<ObjectStyle> whereUpdateBinder,
+                                 WhereStatementBinder<ObjectStyle> whereDeleteBinder,
                                  CursorModelFactory<ObjectStyle> modelFactory) {
-        super(databaseAdapter, insertStatement, updateWhereStatement, builder, binder, whereBinder, modelFactory);
+        super(databaseAdapter, builder, binder, whereUpdateBinder, whereDeleteBinder, modelFactory);
     }
 
     @Override
@@ -78,12 +78,7 @@ public final class ObjectStyleStoreImpl extends ObjectWithoutUidStoreImpl<Object
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
                 ObjectStyleTableInfo.TABLE_INFO.name(), columns);
 
-        return new ObjectStyleStoreImpl(databaseAdapter,
-                databaseAdapter.compileStatement(statementBuilder.insert()),
-                databaseAdapter.compileStatement(statementBuilder.updateWhere()),
-                statementBuilder,
-                BINDER,
-                WHERE_UPDATE_BINDER,
-                ObjectStyle::create);
+        return new ObjectStyleStoreImpl(databaseAdapter, statementBuilder, BINDER, WHERE_UPDATE_BINDER,
+                WHERE_DELETE_BINDER, ObjectStyle::create);
     }
 }

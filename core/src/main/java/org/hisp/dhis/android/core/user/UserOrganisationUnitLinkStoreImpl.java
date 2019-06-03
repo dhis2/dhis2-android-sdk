@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.user;
 
 import android.database.sqlite.SQLiteStatement;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.common.LinkModelStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -65,7 +65,7 @@ public final class UserOrganisationUnitLinkStoreImpl extends LinkModelStoreImpl<
         return new UserOrganisationUnitLinkStoreImpl(
                 databaseAdapter,
                 databaseAdapter.compileStatement(statementBuilder.insert()),
-                UserOrganisationUnitLinkTableInfo.Columns.USER,
+                Columns.ORGANISATION_UNIT_SCOPE,
                 statementBuilder,
                 BINDER);
     }

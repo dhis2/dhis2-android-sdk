@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

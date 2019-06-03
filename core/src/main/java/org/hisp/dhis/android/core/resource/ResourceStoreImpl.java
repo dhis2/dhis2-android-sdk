@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.resource;
 
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
@@ -49,11 +49,12 @@ public final class ResourceStoreImpl extends ObjectWithoutUidStoreImpl<Resource>
     private static final WhereStatementBinder<Resource> WHERE_UPDATE_BINDER
             = (resource, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 3, resource.resourceType());
 
+    private static final WhereStatementBinder<Resource> WHERE_DELETE_BINDER
+            = (resource, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, resource.resourceType());
+
     private ResourceStoreImpl(DatabaseAdapter databaseAdapter,
                              SQLStatementBuilder builder) {
-        super(databaseAdapter,  databaseAdapter.compileStatement(builder.insert()),
-                databaseAdapter.compileStatement(builder.updateWhere()), builder, BINDER, WHERE_UPDATE_BINDER,
-                Resource::create);
+        super(databaseAdapter, builder, BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, Resource::create);
     }
 
     @Override

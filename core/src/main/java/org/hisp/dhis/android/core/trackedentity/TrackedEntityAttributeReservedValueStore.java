@@ -28,13 +28,9 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.sqlite.SQLiteStatement;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
@@ -42,6 +38,9 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueTableInfo.Columns;
 
 import java.util.Date;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
@@ -67,14 +66,21 @@ public final class TrackedEntityAttributeReservedValueStore
         sqLiteBind(sqLiteStatement, 10, o.value());
         sqLiteBind(sqLiteStatement, 11, o.organisationUnit());
     };
-    private TrackedEntityAttributeReservedValueStore(DatabaseAdapter databaseAdapter,
-                                                     SQLiteStatement insertStatement,
-                                                     SQLiteStatement updateWhereStatement,
-                                                     SQLStatementBuilder builder,
-                                                     StatementBinder<TrackedEntityAttributeReservedValue> binder,
-                                                     WhereStatementBinder<TrackedEntityAttributeReservedValue>
-                                                             whereBinder) {
-        super(databaseAdapter, insertStatement, updateWhereStatement, builder, binder, whereBinder,
+
+    private static final WhereStatementBinder<TrackedEntityAttributeReservedValue> WHERE_DELETE_BINDER
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.ownerUid());
+        sqLiteBind(sqLiteStatement, 2, o.value());
+        sqLiteBind(sqLiteStatement, 3, o.organisationUnit());
+    };
+
+    private TrackedEntityAttributeReservedValueStore(
+            DatabaseAdapter databaseAdapter,
+            SQLStatementBuilder builder,
+            StatementBinder<TrackedEntityAttributeReservedValue> binder,
+            WhereStatementBinder<TrackedEntityAttributeReservedValue> whereUpdateBinder,
+            WhereStatementBinder<TrackedEntityAttributeReservedValue> whereDeleteBinder) {
+        super(databaseAdapter, builder, binder, whereUpdateBinder, whereDeleteBinder,
                 TrackedEntityAttributeReservedValue::create);
     }
 
@@ -122,12 +128,7 @@ public final class TrackedEntityAttributeReservedValueStore
         SQLStatementBuilder statementBuilder =
                 new SQLStatementBuilder(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO);
 
-        return new TrackedEntityAttributeReservedValueStore(
-                databaseAdapter,
-                databaseAdapter.compileStatement(statementBuilder.insert()),
-                databaseAdapter.compileStatement(statementBuilder.updateWhere()),
-                statementBuilder,
-                BINDER,
-                WHERE_UPDATE_BINDER);
+        return new TrackedEntityAttributeReservedValueStore(databaseAdapter, statementBuilder,
+                BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER);
     }
 }

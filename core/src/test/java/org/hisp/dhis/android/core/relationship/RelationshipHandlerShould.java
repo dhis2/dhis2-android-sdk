@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
 import org.hisp.dhis.android.core.common.StoreWithState;
 import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
 import org.junit.Before;

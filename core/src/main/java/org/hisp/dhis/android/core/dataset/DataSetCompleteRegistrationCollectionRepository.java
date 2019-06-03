@@ -28,13 +28,14 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.DataValueImportSummary;
@@ -50,7 +51,8 @@ import dagger.Reusable;
 public final class DataSetCompleteRegistrationCollectionRepository
         extends ReadOnlyCollectionRepositoryImpl<DataSetCompleteRegistration,
         DataSetCompleteRegistrationCollectionRepository>
-        implements ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> {
+        implements ReadWriteCollectionRepository<DataSetCompleteRegistration>,
+        ReadOnlyWithUploadCollectionRepository<DataSetCompleteRegistration> {
 
     private final SyncHandler<DataSetCompleteRegistration> handler;
     private final DataSetCompleteRegistrationPostCall postCall;

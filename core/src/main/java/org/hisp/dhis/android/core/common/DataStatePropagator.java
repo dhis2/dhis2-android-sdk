@@ -56,23 +56,27 @@ public final class DataStatePropagator {
         this.eventStore = eventStore;
     }
 
-    public void propagateEnrollmentState(Enrollment enrollment) {
-        trackedEntityInstanceStore.setStateForUpdate(enrollment.trackedEntityInstance());
+    public void propagateEnrollmentUpdate(Enrollment enrollment) {
+        setTeiStateForUpdate(enrollment.trackedEntityInstance());
     }
 
-    public void propagateEventState(Event event) {
+    public void propagateEventUpdate(Event event) {
         Enrollment enrollment = enrollmentStore.selectByUid(event.enrollment());
         enrollmentStore.setStateForUpdate(enrollment.uid());
         trackedEntityInstanceStore.setStateForUpdate(enrollment.trackedEntityInstance());
     }
 
-    public void propagateDataValueState(TrackedEntityDataValue dataValue) {
+    public void propagateTrackedEntityDataValueUpdate(TrackedEntityDataValue dataValue) {
         Event event = eventStore.selectByUid(dataValue.event());
         eventStore.setStateForUpdate(event.uid());
-        propagateEventState(event);
+        propagateEventUpdate(event);
     }
 
-    public void propagateTrackedEntityAttribute(TrackedEntityAttributeValue attributeValue) {
-        trackedEntityInstanceStore.setStateForUpdate(attributeValue.trackedEntityInstance());
+    public void propagateTrackedEntityAttributeUpdate(TrackedEntityAttributeValue trackedEntityAttributeValue) {
+        setTeiStateForUpdate(trackedEntityAttributeValue.trackedEntityInstance());
+    }
+
+    private void setTeiStateForUpdate(String trackedEntityInstanceUid) {
+        trackedEntityInstanceStore.setStateForUpdate(trackedEntityInstanceUid);
     }
 }

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Model;
@@ -63,7 +63,7 @@ public abstract class IdentifiableObjectStoreAbstractIntegrationShould<M extends
     public void insert_and_select_by_uid() {
         store.insert(object);
         M objectFromDb = store.selectByUid(object.uid());
-        assertThat(objectFromDb).isEqualTo(object);
+        assertEqualsIgnoreId(objectFromDb);
     }
 
     @Test
@@ -102,7 +102,7 @@ public abstract class IdentifiableObjectStoreAbstractIntegrationShould<M extends
         store.insert(object);
         store.update(objectToUpdate);
         M updatedObjectFromDb = store.selectFirst();
-        assertThat(updatedObjectFromDb).isEqualTo(objectToUpdate);
+        assertEqualsIgnoreId(updatedObjectFromDb, objectToUpdate);
     }
 
     @Test

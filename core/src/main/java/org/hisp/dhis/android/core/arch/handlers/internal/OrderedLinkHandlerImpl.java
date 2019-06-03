@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.arch.handlers.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.OrderedLinkTransformer;
 
 import java.util.List;
 

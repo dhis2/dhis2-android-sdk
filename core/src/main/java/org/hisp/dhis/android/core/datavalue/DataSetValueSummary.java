@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.datavalue;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -41,6 +43,9 @@ import org.hisp.dhis.android.core.data.database.DbStateColumnAdapter;
 public abstract class DataSetValueSummary {
 
     @NonNull
+    public abstract String dataSet();
+
+    @NonNull
     public abstract String period();
 
     @NonNull
@@ -49,7 +54,7 @@ public abstract class DataSetValueSummary {
     @NonNull
     public abstract String attributeOptionCombo();
 
-    @NonNull
+    @Nullable
     @ColumnAdapter(DbStateColumnAdapter.class)
     public abstract State state();
 
@@ -66,6 +71,8 @@ public abstract class DataSetValueSummary {
 
     @AutoValue.Builder
     public abstract static class Builder {
+
+        public abstract Builder dataSet(String dataSet);
 
         public abstract Builder period(String period);
 

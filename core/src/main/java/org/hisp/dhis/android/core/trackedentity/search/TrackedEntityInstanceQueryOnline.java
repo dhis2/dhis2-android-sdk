@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.search;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseQuery;
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
 import org.hisp.dhis.android.core.common.SafeDateFormat;
 import org.hisp.dhis.android.core.data.api.OuMode;
 

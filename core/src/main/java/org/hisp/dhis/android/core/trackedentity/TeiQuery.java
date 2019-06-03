@@ -33,7 +33,7 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseQuery;
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
 import org.hisp.dhis.android.core.data.api.OuMode;
 
 import java.util.Collection;

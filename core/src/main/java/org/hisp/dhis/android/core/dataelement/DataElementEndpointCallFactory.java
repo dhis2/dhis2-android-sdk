@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCa
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.UidsQuery;
+import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
 
 import java.util.Set;
 

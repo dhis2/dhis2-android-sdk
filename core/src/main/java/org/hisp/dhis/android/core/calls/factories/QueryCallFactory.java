@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.calls.factories;
 
-import org.hisp.dhis.android.core.common.BaseQuery;
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
 
 import java.util.List;
 import java.util.concurrent.Callable;

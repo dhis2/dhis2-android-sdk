@@ -26,26 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.call.queries.internal;
 
-public abstract class BaseQuery {
-    public static final int DEFAULT_PAGE_SIZE = 50;
+import com.google.auto.value.AutoValue;
 
-    public abstract int page();
+@AutoValue
+public abstract class EmptyQuery extends BaseQuery {
 
-    public abstract int pageSize();
-
-    public abstract boolean paging();
-
+    @Override
     boolean isValid() {
         return true;
     }
 
-    protected static abstract class Builder<T extends BaseQuery.Builder> {
-        public abstract T page(int page);
-
-        public abstract T pageSize(int pageSize);
-
-        public abstract T paging(boolean paging);
+    public static EmptyQuery create() {
+        return new AutoValue_EmptyQuery(1, BaseQuery.DEFAULT_PAGE_SIZE, false);
     }
 }

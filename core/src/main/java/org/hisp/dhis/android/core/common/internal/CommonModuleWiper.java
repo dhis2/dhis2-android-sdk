@@ -26,8 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.common.internal;
 
+import org.hisp.dhis.android.core.common.ObjectStyleTableInfo;
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingTableInfo;
 import org.hisp.dhis.android.core.wipe.ModuleWiper;
 import org.hisp.dhis.android.core.wipe.TableWiper;
 

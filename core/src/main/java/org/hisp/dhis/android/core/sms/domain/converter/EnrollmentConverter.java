@@ -30,7 +30,7 @@ public class EnrollmentConverter extends Converter<TrackedEntityInstance> {
     }
 
     @Override
-    public Single<? extends SMSSubmission> convert(@NonNull TrackedEntityInstance tei, String user) {
+    public Single<? extends SMSSubmission> convert(@NonNull TrackedEntityInstance tei, String user, int submissionId) {
         List<Enrollment> enrollments = tei.enrollments();
         if (enrollments == null || enrollments.size() != 1) {
             return Single.error(
@@ -48,6 +48,7 @@ public class EnrollmentConverter extends Converter<TrackedEntityInstance> {
         return Single.fromCallable(() -> {
             Enrollment enrollment = enrollments.get(0);
             EnrollmentSMSSubmission subm = new EnrollmentSMSSubmission();
+            subm.setSubmissionID(submissionId);
             subm.setUserID(user);
             subm.setOrgUnit(enrollment.organisationUnit());
             subm.setTrackerProgram(enrollment.program());

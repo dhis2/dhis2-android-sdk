@@ -5,6 +5,8 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.smscompression.models.Metadata;
 
+import java.util.Map;
+
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
@@ -28,7 +30,9 @@ public interface LocalDbRepository {
 
     Completable setMetadataIds(Metadata metadata);
 
-    Single<Event> getEventToSubmit(String eventUid, String teiUid);
+    Single<Event> getTrackerEventToSubmit(String eventUid);
+
+    Single<Event> getSimpleEventToSubmit(String eventUid);
 
     Single<TrackedEntityInstance> getTeiEnrollmentToSubmit(String enrollmentUid, String teiUid);
 
@@ -43,4 +47,14 @@ public interface LocalDbRepository {
     Completable setModuleEnabled(boolean enabled);
 
     Single<Boolean> isModuleEnabled();
+
+    Single<Map<Integer, SubmissionType>> getOngoingSubmissions();
+
+    Completable addOngoingSubmission(Integer id, SubmissionType type);
+
+    Completable removeOngoingSubmission(Integer id);
+
+    enum SubmissionType {
+        SIMPLE_EVENT, TRACKER_EVENT, ENROLLMENT
+    }
 }

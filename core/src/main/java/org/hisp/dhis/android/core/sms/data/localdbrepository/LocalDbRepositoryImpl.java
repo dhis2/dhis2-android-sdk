@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.sms.data;
+package org.hisp.dhis.android.core.sms.data.localdbrepository;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -20,6 +20,7 @@ import org.hisp.dhis.smscompression.models.Metadata;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -34,13 +35,15 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     private final EnrollmentModule enrollmentModule;
     private final EventStore eventStore;
     private final EnrollmentStore enrollmentStore;
-    private final static String METADATA_FILE = "metadata_ids";
     private final static String CONFIG_FILE = "smsconfig";
     private final static String KEY_GATEWAY = "gateway";
     private final static String KEY_CONFIRMATION_SENDER = "confirmationsender";
     private final static String KEY_WAITING_RESULT_TIMEOUT = "reading_timeout";
     private static final String KEY_METADATA_CONFIG = "metadata_conf";
     private static final String KEY_MODULE_ENABLED = "module_enabled";
+
+    private final MetadataIdsStore metadataIdsStore;
+    private final OngoingSubmissionsStore ongoingSubmissionsStore;
 
     @Inject
     public LocalDbRepositoryImpl(Context ctx,
@@ -57,8 +60,9 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
         this.enrollmentModule = enrollmentModule;
         this.eventStore = eventStore;
         this.enrollmentStore = enrollmentStore;
+        metadataIdsStore = new MetadataIdsStore(context);
+        ongoingSubmissionsStore = new OngoingSubmissionsStore(context);
     }
-
 
     @Override
     public Single<String> getUserName() {
@@ -124,27 +128,24 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     @Override
     public Single<Metadata> getMetadataIds() {
-        return Single.fromCallable(() ->
-                ObjectMapperFactory.objectMapper().readValue(
-                        context.openFileInput(METADATA_FILE), Metadata.class
-                ));
+        return metadataIdsStore.getMetadataIds();
     }
 
     @Override
     public Completable setMetadataIds(final Metadata metadata) {
-        return Completable.fromAction(() ->
-                ObjectMapperFactory.objectMapper().writeValue(
-                        context.openFileOutput(METADATA_FILE, Context.MODE_PRIVATE), metadata
-                ));
+        return metadataIdsStore.setMetadataIds(metadata);
     }
 
     @Override
-    public Single<Event> getEventToSubmit(String eventUid, String teiUid) {
+    public Single<Event> getTrackerEventToSubmit(String eventUid) {
+        return getSimpleEventToSubmit(eventUid); // no difference at the moment
+    }
+
+    @Override
+    public Single<Event> getSimpleEventToSubmit(String eventUid) {
         return Single.fromCallable(() ->
                 eventModule.events.withTrackedEntityDataValues()
-                        .byUid().eq(eventUid).one().get().toBuilder()
-                        .trackedEntityInstance(teiUid)
-                        .build()
+                        .byUid().eq(eventUid).one().get()
         );
     }
 
@@ -209,5 +210,20 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
                 context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
                         .getBoolean(KEY_MODULE_ENABLED, false)
         );
+    }
+
+    @Override
+    public Single<Map<Integer, SubmissionType>> getOngoingSubmissions() {
+        return ongoingSubmissionsStore.getOngoingSubmissions();
+    }
+
+    @Override
+    public Completable addOngoingSubmission(Integer id, SubmissionType type) {
+        return ongoingSubmissionsStore.addOngoingSubmission(id, type);
+    }
+
+    @Override
+    public Completable removeOngoingSubmission(Integer id) {
+        return ongoingSubmissionsStore.removeOngoingSubmission(id);
     }
 }

@@ -8,7 +8,7 @@ import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.smscompression.models.DataValue;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
-import org.hisp.dhis.smscompression.models.TrackerEventSMSSubmission;
+import org.hisp.dhis.smscompression.models.SimpleEventSMSSubmission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,25 +16,23 @@ import java.util.List;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
-public class EventConverter extends Converter<Event> {
+public class SimpleEventConverter extends Converter<Event> {
     private final String eventUid;
-    private final String teiUid;
 
-    public EventConverter(LocalDbRepository localDbRepository, String eventUid, String teiUid) {
+    public SimpleEventConverter(LocalDbRepository localDbRepository, String eventUid) {
         super(localDbRepository);
         this.eventUid = eventUid;
-        this.teiUid = teiUid;
     }
 
     @Override
-    public Single<? extends SMSSubmission> convert(@NonNull Event e, String user) {
+    public Single<? extends SMSSubmission> convert(@NonNull Event e, String user, int submissionId) {
         return Single.fromCallable(() -> {
-            TrackerEventSMSSubmission subm = new TrackerEventSMSSubmission();
+            SimpleEventSMSSubmission subm = new SimpleEventSMSSubmission();
+            subm.setSubmissionID(submissionId);
+            subm.setEventProgram(e.program());
             subm.setAttributeOptionCombo(e.attributeOptionCombo());
             subm.setEvent(e.uid());
-            subm.setProgramStage(e.programStage());
             subm.setTimestamp(e.lastUpdated());
-            subm.setTrackedEntityInstance(e.trackedEntityInstance());
             subm.setValues(convertDataValues(e.attributeOptionCombo(), e.trackedEntityDataValues()));
             subm.setOrgUnit(e.organisationUnit());
             subm.setUserID(user);
@@ -49,7 +47,7 @@ public class EventConverter extends Converter<Event> {
 
     @Override
     Single<Event> readItemFromDb() {
-        return getLocalDbRepository().getEventToSubmit(eventUid, teiUid);
+        return getLocalDbRepository().getSimpleEventToSubmit(eventUid);
     }
 
     @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})

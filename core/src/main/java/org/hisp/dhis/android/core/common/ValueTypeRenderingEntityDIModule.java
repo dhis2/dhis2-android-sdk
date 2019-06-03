@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.arch.handlers.internal.DictionaryTableHandler;
+
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;

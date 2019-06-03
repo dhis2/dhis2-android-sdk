@@ -28,14 +28,13 @@
 
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.SQLOrderType;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
 
-public interface ObjectStore<M> extends DeletableStore {
+public interface ObjectStore<M> {
 
     long insert(@NonNull M m) throws RuntimeException;
 
@@ -56,6 +55,8 @@ public interface ObjectStore<M> extends DeletableStore {
     M selectFirst();
 
     List<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
+
+    int delete();
 
     boolean deleteById(@NonNull M m);
 

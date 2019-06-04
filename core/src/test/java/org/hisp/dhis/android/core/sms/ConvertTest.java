@@ -32,7 +32,7 @@ public class ConvertTest {
         Enrollment enrollment = TestRepositories.getTestEnrollment(TestRepositories.enrollmentUid, TestRepositories.teiUid);
         AtomicReference<String> result = new AtomicReference<>();
         new QrCodeCase(testLocalDb)
-                .generateEnrollmentCode(enrollment.uid(), enrollment.trackedEntityInstance())
+                .generateEnrollmentCode(enrollment.uid())
                 .test()
                 .assertNoErrors()
                 .assertValueCount(1)

@@ -26,8 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.api;
+package org.hisp.dhis.android.core.arch.api.fields.internal;
 
+import org.hisp.dhis.android.core.data.api.RetrofitFactory;
+import org.hisp.dhis.android.core.data.api.Which;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

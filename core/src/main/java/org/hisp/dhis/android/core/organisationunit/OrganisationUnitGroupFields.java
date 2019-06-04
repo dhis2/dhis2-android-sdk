@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 
 public final class OrganisationUnitGroupFields {
 

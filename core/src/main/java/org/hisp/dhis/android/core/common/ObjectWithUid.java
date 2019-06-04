@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 
 import androidx.annotation.NonNull;
 

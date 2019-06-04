@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.data.api;
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
+
 import java.util.Collection;
 
 public interface Filter<T, K> {

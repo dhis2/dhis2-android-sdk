@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.data.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory;
 import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 

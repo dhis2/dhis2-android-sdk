@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.dataapproval;
 
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.data.api.Which;
 
 import java.util.List;

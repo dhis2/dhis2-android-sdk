@@ -26,8 +26,57 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.api.fields.internal;
 
-public interface Property<Parent, Child> {
-    String name();
+import com.google.auto.value.AutoValue;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import androidx.annotation.NonNull;
+
+@AutoValue
+public abstract class Fields<T> {
+
+    @NonNull
+    public abstract List<Property<T, ?>> fields();
+
+    @NonNull
+    public static <K> Fields.Builder<K> builder() {
+        return new Builder<>();
+    }
+
+    public static class Builder<T> {
+        private final List<Property<T, ?>> fields;
+
+        Builder() {
+            this.fields = new ArrayList<>();
+        }
+
+        @SafeVarargs
+        public final Builder<T> fields(@NonNull Property<T, ?>... properties) {
+            if (properties == null || properties.length == 0) {
+                throw new IllegalArgumentException("properties == null or properties.length == 0");
+            }
+
+            fields.addAll(Arrays.asList(properties));
+            return this;
+        }
+
+        public final Builder<T> fields(@NonNull Collection<Property<T, ?>> properties) {
+            if (properties == null || properties.isEmpty()) {
+                throw new IllegalArgumentException("properties null or empty collection");
+            }
+
+            fields.addAll(properties);
+            return this;
+        }
+
+        public final Fields<T> build() {
+            return new AutoValue_Fields<>(Collections.unmodifiableList(fields));
+        }
+    }
 }

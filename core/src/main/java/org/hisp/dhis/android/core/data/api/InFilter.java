@@ -33,6 +33,8 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;

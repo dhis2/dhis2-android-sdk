@@ -26,54 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.api;
+package org.hisp.dhis.android.core.arch.api.fields.internal;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import com.google.auto.value.AutoValue;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-import static junit.framework.Assert.fail;
+import androidx.annotation.NonNull;
 
-@RunWith(JUnit4.class)
-public class FieldsShould {
+@AutoValue
+public abstract class NestedField<Parent, Child> implements Property<Parent, Child> {
+    public abstract List<Property<Child, ?>> children();
 
-    @Test
-    public void throw_illegal_argument_exception_on_null_arguments() {
-        try {
-            Fields.builder().fields().build();
-
-            fail("IllegalArgumentException was expected but was not thrown");
-        } catch (IllegalArgumentException illegalArgumentException) {
-            // swallow exception
-        }
+    public static <T, K> NestedField<T, K> create(@NonNull String name) {
+        return new AutoValue_NestedField<>(name, Collections.emptyList());
     }
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void throw_unsupported_operation_exception_when_try_to_modify_a_immutable_field() {
-        Fields fields = Fields.builder()
-                .fields(
-                        Field.create("one"),
-                        Field.create("two"),
-                        Field.create("three"))
-                .build();
-
-        try {
-            fields.fields().add(Field.create("four"));
-
-            fail("UnsupportedOperationException was expected but nothing was thrown");
-        } catch (UnsupportedOperationException unsupportedOperationException) {
-            // swallow exception
-        }
+    @SafeVarargs
+    public final NestedField<Parent, ?> with(Property<Child, ?>... properties) {
+        return with(Arrays.asList(properties));
     }
 
-    @Test
-    public void have_the_equals_method_conform_to_contract() {
-        EqualsVerifier.forClass(Fields.builder().build().getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
+    public final NestedField<Parent, ?> with(List<Property<Child, ?>> properties) {
+        if (properties != null) {
+            return new AutoValue_NestedField<>(name(), properties);
+        }
+
+        return create(name());
+    }
+
+    public final NestedField<Parent, ?> with(Fields<Child> childFields) {
+        return with(childFields.fields());
     }
 }

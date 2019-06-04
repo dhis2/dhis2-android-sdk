@@ -26,15 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.api;
-
-import androidx.annotation.NonNull;
+package org.hisp.dhis.android.core.arch.api.fields.internal;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.Property;
+import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.InFilter;
+import org.hisp.dhis.android.core.data.api.SingleValueFilter;
 
 import java.util.Collection;
+
+import androidx.annotation.NonNull;
 
 @AutoValue
 public abstract class Field<Parent, Child> implements Property<Parent, Child> {

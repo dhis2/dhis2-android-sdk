@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.data.api;
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;

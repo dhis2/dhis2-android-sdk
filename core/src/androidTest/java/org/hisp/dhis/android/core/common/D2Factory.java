@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor;
 import org.hisp.dhis.android.core.configuration.Configuration;
 import org.hisp.dhis.android.core.d2manager.D2Configuration;
 import org.hisp.dhis.android.core.d2manager.D2Manager;
-import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
+import org.hisp.dhis.android.core.arch.api.authentication.internal.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collections;

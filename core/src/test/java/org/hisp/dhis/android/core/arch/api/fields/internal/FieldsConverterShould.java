@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.api.fields.internal;
 
-import org.hisp.dhis.android.core.data.api.RetrofitFactory;
+import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.junit.Before;
 import org.junit.Test;

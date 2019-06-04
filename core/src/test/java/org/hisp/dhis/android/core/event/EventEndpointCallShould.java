@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
-import org.hisp.dhis.android.core.data.api.RetrofitFactory;
+import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.junit.AfterClass;

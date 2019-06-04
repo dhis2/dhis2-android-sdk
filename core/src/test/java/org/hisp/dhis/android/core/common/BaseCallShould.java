@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.data.api.RetrofitFactory;
+import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;

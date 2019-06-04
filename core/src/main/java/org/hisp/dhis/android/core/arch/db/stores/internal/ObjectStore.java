@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
-import org.hisp.dhis.android.core.common.SQLOrderType;
+import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
 
 import java.util.List;
 

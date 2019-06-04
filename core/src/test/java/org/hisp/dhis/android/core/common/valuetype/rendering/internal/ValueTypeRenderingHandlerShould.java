@@ -25,12 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.common.valuetype.rendering.internal;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.DictionaryTableHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeRenderingHandler;
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

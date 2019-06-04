@@ -26,33 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common.internal;
+package org.hisp.dhis.android.core.common.objectstyle.internal;
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleTableInfo;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
+import org.hisp.dhis.android.core.common.ObjectWithStyle;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-public class ObjectStyleHandlerImpl extends ObjectWithoutUidHandlerImpl<ObjectStyle> implements ObjectStyleHandler {
-
-    private final ObjectWithoutUidStore<ObjectStyle> store;
-
-    ObjectStyleHandlerImpl(ObjectWithoutUidStore<ObjectStyle> store) {
-        super(store);
-        this.store = store;
-    }
-
-    @Override
-    public void handle(ObjectStyle objectStyle, String uid, String objectTable) {
-        if (objectStyle == null) {
-            String whereClause = new WhereClauseBuilder()
-                    .appendKeyStringValue(ObjectStyleTableInfo.Columns.UID, uid).build();
-            store.deleteWhereIfExists(whereClause);
-        } else {
-            Transformer<ObjectStyle, ObjectStyle> transformer = new ObjectStyleTransformer(uid, objectTable);
-            super.handle(objectStyle, transformer);
-        }
-    }
+interface ObjectStyleStore extends ObjectWithoutUidStore<ObjectStyle> {
+    <O extends ObjectWithStyle<?, ?> & ObjectWithUidInterface> ObjectStyle getStyle(O objectWithStyle,
+                                                                                    TableInfo tableInfo);
 }

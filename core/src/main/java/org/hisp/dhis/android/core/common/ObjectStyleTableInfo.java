@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.internal.ObjectStyleFields;
+import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public final class ObjectStyleTableInfo {

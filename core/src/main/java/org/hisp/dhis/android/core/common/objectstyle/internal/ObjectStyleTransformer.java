@@ -26,30 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common.internal;
+package org.hisp.dhis.android.core.common.objectstyle.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.di.internal.ObjectWithoutUidStoreProvider;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+public class ObjectStyleTransformer implements Transformer<ObjectStyle, ObjectStyle> {
 
-@Module
-public final class ObjectStyleEntityDIModule implements ObjectWithoutUidStoreProvider<ObjectStyle> {
+    private final ObjectStyle.Builder builder;
 
-    @Override
-    @Provides
-    @Reusable
-    public ObjectWithoutUidStore<ObjectStyle> store(DatabaseAdapter databaseAdapter) {
-        return ObjectStyleStoreImpl.create(databaseAdapter);
+    public ObjectStyleTransformer(String uid, String objectTable) {
+        builder = ObjectStyle.builder()
+                .uid(uid)
+                .objectTable(objectTable);
     }
 
-    @Provides
-    @Reusable
-    public ObjectStyleHandler handler(ObjectWithoutUidStore<ObjectStyle> store) {
-        return new ObjectStyleHandlerImpl(store);
+    @Override
+    public ObjectStyle transform(ObjectStyle objectStyle) {
+        return builder
+                .color(objectStyle.color())
+                .icon(objectStyle.icon()).build();
     }
 }

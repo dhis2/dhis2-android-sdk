@@ -25,31 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+package org.hisp.dhis.android.core.common.objectstyle.internal;
+
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectWithStyle;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-public final class ObjectStyleChildrenAppender<O extends ObjectWithUidInterface & ObjectWithStyle<O, B>,
-        B extends ObjectWithStyle.Builder<O, B>> extends ChildrenAppender<O> {
+public interface ObjectStyleHandler extends HandlerWithTransformer<ObjectStyle> {
 
-    private final ObjectStyleStore objectStyleStore;
-    private final TableInfo objectWithStyleTableInfo;
-
-
-    public ObjectStyleChildrenAppender(ObjectStyleStore objectStyleStore,
-                                TableInfo objectWithStyleTableInfo) {
-        this.objectStyleStore = objectStyleStore;
-        this.objectWithStyleTableInfo = objectWithStyleTableInfo;
-    }
-
-    @Override
-    protected O appendChildren(O objectWithStyle) {
-        B builder = objectWithStyle.toBuilder();
-        ObjectStyle style = objectStyleStore.getStyle(objectWithStyle, objectWithStyleTableInfo);
-        return builder.style(style).build();
-    }
+    void handle(ObjectStyle objectStyle, String uid, String objectTable);
 }

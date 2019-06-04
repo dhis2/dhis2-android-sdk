@@ -26,22 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common.internal;
+package org.hisp.dhis.android.core.common.objectstyle.internal;
 
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.di.internal.ObjectWithoutUidStoreProvider;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class ObjectStyleFields {
-    public static final String COLOR = "color";
-    public static final String ICON = "icon";
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    private static FieldsHelper<ObjectStyle> fh = new FieldsHelper<>();
-    public static final Fields<ObjectStyle> allFields = Fields.<ObjectStyle>builder().fields(
-            fh.<String>field(COLOR),
-            fh.<String>field(ICON)
-    ).build();
+@Module
+public final class ObjectStyleEntityDIModule implements ObjectWithoutUidStoreProvider<ObjectStyle> {
 
-    private ObjectStyleFields() {
+    @Override
+    @Provides
+    @Reusable
+    public ObjectWithoutUidStore<ObjectStyle> store(DatabaseAdapter databaseAdapter) {
+        return ObjectStyleStoreImpl.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    public ObjectStyleHandler handler(ObjectWithoutUidStore<ObjectStyle> store) {
+        return new ObjectStyleHandlerImpl(store);
     }
 }

@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.common.internal;
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingEntityDIModule;
 import org.hisp.dhis.android.core.common.ValueTypeRenderingEntityDIModule;
+import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleEntityDIModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;

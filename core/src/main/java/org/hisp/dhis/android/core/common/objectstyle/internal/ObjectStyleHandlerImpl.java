@@ -26,25 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common.internal;
+package org.hisp.dhis.android.core.common.objectstyle.internal;
 
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleTableInfo;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 
-public class ObjectStyleTransformer implements Transformer<ObjectStyle, ObjectStyle> {
+public class ObjectStyleHandlerImpl extends ObjectWithoutUidHandlerImpl<ObjectStyle> implements ObjectStyleHandler {
 
-    private final ObjectStyle.Builder builder;
+    private final ObjectWithoutUidStore<ObjectStyle> store;
 
-    public ObjectStyleTransformer(String uid, String objectTable) {
-        builder = ObjectStyle.builder()
-                .uid(uid)
-                .objectTable(objectTable);
+    ObjectStyleHandlerImpl(ObjectWithoutUidStore<ObjectStyle> store) {
+        super(store);
+        this.store = store;
     }
 
     @Override
-    public ObjectStyle transform(ObjectStyle objectStyle) {
-        return builder
-                .color(objectStyle.color())
-                .icon(objectStyle.icon()).build();
+    public void handle(ObjectStyle objectStyle, String uid, String objectTable) {
+        if (objectStyle == null) {
+            String whereClause = new WhereClauseBuilder()
+                    .appendKeyStringValue(ObjectStyleTableInfo.Columns.UID, uid).build();
+            store.deleteWhereIfExists(whereClause);
+        } else {
+            Transformer<ObjectStyle, ObjectStyle> transformer = new ObjectStyleTransformer(uid, objectTable);
+            super.handle(objectStyle, transformer);
+        }
     }
 }

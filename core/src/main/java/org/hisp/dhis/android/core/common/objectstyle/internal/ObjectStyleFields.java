@@ -26,15 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common.internal;
+package org.hisp.dhis.android.core.common.objectstyle.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectWithStyle;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-interface ObjectStyleStore extends ObjectWithoutUidStore<ObjectStyle> {
-    <O extends ObjectWithStyle<?, ?> & ObjectWithUidInterface> ObjectStyle getStyle(O objectWithStyle,
-                                                                                    TableInfo tableInfo);
+public final class ObjectStyleFields {
+    public static final String COLOR = "color";
+    public static final String ICON = "icon";
+
+    private static FieldsHelper<ObjectStyle> fh = new FieldsHelper<>();
+    public static final Fields<ObjectStyle> allFields = Fields.<ObjectStyle>builder().fields(
+            fh.<String>field(COLOR),
+            fh.<String>field(ICON)
+    ).build();
+
+    private ObjectStyleFields() {
+    }
 }

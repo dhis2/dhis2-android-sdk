@@ -29,11 +29,6 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.category.CategoryTableInfo;
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo;
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
-import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;
-import org.hisp.dhis.android.core.legendset.LegendTableInfo;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -83,109 +78,6 @@ public class SQLStatementBuilderShould {
         assertThat(builder.deleteById()).isEqualTo(
                 "DELETE FROM Test_Table WHERE uid=?;"
         );
-    }
-
-    @Test
-    public void generate_create_model_table_statement() {
-        String statement = SQLStatementBuilder.createModelTable("Test_Table",
-                "Test_Column_Name TEXT");
-
-        assertThat(statement).isEqualTo(
-                "CREATE TABLE Test_Table (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        "Test_Column_Name TEXT);");
-    }
-
-    @Test
-    public void generate_create_identifiable_table_statement() {
-        String statement = SQLStatementBuilder.createIdentifiableModelTable("Test_Table",
-                "Test_Column_Name TEXT");
-
-        assertThat(statement).isEqualTo(
-                "CREATE TABLE Test_Table (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        BaseIdentifiableObjectModel.Columns.UID + " TEXT NOT NULL UNIQUE, " +
-                        BaseIdentifiableObjectModel.Columns.CODE + " TEXT, " +
-                        BaseIdentifiableObjectModel.Columns.NAME + " TEXT, " +
-                        BaseIdentifiableObjectModel.Columns.DISPLAY_NAME + " TEXT, " +
-                        BaseIdentifiableObjectModel.Columns.CREATED + " TEXT, " +
-                        BaseIdentifiableObjectModel.Columns.LAST_UPDATED + " TEXT, " +
-                        "Test_Column_Name TEXT);");
-    }
-
-    @Test
-    public void generate_create_nameable_table_statement() {
-        String statement = SQLStatementBuilder.createNameableModelTable("Test_Table",
-                "Test_Column_Name TEXT");
-
-        assertThat(statement).isEqualTo(
-                "CREATE TABLE Test_Table (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        BaseIdentifiableObjectModel.Columns.UID + " TEXT NOT NULL UNIQUE, " +
-                        BaseIdentifiableObjectModel.Columns.CODE + " TEXT, " +
-                        BaseIdentifiableObjectModel.Columns.NAME + " TEXT, " +
-                        BaseIdentifiableObjectModel.Columns.DISPLAY_NAME + " TEXT, " +
-                        BaseIdentifiableObjectModel.Columns.CREATED + " TEXT, " +
-                        BaseIdentifiableObjectModel.Columns.LAST_UPDATED + " TEXT, " +
-                        BaseNameableObjectModel.Columns.SHORT_NAME + " TEXT, " +
-                        BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME + " TEXT, " +
-                        BaseNameableObjectModel.Columns.DESCRIPTION + " TEXT, " +
-                        BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION + " TEXT, " +
-                        "Test_Column_Name TEXT);");
-    }
-
-    @Test
-    public void generate_create_organisation_unit_table_statement() {
-        String createOrganisationUnitTable =
-                SQLStatementBuilder.createNameableModelTable(OrganisationUnitTableInfo.TABLE_INFO.name(),
-                        "path TEXT," +
-                                "openingDate TEXT," +
-                                "closedDate TEXT," +
-                                "level INTEGER," +
-                                "parent TEXT," +
-                                "displayNamePath TEXT"
-                );
-
-        assertThat(createOrganisationUnitTable).isEqualTo("CREATE TABLE OrganisationUnit (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, shortName TEXT, displayShortName TEXT, description TEXT, displayDescription TEXT, path TEXT,openingDate TEXT,closedDate TEXT,level INTEGER,parent TEXT,displayNamePath TEXT);");
-    }
-
-    @Test
-    public void generate_create_data_set_organisation_unit_table_statement() {
-        String createDataSetOrganisationUnitLinkTable =
-                SQLStatementBuilder.createModelTable(DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
-                        DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET + " TEXT NOT NULL," +
-                                DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
-                                " FOREIGN KEY (" + DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET + ") " +
-                                " REFERENCES " + DataSetTableInfo.TABLE_INFO.name() + " (" + BaseIdentifiableObjectModel.Columns.UID + ")" +
-                                " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-                                " FOREIGN KEY (" + DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT + ") " +
-                                " REFERENCES " + OrganisationUnitTableInfo.TABLE_INFO.name() + " (" +
-                                BaseIdentifiableObjectModel.Columns.UID + ")" +
-                                " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-                                " UNIQUE (" + DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET + ", " +
-                                DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT + ")"
-                );
-
-        assertThat(createDataSetOrganisationUnitLinkTable).isEqualTo("CREATE TABLE DataSetOrganisationUnitLink (_id INTEGER PRIMARY KEY AUTOINCREMENT, dataSet TEXT NOT NULL,organisationUnit TEXT NOT NULL, FOREIGN KEY (dataSet)  REFERENCES DataSet (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (organisationUnit)  REFERENCES OrganisationUnit (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (dataSet, organisationUnit));");
-    }
-
-    @Test
-    public void generate_create_legend_table_statement() {
-        String LEGEND_SET = "legendSet";
-        String START_VALUE = "startValue";
-        String END_VALUE = "endValue";
-        String COLOR = "color";
-
-        String createLegendTable =
-                SQLStatementBuilder.createIdentifiableModelTable(LegendTableInfo.TABLE_INFO.name(),
-                        START_VALUE + " REAL," +
-                                END_VALUE + " REAL," +
-                                COLOR + " TEXT," +
-                                LEGEND_SET + " TEXT," +
-                                " FOREIGN KEY ( " + LEGEND_SET + ")" +
-                                " REFERENCES " + LegendSetTableInfo.TABLE_INFO.name() +
-                                " (" + BaseIdentifiableObjectModel.Columns.UID + ")" +
-                                " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"
-                );
-
-        assertThat(createLegendTable).isEqualTo("CREATE TABLE Legend (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, startValue REAL,endValue REAL,color TEXT,legendSet TEXT, FOREIGN KEY ( legendSet) REFERENCES LegendSet (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);");
     }
 
     @Test

@@ -40,11 +40,11 @@ import java.util.List;
 
 public class ReadableStoreImpl<M extends Model> implements ReadableStore<M> {
     protected final DatabaseAdapter databaseAdapter;
-    protected final SQLStatementBuilder builder;
+    protected final ReadOnlySQLStatementBuilder builder;
     final CursorModelFactory<M> modelFactory;
 
     public ReadableStoreImpl(DatabaseAdapter databaseAdapter,
-                             SQLStatementBuilder builder,
+                             ReadOnlySQLStatementBuilder builder,
                              CursorModelFactory<M> modelFactory) {
         this.databaseAdapter = databaseAdapter;
         this.builder = builder;

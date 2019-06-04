@@ -28,15 +28,14 @@
 
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 
 import static org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo.SORT_ORDER;
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
 import static org.hisp.dhis.android.core.utils.Utils.commaAndSpaceSeparatedArrayValues;
 
-public class SQLStatementBuilder {
+public class SQLStatementBuilder implements ReadOnlySQLStatementBuilder {
     // TODO save TableInfo instead of separate files when architecture 1.0 is ready
     final String tableName;
     public final String[] columns;
@@ -107,15 +106,18 @@ public class SQLStatementBuilder {
         return "DELETE" + FROM + tableName + WHERE + UID + "=?;";
     }
 
-    String selectUids() {
+    @Override
+    public String selectUids() {
         return SELECT + UID + FROM + tableName;
     }
 
-    String selectUidsWhere(String whereClause) {
+    @Override
+    public String selectUidsWhere(String whereClause) {
         return SELECT + UID + FROM + tableName + WHERE + whereClause + ";";
     }
 
-    String selectColumnWhere(String column, String whereClause) {
+    @Override
+    public String selectColumnWhere(String column, String whereClause) {
         return SELECT + column + FROM + tableName + WHERE + whereClause + ";";
     }
 
@@ -143,35 +145,43 @@ public class SQLStatementBuilder {
         return hasSortOrder ? ORDER_BY + SORT_ORDER : "";
     }
 
-    String selectByUid() {
+    @Override
+    public String selectByUid() {
         return selectWhere(andSeparatedColumnEqualInterrogationMark(UID));
     }
 
+    @Override
     public String selectWhere(String whereClause) {
         return SELECT + "*" + FROM + tableName + WHERE + whereClause + ";";
     }
 
-    String selectWhere(String whereClause, int limit) {
+    @Override
+    public String selectWhere(String whereClause, int limit) {
         return selectWhere(whereClause + LIMIT + limit);
     }
 
-    String selectWhere(String whereClause, String orderByClause) {
+    @Override
+    public String selectWhere(String whereClause, String orderByClause) {
         return selectWhere(whereClause + ORDER_BY + orderByClause);
     }
 
-    String selectWhere(String whereClause, String orderByClause, int limit) {
+    @Override
+    public String selectWhere(String whereClause, String orderByClause, int limit) {
         return selectWhere(whereClause + ORDER_BY + orderByClause + LIMIT + limit);
     }
 
-    String selectAll() {
+    @Override
+    public String selectAll() {
         return  SELECT + "*" + FROM + tableName;
     }
 
-    String count() {
+    @Override
+    public String count() {
         return SELECT + "COUNT(*)" + FROM + tableName + ";";
     }
 
-    String countWhere(String whereClause) {
+    @Override
+    public String countWhere(String whereClause) {
         return SELECT + "COUNT(*)" + FROM + tableName + WHERE + whereClause + ";";
     }
 
@@ -192,47 +202,5 @@ public class SQLStatementBuilder {
         String whereClause = whereColumns.length == 0 ? BaseModel.Columns.ID + " = -1" :
                 andSeparatedColumnEqualInterrogationMark(whereColumns);
         return "DELETE" + FROM + tableName + WHERE + whereClause + ";";
-    }
-
-    @SuppressWarnings("PMD.UseVarargs")
-    private static String createTableWrapper(String tableName, String[] columnsWithAttributes) {
-        return "CREATE TABLE " + tableName + " (" +
-                commaAndSpaceSeparatedArrayValues(columnsWithAttributes) + ");";
-    }
-
-    private static String[] idColumn() {
-        return new String[]{BaseModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT"};
-    }
-
-    private static String[] identifiableColumns() {
-        return Utils.appendInNewArray(idColumn(),
-                UID + TEXT + " NOT NULL UNIQUE",
-                BaseIdentifiableObjectModel.Columns.CODE + TEXT,
-                BaseIdentifiableObjectModel.Columns.NAME + TEXT,
-                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME + TEXT,
-                BaseIdentifiableObjectModel.Columns.CREATED + TEXT,
-                BaseIdentifiableObjectModel.Columns.LAST_UPDATED + TEXT
-        );
-    }
-
-    private static String[] nameableColumns() {
-        return Utils.appendInNewArray(identifiableColumns(),
-                BaseNameableObjectModel.Columns.SHORT_NAME + TEXT,
-                BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME + TEXT,
-                BaseNameableObjectModel.Columns.DESCRIPTION + TEXT,
-                BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION + TEXT
-        );
-    }
-
-    public static String createModelTable(String tableName, String... columnsWithAttributes) {
-        return createTableWrapper(tableName, Utils.appendInNewArray(idColumn(), columnsWithAttributes));
-    }
-
-    public static String createIdentifiableModelTable(String tableName, String... columnsWithAttributes) {
-        return createTableWrapper(tableName, Utils.appendInNewArray(identifiableColumns(), columnsWithAttributes));
-    }
-
-    public static String createNameableModelTable(String tableName, String... columnsWithAttributes) {
-        return createTableWrapper(tableName, Utils.appendInNewArray(nameableColumns(), columnsWithAttributes));
     }
 }

@@ -26,20 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.common.valuetype.devicerendering.internal;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.DictionaryTableHandler;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class ValueTypeRenderingEntityDIModule {
+public final class ValueTypeDeviceRenderingEntityDIModule {
 
     @Provides
     @Reusable
-    DictionaryTableHandler<ValueTypeRendering> handler(ValueTypeRenderingHandler impl) {
-        return impl;
+    ObjectWithoutUidStore<ValueTypeDeviceRendering> store(DatabaseAdapter databaseAdapter) {
+        return ValueTypeDeviceRenderingStore.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    HandlerWithTransformer<ValueTypeDeviceRendering> handler(
+            ObjectWithoutUidStore<ValueTypeDeviceRendering> store) {
+        return new ObjectWithoutUidHandlerImpl<>(store);
     }
 }

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.common;
 import org.hisp.dhis.android.core.arch.handlers.internal.DictionaryTableHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
+import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeRenderingHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

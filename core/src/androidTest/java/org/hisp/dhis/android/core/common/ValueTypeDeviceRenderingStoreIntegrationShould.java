@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStore;
 import org.hisp.dhis.android.core.data.common.ValueTypeDeviceRenderingSamples;
 import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;

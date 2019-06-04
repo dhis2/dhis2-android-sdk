@@ -28,17 +28,17 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-final class TrackedEntityAttributeHandler extends IdentifiableSyncHandlerImpl<TrackedEntityAttribute> {
+final class TrackedEntityAttributeHandler extends IdentifiableHandlerImpl<TrackedEntityAttribute> {
     private final ObjectStyleHandler styleHandler;
 
     @Inject

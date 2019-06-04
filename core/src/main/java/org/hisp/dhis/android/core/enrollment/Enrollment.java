@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.enrollment;
 
 import android.database.Cursor;
-import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -54,6 +53,8 @@ import org.hisp.dhis.android.core.event.Event;
 
 import java.util.Date;
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Enrollment.Builder.class)

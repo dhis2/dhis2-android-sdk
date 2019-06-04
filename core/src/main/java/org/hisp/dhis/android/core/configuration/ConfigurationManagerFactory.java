@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.configuration;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import androidx.annotation.NonNull;
 
 public final class ConfigurationManagerFactory {
 

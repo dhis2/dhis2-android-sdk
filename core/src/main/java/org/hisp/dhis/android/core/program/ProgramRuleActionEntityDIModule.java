@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collections;
@@ -52,8 +52,8 @@ public final class ProgramRuleActionEntityDIModule {
 
     @Provides
     @Reusable
-    SyncHandler<ProgramRuleAction> handler(IdentifiableObjectStore<ProgramRuleAction> store) {
-        return new IdentifiableSyncHandlerImpl<>(store);
+    Handler<ProgramRuleAction> handler(IdentifiableObjectStore<ProgramRuleAction> store) {
+        return new IdentifiableHandlerImpl<>(store);
     }
 
     @Provides

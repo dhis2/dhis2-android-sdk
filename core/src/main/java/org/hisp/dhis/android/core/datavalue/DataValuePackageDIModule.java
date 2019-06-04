@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
 
 import dagger.Module;
 import dagger.Provides;

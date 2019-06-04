@@ -27,15 +27,12 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
@@ -52,14 +49,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
-class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<OrganisationUnit>
+class OrganisationUnitHandlerImpl extends IdentifiableHandlerImpl<OrganisationUnit>
         implements OrganisationUnitHandler {
-    private final LinkSyncHandler<OrganisationUnit, UserOrganisationUnitLink> userOrganisationUnitLinkHandler;
-    private final LinkSyncHandler<Program, OrganisationUnitProgramLink> organisationUnitProgramLinkHandler;
-    private final LinkSyncHandler<DataSet, DataSetOrganisationUnitLink> dataSetOrganisationUnitLinkHandler;
-    private final SyncHandler<OrganisationUnitGroup> organisationUnitGroupHandler;
-    private final LinkSyncHandler<OrganisationUnitGroup, OrganisationUnitOrganisationUnitGroupLink>
+    private final LinkHandler<OrganisationUnit, UserOrganisationUnitLink> userOrganisationUnitLinkHandler;
+    private final LinkHandler<Program, OrganisationUnitProgramLink> organisationUnitProgramLinkHandler;
+    private final LinkHandler<DataSet, DataSetOrganisationUnitLink> dataSetOrganisationUnitLinkHandler;
+    private final Handler<OrganisationUnitGroup> organisationUnitGroupHandler;
+    private final LinkHandler<OrganisationUnitGroup, OrganisationUnitOrganisationUnitGroupLink>
             organisationUnitGroupLinkHandler;
 
     private User user;
@@ -72,15 +72,15 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
     private Set<OrganisationUnit> userOrganisationUnitsToAdd;
 
     OrganisationUnitHandlerImpl(@NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
-                                @NonNull LinkSyncHandler<OrganisationUnit, UserOrganisationUnitLink>
+                                @NonNull LinkHandler<OrganisationUnit, UserOrganisationUnitLink>
                                         userOrganisationUnitLinkHandler,
-                                @NonNull LinkSyncHandler<Program, OrganisationUnitProgramLink>
+                                @NonNull LinkHandler<Program, OrganisationUnitProgramLink>
                                     organisationUnitProgramLinkHandler,
-                                @NonNull LinkSyncHandler<DataSet, DataSetOrganisationUnitLink>
+                                @NonNull LinkHandler<DataSet, DataSetOrganisationUnitLink>
                                     dataSetOrganisationUnitLinkHandler,
-                                @Nullable SyncHandler<OrganisationUnitGroup> organisationUnitGroupHandler,
-                                @NonNull LinkSyncHandler<OrganisationUnitGroup,
-                                        OrganisationUnitOrganisationUnitGroupLink>
+                                @Nullable Handler<OrganisationUnitGroup> organisationUnitGroupHandler,
+                                @NonNull LinkHandler<OrganisationUnitGroup,
+                                                                        OrganisationUnitOrganisationUnitGroupLink>
                                         organisationUnitGroupLinkHandler) {
 
         super(organisationUnitStore);
@@ -191,10 +191,10 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
     public static OrganisationUnitHandler create(DatabaseAdapter databaseAdapter) {
         return new OrganisationUnitHandlerImpl(
                 OrganisationUnitStore.create(databaseAdapter),
-                new LinkSyncHandlerImpl<>(UserOrganisationUnitLinkStoreImpl.create(databaseAdapter)),
-                new LinkSyncHandlerImpl<>(OrganisationUnitProgramLinkStore.create(databaseAdapter)),
-                new LinkSyncHandlerImpl<>(DataSetOrganisationUnitLinkStore.create(databaseAdapter)),
-                new IdentifiableSyncHandlerImpl<>(OrganisationUnitGroupStore.create(databaseAdapter)),
-                new LinkSyncHandlerImpl<>(OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter)));
+                new LinkHandlerImpl<>(UserOrganisationUnitLinkStoreImpl.create(databaseAdapter)),
+                new LinkHandlerImpl<>(OrganisationUnitProgramLinkStore.create(databaseAdapter)),
+                new LinkHandlerImpl<>(DataSetOrganisationUnitLinkStore.create(databaseAdapter)),
+                new IdentifiableHandlerImpl<>(OrganisationUnitGroupStore.create(databaseAdapter)),
+                new LinkHandlerImpl<>(OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter)));
     }
 }

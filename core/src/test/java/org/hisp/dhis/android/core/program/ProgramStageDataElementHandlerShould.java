@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.DictionaryTableHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.junit.Before;
@@ -50,7 +50,7 @@ public class ProgramStageDataElementHandlerShould {
     private IdentifiableObjectStore<ProgramStageDataElement> programStageDataElementStore;
 
     @Mock
-    private SyncHandler<DataElement> dataElementHandler;
+    private Handler<DataElement> dataElementHandler;
 
     @Mock
     private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
@@ -92,7 +92,7 @@ public class ProgramStageDataElementHandlerShould {
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableSyncHandlerImpl<ProgramStageDataElement> genericHandler =
+        IdentifiableHandlerImpl<ProgramStageDataElement> genericHandler =
                 new ProgramStageDataElementHandler(null, null, null);
     }
 }

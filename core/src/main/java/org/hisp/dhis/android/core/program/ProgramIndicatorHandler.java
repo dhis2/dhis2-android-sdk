@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.legendset.LegendSet;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink;
 
@@ -40,14 +40,14 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class ProgramIndicatorHandler extends IdentifiableSyncHandlerImpl<ProgramIndicator> {
-    private final SyncHandler<LegendSet> legendSetHandler;
-    private final LinkSyncHandler<LegendSet, ProgramIndicatorLegendSetLink> programIndicatorLegendSetLinkHandler;
+final class ProgramIndicatorHandler extends IdentifiableHandlerImpl<ProgramIndicator> {
+    private final Handler<LegendSet> legendSetHandler;
+    private final LinkHandler<LegendSet, ProgramIndicatorLegendSetLink> programIndicatorLegendSetLinkHandler;
 
     @Inject
     ProgramIndicatorHandler(IdentifiableObjectStore<ProgramIndicator> programIndicatorStore,
-                            SyncHandler<LegendSet> legendSetHandler,
-                            LinkSyncHandler<LegendSet, ProgramIndicatorLegendSetLink>
+                            Handler<LegendSet> legendSetHandler,
+                            LinkHandler<LegendSet, ProgramIndicatorLegendSetLink>
                                     programIndicatorLegendSetLinkHandler) {
         super(programIndicatorStore);
         this.legendSetHandler = legendSetHandler;

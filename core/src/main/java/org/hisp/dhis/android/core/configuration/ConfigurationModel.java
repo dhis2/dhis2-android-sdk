@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.configuration;
 
 import android.database.Cursor;
-import androidx.annotation.NonNull;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
@@ -37,6 +36,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 
+import androidx.annotation.NonNull;
 import okhttp3.HttpUrl;
 
 @Deprecated

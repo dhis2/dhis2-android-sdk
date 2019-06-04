@@ -29,10 +29,11 @@
 package org.hisp.dhis.android.core.common;
 
 import android.content.ContentValues;
-import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gabrielittner.auto.value.cursor.ColumnName;
+
+import androidx.annotation.Nullable;
 
 public interface Model {
     @Nullable

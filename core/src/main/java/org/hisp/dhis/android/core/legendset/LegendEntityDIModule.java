@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -48,7 +48,7 @@ public final class LegendEntityDIModule {
 
     @Provides
     @Reusable
-    public SyncHandlerWithTransformer<Legend> handler(IdentifiableObjectStore<Legend> store) {
-        return new IdentifiableSyncHandlerImpl<>(store);
+    public HandlerWithTransformer<Legend> handler(IdentifiableObjectStore<Legend> store) {
+        return new IdentifiableHandlerImpl<>(store);
     }
 }

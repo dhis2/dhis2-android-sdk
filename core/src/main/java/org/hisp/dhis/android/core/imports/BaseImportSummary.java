@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.imports;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public abstract class BaseImportSummary implements ImportSummary {
 

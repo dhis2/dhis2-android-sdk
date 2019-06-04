@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
-import org.hisp.dhis.android.core.common.OrderedLinkTransformer;
-import org.hisp.dhis.android.core.common.OrphanCleaner;
-import org.hisp.dhis.android.core.common.Transformer;
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -57,10 +57,10 @@ public class CategoryComboHandlerShould {
     private IdentifiableObjectStore<CategoryCombo> categoryComboStore;
 
     @Mock
-    private SyncHandlerWithTransformer<CategoryOptionCombo> optionComboHandler;
+    private HandlerWithTransformer<CategoryOptionCombo> optionComboHandler;
 
     @Mock
-    private OrderedLinkSyncHandler<Category, CategoryCategoryComboLink> categoryCategoryComboLinkHandler;
+    private OrderedLinkHandler<Category, CategoryCategoryComboLink> categoryCategoryComboLinkHandler;
 
     @Mock
     private OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner;
@@ -76,7 +76,7 @@ public class CategoryComboHandlerShould {
     @Mock
     private List<CategoryOptionCombo> optionCombos;
 
-    private SyncHandler<CategoryCombo> categoryComboHandler;
+    private Handler<CategoryCombo> categoryComboHandler;
 
     private List<Category> categories;
 

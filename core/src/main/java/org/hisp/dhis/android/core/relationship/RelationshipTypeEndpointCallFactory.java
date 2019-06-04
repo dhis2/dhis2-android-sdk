@@ -28,15 +28,15 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
-import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
-import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalResourceSyncCallProcessor;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactoryImpl;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.PayloadResourceCallFetcher;
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
+import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.resource.Resource;
 
 import javax.inject.Inject;
@@ -49,13 +49,13 @@ final class RelationshipTypeEndpointCallFactory extends ListCallFactoryImpl<Rela
     private final Resource.Type resourceType = Resource.Type.RELATIONSHIP_TYPE;
 
     private final RelationshipTypeService service;
-    private final SyncHandler<RelationshipType> handler;
+    private final Handler<RelationshipType> handler;
 
     @Inject
     RelationshipTypeEndpointCallFactory(GenericCallData data,
                                         APICallExecutor apiCallExecutor,
                                         RelationshipTypeService service,
-                                        SyncHandler<RelationshipType> handler) {
+                                        Handler<RelationshipType> handler) {
         super(data, apiCallExecutor);
         this.service = service;
         this.handler = handler;

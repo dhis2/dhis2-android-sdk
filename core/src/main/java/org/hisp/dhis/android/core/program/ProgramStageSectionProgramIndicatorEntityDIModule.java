@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -48,8 +48,8 @@ public final class ProgramStageSectionProgramIndicatorEntityDIModule {
 
     @Provides
     @Reusable
-    public LinkSyncHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLink> handler(
+    public LinkHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLink> handler(
             LinkModelStore<ProgramStageSectionProgramIndicatorLink> store) {
-        return new LinkSyncHandlerImpl<>(store);
+        return new LinkHandlerImpl<>(store);
     }
 }

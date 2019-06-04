@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
 import javax.inject.Inject;
@@ -40,19 +40,19 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class ProgramStageSectionHandler extends IdentifiableSyncHandlerImpl<ProgramStageSection> {
-    private final SyncHandler<ProgramIndicator> programIndicatorHandler;
-    private final LinkSyncHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLink>
+final class ProgramStageSectionHandler extends IdentifiableHandlerImpl<ProgramStageSection> {
+    private final Handler<ProgramIndicator> programIndicatorHandler;
+    private final LinkHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLink>
             programStageSectionProgramIndicatorLinkHandler;
-    private final OrderedLinkSyncHandler<DataElement, ProgramStageSectionDataElementLink>
+    private final OrderedLinkHandler<DataElement, ProgramStageSectionDataElementLink>
             programStageSectionDataElementLinkHandler;
 
     @Inject
     ProgramStageSectionHandler(IdentifiableObjectStore<ProgramStageSection> programStageSectionStore,
-                               SyncHandler<ProgramIndicator> programIndicatorHandler,
-                               LinkSyncHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLink>
+                               Handler<ProgramIndicator> programIndicatorHandler,
+                               LinkHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLink>
                                        programStageSectionProgramIndicatorLinkHandler,
-                               OrderedLinkSyncHandler<DataElement, ProgramStageSectionDataElementLink>
+                               OrderedLinkHandler<DataElement, ProgramStageSectionDataElementLink>
                                        programStageSectionDataElementLinkHandler) {
         super(programStageSectionStore);
         this.programIndicatorHandler = programIndicatorHandler;

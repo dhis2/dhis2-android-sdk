@@ -27,15 +27,15 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.common.CollectionCleaner;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
@@ -46,9 +46,9 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class ProgramStageHandler extends IdentifiableSyncHandlerImpl<ProgramStage> {
-    private final SyncHandlerWithTransformer<ProgramStageSection> programStageSectionHandler;
-    private final SyncHandler<ProgramStageDataElement> programStageDataElementHandler;
+final class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage> {
+    private final HandlerWithTransformer<ProgramStageSection> programStageSectionHandler;
+    private final Handler<ProgramStageDataElement> programStageDataElementHandler;
     private final ObjectStyleHandler styleHandler;
     private final OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner;
     private final OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner;
@@ -57,8 +57,8 @@ final class ProgramStageHandler extends IdentifiableSyncHandlerImpl<ProgramStage
 
     @Inject
     ProgramStageHandler(IdentifiableObjectStore<ProgramStage> programStageStore,
-                        SyncHandlerWithTransformer<ProgramStageSection> programStageSectionHandler,
-                        SyncHandler<ProgramStageDataElement> programStageDataElementHandler,
+                        HandlerWithTransformer<ProgramStageSection> programStageSectionHandler,
+                        Handler<ProgramStageDataElement> programStageDataElementHandler,
                         ObjectStyleHandler styleHandler,
                         OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner,
                         OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner,

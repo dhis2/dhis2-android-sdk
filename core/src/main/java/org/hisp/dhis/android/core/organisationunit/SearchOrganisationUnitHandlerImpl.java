@@ -27,11 +27,9 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkHelper;
@@ -39,10 +37,11 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
-class SearchOrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<OrganisationUnit>
+class SearchOrganisationUnitHandlerImpl extends IdentifiableHandlerImpl<OrganisationUnit>
     implements SearchOrganisationUnitHandler {
 
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;

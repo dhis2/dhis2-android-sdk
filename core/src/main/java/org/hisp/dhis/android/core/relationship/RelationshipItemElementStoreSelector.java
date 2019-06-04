@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.StoreWithState;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState;
 
 interface RelationshipItemElementStoreSelector {
     StoreWithState getElementStore(RelationshipItem item);

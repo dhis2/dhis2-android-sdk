@@ -28,31 +28,30 @@
 
 package org.hisp.dhis.android.core.category;
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
-import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
-final class CategoryComboHandler extends IdentifiableSyncHandlerImpl<CategoryCombo> {
+final class CategoryComboHandler extends IdentifiableHandlerImpl<CategoryCombo> {
 
-    private final SyncHandlerWithTransformer<CategoryOptionCombo> optionComboHandler;
-    private final OrderedLinkSyncHandler<Category, CategoryCategoryComboLink> categoryCategoryComboLinkHandler;
+    private final HandlerWithTransformer<CategoryOptionCombo> optionComboHandler;
+    private final OrderedLinkHandler<Category, CategoryCategoryComboLink> categoryCategoryComboLinkHandler;
     private final OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner;
 
     @Inject
     CategoryComboHandler(
             @NonNull IdentifiableObjectStore<CategoryCombo> store,
-            @NonNull SyncHandlerWithTransformer<CategoryOptionCombo> optionComboHandler,
-            @NonNull OrderedLinkSyncHandler<Category, CategoryCategoryComboLink> categoryCategoryComboLinkHandler,
+            @NonNull HandlerWithTransformer<CategoryOptionCombo> optionComboHandler,
+            @NonNull OrderedLinkHandler<Category, CategoryCategoryComboLink> categoryCategoryComboLinkHandler,
             OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner) {
         super(store);
         this.optionComboHandler = optionComboHandler;

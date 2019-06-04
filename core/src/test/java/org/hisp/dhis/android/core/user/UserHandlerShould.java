@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.common.CollectionCleaner;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,10 +48,10 @@ public class UserHandlerShould {
     private IdentifiableObjectStore<User> userStore;
 
     @Mock
-    private SyncHandler<UserCredentials> userCredentialsHandler;
+    private Handler<UserCredentials> userCredentialsHandler;
 
     @Mock
-    private SyncHandler<UserRole> userRoleHandler;
+    private Handler<UserRole> userRoleHandler;
 
     @Mock
     private CollectionCleaner<UserRole> userRoleCollectionCleaner;
@@ -74,7 +74,7 @@ public class UserHandlerShould {
 
     @Test
     public void extend_identifiable_sync_handler_impl() {
-        IdentifiableSyncHandlerImpl<User> genericHandler = new UserHandler(null, null, null, null);
+        IdentifiableHandlerImpl<User> genericHandler = new UserHandler(null, null, null, null);
     }
 
     @Test

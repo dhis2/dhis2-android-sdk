@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.configuration;
 
-import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 
 public interface ConfigurationStore extends ObjectStore<Configuration> {
 

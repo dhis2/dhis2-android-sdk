@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
-import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactoryImpl;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 
 import java.util.List;
 
@@ -44,13 +44,13 @@ import dagger.Reusable;
 @Reusable
 final class AuthorityEndpointCallFactory extends ListCallFactoryImpl<Authority> {
 
-    private final SyncHandler<Authority> handler;
+    private final Handler<Authority> handler;
     private final AuthorityService service;
 
     @Inject
     AuthorityEndpointCallFactory(GenericCallData data,
                                  APICallExecutor apiCallExecutor,
-                                 SyncHandler<Authority> handler,
+                                 Handler<Authority> handler,
                                  AuthorityService service) {
         super(data, apiCallExecutor);
         this.handler = handler;

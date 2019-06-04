@@ -29,8 +29,6 @@ package org.hisp.dhis.android.core.arch.db.cursors.internal;
 
 import android.database.Cursor;
 
-import org.hisp.dhis.android.core.common.CursorModelFactory;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

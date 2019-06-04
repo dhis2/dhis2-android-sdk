@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueChildrenAppender;
 
@@ -52,7 +52,7 @@ public final class EventEntityDIModule {
 
     @Provides
     @Reusable
-    public SyncHandlerWithTransformer<Event> handler(EventHandler impl) {
+    public HandlerWithTransformer<Event> handler(EventHandler impl) {
         return impl;
     }
 

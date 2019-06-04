@@ -28,18 +28,18 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseQuery;
-import org.hisp.dhis.android.core.common.SafeDateFormat;
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
+import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
 import org.hisp.dhis.android.core.data.api.OuMode;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 @AutoValue
 public abstract class TrackedEntityInstanceQuery extends BaseQuery {

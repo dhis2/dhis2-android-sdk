@@ -28,16 +28,16 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
-import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
-import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactoryImpl;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.PayloadResourceCallFetcher;
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
+import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.resource.Resource;
 
 import javax.inject.Inject;
@@ -49,14 +49,14 @@ import retrofit2.Call;
 final class DataSetEndpointCallFactory extends ListCallFactoryImpl<DataSet> {
 
     private final DataSetService dataSetService;
-    private final SyncHandler<DataSet> dataSetHandler;
+    private final Handler<DataSet> dataSetHandler;
     private final Resource.Type resourceType = Resource.Type.DATA_SET;
 
     @Inject
     DataSetEndpointCallFactory(GenericCallData data,
                                APICallExecutor apiCallExecutor,
                                DataSetService dataSetService,
-                               SyncHandler<DataSet> dataSetHandler) {
+                               Handler<DataSet> dataSetHandler) {
         super(data, apiCallExecutor);
         this.dataSetService = dataSetService;
         this.dataSetHandler = dataSetHandler;

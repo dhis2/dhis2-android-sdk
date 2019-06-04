@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.common.StoreWithState;
 
 public interface IdentifiableObjectWithStateStore<O extends ObjectWithUidInterface>
         extends IdentifiableObjectStore<O>, StoreWithState {

@@ -33,7 +33,7 @@ import android.os.StrictMode;
 
 import org.hisp.dhis.android.BuildConfig;
 import org.hisp.dhis.android.core.category.CategoryModule;
-import org.hisp.dhis.android.core.common.SSLContextInitializer;
+import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.configuration.Configuration;
 import org.hisp.dhis.android.core.constant.ConstantModule;

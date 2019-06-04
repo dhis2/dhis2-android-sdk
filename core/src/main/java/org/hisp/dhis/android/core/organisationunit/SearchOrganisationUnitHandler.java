@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.user.User;
 
-interface SearchOrganisationUnitHandler extends SyncHandlerWithTransformer<OrganisationUnit> {
+interface SearchOrganisationUnitHandler extends HandlerWithTransformer<OrganisationUnit> {
     void setUser(User user);
 }

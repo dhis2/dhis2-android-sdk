@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.utils.services;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.AggregationType;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.dataelement.DataElement;

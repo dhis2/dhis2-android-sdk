@@ -29,10 +29,11 @@
 package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
-import androidx.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+
+import androidx.annotation.Nullable;
 
 public class CreateProgramUtils {
     /**

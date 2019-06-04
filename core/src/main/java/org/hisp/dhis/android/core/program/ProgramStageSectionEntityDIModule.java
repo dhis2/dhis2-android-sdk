@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.HashMap;
@@ -51,7 +51,7 @@ public final class ProgramStageSectionEntityDIModule {
 
     @Provides
     @Reusable
-    public SyncHandlerWithTransformer<ProgramStageSection> handler(ProgramStageSectionHandler impl) {
+    public HandlerWithTransformer<ProgramStageSection> handler(ProgramStageSectionHandler impl) {
         return impl;
     }
 

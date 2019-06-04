@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -42,6 +40,7 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable

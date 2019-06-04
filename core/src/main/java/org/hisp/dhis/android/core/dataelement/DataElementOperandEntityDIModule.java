@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -48,7 +48,7 @@ public final class DataElementOperandEntityDIModule {
 
     @Provides
     @Reusable
-    SyncHandler<DataElementOperand> handler(IdentifiableObjectStore<DataElementOperand> store) {
-        return new IdentifiableSyncHandlerImpl<>(store);
+    Handler<DataElementOperand> handler(IdentifiableObjectStore<DataElementOperand> store) {
+        return new IdentifiableHandlerImpl<>(store);
     }
 }

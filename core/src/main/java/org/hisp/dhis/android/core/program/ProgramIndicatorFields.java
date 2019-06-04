@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.api.fields.internal.NestedField;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Property;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.Property;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.legendset.LegendSet;
 import org.hisp.dhis.android.core.legendset.LegendSetFields;
 

@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
@@ -59,6 +58,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionRepository;
 import org.hisp.dhis.android.core.utils.CodeGenerator;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;

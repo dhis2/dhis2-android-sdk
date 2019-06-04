@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 import org.hisp.dhis.android.core.imports.ImportStatus;
+
+import androidx.annotation.NonNull;
 
 final class DataValueImportHandler {
 

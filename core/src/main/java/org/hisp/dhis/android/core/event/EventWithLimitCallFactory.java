@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.event;
 
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.maintenance.D2Error;

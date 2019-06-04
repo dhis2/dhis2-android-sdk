@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
@@ -54,7 +54,7 @@ public final class DataSetCompleteRegistrationCollectionRepository
         implements ReadWriteCollectionRepository<DataSetCompleteRegistration>,
         ReadOnlyWithUploadCollectionRepository<DataSetCompleteRegistration> {
 
-    private final SyncHandler<DataSetCompleteRegistration> handler;
+    private final Handler<DataSetCompleteRegistration> handler;
     private final DataSetCompleteRegistrationPostCall postCall;
 
     @Inject
@@ -62,7 +62,7 @@ public final class DataSetCompleteRegistrationCollectionRepository
             final DataSetCompleteRegistrationStore store,
             final Map<String, ChildrenAppender<DataSetCompleteRegistration>> childrenAppenders,
             final RepositoryScope scope,
-            final SyncHandler<DataSetCompleteRegistration> handler,
+            final Handler<DataSetCompleteRegistration> handler,
             final DataSetCompleteRegistrationPostCall postCall) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new DataSetCompleteRegistrationCollectionRepository(store, childrenAppenders,

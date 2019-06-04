@@ -28,16 +28,16 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.api.internal.APICallErrorCatcher;
-import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.api.internal.APIUrlProvider;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.Unit;
-import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -83,7 +83,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private APICallExecutor apiCallExecutor;
 
     @Mock
-    private SyncHandler<User> userHandler;
+    private Handler<User> userHandler;
 
     @Mock
     private ResourceHandler resourceHandler;

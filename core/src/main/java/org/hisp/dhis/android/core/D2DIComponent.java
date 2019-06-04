@@ -31,15 +31,14 @@ package org.hisp.dhis.android.core;
 import android.content.Context;
 
 import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.di.internal.RepositoriesDIModule;
-import org.hisp.dhis.android.core.calls.MetadataCall;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.CategoryPackageDIModule;
-import org.hisp.dhis.android.core.common.CommonPackageDIModule;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.internal.CommonPackageDIModule;
 import org.hisp.dhis.android.core.constant.ConstantPackageDIModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
@@ -50,6 +49,7 @@ import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetPackageDIModule;
 import org.hisp.dhis.android.core.datavalue.DataValuePackageDIModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
+import org.hisp.dhis.android.core.domain.metadata.MetadataCall;
 import org.hisp.dhis.android.core.enrollment.EnrollmentPackageDIModule;
 import org.hisp.dhis.android.core.event.EventPackageDIModule;
 import org.hisp.dhis.android.core.event.EventPostCall;
@@ -136,7 +136,7 @@ public interface D2DIComponent {
     @VisibleForTesting
     UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory();
     @VisibleForTesting
-    SyncHandler<RelationshipType> relationshipTypeHandler();
+    Handler<RelationshipType> relationshipTypeHandler();
     @VisibleForTesting
     TrackedEntityInstancePostCall trackedEntityInstancePostCall();
     @VisibleForTesting

@@ -28,15 +28,15 @@
 
 package org.hisp.dhis.android.core.constant;
 
-import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
-import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.fetchers.PayloadNoResourceCallFetcher;
-import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactoryImpl;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.PayloadNoResourceCallFetcher;
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
+import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 
 import javax.inject.Inject;
 
@@ -46,13 +46,13 @@ import dagger.Reusable;
 final class ConstantCallFactory extends ListCallFactoryImpl<Constant> {
 
     private final ConstantService service;
-    private final SyncHandler<Constant> handler;
+    private final Handler<Constant> handler;
 
     @Inject
     ConstantCallFactory(GenericCallData data,
                         APICallExecutor apiCallExecutor,
                         ConstantService service,
-                        SyncHandler<Constant> handler) {
+                        Handler<Constant> handler) {
         super(data, apiCallExecutor);
         this.service = service;
         this.handler = handler;

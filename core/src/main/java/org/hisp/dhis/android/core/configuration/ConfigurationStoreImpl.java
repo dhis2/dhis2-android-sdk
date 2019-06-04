@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.configuration;
 
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.common.ObjectStoreImpl;
-import org.hisp.dhis.android.core.common.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;

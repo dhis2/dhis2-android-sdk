@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandler;
-import org.hisp.dhis.android.core.common.CollectionCleaner;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import java.util.Collection;
@@ -42,14 +42,14 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class OptionGroupHandler extends IdentifiableSyncHandlerImpl<OptionGroup> {
+final class OptionGroupHandler extends IdentifiableHandlerImpl<OptionGroup> {
 
-    private final LinkSyncHandler<ObjectWithUid, OptionGroupOptionLink> optionGroupOptionLinkHandler;
+    private final LinkHandler<ObjectWithUid, OptionGroupOptionLink> optionGroupOptionLinkHandler;
     private final CollectionCleaner<OptionGroup> collectionCleaner;
 
     @Inject
     OptionGroupHandler(IdentifiableObjectStore<OptionGroup> optionStore,
-                       LinkSyncHandler<ObjectWithUid, OptionGroupOptionLink> optionGroupOptionLinkHandler,
+                       LinkHandler<ObjectWithUid, OptionGroupOptionLink> optionGroupOptionLinkHandler,
                        CollectionCleaner<OptionGroup> collectionCleaner) {
         super(optionStore);
         this.optionGroupOptionLinkHandler = optionGroupOptionLinkHandler;

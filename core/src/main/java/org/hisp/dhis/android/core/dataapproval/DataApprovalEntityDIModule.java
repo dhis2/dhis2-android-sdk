@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.dataapproval;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.di.internal.ObjectWithoutUidStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -50,8 +50,8 @@ public class DataApprovalEntityDIModule implements ObjectWithoutUidStoreProvider
 
     @Provides
     @Reusable
-    public SyncHandler<DataApproval> handler(ObjectWithoutUidStore<DataApproval> dataApprovalStore) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(dataApprovalStore);
+    public Handler<DataApproval> handler(ObjectWithoutUidStore<DataApproval> dataApprovalStore) {
+        return new ObjectWithoutUidHandlerImpl<>(dataApprovalStore);
     }
 
 }

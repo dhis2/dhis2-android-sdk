@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
-import androidx.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
@@ -40,6 +39,8 @@ import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbProgramTypeColumnAdapter;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.utils.Utils;
+
+import androidx.annotation.Nullable;
 
 @SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.GodClass"})
 @Deprecated

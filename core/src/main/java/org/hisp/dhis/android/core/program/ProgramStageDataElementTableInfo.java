@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;

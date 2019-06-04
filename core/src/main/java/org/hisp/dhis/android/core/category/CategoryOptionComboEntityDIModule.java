@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -50,7 +50,7 @@ public final class CategoryOptionComboEntityDIModule {
 
     @Provides
     @Reusable
-    public SyncHandlerWithTransformer<CategoryOptionCombo> handler(CategoryOptionComboHandler impl) {
+    public HandlerWithTransformer<CategoryOptionCombo> handler(CategoryOptionComboHandler impl) {
         return impl;
     }
 

@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
 import org.hisp.dhis.android.core.imports.EnrollmentImportSummaries;

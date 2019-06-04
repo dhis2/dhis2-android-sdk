@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;

@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.di.internal.ObjectWithoutUidStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -54,8 +54,8 @@ public final class DataSetCompleteRegistrationEntityDIModule
 
     @Provides
     @Reusable
-    public SyncHandler<DataSetCompleteRegistration> handler(DataSetCompleteRegistrationStore store) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(store);
+    public Handler<DataSetCompleteRegistration> handler(DataSetCompleteRegistrationStore store) {
+        return new ObjectWithoutUidHandlerImpl<>(store);
     }
 
     @Provides

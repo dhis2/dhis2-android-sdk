@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.enrollment.note.NoteDHISVersionManager;
@@ -49,19 +49,19 @@ import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
-final class EnrollmentHandler extends IdentifiableDataSyncHandlerImpl<Enrollment> {
+final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
     private final NoteDHISVersionManager noteVersionManager;
-    private final SyncHandlerWithTransformer<Event> eventHandler;
-    private final SyncHandler<Note> noteHandler;
+    private final HandlerWithTransformer<Event> eventHandler;
+    private final Handler<Note> noteHandler;
     private final NoteUniquenessManager noteUniquenessManager;
     private final OrphanCleaner<Enrollment, Event> eventOrphanCleaner;
 
     @Inject
     EnrollmentHandler(@NonNull NoteDHISVersionManager noteVersionManager,
                       @NonNull EnrollmentStore enrollmentStore,
-                      @NonNull SyncHandlerWithTransformer<Event> eventHandler,
+                      @NonNull HandlerWithTransformer<Event> eventHandler,
                       @NonNull OrphanCleaner<Enrollment, Event> eventOrphanCleaner,
-                      @NonNull SyncHandler<Note> noteHandler,
+                      @NonNull Handler<Note> noteHandler,
                       @NonNull NoteUniquenessManager noteUniquenessManager) {
         super(enrollmentStore);
         this.noteVersionManager = noteVersionManager;

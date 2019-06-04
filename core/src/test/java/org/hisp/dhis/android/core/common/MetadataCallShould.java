@@ -28,12 +28,14 @@
 package org.hisp.dhis.android.core.common;
 
 import org.assertj.core.util.Lists;
-import org.hisp.dhis.android.core.calls.MetadataCall;
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.category.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.constant.ConstantModuleDownloader;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetModuleDownloader;
+import org.hisp.dhis.android.core.domain.metadata.MetadataCall;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModuleDownloader;

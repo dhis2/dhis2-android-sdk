@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import androidx.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 
@@ -39,6 +37,8 @@ import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreRelationshipItemAdapter;
 
 import java.util.Date;
+
+import androidx.annotation.Nullable;
 
 public abstract class BaseRelationship extends BaseModel implements ObjectWithUidInterface {
 

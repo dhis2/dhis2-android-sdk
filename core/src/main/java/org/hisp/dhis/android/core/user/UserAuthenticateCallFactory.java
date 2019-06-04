@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.internal.APIUrlProvider;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -64,7 +64,7 @@ final class UserAuthenticateCallFactory {
 
     private final UserService userService;
 
-    private final SyncHandler<User> userHandler;
+    private final Handler<User> userHandler;
     private final ResourceHandler resourceHandler;
     private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
@@ -78,7 +78,7 @@ final class UserAuthenticateCallFactory {
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull APICallExecutor apiCallExecutor,
             @NonNull UserService userService,
-            @NonNull SyncHandler<User> userHandler,
+            @NonNull Handler<User> userHandler,
             @NonNull ResourceHandler resourceHandler,
             @NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore,
             @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,

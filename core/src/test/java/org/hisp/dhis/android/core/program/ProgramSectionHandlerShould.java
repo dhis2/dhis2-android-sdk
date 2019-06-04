@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.core.program;
 
 import org.assertj.core.util.Lists;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.common.Transformer;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
+import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +58,7 @@ public class ProgramSectionHandlerShould {
     private IdentifiableObjectStore<ProgramSection> programSectionStore;
 
     @Mock
-    private LinkSyncHandler<TrackedEntityAttribute, ProgramSectionAttributeLink>
+    private LinkHandler<TrackedEntityAttribute, ProgramSectionAttributeLink>
             programSectionAttributeLinkHandler;
 
     @Mock
@@ -100,7 +100,7 @@ public class ProgramSectionHandlerShould {
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableSyncHandlerImpl<ProgramSection> genericHandler = new ProgramSectionHandler(
+        IdentifiableHandlerImpl<ProgramSection> genericHandler = new ProgramSectionHandler(
                 null,null, null);
     }
 }

@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.common;
 
-import androidx.annotation.NonNull;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
+
+import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
 

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 
 final class RelationshipItemTrackedEntityInstanceFields {
 

@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -51,8 +51,8 @@ public final class DataValueEntityDIModule {
 
     @Provides
     @Reusable
-    SyncHandler<DataValue> handler(DataValueStore dataValueStore) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(dataValueStore);
+    Handler<DataValue> handler(DataValueStore dataValueStore) {
+        return new ObjectWithoutUidHandlerImpl<>(dataValueStore);
     }
 
     @Provides

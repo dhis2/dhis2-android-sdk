@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.user.UserOrganisationUnitLinkSamples;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.junit.runner.RunWith;
 
 import androidx.test.runner.AndroidJUnit4;

@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.android.core.user;
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -39,6 +37,8 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
 
 class LogOutUserCallable implements Callable<Unit> {
 

@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

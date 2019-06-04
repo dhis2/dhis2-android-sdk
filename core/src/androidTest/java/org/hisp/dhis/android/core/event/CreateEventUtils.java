@@ -29,11 +29,12 @@
 package org.hisp.dhis.android.core.event;
 
 import android.content.ContentValues;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class CreateEventUtils {
 

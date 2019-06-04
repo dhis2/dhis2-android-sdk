@@ -32,9 +32,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.enrollment.Enrollment;

@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.android.core.common;
 
-import androidx.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
+import org.hisp.dhis.android.core.arch.api.fields.internal.NestedField;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 public abstract class Access {

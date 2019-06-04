@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorExecutor;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.List;
 
-public class LinkModelChildStoreImpl<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface>
+class LinkModelChildStoreImpl<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface>
         implements LinkModelChildStore<P, C> {
 
     private final LinkTableChildProjection linkTableChildProjection;
@@ -45,7 +45,7 @@ public class LinkModelChildStoreImpl<P extends ObjectWithUidInterface, C extends
 
     private final CursorExecutor<C> cursorExecutor;
 
-    public LinkModelChildStoreImpl(LinkTableChildProjection linkTableChildProjection,
+    LinkModelChildStoreImpl(LinkTableChildProjection linkTableChildProjection,
                                    DatabaseAdapter databaseAdapter,
                                    SQLStatementBuilder statementBuilder,
                                    CursorExecutor<C> cursorExecutor) {

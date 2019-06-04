@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 
 import dagger.Module;
 import dagger.Provides;

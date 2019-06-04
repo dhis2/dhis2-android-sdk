@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.user;
 
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 
 public interface UserCredentialsStore extends IdentifiableObjectStore<UserCredentials> {
     UserCredentials getForUser(String userId);

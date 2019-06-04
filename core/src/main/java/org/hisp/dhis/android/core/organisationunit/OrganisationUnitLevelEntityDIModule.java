@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.di.internal.IdentifiableEntityDIModule;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collections;
@@ -57,8 +57,8 @@ public final class OrganisationUnitLevelEntityDIModule implements IdentifiableEn
     @Override
     @Provides
     @Reusable
-    public SyncHandler<OrganisationUnitLevel> handler(IdentifiableObjectStore<OrganisationUnitLevel> store) {
-        return new IdentifiableSyncHandlerImpl<>(store);
+    public Handler<OrganisationUnitLevel> handler(IdentifiableObjectStore<OrganisationUnitLevel> store) {
+        return new IdentifiableHandlerImpl<>(store);
     }
 
     @Provides

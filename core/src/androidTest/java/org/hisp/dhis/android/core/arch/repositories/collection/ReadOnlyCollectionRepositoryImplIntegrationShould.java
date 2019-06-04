@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionRepository;
@@ -59,7 +59,7 @@ public class ReadOnlyCollectionRepositoryImplIntegrationShould extends BaseMockI
 
         typeMap = RelationshipTypeSamples.typeMap();
 
-        SyncHandler<RelationshipType> handler = objects.d2DIComponent.relationshipTypeHandler();
+        Handler<RelationshipType> handler = objects.d2DIComponent.relationshipTypeHandler();
 
         handler.handle(RELATIONSHIP_TYPE_1);
         handler.handle(RELATIONSHIP_TYPE_2);

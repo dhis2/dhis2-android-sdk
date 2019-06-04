@@ -28,17 +28,17 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
-import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
-import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher;
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
+import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.UidsQuery;
 
 import java.util.Set;
 
@@ -52,13 +52,13 @@ final class DataElementEndpointCallFactory extends UidsCallFactoryImpl<DataEleme
     private static final int MAX_UID_LIST_SIZE = 100;
 
     private final DataElementService service;
-    private final SyncHandler<DataElement> handler;
+    private final Handler<DataElement> handler;
 
     @Inject
     DataElementEndpointCallFactory(GenericCallData data,
                                    APICallExecutor apiCallExecutor,
                                    DataElementService service,
-                                   SyncHandler<DataElement> handler) {
+                                   Handler<DataElement> handler) {
         super(data, apiCallExecutor);
         this.service = service;
         this.handler = handler;

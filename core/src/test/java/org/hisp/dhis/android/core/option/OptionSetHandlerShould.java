@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,7 +56,7 @@ public class OptionSetHandlerShould {
     private OptionSet optionSet;
 
     @Mock
-    private SyncHandler<Option> optionHandler;
+    private Handler<Option> optionHandler;
 
     @Mock
     private OrphanCleaner<OptionSet, Option> optionCleaner;
@@ -100,7 +100,7 @@ public class OptionSetHandlerShould {
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableSyncHandlerImpl<OptionSet> genericHandler =
+        IdentifiableHandlerImpl<OptionSet> genericHandler =
                 new OptionSetHandler(null,null, null);
     }
 }

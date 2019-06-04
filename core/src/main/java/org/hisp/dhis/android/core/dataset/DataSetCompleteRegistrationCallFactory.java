@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactoryImpl;
-import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactoryImpl;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
+import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 
 import javax.inject.Inject;
 
@@ -47,13 +47,13 @@ import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionVal
 final class DataSetCompleteRegistrationCallFactory extends QueryCallFactoryImpl<DataSetCompleteRegistration,
         DataSetCompleteRegistrationQuery> {
 
-    private final SyncHandler<DataSetCompleteRegistration> handler;
+    private final Handler<DataSetCompleteRegistration> handler;
     private final DataSetCompleteRegistrationService service;
 
     @Inject
     DataSetCompleteRegistrationCallFactory(GenericCallData genericCallData,
                                            APICallExecutor apiCallExecutor,
-                                           SyncHandler<DataSetCompleteRegistration> handler,
+                                           Handler<DataSetCompleteRegistration> handler,
                                            DataSetCompleteRegistrationService service) {
         super(genericCallData, apiCallExecutor);
         this.handler = handler;

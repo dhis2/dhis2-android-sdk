@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.category;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.di.internal.IdentifiableEntityDIModule;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collections;
@@ -55,8 +55,8 @@ public final class CategoryOptionEntityDIModule implements IdentifiableEntityDIM
     @Override
     @Provides
     @Reusable
-    public SyncHandler<CategoryOption> handler(IdentifiableObjectStore<CategoryOption> store) {
-        return new IdentifiableSyncHandlerImpl<>(store);
+    public Handler<CategoryOption> handler(IdentifiableObjectStore<CategoryOption> store) {
+        return new IdentifiableHandlerImpl<>(store);
     }
 
     @Provides

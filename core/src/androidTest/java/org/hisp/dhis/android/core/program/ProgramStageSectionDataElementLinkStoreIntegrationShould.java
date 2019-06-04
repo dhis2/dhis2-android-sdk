@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.program.ProgramStageSectionDataElementLinkSamples;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.junit.runner.RunWith;
 
 import androidx.test.runner.AndroidJUnit4;

@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
 
 import dagger.Module;
 import dagger.Provides;

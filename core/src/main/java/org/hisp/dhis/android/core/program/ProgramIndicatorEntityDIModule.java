@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collections;
@@ -51,7 +51,7 @@ public final class ProgramIndicatorEntityDIModule {
 
     @Provides
     @Reusable
-    public SyncHandler<ProgramIndicator> handler(ProgramIndicatorHandler impl) {
+    public Handler<ProgramIndicator> handler(ProgramIndicatorHandler impl) {
         return impl;
     }
 

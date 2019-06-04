@@ -28,16 +28,16 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
-import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
-import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.UidsQuery;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher;
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
+import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 
 import java.util.Set;
 
@@ -49,7 +49,7 @@ import dagger.Reusable;
 final class IndicatorEndpointCallFactory extends UidsCallFactoryImpl<Indicator> {
 
     private final IndicatorService service;
-    private final SyncHandler<Indicator> handler;
+    private final Handler<Indicator> handler;
 
     private static final int MAX_UID_LIST_SIZE = 100;
 
@@ -57,7 +57,7 @@ final class IndicatorEndpointCallFactory extends UidsCallFactoryImpl<Indicator> 
     IndicatorEndpointCallFactory(GenericCallData data,
                                         APICallExecutor apiCallExecutor,
                                         IndicatorService service,
-                                        SyncHandler<Indicator> handler) {
+                                        Handler<Indicator> handler) {
         super(data, apiCallExecutor);
         this.service = service;
         this.handler = handler;

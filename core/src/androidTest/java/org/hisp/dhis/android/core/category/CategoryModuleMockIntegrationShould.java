@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.common.UidsHelper;
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;

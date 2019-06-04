@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.constant;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.common.CollectionCleaner;
-import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collections;
@@ -55,7 +55,7 @@ public final class ConstantPackageDIModule {
 
     @Provides
     @Reusable
-    SyncHandler<Constant> handler(ConstantHandler impl) {
+    Handler<Constant> handler(ConstantHandler impl) {
         return impl;
     }
 

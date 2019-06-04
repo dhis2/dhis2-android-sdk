@@ -27,24 +27,24 @@
  */
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-final class OptionSetHandler extends IdentifiableSyncHandlerImpl<OptionSet> {
-    private final SyncHandler<Option> optionHandler;
+final class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet> {
+    private final Handler<Option> optionHandler;
     private final OrphanCleaner<OptionSet, Option> optionCleaner;
 
     @Inject
     OptionSetHandler(IdentifiableObjectStore<OptionSet> optionSetStore,
-                     SyncHandler<Option> optionHandler,
+                     Handler<Option> optionHandler,
                      OrphanCleaner<OptionSet, Option> optionCleaner) {
         super(optionSetStore);
         this.optionHandler = optionHandler;

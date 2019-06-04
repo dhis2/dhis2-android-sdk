@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.option.OptionGroup;
 import org.hisp.dhis.android.core.option.OptionSet;

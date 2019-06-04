@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.common;
 
-import androidx.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 public abstract class Coordinates {

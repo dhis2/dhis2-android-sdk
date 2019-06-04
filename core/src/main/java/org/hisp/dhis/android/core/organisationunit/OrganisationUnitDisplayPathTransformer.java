@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.common.Transformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 
 class OrganisationUnitDisplayPathTransformer implements Transformer<OrganisationUnit, OrganisationUnit> {
 

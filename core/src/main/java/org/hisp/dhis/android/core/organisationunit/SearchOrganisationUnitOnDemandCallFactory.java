@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.calls.EndpointCall;
-import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
-import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.UidsQuery;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher;
+import org.hisp.dhis.android.core.arch.call.internal.EndpointCall;
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
+import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
 import org.hisp.dhis.android.core.user.User;
 
 import java.util.List;

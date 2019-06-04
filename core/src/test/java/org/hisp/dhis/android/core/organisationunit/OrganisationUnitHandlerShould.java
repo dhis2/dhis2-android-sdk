@@ -29,11 +29,11 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Sets;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.Transformer;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
 import org.hisp.dhis.android.core.program.Program;
@@ -68,19 +68,19 @@ public class OrganisationUnitHandlerShould {
     private LinkModelStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
 
     @Mock
-    private LinkSyncHandler<Program, OrganisationUnitProgramLink> organisationUnitProgramLinkHandler;
+    private LinkHandler<Program, OrganisationUnitProgramLink> organisationUnitProgramLinkHandler;
 
     @Mock
-    private LinkSyncHandler<DataSet, DataSetOrganisationUnitLink> dataSetDataSetOrganisationUnitLinkHandler;
+    private LinkHandler<DataSet, DataSetOrganisationUnitLink> dataSetDataSetOrganisationUnitLinkHandler;
 
     @Mock
-    private LinkSyncHandler<OrganisationUnit, UserOrganisationUnitLink> userOrganisationUnitLinkHandler;
+    private LinkHandler<OrganisationUnit, UserOrganisationUnitLink> userOrganisationUnitLinkHandler;
 
     @Mock
-    private SyncHandler<OrganisationUnitGroup> organisationUnitGroupHandler;
+    private Handler<OrganisationUnitGroup> organisationUnitGroupHandler;
 
     @Mock
-    private LinkSyncHandler<OrganisationUnitGroup, OrganisationUnitOrganisationUnitGroupLink>
+    private LinkHandler<OrganisationUnitGroup, OrganisationUnitOrganisationUnitGroupLink>
             organisationUnitGroupLinkHandler;
 
     private OrganisationUnit organisationUnitWithoutGroups;

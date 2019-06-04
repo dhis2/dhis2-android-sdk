@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.enrollment.note;
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
 
 public final class NoteFields {
 

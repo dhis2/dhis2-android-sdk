@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.user.AuthoritySamples;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.junit.runner.RunWith;
 
 import androidx.test.runner.AndroidJUnit4;

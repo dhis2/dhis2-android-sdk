@@ -28,17 +28,17 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.common.OrphanCleaner;
-import org.hisp.dhis.android.core.common.Transformer;
+import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.junit.Before;
@@ -66,10 +66,10 @@ public class ProgramStageHandlerShould {
     private IdentifiableObjectStore<ProgramStage> programStageStore;
 
     @Mock
-    private SyncHandlerWithTransformer<ProgramStageSection> programStageSectionHandler;
+    private HandlerWithTransformer<ProgramStageSection> programStageSectionHandler;
 
     @Mock
-    private SyncHandler<ProgramStageDataElement> programStageDataElementHandler;
+    private Handler<ProgramStageDataElement> programStageDataElementHandler;
 
     @Mock
     private ProgramStage programStage;

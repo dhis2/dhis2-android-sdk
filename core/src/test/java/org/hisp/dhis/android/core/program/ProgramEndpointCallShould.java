@@ -27,15 +27,15 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.internal.APICallExecutorImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.calls.EndpointCall;
-import org.hisp.dhis.android.core.calls.fetchers.PayloadNoResourceCallFetcher;
-import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.PayloadNoResourceCallFetcher;
+import org.hisp.dhis.android.core.arch.call.internal.EndpointCall;
+import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Fields;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,7 +62,7 @@ public class ProgramEndpointCallShould extends BaseCallShould {
     private ProgramService programService;
 
     @Mock
-    private SyncHandler<Program> programHandler;
+    private Handler<Program> programHandler;
 
     @Captor
     private ArgumentCaptor<Fields<Program>> fieldsCaptor;

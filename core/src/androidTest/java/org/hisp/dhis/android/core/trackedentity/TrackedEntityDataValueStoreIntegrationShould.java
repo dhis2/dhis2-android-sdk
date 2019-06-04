@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.trackedentity;
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.trackedentity.EventSamples;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityDataValueSamples;
@@ -40,6 +39,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;

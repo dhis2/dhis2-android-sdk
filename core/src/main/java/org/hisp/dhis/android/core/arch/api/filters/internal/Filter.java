@@ -25,28 +25,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.data.api;
+package org.hisp.dhis.android.core.arch.api.filters.internal;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 
-import retrofit2.Converter;
-import retrofit2.Retrofit;
+import java.util.Collection;
 
-public final class FilterConverterFactory extends Converter.Factory {
-    public static FilterConverterFactory create() {
-        return new FilterConverterFactory();
-    }
+public interface Filter<T, K> {
 
-    private FilterConverterFactory() {}
+    Field<T, K> field();
+    String operator();
 
-    @Override
-    public Converter<?, String> stringConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
-        for (Annotation annotation : annotations) {
-            if (annotation instanceof Where) {
-                return new FilterConverter();
-            }
-        }
-        return null;
-    }
+    Collection<String> values();
+    String generateString();
 }

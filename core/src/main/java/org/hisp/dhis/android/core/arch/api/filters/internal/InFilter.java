@@ -25,17 +25,48 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.data.api;
+
+package org.hisp.dhis.android.core.arch.api.filters.internal;
+
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 
-public interface Filter<T, K> {
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-    Field<T, K> field();
-    String operator();
+@AutoValue
+public abstract class InFilter<T, K> implements Filter<T, K> {
 
-    Collection<String> values();
-    String generateString();
+    public static <T, K> Filter<T, K> create(@NonNull Field<T, K> field,
+                                             @Nullable Collection<String> values) {
+        //If the filter is incomplete, returning null, tells Retrofit that this filter should not be included.
+        if (values == null) {
+            return null;
+        }
+        return new AutoValue_InFilter<>(field, "in", Collections.unmodifiableCollection(values));
+    }
+
+    @Override
+    public String generateString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(field().name())
+                .append(':')
+                .append(operator())
+                .append(":[");
+        //a list of values:
+        Iterator<String> valuesIterator = values().iterator();
+        while (valuesIterator.hasNext()) {
+            builder.append(valuesIterator.next());
+            if (valuesIterator.hasNext()) {
+                builder.append(',');
+            }
+        }
+        builder.append(']');
+        return builder.toString();
+    }
 }

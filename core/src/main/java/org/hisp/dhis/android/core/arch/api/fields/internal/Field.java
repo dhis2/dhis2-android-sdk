@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.arch.api.fields.internal;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.data.api.Filter;
-import org.hisp.dhis.android.core.data.api.InFilter;
-import org.hisp.dhis.android.core.data.api.SingleValueFilter;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
+import org.hisp.dhis.android.core.arch.api.filters.internal.InFilter;
+import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter;
 
 import java.util.Collection;
 

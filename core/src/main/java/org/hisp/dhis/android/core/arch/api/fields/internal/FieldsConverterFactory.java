@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.api.fields.internal;
 
-import org.hisp.dhis.android.core.data.api.Which;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;

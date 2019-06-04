@@ -26,10 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.api;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+package org.hisp.dhis.android.core.arch.api.filters.internal;
 
 import com.google.auto.value.AutoValue;
 
@@ -37,6 +34,9 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 
 import java.util.Collections;
 import java.util.Iterator;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 @AutoValue
 public abstract class SingleValueFilter<T, K> implements Filter<T, K> {

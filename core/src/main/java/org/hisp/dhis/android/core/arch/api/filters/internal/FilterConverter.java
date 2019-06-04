@@ -25,11 +25,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.data.api;
+package org.hisp.dhis.android.core.arch.api.filters.internal;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.io.IOException;
 
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Where {
+import retrofit2.Converter;
+
+public class FilterConverter implements Converter<Filter, String> {
+
+    @Override
+    public String convert(Filter filter) throws IOException {
+        //the convert logic is actually in the Filter implementations.
+        return filter.generateString();
+    }
 }

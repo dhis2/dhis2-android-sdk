@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.data.api.Which;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 
 import io.reactivex.Single;
 import retrofit2.http.GET;

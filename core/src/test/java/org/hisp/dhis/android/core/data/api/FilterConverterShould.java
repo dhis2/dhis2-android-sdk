@@ -29,6 +29,13 @@ package org.hisp.dhis.android.core.data.api;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
+import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverter;
+import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory;
+import org.hisp.dhis.android.core.arch.api.filters.internal.InFilter;
+import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;

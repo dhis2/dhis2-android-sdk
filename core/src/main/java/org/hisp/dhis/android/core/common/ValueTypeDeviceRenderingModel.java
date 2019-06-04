@@ -33,6 +33,7 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.valuetype.renderingtype.internal.ValueTypeRenderingTypeColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import androidx.annotation.Nullable;

@@ -28,23 +28,20 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import android.database.Cursor;
-
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.ReadableStoreImpl;
+import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkTableInfo;
 import org.hisp.dhis.android.core.period.PeriodTableInfo;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-public class DataSetValueSummaryStore {
-
-    private final DatabaseAdapter databaseAdapter;
-    private final CursorModelFactory<DataSetValueSummary> modelFactory;
+public class DataSetValueSummaryStore extends ReadableStoreImpl<DataSetValueSummary> {
 
     private final String DATAVALUE_ALIAS = "dv";
     private final String PERIOD_ALIAS = "pe";
@@ -84,9 +81,9 @@ public class DataSetValueSummaryStore {
             "'Zi5D24rZvYd' ";
 
     private DataSetValueSummaryStore(DatabaseAdapter databaseAdapter,
-                                    CursorModelFactory<DataSetValueSummary> modelFactory) {
-        this.databaseAdapter = databaseAdapter;
-        this.modelFactory = modelFactory;
+                                     SQLStatementBuilder builder,
+                                     CursorModelFactory<DataSetValueSummary> modelFactory) {
+        super(databaseAdapter, builder, modelFactory);
     }
 
     public List<DataSetValueSummary> query(String whereClause) {
@@ -97,22 +94,10 @@ public class DataSetValueSummaryStore {
         return result;
     }
 
-    private void addObjectsToCollection(Cursor cursor,
-                                          Collection<DataSetValueSummary> collection) {
-        try {
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                do {
-                    collection.add(modelFactory.fromCursor(cursor));
-                }
-                while (cursor.moveToNext());
-            }
-        } finally {
-            cursor.close();
-        }
-    }
-
     public static DataSetValueSummaryStore create(DatabaseAdapter databaseAdapter) {
-        return new DataSetValueSummaryStore(databaseAdapter, DataSetValueSummary::create);
+        return new DataSetValueSummaryStore(databaseAdapter,
+                // TODO Just to make it compile
+                new SQLStatementBuilder(DataElementTableInfo.TABLE_INFO),
+                DataSetValueSummary::create);
     }
 }

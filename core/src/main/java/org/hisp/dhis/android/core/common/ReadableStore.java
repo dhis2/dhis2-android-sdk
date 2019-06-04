@@ -25,23 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.object;
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyOneObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ReadableStore;
+package org.hisp.dhis.android.core.common;
 
-import java.util.Map;
+import java.util.List;
 
-public final class ReadOnlyOneObjectRepositoryFinalImpl<M extends Model>
-        extends ReadOnlyOneObjectRepositoryImpl<M, ReadOnlyOneObjectRepositoryFinalImpl<M>> {
+public interface ReadableStore<M> {
 
-    public ReadOnlyOneObjectRepositoryFinalImpl(ReadableStore<M> store,
-                                                Map<String, ChildrenAppender<M>> childrenAppenders,
-                                                RepositoryScope scope) {
-        super(store, childrenAppenders, scope,
-                s -> new ReadOnlyOneObjectRepositoryFinalImpl<>(store, childrenAppenders, s));
-    }
+    List<M> selectAll();
+
+    List<M> selectWhere(String whereClause);
+
+    List<M> selectWhere(String filterWhereClause, String orderByClause);
+
+    List<M> selectWhere(String filterWhereClause, String orderByClause, int limit);
+
+    List<M> selectRawQuery(String sqlRawQuery);
+
+    M selectOneWhere(String whereClause);
+
+    M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
+
+    M selectFirst();
+
+    List<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
+
+    int count();
+
+    int countWhere(String whereClause);
 }

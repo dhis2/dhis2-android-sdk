@@ -36,11 +36,13 @@ import androidx.annotation.Nullable;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DbStateColumnAdapter;
 
 @AutoValue
-public abstract class DataSetValueSummary {
+public abstract class DataSetValueSummary implements Model {
 
     @NonNull
     public abstract String dataSet();
@@ -70,7 +72,8 @@ public abstract class DataSetValueSummary {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder {
+    public abstract static class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder id(Long id);
 
         public abstract Builder dataSet(String dataSet);
 

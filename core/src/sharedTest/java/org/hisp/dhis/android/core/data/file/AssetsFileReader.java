@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.data.file;
 
 import android.content.Context;
-import androidx.test.InstrumentationRegistry;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -38,6 +37,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+
+import androidx.test.InstrumentationRegistry;
 
 public final class AssetsFileReader implements IFileReader {
 /*    public static String getStringFromFile(Class clazz, String filePath) throws IOException {

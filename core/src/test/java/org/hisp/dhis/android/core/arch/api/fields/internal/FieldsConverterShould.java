@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.api.fields.internal;
 
-import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
+import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

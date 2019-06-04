@@ -29,11 +29,12 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
-import androidx.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+
+import androidx.annotation.NonNull;
 
 @Deprecated
 @AutoValue

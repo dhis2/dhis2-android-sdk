@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.organisationunit;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStore;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 final class OrganisationUnitOrganisationUnitGroupProgramChildrenAppender extends ChildrenAppender<OrganisationUnit> {

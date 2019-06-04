@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.program.ProgramStageDataElementSamples;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 
 public class ProgramStageDataElementStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramStageDataElement> {
 

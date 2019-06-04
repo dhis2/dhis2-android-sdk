@@ -27,12 +27,11 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import androidx.annotation.VisibleForTesting;
-
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 
 import javax.inject.Inject;
 
+import androidx.annotation.VisibleForTesting;
 import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 

@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.api.authentication.internal;
 
-import org.hisp.dhis.android.core.arch.api.authentication.internal.BasicAuthenticator;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.junit.After;

@@ -28,14 +28,13 @@
 
 package org.hisp.dhis.android.core.arch.api.authentication.internal;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
 
 import java.io.IOException;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
 import okhttp3.Request;
 import okhttp3.Response;
 

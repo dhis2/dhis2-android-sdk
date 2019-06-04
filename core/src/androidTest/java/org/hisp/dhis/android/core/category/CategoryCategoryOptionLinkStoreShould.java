@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.category;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
@@ -40,6 +38,8 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static org.junit.Assert.assertEquals;
 

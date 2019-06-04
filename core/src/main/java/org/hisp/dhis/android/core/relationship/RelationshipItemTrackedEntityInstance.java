@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import androidx.annotation.NonNull;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
+
+import androidx.annotation.NonNull;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_RelationshipItemTrackedEntityInstance.Builder.class)

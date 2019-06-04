@@ -35,9 +35,7 @@ import org.junit.runners.JUnit4;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 

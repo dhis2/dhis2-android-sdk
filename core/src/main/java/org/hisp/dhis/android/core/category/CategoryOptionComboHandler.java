@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.category;
 
 
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 
 import javax.inject.Inject;
 

@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 
 import java.util.List;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
 
 public interface TrackedEntityAttributeValueStore extends ObjectWithoutUidStore<TrackedEntityAttributeValue> {
 

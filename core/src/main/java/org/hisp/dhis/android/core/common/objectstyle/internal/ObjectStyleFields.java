@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.common.objectstyle.internal;
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 
 public final class ObjectStyleFields {
     public static final String COLOR = "color";

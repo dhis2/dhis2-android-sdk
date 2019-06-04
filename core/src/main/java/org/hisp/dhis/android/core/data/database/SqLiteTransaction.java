@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.data.database;
 
 import android.database.sqlite.SQLiteDatabase;
+
 import androidx.annotation.NonNull;
 
 public class SqLiteTransaction implements Transaction {

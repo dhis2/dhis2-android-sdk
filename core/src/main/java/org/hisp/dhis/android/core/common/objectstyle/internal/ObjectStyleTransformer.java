@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.common.objectstyle.internal;
 
-import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 
 public class ObjectStyleTransformer implements Transformer<ObjectStyle, ObjectStyle> {
 

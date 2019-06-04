@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.data.database;
 
 import android.content.ContentValues;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.junit.Before;
 import org.junit.Test;
 

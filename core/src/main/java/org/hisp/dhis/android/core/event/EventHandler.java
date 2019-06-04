@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.event;
 
 import android.util.Log;
 
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
 import javax.inject.Inject;

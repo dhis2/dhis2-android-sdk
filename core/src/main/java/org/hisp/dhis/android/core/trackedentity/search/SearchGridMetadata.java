@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
-import androidx.annotation.NonNull;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import java.util.Map;
+
+import androidx.annotation.NonNull;
 
 @AutoValue
 public abstract class SearchGridMetadata {

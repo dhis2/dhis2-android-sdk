@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.arch.api.authentication.internal;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
+
+import androidx.annotation.NonNull;
 
 public final class BasicAuthenticatorFactory {
     private BasicAuthenticatorFactory() {

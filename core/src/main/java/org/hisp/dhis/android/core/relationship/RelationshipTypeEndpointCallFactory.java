@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.call.fetchers.internal.PayloadResourceCal
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.resource.Resource;
 
 import javax.inject.Inject;

@@ -26,37 +26,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.api.payload.internal;
 
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.List;
+public class Pager {
+    private final int page;
+    private final int pageCount;
+    private final int pageSize;
+    private final int total;
 
-public class Payload<T> {
-
-    @JsonProperty("pager")
-    Pager pager;
-
-    @JsonIgnore
-    List<T> items;
-
-    public Payload() {
-        // explicit empty constructor
+    @JsonCreator
+    public Pager(@JsonProperty("page") int page,
+                 @JsonProperty("pageCount") int pageCount,
+                 @JsonProperty("pageSize") int pageSize,
+                 @JsonProperty("total") int total) {
+        this.page = page;
+        this.pageCount = pageCount;
+        this.pageSize = pageSize;
+        this.total = total;
     }
 
-    @JsonAnySetter
-    @SuppressWarnings("unused")
-    /* package */ void processItems(String key, List<T> values) {
-        this.items = values;
+    public int page() {
+        return page;
     }
 
-    public Pager pager() {
-        return this.pager;
+    public int pageCount() {
+        return pageCount;
     }
 
-    public List<T> items() {
-        return this.items;
+    public int pageSize() {
+        return pageSize;
+    }
+
+    public int total() {
+        return total;
     }
 }

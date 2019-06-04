@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 
 import java.util.List;
 import java.util.concurrent.Callable;

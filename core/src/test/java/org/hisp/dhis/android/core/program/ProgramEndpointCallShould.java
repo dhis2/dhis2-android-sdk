@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.call.internal.EndpointCall;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.PayloadNoResourceCallFetcher;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.junit.Before;
 import org.junit.Test;

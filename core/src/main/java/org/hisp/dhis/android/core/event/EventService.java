@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Which;
 import org.hisp.dhis.android.core.imports.EventWebResponse;

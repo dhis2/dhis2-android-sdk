@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.enrollment.note.Note;

@@ -32,7 +32,7 @@ import android.os.Build;
 import android.util.Log;
 
 import org.hisp.dhis.android.BuildConfig;
-import org.hisp.dhis.android.core.arch.api.retrofit.PreventURLDecodeInterceptor;
+import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 

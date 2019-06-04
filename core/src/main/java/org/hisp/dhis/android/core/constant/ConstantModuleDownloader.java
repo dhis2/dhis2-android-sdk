@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.constant;
 
-import org.hisp.dhis.android.core.arch.modules.MetadataModuleDownloader;
+import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleDownloader;
 
 import java.util.List;
 import java.util.concurrent.Callable;

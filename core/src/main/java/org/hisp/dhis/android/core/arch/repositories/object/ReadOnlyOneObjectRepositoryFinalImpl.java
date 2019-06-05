@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyOneObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ReadableStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore;
 
 import java.util.Map;
 

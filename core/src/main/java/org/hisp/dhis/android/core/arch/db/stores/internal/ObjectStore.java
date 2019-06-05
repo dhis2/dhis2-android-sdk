@@ -30,9 +30,11 @@ package org.hisp.dhis.android.core.arch.db.stores.internal;
 
 import androidx.annotation.NonNull;
 
-public interface ObjectStore<M> extends ReadableStore<M>, DeletableStore {
+public interface ObjectStore<M> extends ReadableStore<M> {
 
     long insert(@NonNull M m) throws RuntimeException;
+
+    int delete();
 
     boolean deleteById(@NonNull M m);
 

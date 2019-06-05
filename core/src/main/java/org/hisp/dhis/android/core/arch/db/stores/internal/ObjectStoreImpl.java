@@ -32,19 +32,25 @@ import android.database.sqlite.SQLiteStatement;
 
 import androidx.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 public class ObjectStoreImpl<M extends Model> extends ReadableStoreImpl<M> implements ObjectStore<M> {
     private final SQLiteStatement insertStatement;
+    protected final SQLStatementBuilder builder;
     protected final StatementBinder<M> binder;
 
     public ObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
                            SQLStatementBuilder builder, StatementBinder<M> binder, CursorModelFactory<M> modelFactory) {
         super(databaseAdapter, builder, modelFactory);
         this.insertStatement = insertStatement;
+        this.builder = builder;
         this.binder = binder;
     }
 

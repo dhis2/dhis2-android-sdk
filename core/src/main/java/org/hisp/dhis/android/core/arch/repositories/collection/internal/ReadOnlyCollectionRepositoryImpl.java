@@ -44,7 +44,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ReadableStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore;
 
 import java.util.List;
 import java.util.Map;

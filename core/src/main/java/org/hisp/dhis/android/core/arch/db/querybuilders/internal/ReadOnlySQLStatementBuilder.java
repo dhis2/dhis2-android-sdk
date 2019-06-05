@@ -26,31 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.db.querybuilders.internal;
 
-import java.util.List;
+import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 
-public interface ReadableStore<M> {
+public interface ReadOnlySQLStatementBuilder {
+    String selectUids();
 
-    List<M> selectAll();
+    String selectUidsWhere(String whereClause);
 
-    List<M> selectWhere(String whereClause);
+    String selectColumnWhere(String column, String whereClause);
 
-    List<M> selectWhere(String filterWhereClause, String orderByClause);
+    String selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
 
-    List<M> selectWhere(String filterWhereClause, String orderByClause, int limit);
+    String selectChildrenWithLinkTable(LinkTableChildProjection projection, String parentUid, String whereClause);
 
-    List<M> selectRawQuery(String sqlRawQuery);
+    String selectByUid();
 
-    M selectOneWhere(String whereClause);
+    String selectWhere(String whereClause);
 
-    M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
+    String selectWhere(String whereClause, int limit);
 
-    M selectFirst();
+    String selectWhere(String whereClause, String orderByClause);
 
-    List<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
+    String selectWhere(String whereClause, String orderByClause, int limit);
 
-    int count();
+    String selectAll();
 
-    int countWhere(String whereClause);
+    String count();
+
+    String countWhere(String whereClause);
 }

@@ -53,7 +53,7 @@ public class UserAuthenticateCallRealIntegrationShould extends BaseRealIntegrati
 
         d2.syncMetaData().call();
 
-        d2.userModule().logOut().call();
+        d2.userModule().logOut().blockingAwait();
         d2.userModule().logIn("android", "Android123").blockingGet();
     }
 
@@ -63,7 +63,7 @@ public class UserAuthenticateCallRealIntegrationShould extends BaseRealIntegrati
 
         d2.syncMetaData().call();
 
-        d2.userModule().logOut().call();
+        d2.userModule().logOut().blockingAwait();
         d2.userModule().logIn("admin", "district").blockingGet();
     }
 
@@ -77,7 +77,7 @@ public class UserAuthenticateCallRealIntegrationShould extends BaseRealIntegrati
 
         d2 = D2Factory.create("https://play.dhis2.org/android-current/api/", databaseAdapter());
 
-        d2.userModule().logOut().call();
+        d2.userModule().logOut().blockingAwait();
         d2.userModule().logIn("android", "Android123").blockingGet();
     }
 }

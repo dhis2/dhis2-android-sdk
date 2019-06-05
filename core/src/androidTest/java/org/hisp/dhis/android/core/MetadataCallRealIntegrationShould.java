@@ -108,7 +108,7 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
     public void response_successful_on_login_logout_and_login() throws Exception {
         d2.userModule().logIn("android", "Android123").blockingGet();
 
-        d2.userModule().logOut().call();
+        d2.userModule().logOut().blockingAwait();
 
         d2.userModule().logIn("android", "Android123").blockingGet();
     }

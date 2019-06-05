@@ -27,16 +27,12 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.common.Unit;
-
-import java.util.concurrent.Callable;
-
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import androidx.annotation.NonNull;
 import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.reactivex.Completable;
 import io.reactivex.Single;
 
 @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
@@ -44,7 +40,7 @@ import io.reactivex.Single;
 public final class UserModule {
 
     private final IsUserLoggedInCallableFactory isUserLoggedInCallFactory;
-    private final Provider<LogOutUserCallable> logoutCallCallProvider;
+    private final LogOutCallFactory logoutCallCallFactory;
     private final UserAuthenticateCallFactory loginCallFactory;
 
     public final AuthenticatedUserObjectRepository authenticatedUser;
@@ -55,7 +51,7 @@ public final class UserModule {
 
     @Inject
     UserModule(IsUserLoggedInCallableFactory isUserLoggedInCallFactory,
-               Provider<LogOutUserCallable> logoutCallCallProvider,
+               LogOutCallFactory logoutCallCallFactory,
                UserAuthenticateCallFactory loginCallFactory,
                AuthenticatedUserObjectRepository authenticatedUser,
                UserRoleCollectionRepository userRoles,
@@ -63,7 +59,7 @@ public final class UserModule {
                UserCredentialsObjectRepository userCredentials,
                UserObjectRepository user) {
         this.isUserLoggedInCallFactory = isUserLoggedInCallFactory;
-        this.logoutCallCallProvider = logoutCallCallProvider;
+        this.logoutCallCallFactory = logoutCallCallFactory;
         this.loginCallFactory = loginCallFactory;
         this.authenticatedUser = authenticatedUser;
         this.userRoles = userRoles;
@@ -78,8 +74,8 @@ public final class UserModule {
     }
 
     @NonNull
-    public Callable<Unit> logOut() {
-        return logoutCallCallProvider.get();
+    public Completable logOut() {
+        return logoutCallCallFactory.logOut();
     }
 
     @NonNull

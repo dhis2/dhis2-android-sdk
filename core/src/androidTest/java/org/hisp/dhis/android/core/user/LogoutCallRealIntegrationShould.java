@@ -73,7 +73,7 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
 
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 
-        d2.userModule().logOut().call();
+        d2.userModule().logOut().blockingAwait();
 
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
         assertThat(isTableEmpty(databaseAdapter(), EventTableInfo.TABLE_INFO.name())).isFalse();
@@ -93,7 +93,7 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
 
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 
-        d2.userModule().logOut().call();
+        d2.userModule().logOut().blockingAwait();
 
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 
@@ -113,7 +113,7 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
     //@Test
     public void response_successful_on_login_logout_and_login() throws Exception {
         d2.userModule().logIn("android", "Android123").blockingGet();
-        d2.userModule().logOut().call();
+        d2.userModule().logOut().blockingAwait();
         d2.userModule().logIn("android", "Android123").blockingGet();
     }
 }

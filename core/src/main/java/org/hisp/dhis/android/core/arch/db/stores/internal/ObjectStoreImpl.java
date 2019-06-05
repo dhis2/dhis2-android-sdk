@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
 import androidx.annotation.NonNull;
@@ -38,6 +39,8 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
@@ -58,7 +61,7 @@ public class ObjectStoreImpl<M extends Model> extends ReadableStoreImpl<M> imple
     public long insert(@NonNull M m) throws RuntimeException {
         isNull(m);
         binder.bindToStatement(m, insertStatement);
-        Long insertedRowId = databaseAdapter.executeInsert(builder.tableName, insertStatement);
+        Long insertedRowId = databaseAdapter.executeInsert(builder.getTableName(), insertStatement);
         insertStatement.clearBindings();
         if (insertedRowId == -1) {
             throw new RuntimeException("Nothing was inserted.");
@@ -67,12 +70,18 @@ public class ObjectStoreImpl<M extends Model> extends ReadableStoreImpl<M> imple
     }
 
     @Override
+    public List<String> selectStringColumnsWhereClause(String column, String clause) {
+        Cursor cursor = databaseAdapter.query(builder.selectColumnWhere(column, clause));
+        return mapStringColumnSetFromCursor(cursor);
+    }
+
+    @Override
     public final int delete() {
-        return databaseAdapter.delete(builder.tableName);
+        return databaseAdapter.delete(builder.getTableName());
     }
 
     void executeUpdateDelete(SQLiteStatement statement) throws RuntimeException {
-        int numberOfAffectedRows = databaseAdapter.executeUpdateDelete(builder.tableName, statement);
+        int numberOfAffectedRows = databaseAdapter.executeUpdateDelete(builder.getTableName(), statement);
         statement.clearBindings();
 
         if (numberOfAffectedRows == 0) {
@@ -98,7 +107,7 @@ public class ObjectStoreImpl<M extends Model> extends ReadableStoreImpl<M> imple
 
     @Override
     public boolean deleteWhere(String clause) {
-        return databaseAdapter.database().delete(builder.tableName, clause, null) > 0;
+        return databaseAdapter.database().delete(builder.getTableName(), clause, null) > 0;
     }
 
     @Override

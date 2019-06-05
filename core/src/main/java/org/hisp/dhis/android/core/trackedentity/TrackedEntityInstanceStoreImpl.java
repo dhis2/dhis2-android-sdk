@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
@@ -60,7 +60,7 @@ public final class TrackedEntityInstanceStoreImpl extends IdentifiableObjectWith
 
     public TrackedEntityInstanceStoreImpl(DatabaseAdapter databaseAdapter,
                                           SQLStatementWrapper statementWrapper,
-                                          SQLStatementBuilder builder) {
+                                          SQLStatementBuilderImpl builder) {
         super(databaseAdapter, statementWrapper, builder, BINDER, TrackedEntityInstance::create);
     }
 
@@ -105,7 +105,7 @@ public final class TrackedEntityInstanceStoreImpl extends IdentifiableObjectWith
     }
 
     public static TrackedEntityInstanceStore create(DatabaseAdapter databaseAdapter) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
+        SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(
                 TrackedEntityInstanceTableInfo.TABLE_INFO.name(),
                 TrackedEntityInstanceTableInfo.TABLE_INFO.columns());
         SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);

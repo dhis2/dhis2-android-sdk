@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.event;
 import android.database.Cursor;
 
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
@@ -82,7 +82,7 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
 
     private EventStoreImpl(DatabaseAdapter databaseAdapter,
                            SQLStatementWrapper statementWrapper,
-                           SQLStatementBuilder builder,
+                           SQLStatementBuilderImpl builder,
                            StatementBinder<Event> binder,
                            CursorModelFactory<Event> modelFactory) {
         super(databaseAdapter, statementWrapper, builder, binder, modelFactory);
@@ -167,7 +167,7 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
     }
 
     public static EventStore create(DatabaseAdapter databaseAdapter) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
+        SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(
                 EventTableInfo.TABLE_INFO.name(),
                 EventTableInfo.TABLE_INFO.columns());
         SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);

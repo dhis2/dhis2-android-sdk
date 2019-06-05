@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
@@ -77,7 +77,7 @@ public final class TrackedEntityAttributeValueStoreImpl
             TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE);
 
     private TrackedEntityAttributeValueStoreImpl(DatabaseAdapter databaseAdapter,
-                                SQLStatementBuilder builder) {
+                                SQLStatementBuilderImpl builder) {
         super(databaseAdapter, builder, BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER,
                 TrackedEntityAttributeValue::create);
     }
@@ -140,7 +140,7 @@ public final class TrackedEntityAttributeValueStoreImpl
     }
 
     public static TrackedEntityAttributeValueStore create(DatabaseAdapter databaseAdapter) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
+        SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(
                 TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
                 TrackedEntityAttributeValueTableInfo.TABLE_INFO.columns());
 

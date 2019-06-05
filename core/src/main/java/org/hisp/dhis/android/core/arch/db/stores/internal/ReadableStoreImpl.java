@@ -80,6 +80,14 @@ public class ReadableStoreImpl<M extends Model> implements ReadableStore<M> {
     }
 
     @Override
+    public M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType) {
+        Cursor cursor = databaseAdapter.query(builder.selectOneOrderedBy(orderingColumName, orderingType));
+        return getFirstFromCursor(cursor);
+    }
+
+
+
+    @Override
     public List<M> selectRawQuery(String sqlRawQuery) {
         Cursor cursor = databaseAdapter.query(sqlRawQuery);
         List<M> list = new ArrayList<>();
@@ -94,18 +102,12 @@ public class ReadableStoreImpl<M extends Model> implements ReadableStore<M> {
     }
 
     @Override
-    public M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType) {
-        Cursor cursor = databaseAdapter.query(builder.selectOneOrderedBy(orderingColumName, orderingType));
-        return getFirstFromCursor(cursor);
-    }
-
-    @Override
     public M selectFirst() {
         Cursor cursor = databaseAdapter.query(builder.selectAll());
         return getFirstFromCursor(cursor);
     }
 
-    private M getFirstFromCursor(@NonNull Cursor cursor) {
+    M getFirstFromCursor(@NonNull Cursor cursor) {
         try {
             if (cursor.getCount() >= 1) {
                 cursor.moveToFirst();
@@ -149,12 +151,6 @@ public class ReadableStoreImpl<M extends Model> implements ReadableStore<M> {
         } finally {
             cursor.close();
         }
-    }
-
-    @Override
-    public List<String> selectStringColumnsWhereClause(String column, String clause) {
-        Cursor cursor = databaseAdapter.query(builder.selectColumnWhere(column, clause));
-        return mapStringColumnSetFromCursor(cursor);
     }
 
     List<String> mapStringColumnSetFromCursor(Cursor cursor) {

@@ -29,75 +29,22 @@
 package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStoreImpl;
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
-import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkTableInfo;
-import org.hisp.dhis.android.core.period.PeriodTableInfo;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DataSetValueSummaryStore extends ReadableStoreImpl<DataSetValueSummary> {
 
-    private final String DATAVALUE_ALIAS = "dv";
-    private final String PERIOD_ALIAS = "pe";
-    private final String DATASETELEMENT_ALIAS = "dse";
-    private final String DATASET_ALIAS = "ds";
-
-    private final String STATE = DATAVALUE_ALIAS + "." + BaseDataModel.Columns.STATE;
-
-    private final String SELECT_STATE_ORDERING = " MAX(CASE " +
-            "WHEN " + STATE + " = '" + State.SYNCED + "' THEN 1 " +
-            "WHEN " + STATE + " = '" + State.TO_DELETE + "' THEN 2 " +
-            "WHEN " + STATE + " IN ('" + State.TO_POST + "','" + State.TO_UPDATE + "') THEN 3 " +
-            "ELSE 4 END)";
-
-    private final String SELECT = "SELECT " +
-            DATASETELEMENT_ALIAS + "." + DataSetDataElementLinkTableInfo.Columns.DATA_SET + ", " +
-            DATAVALUE_ALIAS + "." + DataValueFields.PERIOD + ", " +
-            DATAVALUE_ALIAS + "." + DataValueTableInfo.ORGANISATION_UNIT + ", " +
-            DATAVALUE_ALIAS + "." + DataValueFields.ATTRIBUTE_OPTION_COMBO + ", " +
-            STATE + ", " +
-            // Auxiliary field to order the 'state' column and to prioritize TO_POST and TO_UPDATE
-            SELECT_STATE_ORDERING + " " +
-
-            "FROM " + DataValueTableInfo.TABLE_INFO.name() + " as " + DATAVALUE_ALIAS +
-            " INNER JOIN " + PeriodTableInfo.TABLE_INFO.name() + " as " + PERIOD_ALIAS +
-            " ON " + DATAVALUE_ALIAS + "." + DataValueFields.PERIOD + " = " + PERIOD_ALIAS + "." + PeriodTableInfo.Columns.PERIOD_ID +
-            " INNER JOIN " + DataSetDataElementLinkTableInfo.TABLE_INFO.name() + " as " + DATASETELEMENT_ALIAS +
-            " ON " + DATAVALUE_ALIAS + "." + DataValueFields.DATA_ELEMENT + " = " + DATASETELEMENT_ALIAS + "." + DataSetDataElementLinkTableInfo.Columns.DATA_ELEMENT;
-
-    private final String GROUP_BY_CLAUSE = " GROUP BY " +
-            DATASETELEMENT_ALIAS + "." + DataSetDataElementLinkTableInfo.Columns.DATA_SET + "," +
-            DATAVALUE_ALIAS + "." + DataValueFields.PERIOD + "," +
-            DATAVALUE_ALIAS + "." + DataValueTableInfo.ORGANISATION_UNIT + "," +
-            DATAVALUE_ALIAS + "." + DataValueFields.ATTRIBUTE_OPTION_COMBO;
-
-    private final String WHERE_CLAUSE = " WHERE dv.period = '201806' and dse.dataSet = " +
-            "'Zi5D24rZvYd' ";
-
     private DataSetValueSummaryStore(DatabaseAdapter databaseAdapter,
-                                     SQLStatementBuilder builder,
+                                     ReadOnlySQLStatementBuilder builder,
                                      CursorModelFactory<DataSetValueSummary> modelFactory) {
         super(databaseAdapter, builder, modelFactory);
     }
 
-    public List<DataSetValueSummary> query(String whereClause) {
-        String query = SELECT + WHERE_CLAUSE + GROUP_BY_CLAUSE;
-        List<DataSetValueSummary> result = new ArrayList<>();
-        addObjectsToCollection(databaseAdapter.query(query), result);
-
-        return result;
-    }
-
     public static DataSetValueSummaryStore create(DatabaseAdapter databaseAdapter) {
-        return new DataSetValueSummaryStore(databaseAdapter,
-                // TODO Just to make it compile
-                new SQLStatementBuilder(DataElementTableInfo.TABLE_INFO),
+        return new DataSetValueSummaryStore(
+                databaseAdapter,
+                new DataSetValueSummarySQLStatementBuilder(),
                 DataSetValueSummary::create);
     }
 }

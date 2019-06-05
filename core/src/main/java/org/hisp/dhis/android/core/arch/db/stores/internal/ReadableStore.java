@@ -42,15 +42,13 @@ public interface ReadableStore<M> {
 
     List<M> selectWhere(String filterWhereClause, String orderByClause, int limit);
 
+    M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
+
     List<M> selectRawQuery(String sqlRawQuery);
 
     M selectOneWhere(String whereClause);
 
-    M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
-
     M selectFirst();
-
-    List<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
 
     int count();
 

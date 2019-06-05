@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.sqlite.SQLiteStatement;
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder;
@@ -51,7 +51,7 @@ public final class ProgramStore extends IdentifiableObjectStoreImpl<Program> imp
 
     private ProgramStore(DatabaseAdapter databaseAdapter,
                          SQLStatementWrapper statementWrapper,
-                         SQLStatementBuilder statementBuilder) {
+                         SQLStatementBuilderImpl statementBuilder) {
         super(databaseAdapter, statementWrapper, statementBuilder, BINDER, Program::create);
     }
     
@@ -91,7 +91,7 @@ public final class ProgramStore extends IdentifiableObjectStoreImpl<Program> imp
     };
 
     public static ProgramStoreInterface create(DatabaseAdapter databaseAdapter) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(ProgramTableInfo.TABLE_INFO.name(),
+        SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(ProgramTableInfo.TABLE_INFO.name(),
                 ProgramTableInfo.TABLE_INFO.columns());
         SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);
 

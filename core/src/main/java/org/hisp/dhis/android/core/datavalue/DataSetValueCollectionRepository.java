@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.datavalue;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
@@ -40,6 +39,7 @@ import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 
 import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -55,45 +55,6 @@ public final class DataSetValueCollectionRepository
                                      final RepositoryScope scope) {
         super(store, Collections.emptyMap(), scope, new FilterConnectorFactory<>(scope,
                 s -> new DataSetValueCollectionRepository(store, s)));
-    }
-
-
-
-
-    public StringFilterConnector<DataSetValueCollectionRepository> byDataElementUid() {
-        return cf.string(DataValueFields.DATA_ELEMENT);
-    }
-
-    public StringFilterConnector<DataSetValueCollectionRepository> byPeriod() {
-        return cf.string(DataValueFields.PERIOD);
-    }
-
-    public StringFilterConnector<DataSetValueCollectionRepository> byOrganisationUnitUid() {
-        return cf.string(DataValueTableInfo.ORGANISATION_UNIT);
-    }
-
-    public StringFilterConnector<DataSetValueCollectionRepository> byCategoryOptionComboUid() {
-        return cf.string(DataValueFields.CATEGORY_OPTION_COMBO);
-    }
-
-    public StringFilterConnector<DataSetValueCollectionRepository> byAttributeOptionComboUid() {
-        return cf.string(DataValueFields.ATTRIBUTE_OPTION_COMBO);
-    }
-
-    public StringFilterConnector<DataSetValueCollectionRepository> byValue() {
-        return cf.string(DataValueFields.VALUE);
-    }
-
-    public StringFilterConnector<DataSetValueCollectionRepository> byStoredBy() {
-        return cf.string(DataValueFields.STORED_BY);
-    }
-
-    public DateFilterConnector<DataSetValueCollectionRepository> byCreated() {
-        return cf.date(DataValueFields.CREATED);
-    }
-
-    public DateFilterConnector<DataSetValueCollectionRepository> byLastUpdated() {
-        return cf.date(DataValueFields.LAST_UPDATED);
     }
 
     public StringFilterConnector<DataSetValueCollectionRepository> byComment() {

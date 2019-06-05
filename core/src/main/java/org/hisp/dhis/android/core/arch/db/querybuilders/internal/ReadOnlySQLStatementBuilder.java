@@ -29,21 +29,8 @@
 package org.hisp.dhis.android.core.arch.db.querybuilders.internal;
 
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 
 public interface ReadOnlySQLStatementBuilder {
-    String selectUids();
-
-    String selectUidsWhere(String whereClause);
-
-    String selectColumnWhere(String column, String whereClause);
-
-    String selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
-
-    String selectChildrenWithLinkTable(LinkTableChildProjection projection, String parentUid, String whereClause);
-
-    String selectByUid();
-
     String selectWhere(String whereClause);
 
     String selectWhere(String whereClause, int limit);
@@ -51,6 +38,8 @@ public interface ReadOnlySQLStatementBuilder {
     String selectWhere(String whereClause, String orderByClause);
 
     String selectWhere(String whereClause, String orderByClause, int limit);
+
+    String selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
 
     String selectAll();
 

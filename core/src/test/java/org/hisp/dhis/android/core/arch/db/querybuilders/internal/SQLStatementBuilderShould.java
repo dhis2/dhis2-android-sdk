@@ -47,7 +47,7 @@ public class SQLStatementBuilderShould {
 
     private final static String[] columns = new String[]{COL_1, COL_2};
 
-    private SQLStatementBuilder builder = new SQLStatementBuilder(TABLE_NAME, columns, columns, false);
+    private SQLStatementBuilderImpl builder = new SQLStatementBuilderImpl(TABLE_NAME, columns, columns, false);
 
     private static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
             CategoryTableInfo.TABLE_INFO,
@@ -131,7 +131,7 @@ public class SQLStatementBuilderShould {
 
     @Test
     public void generate_select_children_with_link_table_with_sort_order() {
-        SQLStatementBuilder builderWithSortOrder = new SQLStatementBuilder(TABLE_NAME, columns, columns, true);
+        SQLStatementBuilderImpl builderWithSortOrder = new SQLStatementBuilderImpl(TABLE_NAME, columns, columns, true);
         assertThat(builderWithSortOrder.selectChildrenWithLinkTable(CHILD_PROJECTION, "UID", null)).isEqualTo(
                 "SELECT c.* FROM Test_Table AS l, Category AS c WHERE l." + COL_2 + "=c.uid AND l." + COL_1 + "='UID' ORDER BY sortOrder;"
         );

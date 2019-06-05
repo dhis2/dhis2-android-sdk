@@ -37,10 +37,20 @@ import org.hisp.dhis.android.core.period.PeriodTableInfo;
 
 public class DataSetValueSummarySQLStatementBuilder implements ReadOnlySQLStatementBuilder {
 
-    private final String DATAVALUE_ALIAS = "dv";
-    private final String PERIOD_ALIAS = "pe";
-    private final String DATASETELEMENT_ALIAS = "dse";
-    private final String DATASET_ALIAS = "ds";
+    private static final String DATAVALUE_ALIAS = "dv";
+    private static final String PERIOD_ALIAS = "pe";
+    private static final String DATASETELEMENT_ALIAS = "dse";
+
+    static final String VALUE_COUNT = "valueCount";
+
+    static final String DATASET_UID = DATASETELEMENT_ALIAS + "." + DataSetDataElementLinkTableInfo.Columns.DATA_SET;
+    static final String PERIOD = DATAVALUE_ALIAS + "." + DataValueFields.PERIOD;
+    static final String ORGANISATION_UNIT = DATAVALUE_ALIAS + "." + DataValueTableInfo.ORGANISATION_UNIT;
+    static final String ATTRIBUTE_OPTION_COMBO = DATAVALUE_ALIAS + "." + DataValueFields.ATTRIBUTE_OPTION_COMBO;
+
+    static final String PERIOD_START_DATE = PERIOD_ALIAS + "." + PeriodTableInfo.Columns.START_DATE;
+    static final String PERIOD_END_DATE = PERIOD_ALIAS + "." + PeriodTableInfo.Columns.END_DATE;
+    static final String PERIOD_TYPE = PERIOD_ALIAS + "." + PeriodTableInfo.Columns.PERIOD_TYPE;
 
     private final String STATE = DATAVALUE_ALIAS + "." + BaseDataModel.Columns.STATE;
 
@@ -53,16 +63,18 @@ public class DataSetValueSummarySQLStatementBuilder implements ReadOnlySQLStatem
     private final String FROM_CLAUSE =
             " FROM " + DataValueTableInfo.TABLE_INFO.name() + " as " + DATAVALUE_ALIAS +
             " INNER JOIN " + PeriodTableInfo.TABLE_INFO.name() + " as " + PERIOD_ALIAS +
-            " ON " + DATAVALUE_ALIAS + "." + DataValueFields.PERIOD + " = " + PERIOD_ALIAS + "." + PeriodTableInfo.Columns.PERIOD_ID +
+            " ON " + PERIOD + " = " + PERIOD_ALIAS + "." + PeriodTableInfo.Columns.PERIOD_ID +
             " INNER JOIN " + DataSetDataElementLinkTableInfo.TABLE_INFO.name() + " as " + DATASETELEMENT_ALIAS +
-            " ON " + DATAVALUE_ALIAS + "." + DataValueFields.DATA_ELEMENT + " = " + DATASETELEMENT_ALIAS + "." + DataSetDataElementLinkTableInfo.Columns.DATA_ELEMENT;
+            " ON " + DATAVALUE_ALIAS + "." + DataValueFields.DATA_ELEMENT + " = " +
+                    DATASETELEMENT_ALIAS + "." + DataSetDataElementLinkTableInfo.Columns.DATA_ELEMENT;
 
     private final String SELECT_CLAUSE = "SELECT " +
             DATAVALUE_ALIAS + "." + BaseDataModel.Columns.ID + ", " +
-            DATASETELEMENT_ALIAS + "." + DataSetDataElementLinkTableInfo.Columns.DATA_SET + ", " +
-            DATAVALUE_ALIAS + "." + DataValueFields.PERIOD + ", " +
-            DATAVALUE_ALIAS + "." + DataValueTableInfo.ORGANISATION_UNIT + ", " +
-            DATAVALUE_ALIAS + "." + DataValueFields.ATTRIBUTE_OPTION_COMBO + ", " +
+            DATASET_UID + ", " +
+            PERIOD + ", " +
+            ORGANISATION_UNIT + ", " +
+            ATTRIBUTE_OPTION_COMBO + ", " +
+            "COUNT(*) AS " + VALUE_COUNT + ", " +
             STATE + ", " +
             // Auxiliary field to order the 'state' column and to prioritize TO_POST and TO_UPDATE
             SELECT_STATE_ORDERING +
@@ -71,10 +83,10 @@ public class DataSetValueSummarySQLStatementBuilder implements ReadOnlySQLStatem
     private final String SELECT_COUNT_CLAUSE = "SELECT count(*) " + FROM_CLAUSE;
 
     private final String GROUP_BY_CLAUSE = " GROUP BY " +
-            DATASETELEMENT_ALIAS + "." + DataSetDataElementLinkTableInfo.Columns.DATA_SET + "," +
-            DATAVALUE_ALIAS + "." + DataValueFields.PERIOD + "," +
-            DATAVALUE_ALIAS + "." + DataValueTableInfo.ORGANISATION_UNIT + "," +
-            DATAVALUE_ALIAS + "." + DataValueFields.ATTRIBUTE_OPTION_COMBO;
+            DATASET_UID + "," +
+            PERIOD + "," +
+            ORGANISATION_UNIT + "," +
+            ATTRIBUTE_OPTION_COMBO;
 
     @Override
     public String selectWhere(String whereClause) {

@@ -34,6 +34,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
@@ -55,6 +56,10 @@ public abstract class DataSetValueSummary implements Model {
 
     @NonNull
     public abstract String attributeOptionCombo();
+
+    @NonNull
+    @ColumnName(DataSetValueSummarySQLStatementBuilder.VALUE_COUNT)
+    public abstract Integer valueCount();
 
     @Nullable
     @ColumnAdapter(DbStateColumnAdapter.class)
@@ -82,6 +87,8 @@ public abstract class DataSetValueSummary implements Model {
         public abstract Builder organisationUnit(String organisationUnit);
 
         public abstract Builder attributeOptionCombo(String attributeOptionCombo);
+
+        public abstract Builder valueCount(Integer valueCount);
 
         public abstract Builder state(State state);
 

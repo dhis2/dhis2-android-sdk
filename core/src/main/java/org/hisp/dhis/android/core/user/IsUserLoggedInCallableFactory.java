@@ -45,7 +45,7 @@ final class IsUserLoggedInCallableFactory {
         this.authenticatedUserStore = authenticatedUserStore;
     }
 
-    public Single<Boolean> isLogged() {
+    Single<Boolean> isLogged() {
         return Single.create(emitter -> {
             AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
             emitter.onSuccess(authenticatedUser != null && authenticatedUser.credentials() != null);

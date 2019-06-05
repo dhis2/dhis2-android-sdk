@@ -38,7 +38,7 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import io.reactivex.Completable;
 
-class LogOutCallFactory {
+final class LogOutCallFactory {
 
     @NonNull
     private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
@@ -48,7 +48,7 @@ class LogOutCallFactory {
         this.authenticatedUserStore = authenticatedUserStore;
     }
 
-    public Completable logOut() {
+    Completable logOut() {
         return Completable.create(emitter -> {
             AuthenticatedUser existingUser = this.authenticatedUserStore.selectFirst();
 

@@ -129,7 +129,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private APIUrlProvider apiUrlProvider;
 
     // call we are testing
-    private Single<User> userAuthenticateCall;
+    private Single<User> logInSingle;
 
     private static final String USERNAME = "test_username";
     private static final String UID = "test_uid";
@@ -171,7 +171,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         when(d2Error.errorCode()).thenReturn(D2ErrorCode.SOCKET_TIMEOUT);
 
-        userAuthenticateCall = instantiateCall(USERNAME, PASSWORD);
+        logInSingle = instantiateCall(USERNAME, PASSWORD);
     }
 
     private Single<User> instantiateCall(String username, String password) {
@@ -208,8 +208,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
                 credentialsCaptor.capture(), filterCaptor.capture())
         ).thenReturn(authenticateAPICall);
 
-        TestObserver<User> testObserver = userAuthenticateCall.test();
-        testObserver.awaitTerminalEvent();
+        logInSingle.blockingGet();
 
         assertThat(basic(USERNAME, PASSWORD))
                 .isEqualTo(credentialsCaptor.getValue());
@@ -219,7 +218,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     public void not_invoke_stores_on_exception_on_call() throws D2Error {
         whenAPICall().thenThrow(d2Error);
 
-        TestObserver<User> testObserver = userAuthenticateCall.test();
+        TestObserver<User> testObserver = logInSingle.test();
         testObserver.awaitTerminalEvent();
 
         assertThat(testObserver.errorCount()).isEqualTo(1);
@@ -236,7 +235,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         whenAPICall().thenThrow(d2Error);
         when(d2Error.errorCode()).thenReturn(D2ErrorCode.UNEXPECTED);
 
-        TestObserver<User> testObserver = userAuthenticateCall.test();
+        TestObserver<User> testObserver = logInSingle.test();
         testObserver.awaitTerminalEvent();
 
         assertThat(testObserver.errorCount()).isEqualTo(1);
@@ -251,13 +250,13 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Test
     public void succeed_when_no_previous_user_or_system_info() {
-        userAuthenticateCall.test().awaitTerminalEvent();
+        logInSingle.blockingGet();
         verifySuccess();
     }
 
     @Test
     public void not_wipe_db_when_no_previous_user_or_system_info() throws Exception {
-        userAuthenticateCall.test().awaitTerminalEvent();
+        logInSingle.blockingGet();
 
         verify(wipeModule, never()).wipeEverything();
         verifySuccess();
@@ -267,7 +266,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     public void not_wipe_db_when_previously_same_user() throws Exception {
         when(userStore.selectFirst()).thenReturn(user);
 
-        userAuthenticateCall.test().awaitTerminalEvent();
+        logInSingle.blockingGet();
 
         verify(wipeModule, never()).wipeEverything();
         verifySuccess();
@@ -277,7 +276,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     public void wipe_db_when_previously_another_user() throws Exception {
         when(userStore.selectFirst()).thenReturn(anotherUser);
 
-        userAuthenticateCall.test().awaitTerminalEvent();
+        logInSingle.blockingGet();
 
         verify(wipeModule).wipeEverything();
         verifySuccess();
@@ -287,7 +286,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     public void wipe_db_when_previously_equal_user_but_different_server() throws Exception {
         when(systemInfoFromDb.contextPath()).thenReturn("https://another-instance.org/");
 
-        userAuthenticateCall.test().awaitTerminalEvent();
+        logInSingle.blockingGet();
 
         verify(wipeModule).wipeEverything();
         verifySuccess();
@@ -297,7 +296,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     public void wipe_db_when_previously_different_user() throws Exception {
         when(loggedUser.uid()).thenReturn("previous_user");
 
-        userAuthenticateCall.test().awaitTerminalEvent();
+        logInSingle.blockingGet();
 
         verify(wipeModule).wipeEverything();
         verifySuccess();
@@ -306,7 +305,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Test
     public void throw_d2_call_exception_state_exception_if_user_already_signed_in() {
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
-        TestObserver<User> testObserver = userAuthenticateCall.test();
+        TestObserver<User> testObserver = logInSingle.test();
         assertD2Error(testObserver);
     }
 
@@ -316,7 +315,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     public void continue_if_user_has_logged_out() {
         when(authenticatedUser.credentials()).thenReturn(null);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
-        userAuthenticateCall.test().awaitTerminalEvent();
+        logInSingle.blockingGet();
         verifySuccess();
     }
 
@@ -327,7 +326,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(authenticatedUser.credentials()).thenReturn(null);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
-        userAuthenticateCall.test().awaitTerminalEvent();
+        logInSingle.test().awaitTerminalEvent();
         verifySuccessOffline();
     }
 
@@ -337,7 +336,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         when(authenticatedUserStore.selectFirst()).thenReturn(null);
 
-        TestObserver<User> testObserver = userAuthenticateCall.test();
+        TestObserver<User> testObserver = logInSingle.test();
         testObserver.awaitTerminalEvent();
 
         D2Error d2Error = (D2Error) testObserver.errors().get(0);
@@ -353,7 +352,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
 
-        TestObserver<User> testObserver = userAuthenticateCall.test();
+        TestObserver<User> testObserver = logInSingle.test();
         testObserver.awaitTerminalEvent();
 
         D2Error d2Error = (D2Error) testObserver.errors().get(0);

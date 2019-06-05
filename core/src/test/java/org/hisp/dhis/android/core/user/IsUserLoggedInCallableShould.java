@@ -37,7 +37,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import io.reactivex.Single;
-import io.reactivex.observers.TestObserver;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -51,7 +50,7 @@ public class IsUserLoggedInCallableShould {
     @Mock
     private AuthenticatedUser authenticatedUser;
 
-    private Single<Boolean> isUserLoggedInCallable;
+    private Single<Boolean> isUserLoggedInSingle;
 
     @Before
     public void setUp() {
@@ -61,27 +60,25 @@ public class IsUserLoggedInCallableShould {
         when(authenticatedUser.credentials()).thenReturn("credentials");
         when(authenticatedUser.hash()).thenReturn("hash");
 
-        isUserLoggedInCallable = new IsUserLoggedInCallableFactory(authenticatedUserStore).isLogged();
+        isUserLoggedInSingle = new IsUserLoggedInCallableFactory(authenticatedUserStore).isLogged();
     }
 
     @Test
     public void return_true_if_any_users_are_persisted_after_call() {
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
-        TestObserver<Boolean> testObserver = isUserLoggedInCallable.test();
-        testObserver.awaitTerminalEvent();
+        Boolean isUserLoggedIn = isUserLoggedInSingle.blockingGet();
 
-        assertThat(testObserver.values().get(0)).isTrue();
+        assertThat(isUserLoggedIn).isTrue();
     }
 
     @Test
     public void return_false_if_any_users_are_not_persisted_after_call() {
         when(authenticatedUserStore.selectFirst()).thenReturn(null);
 
-        TestObserver<Boolean> testObserver = isUserLoggedInCallable.test();
-        testObserver.awaitTerminalEvent();
+        Boolean isUserLoggedIn = isUserLoggedInSingle.blockingGet();
 
-        assertThat(testObserver.values().get(0)).isFalse();
+        assertThat(isUserLoggedIn).isFalse();
     }
 
     @Test
@@ -89,9 +86,8 @@ public class IsUserLoggedInCallableShould {
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
         when(authenticatedUser.credentials()).thenReturn(null);
 
-        TestObserver<Boolean> testObserver = isUserLoggedInCallable.test();
-        testObserver.awaitTerminalEvent();
+        Boolean isUserLoggedIn = isUserLoggedInSingle.blockingGet();
 
-        assertThat(testObserver.values().get(0)).isFalse();
+        assertThat(isUserLoggedIn).isFalse();
     }
 }

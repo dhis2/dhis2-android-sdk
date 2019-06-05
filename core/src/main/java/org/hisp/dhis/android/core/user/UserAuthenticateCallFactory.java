@@ -171,7 +171,7 @@ final class UserAuthenticateCallFactory {
         if (existingUser == null) {
             throw D2Error.builder()
                     .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE)
-                    .errorDescription("No user has been previously authenticated. Cannot loginInternal offline.")
+                    .errorDescription("No user has been previously authenticated. Cannot login offline.")
                     .errorComponent(D2ErrorComponent.SDK)
                     .build();
         }

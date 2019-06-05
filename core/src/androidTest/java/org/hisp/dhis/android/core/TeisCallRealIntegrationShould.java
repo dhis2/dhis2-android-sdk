@@ -57,7 +57,7 @@ public class TeisCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void download_tracked_entity_instances() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
 
         d2.syncMetaData().call();
 

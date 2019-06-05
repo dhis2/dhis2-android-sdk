@@ -54,12 +54,12 @@ public class TrackedEntityInstanceCallRealIntegrationShould extends BaseRealInte
     }
 
     //This test is commented because technically it is flaky.
-    //It depends on a live server to operate and the login is hardcoded here.
+    //It depends on a live server to operate and the logIn is hardcoded here.
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
 
     //@Test
     public void download_tei_enrollments_and_events() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
+        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
 
         d2.syncMetaData().call();
 

@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -55,15 +54,14 @@ import org.mockito.Mock;
 import org.mockito.stubbing.Answer;
 import org.mockito.stubbing.OngoingStubbing;
 
-import java.util.concurrent.Callable;
-
 import io.reactivex.Completable;
+import io.reactivex.Single;
+import io.reactivex.observers.TestObserver;
 
 import static okhttp3.Credentials.basic;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hisp.dhis.android.core.utils.UserUtils.base64;
 import static org.hisp.dhis.android.core.utils.UserUtils.md5;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
@@ -125,16 +123,13 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
 
     @Mock
-    private Callable<Unit> systemInfoEndpointCall;
-
-    @Mock
     private WipeModule wipeModule;
 
     @Mock
     private APIUrlProvider apiUrlProvider;
 
     // call we are testing
-    private Callable<User> userAuthenticateCall;
+    private Single<User> userAuthenticateCall;
 
     private static final String USERNAME = "test_username";
     private static final String UID = "test_uid";
@@ -179,34 +174,42 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         userAuthenticateCall = instantiateCall(USERNAME, PASSWORD);
     }
 
-    private Callable<User> instantiateCall(String username, String password) {
+    private Single<User> instantiateCall(String username, String password) {
         return new UserAuthenticateCallFactory(databaseAdapter, apiCallExecutor,
                 userService, userHandler, resourceHandler, authenticatedUserStore,
                 systemInfoRepository, userStore, wipeModule,
-                apiUrlProvider).getCall(username, password);
+                apiUrlProvider).logIn(username, password);
     }
 
     private OngoingStubbing<User> whenAPICall() throws D2Error {
         return when(apiCallExecutor.executeObjectCallWithErrorCatcher(same(authenticateAPICall), any(APICallErrorCatcher.class)));
     }
 
-    @Test(expected = D2Error.class)
-    public void throw_d2_call_exception_for_null_username() throws Exception {
-        instantiateCall(null, PASSWORD).call();
-    }
-
-    @Test(expected = D2Error.class)
-    public void throw_d2_call_exception_for_null_password() throws Exception {
-        instantiateCall(USERNAME, null).call();
+    @Test
+    public void throw_d2_call_exception_for_null_username() {
+        TestObserver<User> testObserver = instantiateCall(null, PASSWORD).test();
+        assertD2Error(testObserver);
     }
 
     @Test
-    public void invoke_server_with_correct_parameters_after_call() throws Exception {
+    public void throw_d2_call_exception_for_null_password() {
+        TestObserver<User> testObserver = instantiateCall(USERNAME, null).test();
+        assertD2Error(testObserver);
+    }
+
+    private void assertD2Error(TestObserver<User> testObserver) {
+        testObserver.awaitTerminalEvent();
+        assertThat(testObserver.errors().get(0)).isInstanceOf(D2Error.class);
+    }
+
+    @Test
+    public void invoke_server_with_correct_parameters_after_call() {
         when(userService.authenticate(
                 credentialsCaptor.capture(), filterCaptor.capture())
         ).thenReturn(authenticateAPICall);
 
-        userAuthenticateCall.call();
+        TestObserver<User> testObserver = userAuthenticateCall.test();
+        testObserver.awaitTerminalEvent();
 
         assertThat(basic(USERNAME, PASSWORD))
                 .isEqualTo(credentialsCaptor.getValue());
@@ -216,30 +219,27 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     public void not_invoke_stores_on_exception_on_call() throws D2Error {
         whenAPICall().thenThrow(d2Error);
 
-        try {
-            userAuthenticateCall.call();
+        TestObserver<User> testObserver = userAuthenticateCall.test();
+        testObserver.awaitTerminalEvent();
 
-            fail("Expected exception was not thrown");
-        } catch (Exception exception) {
-            verifyNoTransactionStarted();
+        assertThat(testObserver.errorCount()).isEqualTo(1);
 
-            // stores must not be invoked
-            verify(authenticatedUserStore, never()).updateOrInsertWhere(any(AuthenticatedUser.class));
-            verifyNoMoreInteractions(userHandler);
-        }
+        verifyNoTransactionStarted();
+
+        // stores must not be invoked
+        verify(authenticatedUserStore, never()).updateOrInsertWhere(any(AuthenticatedUser.class));
+        verifyNoMoreInteractions(userHandler);
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void not_invoke_stores_on_exception_on_request_fail() throws Exception {
         whenAPICall().thenThrow(d2Error);
         when(d2Error.errorCode()).thenReturn(D2ErrorCode.UNEXPECTED);
 
-        try {
-            userAuthenticateCall.call();
-        } catch (D2Error d2e) {
+        TestObserver<User> testObserver = userAuthenticateCall.test();
+        testObserver.awaitTerminalEvent();
 
-        }
+        assertThat(testObserver.errorCount()).isEqualTo(1);
 
         verifyNoTransactionStarted();
 
@@ -250,14 +250,14 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     }
 
     @Test
-    public void succeed_when_no_previous_user_or_system_info() throws Exception {
-        userAuthenticateCall.call();
+    public void succeed_when_no_previous_user_or_system_info() {
+        userAuthenticateCall.test().awaitTerminalEvent();
         verifySuccess();
     }
 
     @Test
     public void not_wipe_db_when_no_previous_user_or_system_info() throws Exception {
-        userAuthenticateCall.call();
+        userAuthenticateCall.test().awaitTerminalEvent();
 
         verify(wipeModule, never()).wipeEverything();
         verifySuccess();
@@ -267,7 +267,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     public void not_wipe_db_when_previously_same_user() throws Exception {
         when(userStore.selectFirst()).thenReturn(user);
 
-        userAuthenticateCall.call();
+        userAuthenticateCall.test().awaitTerminalEvent();
 
         verify(wipeModule, never()).wipeEverything();
         verifySuccess();
@@ -277,7 +277,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     public void wipe_db_when_previously_another_user() throws Exception {
         when(userStore.selectFirst()).thenReturn(anotherUser);
 
-        userAuthenticateCall.call();
+        userAuthenticateCall.test().awaitTerminalEvent();
 
         verify(wipeModule).wipeEverything();
         verifySuccess();
@@ -287,7 +287,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     public void wipe_db_when_previously_equal_user_but_different_server() throws Exception {
         when(systemInfoFromDb.contextPath()).thenReturn("https://another-instance.org/");
 
-        userAuthenticateCall.call();
+        userAuthenticateCall.test().awaitTerminalEvent();
 
         verify(wipeModule).wipeEverything();
         verifySuccess();
@@ -297,25 +297,26 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     public void wipe_db_when_previously_different_user() throws Exception {
         when(loggedUser.uid()).thenReturn("previous_user");
 
-        userAuthenticateCall.call();
+        userAuthenticateCall.test().awaitTerminalEvent();
 
         verify(wipeModule).wipeEverything();
         verifySuccess();
     }
 
-    @Test(expected = D2Error.class)
-    public void throw_d2_call_exception_state_exception_if_user_already_signed_in() throws Exception {
+    @Test
+    public void throw_d2_call_exception_state_exception_if_user_already_signed_in() {
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
-        userAuthenticateCall.call();
+        TestObserver<User> testObserver = userAuthenticateCall.test();
+        assertD2Error(testObserver);
     }
 
     // Offline support
 
     @Test
-    public void continue_if_user_has_logged_out() throws Exception {
+    public void continue_if_user_has_logged_out() {
         when(authenticatedUser.credentials()).thenReturn(null);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
-        userAuthenticateCall.call();
+        userAuthenticateCall.test().awaitTerminalEvent();
         verifySuccess();
     }
 
@@ -326,7 +327,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(authenticatedUser.credentials()).thenReturn(null);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
-        userAuthenticateCall.call();
+        userAuthenticateCall.test().awaitTerminalEvent();
         verifySuccessOffline();
     }
 
@@ -336,11 +337,11 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         when(authenticatedUserStore.selectFirst()).thenReturn(null);
 
-        try {
-            userAuthenticateCall.call();
-        } catch (D2Error d2Exception) {
-            assertThat(d2Exception.errorCode()).isEqualTo(D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE);
-        }
+        TestObserver<User> testObserver = userAuthenticateCall.test();
+        testObserver.awaitTerminalEvent();
+
+        D2Error d2Error = (D2Error) testObserver.errors().get(0);
+        assertThat(d2Error.errorCode()).isEqualTo(D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE);
     }
 
     @Test
@@ -351,11 +352,12 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(authenticatedUser.hash()).thenReturn("different_hash");
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
-        try {
-            userAuthenticateCall.call();
-        } catch (D2Error d2Exception) {
-            assertThat(d2Exception.errorCode()).isEqualTo(D2ErrorCode.DIFFERENT_AUTHENTICATED_USER_OFFLINE);
-        }
+
+        TestObserver<User> testObserver = userAuthenticateCall.test();
+        testObserver.awaitTerminalEvent();
+
+        D2Error d2Error = (D2Error) testObserver.errors().get(0);
+        assertThat(d2Error.errorCode()).isEqualTo(D2ErrorCode.DIFFERENT_AUTHENTICATED_USER_OFFLINE);
     }
 
     private void verifySuccess() {

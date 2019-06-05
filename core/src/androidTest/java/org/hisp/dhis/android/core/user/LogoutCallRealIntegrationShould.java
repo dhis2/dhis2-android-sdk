@@ -63,7 +63,7 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void delete_credentials_when_log_out_after_sync_data() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
 
         d2.syncMetaData().call();
 
@@ -87,7 +87,7 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
     //@Test
     public void recreate_credentials_when_login_again()
             throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
 
         d2.syncMetaData().call();
 
@@ -102,7 +102,7 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
         assertThat(authenticatedUser).isNotNull();
         assertThat(authenticatedUser.credentials()).isNull();
 
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
 
         authenticatedUser = authenticatedUserStore.selectFirst();
 
@@ -112,8 +112,8 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void response_successful_on_login_logout_and_login() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
         d2.userModule().logOut().call();
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
     }
 }

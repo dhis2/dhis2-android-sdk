@@ -69,11 +69,11 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
     pragma foreign_key_check;*/
 
     //This test is uncommented because technically it is flaky.
-    //It depends on a live server to operate and the login is hardcoded here.
+    //It depends on a live server to operate and the logIn is hardcoded here.
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
     //@Test
     public void response_successful_on_sync_meta_data_once() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
 
         d2.syncMetaData().call();
 
@@ -86,7 +86,7 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void response_successful_on_sync_meta_data_two_times() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
 
         //first sync:
         d2.syncMetaData().call();
@@ -97,19 +97,19 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void response_successful_on_login_wipe_db_and_login() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
 
         d2.wipeModule().wipeEverything();
 
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
     }
 
     //@Test
     public void response_successful_on_login_logout_and_login() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
 
         d2.userModule().logOut().call();
 
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
     }
 }

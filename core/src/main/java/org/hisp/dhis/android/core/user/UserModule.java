@@ -37,12 +37,13 @@ import javax.inject.Provider;
 import androidx.annotation.NonNull;
 import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.reactivex.Single;
 
 @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 @Reusable
 public final class UserModule {
 
-    private final Provider<IsUserLoggedInCallable> isUserLoggedInCallProvider;
+    private final IsUserLoggedInCallableFactory isUserLoggedInCallFactory;
     private final Provider<LogOutUserCallable> logoutCallCallProvider;
     private final UserAuthenticateCallFactory loginCallFactory;
 
@@ -53,7 +54,7 @@ public final class UserModule {
     public final UserObjectRepository user;
 
     @Inject
-    UserModule(Provider<IsUserLoggedInCallable> isUserLoggedInCallProvider,
+    UserModule(IsUserLoggedInCallableFactory isUserLoggedInCallFactory,
                Provider<LogOutUserCallable> logoutCallCallProvider,
                UserAuthenticateCallFactory loginCallFactory,
                AuthenticatedUserObjectRepository authenticatedUser,
@@ -61,7 +62,7 @@ public final class UserModule {
                AuthorityCollectionRepository authorities,
                UserCredentialsObjectRepository userCredentials,
                UserObjectRepository user) {
-        this.isUserLoggedInCallProvider = isUserLoggedInCallProvider;
+        this.isUserLoggedInCallFactory = isUserLoggedInCallFactory;
         this.logoutCallCallProvider = logoutCallCallProvider;
         this.loginCallFactory = loginCallFactory;
         this.authenticatedUser = authenticatedUser;
@@ -72,8 +73,8 @@ public final class UserModule {
     }
 
     @NonNull
-    public Callable<User> logIn(String username, String password) {
-        return loginCallFactory.getCall(username, password);
+    public Single<User> logIn(String username, String password) {
+        return loginCallFactory.logIn(username, password);
     }
 
     @NonNull
@@ -82,7 +83,7 @@ public final class UserModule {
     }
 
     @NonNull
-    public Callable<Boolean> isLogged() {
-        return isUserLoggedInCallProvider.get();
+    public Single<Boolean> isLogged() {
+        return isUserLoggedInCallFactory.isLogged();
     }
 }

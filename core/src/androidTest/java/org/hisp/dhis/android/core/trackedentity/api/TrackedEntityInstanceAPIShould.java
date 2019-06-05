@@ -563,7 +563,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
                 .events().get(0).status()).isEqualTo(EventStatus.COMPLETED);
     }
 
-    private void login() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
+    private void login() {
+        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
     }
 }

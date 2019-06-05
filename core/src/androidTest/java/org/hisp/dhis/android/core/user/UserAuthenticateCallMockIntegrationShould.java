@@ -37,7 +37,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.concurrent.Callable;
+import io.reactivex.Single;
+import io.reactivex.observers.TestObserver;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -47,7 +48,7 @@ import static com.google.common.truth.Truth.assertThat;
 @RunWith(D2JunitRunner.class)
 public class UserAuthenticateCallMockIntegrationShould extends BaseMockIntegrationTestEmptyEnqueable {
 
-    private Callable<User> authenticateUserCall;
+    private Single<User> authenticateUserCall;
 
     @Before
     public void setUp() throws D2Error {
@@ -65,8 +66,8 @@ public class UserAuthenticateCallMockIntegrationShould extends BaseMockIntegrati
     }
 
     @Test
-    public void persist_user_in_data_base_when_call() throws Exception {
-        authenticateUserCall.call();
+    public void persist_user_in_data_base_when_call() {
+        authenticateUserCall.test().awaitTerminalEvent();
 
         User user = d2.userModule().user.get();
         assertThat(user.uid()).isEqualTo("DXyJmlo9rge");
@@ -82,7 +83,10 @@ public class UserAuthenticateCallMockIntegrationShould extends BaseMockIntegrati
 
     @Test
     public void return_correct_user_when_call() throws Exception {
-        User user = authenticateUserCall.call();
+        TestObserver<User> testObserver = authenticateUserCall.test();
+        testObserver.awaitTerminalEvent();
+
+        User user = testObserver.values().get(0);
 
         // verify payload which has been returned from call
         assertThat(user.uid()).isEqualTo("DXyJmlo9rge");

@@ -59,7 +59,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends BaseRealInte
 
     //@Test
     public void download_categories_combos_and_relatives() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
+        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
 
         d2.databaseAdapter().database().setForeignKeyConstraintsEnabled(false);
 

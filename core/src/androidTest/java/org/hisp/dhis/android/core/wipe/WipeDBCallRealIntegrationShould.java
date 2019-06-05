@@ -58,7 +58,7 @@ public class WipeDBCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void have_empty_database_when_wipe_db_after_sync_metadata() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
+        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
 
         d2.syncMetaData().call();
 
@@ -71,7 +71,7 @@ public class WipeDBCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void have_empty_database_when_wipe_db_after_sync_data() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
+        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
 
         d2.syncMetaData().call();
 
@@ -88,7 +88,7 @@ public class WipeDBCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void do_not_have_metadata_when_wipe_metadata_after_sync_metadata() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
+        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
 
         d2.syncMetaData().call();
 
@@ -101,7 +101,7 @@ public class WipeDBCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void do_not_have_data_when_wipe_data_after_sync() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
+        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
 
         d2.syncMetaData().call();
 

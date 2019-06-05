@@ -85,7 +85,7 @@ public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends 
         assertThat(queriedTeis.size()).isEqualTo(downloadedTeis.size());
     }
 
-    private void login() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+    private void login() {
+        d2.userModule().logIn("android", "Android123").blockingGet();
     }
 }

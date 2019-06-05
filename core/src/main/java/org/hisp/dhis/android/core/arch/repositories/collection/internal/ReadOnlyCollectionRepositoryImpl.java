@@ -68,7 +68,8 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     protected List<M> getWithoutChildren() {
-        return store.selectWhere(getWhereClause(), OrderByClauseBuilder.orderByFromItems(scope.orderBy()));
+        return store.selectWhere(getWhereClause(), OrderByClauseBuilder.orderByFromItems(scope.orderBy(),
+                scope.pagingKey()));
     }
 
     @Override

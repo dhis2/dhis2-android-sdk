@@ -60,7 +60,7 @@ public final class RepositoryDataSource<M extends Model> extends ItemKeyedDataSo
     public void loadInitial(@NonNull LoadInitialParams<M> params, @NonNull LoadInitialCallback<M> callback) {
         String whereClause = new WhereClauseFromScopeBuilder(new WhereClauseBuilder()).getWhereClause(scope);
         List<M> withoutChildren = store.selectWhere(whereClause,
-                OrderByClauseBuilder.orderByFromItems(scope.orderBy()), params.requestedLoadSize);
+                OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()), params.requestedLoadSize);
         callback.onResult(appendChildren(withoutChildren));
     }
 
@@ -77,9 +77,10 @@ public final class RepositoryDataSource<M extends Model> extends ItemKeyedDataSo
     private void loadPages(@NonNull LoadParams<M> params, @NonNull LoadCallback<M> callback, boolean reversed) {
         WhereClauseBuilder whereClauseBuilder = new WhereClauseBuilder();
         OrderByClauseBuilder.addSortingClauses(whereClauseBuilder, scope.orderBy(),
-                params.key.toContentValues(), reversed);
+                params.key.toContentValues(), reversed, scope.pagingKey());
         String whereClause = new WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(scope);
-        List<M> withoutChildren = store.selectWhere(whereClause, OrderByClauseBuilder.orderByFromItems(scope.orderBy()),
+        List<M> withoutChildren = store.selectWhere(whereClause,
+                OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
                 params.requestedLoadSize);
         callback.onResult(appendChildren(withoutChildren));
     }

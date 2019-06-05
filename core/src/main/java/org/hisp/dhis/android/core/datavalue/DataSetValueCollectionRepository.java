@@ -30,16 +30,11 @@ package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.State;
 
 import java.util.Collections;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -51,21 +46,14 @@ public final class DataSetValueCollectionRepository
         implements ReadOnlyCollectionRepository<DataSetValueSummary> {
 
     @Inject
-    DataSetValueCollectionRepository(final DataSetValueSummaryStore store,
+    public DataSetValueCollectionRepository(final DataSetValueSummaryStore store,
                                      final RepositoryScope scope) {
         super(store, Collections.emptyMap(), scope, new FilterConnectorFactory<>(scope,
                 s -> new DataSetValueCollectionRepository(store, s)));
     }
 
-    public StringFilterConnector<DataSetValueCollectionRepository> byComment() {
-        return cf.string(DataValueFields.COMMENT);
+    public StringFilterConnector<DataSetValueCollectionRepository> byDataset() {
+        return cf.string("dse.dataSet");
     }
 
-    public BooleanFilterConnector<DataSetValueCollectionRepository> byFollowUp() {
-        return cf.bool(DataValueFields.FOLLOW_UP);
-    }
-
-    public EnumFilterConnector<DataSetValueCollectionRepository, State> byState() {
-        return cf.enumC(BaseDataModel.Columns.STATE);
-    }
 }

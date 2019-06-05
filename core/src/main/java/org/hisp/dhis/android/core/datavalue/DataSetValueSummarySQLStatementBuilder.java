@@ -58,6 +58,7 @@ public class DataSetValueSummarySQLStatementBuilder implements ReadOnlySQLStatem
             " ON " + DATAVALUE_ALIAS + "." + DataValueFields.DATA_ELEMENT + " = " + DATASETELEMENT_ALIAS + "." + DataSetDataElementLinkTableInfo.Columns.DATA_ELEMENT;
 
     private final String SELECT_CLAUSE = "SELECT " +
+            DATAVALUE_ALIAS + "." + BaseDataModel.Columns.ID + ", " +
             DATASETELEMENT_ALIAS + "." + DataSetDataElementLinkTableInfo.Columns.DATA_SET + ", " +
             DATAVALUE_ALIAS + "." + DataValueFields.PERIOD + ", " +
             DATAVALUE_ALIAS + "." + DataValueTableInfo.ORGANISATION_UNIT + ", " +
@@ -77,7 +78,7 @@ public class DataSetValueSummarySQLStatementBuilder implements ReadOnlySQLStatem
 
     @Override
     public String selectWhere(String whereClause) {
-        return SELECT_CLAUSE + whereClause + GROUP_BY_CLAUSE;
+        return SELECT_CLAUSE + " WHERE " + whereClause + GROUP_BY_CLAUSE;
     }
 
     @Override
@@ -97,26 +98,21 @@ public class DataSetValueSummarySQLStatementBuilder implements ReadOnlySQLStatem
 
     @Override
     public String countWhere(String whereClause) {
-        return SELECT_COUNT_CLAUSE + whereClause + GROUP_BY_CLAUSE;
+        return SELECT_COUNT_CLAUSE + " WHERE " + whereClause + GROUP_BY_CLAUSE;
     }
-
-
-
 
     @Override
     public String selectWhere(String whereClause, String orderByClause) {
-        return "";
+        return selectWhere(whereClause) + " ORDER BY " + orderByClause;
     }
 
     @Override
     public String selectWhere(String whereClause, String orderByClause, int limit) {
-        return "";
+        return selectWhere(whereClause, orderByClause) + " LIMIT " + limit;
     }
 
     @Override
     public String selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType) {
-        return "";
+        return selectWhere("1", orderingColumName + " " + orderingType, 1);
     }
-
-
 }

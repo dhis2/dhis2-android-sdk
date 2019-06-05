@@ -36,23 +36,21 @@ import org.hisp.dhis.android.core.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.arch.repositories.paging.internal.RepositoryPagingConfig.PAGING_KEY;
-
 public final class OrderByClauseBuilder {
 
-    public static String orderByFromItems(List<RepositoryScopeOrderByItem> orderByItems) {
+    public static String orderByFromItems(List<RepositoryScopeOrderByItem> orderByItems, String pagingKey) {
         List<String> stringList = new ArrayList<>(orderByItems.size());
         boolean hasPagingKey = false;
         for (RepositoryScopeOrderByItem item: orderByItems) {
             stringList.add(item.toSQLString());
-            if (item.column().equals(PAGING_KEY)) {
+            if (item.column().equals(pagingKey)) {
                 hasPagingKey = true;
             }
         }
 
         if (!hasPagingKey) {
             stringList.add(RepositoryScopeOrderByItem.builder()
-                    .column(PAGING_KEY)
+                    .column(pagingKey)
                     .direction(RepositoryScope.OrderByDirection.ASC)
                     .build()
                     .toSQLString());
@@ -64,18 +62,19 @@ public final class OrderByClauseBuilder {
     public static void addSortingClauses(WhereClauseBuilder whereClauseBuilder,
                                          List<RepositoryScopeOrderByItem> orderByItems,
                                          ContentValues object,
-                                         boolean reversed) {
+                                         boolean reversed,
+                                         String pagingKey) {
         boolean hasPagingKey = false;
         List<RepositoryScopeOrderByItem> items = new ArrayList<>();
 
         for (RepositoryScopeOrderByItem item: orderByItems) {
             items.add(item);
-            if (item.column().equals(PAGING_KEY)) {
+            if (item.column().equals(pagingKey)) {
                 hasPagingKey = true;
             }
         }
         if (!hasPagingKey) {
-            items.add(RepositoryScopeOrderByItem.builder().column(PAGING_KEY)
+            items.add(RepositoryScopeOrderByItem.builder().column(pagingKey)
                     .direction(RepositoryScope.OrderByDirection.ASC).build());
         }
 

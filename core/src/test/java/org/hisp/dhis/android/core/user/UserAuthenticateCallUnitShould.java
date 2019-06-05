@@ -200,6 +200,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private void assertD2Error(TestObserver<User> testObserver) {
         testObserver.awaitTerminalEvent();
         assertThat(testObserver.errors().get(0)).isInstanceOf(D2Error.class);
+        testObserver.dispose();
     }
 
     @Test
@@ -222,6 +223,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         testObserver.awaitTerminalEvent();
 
         assertThat(testObserver.errorCount()).isEqualTo(1);
+        testObserver.dispose();
 
         verifyNoTransactionStarted();
 
@@ -239,6 +241,8 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         testObserver.awaitTerminalEvent();
 
         assertThat(testObserver.errorCount()).isEqualTo(1);
+
+        testObserver.dispose();
 
         verifyNoTransactionStarted();
 
@@ -341,6 +345,8 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         D2Error d2Error = (D2Error) testObserver.errors().get(0);
         assertThat(d2Error.errorCode()).isEqualTo(D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE);
+
+        testObserver.dispose();
     }
 
     @Test
@@ -357,6 +363,8 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         D2Error d2Error = (D2Error) testObserver.errors().get(0);
         assertThat(d2Error.errorCode()).isEqualTo(D2ErrorCode.DIFFERENT_AUTHENTICATED_USER_OFFLINE);
+
+        testObserver.dispose();
     }
 
     private void verifySuccess() {

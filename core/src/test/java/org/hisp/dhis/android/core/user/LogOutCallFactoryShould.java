@@ -97,5 +97,7 @@ public class LogOutCallFactoryShould {
 
         D2Error d2Error = (D2Error) testObserver.errors().get(0);
         assertThat(d2Error.errorCode()).isEqualTo(D2ErrorCode.NO_AUTHENTICATED_USER);
+
+        testObserver.dispose();
     }
 }

@@ -100,13 +100,13 @@ final class UserAuthenticateCallFactory {
     }
 
     public Single<User> logIn(final String username, final String password) {
-        return Single.create((emitter -> {
+        return Single.create(emitter -> {
             try {
                 emitter.onSuccess(loginInternal(username, password));
             } catch (Throwable t) {
                 emitter.onError(t);
             }
-        }));
+        });
     }
 
     private User loginInternal(String username, String password) throws D2Error {

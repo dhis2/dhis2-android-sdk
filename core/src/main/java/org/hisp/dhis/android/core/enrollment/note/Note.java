@@ -38,6 +38,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.enrollment.note.internal.NoteFields;
 
 import androidx.annotation.Nullable;
 

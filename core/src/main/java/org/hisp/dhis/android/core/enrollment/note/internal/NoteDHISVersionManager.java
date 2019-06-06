@@ -26,56 +26,53 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.note;
+package org.hisp.dhis.android.core.enrollment.note.internal;
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.note.Note;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.text.ParseException;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public class NoteUniquenessManager {
+public class NoteDHISVersionManager {
 
-    private final ObjectWithoutUidStore<Note> noteStore;
+    private final DHISVersionManager versionManager;
 
     @Inject
-    NoteUniquenessManager(ObjectWithoutUidStore<Note> noteStore) {
-        this.noteStore = noteStore;
+    public NoteDHISVersionManager(DHISVersionManager versionManager) {
+        this.versionManager = versionManager;
     }
 
-    public Set<Note> buildUniqueCollection(Collection<Note> notes, String enrollmentUid) {
-        String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST)
-                .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build();
-        List<Note> toPostNotes = noteStore.selectWhere(whereClause);
+    public Note transform(Enrollment enrollment, Note note) {
+        Note.Builder builder = Note.builder().enrollment(enrollment.uid());
 
-        String deleteWhereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build();
-        noteStore.deleteWhere(deleteWhereClause);
-
-        Set<Note> uniqueNotes = new HashSet<>();
-        for (Note note : notes) {
-            uniqueNotes.add(note.toBuilder()
-                    .id(null)
-                    .state(State.SYNCED)
-                    .build());
+        try {
+            if (this.versionManager.is2_29()) {
+                builder
+                        .storedDate(BaseIdentifiableObject.dateToDateStr(
+                        BaseIdentifiableObject.parseSpaceDate(note.storedDate())))
+                        .uid(null);
+            } else {
+                builder
+                        .storedDate(BaseIdentifiableObject.dateToDateStr(
+                        BaseIdentifiableObject.parseDate(note.storedDate())))
+                        .uid(note.uid());
+            }
+        } catch (ParseException ignored) {
+            builder
+                    .storedDate(null)
+                    .uid(null);
         }
 
-        for (Note toPostNote : toPostNotes) {
-            uniqueNotes.add(toPostNote.toBuilder()
-                    .id(null)
-                    .build());
-        }
-
-        return uniqueNotes;
+        return builder
+                .value(note.value())
+                .storedBy(note.storedBy())
+                .build();
     }
 }

@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.enrollment.note.Note;
-import org.hisp.dhis.android.core.enrollment.note.NoteFields;
+import org.hisp.dhis.android.core.enrollment.note.internal.NoteFields;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventFields;
 

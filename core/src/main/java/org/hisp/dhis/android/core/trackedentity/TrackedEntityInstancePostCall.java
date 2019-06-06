@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.note.Note;
-import org.hisp.dhis.android.core.enrollment.note.NoteToPostTransformer;
+import org.hisp.dhis.android.core.enrollment.note.internal.NoteToPostTransformer;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.imports.TEIWebResponse;

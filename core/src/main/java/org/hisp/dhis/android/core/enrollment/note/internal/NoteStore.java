@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.note;
+package org.hisp.dhis.android.core.enrollment.note.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
@@ -34,6 +34,8 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.enrollment.note.Note;
+import org.hisp.dhis.android.core.enrollment.note.NoteTableInfo;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 

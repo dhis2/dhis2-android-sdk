@@ -26,39 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.note;
+package org.hisp.dhis.android.core.enrollment.note.internal;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.enrollment.note.Note;
 
-import java.text.ParseException;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-public class NoteToPostTransformer implements Transformer<Note, Note> {
+@Module
+public final class NoteEntityDIModule {
 
-    private final DHISVersionManager versionManager;
-
-    public NoteToPostTransformer(DHISVersionManager versionManager) {
-        this.versionManager = versionManager;
+    @Provides
+    @Reusable
+    public ObjectWithoutUidStore<Note> store(DatabaseAdapter databaseAdapter) {
+        return NoteStore.create(databaseAdapter);
     }
 
-    @Override
-    public Note transform(Note note) {
-
-        Note.Builder noteBuilder = note.toBuilder();
-
-        try {
-            if (this.versionManager.is2_29()) {
-                noteBuilder.storedDate(BaseIdentifiableObject.dateToSpaceDateStr(
-                        BaseIdentifiableObject.parseDate(note.storedDate())))
-                .uid(null);
-            }
-        } catch (ParseException ignored) {
-            noteBuilder
-                    .storedDate(null)
-                    .uid(null);
-        }
-
-        return noteBuilder.build();
+    @Provides
+    @Reusable
+    public Handler<Note> handler(ObjectWithoutUidStore<Note> store) {
+        return new ObjectWithoutUidHandlerImpl<>(store);
     }
 }

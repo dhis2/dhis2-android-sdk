@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
-import org.hisp.dhis.android.core.enrollment.note.NoteChildrenAppender;
+import org.hisp.dhis.android.core.enrollment.note.internal.NoteChildrenAppender;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventChildrenAppender;
 import org.hisp.dhis.android.core.event.EventFields;

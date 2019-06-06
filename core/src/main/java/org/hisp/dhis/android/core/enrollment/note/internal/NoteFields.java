@@ -26,52 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.note;
+package org.hisp.dhis.android.core.enrollment.note.internal;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.enrollment.note.Note;
 
-import java.text.ParseException;
+public final class NoteFields {
 
-import javax.inject.Inject;
+    public final static String UID = "note";
+    public final static String VALUE = "value";
+    public final static String STORED_BY = "storedBy";
+    public final static String STORED_DATE = "storedDate";
 
-import dagger.Reusable;
+    private static final FieldsHelper<Note> fh = new FieldsHelper<>();
 
-@Reusable
-public class NoteDHISVersionManager {
+    public static final Field<Note, String> uid = fh.uid();
 
-    private final DHISVersionManager versionManager;
+    public static final Fields<Note> all = Fields.<Note>builder()
+            .fields(
+                    fh.<String>field(UID),
+                    fh.<String>field(VALUE),
+                    fh.<String>field(STORED_BY),
+                    fh.<String>field(STORED_DATE)
+            ).build();
 
-    @Inject
-    public NoteDHISVersionManager(DHISVersionManager versionManager) {
-        this.versionManager = versionManager;
-    }
-
-    public Note transform(Enrollment enrollment, Note note) {
-        Note.Builder builder = Note.builder().enrollment(enrollment.uid());
-
-        try {
-            if (this.versionManager.is2_29()) {
-                builder
-                        .storedDate(BaseIdentifiableObject.dateToDateStr(
-                        BaseIdentifiableObject.parseSpaceDate(note.storedDate())))
-                        .uid(null);
-            } else {
-                builder
-                        .storedDate(BaseIdentifiableObject.dateToDateStr(
-                        BaseIdentifiableObject.parseDate(note.storedDate())))
-                        .uid(note.uid());
-            }
-        } catch (ParseException ignored) {
-            builder
-                    .storedDate(null)
-                    .uid(null);
-        }
-
-        return builder
-                .value(note.value())
-                .storedBy(note.storedBy())
-                .build();
+    private NoteFields() {
     }
 }

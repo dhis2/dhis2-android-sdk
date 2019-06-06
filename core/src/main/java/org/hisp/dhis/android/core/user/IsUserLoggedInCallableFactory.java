@@ -30,25 +30,25 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 
-import java.util.concurrent.Callable;
-
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
+import io.reactivex.Single;
 
-final class IsUserLoggedInCallable implements Callable<Boolean> {
+final class IsUserLoggedInCallableFactory {
 
     @NonNull
     private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
 
     @Inject
-    IsUserLoggedInCallable(@NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore) {
+    IsUserLoggedInCallableFactory(@NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore) {
         this.authenticatedUserStore = authenticatedUserStore;
     }
 
-    @Override
-    public Boolean call() {
-        AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
-        return authenticatedUser != null && authenticatedUser.credentials() != null;
+    Single<Boolean> isLogged() {
+        return Single.create(emitter -> {
+            AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
+            emitter.onSuccess(authenticatedUser != null && authenticatedUser.credentials() != null);
+        });
     }
 }

@@ -44,6 +44,7 @@ public class AggregatedDataCallMockIntegrationShould extends BaseMockIntegration
         testObserver.assertValueAt(0, v -> assertDouble(v.percentage(), 33.33) && v.lastCall().equals("SystemInfo"));
         testObserver.assertValueAt(1, v -> assertDouble(v.percentage(), 66.66));
         testObserver.assertValueAt(2, v -> assertDouble(v.percentage(), 100));
+
         testObserver.dispose();
     }
 

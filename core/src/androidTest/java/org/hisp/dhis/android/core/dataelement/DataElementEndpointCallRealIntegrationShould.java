@@ -67,7 +67,7 @@ public class DataElementEndpointCallRealIntegrationShould extends BaseRealIntegr
 
     // @Test
     public void download_data_elements() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
 
         /*  This test won't pass independently of DataElementEndpointCallFactory and
             CategoryComboEndpointCallFactory, as the foreign keys constraints won't be satisfied.

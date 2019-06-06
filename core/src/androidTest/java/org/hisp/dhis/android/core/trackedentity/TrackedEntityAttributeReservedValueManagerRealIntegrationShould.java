@@ -325,8 +325,8 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 
     private void login() {
         try {
-            if (!d2.userModule().isLogged().call()) {
-                d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
+            if (!d2.userModule().isLogged().blockingGet()) {
+                d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
             }
         } catch (Exception ignored) {
         }

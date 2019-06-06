@@ -528,7 +528,7 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends BaseRea
         }
     }
 
-    private void login() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+    private void login() {
+        d2.userModule().logIn("android", "Android123").blockingGet();
     }
 }

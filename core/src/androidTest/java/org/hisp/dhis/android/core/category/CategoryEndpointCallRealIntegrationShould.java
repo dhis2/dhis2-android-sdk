@@ -56,7 +56,7 @@ public class CategoryEndpointCallRealIntegrationShould extends BaseRealIntegrati
 
     //@Test
     public void call_categories_endpoint() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
+        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
 
         Callable<List<Category>> categoryEndpointCall = getD2DIComponent(d2).internalModules().category.categoryCallFactory.create(
                 new HashSet<>(Lists.newArrayList("cX5k9anHEHd")));

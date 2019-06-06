@@ -59,7 +59,7 @@ public class TrackedEntityInstanceCallRealIntegrationShould extends BaseRealInte
 
     //@Test
     public void download_tei_enrollments_and_events() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
+        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
 
         d2.syncMetaData().call();
 

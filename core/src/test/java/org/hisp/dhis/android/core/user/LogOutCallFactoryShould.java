@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.junit.Before;
@@ -41,15 +40,15 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.concurrent.Callable;
+import io.reactivex.Completable;
+import io.reactivex.observers.TestObserver;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.assertj.core.api.Java6Assertions.fail;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class LogOutUserCallableShould {
+public class LogOutCallFactoryShould {
 
     @Mock
     private ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
@@ -60,7 +59,7 @@ public class LogOutUserCallableShould {
     @Captor
     private ArgumentCaptor<AuthenticatedUser> loggedOutUser;
 
-    private Callable<Unit> logOutUserCallable;
+    private Completable logOutCompletable;
 
     static final String USER = "user";
     static final String HASH = "hash";
@@ -73,14 +72,14 @@ public class LogOutUserCallableShould {
         when(authenticatedUser.credentials()).thenReturn("credentials");
         when(authenticatedUser.hash()).thenReturn(HASH);
 
-        logOutUserCallable = new LogOutUserCallable(authenticatedUserStore);
+        logOutCompletable = new LogOutCallFactory(authenticatedUserStore).logOut();
     }
 
     @Test
-    public void clear_user_credentials() throws Exception {
+    public void clear_user_credentials() {
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
-        logOutUserCallable.call();
+        logOutCompletable.blockingAwait();
 
         verify(authenticatedUserStore).updateOrInsertWhere(loggedOutUser.capture());
 
@@ -90,14 +89,15 @@ public class LogOutUserCallableShould {
     }
 
     @Test
-    public void throw_d2_exception_if_no_authenticated_user() throws Exception {
+    public void throw_d2_exception_if_no_authenticated_user() {
         when(authenticatedUserStore.selectFirst()).thenReturn(null);
 
-        try {
-            logOutUserCallable.call();
-            fail("D2Exception must be thrown if no authenticated user");
-        } catch (D2Error d2Exception) {
-            assertThat(d2Exception.errorCode()).isEqualTo(D2ErrorCode.NO_AUTHENTICATED_USER);
-        }
+        TestObserver<Void> testObserver = logOutCompletable.test();
+        testObserver.awaitTerminalEvent();
+
+        D2Error d2Error = (D2Error) testObserver.errors().get(0);
+        assertThat(d2Error.errorCode()).isEqualTo(D2ErrorCode.NO_AUTHENTICATED_USER);
+
+        testObserver.dispose();
     }
 }

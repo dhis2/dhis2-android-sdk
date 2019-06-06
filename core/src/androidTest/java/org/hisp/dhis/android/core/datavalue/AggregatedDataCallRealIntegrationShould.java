@@ -72,7 +72,7 @@ public class AggregatedDataCallRealIntegrationShould extends BaseRealIntegration
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
     //@Test
     public void response_successful_on_sync_data_once() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
 
         d2.syncMetaData().call();
         d2.aggregatedModule().data().download().asObservable().subscribe();
@@ -80,7 +80,7 @@ public class AggregatedDataCallRealIntegrationShould extends BaseRealIntegration
 
     //@Test
     public void response_successful_on_sync_data_value_two_times() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
 
         d2.syncMetaData().call();
         d2.aggregatedModule().data().download().asObservable().subscribe();

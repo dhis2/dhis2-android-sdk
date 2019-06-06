@@ -63,7 +63,7 @@ public class EventEndpointCallRealIntegrationShould extends BaseRealIntegrationT
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
     //@Test
     public void download_number_of_events_according_to_default_limit() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
+        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
 
         d2.syncMetaData().call();
 
@@ -80,7 +80,7 @@ public class EventEndpointCallRealIntegrationShould extends BaseRealIntegrationT
 
     //@Test
     public void download_event_with_category_combo_option() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
+        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
 
         d2.syncMetaData().call();
 

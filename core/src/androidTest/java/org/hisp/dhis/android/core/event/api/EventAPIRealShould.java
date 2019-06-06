@@ -305,7 +305,7 @@ public abstract class EventAPIRealShould extends BaseRealIntegrationTest {
         assertThat(serverInvalidEvent.trackedEntityDataValues()).isNull();
     }
 
-    private void login() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
+    private void login() {
+        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
     }
 }

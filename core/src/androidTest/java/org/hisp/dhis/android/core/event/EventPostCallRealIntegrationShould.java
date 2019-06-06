@@ -202,7 +202,7 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
     }
 
     private void downloadMetadata() throws Exception {
-        d2.userModule().logIn(user, password).call();
+        d2.userModule().logIn(user, password).blockingGet();
         d2.syncMetaData().call();
     }
 

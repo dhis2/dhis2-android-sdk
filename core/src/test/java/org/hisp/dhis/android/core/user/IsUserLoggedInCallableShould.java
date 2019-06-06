@@ -36,7 +36,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.concurrent.Callable;
+import io.reactivex.Single;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -50,43 +50,43 @@ public class IsUserLoggedInCallableShould {
     @Mock
     private AuthenticatedUser authenticatedUser;
 
-    private Callable<Boolean> isUserLoggedInCallable;
+    private Single<Boolean> isUserLoggedInSingle;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
 
         when(authenticatedUser.user()).thenReturn("user");
         when(authenticatedUser.credentials()).thenReturn("credentials");
         when(authenticatedUser.hash()).thenReturn("hash");
 
-        isUserLoggedInCallable = new IsUserLoggedInCallable(authenticatedUserStore);
+        isUserLoggedInSingle = new IsUserLoggedInCallableFactory(authenticatedUserStore).isLogged();
     }
 
     @Test
-    public void return_true_if_any_users_are_persisted_after_call() throws Exception {
+    public void return_true_if_any_users_are_persisted_after_call() {
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
-        Boolean isUserLoggedIn = isUserLoggedInCallable.call();
+        Boolean isUserLoggedIn = isUserLoggedInSingle.blockingGet();
 
         assertThat(isUserLoggedIn).isTrue();
     }
 
     @Test
-    public void return_false_if_any_users_are_not_persisted_after_call() throws Exception {
+    public void return_false_if_any_users_are_not_persisted_after_call() {
         when(authenticatedUserStore.selectFirst()).thenReturn(null);
 
-        Boolean isUserLoggedIn = isUserLoggedInCallable.call();
+        Boolean isUserLoggedIn = isUserLoggedInSingle.blockingGet();
 
         assertThat(isUserLoggedIn).isFalse();
     }
 
     @Test
-    public void return_false_if_users_persisted_but_without_credentials() throws Exception {
+    public void return_false_if_users_persisted_but_without_credentials() {
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
         when(authenticatedUser.credentials()).thenReturn(null);
 
-        Boolean isUserLoggedIn = isUserLoggedInCallable.call();
+        Boolean isUserLoggedIn = isUserLoggedInSingle.blockingGet();
 
         assertThat(isUserLoggedIn).isFalse();
     }

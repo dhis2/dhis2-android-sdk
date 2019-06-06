@@ -59,8 +59,8 @@ public class DataSetEndpointCallRealIntegrationShould extends BaseRealIntegratio
 
     // @Test
     public void download_data_sets() throws Exception {
-        if (!d2.userModule().isLogged().call()) {
-            d2.userModule().logIn("android", "Android123").call();
+        if (!d2.userModule().isLogged().blockingGet()) {
+            d2.userModule().logIn("android", "Android123").blockingGet();
         }
 
         /*  This test won't pass independently of DataElementEndpointCallFactory and

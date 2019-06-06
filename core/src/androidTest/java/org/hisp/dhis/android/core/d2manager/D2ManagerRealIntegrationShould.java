@@ -102,7 +102,7 @@ public class D2ManagerRealIntegrationShould {
     public void create_a_d2_instance_which_downloads_and_persists_data_from_server() throws Exception {
         configureD2();
 
-        d2Manager.getD2().userModule().logIn("android", "Android123").call();
+        d2Manager.getD2().userModule().logIn("android", "Android123").blockingGet();
 
         assertThat(d2Manager.getD2().userModule().authenticatedUser.get().user() != null).isTrue();
     }

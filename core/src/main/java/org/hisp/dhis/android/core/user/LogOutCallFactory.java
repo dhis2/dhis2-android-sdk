@@ -29,46 +29,45 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
-import java.util.concurrent.Callable;
-
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
+import io.reactivex.Completable;
 
-class LogOutUserCallable implements Callable<Unit> {
+final class LogOutCallFactory {
 
     @NonNull
     private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
 
     @Inject
-    LogOutUserCallable(@NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore) {
+    LogOutCallFactory(@NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore) {
         this.authenticatedUserStore = authenticatedUserStore;
     }
 
-    @Override
-    public Unit call() throws Exception {
-        AuthenticatedUser existingUser = this.authenticatedUserStore.selectFirst();
+    Completable logOut() {
+        return Completable.create(emitter -> {
+            AuthenticatedUser existingUser = this.authenticatedUserStore.selectFirst();
 
-        if (existingUser == null) {
-            throw D2Error.builder()
-                    .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER)
-                    .errorDescription("There is not any authenticated user")
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .build();
-        }
+            if (existingUser == null) {
+                throw D2Error.builder()
+                        .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER)
+                        .errorDescription("There is not any authenticated user")
+                        .errorComponent(D2ErrorComponent.SDK)
+                        .build();
+            }
 
-        AuthenticatedUser loggedOutUser =
-                AuthenticatedUser.builder()
-                .user(existingUser.user())
-                .hash(existingUser.hash())
-                .build();
+            AuthenticatedUser loggedOutUser =
+                    AuthenticatedUser.builder()
+                            .user(existingUser.user())
+                            .hash(existingUser.hash())
+                            .build();
 
-        authenticatedUserStore.updateOrInsertWhere(loggedOutUser);
-        return new Unit();
+            authenticatedUserStore.updateOrInsertWhere(loggedOutUser);
+            emitter.onComplete();
+        });
     }
 }

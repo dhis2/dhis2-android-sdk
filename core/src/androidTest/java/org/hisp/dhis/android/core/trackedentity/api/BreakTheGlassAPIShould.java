@@ -299,7 +299,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
                 .organisationUnit(searchOrgunit)
                 .build();
     }
-    private void login() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
+    private void login() {
+        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
     }
 }

@@ -28,23 +28,23 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStoreImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+class DataSetReportStore extends ReadableStoreImpl<DataSetReport> {
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class DataValueModule {
+    private DataSetReportStore(DatabaseAdapter databaseAdapter,
+                               ReadOnlySQLStatementBuilder builder,
+                               CursorModelFactory<DataSetReport> modelFactory) {
+        super(databaseAdapter, builder, modelFactory);
+    }
 
-    public final DataValueCollectionRepository dataValues;
-
-    public final DataSetReportCollectionRepository dataSetReports;
-
-    @Inject
-    DataValueModule(DataValueCollectionRepository dataValueCollectionRepository,
-                    DataSetReportCollectionRepository dataSetReportCollectionRepository) {
-        this.dataValues = dataValueCollectionRepository;
-        this.dataSetReports = dataSetReportCollectionRepository;
+    static DataSetReportStore create(DatabaseAdapter databaseAdapter) {
+        return new DataSetReportStore(
+                databaseAdapter,
+                new DataSetReportSQLStatementBuilder(),
+                DataSetReport::create);
     }
 }

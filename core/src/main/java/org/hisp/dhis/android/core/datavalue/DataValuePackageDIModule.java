@@ -35,7 +35,10 @@ import dagger.Provides;
 import dagger.Reusable;
 import retrofit2.Retrofit;
 
-@Module(includes = {DataValueEntityDIModule.class})
+@Module(includes = {
+        DataValueEntityDIModule.class,
+        DataSetReportEntityDIModule.class
+})
 public final class DataValuePackageDIModule {
 
     @Provides

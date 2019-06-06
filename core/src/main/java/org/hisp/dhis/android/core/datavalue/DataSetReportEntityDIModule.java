@@ -28,23 +28,29 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStatementBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStoreImpl;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class DataSetValueStore extends ReadableStoreImpl<DataSetValue> {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    private DataSetValueStore(DatabaseAdapter databaseAdapter,
-                              ReadOnlySQLStatementBuilder builder,
-                              CursorModelFactory<DataSetValue> modelFactory) {
-        super(databaseAdapter, builder, modelFactory);
+@Module
+public final class DataSetReportEntityDIModule {
+
+    @Provides
+    @Reusable
+    DataSetReportStore store(DatabaseAdapter databaseAdapter) {
+        return DataSetReportStore.create(databaseAdapter);
     }
 
-    public static DataSetValueStore create(DatabaseAdapter databaseAdapter) {
-        return new DataSetValueStore(
-                databaseAdapter,
-                new DataSetValueSQLStatementBuilder(),
-                DataSetValue::create);
+    @Provides
+    @Reusable
+    DataSetReportCollectionRepository repository(DataSetReportStore store) {
+        return new DataSetReportCollectionRepository(store,
+                RepositoryScope.empty().toBuilder()
+                        .pagingKey(DataSetReportSQLStatementBuilder.DATAVALUE_ID)
+                        .build());
     }
+
 }

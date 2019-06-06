@@ -43,51 +43,51 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 
-import static org.hisp.dhis.android.core.datavalue.DataSetValueSQLStatementBuilder.ATTRIBUTE_OPTION_COMBO_UID;
-import static org.hisp.dhis.android.core.datavalue.DataSetValueSQLStatementBuilder.DATASET_UID;
-import static org.hisp.dhis.android.core.datavalue.DataSetValueSQLStatementBuilder.ORGANISATION_UNIT_UID;
-import static org.hisp.dhis.android.core.datavalue.DataSetValueSQLStatementBuilder.PERIOD;
-import static org.hisp.dhis.android.core.datavalue.DataSetValueSQLStatementBuilder.PERIOD_END_DATE;
-import static org.hisp.dhis.android.core.datavalue.DataSetValueSQLStatementBuilder.PERIOD_START_DATE;
-import static org.hisp.dhis.android.core.datavalue.DataSetValueSQLStatementBuilder.PERIOD_TYPE;
+import static org.hisp.dhis.android.core.datavalue.DataSetReportSQLStatementBuilder.ATTRIBUTE_OPTION_COMBO_UID;
+import static org.hisp.dhis.android.core.datavalue.DataSetReportSQLStatementBuilder.DATASET_UID;
+import static org.hisp.dhis.android.core.datavalue.DataSetReportSQLStatementBuilder.ORGANISATION_UNIT_UID;
+import static org.hisp.dhis.android.core.datavalue.DataSetReportSQLStatementBuilder.PERIOD;
+import static org.hisp.dhis.android.core.datavalue.DataSetReportSQLStatementBuilder.PERIOD_END_DATE;
+import static org.hisp.dhis.android.core.datavalue.DataSetReportSQLStatementBuilder.PERIOD_START_DATE;
+import static org.hisp.dhis.android.core.datavalue.DataSetReportSQLStatementBuilder.PERIOD_TYPE;
 
 @Reusable
-public final class DataSetValueCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl<DataSetValue, DataSetValueCollectionRepository>
-        implements ReadOnlyCollectionRepository<DataSetValue> {
+public final class DataSetReportCollectionRepository
+        extends ReadOnlyCollectionRepositoryImpl<DataSetReport, DataSetReportCollectionRepository>
+        implements ReadOnlyCollectionRepository<DataSetReport> {
 
     @Inject
-    public DataSetValueCollectionRepository(final DataSetValueStore store,
-                                     final RepositoryScope scope) {
+    DataSetReportCollectionRepository(final DataSetReportStore store,
+                                      final RepositoryScope scope) {
         super(store, Collections.emptyMap(), scope, new FilterConnectorFactory<>(scope,
-                s -> new DataSetValueCollectionRepository(store, s)));
+                s -> new DataSetReportCollectionRepository(store, s)));
     }
 
-    public StringFilterConnector<DataSetValueCollectionRepository> byDataSetUid() {
+    public StringFilterConnector<DataSetReportCollectionRepository> byDataSetUid() {
         return cf.string(DATASET_UID);
     }
 
-    public StringFilterConnector<DataSetValueCollectionRepository> byPeriod() {
+    public StringFilterConnector<DataSetReportCollectionRepository> byPeriod() {
         return cf.string(PERIOD);
     }
 
-    public EnumFilterConnector<DataSetValueCollectionRepository, PeriodType> byPeriodType() {
+    public EnumFilterConnector<DataSetReportCollectionRepository, PeriodType> byPeriodType() {
         return cf.enumC(PERIOD_TYPE);
     }
 
-    public DateFilterConnector<DataSetValueCollectionRepository> byPeriodStartDate() {
+    public DateFilterConnector<DataSetReportCollectionRepository> byPeriodStartDate() {
         return cf.date(PERIOD_START_DATE);
     }
 
-    public DateFilterConnector<DataSetValueCollectionRepository> byPeriodEndDate() {
+    public DateFilterConnector<DataSetReportCollectionRepository> byPeriodEndDate() {
         return cf.date(PERIOD_END_DATE);
     }
 
-    public StringFilterConnector<DataSetValueCollectionRepository> byOrganisationUnitUid() {
+    public StringFilterConnector<DataSetReportCollectionRepository> byOrganisationUnitUid() {
         return cf.string(ORGANISATION_UNIT_UID);
     }
 
-    public StringFilterConnector<DataSetValueCollectionRepository> byAttributeOptionComboUid() {
+    public StringFilterConnector<DataSetReportCollectionRepository> byAttributeOptionComboUid() {
         return cf.string(ATTRIBUTE_OPTION_COMBO_UID);
     }
 

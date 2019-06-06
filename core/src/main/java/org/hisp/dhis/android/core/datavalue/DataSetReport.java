@@ -45,43 +45,43 @@ import org.hisp.dhis.android.core.data.database.DbStateColumnAdapter;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 @AutoValue
-public abstract class DataSetValue implements Model {
+public abstract class DataSetReport implements Model {
 
     @NonNull
-    @ColumnName(DataSetValueSQLStatementBuilder.DATASET_UID_ALIAS)
+    @ColumnName(DataSetReportSQLStatementBuilder.DATASET_UID_ALIAS)
     public abstract String dataSetUid();
 
     @NonNull
-    @ColumnName(DataSetValueSQLStatementBuilder.DATASET_NAME_ALIAS)
+    @ColumnName(DataSetReportSQLStatementBuilder.DATASET_NAME_ALIAS)
     public abstract String dataSetDisplayName();
 
     @NonNull
-    @ColumnName(DataSetValueSQLStatementBuilder.PERIOD_ALIAS)
+    @ColumnName(DataSetReportSQLStatementBuilder.PERIOD_ALIAS)
     public abstract String period();
 
     @NonNull
-    @ColumnName(DataSetValueSQLStatementBuilder.PERIOD_TYPE_ALIAS)
+    @ColumnName(DataSetReportSQLStatementBuilder.PERIOD_TYPE_ALIAS)
     @ColumnAdapter(DbPeriodTypeColumnAdapter.class)
     public abstract PeriodType periodType();
 
     @NonNull
-    @ColumnName(DataSetValueSQLStatementBuilder.ORGANISATION_UNIT_UID_ALIAS)
+    @ColumnName(DataSetReportSQLStatementBuilder.ORGANISATION_UNIT_UID_ALIAS)
     public abstract String organisationUnitUid();
 
     @NonNull
-    @ColumnName(DataSetValueSQLStatementBuilder.ORGANISATION_UNIT_NAME_ALIAS)
+    @ColumnName(DataSetReportSQLStatementBuilder.ORGANISATION_UNIT_NAME_ALIAS)
     public abstract String organisationUnitDisplayName();
 
     @NonNull
-    @ColumnName(DataSetValueSQLStatementBuilder.ATTRIBUTE_OPTION_COMBO_UID_ALIAS)
+    @ColumnName(DataSetReportSQLStatementBuilder.ATTRIBUTE_OPTION_COMBO_UID_ALIAS)
     public abstract String attributeOptionComboUid();
 
     @NonNull
-    @ColumnName(DataSetValueSQLStatementBuilder.ATTRIBUTE_OPTION_COMBO_NAME_ALIAS)
+    @ColumnName(DataSetReportSQLStatementBuilder.ATTRIBUTE_OPTION_COMBO_NAME_ALIAS)
     public abstract String attributeOptionComboDisplayName();
 
     @NonNull
-    @ColumnName(DataSetValueSQLStatementBuilder.VALUE_COUNT_ALIAS)
+    @ColumnName(DataSetReportSQLStatementBuilder.VALUE_COUNT_ALIAS)
     public abstract Integer valueCount();
 
     @Nullable
@@ -89,14 +89,14 @@ public abstract class DataSetValue implements Model {
     public abstract State state();
 
     @NonNull
-    public static DataSetValue create(Cursor cursor) {
-        return AutoValue_DataSetValue.createFromCursor(cursor);
+    static DataSetReport create(Cursor cursor) {
+        return AutoValue_DataSetReport.createFromCursor(cursor);
     }
 
-    public abstract DataSetValue.Builder toBuilder();
+    public abstract DataSetReport.Builder toBuilder();
 
-    public static DataSetValue.Builder builder() {
-        return new $AutoValue_DataSetValue.Builder();
+    public static DataSetReport.Builder builder() {
+        return new $AutoValue_DataSetReport.Builder();
     }
 
     @AutoValue.Builder
@@ -123,6 +123,6 @@ public abstract class DataSetValue implements Model {
 
         public abstract Builder state(State state);
 
-        public abstract DataSetValue build();
+        public abstract DataSetReport build();
     }
 }

@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.period.PeriodTableInfo;
 
-public class DataSetValueSQLStatementBuilder implements ReadOnlySQLStatementBuilder {
+class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBuilder {
 
     private static final String DATAVALUE_TABLE_ALIAS = "dv";
     private static final String PERIOD_TABLE_ALIAS = "pe";
@@ -58,6 +58,7 @@ public class DataSetValueSQLStatementBuilder implements ReadOnlySQLStatementBuil
     static final String ATTRIBUTE_OPTION_COMBO_UID_ALIAS = "attributeOptionComboUid";
     static final String ATTRIBUTE_OPTION_COMBO_NAME_ALIAS = "attributeOptionComboDisplayName";
 
+    static final String DATAVALUE_ID = DATAVALUE_TABLE_ALIAS + "." + BaseDataModel.Columns.ID;
     static final String DATASET_UID = DATASET_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
     static final String DATASET_NAME = DATASET_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.DISPLAY_NAME;
     static final String PERIOD = DATAVALUE_TABLE_ALIAS + "." + DataValueFields.PERIOD;
@@ -90,7 +91,7 @@ public class DataSetValueSQLStatementBuilder implements ReadOnlySQLStatementBuil
                     getJoinAttributeOptionCombo();
 
     private final String SELECT_CLAUSE = "SELECT " +
-            DATAVALUE_TABLE_ALIAS + "." + BaseDataModel.Columns.ID + ", " +
+            DATAVALUE_ID + ", " +
             DATASET_UID + " AS " + DATASET_UID_ALIAS + "," +
             DATASET_NAME + " AS " + DATASET_NAME_ALIAS + "," +
             PERIOD + " AS " + PERIOD_ALIAS + "," +

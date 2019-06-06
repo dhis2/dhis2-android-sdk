@@ -139,8 +139,7 @@ class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBuilder {
 
     @Override
     public String countWhere(String whereClause) {
-        String c = "SELECT count(*) FROM (" + selectWhere(whereClause) + ")";
-        return c;
+        return "SELECT count(*) FROM (" + selectWhere(whereClause) + ")";
     }
 
     @Override

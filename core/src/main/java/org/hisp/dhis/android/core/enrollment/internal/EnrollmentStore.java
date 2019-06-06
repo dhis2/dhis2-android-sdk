@@ -26,47 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment;
+package org.hisp.dhis.android.core.enrollment.internal;
 
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.IdentifiableDataObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.enrollment.EnrollmentSamples;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectWithStateStore;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 
-import androidx.test.runner.AndroidJUnit4;
+import java.util.List;
+import java.util.Map;
 
-@RunWith(AndroidJUnit4.class)
-public class EnrollmentStoreIntegrationShould extends IdentifiableDataObjectStoreAbstractIntegrationShould<Enrollment> {
+public interface EnrollmentStore extends IdentifiableObjectWithStateStore<Enrollment> {
 
-    public EnrollmentStoreIntegrationShould() {
-        super(EnrollmentStoreImpl.create(DatabaseAdapterFactory.get()),
-                EnrollmentTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
-    }
-
-    @Override
-    protected Enrollment buildObject() {
-        return EnrollmentSamples.get();
-    }
-
-    @Override
-    protected Enrollment buildObjectToUpdate() {
-        return EnrollmentSamples.get().toBuilder()
-                .followUp(Boolean.TRUE)
-                .build();
-    }
-
-    @Override
-    protected Enrollment buildObjectWithToDeleteState() {
-        return EnrollmentSamples.get().toBuilder()
-                .state(State.TO_DELETE)
-                .build();
-    }
-
-    @Override
-    protected Enrollment buildObjectWithSyncedState() {
-        return EnrollmentSamples.get().toBuilder()
-                .state(State.SYNCED)
-                .build();
-    }
+    Map<String, List<Enrollment>> queryEnrollmentsToPost();
 }

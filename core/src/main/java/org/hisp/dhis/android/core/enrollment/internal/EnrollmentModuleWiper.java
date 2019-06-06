@@ -26,14 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment;
+package org.hisp.dhis.android.core.enrollment.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectWithStateStore;
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
+import org.hisp.dhis.android.core.enrollment.note.NoteTableInfo;
+import org.hisp.dhis.android.core.wipe.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.TableWiper;
 
-import java.util.List;
-import java.util.Map;
+import javax.inject.Inject;
 
-public interface EnrollmentStore extends IdentifiableObjectWithStateStore<Enrollment> {
+import dagger.Reusable;
 
-    Map<String, List<Enrollment>> queryEnrollmentsToPost();
+@Reusable
+public final class EnrollmentModuleWiper implements ModuleWiper {
+
+    private final TableWiper tableWiper;
+
+    @Inject
+    EnrollmentModuleWiper(TableWiper tableWiper) {
+        this.tableWiper = tableWiper;
+    }
+
+    @Override
+    public void wipeMetadata() {
+        // No metadata to wipe
+    }
+
+    @Override
+    public void wipeData() {
+        tableWiper.wipeTables(
+                EnrollmentTableInfo.TABLE_INFO,
+                NoteTableInfo.TABLE_INFO
+        );
+    }
 }

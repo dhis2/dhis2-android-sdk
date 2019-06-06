@@ -26,36 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment;
+package org.hisp.dhis.android.core.enrollment.internal;
 
-import org.hisp.dhis.android.core.enrollment.note.NoteTableInfo;
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
+import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 
-import javax.inject.Inject;
+import java.util.Date;
 
-import dagger.Reusable;
-
-@Reusable
-public final class EnrollmentModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    EnrollmentModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
+final class EnrollmentProjectionTransformer implements Transformer<EnrollmentCreateProjection, Enrollment> {
 
     @Override
-    public void wipeMetadata() {
-        // No metadata to wipe
-    }
+    public Enrollment transform(EnrollmentCreateProjection projection) {
+        String generatedUid = new CodeGeneratorImpl().generate();
+        Date creationDate = new Date();
 
-    @Override
-    public void wipeData() {
-        tableWiper.wipeTables(
-                EnrollmentTableInfo.TABLE_INFO,
-                NoteTableInfo.TABLE_INFO
-        );
+        return Enrollment.builder()
+                .uid(generatedUid)
+                .state(State.TO_POST)
+                .created(creationDate)
+                .lastUpdated(creationDate)
+                .createdAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
+                .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
+                .organisationUnit(projection.organisationUnit())
+                .program(projection.program())
+                .trackedEntityInstance(projection.trackedEntityInstance())
+                .build();
     }
 }

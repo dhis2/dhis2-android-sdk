@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentImportHandler;
 import org.hisp.dhis.android.core.imports.EnrollmentImportSummaries;
 import org.hisp.dhis.android.core.imports.ImportConflict;
 import org.hisp.dhis.android.core.imports.TEIImportSummary;

@@ -26,11 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment;
+package org.hisp.dhis.android.core.enrollment.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.enrollment.note.NoteFields;
 import org.hisp.dhis.android.core.event.Event;
@@ -38,20 +40,20 @@ import org.hisp.dhis.android.core.event.EventFields;
 
 public final class EnrollmentFields {
 
-    static final String UID = "enrollment";
-    static final String CREATED = "created";
-    static final String LAST_UPDATED = "lastUpdated";
-    static final String ORGANISATION_UNIT = "orgUnit";
+    public static final String UID = "enrollment";
+    public static final String CREATED = "created";
+    public static final String LAST_UPDATED = "lastUpdated";
+    public static final String ORGANISATION_UNIT = "orgUnit";
     public static final String PROGRAM = "program";
     public static final String ENROLLMENT_DATE = "enrollmentDate";
-    static final String INCIDENT_DATE = "incidentDate";
-    static final String FOLLOW_UP = "followup";
+    public static final String INCIDENT_DATE = "incidentDate";
+    public static final String FOLLOW_UP = "followup";
     public static final String STATUS = "status";
     public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
-    private static final String COORDINATE = "coordinate";
-    static final String DELETED = "deleted";
-    static final String EVENTS = "events";
-    static final String NOTES = "notes";
+    public static final String COORDINATE = "coordinate";
+    public static final String DELETED = "deleted";
+    public static final String EVENTS = "events";
+    public static final String NOTES = "notes";
 
     private static FieldsHelper<Enrollment> fh = new FieldsHelper<>();
 

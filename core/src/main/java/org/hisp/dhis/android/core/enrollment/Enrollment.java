@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbEnrollmentStatusColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreEventListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreNoteListColumnAdapter;
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.Event;
 

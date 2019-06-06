@@ -26,32 +26,50 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment;
+package org.hisp.dhis.android.core.enrollment.internal;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.data.database.IdentifiableDataObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.enrollment.EnrollmentSamples;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.junit.runner.RunWith;
 
-import java.util.Date;
+import androidx.test.runner.AndroidJUnit4;
 
-final class EnrollmentProjectionTransformer implements Transformer<EnrollmentCreateProjection, Enrollment> {
+@RunWith(AndroidJUnit4.class)
+public class EnrollmentStoreIntegrationShould extends IdentifiableDataObjectStoreAbstractIntegrationShould<Enrollment> {
+
+    public EnrollmentStoreIntegrationShould() {
+        super(EnrollmentStoreImpl.create(DatabaseAdapterFactory.get()),
+                EnrollmentTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+    }
 
     @Override
-    public Enrollment transform(EnrollmentCreateProjection projection) {
-        String generatedUid = new CodeGeneratorImpl().generate();
-        Date creationDate = new Date();
+    protected Enrollment buildObject() {
+        return EnrollmentSamples.get();
+    }
 
-        return Enrollment.builder()
-                .uid(generatedUid)
-                .state(State.TO_POST)
-                .created(creationDate)
-                .lastUpdated(creationDate)
-                .createdAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
-                .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
-                .organisationUnit(projection.organisationUnit())
-                .program(projection.program())
-                .trackedEntityInstance(projection.trackedEntityInstance())
+    @Override
+    protected Enrollment buildObjectToUpdate() {
+        return EnrollmentSamples.get().toBuilder()
+                .followUp(Boolean.TRUE)
+                .build();
+    }
+
+    @Override
+    protected Enrollment buildObjectWithToDeleteState() {
+        return EnrollmentSamples.get().toBuilder()
+                .state(State.TO_DELETE)
+                .build();
+    }
+
+    @Override
+    protected Enrollment buildObjectWithSyncedState() {
+        return EnrollmentSamples.get().toBuilder()
+                .state(State.SYNCED)
                 .build();
     }
 }

@@ -111,8 +111,6 @@ class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBuilder {
             SELECT_STATE_ORDERING +
             FROM_CLAUSE;
 
-    private static final String SELECT_COUNT_CLAUSE = "SELECT count(*) " + FROM_CLAUSE;
-
     private static final String GROUP_BY_CLAUSE = " GROUP BY " +
             DATASET_UID + "," +
             PERIOD + "," +
@@ -136,12 +134,13 @@ class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBuilder {
 
     @Override
     public String count() {
-        return SELECT_COUNT_CLAUSE + GROUP_BY_CLAUSE;
+        return "SELECT count(*) FROM (" + selectAll() + ")";
     }
 
     @Override
     public String countWhere(String whereClause) {
-        return SELECT_COUNT_CLAUSE + " WHERE " + whereClause + GROUP_BY_CLAUSE;
+        String c = "SELECT count(*) FROM (" + selectWhere(whereClause) + ")";
+        return c;
     }
 
     @Override

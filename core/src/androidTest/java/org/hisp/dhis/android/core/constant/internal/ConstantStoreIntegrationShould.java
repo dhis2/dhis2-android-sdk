@@ -26,19 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.constant;
+package org.hisp.dhis.android.core.constant.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.constant.Constant;
+import org.hisp.dhis.android.core.constant.ConstantTableInfo;
+import org.hisp.dhis.android.core.data.constant.ConstantSamples;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.junit.runner.RunWith;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import androidx.test.runner.AndroidJUnit4;
 
-public interface ConstantService {
+@RunWith(AndroidJUnit4.class)
+public class ConstantStoreIntegrationShould
+        extends IdentifiableObjectStoreAbstractIntegrationShould<Constant> {
 
-    @GET("constants")
-    Call<Payload<Constant>> constants(@Query("fields") @Which Fields<Constant> fields,
-                                      @Query("paging") boolean paging);
+    public ConstantStoreIntegrationShould() {
+        super(ConstantStore.create(DatabaseAdapterFactory.get()), ConstantTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get());
+    }
+
+    @Override
+    protected Constant buildObject() {
+        return ConstantSamples.getConstant();
+    }
+
+    @Override
+    protected Constant buildObjectToUpdate() {
+        return ConstantSamples.getConstant().toBuilder()
+                .value(25.36)
+                .build();
+    }
 }

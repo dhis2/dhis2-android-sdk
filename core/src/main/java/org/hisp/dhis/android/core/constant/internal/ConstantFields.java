@@ -25,32 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.constant;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+package org.hisp.dhis.android.core.constant.internal;
 
-import java.util.Collection;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.constant.Constant;
 
-import javax.inject.Inject;
+public final class ConstantFields {
 
-import dagger.Reusable;
+    public static final String VALUE = "value";
 
-@Reusable
-final class ConstantHandler extends IdentifiableHandlerImpl<Constant> {
+    private static final FieldsHelper<Constant> fh = new FieldsHelper<>();
 
-    private final CollectionCleaner<Constant> collectionCleaner;
+    static final Fields<Constant> allFields = Fields.<Constant>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(fh.<Double>field(VALUE))
+            .build();
 
-    @Inject
-    ConstantHandler(IdentifiableObjectStore<Constant> optionStore,
-                    CollectionCleaner<Constant> collectionCleaner) {
-        super(optionStore);
-        this.collectionCleaner = collectionCleaner;
-    }
-
-    @Override
-    protected void afterCollectionHandled(Collection<Constant> constants) {
-        collectionCleaner.deleteNotPresent(constants);
+    private ConstantFields() {
     }
 }

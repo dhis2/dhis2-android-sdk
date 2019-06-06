@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.arch.repositories.di.internal.RepositoriesDIMo
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.internal.CategoryPackageDIModule;
 import org.hisp.dhis.android.core.common.internal.CommonPackageDIModule;
-import org.hisp.dhis.android.core.constant.ConstantPackageDIModule;
+import org.hisp.dhis.android.core.constant.internal.ConstantPackageDIModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
 import org.hisp.dhis.android.core.dataapproval.DataApprovalPackageDIModule;

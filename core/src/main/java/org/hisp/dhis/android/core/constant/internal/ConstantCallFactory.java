@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.constant;
+package org.hisp.dhis.android.core.constant.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.constant.Constant;
 
 import javax.inject.Inject;
 

@@ -25,29 +25,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.constant;
 
-import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleDownloader;
+package org.hisp.dhis.android.core.constant.internal;
 
-import java.util.List;
-import java.util.concurrent.Callable;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.constant.Constant;
 
-import javax.inject.Inject;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-import dagger.Reusable;
+interface ConstantService {
 
-@Reusable
-public class ConstantModuleDownloader implements MetadataModuleDownloader<List<Constant>> {
-
-    private final ConstantCallFactory constantCallFactory;
-
-    @Inject
-    ConstantModuleDownloader(ConstantCallFactory constantCallFactory) {
-        this.constantCallFactory = constantCallFactory;
-    }
-
-    @Override
-    public Callable<List<Constant>> downloadMetadata() {
-        return constantCallFactory.create();
-    }
+    @GET("constants")
+    Call<Payload<Constant>> constants(@Query("fields") @Which Fields<Constant> fields,
+                                      @Query("paging") boolean paging);
 }

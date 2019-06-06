@@ -26,33 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.constant;
+package org.hisp.dhis.android.core.constant.internal;
 
-import org.hisp.dhis.android.core.data.constant.ConstantSamples;
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
-import org.junit.runner.RunWith;
+import android.database.sqlite.SQLiteStatement;
 
-import androidx.test.runner.AndroidJUnit4;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.constant.Constant;
+import org.hisp.dhis.android.core.constant.ConstantTableInfo;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-@RunWith(AndroidJUnit4.class)
-public class ConstantStoreIntegrationShould
-        extends IdentifiableObjectStoreAbstractIntegrationShould<Constant> {
+import androidx.annotation.NonNull;
 
-    public ConstantStoreIntegrationShould() {
-        super(ConstantStore.create(DatabaseAdapterFactory.get()), ConstantTableInfo.TABLE_INFO,
-                DatabaseAdapterFactory.get());
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+
+final class ConstantStore {
+
+    private ConstantStore() {
     }
 
-    @Override
-    protected Constant buildObject() {
-        return ConstantSamples.getConstant();
-    }
+    private static StatementBinder<Constant> BINDER = new IdentifiableStatementBinder<Constant>() {
+        @Override
+        public void bindToStatement(@NonNull Constant o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 7, o.value());
+        }
+    };
 
-    @Override
-    protected Constant buildObjectToUpdate() {
-        return ConstantSamples.getConstant().toBuilder()
-                .value(25.36)
-                .build();
+    public static IdentifiableObjectStore<Constant> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, ConstantTableInfo.TABLE_INFO, BINDER, Constant::create);
     }
 }

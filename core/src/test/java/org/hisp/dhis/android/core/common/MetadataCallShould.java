@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.constant.Constant;
-import org.hisp.dhis.android.core.constant.ConstantModuleDownloader;
+import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetModuleDownloader;
 import org.hisp.dhis.android.core.domain.metadata.MetadataCall;

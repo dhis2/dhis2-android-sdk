@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.wipe;
 
 import org.hisp.dhis.android.core.category.internal.CategoryModuleWiper;
 import org.hisp.dhis.android.core.common.internal.CommonModuleWiper;
-import org.hisp.dhis.android.core.constant.ConstantModuleWiper;
+import org.hisp.dhis.android.core.constant.internal.ConstantModuleWiper;
 import org.hisp.dhis.android.core.dataelement.DataElementModuleWiper;
 import org.hisp.dhis.android.core.dataset.DataSetModuleWiper;
 import org.hisp.dhis.android.core.datavalue.DataValueModuleWiper;

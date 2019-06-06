@@ -25,37 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.constant;
+package org.hisp.dhis.android.core.constant.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.DoubleFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.constant.internal.ConstantFields;
+import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleDownloader;
+import org.hisp.dhis.android.core.constant.Constant;
 
-import java.util.Map;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class ConstantCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl<
-        Constant, ConstantCollectionRepository> {
+public class ConstantModuleDownloader implements MetadataModuleDownloader<List<Constant>> {
+
+    private final ConstantCallFactory constantCallFactory;
 
     @Inject
-    ConstantCollectionRepository(
-            final IdentifiableObjectStore<Constant> store,
-            final Map<String, ChildrenAppender<Constant>> childrenAppenders,
-            final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new ConstantCollectionRepository(store, childrenAppenders, s)));
+    ConstantModuleDownloader(ConstantCallFactory constantCallFactory) {
+        this.constantCallFactory = constantCallFactory;
     }
 
-    public DoubleFilterConnector<ConstantCollectionRepository> byValue() {
-        return cf.doubleC(ConstantFields.VALUE);
+    @Override
+    public Callable<List<Constant>> downloadMetadata() {
+        return constantCallFactory.create();
     }
-
 }

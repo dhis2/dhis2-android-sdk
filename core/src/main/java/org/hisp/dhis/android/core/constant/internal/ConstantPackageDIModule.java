@@ -26,34 +26,62 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.constant;
+package org.hisp.dhis.android.core.constant.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.constant.Constant;
+import org.hisp.dhis.android.core.constant.ConstantTableInfo;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import androidx.annotation.NonNull;
+import java.util.Collections;
+import java.util.Map;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-public final class ConstantStore {
+@Module()
+public final class ConstantPackageDIModule {
 
-    private ConstantStore() {
+    @Provides
+    @Reusable
+    IdentifiableObjectStore<Constant> store(DatabaseAdapter databaseAdapter) {
+        return ConstantStore.create(databaseAdapter);
     }
 
-    private static StatementBinder<Constant> BINDER = new IdentifiableStatementBinder<Constant>() {
-        @Override
-        public void bindToStatement(@NonNull Constant o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.value());
-        }
-    };
+    @Provides
+    @Reusable
+    Handler<Constant> handler(ConstantHandler impl) {
+        return impl;
+    }
 
-    public static IdentifiableObjectStore<Constant> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, ConstantTableInfo.TABLE_INFO, BINDER, Constant::create);
+    @Provides
+    @Reusable
+    ListCallFactory<Constant> constantCallFactory(ConstantCallFactory impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    ConstantService service(Retrofit retrofit) {
+        return retrofit.create(ConstantService.class);
+    }
+
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<Constant>> childrenAppenders() {
+        return Collections.emptyMap();
+    }
+
+    @Provides
+    @Reusable
+    CollectionCleaner<Constant> collectionCleaner(DatabaseAdapter databaseAdapter) {
+        return new CollectionCleanerImpl<>(ConstantTableInfo.TABLE_INFO.name(), databaseAdapter);
     }
 }

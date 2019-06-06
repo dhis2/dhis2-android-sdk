@@ -26,8 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.constant;
+package org.hisp.dhis.android.core.constant.internal;
 
+import org.hisp.dhis.android.core.constant.ConstantTableInfo;
 import org.hisp.dhis.android.core.wipe.ModuleWiper;
 import org.hisp.dhis.android.core.wipe.TableWiper;
 

@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.event.internal;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
-import org.hisp.dhis.android.core.imports.EventImportSummary;
+import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;

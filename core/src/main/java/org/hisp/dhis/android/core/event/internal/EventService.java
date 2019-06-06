@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.imports.EventWebResponse;
+import org.hisp.dhis.android.core.imports.internal.EventWebResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

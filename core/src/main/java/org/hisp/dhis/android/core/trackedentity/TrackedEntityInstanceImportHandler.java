@@ -34,9 +34,9 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentImportHandler;
-import org.hisp.dhis.android.core.imports.EnrollmentImportSummaries;
-import org.hisp.dhis.android.core.imports.ImportConflict;
-import org.hisp.dhis.android.core.imports.TEIImportSummary;
+import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummaries;
+import org.hisp.dhis.android.core.imports.internal.ImportConflict;
+import org.hisp.dhis.android.core.imports.internal.TEIImportSummary;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
 

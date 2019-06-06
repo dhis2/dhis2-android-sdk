@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.period.PeriodTableInfo;
 
-public class DataSetValueSummarySQLStatementBuilder implements ReadOnlySQLStatementBuilder {
+public class DataSetValueSQLStatementBuilder implements ReadOnlySQLStatementBuilder {
 
     private static final String DATAVALUE_TABLE_ALIAS = "dv";
     private static final String PERIOD_TABLE_ALIAS = "pe";

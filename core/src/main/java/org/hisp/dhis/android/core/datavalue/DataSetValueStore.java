@@ -33,18 +33,18 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStat
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class DataSetValueSummaryStore extends ReadableStoreImpl<DataSetValueSummary> {
+public class DataSetValueStore extends ReadableStoreImpl<DataSetValue> {
 
-    private DataSetValueSummaryStore(DatabaseAdapter databaseAdapter,
-                                     ReadOnlySQLStatementBuilder builder,
-                                     CursorModelFactory<DataSetValueSummary> modelFactory) {
+    private DataSetValueStore(DatabaseAdapter databaseAdapter,
+                              ReadOnlySQLStatementBuilder builder,
+                              CursorModelFactory<DataSetValue> modelFactory) {
         super(databaseAdapter, builder, modelFactory);
     }
 
-    public static DataSetValueSummaryStore create(DatabaseAdapter databaseAdapter) {
-        return new DataSetValueSummaryStore(
+    public static DataSetValueStore create(DatabaseAdapter databaseAdapter) {
+        return new DataSetValueStore(
                 databaseAdapter,
-                new DataSetValueSummarySQLStatementBuilder(),
-                DataSetValueSummary::create);
+                new DataSetValueSQLStatementBuilder(),
+                DataSetValue::create);
     }
 }

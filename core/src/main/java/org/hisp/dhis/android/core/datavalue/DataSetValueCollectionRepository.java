@@ -43,21 +43,21 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 
-import static org.hisp.dhis.android.core.datavalue.DataSetValueSummarySQLStatementBuilder.ATTRIBUTE_OPTION_COMBO_UID;
-import static org.hisp.dhis.android.core.datavalue.DataSetValueSummarySQLStatementBuilder.DATASET_UID;
-import static org.hisp.dhis.android.core.datavalue.DataSetValueSummarySQLStatementBuilder.ORGANISATION_UNIT_UID;
-import static org.hisp.dhis.android.core.datavalue.DataSetValueSummarySQLStatementBuilder.PERIOD;
-import static org.hisp.dhis.android.core.datavalue.DataSetValueSummarySQLStatementBuilder.PERIOD_END_DATE;
-import static org.hisp.dhis.android.core.datavalue.DataSetValueSummarySQLStatementBuilder.PERIOD_START_DATE;
-import static org.hisp.dhis.android.core.datavalue.DataSetValueSummarySQLStatementBuilder.PERIOD_TYPE;
+import static org.hisp.dhis.android.core.datavalue.DataSetValueSQLStatementBuilder.ATTRIBUTE_OPTION_COMBO_UID;
+import static org.hisp.dhis.android.core.datavalue.DataSetValueSQLStatementBuilder.DATASET_UID;
+import static org.hisp.dhis.android.core.datavalue.DataSetValueSQLStatementBuilder.ORGANISATION_UNIT_UID;
+import static org.hisp.dhis.android.core.datavalue.DataSetValueSQLStatementBuilder.PERIOD;
+import static org.hisp.dhis.android.core.datavalue.DataSetValueSQLStatementBuilder.PERIOD_END_DATE;
+import static org.hisp.dhis.android.core.datavalue.DataSetValueSQLStatementBuilder.PERIOD_START_DATE;
+import static org.hisp.dhis.android.core.datavalue.DataSetValueSQLStatementBuilder.PERIOD_TYPE;
 
 @Reusable
 public final class DataSetValueCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl<DataSetValueSummary, DataSetValueCollectionRepository>
-        implements ReadOnlyCollectionRepository<DataSetValueSummary> {
+        extends ReadOnlyCollectionRepositoryImpl<DataSetValue, DataSetValueCollectionRepository>
+        implements ReadOnlyCollectionRepository<DataSetValue> {
 
     @Inject
-    public DataSetValueCollectionRepository(final DataSetValueSummaryStore store,
+    public DataSetValueCollectionRepository(final DataSetValueStore store,
                                      final RepositoryScope scope) {
         super(store, Collections.emptyMap(), scope, new FilterConnectorFactory<>(scope,
                 s -> new DataSetValueCollectionRepository(store, s)));

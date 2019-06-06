@@ -41,6 +41,11 @@ import org.hisp.dhis.android.core.period.PeriodTableInfo;
 
 class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBuilder {
 
+    private static final String AS = " AS ";
+    private static final String INNER_JOIN = " INNER JOIN ";
+    private static final String ON = " ON ";
+    private static final String EQ = " = ";
+
     private static final String DATAVALUE_TABLE_ALIAS = "dv";
     private static final String PERIOD_TABLE_ALIAS = "pe";
     private static final String DATASETELEMENT_TABLE_ALIAS = "dse";
@@ -74,41 +79,41 @@ class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBuilder {
     static final String PERIOD_END_DATE = PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.END_DATE;
 
 
-    private final String STATE = DATAVALUE_TABLE_ALIAS + "." + BaseDataModel.Columns.STATE;
+    private static final String STATE = DATAVALUE_TABLE_ALIAS + "." + BaseDataModel.Columns.STATE;
 
-    private final String SELECT_STATE_ORDERING = " MAX(CASE " +
+    private static final String SELECT_STATE_ORDERING = " MAX(CASE " +
             "WHEN " + STATE + " = '" + State.SYNCED + "' THEN 1 " +
             "WHEN " + STATE + " = '" + State.TO_DELETE + "' THEN 2 " +
             "WHEN " + STATE + " IN ('" + State.TO_POST + "','" + State.TO_UPDATE + "') THEN 3 " +
             "ELSE 4 END)";
 
-    private final String FROM_CLAUSE =
-            " FROM " + DataValueTableInfo.TABLE_INFO.name() + " as " + DATAVALUE_TABLE_ALIAS +
+    private static final String FROM_CLAUSE =
+            " FROM " + DataValueTableInfo.TABLE_INFO.name() + AS + DATAVALUE_TABLE_ALIAS +
                     getJoinPeriod() +
                     getJoinDataSetElement() +
                     getJoinDataSet() +
                     getJoinOrganisationUnit() +
                     getJoinAttributeOptionCombo();
 
-    private final String SELECT_CLAUSE = "SELECT " +
+    private static final String SELECT_CLAUSE = "SELECT " +
             DATAVALUE_ID + ", " +
-            DATASET_UID + " AS " + DATASET_UID_ALIAS + "," +
-            DATASET_NAME + " AS " + DATASET_NAME_ALIAS + "," +
-            PERIOD + " AS " + PERIOD_ALIAS + "," +
-            PERIOD_TYPE + " AS " + PERIOD_TYPE_ALIAS + "," +
-            ORGANISATION_UNIT_UID + " AS " + ORGANISATION_UNIT_UID_ALIAS + "," +
-            ORGANISATION_UNIT_NAME + " AS " + ORGANISATION_UNIT_NAME_ALIAS + "," +
-            ATTRIBUTE_OPTION_COMBO_UID + " AS " + ATTRIBUTE_OPTION_COMBO_UID_ALIAS + "," +
-            ATTRIBUTE_OPTION_COMBO_NAME + " AS " + ATTRIBUTE_OPTION_COMBO_NAME_ALIAS + "," +
-            "COUNT(*) AS " + VALUE_COUNT_ALIAS + ", " +
+            DATASET_UID + AS + DATASET_UID_ALIAS + "," +
+            DATASET_NAME + AS + DATASET_NAME_ALIAS + "," +
+            PERIOD + AS + PERIOD_ALIAS + "," +
+            PERIOD_TYPE + AS + PERIOD_TYPE_ALIAS + "," +
+            ORGANISATION_UNIT_UID + AS + ORGANISATION_UNIT_UID_ALIAS + "," +
+            ORGANISATION_UNIT_NAME + AS + ORGANISATION_UNIT_NAME_ALIAS + "," +
+            ATTRIBUTE_OPTION_COMBO_UID + AS + ATTRIBUTE_OPTION_COMBO_UID_ALIAS + "," +
+            ATTRIBUTE_OPTION_COMBO_NAME + AS + ATTRIBUTE_OPTION_COMBO_NAME_ALIAS + "," +
+            "COUNT(*)" + AS + VALUE_COUNT_ALIAS + ", " +
             STATE + ", " +
             // Auxiliary field to order the 'state' column and to prioritize TO_POST and TO_UPDATE
             SELECT_STATE_ORDERING +
             FROM_CLAUSE;
 
-    private final String SELECT_COUNT_CLAUSE = "SELECT count(*) " + FROM_CLAUSE;
+    private static final String SELECT_COUNT_CLAUSE = "SELECT count(*) " + FROM_CLAUSE;
 
-    private final String GROUP_BY_CLAUSE = " GROUP BY " +
+    private static final String GROUP_BY_CLAUSE = " GROUP BY " +
             DATASET_UID + "," +
             PERIOD + "," +
             ORGANISATION_UNIT_UID + "," +
@@ -154,32 +159,32 @@ class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBuilder {
         return selectWhere("1", orderingColumName + " " + orderingType, 1);
     }
 
-    private String getJoinPeriod() {
-        return " INNER JOIN " + PeriodTableInfo.TABLE_INFO.name() + " as " + PERIOD_TABLE_ALIAS +
-                " ON " + PERIOD + " = " + PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.PERIOD_ID;
+    private static String getJoinPeriod() {
+        return INNER_JOIN + PeriodTableInfo.TABLE_INFO.name() + AS + PERIOD_TABLE_ALIAS +
+                ON + PERIOD + EQ + PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.PERIOD_ID;
     }
 
-    private String getJoinDataSetElement() {
-        return " INNER JOIN " + DataSetDataElementLinkTableInfo.TABLE_INFO.name() + " as " + DATASETELEMENT_TABLE_ALIAS +
-                " ON " + DATAVALUE_TABLE_ALIAS + "." + DataValueFields.DATA_ELEMENT + " = " +
+    private static String getJoinDataSetElement() {
+        return INNER_JOIN + DataSetDataElementLinkTableInfo.TABLE_INFO.name() + AS + DATASETELEMENT_TABLE_ALIAS +
+                ON + DATAVALUE_TABLE_ALIAS + "." + DataValueFields.DATA_ELEMENT + EQ +
                 DATASETELEMENT_TABLE_ALIAS + "." + DataSetDataElementLinkTableInfo.Columns.DATA_ELEMENT;
     }
 
-    private String getJoinOrganisationUnit() {
-        return " INNER JOIN " + OrganisationUnitTableInfo.TABLE_INFO.name() + " as " + ORGUNIT_TABLE_ALIAS +
-                " ON " + DATAVALUE_TABLE_ALIAS + "." + DataValueTableInfo.ORGANISATION_UNIT + " = " +
+    private static String getJoinOrganisationUnit() {
+        return INNER_JOIN + OrganisationUnitTableInfo.TABLE_INFO.name() + AS + ORGUNIT_TABLE_ALIAS +
+                ON + DATAVALUE_TABLE_ALIAS + "." + DataValueTableInfo.ORGANISATION_UNIT + EQ +
                 ORGUNIT_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
     }
 
-    private String getJoinDataSet() {
-        return " INNER JOIN " + DataSetTableInfo.TABLE_INFO.name() + " as " + DATASET_TABLE_ALIAS +
-                " ON " + DATASETELEMENT_TABLE_ALIAS + "." + DataSetDataElementLinkTableInfo.Columns.DATA_SET + " = " +
+    private static String getJoinDataSet() {
+        return INNER_JOIN + DataSetTableInfo.TABLE_INFO.name() + AS + DATASET_TABLE_ALIAS +
+                ON + DATASETELEMENT_TABLE_ALIAS + "." + DataSetDataElementLinkTableInfo.Columns.DATA_SET + EQ +
                 DATASET_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
     }
 
-    private String getJoinAttributeOptionCombo() {
-        return " INNER JOIN " + CategoryOptionComboTableInfo.TABLE_INFO.name() + " as " + AOC_TABLE_ALIAS +
-                " ON " + DATAVALUE_TABLE_ALIAS + "." + DataValueFields.ATTRIBUTE_OPTION_COMBO + " = " +
+    private static String getJoinAttributeOptionCombo() {
+        return INNER_JOIN + CategoryOptionComboTableInfo.TABLE_INFO.name() + AS + AOC_TABLE_ALIAS +
+                ON + DATAVALUE_TABLE_ALIAS + "." + DataValueFields.ATTRIBUTE_OPTION_COMBO + EQ +
                 AOC_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
     }
 }

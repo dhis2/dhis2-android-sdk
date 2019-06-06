@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStat
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-class DataSetReportStore extends ReadableStoreImpl<DataSetReport> {
+final class DataSetReportStore extends ReadableStoreImpl<DataSetReport> {
 
     private DataSetReportStore(DatabaseAdapter databaseAdapter,
                                ReadOnlySQLStatementBuilder builder,

@@ -44,7 +44,6 @@ public class SQLStatementBuilderImpl implements SQLStatementBuilder {
     private final String[] whereColumns;
     private final boolean hasSortOrder;
 
-    private final static String TEXT = " TEXT";
     private final static String WHERE = " WHERE ";
     private final static String LIMIT = " LIMIT ";
     private final static String FROM = " FROM ";
@@ -106,7 +105,7 @@ public class SQLStatementBuilderImpl implements SQLStatementBuilder {
 
     @Override
     public String[] getColumns() {
-        return columns;
+        return columns.clone();
     }
 
     @Override

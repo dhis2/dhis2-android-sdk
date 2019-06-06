@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
@@ -43,18 +42,9 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 
-import static org.hisp.dhis.android.core.datavalue.DataSetReportSQLStatementBuilder.ATTRIBUTE_OPTION_COMBO_UID;
-import static org.hisp.dhis.android.core.datavalue.DataSetReportSQLStatementBuilder.DATASET_UID;
-import static org.hisp.dhis.android.core.datavalue.DataSetReportSQLStatementBuilder.ORGANISATION_UNIT_UID;
-import static org.hisp.dhis.android.core.datavalue.DataSetReportSQLStatementBuilder.PERIOD;
-import static org.hisp.dhis.android.core.datavalue.DataSetReportSQLStatementBuilder.PERIOD_END_DATE;
-import static org.hisp.dhis.android.core.datavalue.DataSetReportSQLStatementBuilder.PERIOD_START_DATE;
-import static org.hisp.dhis.android.core.datavalue.DataSetReportSQLStatementBuilder.PERIOD_TYPE;
-
 @Reusable
 public final class DataSetReportCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl<DataSetReport, DataSetReportCollectionRepository>
-        implements ReadOnlyCollectionRepository<DataSetReport> {
+        extends ReadOnlyCollectionRepositoryImpl<DataSetReport, DataSetReportCollectionRepository> {
 
     @Inject
     DataSetReportCollectionRepository(final DataSetReportStore store,
@@ -64,31 +54,31 @@ public final class DataSetReportCollectionRepository
     }
 
     public StringFilterConnector<DataSetReportCollectionRepository> byDataSetUid() {
-        return cf.string(DATASET_UID);
+        return cf.string(DataSetReportSQLStatementBuilder.DATASET_UID);
     }
 
     public StringFilterConnector<DataSetReportCollectionRepository> byPeriod() {
-        return cf.string(PERIOD);
+        return cf.string(DataSetReportSQLStatementBuilder.PERIOD);
     }
 
     public EnumFilterConnector<DataSetReportCollectionRepository, PeriodType> byPeriodType() {
-        return cf.enumC(PERIOD_TYPE);
+        return cf.enumC(DataSetReportSQLStatementBuilder.PERIOD_TYPE);
     }
 
     public DateFilterConnector<DataSetReportCollectionRepository> byPeriodStartDate() {
-        return cf.date(PERIOD_START_DATE);
+        return cf.date(DataSetReportSQLStatementBuilder.PERIOD_START_DATE);
     }
 
     public DateFilterConnector<DataSetReportCollectionRepository> byPeriodEndDate() {
-        return cf.date(PERIOD_END_DATE);
+        return cf.date(DataSetReportSQLStatementBuilder.PERIOD_END_DATE);
     }
 
     public StringFilterConnector<DataSetReportCollectionRepository> byOrganisationUnitUid() {
-        return cf.string(ORGANISATION_UNIT_UID);
+        return cf.string(DataSetReportSQLStatementBuilder.ORGANISATION_UNIT_UID);
     }
 
     public StringFilterConnector<DataSetReportCollectionRepository> byAttributeOptionComboUid() {
-        return cf.string(ATTRIBUTE_OPTION_COMBO_UID);
+        return cf.string(DataSetReportSQLStatementBuilder.ATTRIBUTE_OPTION_COMBO_UID);
     }
 
 }

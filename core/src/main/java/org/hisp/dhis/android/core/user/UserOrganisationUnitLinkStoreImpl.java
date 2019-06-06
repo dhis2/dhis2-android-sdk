@@ -60,7 +60,8 @@ public final class UserOrganisationUnitLinkStoreImpl extends LinkModelStoreImpl<
     }
 
     public static UserOrganisationUnitLinkStore create(DatabaseAdapter databaseAdapter) {
-        SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(UserOrganisationUnitLinkTableInfo.TABLE_INFO);
+        SQLStatementBuilderImpl statementBuilder =
+                new SQLStatementBuilderImpl(UserOrganisationUnitLinkTableInfo.TABLE_INFO);
 
         return new UserOrganisationUnitLinkStoreImpl(
                 databaseAdapter,

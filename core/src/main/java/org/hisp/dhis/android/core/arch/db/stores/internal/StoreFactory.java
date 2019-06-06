@@ -70,7 +70,8 @@ public final class StoreFactory {
             WhereStatementBinder<I> whereUpdateBinder,
             WhereStatementBinder<I> whereDeleteBinder, CursorModelFactory<I> modelFactory) {
         SQLStatementBuilder statementBuilder =
-                new SQLStatementBuilderImpl(tableInfo.name(), tableInfo.columns().all(), tableInfo.columns().whereUpdate());
+                new SQLStatementBuilderImpl(tableInfo.name(), tableInfo.columns().all(),
+                        tableInfo.columns().whereUpdate());
         return new ObjectWithoutUidStoreImpl<>(databaseAdapter, statementBuilder, binder, whereUpdateBinder,
                 whereDeleteBinder, modelFactory);
     }

@@ -26,37 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.internal.EventStore;
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-import java.util.List;
+@Module(includes = {
+        EventEntityDIModule.class
+})
+public final class EventPackageDIModule {
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-
-@RunWith(D2JunitRunner.class)
-public class EventWithLimitCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
-
-    @Test
-    public void download_events() throws Exception {
-        int eventLimitByOrgUnit = 1;
-
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
-        dhis2MockServer.enqueueMockResponse("event/events_1.json");
-
-        d2.eventModule().downloadSingleEvents(eventLimitByOrgUnit, false, false).call();
-
-        EventStore eventStore = EventStoreImpl.create(databaseAdapter);
-
-        List<Event> downloadedEvents = eventStore.querySingleEvents();
-
-        assertThat(downloadedEvents.size(), is(eventLimitByOrgUnit));
+    @Provides
+    @Reusable
+    EventService service(Retrofit retrofit) {
+        return retrofit.create(EventService.class);
     }
 }

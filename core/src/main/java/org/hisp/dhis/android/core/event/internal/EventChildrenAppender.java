@@ -25,38 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal;
 
-package org.hisp.dhis.android.core;
-
+import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.internal.EventStore;
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import java.util.List;
+public final class EventChildrenAppender extends ChildrenAppender<Enrollment> {
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+    private final SingleParentChildStore<Enrollment, Event> childStore;
 
-@RunWith(D2JunitRunner.class)
-public class EventWithLimitCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
+    private EventChildrenAppender(SingleParentChildStore<Enrollment, Event> childStore) {
+        this.childStore = childStore;
+    }
 
-    @Test
-    public void download_events() throws Exception {
-        int eventLimitByOrgUnit = 1;
+    @Override
+    protected Enrollment appendChildren(Enrollment tei) {
+        Enrollment.Builder builder = tei.toBuilder();
+        builder.events(childStore.getChildren(tei));
+        return builder.build();
+    }
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
-        dhis2MockServer.enqueueMockResponse("event/events_1.json");
-
-        d2.eventModule().downloadSingleEvents(eventLimitByOrgUnit, false, false).call();
-
-        EventStore eventStore = EventStoreImpl.create(databaseAdapter);
-
-        List<Event> downloadedEvents = eventStore.querySingleEvents();
-
-        assertThat(downloadedEvents.size(), is(eventLimitByOrgUnit));
+    public static ChildrenAppender<Enrollment> create(DatabaseAdapter databaseAdapter) {
+        return new EventChildrenAppender(
+                StoreFactory.singleParentChildStore(
+                        databaseAdapter,
+                        EventStoreImpl.CHILD_PROJECTION,
+                        Event::create)
+        );
     }
 }

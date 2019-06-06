@@ -26,24 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.internal;
+package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.DataOrphanCleanerImpl;
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
-import org.hisp.dhis.android.core.enrollment.note.internal.NoteChildrenAppender;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.internal.EventChildrenAppender;
-import org.hisp.dhis.android.core.event.internal.EventFields;
-import org.hisp.dhis.android.core.event.EventTableInfo;
+import org.hisp.dhis.android.core.event.EventCreateProjection;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueChildrenAppender;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import dagger.Module;
@@ -51,40 +44,30 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class EnrollmentEntityDIModule {
+public final class EventEntityDIModule {
 
     @Provides
     @Reusable
-    public EnrollmentStore store(DatabaseAdapter databaseAdapter) {
-        return EnrollmentStoreImpl.create(databaseAdapter);
+    public EventStore store(DatabaseAdapter databaseAdapter) {
+        return EventStoreImpl.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    public HandlerWithTransformer<Enrollment> handler(EnrollmentHandler impl) {
+    public HandlerWithTransformer<Event> handler(EventHandler impl) {
         return impl;
     }
 
     @Provides
     @Reusable
-    Transformer<EnrollmentCreateProjection, Enrollment> transformer() {
-        return new EnrollmentProjectionTransformer();
+    Transformer<EventCreateProjection, Event> transformer() {
+        return new EventProjectionTransformer();
     }
 
     @Provides
     @Reusable
-    @SuppressWarnings("PMD.NonStaticInitializer")
-    Map<String, ChildrenAppender<Enrollment>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return new HashMap<String, ChildrenAppender<Enrollment>>() {{
-            put(EnrollmentFields.NOTES, NoteChildrenAppender.create(databaseAdapter));
-            put(EnrollmentFields.EVENTS, EventChildrenAppender.create(databaseAdapter));
-        }};
-    }
-
-    @Provides
-    @Reusable
-    OrphanCleaner<Enrollment, Event> eventOrphanCleaner(DatabaseAdapter databaseAdapter) {
-        return new DataOrphanCleanerImpl<>(EventTableInfo.TABLE_INFO.name(), EventFields.ENROLLMENT,
-                BaseDataModel.Columns.STATE, databaseAdapter);
+    Map<String, ChildrenAppender<Event>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Collections.singletonMap(EventFields.TRACKED_ENTITY_DATA_VALUES,
+                TrackedEntityDataValueChildrenAppender.create(databaseAdapter));
     }
 }

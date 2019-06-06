@@ -26,37 +26,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.event.internal;
 
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.internal.EventStore;
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import retrofit2.Retrofit;
 
-@RunWith(D2JunitRunner.class)
-public class EventWithLimitCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
+public class EventCallFactory {
+    public static Callable<List<Event>> create(Retrofit retrofit,
+                                               DatabaseAdapter databaseAdapter,
+                                               String orgUnit,
+                                               int pageSize) {
 
-    @Test
-    public void download_events() throws Exception {
-        int eventLimitByOrgUnit = 1;
+        EventQuery eventQuery = EventQuery.builder()
+                .orgUnit(orgUnit)
+                .pageSize(pageSize)
+                .build();
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
-        dhis2MockServer.enqueueMockResponse("event/events_1.json");
-
-        d2.eventModule().downloadSingleEvents(eventLimitByOrgUnit, false, false).call();
-
-        EventStore eventStore = EventStoreImpl.create(databaseAdapter);
-
-        List<Event> downloadedEvents = eventStore.querySingleEvents();
-
-        assertThat(downloadedEvents.size(), is(eventLimitByOrgUnit));
+        return new EventEndpointCallFactory(retrofit.create(EventService.class),
+                APICallExecutorImpl.create(databaseAdapter)).getCall(eventQuery);
     }
 }

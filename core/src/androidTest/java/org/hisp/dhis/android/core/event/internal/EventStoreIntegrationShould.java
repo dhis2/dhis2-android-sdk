@@ -26,37 +26,50 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.event.internal;
 
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.data.database.IdentifiableDataObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.trackedentity.EventSamples;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.internal.EventStore;
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
+import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.event.EventTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.junit.runner.RunWith;
 
-import java.util.List;
+import androidx.test.runner.AndroidJUnit4;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+@RunWith(AndroidJUnit4.class)
+public class EventStoreIntegrationShould extends IdentifiableDataObjectStoreAbstractIntegrationShould<Event> {
 
-@RunWith(D2JunitRunner.class)
-public class EventWithLimitCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
+    public EventStoreIntegrationShould() {
+        super(EventStoreImpl.create(DatabaseAdapterFactory.get()),
+                EventTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+    }
 
-    @Test
-    public void download_events() throws Exception {
-        int eventLimitByOrgUnit = 1;
+    @Override
+    protected Event buildObject() {
+        return EventSamples.get();
+    }
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
-        dhis2MockServer.enqueueMockResponse("event/events_1.json");
+    @Override
+    protected Event buildObjectToUpdate() {
+        return EventSamples.get().toBuilder()
+                .status(EventStatus.VISITED)
+                .build();
+    }
 
-        d2.eventModule().downloadSingleEvents(eventLimitByOrgUnit, false, false).call();
+    @Override
+    protected Event buildObjectWithToDeleteState() {
+        return EventSamples.get().toBuilder()
+                .state(State.TO_DELETE)
+                .build();
+    }
 
-        EventStore eventStore = EventStoreImpl.create(databaseAdapter);
-
-        List<Event> downloadedEvents = eventStore.querySingleEvents();
-
-        assertThat(downloadedEvents.size(), is(eventLimitByOrgUnit));
+    @Override
+    protected Event buildObjectWithSyncedState() {
+        return EventSamples.get().toBuilder()
+                .state(State.SYNCED)
+                .build();
     }
 }

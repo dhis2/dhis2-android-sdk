@@ -26,37 +26,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.event.internal;
 
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.internal.EventStore;
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import javax.inject.Inject;
 
-@RunWith(D2JunitRunner.class)
-public class EventWithLimitCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
+import androidx.annotation.NonNull;
+import dagger.Reusable;
+import retrofit2.Call;
 
-    @Test
-    public void download_events() throws Exception {
-        int eventLimitByOrgUnit = 1;
+@Reusable
+final class EventEndpointCallFactory {
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
-        dhis2MockServer.enqueueMockResponse("event/events_1.json");
+    private final EventService service;
+    private final APICallExecutor apiCallExecutor;
 
-        d2.eventModule().downloadSingleEvents(eventLimitByOrgUnit, false, false).call();
+    @Inject
+    EventEndpointCallFactory(@NonNull EventService service, APICallExecutor apiCallExecutor) {
+        this.service = service;
+        this.apiCallExecutor = apiCallExecutor;
+    }
 
-        EventStore eventStore = EventStoreImpl.create(databaseAdapter);
+    Callable<List<Event>> getCall(final EventQuery eventQuery) {
+        return () -> {
 
-        List<Event> downloadedEvents = eventStore.querySingleEvents();
+            Call<Payload<Event>> call = service.getEvents(eventQuery.orgUnit(), eventQuery.program(),
+                    eventQuery.trackedEntityInstance(), EventFields.allFields, Boolean.TRUE,
+                    eventQuery.page(), eventQuery.pageSize(), eventQuery.lastUpdatedStartDate(), true);
 
-        assertThat(downloadedEvents.size(), is(eventLimitByOrgUnit));
+            return apiCallExecutor.executePayloadCall(call);
+        };
     }
 }

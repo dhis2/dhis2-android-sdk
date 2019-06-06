@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.event.internal.EventCallFactory;
+import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;

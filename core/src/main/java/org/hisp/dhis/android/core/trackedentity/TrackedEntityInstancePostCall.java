@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.enrollment.note.internal.NoteToPostTransformer;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventStore;
+import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.imports.TEIWebResponse;
 import org.hisp.dhis.android.core.imports.TEIWebResponseHandler;
 import org.hisp.dhis.android.core.maintenance.D2Error;

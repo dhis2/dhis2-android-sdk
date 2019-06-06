@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.enrollment.note.NoteTableInfo;
-import org.hisp.dhis.android.core.event.EventImportHandler;
+import org.hisp.dhis.android.core.event.internal.EventImportHandler;
 import org.hisp.dhis.android.core.imports.EnrollmentImportSummary;
 import org.hisp.dhis.android.core.imports.EventImportSummaries;
 import org.hisp.dhis.android.core.imports.ImportConflict;

@@ -26,37 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.event.internal;
 
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.internal.EventStore;
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.event.EventCreateProjection;
+import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 
-import java.util.List;
+import java.util.Date;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+final class EventProjectionTransformer implements Transformer<EventCreateProjection, Event> {
 
-@RunWith(D2JunitRunner.class)
-public class EventWithLimitCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
+    @Override
+    public Event transform(EventCreateProjection projection) {
+        String generatedUid = new CodeGeneratorImpl().generate();
+        Date creationDate = new Date();
 
-    @Test
-    public void download_events() throws Exception {
-        int eventLimitByOrgUnit = 1;
-
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
-        dhis2MockServer.enqueueMockResponse("event/events_1.json");
-
-        d2.eventModule().downloadSingleEvents(eventLimitByOrgUnit, false, false).call();
-
-        EventStore eventStore = EventStoreImpl.create(databaseAdapter);
-
-        List<Event> downloadedEvents = eventStore.querySingleEvents();
-
-        assertThat(downloadedEvents.size(), is(eventLimitByOrgUnit));
+        return Event.builder()
+                .uid(generatedUid)
+                .state(State.TO_POST)
+                .created(creationDate)
+                .lastUpdated(creationDate)
+                .createdAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
+                .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
+                .enrollment(projection.enrollment())
+                .program(projection.program())
+                .programStage(projection.programStage())
+                .organisationUnit(projection.organisationUnit())
+                .attributeOptionCombo(projection.attributeOptionCombo())
+                .build();
     }
 }

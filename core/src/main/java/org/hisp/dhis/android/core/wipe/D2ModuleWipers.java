@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementModuleWiper;
 import org.hisp.dhis.android.core.dataset.DataSetModuleWiper;
 import org.hisp.dhis.android.core.datavalue.DataValueModuleWiper;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentModuleWiper;
-import org.hisp.dhis.android.core.event.EventModuleWiper;
+import org.hisp.dhis.android.core.event.internal.EventModuleWiper;
 import org.hisp.dhis.android.core.imports.ImportModuleWiper;
 import org.hisp.dhis.android.core.indicator.IndicatorModuleWiper;
 import org.hisp.dhis.android.core.legendset.LegendSetModuleWiper;

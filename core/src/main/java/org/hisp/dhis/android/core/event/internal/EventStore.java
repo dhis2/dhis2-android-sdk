@@ -26,37 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.event.internal;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectWithStateStore;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.internal.EventStore;
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+public interface EventStore extends IdentifiableObjectWithStateStore<Event> {
 
-@RunWith(D2JunitRunner.class)
-public class EventWithLimitCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
+    Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost();
 
-    @Test
-    public void download_events() throws Exception {
-        int eventLimitByOrgUnit = 1;
+    List<Event> querySingleEventsToPost();
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
-        dhis2MockServer.enqueueMockResponse("event/events_1.json");
+    List<Event> querySingleEvents();
 
-        d2.eventModule().downloadSingleEvents(eventLimitByOrgUnit, false, false).call();
+    List<Event> queryOrderedForEnrollmentAndProgramStage(String enrollmentUid, String programStageUid);
 
-        EventStore eventStore = EventStoreImpl.create(databaseAdapter);
+    Integer countEventsForEnrollment(String enrollmentUid);
 
-        List<Event> downloadedEvents = eventStore.querySingleEvents();
-
-        assertThat(downloadedEvents.size(), is(eventLimitByOrgUnit));
-    }
+    int countTeisWhereEvents(String whereClause);
 }

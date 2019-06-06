@@ -26,53 +26,55 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.internal;
+package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.Coordinates;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.enrollment.note.Note;
-import org.hisp.dhis.android.core.enrollment.note.internal.NoteFields;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.internal.EventFields;
+import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueFields;
 
-public final class EnrollmentFields {
+public final class EventFields {
 
-    public static final String UID = "enrollment";
+    public static final String UID = "event";
+    public static final String ENROLLMENT = "enrollment";
     public static final String CREATED = "created";
     public static final String LAST_UPDATED = "lastUpdated";
-    public static final String ORGANISATION_UNIT = "orgUnit";
-    public static final String PROGRAM = "program";
-    public static final String ENROLLMENT_DATE = "enrollmentDate";
-    public static final String INCIDENT_DATE = "incidentDate";
-    public static final String FOLLOW_UP = "followup";
     public static final String STATUS = "status";
-    public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
-    public static final String COORDINATE = "coordinate";
+    private static final String COORDINATE = "coordinate";
+    public static final String PROGRAM = "program";
+    public static final String PROGRAM_STAGE = "programStage";
+    public static final String ORGANISATION_UNIT = "orgUnit";
+    public static final String EVENT_DATE = "eventDate";
+    public static final String COMPLETE_DATE = "completedDate";
+    public static final String DUE_DATE = "dueDate";
     public static final String DELETED = "deleted";
-    public static final String EVENTS = "events";
-    public static final String NOTES = "notes";
+    public static final String TRACKED_ENTITY_DATA_VALUES = "dataValues";
+    public static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
 
-    private static FieldsHelper<Enrollment> fh = new FieldsHelper<>();
+    private static FieldsHelper<Event> fh = new FieldsHelper<>();
 
-    public static final Fields<Enrollment> allFields = Fields.<Enrollment>builder()
+    public static final Fields<Event> allFields = Fields.<Event>builder()
             .fields(fh.<String>field(UID),
+                    fh.<String>field(ENROLLMENT),
                     fh.<String>field(CREATED),
                     fh.<String>field(LAST_UPDATED),
-                    fh.<String>field(ORGANISATION_UNIT),
-                    fh.<String>field(PROGRAM),
-                    fh.<String>field(ENROLLMENT_DATE),
-                    fh.<String>field(INCIDENT_DATE),
-                    fh.<String>field(FOLLOW_UP),
-                    fh.<EnrollmentStatus>field(STATUS),
-                    fh.<Boolean>field(DELETED),
-                    fh.<String>field(TRACKED_ENTITY_INSTANCE),
+                    fh.<EventStatus>field(STATUS),
                     fh.<Coordinates>field(COORDINATE),
-                    fh.<Event>nestedField(EVENTS).with(EventFields.allFields),
-                    fh.<Note>nestedField(NOTES).with(NoteFields.all)
+                    fh.<String>field(PROGRAM),
+                    fh.<String>field(PROGRAM_STAGE),
+                    fh.<String>field(ORGANISATION_UNIT),
+                    fh.<String>field(EVENT_DATE),
+                    fh.<String>field(COMPLETE_DATE),
+                    fh.<Boolean>field(DELETED),
+                    fh.<String>field(DUE_DATE),
+                    fh.<String>field(ATTRIBUTE_OPTION_COMBO),
+                    fh.<TrackedEntityDataValue>nestedField(TRACKED_ENTITY_DATA_VALUES)
+                            .with(TrackedEntityDataValueFields.allFields)
     ).build();
 
-    private EnrollmentFields() {}
+    private EventFields() {}
+
 }

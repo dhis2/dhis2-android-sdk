@@ -26,37 +26,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.internal.EventStore;
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
+import org.junit.Before;
 
-import java.util.List;
+import java.io.IOException;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
-@RunWith(D2JunitRunner.class)
-public class EventWithLimitCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
+public class EventWithLimitCallRealIntegrationShould extends BaseRealIntegrationTest {
 
-    @Test
-    public void download_events() throws Exception {
-        int eventLimitByOrgUnit = 1;
+    private D2 d2;
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
-        dhis2MockServer.enqueueMockResponse("event/events_1.json");
+    @Before
+    @Override
+    public void setUp() throws IOException {
+        super.setUp();
 
-        d2.eventModule().downloadSingleEvents(eventLimitByOrgUnit, false, false).call();
+        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+    }
 
-        EventStore eventStore = EventStoreImpl.create(databaseAdapter);
+    //@Test
+    public void download_tracked_entity_instances() throws Exception {
+        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
 
-        List<Event> downloadedEvents = eventStore.querySingleEvents();
+        d2.syncMetaData().call();
 
-        assertThat(downloadedEvents.size(), is(eventLimitByOrgUnit));
+        d2.eventModule().downloadSingleEvents(20,  false, false).call();
+
+        int count = d2.eventModule().events.count();
+
+        assertThat(count).isEqualTo(20);
     }
 }

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core;
 
-import org.hisp.dhis.android.core.category.CategoryInternalModule;
+import org.hisp.dhis.android.core.category.internal.CategoryInternalModule;
 import org.hisp.dhis.android.core.user.UserInternalModule;
 
 import javax.inject.Inject;

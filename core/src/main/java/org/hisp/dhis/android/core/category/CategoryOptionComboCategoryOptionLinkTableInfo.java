@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -47,11 +46,6 @@ public final class CategoryOptionComboCategoryOptionLinkTableInfo {
             return new Columns();
         }
     };
-
-    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            CategoryOptionTableInfo.TABLE_INFO,
-            Columns.CATEGORY_OPTION_COMBO,
-            Columns.CATEGORY_OPTION);
 
     private CategoryOptionComboCategoryOptionLinkTableInfo() {
     }

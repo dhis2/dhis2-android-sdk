@@ -50,7 +50,7 @@ public abstract class CategoryOptionComboCategoryOptionLink implements Model {
         return new AutoValue_CategoryOptionComboCategoryOptionLink.Builder();
     }
 
-    static CategoryOptionComboCategoryOptionLink create(Cursor cursor) {
+    public static CategoryOptionComboCategoryOptionLink create(Cursor cursor) {
         return AutoValue_CategoryOptionComboCategoryOptionLink.createFromCursor(cursor);
     }
 

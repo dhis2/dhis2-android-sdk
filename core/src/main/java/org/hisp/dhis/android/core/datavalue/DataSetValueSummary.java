@@ -40,25 +40,48 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbStateColumnAdapter;
+import org.hisp.dhis.android.core.period.PeriodType;
 
 @AutoValue
 public abstract class DataSetValueSummary implements Model {
 
     @NonNull
-    public abstract String dataSet();
+    @ColumnName(DataSetValueSummarySQLStatementBuilder.DATASET_UID_ALIAS)
+    public abstract String dataSetUid();
 
     @NonNull
+    @ColumnName(DataSetValueSummarySQLStatementBuilder.DATASET_NAME_ALIAS)
+    public abstract String dataSetDisplayName();
+
+    @NonNull
+    @ColumnName(DataSetValueSummarySQLStatementBuilder.PERIOD_ALIAS)
     public abstract String period();
 
     @NonNull
-    public abstract String organisationUnit();
+    @ColumnName(DataSetValueSummarySQLStatementBuilder.PERIOD_TYPE_ALIAS)
+    @ColumnAdapter(DbPeriodTypeColumnAdapter.class)
+    public abstract PeriodType periodType();
 
     @NonNull
-    public abstract String attributeOptionCombo();
+    @ColumnName(DataSetValueSummarySQLStatementBuilder.ORGANISATION_UNIT_UID_ALIAS)
+    public abstract String organisationUnitUid();
 
     @NonNull
-    @ColumnName(DataSetValueSummarySQLStatementBuilder.VALUE_COUNT)
+    @ColumnName(DataSetValueSummarySQLStatementBuilder.ORGANISATION_UNIT_NAME_ALIAS)
+    public abstract String organisationUnitDisplayName();
+
+    @NonNull
+    @ColumnName(DataSetValueSummarySQLStatementBuilder.ATTRIBUTE_OPTION_COMBO_UID_ALIAS)
+    public abstract String attributeOptionComboUid();
+
+    @NonNull
+    @ColumnName(DataSetValueSummarySQLStatementBuilder.ATTRIBUTE_OPTION_COMBO_NAME_ALIAS)
+    public abstract String attributeOptionComboDisplayName();
+
+    @NonNull
+    @ColumnName(DataSetValueSummarySQLStatementBuilder.VALUE_COUNT_ALIAS)
     public abstract Integer valueCount();
 
     @Nullable
@@ -80,13 +103,21 @@ public abstract class DataSetValueSummary implements Model {
     public abstract static class Builder extends BaseModel.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        public abstract Builder dataSet(String dataSet);
+        public abstract Builder dataSetUid(String dataSetUid);
+
+        public abstract Builder dataSetDisplayName(String dataSetDisplayName);
 
         public abstract Builder period(String period);
 
-        public abstract Builder organisationUnit(String organisationUnit);
+        public abstract Builder periodType(PeriodType periodType);
 
-        public abstract Builder attributeOptionCombo(String attributeOptionCombo);
+        public abstract Builder organisationUnitUid(String organisationUnitUid);
+
+        public abstract Builder organisationUnitDisplayName(String organisationUnitDisplayName);
+
+        public abstract Builder attributeOptionComboUid(String attributeOptionComboUid);
+
+        public abstract Builder attributeOptionComboDisplayName(String attributeOptionComboDisplayName);
 
         public abstract Builder valueCount(Integer valueCount);
 

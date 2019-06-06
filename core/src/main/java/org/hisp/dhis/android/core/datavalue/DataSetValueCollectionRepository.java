@@ -43,9 +43,9 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 
-import static org.hisp.dhis.android.core.datavalue.DataSetValueSummarySQLStatementBuilder.ATTRIBUTE_OPTION_COMBO;
+import static org.hisp.dhis.android.core.datavalue.DataSetValueSummarySQLStatementBuilder.ATTRIBUTE_OPTION_COMBO_UID;
 import static org.hisp.dhis.android.core.datavalue.DataSetValueSummarySQLStatementBuilder.DATASET_UID;
-import static org.hisp.dhis.android.core.datavalue.DataSetValueSummarySQLStatementBuilder.ORGANISATION_UNIT;
+import static org.hisp.dhis.android.core.datavalue.DataSetValueSummarySQLStatementBuilder.ORGANISATION_UNIT_UID;
 import static org.hisp.dhis.android.core.datavalue.DataSetValueSummarySQLStatementBuilder.PERIOD;
 import static org.hisp.dhis.android.core.datavalue.DataSetValueSummarySQLStatementBuilder.PERIOD_END_DATE;
 import static org.hisp.dhis.android.core.datavalue.DataSetValueSummarySQLStatementBuilder.PERIOD_START_DATE;
@@ -71,12 +71,8 @@ public final class DataSetValueCollectionRepository
         return cf.string(PERIOD);
     }
 
-    public StringFilterConnector<DataSetValueCollectionRepository> byOrganisationUnitUid() {
-        return cf.string(ORGANISATION_UNIT);
-    }
-
-    public StringFilterConnector<DataSetValueCollectionRepository> byAttributeOptionComboUid() {
-        return cf.string(ATTRIBUTE_OPTION_COMBO);
+    public EnumFilterConnector<DataSetValueCollectionRepository, PeriodType> byPeriodType() {
+        return cf.enumC(PERIOD_TYPE);
     }
 
     public DateFilterConnector<DataSetValueCollectionRepository> byPeriodStartDate() {
@@ -87,8 +83,12 @@ public final class DataSetValueCollectionRepository
         return cf.date(PERIOD_END_DATE);
     }
 
-    public EnumFilterConnector<DataSetValueCollectionRepository, PeriodType> byPeriodType() {
-        return cf.enumC(PERIOD_TYPE);
+    public StringFilterConnector<DataSetValueCollectionRepository> byOrganisationUnitUid() {
+        return cf.string(ORGANISATION_UNIT_UID);
+    }
+
+    public StringFilterConnector<DataSetValueCollectionRepository> byAttributeOptionComboUid() {
+        return cf.string(ATTRIBUTE_OPTION_COMBO_UID);
     }
 
 }

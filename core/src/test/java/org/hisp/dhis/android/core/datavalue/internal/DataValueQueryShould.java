@@ -26,38 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.datavalue.internal;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.junit.Test;
 
-import java.util.Collections;
-import java.util.Map;
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getDataSetUids;
+import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getOrgUnitUids;
+import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getPeriodIds;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+public class DataValueQueryShould {
 
-@Module
-public final class DataValueEntityDIModule {
-
-    @Provides
-    @Reusable
-    DataValueStore store(DatabaseAdapter databaseAdapter) {
-        return DataValueStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    Handler<DataValue> handler(DataValueStore dataValueStore) {
-        return new ObjectWithoutUidHandlerImpl<>(dataValueStore);
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<DataValue>> childrenAppenders() {
-        return Collections.emptyMap();
+    @Test
+    public void create_data_value_query_successfully() {
+        DataValueQuery dataValueQuery = DataValueQuery.create(getDataSetUids(), getPeriodIds(), getOrgUnitUids());
+        assertThat(dataValueQuery.dataSetUids()).isEqualTo(getDataSetUids());
+        assertThat(dataValueQuery.periodIds()).isEqualTo(getPeriodIds());
+        assertThat(dataValueQuery.orgUnitUids()).isEqualTo(getOrgUnitUids());
     }
 }

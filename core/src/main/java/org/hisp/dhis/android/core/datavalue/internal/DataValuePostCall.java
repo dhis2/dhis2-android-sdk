@@ -26,10 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.datavalue.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
-final class DataValuePostCall implements Callable<DataValueImportSummary> {
+public final class DataValuePostCall implements Callable<DataValueImportSummary> {
 
     private final DataValueService dataValueService;
     private final DataValueStore dataValueStore;

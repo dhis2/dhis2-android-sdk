@@ -26,32 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.datavalue.internal;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.datavalue.DataValue;
 
-import javax.inject.Inject;
+import java.util.Collection;
 
-import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@Reusable
-public final class DataValueModuleWiper implements ModuleWiper {
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+class DataValueSet {
 
-    private final TableWiper tableWiper;
+    public Collection<DataValue> dataValues;
 
-    @Inject
-    DataValueModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        // No metadata to wipe
-    }
-
-    @Override
-    public void wipeData() {
-        tableWiper.wipeTable(DataValueTableInfo.TABLE_INFO);
+    DataValueSet(Collection<DataValue> dataValues) {
+        this.dataValues = dataValues;
     }
 }

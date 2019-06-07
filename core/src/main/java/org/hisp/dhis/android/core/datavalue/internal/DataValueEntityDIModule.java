@@ -26,25 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.datavalue.internal;
 
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStatementBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStoreImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.datavalue.DataValue;
 
-final class DataSetReportStore extends ReadableStoreImpl<DataSetReport> {
+import java.util.Collections;
+import java.util.Map;
 
-    private DataSetReportStore(DatabaseAdapter databaseAdapter,
-                               ReadOnlySQLStatementBuilder builder,
-                               CursorModelFactory<DataSetReport> modelFactory) {
-        super(databaseAdapter, builder, modelFactory);
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+
+@Module
+public final class DataValueEntityDIModule {
+
+    @Provides
+    @Reusable
+    DataValueStore store(DatabaseAdapter databaseAdapter) {
+        return DataValueStore.create(databaseAdapter);
     }
 
-    static DataSetReportStore create(DatabaseAdapter databaseAdapter) {
-        return new DataSetReportStore(
-                databaseAdapter,
-                new DataSetReportSQLStatementBuilder(),
-                DataSetReport::create);
+    @Provides
+    @Reusable
+    Handler<DataValue> handler(DataValueStore dataValueStore) {
+        return new ObjectWithoutUidHandlerImpl<>(dataValueStore);
+    }
+
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<DataValue>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

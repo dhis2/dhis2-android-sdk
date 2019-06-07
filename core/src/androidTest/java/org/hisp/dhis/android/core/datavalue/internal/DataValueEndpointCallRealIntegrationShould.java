@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.datavalue.internal;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
@@ -34,6 +34,10 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImp
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.datavalue.DataValue;
+import org.hisp.dhis.android.core.datavalue.internal.DataValueEndpointCallFactory;
+import org.hisp.dhis.android.core.datavalue.internal.DataValueQuery;
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStore;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 

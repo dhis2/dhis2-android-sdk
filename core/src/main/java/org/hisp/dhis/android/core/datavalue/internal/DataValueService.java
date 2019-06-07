@@ -26,29 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.datavalue.internal;
 
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataDispatcher;
-import org.junit.Test;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.datavalue.DataValue;
+import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 
-import io.reactivex.observers.TestObserver;
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Query;
 
-public class AggregatedDataCallMockIntegrationShould extends BaseMockIntegrationTestMetadataDispatcher {
+interface DataValueService {
+    @GET("dataValueSets")
+    Call<Payload<DataValue>> getDataValues(@Query("fields") @Which Fields<DataValue> fields,
+                                           @Query("filter") @Where Filter<DataValue, String> lastUpdated,
+                                           @Query("dataSet") String dataSetUids,
+                                           @Query("period") String periodIds,
+                                           @Query("orgUnit") String orgUnitUids,
+                                           @Query("children") Boolean children,
+                                           @Query("paging") Boolean paging);
 
-    @Test
-    public void emit_progress() {
-        TestObserver<D2Progress> testObserver = d2.aggregatedModule().data().download().asObservable().test();
-        testObserver.assertValueCount(3);
-
-        testObserver.assertValueAt(0, v -> assertDouble(v.percentage(), 33.33) && v.lastCall().equals("SystemInfo"));
-        testObserver.assertValueAt(1, v -> assertDouble(v.percentage(), 66.66));
-        testObserver.assertValueAt(2, v -> assertDouble(v.percentage(), 100));
-
-        testObserver.dispose();
-    }
-
-    private boolean assertDouble(double d1, double d2) {
-        return d2 - d1 < 0.01;
-    }
+    @POST("dataValueSets")
+    Call<DataValueImportSummary> postDataValues(@Body DataValueSet dataValueSet);
 }

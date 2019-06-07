@@ -26,26 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.datavalue.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.datavalue.DataValue;
 
-final class DataValueFields {
+public final class DataValueFields {
 
-    static final String DATA_ELEMENT = "dataElement";
-    static final String PERIOD = "period";
-    static final String ORGANISATION_UNIT = "orgUnit";
-    static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
-    static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
-    static final String VALUE = "value";
-    static final String STORED_BY = "storedBy";
-    static final String CREATED = "created";
-    static final String LAST_UPDATED = "lastUpdated";
-    static final String COMMENT = "comment";
-    static final String FOLLOW_UP = "followup";
-    static final String DELETED = "deleted";
+    public static final String DATA_ELEMENT = "dataElement";
+    public static final String PERIOD = "period";
+    public static final String ORGANISATION_UNIT = "orgUnit";
+    public static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
+    public static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
+    public static final String VALUE = "value";
+    public static final String STORED_BY = "storedBy";
+    public static final String CREATED = "created";
+    public static final String LAST_UPDATED = "lastUpdated";
+    public static final String COMMENT = "comment";
+    public static final String FOLLOW_UP = "followup";
+    public static final String DELETED = "deleted";
 
     private static FieldsHelper<DataValue> fieldsHelper = new FieldsHelper<>();
 

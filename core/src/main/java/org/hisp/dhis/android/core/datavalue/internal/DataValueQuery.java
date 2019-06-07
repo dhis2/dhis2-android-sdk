@@ -26,22 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.datavalue.internal;
 
-import org.junit.Test;
+import com.google.auto.value.AutoValue;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getDataSetUids;
-import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getOrgUnitUids;
-import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getPeriodIds;
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
 
-public class DataValueQueryShould {
+import java.util.Collection;
 
-    @Test
-    public void create_data_value_query_successfully() {
-        DataValueQuery dataValueQuery = DataValueQuery.create(getDataSetUids(), getPeriodIds(), getOrgUnitUids());
-        assertThat(dataValueQuery.dataSetUids()).isEqualTo(getDataSetUids());
-        assertThat(dataValueQuery.periodIds()).isEqualTo(getPeriodIds());
-        assertThat(dataValueQuery.orgUnitUids()).isEqualTo(getOrgUnitUids());
+@AutoValue
+public abstract class DataValueQuery extends BaseQuery {
+    public abstract Collection<String> dataSetUids();
+
+    public abstract Collection<String> periodIds();
+
+    public abstract Collection<String> orgUnitUids();
+
+    public static DataValueQuery create(Collection<String> dataSetUids,
+                                        Collection<String> periodIds,
+                                        Collection<String> orgUnitUids) {
+        return new AutoValue_DataValueQuery(1, BaseQuery.DEFAULT_PAGE_SIZE, false,
+                dataSetUids, periodIds, orgUnitUids);
     }
 }

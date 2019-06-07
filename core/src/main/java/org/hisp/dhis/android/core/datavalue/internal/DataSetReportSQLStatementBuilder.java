@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.datavalue.internal;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
@@ -36,10 +36,11 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
+import org.hisp.dhis.android.core.datavalue.DataValueTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.period.PeriodTableInfo;
 
-class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBuilder {
+public class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBuilder {
 
     private static final String AS = " AS ";
     private static final String INNER_JOIN = " INNER JOIN ";
@@ -53,30 +54,30 @@ class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBuilder {
     private static final String DATASET_TABLE_ALIAS = "ds";
     private static final String AOC_TABLE_ALIAS = "aoc";
 
-    static final String VALUE_COUNT_ALIAS = "valueCount";
-    static final String DATASET_UID_ALIAS = "dataSetUid";
-    static final String DATASET_NAME_ALIAS = "dataSetDisplayName";
-    static final String PERIOD_ALIAS = "period";
-    static final String PERIOD_TYPE_ALIAS = "periodType";
-    static final String ORGANISATION_UNIT_UID_ALIAS = "organisationUnitUid";
-    static final String ORGANISATION_UNIT_NAME_ALIAS = "organisationUnitDisplayName";
-    static final String ATTRIBUTE_OPTION_COMBO_UID_ALIAS = "attributeOptionComboUid";
-    static final String ATTRIBUTE_OPTION_COMBO_NAME_ALIAS = "attributeOptionComboDisplayName";
+    private static final String VALUE_COUNT_ALIAS = "valueCount";
+    private static final String DATASET_UID_ALIAS = "dataSetUid";
+    private static final String DATASET_NAME_ALIAS = "dataSetDisplayName";
+    private static final String PERIOD_ALIAS = "period";
+    private static final String PERIOD_TYPE_ALIAS = "periodType";
+    private static final String ORGANISATION_UNIT_UID_ALIAS = "organisationUnitUid";
+    private static final String ORGANISATION_UNIT_NAME_ALIAS = "organisationUnitDisplayName";
+    private static final String ATTRIBUTE_OPTION_COMBO_UID_ALIAS = "attributeOptionComboUid";
+    private static final String ATTRIBUTE_OPTION_COMBO_NAME_ALIAS = "attributeOptionComboDisplayName";
 
     static final String DATAVALUE_ID = DATAVALUE_TABLE_ALIAS + "." + BaseDataModel.Columns.ID;
-    static final String DATASET_UID = DATASET_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
+    public static final String DATASET_UID = DATASET_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
     static final String DATASET_NAME = DATASET_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.DISPLAY_NAME;
-    static final String PERIOD = DATAVALUE_TABLE_ALIAS + "." + DataValueFields.PERIOD;
-    static final String PERIOD_TYPE = PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.PERIOD_TYPE;
-    static final String ORGANISATION_UNIT_UID = ORGUNIT_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
+    public static final String PERIOD = DATAVALUE_TABLE_ALIAS + "." + DataValueFields.PERIOD;
+    public static final String PERIOD_TYPE = PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.PERIOD_TYPE;
+    public static final String ORGANISATION_UNIT_UID = ORGUNIT_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
     static final String ORGANISATION_UNIT_NAME =
             ORGUNIT_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.DISPLAY_NAME;
-    static final String ATTRIBUTE_OPTION_COMBO_UID = AOC_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
+    public static final String ATTRIBUTE_OPTION_COMBO_UID = AOC_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
     static final String ATTRIBUTE_OPTION_COMBO_NAME =
             AOC_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.DISPLAY_NAME;
 
-    static final String PERIOD_START_DATE = PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.START_DATE;
-    static final String PERIOD_END_DATE = PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.END_DATE;
+    public static final String PERIOD_START_DATE = PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.START_DATE;
+    public static final String PERIOD_END_DATE = PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.END_DATE;
 
 
     private static final String STATE = DATAVALUE_TABLE_ALIAS + "." + BaseDataModel.Columns.STATE;

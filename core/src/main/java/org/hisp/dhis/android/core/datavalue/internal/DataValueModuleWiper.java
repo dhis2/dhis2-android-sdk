@@ -26,26 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.datavalue.internal;
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.datavalue.DataValueTableInfo;
+import org.hisp.dhis.android.core.wipe.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.TableWiper;
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
+import javax.inject.Inject;
 
-import java.util.Collection;
+import dagger.Reusable;
 
-@AutoValue
-public abstract class DataValueQuery extends BaseQuery {
-    public abstract Collection<String> dataSetUids();
+@Reusable
+public final class DataValueModuleWiper implements ModuleWiper {
 
-    public abstract Collection<String> periodIds();
+    private final TableWiper tableWiper;
 
-    public abstract Collection<String> orgUnitUids();
+    @Inject
+    DataValueModuleWiper(TableWiper tableWiper) {
+        this.tableWiper = tableWiper;
+    }
 
-    public static DataValueQuery create(Collection<String> dataSetUids,
-                                        Collection<String> periodIds,
-                                        Collection<String> orgUnitUids) {
-        return new AutoValue_DataValueQuery(1, BaseQuery.DEFAULT_PAGE_SIZE, false,
-                dataSetUids, periodIds, orgUnitUids);
+    @Override
+    public void wipeMetadata() {
+        // No metadata to wipe
+    }
+
+    @Override
+    public void wipeData() {
+        tableWiper.wipeTable(DataValueTableInfo.TABLE_INFO);
     }
 }

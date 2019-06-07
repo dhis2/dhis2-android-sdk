@@ -26,31 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.datavalue.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
+import org.hisp.dhis.android.core.datavalue.DataValue;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
+import retrofit2.Retrofit;
 
-@Module
-public final class DataSetReportEntityDIModule {
+@Module(includes = {
+        DataValueEntityDIModule.class,
+        DataSetReportEntityDIModule.class
+})
+public final class DataValuePackageDIModule {
 
     @Provides
     @Reusable
-    DataSetReportStore store(DatabaseAdapter databaseAdapter) {
-        return DataSetReportStore.create(databaseAdapter);
+    DataValueService service(Retrofit retrofit) {
+        return retrofit.create(DataValueService.class);
     }
 
     @Provides
     @Reusable
-    DataSetReportCollectionRepository repository(DataSetReportStore store) {
-        return new DataSetReportCollectionRepository(store,
-                RepositoryScope.empty().toBuilder()
-                        .pagingKey(DataSetReportSQLStatementBuilder.DATAVALUE_ID)
-                        .build());
+    QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory(DataValueEndpointCallFactory callFactoryImpl) {
+        return callFactoryImpl;
     }
-
 }

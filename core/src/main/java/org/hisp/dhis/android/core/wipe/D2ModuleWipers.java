@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.common.internal.CommonModuleWiper;
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleWiper;
 import org.hisp.dhis.android.core.dataelement.internal.DataElementModuleWiper;
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleWiper;
-import org.hisp.dhis.android.core.datavalue.DataValueModuleWiper;
+import org.hisp.dhis.android.core.datavalue.internal.DataValueModuleWiper;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentModuleWiper;
 import org.hisp.dhis.android.core.event.internal.EventModuleWiper;
 import org.hisp.dhis.android.core.imports.internal.ImportModuleWiper;

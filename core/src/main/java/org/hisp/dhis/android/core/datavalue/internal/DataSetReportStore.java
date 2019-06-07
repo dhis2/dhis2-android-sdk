@@ -26,31 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.datavalue.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStoreImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.datavalue.DataSetReport;
 
-import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.Query;
+public final class DataSetReportStore extends ReadableStoreImpl<DataSetReport> {
 
-interface DataValueService {
-    @GET("dataValueSets")
-    Call<Payload<DataValue>> getDataValues(@Query("fields") @Which Fields<DataValue> fields,
-                                           @Query("filter") @Where Filter<DataValue, String> lastUpdated,
-                                           @Query("dataSet") String dataSetUids,
-                                           @Query("period") String periodIds,
-                                           @Query("orgUnit") String orgUnitUids,
-                                           @Query("children") Boolean children,
-                                           @Query("paging") Boolean paging);
+    private DataSetReportStore(DatabaseAdapter databaseAdapter,
+                               ReadOnlySQLStatementBuilder builder,
+                               CursorModelFactory<DataSetReport> modelFactory) {
+        super(databaseAdapter, builder, modelFactory);
+    }
 
-    @POST("dataValueSets")
-    Call<DataValueImportSummary> postDataValues(@Body DataValueSet dataValueSet);
+    static DataSetReportStore create(DatabaseAdapter databaseAdapter) {
+        return new DataSetReportStore(
+                databaseAdapter,
+                new DataSetReportSQLStatementBuilder(),
+                DataSetReport::create);
+    }
 }

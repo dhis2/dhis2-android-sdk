@@ -26,18 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.datavalue.internal;
 
-import java.util.Collection;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.datavalue.DataValue;
+import org.hisp.dhis.android.core.imports.ImportStatus;
+import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import androidx.annotation.NonNull;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-class DataValueSet {
+final class DataValueImportHandler {
 
-    public Collection<DataValue> dataValues;
+    private final DataValueStore dataValueStore;
 
-    DataValueSet(Collection<DataValue> dataValues) {
-        this.dataValues = dataValues;
+    DataValueImportHandler(DataValueStore dataValueStore) {
+        this.dataValueStore = dataValueStore;
+    }
+
+    void handleImportSummary(@NonNull DataValueSet dataValueSet,
+                             @NonNull DataValueImportSummary dataValueImportSummary) {
+
+        if (dataValueImportSummary == null || dataValueSet == null) {
+            return;
+        }
+
+        State newState =
+                (dataValueImportSummary.importStatus() == ImportStatus.ERROR) ? State.ERROR : State.SYNCED;
+
+        for (DataValue dataValue : dataValueSet.dataValues) {
+            dataValueStore.setState(dataValue, newState);
+        }
     }
 }

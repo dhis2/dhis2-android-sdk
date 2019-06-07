@@ -69,10 +69,12 @@ public class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBui
     static final String DATASET_NAME = DATASET_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.DISPLAY_NAME;
     public static final String PERIOD = DATAVALUE_TABLE_ALIAS + "." + DataValueFields.PERIOD;
     public static final String PERIOD_TYPE = PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.PERIOD_TYPE;
-    public static final String ORGANISATION_UNIT_UID = ORGUNIT_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
+    public static final String ORGANISATION_UNIT_UID = ORGUNIT_TABLE_ALIAS + "." +
+            BaseIdentifiableObjectModel.Columns.UID;
     static final String ORGANISATION_UNIT_NAME =
             ORGUNIT_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.DISPLAY_NAME;
-    public static final String ATTRIBUTE_OPTION_COMBO_UID = AOC_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
+    public static final String ATTRIBUTE_OPTION_COMBO_UID = AOC_TABLE_ALIAS + "." +
+            BaseIdentifiableObjectModel.Columns.UID;
     static final String ATTRIBUTE_OPTION_COMBO_NAME =
             AOC_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.DISPLAY_NAME;
 

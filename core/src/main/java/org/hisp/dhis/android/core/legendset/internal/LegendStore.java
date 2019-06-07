@@ -26,28 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.legendset.internal;
 
+import android.database.sqlite.SQLiteStatement;
+
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.legendset.Legend;
+import org.hisp.dhis.android.core.legendset.LegendTableInfo;
+
+import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public final class ProgramIndicatorLegendSetLinkStore {
+public final class LegendStore {
 
-    private static final StatementBinder<ProgramIndicatorLegendSetLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.programIndicator());
-        sqLiteBind(sqLiteStatement, 2, o.legendSet());
+    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            LegendTableInfo.TABLE_INFO, LegendTableInfo.Columns.LEGEND_SET);
+
+    private LegendStore() {}
+
+    private static StatementBinder<Legend> BINDER = new IdentifiableStatementBinder<Legend>() {
+        @Override
+        public void bindToStatement(@NonNull Legend o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 7, o.startValue());
+            sqLiteBind(sqLiteStatement, 8, o.endValue());
+            sqLiteBind(sqLiteStatement, 9, o.color());
+            sqLiteBind(sqLiteStatement, 10, UidsHelper.getUidOrNull(o.legendSet()));
+        }
     };
 
-    private ProgramIndicatorLegendSetLinkStore() {}
-
-    public static LinkModelStore<ProgramIndicatorLegendSetLink> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO,
-                ProgramIndicatorLegendSetLinkTableInfo.Columns.PROGRAM_INDICATOR,
-                BINDER, ProgramIndicatorLegendSetLink::create);
+    public static IdentifiableObjectStore<Legend> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, LegendTableInfo.TABLE_INFO, BINDER, Legend::create);
     }
 }

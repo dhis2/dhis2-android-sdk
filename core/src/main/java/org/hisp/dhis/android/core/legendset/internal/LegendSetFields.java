@@ -26,35 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.legendset.internal;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.legendset.Legend;
+import org.hisp.dhis.android.core.legendset.LegendSet;
 
-import javax.inject.Inject;
+public final class LegendSetFields {
 
-import dagger.Reusable;
+    public final static String SYMBOLIZER = "symbolizer";
+    public final static String LEGENDS = "legends";
 
-@Reusable
-public final class LegendSetModuleWiper implements ModuleWiper {
+    private static final FieldsHelper<LegendSet> fh = new FieldsHelper<>();
 
-    private final TableWiper tableWiper;
+    public static final Fields<LegendSet> allFields = Fields.<LegendSet>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.<String>field(SYMBOLIZER),
+                    fh.<Legend>nestedField(LEGENDS).with(LegendFields.allFields)
+            ).build();
 
-    @Inject
-    LegendSetModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                LegendTableInfo.TABLE_INFO,
-                LegendSetTableInfo.TABLE_INFO,
-                ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO);
-    }
-
-    @Override
-    public void wipeData() {
-        // No metadata to wipe
+    private LegendSetFields() {
     }
 }

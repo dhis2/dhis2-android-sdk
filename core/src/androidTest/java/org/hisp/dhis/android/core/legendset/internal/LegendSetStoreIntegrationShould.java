@@ -26,34 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.legendset.internal;
 
-import android.database.sqlite.SQLiteStatement;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.legendset.LegendSetSamples;
+import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.junit.runner.RunWith;
 
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import androidx.test.runner.AndroidJUnit4;
 
-import androidx.annotation.NonNull;
+@RunWith(AndroidJUnit4.class)
+public class LegendSetStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<LegendSet> {
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+    public LegendSetStoreIntegrationShould() {
+        super(LegendSetStore.create(DatabaseAdapterFactory.get()), LegendSetTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+    }
 
-public final class LegendSetStore {
+    @Override
+    protected LegendSet buildObject() {
+        return LegendSetSamples.getLegendSet();
+    }
 
-    private LegendSetStore() {}
-
-    private static StatementBinder<LegendSet> BINDER = new IdentifiableStatementBinder<LegendSet>() {
-        @Override
-        public void bindToStatement(@NonNull LegendSet o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.symbolizer());
-        }
-    };
-
-    public static IdentifiableObjectStore<LegendSet> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, LegendSetTableInfo.TABLE_INFO, BINDER,
-                LegendSet::create);
+    @Override
+    protected LegendSet buildObjectToUpdate() {
+        return LegendSetSamples.getLegendSet().toBuilder()
+                .symbolizer("new_color")
+                .build();
     }
 }

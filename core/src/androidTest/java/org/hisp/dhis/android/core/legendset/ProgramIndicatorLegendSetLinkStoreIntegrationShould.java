@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.legendset;
 
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.legendset.ProgramIndicatorLegendSetLinkSamples;
+import org.hisp.dhis.android.core.legendset.internal.ProgramIndicatorLegendSetLinkStore;
 import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.junit.runner.RunWith;
 

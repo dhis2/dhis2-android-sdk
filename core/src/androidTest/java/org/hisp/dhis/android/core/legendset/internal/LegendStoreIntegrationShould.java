@@ -26,47 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.legendset.internal;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.legendset.LegendSamples;
+import org.hisp.dhis.android.core.legendset.Legend;
+import org.hisp.dhis.android.core.legendset.LegendTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.junit.runner.RunWith;
 
-import java.util.Collections;
-import java.util.Map;
+import androidx.test.runner.AndroidJUnit4;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+@RunWith(AndroidJUnit4.class)
+public class LegendStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Legend> {
 
-@Module
-public final class LegendSetEntityDIModule {
-
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<LegendSet> store(DatabaseAdapter databaseAdapter) {
-        return LegendSetStore.create(databaseAdapter);
+    public LegendStoreIntegrationShould() {
+        super(LegendStore.create(DatabaseAdapterFactory.get()), LegendTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
-    @Provides
-    @Reusable
-    public Handler<LegendSet> handler(LegendSetHandler impl) {
-        return impl;
+    @Override
+    protected Legend buildObject() {
+        return LegendSamples.getLegend();
     }
 
-    @Provides
-    @Reusable
-    OrphanCleaner<LegendSet, Legend> legendCleaner(DatabaseAdapter databaseAdapter) {
-        return new OrphanCleanerImpl<>(LegendTableInfo.TABLE_INFO.name(), LegendTableInfo.Columns.LEGEND_SET,
-                databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<LegendSet>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singletonMap(LegendSetFields.LEGENDS, LegendChildrenAppender.create(databaseAdapter));
+    @Override
+    protected Legend buildObjectToUpdate() {
+        return LegendSamples.getLegend().toBuilder()
+                .legendSet(ObjectWithUid.create("new_legend_set_uid"))
+                .build();
     }
 }

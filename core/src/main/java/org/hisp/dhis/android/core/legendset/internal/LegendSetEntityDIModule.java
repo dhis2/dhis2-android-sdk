@@ -25,41 +25,51 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.legendset;
+
+package org.hisp.dhis.android.core.legendset.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.legendset.Legend;
+import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.hisp.dhis.android.core.legendset.LegendTableInfo;
 
-import javax.inject.Inject;
+import java.util.Collections;
+import java.util.Map;
 
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-final class LegendSetHandler extends IdentifiableHandlerImpl<LegendSet> {
+@Module
+public final class LegendSetEntityDIModule {
 
-    private final HandlerWithTransformer<Legend> legendHandler;
-    private final OrphanCleaner<LegendSet, Legend> legendCleaner;
-
-    @Inject
-    LegendSetHandler(IdentifiableObjectStore<LegendSet> legendSetStore,
-                     HandlerWithTransformer<Legend> legendHandler,
-                     OrphanCleaner<LegendSet, Legend> legendCleaner) {
-        super(legendSetStore);
-        this.legendHandler = legendHandler;
-        this.legendCleaner = legendCleaner;
+    @Provides
+    @Reusable
+    public IdentifiableObjectStore<LegendSet> store(DatabaseAdapter databaseAdapter) {
+        return LegendSetStore.create(databaseAdapter);
     }
 
-    @Override
-    protected void afterObjectHandled(final LegendSet legendSet, HandleAction action) {
-        legendHandler.handleMany(legendSet.legends(),
-                legend -> legend.toBuilder().legendSet(ObjectWithUid.create(legendSet.uid())).build());
+    @Provides
+    @Reusable
+    public Handler<LegendSet> handler(LegendSetHandler impl) {
+        return impl;
+    }
 
-        if (action == HandleAction.Update) {
-            legendCleaner.deleteOrphan(legendSet, legendSet.legends());
-        }
+    @Provides
+    @Reusable
+    OrphanCleaner<LegendSet, Legend> legendCleaner(DatabaseAdapter databaseAdapter) {
+        return new OrphanCleanerImpl<>(LegendTableInfo.TABLE_INFO.name(), LegendTableInfo.Columns.LEGEND_SET,
+                databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<LegendSet>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Collections.singletonMap(LegendSetFields.LEGENDS, LegendChildrenAppender.create(databaseAdapter));
     }
 }

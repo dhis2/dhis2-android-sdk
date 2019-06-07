@@ -56,10 +56,10 @@ public final class ProgramIndicatorLegendSetLinkTableInfo {
     private ProgramIndicatorLegendSetLinkTableInfo() {
     }
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
 
-        static final String PROGRAM_INDICATOR = "programIndicator";
-        static final String LEGEND_SET = "legendSet";
+        public static final String PROGRAM_INDICATOR = "programIndicator";
+        public static final String LEGEND_SET = "legendSet";
 
         @Override
         public String[] all() {

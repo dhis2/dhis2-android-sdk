@@ -26,32 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.legendset.internal;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.legendset.LegendSamples;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.legendset.Legend;
 
-import androidx.test.runner.AndroidJUnit4;
+public final class LegendFields {
+    public final static String START_VALUE = "startValue";
+    public final static String END_VALUE = "endValue";
+    public final static String COLOR = "color";
 
-@RunWith(AndroidJUnit4.class)
-public class LegendStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Legend> {
+    private static final FieldsHelper<Legend> fh = new FieldsHelper<>();
 
-    public LegendStoreIntegrationShould() {
-        super(LegendStore.create(DatabaseAdapterFactory.get()), LegendTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
-    }
+    public static final Fields<Legend> allFields = Fields.<Legend>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.<Double>field(START_VALUE),
+                    fh.<Double>field(END_VALUE),
+                    fh.<String>field(COLOR)
+            ).build();
 
-    @Override
-    protected Legend buildObject() {
-        return LegendSamples.getLegend();
-    }
-
-    @Override
-    protected Legend buildObjectToUpdate() {
-        return LegendSamples.getLegend().toBuilder()
-                .legendSet(ObjectWithUid.create("new_legend_set_uid"))
-                .build();
+    private LegendFields() {
     }
 }

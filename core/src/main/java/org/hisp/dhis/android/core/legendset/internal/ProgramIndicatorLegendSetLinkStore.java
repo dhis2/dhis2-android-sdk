@@ -26,25 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.legendset.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkTableInfo;
 
-public final class LegendSetFields {
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-    final static String SYMBOLIZER = "symbolizer";
-    final static String LEGENDS = "legends";
+public final class ProgramIndicatorLegendSetLinkStore {
 
-    private static final FieldsHelper<LegendSet> fh = new FieldsHelper<>();
+    private static final StatementBinder<ProgramIndicatorLegendSetLink> BINDER
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.programIndicator());
+        sqLiteBind(sqLiteStatement, 2, o.legendSet());
+    };
 
-    public static final Fields<LegendSet> allFields = Fields.<LegendSet>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<String>field(SYMBOLIZER),
-                    fh.<Legend>nestedField(LEGENDS).with(LegendFields.allFields)
-            ).build();
+    private ProgramIndicatorLegendSetLinkStore() {}
 
-    private LegendSetFields() {
+    public static LinkModelStore<ProgramIndicatorLegendSetLink> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkModelStore(databaseAdapter, ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO,
+                ProgramIndicatorLegendSetLinkTableInfo.Columns.PROGRAM_INDICATOR,
+                BINDER, ProgramIndicatorLegendSetLink::create);
     }
 }

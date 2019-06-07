@@ -26,29 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.legendset.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;
+import org.hisp.dhis.android.core.legendset.LegendTableInfo;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkTableInfo;
+import org.hisp.dhis.android.core.wipe.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.TableWiper;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module
-public final class LegendEntityDIModule {
+@Reusable
+public final class LegendSetModuleWiper implements ModuleWiper {
 
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<Legend> store(DatabaseAdapter databaseAdapter) {
-        return LegendStore.create(databaseAdapter);
+    private final TableWiper tableWiper;
+
+    @Inject
+    LegendSetModuleWiper(TableWiper tableWiper) {
+        this.tableWiper = tableWiper;
     }
 
-    @Provides
-    @Reusable
-    public HandlerWithTransformer<Legend> handler(IdentifiableObjectStore<Legend> store) {
-        return new IdentifiableHandlerImpl<>(store);
+    @Override
+    public void wipeMetadata() {
+        tableWiper.wipeTables(
+                LegendTableInfo.TABLE_INFO,
+                LegendSetTableInfo.TABLE_INFO,
+                ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO);
+    }
+
+    @Override
+    public void wipeData() {
+        // No metadata to wipe
     }
 }

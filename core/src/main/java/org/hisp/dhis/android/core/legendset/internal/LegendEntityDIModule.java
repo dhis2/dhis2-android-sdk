@@ -25,34 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+package org.hisp.dhis.android.core.legendset.internal;
+
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.legendset.Legend;
 
-final class LegendChildrenAppender extends ChildrenAppender<LegendSet> {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    private final SingleParentChildStore<LegendSet, Legend> childStore;
+@Module
+public final class LegendEntityDIModule {
 
-    private LegendChildrenAppender(SingleParentChildStore<LegendSet, Legend> childStore) {
-        this.childStore = childStore;
+    @Provides
+    @Reusable
+    public IdentifiableObjectStore<Legend> store(DatabaseAdapter databaseAdapter) {
+        return LegendStore.create(databaseAdapter);
     }
 
-    @Override
-    protected LegendSet appendChildren(LegendSet legendSet) {
-        LegendSet.Builder builder = legendSet.toBuilder();
-        builder.legends(childStore.getChildren(legendSet));
-        return builder.build();
-    }
-
-    static ChildrenAppender<LegendSet> create(DatabaseAdapter databaseAdapter) {
-        return new LegendChildrenAppender(
-                StoreFactory.singleParentChildStore(
-                        databaseAdapter,
-                        LegendStore.CHILD_PROJECTION,
-                        Legend::create)
-        );
+    @Provides
+    @Reusable
+    public HandlerWithTransformer<Legend> handler(IdentifiableObjectStore<Legend> store) {
+        return new IdentifiableHandlerImpl<>(store);
     }
 }

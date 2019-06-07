@@ -25,32 +25,43 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.legendset.internal;
 
-package org.hisp.dhis.android.core.legendset;
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.legendset.Legend;
+import org.hisp.dhis.android.core.legendset.LegendSet;
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.legendset.LegendSetSamples;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
-import org.junit.runner.RunWith;
+import javax.inject.Inject;
 
-import androidx.test.runner.AndroidJUnit4;
+import dagger.Reusable;
 
-@RunWith(AndroidJUnit4.class)
-public class LegendSetStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<LegendSet> {
+@Reusable
+final class LegendSetHandler extends IdentifiableHandlerImpl<LegendSet> {
 
-    public LegendSetStoreIntegrationShould() {
-        super(LegendSetStore.create(DatabaseAdapterFactory.get()), LegendSetTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+    private final HandlerWithTransformer<Legend> legendHandler;
+    private final OrphanCleaner<LegendSet, Legend> legendCleaner;
+
+    @Inject
+    LegendSetHandler(IdentifiableObjectStore<LegendSet> legendSetStore,
+                     HandlerWithTransformer<Legend> legendHandler,
+                     OrphanCleaner<LegendSet, Legend> legendCleaner) {
+        super(legendSetStore);
+        this.legendHandler = legendHandler;
+        this.legendCleaner = legendCleaner;
     }
 
     @Override
-    protected LegendSet buildObject() {
-        return LegendSetSamples.getLegendSet();
-    }
+    protected void afterObjectHandled(final LegendSet legendSet, HandleAction action) {
+        legendHandler.handleMany(legendSet.legends(),
+                legend -> legend.toBuilder().legendSet(ObjectWithUid.create(legendSet.uid())).build());
 
-    @Override
-    protected LegendSet buildObjectToUpdate() {
-        return LegendSetSamples.getLegendSet().toBuilder()
-                .symbolizer("new_color")
-                .build();
+        if (action == HandleAction.Update) {
+            legendCleaner.deleteOrphan(legendSet, legendSet.legends());
+        }
     }
 }

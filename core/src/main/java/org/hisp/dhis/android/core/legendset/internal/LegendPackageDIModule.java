@@ -26,26 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.legendset.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import dagger.Module;
 
-final class LegendFields {
-    final static String START_VALUE = "startValue";
-    final static String END_VALUE = "endValue";
-    final static String COLOR = "color";
-
-    private static final FieldsHelper<Legend> fh = new FieldsHelper<>();
-
-    public static final Fields<Legend> allFields = Fields.<Legend>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<Double>field(START_VALUE),
-                    fh.<Double>field(END_VALUE),
-                    fh.<String>field(COLOR)
-            ).build();
-
-    private LegendFields() {
-    }
+@Module(includes = {
+        LegendEntityDIModule.class,
+        LegendSetEntityDIModule.class
+})
+public final class LegendPackageDIModule {
 }

@@ -26,25 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.maintenance;
+package org.hisp.dhis.android.core.maintenance.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
+
+import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
 
-@Module(includes = {
-        D2ErrorEntityDIModule.class,
-        ForeignKeyViolationEntityDIModule.class
-})
-public final class MaintenancePackageDIModule {
+@Module
+public final class ForeignKeyViolationEntityDIModule {
 
     @Provides
     @Reusable
-    ForeignKeyCleaner cleaner(DatabaseAdapter databaseAdapter,
-                              ObjectStore<ForeignKeyViolation> foreignKeyViolationStore) {
-        return new ForeignKeyCleanerImpl(databaseAdapter, foreignKeyViolationStore);
+    public ObjectStore<ForeignKeyViolation> store(DatabaseAdapter databaseAdapter) {
+        return ForeignKeyViolationStore.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<ForeignKeyViolation>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

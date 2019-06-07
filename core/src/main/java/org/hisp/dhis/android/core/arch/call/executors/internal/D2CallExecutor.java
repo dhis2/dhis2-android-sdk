@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
-import org.hisp.dhis.android.core.maintenance.D2ErrorStore;
+import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore;
 
 import java.util.concurrent.Callable;
 

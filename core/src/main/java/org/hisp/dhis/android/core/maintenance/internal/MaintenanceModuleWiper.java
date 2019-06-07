@@ -25,32 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.maintenance.internal;
 
-package org.hisp.dhis.android.core.maintenance;
+import org.hisp.dhis.android.core.maintenance.D2ErrorTableInfo;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo;
+import org.hisp.dhis.android.core.wipe.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.TableWiper;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import javax.inject.Inject;
 
-import java.util.Collections;
-import java.util.Map;
-
-import dagger.Module;
-import dagger.Provides;
 import dagger.Reusable;
 
-@Module
-public final class D2ErrorEntityDIModule {
+@Reusable
+public final class MaintenanceModuleWiper implements ModuleWiper {
 
-    @Provides
-    @Reusable
-    public ObjectStore<D2Error> store(DatabaseAdapter databaseAdapter) {
-        return D2ErrorStore.create(databaseAdapter);
+    private final TableWiper tableWiper;
+
+    @Inject
+    MaintenanceModuleWiper(TableWiper tableWiper) {
+        this.tableWiper = tableWiper;
     }
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<D2Error>> childrenAppenders() {
-        return Collections.emptyMap();
+    @Override
+    public void wipeMetadata() {
+        // No metadata to wipe
+    }
+
+    @Override
+    public void wipeData() {
+        tableWiper.wipeTables(
+                D2ErrorTableInfo.TABLE_INFO,
+                ForeignKeyViolationTableInfo.TABLE_INFO);
     }
 }

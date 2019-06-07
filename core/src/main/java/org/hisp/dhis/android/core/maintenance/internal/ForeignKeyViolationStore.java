@@ -25,34 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.maintenance;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+package org.hisp.dhis.android.core.maintenance.internal;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo;
 
-import dagger.Reusable;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-@Reusable
-public final class MaintenanceModuleWiper implements ModuleWiper {
+final class ForeignKeyViolationStore {
 
-    private final TableWiper tableWiper;
+    private static final StatementBinder<ForeignKeyViolation> BINDER = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.fromTable());
+        sqLiteBind(sqLiteStatement, 2, o.fromColumn());
+        sqLiteBind(sqLiteStatement, 3, o.toTable());
+        sqLiteBind(sqLiteStatement, 4, o.toColumn());
+        sqLiteBind(sqLiteStatement, 5, o.notFoundValue());
+        sqLiteBind(sqLiteStatement, 6, o.fromObjectUid());
+        sqLiteBind(sqLiteStatement, 7, o.fromObjectRow());
+        sqLiteBind(sqLiteStatement, 8, o.created());
+    };
 
-    @Inject
-    MaintenanceModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    private ForeignKeyViolationStore() {
     }
 
-    @Override
-    public void wipeMetadata() {
-        // No metadata to wipe
-    }
-
-    @Override
-    public void wipeData() {
-        tableWiper.wipeTables(
-                D2ErrorTableInfo.TABLE_INFO,
-                ForeignKeyViolationTableInfo.TABLE_INFO);
+    static ObjectStore<ForeignKeyViolation> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectStore(databaseAdapter, ForeignKeyViolationTableInfo.TABLE_INFO, BINDER,
+                ForeignKeyViolation::create);
     }
 }

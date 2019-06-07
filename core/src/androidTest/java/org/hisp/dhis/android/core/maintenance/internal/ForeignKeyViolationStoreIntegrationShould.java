@@ -26,25 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.maintenance;
+package org.hisp.dhis.android.core.maintenance.internal;
 
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples;
+import org.hisp.dhis.android.core.data.maintenance.ForeignKeyViolationSamples;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.junit.runner.RunWith;
 
 import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-public class D2ErrorStoreIntegrationShould extends ObjectStoreAbstractIntegrationShould<D2Error> {
+public class ForeignKeyViolationStoreIntegrationShould
+        extends ObjectStoreAbstractIntegrationShould<ForeignKeyViolation> {
 
-    public D2ErrorStoreIntegrationShould() {
-        super(D2ErrorStore.create(DatabaseAdapterFactory.get()),
-                D2ErrorTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+    public ForeignKeyViolationStoreIntegrationShould() {
+        super(ForeignKeyViolationStore.create(DatabaseAdapterFactory.get()),
+                ForeignKeyViolationTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override
-    protected D2Error buildObject() {
-        return D2ErrorSamples.get();
+    protected ForeignKeyViolation buildObject() {
+        return ForeignKeyViolationSamples.get();
     }
 }

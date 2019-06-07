@@ -26,26 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.maintenance;
+package org.hisp.dhis.android.core.maintenance.internal;
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.maintenance.ForeignKeyViolationSamples;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
-import org.junit.runner.RunWith;
-
-import androidx.test.runner.AndroidJUnit4;
-
-@RunWith(AndroidJUnit4.class)
-public class ForeignKeyViolationStoreIntegrationShould
-        extends ObjectStoreAbstractIntegrationShould<ForeignKeyViolation> {
-
-    public ForeignKeyViolationStoreIntegrationShould() {
-        super(ForeignKeyViolationStore.create(DatabaseAdapterFactory.get()),
-                ForeignKeyViolationTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
-    }
-
-    @Override
-    protected ForeignKeyViolation buildObject() {
-        return ForeignKeyViolationSamples.get();
-    }
+public interface ForeignKeyCleaner {
+   Integer cleanForeignKeyErrors();
 }

@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
-import org.hisp.dhis.android.core.maintenance.D2ErrorStore;
+import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

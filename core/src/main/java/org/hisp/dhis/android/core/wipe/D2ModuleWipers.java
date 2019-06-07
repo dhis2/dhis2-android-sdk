@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.event.internal.EventModuleWiper;
 import org.hisp.dhis.android.core.imports.internal.ImportModuleWiper;
 import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleWiper;
 import org.hisp.dhis.android.core.legendset.internal.LegendSetModuleWiper;
-import org.hisp.dhis.android.core.maintenance.MaintenanceModuleWiper;
+import org.hisp.dhis.android.core.maintenance.internal.MaintenanceModuleWiper;
 import org.hisp.dhis.android.core.option.OptionModuleWiper;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModuleWiper;
 import org.hisp.dhis.android.core.period.PeriodModuleWiper;

@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
+import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.ArrayList;

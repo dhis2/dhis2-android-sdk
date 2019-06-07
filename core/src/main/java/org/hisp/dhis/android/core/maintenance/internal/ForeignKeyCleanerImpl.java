@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.maintenance;
+package org.hisp.dhis.android.core.maintenance.internal;
 
 import android.database.Cursor;
 import android.util.Log;
@@ -34,6 +34,7 @@ import android.util.Log;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.ArrayList;

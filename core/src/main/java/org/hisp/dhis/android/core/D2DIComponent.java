@@ -56,7 +56,7 @@ import org.hisp.dhis.android.core.event.internal.EventPostCall;
 import org.hisp.dhis.android.core.imports.internal.ImportPackageDIModule;
 import org.hisp.dhis.android.core.indicator.internal.IndicatorPackageDIModule;
 import org.hisp.dhis.android.core.legendset.internal.LegendPackageDIModule;
-import org.hisp.dhis.android.core.maintenance.MaintenancePackageDIModule;
+import org.hisp.dhis.android.core.maintenance.internal.MaintenancePackageDIModule;
 import org.hisp.dhis.android.core.option.OptionPackageDIModule;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitPackageDIModule;

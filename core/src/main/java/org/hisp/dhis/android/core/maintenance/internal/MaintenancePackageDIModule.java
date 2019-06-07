@@ -26,33 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.maintenance;
+package org.hisp.dhis.android.core.maintenance.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-public final class ForeignKeyViolationStore {
+@Module(includes = {
+        D2ErrorEntityDIModule.class,
+        ForeignKeyViolationEntityDIModule.class
+})
+public final class MaintenancePackageDIModule {
 
-    private static final StatementBinder<ForeignKeyViolation> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.fromTable());
-        sqLiteBind(sqLiteStatement, 2, o.fromColumn());
-        sqLiteBind(sqLiteStatement, 3, o.toTable());
-        sqLiteBind(sqLiteStatement, 4, o.toColumn());
-        sqLiteBind(sqLiteStatement, 5, o.notFoundValue());
-        sqLiteBind(sqLiteStatement, 6, o.fromObjectUid());
-        sqLiteBind(sqLiteStatement, 7, o.fromObjectRow());
-        sqLiteBind(sqLiteStatement, 8, o.created());
-    };
-
-    private ForeignKeyViolationStore() {
-    }
-
-    public static ObjectStore<ForeignKeyViolation> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectStore(databaseAdapter, ForeignKeyViolationTableInfo.TABLE_INFO, BINDER,
-                ForeignKeyViolation::create);
+    @Provides
+    @Reusable
+    ForeignKeyCleaner cleaner(DatabaseAdapter databaseAdapter,
+                              ObjectStore<ForeignKeyViolation> foreignKeyViolationStore) {
+        return new ForeignKeyCleanerImpl(databaseAdapter, foreignKeyViolationStore);
     }
 }

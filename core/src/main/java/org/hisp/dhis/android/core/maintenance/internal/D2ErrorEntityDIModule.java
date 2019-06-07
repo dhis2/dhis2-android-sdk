@@ -26,11 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.maintenance;
+package org.hisp.dhis.android.core.maintenance.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.Collections;
 import java.util.Map;
@@ -40,17 +41,17 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class ForeignKeyViolationEntityDIModule {
+public final class D2ErrorEntityDIModule {
 
     @Provides
     @Reusable
-    public ObjectStore<ForeignKeyViolation> store(DatabaseAdapter databaseAdapter) {
-        return ForeignKeyViolationStore.create(databaseAdapter);
+    public ObjectStore<D2Error> store(DatabaseAdapter databaseAdapter) {
+        return D2ErrorStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    Map<String, ChildrenAppender<ForeignKeyViolation>> childrenAppenders() {
+    Map<String, ChildrenAppender<D2Error>> childrenAppenders() {
         return Collections.emptyMap();
     }
 }

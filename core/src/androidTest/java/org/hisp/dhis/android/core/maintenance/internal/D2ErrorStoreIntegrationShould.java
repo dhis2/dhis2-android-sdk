@@ -26,8 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.maintenance;
+package org.hisp.dhis.android.core.maintenance.internal;
 
-public interface ForeignKeyCleaner {
-   Integer cleanForeignKeyErrors();
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
+
+@RunWith(AndroidJUnit4.class)
+public class D2ErrorStoreIntegrationShould extends ObjectStoreAbstractIntegrationShould<D2Error> {
+
+    public D2ErrorStoreIntegrationShould() {
+        super(D2ErrorStore.create(DatabaseAdapterFactory.get()),
+                D2ErrorTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+    }
+
+    @Override
+    protected D2Error buildObject() {
+        return D2ErrorSamples.get();
+    }
 }

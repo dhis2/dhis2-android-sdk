@@ -31,43 +31,37 @@ package org.hisp.dhis.android.core.arch.db.stores.internal;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
-import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
-    protected final DatabaseAdapter databaseAdapter;
-    protected final SQLiteStatement insertStatement;
+public class ObjectStoreImpl<M extends Model> extends ReadableStoreImpl<M> implements ObjectStore<M> {
+    private final SQLiteStatement insertStatement;
     protected final SQLStatementBuilder builder;
-    final StatementBinder<M> binder;
-    final CursorModelFactory<M> modelFactory;
+    protected final StatementBinder<M> binder;
 
     public ObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
                            SQLStatementBuilder builder, StatementBinder<M> binder, CursorModelFactory<M> modelFactory) {
-        this.databaseAdapter = databaseAdapter;
+        super(databaseAdapter, builder, modelFactory);
         this.insertStatement = insertStatement;
         this.builder = builder;
         this.binder = binder;
-        this.modelFactory = modelFactory;
     }
 
     @Override
     public long insert(@NonNull M m) throws RuntimeException {
         isNull(m);
         binder.bindToStatement(m, insertStatement);
-        Long insertedRowId = databaseAdapter.executeInsert(builder.tableName, insertStatement);
+        Long insertedRowId = databaseAdapter.executeInsert(builder.getTableName(), insertStatement);
         insertStatement.clearBindings();
         if (insertedRowId == -1) {
             throw new RuntimeException("Nothing was inserted.");
@@ -76,12 +70,18 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     }
 
     @Override
-    public final int delete() {
-        return databaseAdapter.delete(builder.tableName);
+    public List<String> selectStringColumnsWhereClause(String column, String clause) {
+        Cursor cursor = databaseAdapter.query(builder.selectColumnWhere(column, clause));
+        return mapStringColumnSetFromCursor(cursor);
     }
 
-    protected void executeUpdateDelete(SQLiteStatement statement) throws RuntimeException {
-        int numberOfAffectedRows = databaseAdapter.executeUpdateDelete(builder.tableName, statement);
+    @Override
+    public final int delete() {
+        return databaseAdapter.delete(builder.getTableName());
+    }
+
+    void executeUpdateDelete(SQLiteStatement statement) throws RuntimeException {
+        int numberOfAffectedRows = databaseAdapter.executeUpdateDelete(builder.getTableName(), statement);
         statement.clearBindings();
 
         if (numberOfAffectedRows == 0) {
@@ -91,72 +91,10 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
         }
     }
 
-    @Override
-    public List<M> selectAll() {
-        String query = builder.selectAll();
-        return selectRawQuery(query);
-    }
-
-    @Override
-    public List<M> selectWhere(String whereClause) {
-        String query = builder.selectWhere(whereClause);
-        return selectRawQuery(query);
-    }
-
-    @Override
-    public List<M> selectWhere(String filterWhereClause, String orderByClause) {
-        String query = builder.selectWhere(filterWhereClause, orderByClause);
-        return selectRawQuery(query);
-    }
-
-    @Override
-    public List<M> selectWhere(String filterWhereClause, String orderByClause, int limit) {
-        String query = builder.selectWhere(filterWhereClause, orderByClause, limit);
-        return selectRawQuery(query);
-    }
-
-    @Override
-    public List<M> selectRawQuery(String sqlRawQuery) {
-        Cursor cursor = databaseAdapter.query(sqlRawQuery);
-        List<M> list = new ArrayList<>();
-        addObjectsToCollection(cursor, list);
-        return list;
-    }
-
-    @Override
-    public M selectOneWhere(@NonNull String whereClause) {
-        Cursor cursor = databaseAdapter.query(builder.selectWhere(whereClause, 1));
-        return getFirstFromCursor(cursor);
-    }
-
-    @Override
-    public M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType) {
-        Cursor cursor = databaseAdapter.query(builder.selectOneOrderedBy(orderingColumName, orderingType));
-        return getFirstFromCursor(cursor);
-    }
-
-    @Override
-    public M selectFirst() {
-        Cursor cursor = databaseAdapter.query(builder.selectAll());
-        return getFirstFromCursor(cursor);
-    }
 
     @Override
     public boolean deleteById(@NonNull M m) {
         return deleteWhere(BaseModel.Columns.ID + "='" + m.id() + "';");
-    }
-
-    private M getFirstFromCursor(@NonNull Cursor cursor) {
-        try {
-            if (cursor.getCount() >= 1) {
-                cursor.moveToFirst();
-                return modelFactory.fromCursor(cursor);
-            } else {
-                return null;
-            }
-        } finally {
-            cursor.close();
-        }
     }
 
     protected M popOneWhere(@NonNull String whereClause) {
@@ -168,41 +106,8 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     }
 
     @Override
-    public int count() {
-        return processCount(databaseAdapter.query(builder.count()));
-    }
-
-    @Override
-    public int countWhere(@NonNull String whereClause) {
-        return processCount(databaseAdapter.query(builder.countWhere(whereClause)));
-    }
-
-    protected int processCount(Cursor cursor) {
-        try {
-            cursor.moveToFirst();
-            return cursor.getInt(0);
-        } finally {
-            cursor.close();
-        }
-    }
-
-    protected void addObjectsToCollection(Cursor cursor, Collection<M> collection) {
-        try {
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                do {
-                    collection.add(modelFactory.fromCursor(cursor));
-                }
-                while (cursor.moveToNext());
-            }
-        } finally {
-            cursor.close();
-        }
-    }
-
-    @Override
     public boolean deleteWhere(String clause) {
-        return databaseAdapter.database().delete(builder.tableName, clause, null) > 0;
+        return databaseAdapter.database().delete(builder.getTableName(), clause, null) > 0;
     }
 
     @Override
@@ -214,28 +119,5 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
                 throw e;
             }
         }
-    }
-
-    @Override
-    public List<String> selectStringColumnsWhereClause(String column, String clause) {
-        Cursor cursor = databaseAdapter.query(builder.selectColumnWhere(column, clause));
-        return mapStringColumnSetFromCursor(cursor);
-    }
-
-    List<String> mapStringColumnSetFromCursor(Cursor cursor) {
-        List<String> columns = new ArrayList<>(cursor.getCount());
-
-        try {
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                do {
-                    columns.add(cursor.getString(0));
-                }
-                while (cursor.moveToNext());
-            }
-        } finally {
-            cursor.close();
-        }
-        return columns;
     }
 }

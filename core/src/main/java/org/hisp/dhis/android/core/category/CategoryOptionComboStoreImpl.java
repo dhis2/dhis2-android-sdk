@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.category;
 
 import android.database.sqlite.SQLiteStatement;
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
@@ -50,7 +50,7 @@ public final class CategoryOptionComboStoreImpl extends IdentifiableObjectStoreI
 
     private CategoryOptionComboStoreImpl(DatabaseAdapter databaseAdapter,
                          SQLStatementWrapper statementWrapper,
-                         SQLStatementBuilder statementBuilder) {
+                         SQLStatementBuilderImpl statementBuilder) {
         super(databaseAdapter, statementWrapper, statementBuilder, BINDER, CategoryOptionCombo::create);
     }
 
@@ -73,7 +73,7 @@ public final class CategoryOptionComboStoreImpl extends IdentifiableObjectStoreI
     };
 
     static CategoryOptionComboStore create(DatabaseAdapter databaseAdapter) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(CategoryOptionComboTableInfo.TABLE_INFO);
+        SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(CategoryOptionComboTableInfo.TABLE_INFO);
         SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);
         return new CategoryOptionComboStoreImpl(databaseAdapter, statementWrapper, statementBuilder);
     }

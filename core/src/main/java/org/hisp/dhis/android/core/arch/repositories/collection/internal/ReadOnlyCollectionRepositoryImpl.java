@@ -27,9 +27,13 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
+import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
+
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
@@ -40,24 +44,20 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore;
 
 import java.util.List;
 import java.util.Map;
 
-import androidx.lifecycle.LiveData;
-import androidx.paging.DataSource;
-import androidx.paging.LivePagedListBuilder;
-import androidx.paging.PagedList;
-
 public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnlyCollectionRepository<M>>
         implements ReadOnlyCollectionRepository<M> {
 
-    private final ObjectStore<M> store;
+    private final ReadableStore<M> store;
     protected final Map<String, ChildrenAppender<M>> childrenAppenders;
     protected final RepositoryScope scope;
     protected final FilterConnectorFactory<R> cf;
 
-    public ReadOnlyCollectionRepositoryImpl(ObjectStore<M> store,
+    public ReadOnlyCollectionRepositoryImpl(ReadableStore<M> store,
                                             Map<String, ChildrenAppender<M>> childrenAppenders,
                                             RepositoryScope scope,
                                             FilterConnectorFactory<R> cf) {
@@ -68,7 +68,8 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     protected List<M> getWithoutChildren() {
-        return store.selectWhere(getWhereClause(), OrderByClauseBuilder.orderByFromItems(scope.orderBy()));
+        return store.selectWhere(getWhereClause(), OrderByClauseBuilder.orderByFromItems(scope.orderBy(),
+                scope.pagingKey()));
     }
 
     @Override

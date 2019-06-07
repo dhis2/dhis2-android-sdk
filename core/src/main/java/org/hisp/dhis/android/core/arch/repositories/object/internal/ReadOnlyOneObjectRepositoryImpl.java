@@ -28,21 +28,21 @@
 package org.hisp.dhis.android.core.arch.repositories.object.internal;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore;
 
 import java.util.Map;
 
 public class ReadOnlyOneObjectRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
         extends ReadOnlyObjectRepositoryImpl<M, R> {
 
-    private final ObjectStore<M> store;
+    private final ReadableStore<M> store;
 
-    public ReadOnlyOneObjectRepositoryImpl(ObjectStore<M> store,
+    public ReadOnlyOneObjectRepositoryImpl(ReadableStore<M> store,
                                            Map<String, ChildrenAppender<M>> childrenAppenders,
                                            RepositoryScope scope,
                                            ObjectRepositoryFactory<R> repositoryFactory) {

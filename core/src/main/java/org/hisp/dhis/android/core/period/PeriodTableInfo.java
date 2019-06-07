@@ -50,11 +50,11 @@ public final class PeriodTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
-        static final String PERIOD_ID = "periodId";
-        static final String PERIOD_TYPE = "periodType";
-        static final String START_DATE = "startDate";
-        static final String END_DATE = "endDate";
+    public static class Columns extends BaseModel.Columns {
+        public static final String PERIOD_ID = "periodId";
+        public static final String PERIOD_TYPE = "periodType";
+        public static final String START_DATE = "startDate";
+        public static final String END_DATE = "endDate";
 
         @Override
         public String[] all() {

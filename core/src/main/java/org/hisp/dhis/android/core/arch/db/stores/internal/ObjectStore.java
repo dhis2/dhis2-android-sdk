@@ -28,33 +28,15 @@
 
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
-import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
+import androidx.annotation.NonNull;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
-
-public interface ObjectStore<M> {
-
-    long insert(@NonNull M m) throws RuntimeException;
-
-    List<M> selectAll();
-
-    List<M> selectWhere(String whereClause);
-
-    List<M> selectWhere(String filterWhereClause, String orderByClause);
-
-    List<M> selectWhere(String filterWhereClause, String orderByClause, int limit);
-
-    List<M> selectRawQuery(String sqlRawQuery);
-
-    M selectOneWhere(String whereClause);
-
-    M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
-
-    M selectFirst();
+public interface ObjectStore<M> extends ReadableStore<M> {
 
     List<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
+
+    long insert(@NonNull M m) throws RuntimeException;
 
     int delete();
 
@@ -63,8 +45,4 @@ public interface ObjectStore<M> {
     boolean deleteWhere(String whereClause);
 
     void deleteWhereIfExists(@NonNull String whereClause) throws RuntimeException;
-
-    int count();
-
-    int countWhere(String whereClause);
 }

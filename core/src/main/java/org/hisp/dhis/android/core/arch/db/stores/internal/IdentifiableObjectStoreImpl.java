@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.arch.db.stores.internal;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
@@ -40,8 +42,6 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
@@ -88,7 +88,7 @@ public class IdentifiableObjectStoreImpl<M extends Model & ObjectWithUidInterfac
     public final void update(@NonNull M m) throws RuntimeException {
         isNull(m);
         binder.bindToStatement(m, statements.update);
-        sqLiteBind(statements.update, builder.columns.length + 1, m.uid());
+        sqLiteBind(statements.update, builder.getColumns().length + 1, m.uid());
         executeUpdateDelete(statements.update);
     }
 

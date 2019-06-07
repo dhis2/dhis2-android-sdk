@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.user;
 
 import android.database.sqlite.SQLiteStatement;
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
@@ -48,7 +48,7 @@ public final class UserCredentialsStoreImpl extends IdentifiableObjectStoreImpl<
 
     private UserCredentialsStoreImpl(DatabaseAdapter databaseAdapter,
                                      SQLStatementWrapper statementWrapper,
-                                     SQLStatementBuilder statementBuilder) {
+                                     SQLStatementBuilderImpl statementBuilder) {
         super(databaseAdapter, statementWrapper, statementBuilder, BINDER, UserCredentials::create);
     }
 
@@ -70,7 +70,7 @@ public final class UserCredentialsStoreImpl extends IdentifiableObjectStoreImpl<
     };
 
     public static UserCredentialsStore create(DatabaseAdapter databaseAdapter) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(UserCredentialsTableInfo.TABLE_INFO);
+        SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(UserCredentialsTableInfo.TABLE_INFO);
         SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);
         return new UserCredentialsStoreImpl(databaseAdapter, statementWrapper, statementBuilder);
     }

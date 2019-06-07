@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.database.Cursor;
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
@@ -74,7 +74,7 @@ public final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<R
     };
 
     private RelationshipItemStoreImpl(DatabaseAdapter databaseAdapter,
-                                      SQLStatementBuilder builder) {
+                                      SQLStatementBuilderImpl builder) {
         super(databaseAdapter, builder, BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, RelationshipItem::create);
     }
 
@@ -160,7 +160,7 @@ public final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<R
     }
 
     public static RelationshipItemStore create(DatabaseAdapter databaseAdapter) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
+        SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(
                 RelationshipItemTableInfo.TABLE_INFO.name(), new RelationshipItemTableInfo.Columns());
 
         return new RelationshipItemStoreImpl(

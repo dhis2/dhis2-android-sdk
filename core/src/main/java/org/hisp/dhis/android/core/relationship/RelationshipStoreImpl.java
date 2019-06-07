@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
@@ -53,7 +53,7 @@ public final class RelationshipStoreImpl extends IdentifiableObjectStoreImpl<Rel
 
     private RelationshipStoreImpl(DatabaseAdapter databaseAdapter,
                                   SQLStatementWrapper statementWrapper,
-                                  SQLStatementBuilder statementBuilder) {
+                                  SQLStatementBuilderImpl statementBuilder) {
         super(databaseAdapter, statementWrapper, statementBuilder, BINDER, Relationship::create);
     }
 
@@ -77,7 +77,7 @@ public final class RelationshipStoreImpl extends IdentifiableObjectStoreImpl<Rel
     }
 
     public static RelationshipStore create(DatabaseAdapter databaseAdapter) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(RelationshipTableInfo.TABLE_INFO);
+        SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(RelationshipTableInfo.TABLE_INFO);
         SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);
         return new RelationshipStoreImpl(databaseAdapter, statementWrapper, statementBuilder);
     }

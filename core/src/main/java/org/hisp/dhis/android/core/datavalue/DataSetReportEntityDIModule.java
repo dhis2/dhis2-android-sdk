@@ -28,23 +28,29 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class DataValueModule {
+@Module
+public final class DataSetReportEntityDIModule {
 
-    public final DataValueCollectionRepository dataValues;
-
-    public final DataSetReportCollectionRepository dataSetReports;
-
-    @Inject
-    DataValueModule(DataValueCollectionRepository dataValueCollectionRepository,
-                    DataSetReportCollectionRepository dataSetReportCollectionRepository) {
-        this.dataValues = dataValueCollectionRepository;
-        this.dataSetReports = dataSetReportCollectionRepository;
+    @Provides
+    @Reusable
+    DataSetReportStore store(DatabaseAdapter databaseAdapter) {
+        return DataSetReportStore.create(databaseAdapter);
     }
+
+    @Provides
+    @Reusable
+    DataSetReportCollectionRepository repository(DataSetReportStore store) {
+        return new DataSetReportCollectionRepository(store,
+                RepositoryScope.empty().toBuilder()
+                        .pagingKey(DataSetReportSQLStatementBuilder.DATAVALUE_ID)
+                        .build());
+    }
+
 }

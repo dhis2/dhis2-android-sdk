@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
@@ -75,7 +75,7 @@ public final class EnrollmentStoreImpl
 
     private EnrollmentStoreImpl(DatabaseAdapter databaseAdapter,
                                 SQLStatementWrapper statementWrapper,
-                                SQLStatementBuilder builder,
+                                SQLStatementBuilderImpl builder,
                                 StatementBinder<Enrollment> binder,
                                 CursorModelFactory<Enrollment> modelFactory) {
         super(databaseAdapter, statementWrapper, builder, binder, modelFactory);
@@ -108,7 +108,7 @@ public final class EnrollmentStoreImpl
     }
 
     public static EnrollmentStore create(DatabaseAdapter databaseAdapter) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
+        SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(
                 EnrollmentTableInfo.TABLE_INFO.name(),
                 EnrollmentTableInfo.TABLE_INFO.columns());
         SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);

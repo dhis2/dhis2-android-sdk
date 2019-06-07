@@ -26,25 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.arch.db.stores.internal;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
 
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.util.List;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class DataValueModule {
+public interface ReadableStore<M> {
 
-    public final DataValueCollectionRepository dataValues;
+    List<M> selectAll();
 
-    public final DataSetReportCollectionRepository dataSetReports;
+    List<M> selectWhere(String whereClause);
 
-    @Inject
-    DataValueModule(DataValueCollectionRepository dataValueCollectionRepository,
-                    DataSetReportCollectionRepository dataSetReportCollectionRepository) {
-        this.dataValues = dataValueCollectionRepository;
-        this.dataSetReports = dataSetReportCollectionRepository;
-    }
+    List<M> selectWhere(String filterWhereClause, String orderByClause);
+
+    List<M> selectWhere(String filterWhereClause, String orderByClause, int limit);
+
+    M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
+
+    List<M> selectRawQuery(String sqlRawQuery);
+
+    M selectOneWhere(String whereClause);
+
+    M selectFirst();
+
+    int count();
+
+    int countWhere(String whereClause);
 }

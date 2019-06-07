@@ -42,7 +42,6 @@ import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
-import java.util.Collections;
 import java.util.List;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
@@ -57,7 +56,8 @@ public class PagingMockIntegrationShould extends BaseMockIntegrationTestFullDisp
 
     private IdentifiableObjectStore<CategoryOption> store;
     private List<CategoryOption> allValues;
-    private String orderByClause = OrderByClauseBuilder.orderByFromItems(Collections.emptyList());
+    private RepositoryScope empty = RepositoryScope.empty();
+    private String orderByClause = OrderByClauseBuilder.orderByFromItems(empty.orderBy(), empty.pagingKey());
 
     @Before
     public void setUp() {

@@ -26,25 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.arch.db.querybuilders.internal;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
 
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+public interface ReadOnlySQLStatementBuilder {
+    String selectWhere(String whereClause);
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class DataValueModule {
+    String selectWhere(String whereClause, int limit);
 
-    public final DataValueCollectionRepository dataValues;
+    String selectWhere(String whereClause, String orderByClause);
 
-    public final DataSetReportCollectionRepository dataSetReports;
+    String selectWhere(String whereClause, String orderByClause, int limit);
 
-    @Inject
-    DataValueModule(DataValueCollectionRepository dataValueCollectionRepository,
-                    DataSetReportCollectionRepository dataSetReportCollectionRepository) {
-        this.dataValues = dataValueCollectionRepository;
-        this.dataSetReports = dataSetReportCollectionRepository;
-    }
+    String selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
+
+    String selectAll();
+
+    String count();
+
+    String countWhere(String whereClause);
 }

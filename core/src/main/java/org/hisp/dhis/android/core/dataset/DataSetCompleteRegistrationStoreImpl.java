@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
@@ -71,15 +71,15 @@ final class DataSetCompleteRegistrationStoreImpl extends
             };
 
     private DataSetCompleteRegistrationStoreImpl(DatabaseAdapter databaseAdapter,
-                                                 SQLStatementBuilder builder) {
+                                                 SQLStatementBuilderImpl builder) {
         super(databaseAdapter, builder, BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER,
                 DataSetCompleteRegistration::create);
     }
 
     public static DataSetCompleteRegistrationStoreImpl create(DatabaseAdapter databaseAdapter) {
 
-        SQLStatementBuilder sqlStatementBuilder =
-                new SQLStatementBuilder(DataSetCompleteRegistrationTableInfo.TABLE_INFO.name(),
+        SQLStatementBuilderImpl sqlStatementBuilder =
+                new SQLStatementBuilderImpl(DataSetCompleteRegistrationTableInfo.TABLE_INFO.name(),
                         DataSetCompleteRegistrationTableInfo.TABLE_INFO.columns());
 
         return new DataSetCompleteRegistrationStoreImpl(databaseAdapter, sqlStatementBuilder);

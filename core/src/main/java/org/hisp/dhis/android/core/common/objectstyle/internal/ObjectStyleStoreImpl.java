@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.common.objectstyle.internal;
 
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
@@ -61,7 +61,7 @@ public final class ObjectStyleStoreImpl extends ObjectWithoutUidStoreImpl<Object
             = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.uid());
 
     private ObjectStyleStoreImpl(DatabaseAdapter databaseAdapter,
-                                 SQLStatementBuilder builder,
+                                 SQLStatementBuilderImpl builder,
                                  StatementBinder<ObjectStyle> binder,
                                  WhereStatementBinder<ObjectStyle> whereUpdateBinder,
                                  WhereStatementBinder<ObjectStyle> whereDeleteBinder,
@@ -83,7 +83,7 @@ public final class ObjectStyleStoreImpl extends ObjectWithoutUidStoreImpl<Object
 
         BaseModel.Columns columns = ObjectStyleTableInfo.TABLE_INFO.columns();
 
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
+        SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(
                 ObjectStyleTableInfo.TABLE_INFO.name(), columns);
 
         return new ObjectStyleStoreImpl(databaseAdapter, statementBuilder, BINDER, WHERE_UPDATE_BINDER,

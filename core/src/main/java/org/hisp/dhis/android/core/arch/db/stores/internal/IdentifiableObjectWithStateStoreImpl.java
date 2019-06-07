@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.arch.db.stores.internal;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
@@ -41,8 +43,6 @@ import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-
-import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.common.BaseDataModel.Columns.STATE;
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
@@ -63,7 +63,7 @@ public class IdentifiableObjectWithStateStoreImpl<M extends Model & ObjectWithUi
                                                 SQLStatementBuilder builder, StatementBinder<M> binder,
                                                 CursorModelFactory<M> modelFactory) {
         super(databaseAdapter, statements, builder, binder, modelFactory);
-        this.tableName = builder.tableName;
+        this.tableName = builder.getTableName();
         String whereUid =  " WHERE " + UID + " =?;";
 
         String setState = "UPDATE " + tableName + " SET " +

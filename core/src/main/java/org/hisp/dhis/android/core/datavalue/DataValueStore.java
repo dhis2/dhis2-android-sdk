@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
@@ -76,14 +76,14 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
         sqLiteBind(sqLiteStatement, 5, dataValue.attributeOptionCombo());
     };
 
-    private DataValueStore(DatabaseAdapter databaseAdapter, SQLStatementBuilder builder) {
+    private DataValueStore(DatabaseAdapter databaseAdapter, SQLStatementBuilderImpl builder) {
         super(databaseAdapter, builder, BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, DataValue::create);
     }
 
     public static DataValueStore create(DatabaseAdapter databaseAdapter) {
 
-        SQLStatementBuilder sqlStatementBuilder =
-                new SQLStatementBuilder(DataValueTableInfo.TABLE_INFO.name(),
+        SQLStatementBuilderImpl sqlStatementBuilder =
+                new SQLStatementBuilderImpl(DataValueTableInfo.TABLE_INFO.name(),
                         DataValueTableInfo.TABLE_INFO.columns());
 
         return new DataValueStore(databaseAdapter, sqlStatementBuilder);

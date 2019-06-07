@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.resource;
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
@@ -53,7 +53,7 @@ public final class ResourceStoreImpl extends ObjectWithoutUidStoreImpl<Resource>
             = (resource, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, resource.resourceType());
 
     private ResourceStoreImpl(DatabaseAdapter databaseAdapter,
-                             SQLStatementBuilder builder) {
+                             SQLStatementBuilderImpl builder) {
         super(databaseAdapter, builder, BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, Resource::create);
     }
 
@@ -77,7 +77,7 @@ public final class ResourceStoreImpl extends ObjectWithoutUidStoreImpl<Resource>
 
     public static ResourceStore create(DatabaseAdapter databaseAdapter) {
 
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(ResourceTableInfo.TABLE_INFO.name(),
+        SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(ResourceTableInfo.TABLE_INFO.name(),
                 ResourceTableInfo.TABLE_INFO.columns());
 
         return new ResourceStoreImpl(databaseAdapter, statementBuilder);

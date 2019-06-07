@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.period;
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
@@ -57,7 +57,7 @@ public final class PeriodStoreImpl extends ObjectWithoutUidStoreImpl<Period> imp
             = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.periodId());
 
     private PeriodStoreImpl(DatabaseAdapter databaseAdapter,
-                            SQLStatementBuilder builder) {
+                            SQLStatementBuilderImpl builder) {
         super(databaseAdapter, builder, BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, Period::create);
     }
 
@@ -84,7 +84,7 @@ public final class PeriodStoreImpl extends ObjectWithoutUidStoreImpl<Period> imp
     }
 
     public static PeriodStore create(DatabaseAdapter databaseAdapter) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
+        SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(
                 PeriodTableInfo.TABLE_INFO.name(), PeriodTableInfo.TABLE_INFO.columns());
 
         return new PeriodStoreImpl(databaseAdapter, statementBuilder);

@@ -25,36 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.option.internal;
 
-package org.hisp.dhis.android.core.option;
-
-import android.database.sqlite.SQLiteStatement;
-
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.option.Option;
+import org.hisp.dhis.android.core.option.OptionSet;
 
-import androidx.annotation.NonNull;
+import javax.inject.Inject;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import dagger.Reusable;
 
-public final class OptionSetStore {
+@Reusable
+final class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet> {
+    private final Handler<Option> optionHandler;
+    private final OrphanCleaner<OptionSet, Option> optionCleaner;
 
-    private OptionSetStore() {}
+    @Inject
+    OptionSetHandler(IdentifiableObjectStore<OptionSet> optionSetStore,
+                     Handler<Option> optionHandler,
+                     OrphanCleaner<OptionSet, Option> optionCleaner) {
+        super(optionSetStore);
+        this.optionHandler = optionHandler;
+        this.optionCleaner = optionCleaner;
+    }
 
-    private static StatementBinder<OptionSet> BINDER = new IdentifiableStatementBinder<OptionSet>() {
-        @Override
-        public void bindToStatement(@NonNull OptionSet o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.version());
-            sqLiteBind(sqLiteStatement, 8, o.valueType());
+    @Override
+    protected void afterObjectHandled(OptionSet optionSet, HandleAction action) {
+        optionHandler.handleMany(optionSet.options());
+        if (action == HandleAction.Update) {
+            optionCleaner.deleteOrphan(optionSet, optionSet.options());
         }
-    };
-
-    public static IdentifiableObjectStore<OptionSet> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, OptionSetTableInfo.TABLE_INFO, BINDER,
-                OptionSet::create);
     }
 }

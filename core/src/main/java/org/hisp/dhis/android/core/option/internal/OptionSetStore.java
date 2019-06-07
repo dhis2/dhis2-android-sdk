@@ -26,23 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import android.database.sqlite.SQLiteStatement;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.option.OptionSetTableInfo;
 
-public interface OptionSetService {
+import androidx.annotation.NonNull;
 
-    @GET("optionSets")
-    Call<Payload<OptionSet>> optionSets(@Query("fields") @Which Fields<OptionSet> fields,
-                                        @Query("filter") @Where Filter<OptionSet, String> filter,
-                                        @Query("filter") @Where Filter<OptionSet, String> lastUpdated,
-                                        @Query("paging") boolean paging);
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+
+public final class OptionSetStore {
+
+    private OptionSetStore() {}
+
+    private static StatementBinder<OptionSet> BINDER = new IdentifiableStatementBinder<OptionSet>() {
+        @Override
+        public void bindToStatement(@NonNull OptionSet o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 7, o.version());
+            sqLiteBind(sqLiteStatement, 8, o.valueType());
+        }
+    };
+
+    public static IdentifiableObjectStore<OptionSet> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, OptionSetTableInfo.TABLE_INFO, BINDER,
+                OptionSet::create);
+    }
 }

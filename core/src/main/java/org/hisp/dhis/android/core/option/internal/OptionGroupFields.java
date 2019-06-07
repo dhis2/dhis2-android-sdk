@@ -26,36 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option.internal;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.option.OptionGroup;
 
-import javax.inject.Inject;
+public final class OptionGroupFields {
 
-import dagger.Reusable;
+    public final static String OPTION_SET = "optionSet";
+    public final static String OPTIONS = "options";
 
-@Reusable
-public final class OptionModuleWiper implements ModuleWiper {
+    private static final FieldsHelper<OptionGroup> fh = new FieldsHelper<>();
 
-    private final TableWiper tableWiper;
+    public static final Field<OptionGroup, String> uid = fh.uid();
 
-    @Inject
-    OptionModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
+    static final Field<OptionGroup, String> lastUpdated = fh.lastUpdated();
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                OptionTableInfo.TABLE_INFO,
-                OptionGroupTableInfo.TABLE_INFO,
-                OptionGroupOptionLinkTableInfo.TABLE_INFO,
-                OptionSetTableInfo.TABLE_INFO);
-    }
+    public static final Fields<OptionGroup> allFields = Fields.<OptionGroup>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.nestedFieldWithUid(OPTION_SET),
+                    fh.nestedFieldWithUid(OPTIONS)
+            ).build();
 
-    @Override
-    public void wipeData() {
-        // No metadata to wipe
+    private OptionGroupFields() {
     }
 }

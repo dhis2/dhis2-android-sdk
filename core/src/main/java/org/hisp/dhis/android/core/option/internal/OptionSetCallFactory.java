@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.option.OptionSet;
 
 import java.util.Set;
 
@@ -46,39 +47,38 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class OptionGroupCallFactory extends UidsCallFactoryImpl<OptionGroup> {
+final class OptionSetCallFactory extends UidsCallFactoryImpl<OptionSet> {
 
     private static final int MAX_UID_LIST_SIZE = 130;
 
-    private final OptionGroupService service;
-    private final Handler<OptionGroup> handler;
+    private final OptionSetService service;
+    private final Handler<OptionSet> handler;
 
     @Inject
-    OptionGroupCallFactory(GenericCallData data,
-                                  APICallExecutor apiCallExecutor,
-                                  OptionGroupService service,
-                                  Handler<OptionGroup> handler) {
+    OptionSetCallFactory(GenericCallData data,
+                                APICallExecutor apiCallExecutor,
+                                OptionSetService service,
+                                Handler<OptionSet> handler) {
         super(data, apiCallExecutor);
         this.service = service;
         this.handler = handler;
     }
 
     @Override
-    protected CallFetcher<OptionGroup> fetcher(Set<String> uids) {
+    protected CallFetcher<OptionSet> fetcher(Set<String> uids) {
 
-        return new UidsNoResourceCallFetcher<OptionGroup>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
+        return new UidsNoResourceCallFetcher<OptionSet>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
 
             @Override
-            protected retrofit2.Call<Payload<OptionGroup>> getCall(UidsQuery query) {
-                return service.optionGroups(OptionGroupFields.allFields,
-                        "optionSet." + OptionSetFields.uid.in(query.uids()).generateString(),
+            protected retrofit2.Call<Payload<OptionSet>> getCall(UidsQuery query) {
+                return service.optionSets(OptionSetFields.allFields, OptionSetFields.uid.in(query.uids()),
                         null, query.paging());
             }
         };
     }
 
     @Override
-    protected CallProcessor<OptionGroup> processor() {
+    protected CallProcessor<OptionSet> processor() {
         return new TransactionalNoResourceSyncCallProcessor<>(
                 data.databaseAdapter(),
                 handler);

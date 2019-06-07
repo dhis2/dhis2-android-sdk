@@ -26,23 +26,46 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
+import org.hisp.dhis.android.core.option.OptionGroup;
+import org.hisp.dhis.android.core.option.OptionSet;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-public interface OptionGroupService {
+@Module(includes = {
+        OptionEntityDIModule.class,
+        OptionGroupEntityDIModule.class,
+        OptionGroupOptionEntityDIModule.class,
+        OptionSetEntityDIModule.class
+})
+public final class OptionPackageDIModule {
 
-    @GET("optionGroups")
-    Call<Payload<OptionGroup>> optionGroups(@Query("fields") @Which Fields<OptionGroup> fields,
-                                            @Query("filter") String dataSetUidsFilter,
-                                            @Query("filter") @Where Filter<OptionGroup, String> lastUpdated,
-                                            @Query("paging") boolean paging);
+    @Provides
+    @Reusable
+    UidsCallFactory<OptionSet> optionSetCallFactory(OptionSetCallFactory impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    OptionSetService optionSetService(Retrofit retrofit) {
+        return retrofit.create(OptionSetService.class);
+    }
+
+    @Provides
+    @Reusable
+    UidsCallFactory<OptionGroup> optionGroupCallFactory(OptionGroupCallFactory impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    OptionGroupService optionGroupService(Retrofit retrofit) {
+        return retrofit.create(OptionGroupService.class);
+    }
 }

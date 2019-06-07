@@ -26,44 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.option.OptionGroupOptionLink;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        OptionEntityDIModule.class,
-        OptionGroupEntityDIModule.class,
-        OptionGroupOptionEntityDIModule.class,
-        OptionSetEntityDIModule.class
-})
-public final class OptionPackageDIModule {
+@Module
+public final class OptionGroupOptionEntityDIModule {
 
     @Provides
     @Reusable
-    UidsCallFactory<OptionSet> optionSetCallFactory(OptionSetCallFactory impl) {
-        return impl;
+    public LinkModelStore<OptionGroupOptionLink> store(DatabaseAdapter databaseAdapter) {
+        return OptionGroupOptionLinkStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    OptionSetService optionSetService(Retrofit retrofit) {
-        return retrofit.create(OptionSetService.class);
-    }
-
-    @Provides
-    @Reusable
-    UidsCallFactory<OptionGroup> optionGroupCallFactory(OptionGroupCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    OptionGroupService optionGroupService(Retrofit retrofit) {
-        return retrofit.create(OptionGroupService.class);
+    public LinkHandler<ObjectWithUid, OptionGroupOptionLink> handler(LinkModelStore<OptionGroupOptionLink> store) {
+        return new LinkHandlerImpl<>(store);
     }
 }

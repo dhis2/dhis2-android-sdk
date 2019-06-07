@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option.internal;
 
 import android.database.sqlite.SQLiteStatement;
 
@@ -37,6 +37,9 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.option.Option;
+import org.hisp.dhis.android.core.option.OptionFields;
+import org.hisp.dhis.android.core.option.OptionTableInfo;
 
 import androidx.annotation.NonNull;
 

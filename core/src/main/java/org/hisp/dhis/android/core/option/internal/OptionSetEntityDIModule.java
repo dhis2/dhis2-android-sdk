@@ -25,37 +25,54 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option;
+
+package org.hisp.dhis.android.core.option.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.option.Option;
+import org.hisp.dhis.android.core.option.OptionFields;
+import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.option.OptionTableInfo;
 
-import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
 
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-final class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet> {
-    private final Handler<Option> optionHandler;
-    private final OrphanCleaner<OptionSet, Option> optionCleaner;
+@Module
+public final class OptionSetEntityDIModule {
 
-    @Inject
-    OptionSetHandler(IdentifiableObjectStore<OptionSet> optionSetStore,
-                     Handler<Option> optionHandler,
-                     OrphanCleaner<OptionSet, Option> optionCleaner) {
-        super(optionSetStore);
-        this.optionHandler = optionHandler;
-        this.optionCleaner = optionCleaner;
+    @Provides
+    @Reusable
+    IdentifiableObjectStore<OptionSet> store(DatabaseAdapter databaseAdapter) {
+        return OptionSetStore.create(databaseAdapter);
     }
 
-    @Override
-    protected void afterObjectHandled(OptionSet optionSet, HandleAction action) {
-        optionHandler.handleMany(optionSet.options());
-        if (action == HandleAction.Update) {
-            optionCleaner.deleteOrphan(optionSet, optionSet.options());
-        }
+    @Provides
+    @Reusable
+    Handler<OptionSet> handler(OptionSetHandler impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    OrphanCleaner<OptionSet, Option> optionCleaner(DatabaseAdapter databaseAdapter) {
+        return new OrphanCleanerImpl<>(OptionTableInfo.TABLE_INFO.name(), OptionFields.OPTION_SET, databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    @SuppressWarnings("PMD.NonStaticInitializer")
+    Map<String, ChildrenAppender<OptionSet>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return new HashMap<String, ChildrenAppender<OptionSet>>() {{
+            put(OptionSetFields.OPTIONS, OptionSetOptionChildrenAppender.create(databaseAdapter));
+        }};
     }
 }

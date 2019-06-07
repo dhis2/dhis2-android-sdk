@@ -26,27 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.option.OptionSet;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-public final class OptionGroupOptionLinkStore {
+public interface OptionSetService {
 
-    private static final StatementBinder<OptionGroupOptionLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.optionGroup());
-        sqLiteBind(sqLiteStatement, 2, o.option());
-    };
-
-    private OptionGroupOptionLinkStore() {}
-
-    public static LinkModelStore<OptionGroupOptionLink> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, OptionGroupOptionLinkTableInfo.TABLE_INFO,
-                OptionGroupOptionLinkTableInfo.Columns.OPTION_GROUP, BINDER, OptionGroupOptionLink::create);
-    }
+    @GET("optionSets")
+    Call<Payload<OptionSet>> optionSets(@Query("fields") @Which Fields<OptionSet> fields,
+                                        @Query("filter") @Where Filter<OptionSet, String> filter,
+                                        @Query("filter") @Where Filter<OptionSet, String> lastUpdated,
+                                        @Query("paging") boolean paging);
 }

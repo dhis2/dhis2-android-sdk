@@ -26,35 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.option.OptionGroupSamples;
+import org.hisp.dhis.android.core.option.OptionGroup;
+import org.hisp.dhis.android.core.option.OptionGroupTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.junit.runner.RunWith;
 
-final class OptionSetOptionChildrenAppender extends ChildrenAppender<OptionSet> {
+import androidx.test.runner.AndroidJUnit4;
 
-    private final SingleParentChildStore<OptionSet, Option> childStore;
+@RunWith(AndroidJUnit4.class)
+public class OptionGroupStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<OptionGroup> {
 
-    private OptionSetOptionChildrenAppender(SingleParentChildStore<OptionSet, Option> childStore) {
-        this.childStore = childStore;
+    public OptionGroupStoreIntegrationShould() {
+        super(OptionGroupStore.create(DatabaseAdapterFactory.get()),
+                OptionGroupTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override
-    protected OptionSet appendChildren(OptionSet optionSet) {
-        OptionSet.Builder builder = optionSet.toBuilder();
-        builder.options(childStore.getChildren(optionSet));
-        return builder.build();
+    protected OptionGroup buildObject() {
+        return OptionGroupSamples.getOptionGroup();
     }
 
-    static ChildrenAppender<OptionSet> create(DatabaseAdapter databaseAdapter) {
-        return new OptionSetOptionChildrenAppender(
-                StoreFactory.singleParentChildStore(
-                        databaseAdapter,
-                        OptionStore.CHILD_PROJECTION,
-                        Option::create
-                )
-        );
+    @Override
+    protected OptionGroup buildObjectToUpdate() {
+        return OptionGroupSamples.getOptionGroup().toBuilder()
+                .name("new_name")
+                .build();
     }
 }

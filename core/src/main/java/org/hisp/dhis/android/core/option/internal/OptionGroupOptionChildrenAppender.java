@@ -25,48 +25,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.option.internal;
 
-package org.hisp.dhis.android.core.option;
-
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.option.OptionGroup;
+import org.hisp.dhis.android.core.option.OptionGroupOptionLinkTableInfo;
+import org.hisp.dhis.android.core.option.OptionTableInfo;
 
-import java.util.Collections;
-import java.util.Map;
+final class OptionGroupOptionChildrenAppender extends ChildrenAppender<OptionGroup> {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+    private static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            OptionTableInfo.TABLE_INFO,
+            OptionGroupOptionLinkTableInfo.Columns.OPTION_GROUP,
+            OptionGroupOptionLinkTableInfo.Columns.OPTION);
 
-@Module
-public final class OptionGroupEntityDIModule {
+    private final ObjectWithUidChildStore<OptionGroup> linkModelChildStore;
 
-    @Provides
-    @Reusable
-    IdentifiableObjectStore<OptionGroup> store(DatabaseAdapter databaseAdapter) {
-        return OptionGroupStore.create(databaseAdapter);
+    private OptionGroupOptionChildrenAppender(ObjectWithUidChildStore<OptionGroup> linkModelChildStore) {
+        this.linkModelChildStore = linkModelChildStore;
     }
 
-    @Provides
-    @Reusable
-    Handler<OptionGroup> handler(OptionGroupHandler impl) {
-        return impl;
+    @Override
+    protected OptionGroup appendChildren(OptionGroup optionGroup) {
+        OptionGroup.Builder builder = optionGroup.toBuilder();
+        builder.options(linkModelChildStore.getChildren(optionGroup));
+        return builder.build();
     }
 
-    @Provides
-    @Reusable
-    CollectionCleaner<OptionGroup> collectionCleaner(DatabaseAdapter databaseAdapter) {
-        return new CollectionCleanerImpl<>(OptionGroupTableInfo.TABLE_INFO.name(), databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<OptionGroup>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singletonMap(OptionGroupFields.OPTIONS,
-                OptionGroupOptionChildrenAppender.create(databaseAdapter));
+    static ChildrenAppender<OptionGroup> create(DatabaseAdapter databaseAdapter) {
+        return new OptionGroupOptionChildrenAppender(
+                StoreFactory.objectWithUidChildStore(
+                        databaseAdapter,
+                        OptionGroupOptionLinkTableInfo.TABLE_INFO,
+                        CHILD_PROJECTION
+                )
+        );
     }
 }

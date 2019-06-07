@@ -25,36 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.option.internal;
 
-package org.hisp.dhis.android.core.option;
-
-import android.database.sqlite.SQLiteStatement;
-
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
+import org.hisp.dhis.android.core.option.Option;
+import org.hisp.dhis.android.core.option.OptionTableInfo;
 
-import androidx.annotation.NonNull;
+import javax.inject.Inject;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import dagger.Reusable;
 
-final class OptionGroupStore {
+@Reusable
+final class OptionHandler extends IdentifiableHandlerImpl<Option> {
+    private final ObjectStyleHandler styleHandler;
 
-    private OptionGroupStore() {}
+    @Inject
+    OptionHandler(IdentifiableObjectStore<Option> optionStore,
+                          ObjectStyleHandler styleHandler) {
+        super(optionStore);
+        this.styleHandler = styleHandler;
+    }
 
-    private static StatementBinder<OptionGroup> BINDER = new IdentifiableStatementBinder<OptionGroup>() {
-        @Override
-        public void bindToStatement(@NonNull OptionGroup o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, UidsHelper.getUidOrNull(o.optionSet()));
-        }
-    };
-
-    public static IdentifiableObjectStore<OptionGroup> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, OptionGroupTableInfo.TABLE_INFO, BINDER,
-                OptionGroup::create);
+    @Override
+    protected void afterObjectHandled(Option option, HandleAction action) {
+        styleHandler.handle(option.style(), option.uid(), OptionTableInfo.TABLE_INFO.name());
     }
 }

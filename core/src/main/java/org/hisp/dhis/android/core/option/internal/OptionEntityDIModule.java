@@ -26,30 +26,48 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleChildrenAppender;
+import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.option.Option;
+import org.hisp.dhis.android.core.option.OptionFields;
+import org.hisp.dhis.android.core.option.OptionTableInfo;
+
+import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class OptionGroupOptionEntityDIModule {
+public final class OptionEntityDIModule {
 
     @Provides
     @Reusable
-    public LinkModelStore<OptionGroupOptionLink> store(DatabaseAdapter databaseAdapter) {
-        return OptionGroupOptionLinkStore.create(databaseAdapter);
+    public IdentifiableObjectStore<Option> store(DatabaseAdapter databaseAdapter) {
+        return OptionStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    public LinkHandler<ObjectWithUid, OptionGroupOptionLink> handler(LinkModelStore<OptionGroupOptionLink> store) {
-        return new LinkHandlerImpl<>(store);
+    Handler<Option> handler(OptionHandler impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<Option>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        ChildrenAppender<Option> childrenAppender = new ObjectStyleChildrenAppender<>(
+                ObjectStyleStoreImpl.create(databaseAdapter),
+                OptionTableInfo.TABLE_INFO
+        );
+
+        return Collections.singletonMap(OptionFields.STYLE, childrenAppender);
     }
 }

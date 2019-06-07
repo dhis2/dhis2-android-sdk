@@ -26,34 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.option.OptionGroup;
 
-final class OptionSetFields {
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-    final static String VERSION = "version";
-    final static String VALUE_TYPE = "valueType";
-    final static String OPTIONS = "options";
+interface OptionGroupService {
 
-    private static final FieldsHelper<OptionSet> fh = new FieldsHelper<>();
-
-    public static final Field<OptionSet, String> uid = fh.uid();
-
-    public static final Field<OptionSet, String> version = Field.create(VERSION);
-
-    public static final Fields<OptionSet> allFields = Fields.<OptionSet>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    version,
-                    fh.<ValueType>field(VALUE_TYPE),
-                    fh.<Option>nestedField(OPTIONS)
-                            .with(OptionFields.allFields)
-            ).build();
-
-    private OptionSetFields() {
-    }
+    @GET("optionGroups")
+    Call<Payload<OptionGroup>> optionGroups(@Query("fields") @Which Fields<OptionGroup> fields,
+                                            @Query("filter") String dataSetUidsFilter,
+                                            @Query("filter") @Where Filter<OptionGroup, String> lastUpdated,
+                                            @Query("paging") boolean paging);
 }

@@ -26,16 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option.internal;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl;
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.option.OptionGroup;
+import org.hisp.dhis.android.core.option.OptionGroupTableInfo;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import dagger.Module;
@@ -43,32 +45,30 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class OptionSetEntityDIModule {
+public final class OptionGroupEntityDIModule {
 
     @Provides
     @Reusable
-    IdentifiableObjectStore<OptionSet> store(DatabaseAdapter databaseAdapter) {
-        return OptionSetStore.create(databaseAdapter);
+    IdentifiableObjectStore<OptionGroup> store(DatabaseAdapter databaseAdapter) {
+        return OptionGroupStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    Handler<OptionSet> handler(OptionSetHandler impl) {
+    Handler<OptionGroup> handler(OptionGroupHandler impl) {
         return impl;
     }
 
     @Provides
     @Reusable
-    OrphanCleaner<OptionSet, Option> optionCleaner(DatabaseAdapter databaseAdapter) {
-        return new OrphanCleanerImpl<>(OptionTableInfo.TABLE_INFO.name(), OptionFields.OPTION_SET, databaseAdapter);
+    CollectionCleaner<OptionGroup> collectionCleaner(DatabaseAdapter databaseAdapter) {
+        return new CollectionCleanerImpl<>(OptionGroupTableInfo.TABLE_INFO.name(), databaseAdapter);
     }
 
     @Provides
     @Reusable
-    @SuppressWarnings("PMD.NonStaticInitializer")
-    Map<String, ChildrenAppender<OptionSet>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return new HashMap<String, ChildrenAppender<OptionSet>>() {{
-            put(OptionSetFields.OPTIONS, OptionSetOptionChildrenAppender.create(databaseAdapter));
-        }};
+    Map<String, ChildrenAppender<OptionGroup>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Collections.singletonMap(OptionGroupFields.OPTIONS,
+                OptionGroupOptionChildrenAppender.create(databaseAdapter));
     }
 }

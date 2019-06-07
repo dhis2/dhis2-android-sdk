@@ -26,45 +26,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleStoreImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.option.OptionGroupOptionLinkTableInfo;
+import org.hisp.dhis.android.core.option.OptionGroupTableInfo;
+import org.hisp.dhis.android.core.option.OptionSetTableInfo;
+import org.hisp.dhis.android.core.option.OptionTableInfo;
+import org.hisp.dhis.android.core.wipe.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.TableWiper;
 
-import java.util.Collections;
-import java.util.Map;
+import javax.inject.Inject;
 
-import dagger.Module;
-import dagger.Provides;
 import dagger.Reusable;
 
-@Module
-public final class OptionEntityDIModule {
+@Reusable
+public final class OptionModuleWiper implements ModuleWiper {
 
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<Option> store(DatabaseAdapter databaseAdapter) {
-        return OptionStore.create(databaseAdapter);
+    private final TableWiper tableWiper;
+
+    @Inject
+    OptionModuleWiper(TableWiper tableWiper) {
+        this.tableWiper = tableWiper;
     }
 
-    @Provides
-    @Reusable
-    Handler<Option> handler(OptionHandler impl) {
-        return impl;
+    @Override
+    public void wipeMetadata() {
+        tableWiper.wipeTables(
+                OptionTableInfo.TABLE_INFO,
+                OptionGroupTableInfo.TABLE_INFO,
+                OptionGroupOptionLinkTableInfo.TABLE_INFO,
+                OptionSetTableInfo.TABLE_INFO);
     }
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Option>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<Option> childrenAppender = new ObjectStyleChildrenAppender<>(
-                ObjectStyleStoreImpl.create(databaseAdapter),
-                OptionTableInfo.TABLE_INFO
-        );
-
-        return Collections.singletonMap(OptionFields.STYLE, childrenAppender);
+    @Override
+    public void wipeData() {
+        // No metadata to wipe
     }
 }

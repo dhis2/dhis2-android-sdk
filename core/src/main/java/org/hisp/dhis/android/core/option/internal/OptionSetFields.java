@@ -26,32 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option.internal;
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.option.OptionGroupSamples;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.option.Option;
+import org.hisp.dhis.android.core.option.OptionFields;
+import org.hisp.dhis.android.core.option.OptionSet;
 
-import androidx.test.runner.AndroidJUnit4;
+public final class OptionSetFields {
 
-@RunWith(AndroidJUnit4.class)
-public class OptionGroupStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<OptionGroup> {
+    public final static String VERSION = "version";
+    public final static String VALUE_TYPE = "valueType";
+    public final static String OPTIONS = "options";
 
-    public OptionGroupStoreIntegrationShould() {
-        super(OptionGroupStore.create(DatabaseAdapterFactory.get()),
-                OptionGroupTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
-    }
+    private static final FieldsHelper<OptionSet> fh = new FieldsHelper<>();
 
-    @Override
-    protected OptionGroup buildObject() {
-        return OptionGroupSamples.getOptionGroup();
-    }
+    public static final Field<OptionSet, String> uid = fh.uid();
 
-    @Override
-    protected OptionGroup buildObjectToUpdate() {
-        return OptionGroupSamples.getOptionGroup().toBuilder()
-                .name("new_name")
-                .build();
+    public static final Field<OptionSet, String> version = Field.create(VERSION);
+
+    public static final Fields<OptionSet> allFields = Fields.<OptionSet>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    version,
+                    fh.<ValueType>field(VALUE_TYPE),
+                    fh.<Option>nestedField(OPTIONS)
+                            .with(OptionFields.allFields)
+            ).build();
+
+    private OptionSetFields() {
     }
 }

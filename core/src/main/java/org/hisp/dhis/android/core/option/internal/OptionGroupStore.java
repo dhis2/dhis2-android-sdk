@@ -26,30 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import android.database.sqlite.SQLiteStatement;
 
-public final class OptionGroupFields {
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.option.OptionGroup;
+import org.hisp.dhis.android.core.option.OptionGroupTableInfo;
 
-    public final static String OPTION_SET = "optionSet";
-    final static String OPTIONS = "options";
+import androidx.annotation.NonNull;
 
-    private static final FieldsHelper<OptionGroup> fh = new FieldsHelper<>();
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-    public static final Field<OptionGroup, String> uid = fh.uid();
+final class OptionGroupStore {
 
-    static final Field<OptionGroup, String> lastUpdated = fh.lastUpdated();
+    private OptionGroupStore() {}
 
-    public static final Fields<OptionGroup> allFields = Fields.<OptionGroup>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.nestedFieldWithUid(OPTION_SET),
-                    fh.nestedFieldWithUid(OPTIONS)
-            ).build();
+    private static StatementBinder<OptionGroup> BINDER = new IdentifiableStatementBinder<OptionGroup>() {
+        @Override
+        public void bindToStatement(@NonNull OptionGroup o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 7, UidsHelper.getUidOrNull(o.optionSet()));
+        }
+    };
 
-    private OptionGroupFields() {
+    public static IdentifiableObjectStore<OptionGroup> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, OptionGroupTableInfo.TABLE_INFO, BINDER,
+                OptionGroup::create);
     }
 }

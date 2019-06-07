@@ -26,10 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option.internal;
 
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.option.OptionGroupOptionLinkSamples;
+import org.hisp.dhis.android.core.option.OptionGroupOptionLink;
+import org.hisp.dhis.android.core.option.OptionGroupOptionLinkTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.junit.runner.RunWith;
 

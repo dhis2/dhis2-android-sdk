@@ -25,30 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
+package org.hisp.dhis.android.core.option.internal;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.option.OptionGroupOptionLink;
+import org.hisp.dhis.android.core.option.OptionGroupOptionLinkTableInfo;
 
-import dagger.Reusable;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-@Reusable
-final class OptionHandler extends IdentifiableHandlerImpl<Option> {
-    private final ObjectStyleHandler styleHandler;
+public final class OptionGroupOptionLinkStore {
 
-    @Inject
-    OptionHandler(IdentifiableObjectStore<Option> optionStore,
-                          ObjectStyleHandler styleHandler) {
-        super(optionStore);
-        this.styleHandler = styleHandler;
-    }
+    private static final StatementBinder<OptionGroupOptionLink> BINDER
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.optionGroup());
+        sqLiteBind(sqLiteStatement, 2, o.option());
+    };
 
-    @Override
-    protected void afterObjectHandled(Option option, HandleAction action) {
-        styleHandler.handle(option.style(), option.uid(), OptionTableInfo.TABLE_INFO.name());
+    private OptionGroupOptionLinkStore() {}
+
+    public static LinkModelStore<OptionGroupOptionLink> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkModelStore(databaseAdapter, OptionGroupOptionLinkTableInfo.TABLE_INFO,
+                OptionGroupOptionLinkTableInfo.Columns.OPTION_GROUP, BINDER, OptionGroupOptionLink::create);
     }
 }

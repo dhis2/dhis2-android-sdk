@@ -25,34 +25,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore;
+package org.hisp.dhis.android.core.option.internal;
+
+import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.option.Option;
+import org.hisp.dhis.android.core.option.OptionSet;
 
-final class OptionGroupOptionChildrenAppender extends ChildrenAppender<OptionGroup> {
+final class OptionSetOptionChildrenAppender extends ChildrenAppender<OptionSet> {
 
-    private final ObjectWithUidChildStore<OptionGroup> linkModelChildStore;
+    private final SingleParentChildStore<OptionSet, Option> childStore;
 
-    private OptionGroupOptionChildrenAppender(ObjectWithUidChildStore<OptionGroup> linkModelChildStore) {
-        this.linkModelChildStore = linkModelChildStore;
+    private OptionSetOptionChildrenAppender(SingleParentChildStore<OptionSet, Option> childStore) {
+        this.childStore = childStore;
     }
 
     @Override
-    protected OptionGroup appendChildren(OptionGroup optionGroup) {
-        OptionGroup.Builder builder = optionGroup.toBuilder();
-        builder.options(linkModelChildStore.getChildren(optionGroup));
+    protected OptionSet appendChildren(OptionSet optionSet) {
+        OptionSet.Builder builder = optionSet.toBuilder();
+        builder.options(childStore.getChildren(optionSet));
         return builder.build();
     }
 
-    static ChildrenAppender<OptionGroup> create(DatabaseAdapter databaseAdapter) {
-        return new OptionGroupOptionChildrenAppender(
-                StoreFactory.objectWithUidChildStore(
+    static ChildrenAppender<OptionSet> create(DatabaseAdapter databaseAdapter) {
+        return new OptionSetOptionChildrenAppender(
+                StoreFactory.singleParentChildStore(
                         databaseAdapter,
-                        OptionGroupOptionLinkTableInfo.TABLE_INFO,
-                        OptionGroupOptionLinkTableInfo.CHILD_PROJECTION
+                        OptionStore.CHILD_PROJECTION,
+                        Option::create
                 )
         );
     }

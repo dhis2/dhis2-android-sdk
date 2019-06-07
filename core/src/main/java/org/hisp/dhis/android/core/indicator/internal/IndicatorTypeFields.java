@@ -26,42 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.indicator.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.di.internal.IdentifiableEntityDIModule;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.indicator.IndicatorType;
 
-import java.util.Collections;
-import java.util.Map;
+public final class IndicatorTypeFields {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+    public final static String NUMBER = "number";
+    public final static String FACTOR = "factor";
 
-@Module
-public final class IndicatorEntityDIModule implements IdentifiableEntityDIModule<Indicator> {
+    private static final FieldsHelper<IndicatorType> fh = new FieldsHelper<>();
 
-    @Override
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<Indicator> store(DatabaseAdapter databaseAdapter) {
-        return IndicatorStore.create(databaseAdapter);
-    }
+    public static final Field<IndicatorType, String> uid = fh.uid();
 
-    @Override
-    @Provides
-    @Reusable
-    public Handler<Indicator> handler(IdentifiableObjectStore<Indicator> store) {
-        return new IdentifiableHandlerImpl<>(store);
-    }
+    static final Field<IndicatorType, String> lastUpdated = fh.lastUpdated();
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Indicator>> childrenAppenders() {
-        return Collections.emptyMap();
+    public static final Fields<IndicatorType> allFields = Fields.<IndicatorType>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.<Boolean>field(NUMBER),
+                    fh.<Integer>field(FACTOR)
+            ).build();
+
+    private IndicatorTypeFields() {
     }
 }

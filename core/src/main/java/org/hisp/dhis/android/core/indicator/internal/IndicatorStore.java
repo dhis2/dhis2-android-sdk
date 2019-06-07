@@ -26,27 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.indicator.internal;
 
+import android.database.sqlite.SQLiteStatement;
+
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.indicator.Indicator;
+import org.hisp.dhis.android.core.indicator.IndicatorTableInfo;
+
+import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public final class DataSetIndicatorLinkStore {
+public final class IndicatorStore {
 
-    private static final StatementBinder<DataSetIndicatorLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.dataSet());
-        sqLiteBind(sqLiteStatement, 2, o.indicator());
+    private IndicatorStore() {}
+
+    private static StatementBinder<Indicator> BINDER = new NameableStatementBinder<Indicator>() {
+        @Override
+        public void bindToStatement(@NonNull Indicator o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 11, o.annualized());
+            sqLiteBind(sqLiteStatement, 12, UidsHelper.getUidOrNull(o.indicatorType()));
+            sqLiteBind(sqLiteStatement, 13, o.numerator());
+            sqLiteBind(sqLiteStatement, 14, o.numeratorDescription());
+            sqLiteBind(sqLiteStatement, 15, o.denominator());
+            sqLiteBind(sqLiteStatement, 16, o.denominatorDescription());
+            sqLiteBind(sqLiteStatement, 17, o.url());
+        }
     };
 
-    private DataSetIndicatorLinkStore() {}
-
-    public static LinkModelStore<DataSetIndicatorLink> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, DataSetIndicatorLinkTableInfo.TABLE_INFO,
-                DataSetIndicatorLinkTableInfo.Columns.DATA_SET, BINDER, DataSetIndicatorLink::create);
+    public static IdentifiableObjectStore<Indicator> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, IndicatorTableInfo.TABLE_INFO, BINDER,
+                Indicator::create);
     }
 }

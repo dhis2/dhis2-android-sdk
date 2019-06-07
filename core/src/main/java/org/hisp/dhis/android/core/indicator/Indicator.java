@@ -49,7 +49,7 @@ public abstract class Indicator extends BaseNameableObject implements Model {
 
     @Nullable
     @JsonProperty()
-    abstract Boolean annualized();
+    public abstract Boolean annualized();
 
     @Nullable
     @JsonProperty()
@@ -58,23 +58,23 @@ public abstract class Indicator extends BaseNameableObject implements Model {
 
     @Nullable
     @JsonProperty()
-    abstract String numerator();
+    public abstract String numerator();
 
     @Nullable
     @JsonProperty()
-    abstract String numeratorDescription();
+    public abstract String numeratorDescription();
 
     @Nullable
     @JsonProperty()
-    abstract String denominator();
+    public abstract String denominator();
 
     @Nullable
     @JsonProperty()
-    abstract String denominatorDescription();
+    public abstract String denominatorDescription();
 
     @Nullable
     @JsonProperty()
-    abstract String url();
+    public abstract String url();
 
     public static Builder builder() {
         return new $$AutoValue_Indicator.Builder();

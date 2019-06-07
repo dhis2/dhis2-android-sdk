@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.dataset.Section;
 import org.hisp.dhis.android.core.dataset.SectionFields;
 import org.hisp.dhis.android.core.dataset.SectionTableInfo;
-import org.hisp.dhis.android.core.indicator.DataSetIndicatorChildrenAppender;
+import org.hisp.dhis.android.core.indicator.internal.DataSetIndicatorChildrenAppender;
 
 import java.util.HashMap;
 import java.util.Map;

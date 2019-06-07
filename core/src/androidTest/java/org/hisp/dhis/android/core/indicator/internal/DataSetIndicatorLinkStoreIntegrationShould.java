@@ -26,10 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.indicator.internal;
 
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.indicator.DataSetIndicatorLinkSamples;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.junit.runner.RunWith;
 

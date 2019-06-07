@@ -25,30 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.indicator.internal;
 
-package org.hisp.dhis.android.core.indicator;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.indicator.Indicator;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+public interface IndicatorService {
+    @GET("indicators")
+    Call<Payload<Indicator>> getIndicators(@Query("fields") @Which Fields<Indicator> fields,
+                                           @Query("filter") @Where Filter<Indicator, String> lastUpdated,
+                                           @Query("filter") @Where Filter<Indicator, String> uids,
+                                           @Query("paging") Boolean paging);
 
-@Module
-public final class DataSetIndicatorEntityDIModule {
-
-    @Provides
-    @Reusable
-    LinkModelStore<DataSetIndicatorLink> store(DatabaseAdapter databaseAdapter) {
-        return DataSetIndicatorLinkStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    LinkHandler<Indicator, DataSetIndicatorLink> handler(LinkModelStore<DataSetIndicatorLink> store) {
-        return new LinkHandlerImpl<>(store);
-    }
 }

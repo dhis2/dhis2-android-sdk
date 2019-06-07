@@ -25,16 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.indicator.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo;
+import org.hisp.dhis.android.core.indicator.Indicator;
+import org.hisp.dhis.android.core.indicator.IndicatorTableInfo;
 
 public final class DataSetIndicatorChildrenAppender extends ChildrenAppender<DataSet> {
 
+    private static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            IndicatorTableInfo.TABLE_INFO,
+            DataSetIndicatorLinkTableInfo.Columns.DATA_SET,
+            DataSetIndicatorLinkTableInfo.Columns.INDICATOR);
     private final LinkModelChildStore<DataSet, Indicator> linkModelChildStore;
 
     private DataSetIndicatorChildrenAppender(
@@ -54,7 +62,7 @@ public final class DataSetIndicatorChildrenAppender extends ChildrenAppender<Dat
                 StoreFactory.linkModelChildStore(
                         databaseAdapter,
                         DataSetIndicatorLinkTableInfo.TABLE_INFO,
-                        DataSetIndicatorLinkTableInfo.CHILD_PROJECTION,
+                        CHILD_PROJECTION,
                         Indicator::create)
         );
     }

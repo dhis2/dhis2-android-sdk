@@ -26,40 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.indicator.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink;
+import org.hisp.dhis.android.core.indicator.Indicator;
 
-public final class IndicatorFields {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    final static String ANNUALIZED = "annualized";
-    final static String INDICATOR_TYPE = "indicatorType";
-    final static String NUMERATOR = "numerator";
-    final static String NUMERATOR_DESCRIPTION = "numeratorDescription";
-    final static String DENOMINATOR = "denominator";
-    final static String DENOMINATOR_DESCRIPTION = "denominatorDescription";
-    final static String URL = "url";
+@Module
+public final class DataSetIndicatorEntityDIModule {
 
-    private static final FieldsHelper<Indicator> fh = new FieldsHelper<>();
+    @Provides
+    @Reusable
+    LinkModelStore<DataSetIndicatorLink> store(DatabaseAdapter databaseAdapter) {
+        return DataSetIndicatorLinkStore.create(databaseAdapter);
+    }
 
-    public static final Field<Indicator, String> uid = fh.uid();
-
-    static final Field<Indicator, String> lastUpdated = fh.lastUpdated();
-
-    public static final Fields<Indicator> allFields = Fields.<Indicator>builder()
-            .fields(fh.getNameableFields())
-            .fields(
-                    fh.<Boolean>field(ANNUALIZED),
-                    fh.nestedFieldWithUid(INDICATOR_TYPE),
-                    fh.<String>field(NUMERATOR),
-                    fh.<String>field(NUMERATOR_DESCRIPTION),
-                    fh.<String>field(DENOMINATOR),
-                    fh.<String>field(DENOMINATOR_DESCRIPTION),
-                    fh.<String>field(URL)
-            ).build();
-
-    private IndicatorFields() {
+    @Provides
+    @Reusable
+    LinkHandler<Indicator, DataSetIndicatorLink> handler(LinkModelStore<DataSetIndicatorLink> store) {
+        return new LinkHandlerImpl<>(store);
     }
 }

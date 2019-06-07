@@ -26,35 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.indicator.internal;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.indicator.IndicatorSamples;
+import org.hisp.dhis.android.core.indicator.Indicator;
+import org.hisp.dhis.android.core.indicator.IndicatorTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.junit.runner.RunWith;
 
-import javax.inject.Inject;
+import androidx.test.runner.AndroidJUnit4;
 
-import dagger.Reusable;
+@RunWith(AndroidJUnit4.class)
+public class IndicatorStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Indicator> {
 
-@Reusable
-public final class IndicatorModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    IndicatorModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    public IndicatorStoreIntegrationShould() {
+        super(IndicatorStore.create(DatabaseAdapterFactory.get()), IndicatorTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                IndicatorTableInfo.TABLE_INFO,
-                IndicatorTypeTableInfo.TABLE_INFO,
-                DataSetIndicatorLinkTableInfo.TABLE_INFO);
+    protected Indicator buildObject() {
+        return IndicatorSamples.getIndicator();
     }
 
     @Override
-    public void wipeData() {
-        // No metadata to wipe
+    protected Indicator buildObjectToUpdate() {
+        return IndicatorSamples.getIndicator().toBuilder()
+                .indicatorType(ObjectWithUid.create("new_indicator_type_uid"))
+                .build();
     }
 }

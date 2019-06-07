@@ -26,32 +26,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.indicator.internal;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.indicator.IndicatorSamples;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo;
 
-import androidx.test.runner.AndroidJUnit4;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-@RunWith(AndroidJUnit4.class)
-public class IndicatorStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Indicator> {
+public final class DataSetIndicatorLinkStore {
 
-    public IndicatorStoreIntegrationShould() {
-        super(IndicatorStore.create(DatabaseAdapterFactory.get()), IndicatorTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
-    }
+    private static final StatementBinder<DataSetIndicatorLink> BINDER
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.dataSet());
+        sqLiteBind(sqLiteStatement, 2, o.indicator());
+    };
 
-    @Override
-    protected Indicator buildObject() {
-        return IndicatorSamples.getIndicator();
-    }
+    private DataSetIndicatorLinkStore() {}
 
-    @Override
-    protected Indicator buildObjectToUpdate() {
-        return IndicatorSamples.getIndicator().toBuilder()
-                .indicatorType(ObjectWithUid.create("new_indicator_type_uid"))
-                .build();
+    public static LinkModelStore<DataSetIndicatorLink> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkModelStore(databaseAdapter, DataSetIndicatorLinkTableInfo.TABLE_INFO,
+                DataSetIndicatorLinkTableInfo.Columns.DATA_SET, BINDER, DataSetIndicatorLink::create);
     }
 }

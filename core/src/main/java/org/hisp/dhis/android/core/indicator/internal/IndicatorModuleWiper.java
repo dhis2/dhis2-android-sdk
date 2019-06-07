@@ -26,43 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.indicator.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo;
+import org.hisp.dhis.android.core.indicator.IndicatorTableInfo;
+import org.hisp.dhis.android.core.indicator.IndicatorTypeTableInfo;
+import org.hisp.dhis.android.core.wipe.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.TableWiper;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        DataSetIndicatorEntityDIModule.class,
-        IndicatorEntityDIModule.class,
-        IndicatorTypeEntityDIModule.class
-})
-public final class IndicatorPackageDIModule {
+@Reusable
+public final class IndicatorModuleWiper implements ModuleWiper {
 
-    @Provides
-    @Reusable
-    UidsCallFactory<Indicator> indicatorCallFactory(IndicatorEndpointCallFactory impl) {
-        return impl;
+    private final TableWiper tableWiper;
+
+    @Inject
+    IndicatorModuleWiper(TableWiper tableWiper) {
+        this.tableWiper = tableWiper;
     }
 
-    @Provides
-    @Reusable
-    UidsCallFactory<IndicatorType> indicatorTypeCallFactory(IndicatorTypeEndpointCallFactory impl) {
-        return impl;
+    @Override
+    public void wipeMetadata() {
+        tableWiper.wipeTables(
+                IndicatorTableInfo.TABLE_INFO,
+                IndicatorTypeTableInfo.TABLE_INFO,
+                DataSetIndicatorLinkTableInfo.TABLE_INFO);
     }
 
-    @Provides
-    @Reusable
-    IndicatorService indicatorService(Retrofit retrofit) {
-        return retrofit.create(IndicatorService.class);
-    }
-
-    @Provides
-    @Reusable
-    IndicatorTypeService indicatorTypeService(Retrofit retrofit) {
-        return retrofit.create(IndicatorTypeService.class);
+    @Override
+    public void wipeData() {
+        // No metadata to wipe
     }
 }

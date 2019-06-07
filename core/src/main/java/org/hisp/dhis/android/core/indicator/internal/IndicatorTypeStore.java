@@ -26,41 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.indicator.internal;
 
 import android.database.sqlite.SQLiteStatement;
 
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.indicator.IndicatorType;
+import org.hisp.dhis.android.core.indicator.IndicatorTypeTableInfo;
 
 import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public final class IndicatorStore {
+public final class IndicatorTypeStore {
 
-    private IndicatorStore() {}
+    private IndicatorTypeStore() {}
 
-    private static StatementBinder<Indicator> BINDER = new NameableStatementBinder<Indicator>() {
+    private static StatementBinder<IndicatorType> BINDER = new IdentifiableStatementBinder<IndicatorType>() {
         @Override
-        public void bindToStatement(@NonNull Indicator o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull IndicatorType o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 11, o.annualized());
-            sqLiteBind(sqLiteStatement, 12, UidsHelper.getUidOrNull(o.indicatorType()));
-            sqLiteBind(sqLiteStatement, 13, o.numerator());
-            sqLiteBind(sqLiteStatement, 14, o.numeratorDescription());
-            sqLiteBind(sqLiteStatement, 15, o.denominator());
-            sqLiteBind(sqLiteStatement, 16, o.denominatorDescription());
-            sqLiteBind(sqLiteStatement, 17, o.url());
+            sqLiteBind(sqLiteStatement, 7, o.number());
+            sqLiteBind(sqLiteStatement, 8, o.factor());
         }
     };
 
-    public static IdentifiableObjectStore<Indicator> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, IndicatorTableInfo.TABLE_INFO, BINDER,
-                Indicator::create);
+    public static IdentifiableObjectStore<IndicatorType> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, IndicatorTypeTableInfo.TABLE_INFO, BINDER,
+                IndicatorType::create);
     }
 }

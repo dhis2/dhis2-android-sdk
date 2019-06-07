@@ -26,30 +26,45 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.indicator.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
+import org.hisp.dhis.android.core.indicator.Indicator;
+import org.hisp.dhis.android.core.indicator.IndicatorType;
 
-public final class IndicatorTypeFields {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-    final static String NUMBER = "number";
-    final static String FACTOR = "factor";
+@Module(includes = {
+        DataSetIndicatorEntityDIModule.class,
+        IndicatorEntityDIModule.class,
+        IndicatorTypeEntityDIModule.class
+})
+public final class IndicatorPackageDIModule {
 
-    private static final FieldsHelper<IndicatorType> fh = new FieldsHelper<>();
+    @Provides
+    @Reusable
+    UidsCallFactory<Indicator> indicatorCallFactory(IndicatorEndpointCallFactory impl) {
+        return impl;
+    }
 
-    public static final Field<IndicatorType, String> uid = fh.uid();
+    @Provides
+    @Reusable
+    UidsCallFactory<IndicatorType> indicatorTypeCallFactory(IndicatorTypeEndpointCallFactory impl) {
+        return impl;
+    }
 
-    static final Field<IndicatorType, String> lastUpdated = fh.lastUpdated();
+    @Provides
+    @Reusable
+    IndicatorService indicatorService(Retrofit retrofit) {
+        return retrofit.create(IndicatorService.class);
+    }
 
-    public static final Fields<IndicatorType> allFields = Fields.<IndicatorType>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<Boolean>field(NUMBER),
-                    fh.<Integer>field(FACTOR)
-            ).build();
-
-    private IndicatorTypeFields() {
+    @Provides
+    @Reusable
+    IndicatorTypeService indicatorTypeService(Retrofit retrofit) {
+        return retrofit.create(IndicatorTypeService.class);
     }
 }

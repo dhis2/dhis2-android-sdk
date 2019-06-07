@@ -25,43 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.indicator.internal;
 
-package org.hisp.dhis.android.core.indicator;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.indicator.IndicatorType;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.di.internal.IdentifiableEntityDIModule;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-import java.util.Collections;
-import java.util.Map;
+public interface IndicatorTypeService {
+    @GET("indicatorTypes")
+    Call<Payload<IndicatorType>> getIndicatorTypes(@Query("fields") @Which Fields<IndicatorType> fields,
+                                                   @Query("filter") @Where Filter<IndicatorType, String> lastUpdated,
+                                                   @Query("filter") @Where Filter<IndicatorType, String> uids,
+                                                   @Query("paging") Boolean paging);
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class IndicatorTypeEntityDIModule implements IdentifiableEntityDIModule<IndicatorType> {
-
-    @Override
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<IndicatorType> store(DatabaseAdapter databaseAdapter) {
-        return IndicatorTypeStore.create(databaseAdapter);
-    }
-
-    @Override
-    @Provides
-    @Reusable
-    public Handler<IndicatorType> handler(IdentifiableObjectStore<IndicatorType> store) {
-        return new IdentifiableHandlerImpl<>(store);
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<IndicatorType>> childrenAppenders() {
-        return Collections.emptyMap();
-    }
 }

@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.indicator.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.indicator.IndicatorType;
 
 import java.util.Set;
 
@@ -46,41 +47,41 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class IndicatorEndpointCallFactory extends UidsCallFactoryImpl<Indicator> {
+final class IndicatorTypeEndpointCallFactory extends UidsCallFactoryImpl<IndicatorType> {
 
-    private final IndicatorService service;
-    private final Handler<Indicator> handler;
+    private static final int MAX_UID_LIST_SIZE = 140;
 
-    private static final int MAX_UID_LIST_SIZE = 100;
+    private final IndicatorTypeService service;
+    private final Handler<IndicatorType> handler;
 
     @Inject
-    IndicatorEndpointCallFactory(GenericCallData data,
-                                        APICallExecutor apiCallExecutor,
-                                        IndicatorService service,
-                                        Handler<Indicator> handler) {
+    IndicatorTypeEndpointCallFactory(GenericCallData data,
+                                            APICallExecutor apiCallExecutor,
+                                            IndicatorTypeService service,
+                                            Handler<IndicatorType> handler) {
         super(data, apiCallExecutor);
         this.service = service;
         this.handler = handler;
     }
 
     @Override
-    protected CallFetcher<Indicator> fetcher(Set<String> uids) {
+    protected CallFetcher<IndicatorType> fetcher(Set<String> uids) {
 
-        return new UidsNoResourceCallFetcher<Indicator>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
+        return new UidsNoResourceCallFetcher<IndicatorType>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
 
             @Override
-            protected retrofit2.Call<Payload<Indicator>> getCall(UidsQuery query) {
-                return service.getIndicators(
-                        IndicatorFields.allFields,
-                        IndicatorFields.lastUpdated.gt(null),
-                        IndicatorFields.uid.in(query.uids()),
+            protected retrofit2.Call<Payload<IndicatorType>> getCall(UidsQuery query) {
+                return service.getIndicatorTypes(
+                        IndicatorTypeFields.allFields,
+                        IndicatorTypeFields.lastUpdated.gt(null),
+                        IndicatorTypeFields.uid.in(query.uids()),
                         Boolean.FALSE);
             }
         };
     }
 
     @Override
-    protected CallProcessor<Indicator> processor() {
+    protected CallProcessor<IndicatorType> processor() {
         return new TransactionalNoResourceSyncCallProcessor<>(
                 data.databaseAdapter(),
                 handler);

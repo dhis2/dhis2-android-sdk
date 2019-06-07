@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkStore;
+import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;

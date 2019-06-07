@@ -28,10 +28,8 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public final class DataSetCompulsoryDataElementOperandLinkTableInfo {
@@ -49,15 +47,10 @@ public final class DataSetCompulsoryDataElementOperandLinkTableInfo {
         }
     };
 
-    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            DataElementOperandTableInfo.TABLE_INFO,
-            Columns.DATA_SET,
-            Columns.DATA_ELEMENT_OPERAND);
-
     private DataSetCompulsoryDataElementOperandLinkTableInfo() {
     }
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
 
         public static final String DATA_SET = "dataSet";
         public static final String DATA_ELEMENT_OPERAND = "dataElementOperand";

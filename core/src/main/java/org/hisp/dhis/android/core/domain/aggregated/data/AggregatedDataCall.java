@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationQuery;
+import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationQuery;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.DataValueQuery;
 import org.hisp.dhis.android.core.period.Period;

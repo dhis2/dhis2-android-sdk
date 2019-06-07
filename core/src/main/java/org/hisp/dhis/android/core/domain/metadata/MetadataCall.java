@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader;
 import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.DataSetModuleDownloader;
+import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.program.Program;

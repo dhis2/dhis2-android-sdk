@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQu
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo;
-import org.hisp.dhis.android.core.dataset.DataSetFields;
+import org.hisp.dhis.android.core.dataset.internal.DataSetFields;
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 

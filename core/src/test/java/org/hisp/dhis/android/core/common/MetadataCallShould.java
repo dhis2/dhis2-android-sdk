@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader;
 import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.DataSetModuleDownloader;
+import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader;
 import org.hisp.dhis.android.core.domain.metadata.MetadataCall;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;

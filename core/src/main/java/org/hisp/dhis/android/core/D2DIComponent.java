@@ -46,7 +46,7 @@ import org.hisp.dhis.android.core.dataapproval.DataApprovalPackageDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.internal.DataElementPackageDIModule;
 import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.DataSetPackageDIModule;
+import org.hisp.dhis.android.core.dataset.internal.DataSetPackageDIModule;
 import org.hisp.dhis.android.core.datavalue.DataValuePackageDIModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
 import org.hisp.dhis.android.core.domain.metadata.MetadataCall;

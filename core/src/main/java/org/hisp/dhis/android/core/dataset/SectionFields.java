@@ -35,13 +35,13 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandFields;
 
 public final class SectionFields {
 
-    final static String DESCRIPTION = "description";
-    final static String SORT_ORDER = "sortOrder";
-    final static String DATA_SET = "dataSet";
-    final static String SHOW_ROW_TOTALS = "showRowTotals";
-    final static String SHOW_COLUMN_TOTALS = "showColumnTotals";
-    final static String DATA_ELEMENTS = "dataElements";
-     final static String GREYED_FIELDS = "greyedFields";
+    public final static String DESCRIPTION = "description";
+    public final static String SORT_ORDER = "sortOrder";
+    public final static String DATA_SET = "dataSet";
+    public final static String SHOW_ROW_TOTALS = "showRowTotals";
+    public final static String SHOW_COLUMN_TOTALS = "showColumnTotals";
+    public final static String DATA_ELEMENTS = "dataElements";
+    public final static String GREYED_FIELDS = "greyedFields";
 
     private static final FieldsHelper<Section> fh = new FieldsHelper<>();
 

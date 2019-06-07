@@ -28,10 +28,8 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public final class SectionDataElementLinkTableInfo {
@@ -49,19 +47,14 @@ public final class SectionDataElementLinkTableInfo {
         }
     };
 
-    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            DataElementTableInfo.TABLE_INFO,
-            Columns.SECTION,
-            Columns.DATA_ELEMENT);
-
     private SectionDataElementLinkTableInfo() {
     }
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
 
-        static final String SECTION = "section";
-        static final String DATA_ELEMENT = "dataElement";
-        static final String SORT_ORDER = "sortOrder";
+        public static final String SECTION = "section";
+        public static final String DATA_ELEMENT = "dataElement";
+        public static final String SORT_ORDER = "sortOrder";
 
         @Override
         public String[] all() {

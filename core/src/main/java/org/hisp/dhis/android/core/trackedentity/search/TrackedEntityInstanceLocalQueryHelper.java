@@ -41,8 +41,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
-import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitFields.PARENT;
-import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitFields.PATH;
+import static org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields.PARENT;
+import static org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields.PATH;
 import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueFields.VALUE;
 
 final class TrackedEntityInstanceLocalQueryHelper {

@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader;
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModuleDownloader;
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramModuleDownloader;
 import org.hisp.dhis.android.core.settings.SystemSettingModuleDownloader;

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.search;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.data.api.OuMode;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
@@ -61,7 +61,7 @@ public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends 
 
         queryBuilder = TrackedEntityInstanceQuery.builder()
                 .paging(true).page(1).pageSize(50)
-                .orgUnits(orgUnits).orgUnitMode(OuMode.ACCESSIBLE);
+                .orgUnits(orgUnits).orgUnitMode(OrganisationUnitMode.ACCESSIBLE);
     }
 
     //@Test

@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.event.internal;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
-import org.hisp.dhis.android.core.data.api.OuMode;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -52,7 +52,7 @@ public abstract class EventQuery extends BaseQuery {
     public abstract String trackedEntityInstance();
 
     @NonNull
-    public abstract OuMode ouMode();
+    public abstract OrganisationUnitMode ouMode();
 
     @Nullable
     public abstract String lastUpdatedStartDate();
@@ -65,7 +65,7 @@ public abstract class EventQuery extends BaseQuery {
                 .page(1)
                 .pageSize(DEFAULT_PAGE_SIZE)
                 .paging(true)
-                .ouMode(OuMode.SELECTED)
+                .ouMode(OrganisationUnitMode.SELECTED)
                 .uIds(Collections.emptyList());
     }
 
@@ -77,7 +77,7 @@ public abstract class EventQuery extends BaseQuery {
 
         public abstract Builder trackedEntityInstance(String trackedEntityInstance);
 
-        public abstract Builder ouMode(OuMode ouMode);
+        public abstract Builder ouMode(OrganisationUnitMode ouMode);
 
         public abstract Builder lastUpdatedStartDate(String lastUpdatedStartDate);
 

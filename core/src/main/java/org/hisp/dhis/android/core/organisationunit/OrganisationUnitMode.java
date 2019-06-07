@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.api;
+package org.hisp.dhis.android.core.organisationunit;
 
 /**
  * Defines the selection of organisation units.
@@ -41,7 +41,7 @@ package org.hisp.dhis.android.core.data.api;
  * @author Lars Helge Overland
  */
 
-public enum OuMode {
+public enum OrganisationUnitMode {
     SELECTED,
     CHILDREN,
     DESCENDANTS,

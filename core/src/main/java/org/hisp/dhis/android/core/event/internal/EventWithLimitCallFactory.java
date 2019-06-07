@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.event.internal;
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.Unit;
-import org.hisp.dhis.android.core.data.api.OuMode;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -108,7 +108,7 @@ public final class EventWithLimitCallFactory {
             organisationUnitUids = getOrgUnitUids();
         } else {
             organisationUnitUids = userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids();
-            eventQueryBuilder.ouMode(OuMode.DESCENDANTS);
+            eventQueryBuilder.ouMode(OrganisationUnitMode.DESCENDANTS);
         }
 
         int eventsCount = 0;

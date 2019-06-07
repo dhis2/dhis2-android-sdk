@@ -32,7 +32,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
-import org.hisp.dhis.android.core.data.api.OuMode;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 import java.util.Collections;
 import java.util.Date;
@@ -50,7 +50,7 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
     public abstract List<String> orgUnits();
 
     @Nullable
-    public abstract OuMode orgUnitMode();
+    public abstract OrganisationUnitMode orgUnitMode();
 
     @Nullable
     public abstract String program();
@@ -95,7 +95,7 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
     public abstract static class Builder extends BaseQuery.Builder<Builder> {
         public abstract Builder orgUnits(List<String> orgUnits);
 
-        public abstract Builder orgUnitMode(OuMode orgUnitMode);
+        public abstract Builder orgUnitMode(OrganisationUnitMode orgUnitMode);
 
         public abstract Builder program(String program);
 

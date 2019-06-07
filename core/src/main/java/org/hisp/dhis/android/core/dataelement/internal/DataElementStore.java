@@ -26,46 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.dataelement.internal;
 
+import android.database.sqlite.SQLiteStatement;
+
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleStoreImpl;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
 
-import java.util.Collections;
-import java.util.Map;
+import androidx.annotation.NonNull;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-@Module
-public final class DataElementEntityDIModule {
+public final class DataElementStore {
 
-    @Provides
-    @Reusable
-    IdentifiableObjectStore<DataElement> store(DatabaseAdapter databaseAdapter) {
-        return DataElementStore.create(databaseAdapter);
-    }
+    private DataElementStore() {}
 
-    @Provides
-    @Reusable
-    Handler<DataElement> handler(DataElementHandler impl) {
-        return impl;
-    }
+    private static StatementBinder<DataElement> BINDER = new NameableStatementBinder<DataElement>() {
+        @Override
+        public void bindToStatement(@NonNull DataElement o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 11, o.valueType());
+            sqLiteBind(sqLiteStatement, 12, o.zeroIsSignificant());
+            sqLiteBind(sqLiteStatement, 13, o.aggregationType());
+            sqLiteBind(sqLiteStatement, 14, o.formName());
+            sqLiteBind(sqLiteStatement, 15, o.domainType());
+            sqLiteBind(sqLiteStatement, 16, o.displayFormName());
+            sqLiteBind(sqLiteStatement, 17, o.optionSetUid());
+            sqLiteBind(sqLiteStatement, 18, o.categoryComboUid());
+        }
+    };
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<DataElement>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<DataElement> childrenAppender =
-                new ObjectStyleChildrenAppender<>(
-                        ObjectStyleStoreImpl.create(databaseAdapter),
-                        DataElementTableInfo.TABLE_INFO
-                );
-
-        return Collections.singletonMap(DataElementFields.STYLE, childrenAppender);
+    public static IdentifiableObjectStore<DataElement> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter,
+                DataElementTableInfo.TABLE_INFO, BINDER, DataElement::create);
     }
 }

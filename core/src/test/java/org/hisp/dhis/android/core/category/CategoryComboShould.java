@@ -25,34 +25,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+package org.hisp.dhis.android.core.category;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-import dagger.Reusable;
+import java.io.IOException;
+import java.text.ParseException;
 
-@Reusable
-public final class DataElementModuleWiper implements ModuleWiper {
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-    private final TableWiper tableWiper;
+public class CategoryComboShould extends BaseObjectShould implements ObjectShould {
 
-    @Inject
-    DataElementModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    public CategoryComboShould() {
+        super("category/category_combo.json");
     }
 
     @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                DataElementTableInfo.TABLE_INFO,
-                DataElementOperandTableInfo.TABLE_INFO);
-    }
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        CategoryCombo combo = objectMapper.readValue(jsonStream, CategoryCombo.class);
 
-    @Override
-    public void wipeData() {
-        // No data to wipe
+        assertThat(combo.uid()).isEqualTo("m2jTvAj5kkm");
+        assertThat(combo.code()).isEqualTo("BIRTHS");
+        assertThat(combo.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.203"));
+        assertThat(combo.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2016-04-18T16:04:34.745"));
+        assertThat(combo.name()).isEqualTo("Births");
+        assertThat(combo.displayName()).isEqualTo("Births");
+        assertThat(combo.isDefault()).isEqualTo(false);
+
+        // categories
+        assertThat(combo.categories().get(0).uid()).isEqualTo("KfdsGBcoiCa");
+        assertThat(combo.categories().get(1).uid()).isEqualTo("cX5k9anHEHd");
     }
 }

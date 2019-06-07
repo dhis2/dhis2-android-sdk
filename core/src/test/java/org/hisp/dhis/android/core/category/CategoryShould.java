@@ -26,9 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
@@ -39,31 +38,33 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class CategoryOptionShould extends BaseObjectShould implements ObjectShould {
+public class CategoryShould extends BaseObjectShould implements ObjectShould {
 
-    public CategoryOptionShould() {
-        super("category/category_option.json");
+    public CategoryShould() {
+        super("category/category.json");
     }
 
     @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        CategoryOption option = objectMapper.readValue(jsonStream, CategoryOption.class);
+        Category category = objectMapper.readValue(jsonStream, Category.class);
 
-        assertThat(option.uid()).isEqualTo("cQYFfHX9oIT");
-        assertThat(option.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2016-08-08T11:17:59.448"));
-        assertThat(option.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2016-08-08T11:17:59.448"));
+        assertThat(category.uid()).isEqualTo("KfdsGBcoiCa");
+        assertThat(category.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.155"));
+        assertThat(category.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2014-11-19T12:58:52.558"));
 
-        assertThat(option.name()).isEqualTo("Green");
-        assertThat(option.shortName()).isEqualTo("Green");
-        assertThat(option.displayName()).isEqualTo("Green");
-        assertThat(option.displayShortName()).isEqualTo("Green");
+        // names
+        assertThat(category.name()).isEqualTo("Births attended by");
+        assertThat(category.displayName()).isEqualTo("Births attended by");
 
-        assertThat(option.startDate()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2016-04-01T00:00:00.000"));
-        assertThat(option.endDate()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2016-05-01T00:00:00.000"));
+        // checking options
+        assertThat(category.categoryOptions().get(0).uid()).isEqualTo("TNYQzTHdoxL");
+        assertThat(category.categoryOptions().get(1).uid()).isEqualTo("TXGfLxZlInA");
+        assertThat(category.categoryOptions().get(2).uid()).isEqualTo("QgULqw9YDu2");
+        assertThat(category.categoryOptions().get(3).uid()).isEqualTo("OjIOxG7vgna");
+        assertThat(category.categoryOptions().get(4).uid()).isEqualTo("uZUnebiT5DI");
+        assertThat(category.categoryOptions().get(5).uid()).isEqualTo("HTHvCohKoXt");
     }
 }

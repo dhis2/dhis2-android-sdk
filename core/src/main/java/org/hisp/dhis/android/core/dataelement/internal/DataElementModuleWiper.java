@@ -25,30 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataelement.internal;
 
-package org.hisp.dhis.android.core.dataelement;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo;
+import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
+import org.hisp.dhis.android.core.wipe.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.TableWiper;
 
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import javax.inject.Inject;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import dagger.Reusable;
 
-public final class DataElementOperandStore {
+@Reusable
+public final class DataElementModuleWiper implements ModuleWiper {
 
-    private static final StatementBinder<DataElementOperand> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.uid());
-        sqLiteBind(sqLiteStatement, 2, UidsHelper.getUidOrNull(o.dataElement()));
-        sqLiteBind(sqLiteStatement, 3, UidsHelper.getUidOrNull(o.categoryOptionCombo()));
-    };
+    private final TableWiper tableWiper;
 
-    private DataElementOperandStore() {}
+    @Inject
+    DataElementModuleWiper(TableWiper tableWiper) {
+        this.tableWiper = tableWiper;
+    }
 
-    public static IdentifiableObjectStore<DataElementOperand> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, DataElementOperandTableInfo.TABLE_INFO,
-                BINDER, DataElementOperand::create);
+    @Override
+    public void wipeMetadata() {
+        tableWiper.wipeTables(
+                DataElementTableInfo.TABLE_INFO,
+                DataElementOperandTableInfo.TABLE_INFO);
+    }
+
+    @Override
+    public void wipeData() {
+        // No data to wipe
     }
 }

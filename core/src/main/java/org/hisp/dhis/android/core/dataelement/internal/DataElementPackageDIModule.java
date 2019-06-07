@@ -25,23 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+package org.hisp.dhis.android.core.dataelement.internal;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 
-interface DataElementService {
-    @GET("dataElements")
-    Call<Payload<DataElement>> getDataElements(@Query("fields") @Which Fields<DataElement> fields,
-                                               @Query("filter") @Where Filter<DataElement, String> uids,
-                                               @Query("filter") @Where Filter<DataElement, String> lastUpdated,
-                                               @Query("filter") String accessReadFilter,
-                                               @Query("paging") Boolean paging);
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
+
+@Module(includes = {
+        DataElementEntityDIModule.class,
+        DataElementOperandEntityDIModule.class
+})
+public final class DataElementPackageDIModule {
+
+    @Provides
+    @Reusable
+    UidsCallFactory<DataElement> dataElementEndpointCallFactory(DataElementEndpointCallFactory impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    DataElementService service(Retrofit retrofit) {
+        return retrofit.create(DataElementService.class);
+    }
 }

@@ -25,27 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.dataelement.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 
-public final class DataElementOperandFields {
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-    static final String DATA_ELEMENT = "dataElement";
-    static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
-
-    private static final FieldsHelper<DataElementOperand> fh = new FieldsHelper<>();
-
-    public static final Fields<DataElementOperand> allFields = Fields.<DataElementOperand>builder()
-            .fields(
-                    fh.uid(),
-                    fh.deleted(),
-                    fh.nestedFieldWithUid(DATA_ELEMENT),
-                    fh.nestedFieldWithUid(CATEGORY_OPTION_COMBO)
-            ).build();
-
-    private DataElementOperandFields() {
-    }
+interface DataElementService {
+    @GET("dataElements")
+    Call<Payload<DataElement>> getDataElements(@Query("fields") @Which Fields<DataElement> fields,
+                                               @Query("filter") @Where Filter<DataElement, String> uids,
+                                               @Query("filter") @Where Filter<DataElement, String> lastUpdated,
+                                               @Query("filter") String accessReadFilter,
+                                               @Query("paging") Boolean paging);
 }

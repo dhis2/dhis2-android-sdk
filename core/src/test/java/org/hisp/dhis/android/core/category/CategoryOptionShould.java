@@ -26,30 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-import javax.inject.Inject;
+import java.io.IOException;
+import java.text.ParseException;
 
-import dagger.Reusable;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-@Reusable
-final class DataElementHandler extends IdentifiableHandlerImpl<DataElement> {
-    private final ObjectStyleHandler styleHandler;
+public class CategoryOptionShould extends BaseObjectShould implements ObjectShould {
 
-    @Inject
-    DataElementHandler(IdentifiableObjectStore<DataElement> dataElementStore,
-                       ObjectStyleHandler styleHandler) {
-        super(dataElementStore);
-        this.styleHandler = styleHandler;
+    public CategoryOptionShould() {
+        super("category/category_option.json");
     }
 
     @Override
-    protected void afterObjectHandled(DataElement dateElement, HandleAction action) {
-        styleHandler.handle(dateElement.style(), dateElement.uid(), DataElementTableInfo.TABLE_INFO.name());
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        CategoryOption option = objectMapper.readValue(jsonStream, CategoryOption.class);
+
+        assertThat(option.uid()).isEqualTo("cQYFfHX9oIT");
+        assertThat(option.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2016-08-08T11:17:59.448"));
+        assertThat(option.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2016-08-08T11:17:59.448"));
+
+        assertThat(option.name()).isEqualTo("Green");
+        assertThat(option.shortName()).isEqualTo("Green");
+        assertThat(option.displayName()).isEqualTo("Green");
+        assertThat(option.displayShortName()).isEqualTo("Green");
+
+        assertThat(option.startDate()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2016-04-01T00:00:00.000"));
+        assertThat(option.endDate()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2016-05-01T00:00:00.000"));
     }
 }

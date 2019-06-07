@@ -26,39 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.dataelement.internal;
 
-import org.hisp.dhis.android.core.category.CategoryOptionCombo;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.dataelement.DataElementOperandSamples;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.junit.runner.RunWith;
 
-import java.io.IOException;
-import java.text.ParseException;
+import androidx.test.runner.AndroidJUnit4;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+@RunWith(AndroidJUnit4.class)
+public class DataElementOperandStoreIntegrationShould
+        extends IdentifiableObjectStoreAbstractIntegrationShould<DataElementOperand> {
 
-public class CategoryOptionComboShould extends BaseObjectShould implements ObjectShould {
-
-    public CategoryOptionComboShould() {
-        super("category/category_option_combo.json");
+    public DataElementOperandStoreIntegrationShould() {
+        super(DataElementOperandStore.create(DatabaseAdapterFactory.get()), DataElementOperandTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get());
     }
 
     @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        CategoryOptionCombo categoryOptionCombo = objectMapper.readValue(jsonStream, CategoryOptionCombo.class);
+    protected DataElementOperand buildObject() {
+        return DataElementOperandSamples.getDataElementOperand();
+    }
 
-        assertThat(categoryOptionCombo.uid()).isEqualTo("S34ULMcHMca");
-        assertThat(categoryOptionCombo.code()).isEqualTo("COC_358963");
-
-        assertThat(categoryOptionCombo.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.319"));
-        assertThat(categoryOptionCombo.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.319"));
-
-        assertThat(categoryOptionCombo.name()).isEqualTo("0-11m");
-        assertThat(categoryOptionCombo.displayName()).isEqualTo("0-11m");
+    @Override
+    protected DataElementOperand buildObjectToUpdate() {
+        return DataElementOperandSamples.getDataElementOperand().toBuilder()
+                .categoryOptionCombo(ObjectWithUid.create("newCombo"))
+                .build();
     }
 }

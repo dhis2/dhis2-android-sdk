@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.dataelement.DataElementOperandFields;
+import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandFields;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 public final class DataSetFields {

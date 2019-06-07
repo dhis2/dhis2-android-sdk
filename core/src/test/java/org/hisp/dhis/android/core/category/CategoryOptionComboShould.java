@@ -26,9 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
@@ -39,29 +38,26 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class CategoryComboShould extends BaseObjectShould implements ObjectShould {
+public class CategoryOptionComboShould extends BaseObjectShould implements ObjectShould {
 
-    public CategoryComboShould() {
-        super("category/category_combo.json");
+    public CategoryOptionComboShould() {
+        super("category/category_option_combo.json");
     }
 
     @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        CategoryCombo combo = objectMapper.readValue(jsonStream, CategoryCombo.class);
+        CategoryOptionCombo categoryOptionCombo = objectMapper.readValue(jsonStream, CategoryOptionCombo.class);
 
-        assertThat(combo.uid()).isEqualTo("m2jTvAj5kkm");
-        assertThat(combo.code()).isEqualTo("BIRTHS");
-        assertThat(combo.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.203"));
-        assertThat(combo.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2016-04-18T16:04:34.745"));
-        assertThat(combo.name()).isEqualTo("Births");
-        assertThat(combo.displayName()).isEqualTo("Births");
-        assertThat(combo.isDefault()).isEqualTo(false);
+        assertThat(categoryOptionCombo.uid()).isEqualTo("S34ULMcHMca");
+        assertThat(categoryOptionCombo.code()).isEqualTo("COC_358963");
 
-        // categories
-        assertThat(combo.categories().get(0).uid()).isEqualTo("KfdsGBcoiCa");
-        assertThat(combo.categories().get(1).uid()).isEqualTo("cX5k9anHEHd");
+        assertThat(categoryOptionCombo.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.319"));
+        assertThat(categoryOptionCombo.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.319"));
+
+        assertThat(categoryOptionCombo.name()).isEqualTo("0-11m");
+        assertThat(categoryOptionCombo.displayName()).isEqualTo("0-11m");
     }
 }

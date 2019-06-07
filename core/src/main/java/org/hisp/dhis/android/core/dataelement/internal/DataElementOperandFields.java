@@ -26,34 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.dataelement.internal;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.dataelement.DataElementOperandSamples;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 
-import androidx.test.runner.AndroidJUnit4;
+public final class DataElementOperandFields {
 
-@RunWith(AndroidJUnit4.class)
-public class DataElementOperandStoreIntegrationShould
-        extends IdentifiableObjectStoreAbstractIntegrationShould<DataElementOperand> {
+    public static final String DATA_ELEMENT = "dataElement";
+    public static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
 
-    public DataElementOperandStoreIntegrationShould() {
-        super(DataElementOperandStore.create(DatabaseAdapterFactory.get()), DataElementOperandTableInfo.TABLE_INFO,
-                DatabaseAdapterFactory.get());
-    }
+    private static final FieldsHelper<DataElementOperand> fh = new FieldsHelper<>();
 
-    @Override
-    protected DataElementOperand buildObject() {
-        return DataElementOperandSamples.getDataElementOperand();
-    }
+    public static final Fields<DataElementOperand> allFields = Fields.<DataElementOperand>builder()
+            .fields(
+                    fh.uid(),
+                    fh.deleted(),
+                    fh.nestedFieldWithUid(DATA_ELEMENT),
+                    fh.nestedFieldWithUid(CATEGORY_OPTION_COMBO)
+            ).build();
 
-    @Override
-    protected DataElementOperand buildObjectToUpdate() {
-        return DataElementOperandSamples.getDataElementOperand().toBuilder()
-                .categoryOptionCombo(ObjectWithUid.create("newCombo"))
-                .build();
+    private DataElementOperandFields() {
     }
 }

@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.dataelement.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
@@ -36,21 +36,22 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 
 public final class DataElementFields {
 
-    final static String VALUE_TYPE = "valueType";
-    final static String ZERO_IS_SIGNIFICANT = "zeroIsSignificant";
-    final static String AGGREGATION_TYPE = "aggregationType";
-    final static String FORM_NAME = "formName";
-    final static String NUMBER_TYPE = "numberType";
-    final static String DOMAIN_TYPE = "domainType";
-    final static String DIMENSION = "dimension";
-    final static String DISPLAY_FORM_NAME = "displayFormName";
-    final static String OPTION_SET = "optionSet";
-    final static String CATEGORY_COMBO = "categoryCombo";
-    final static String STYLE = "style";
-    final static String ACCESS = "access";
+    public final static String VALUE_TYPE = "valueType";
+    public final static String ZERO_IS_SIGNIFICANT = "zeroIsSignificant";
+    public final static String AGGREGATION_TYPE = "aggregationType";
+    public final static String FORM_NAME = "formName";
+    public final static String NUMBER_TYPE = "numberType";
+    public final static String DOMAIN_TYPE = "domainType";
+    public final static String DIMENSION = "dimension";
+    public final static String DISPLAY_FORM_NAME = "displayFormName";
+    public final static String OPTION_SET = "optionSet";
+    public final static String CATEGORY_COMBO = "categoryCombo";
+    public final static String STYLE = "style";
+    public final static String ACCESS = "access";
 
     private static final FieldsHelper<DataElement> fh = new FieldsHelper<>();
 

@@ -26,59 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.dataelement.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import javax.inject.Inject;
 
-@RunWith(JUnit4.class)
-public class DataElementHandlerShould {
+import dagger.Reusable;
 
-    @Mock
-    private IdentifiableObjectStore<DataElement> dataElementStore;
+@Reusable
+final class DataElementHandler extends IdentifiableHandlerImpl<DataElement> {
+    private final ObjectStyleHandler styleHandler;
 
-    @Mock
-    private ObjectStyleHandler styleHandler;
-
-    @Mock
-    private DataElement dataElement;
-
-    @Mock
-    private ObjectWithUid categoryCombo;
-
-    // object to test
-    private DataElementHandler dataElementHandler;
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        dataElementHandler = new DataElementHandler(dataElementStore, styleHandler);
-        when(dataElement.uid()).thenReturn("test_data_element_uid");
-        when(dataElement.categoryCombo()).thenReturn(categoryCombo);
+    @Inject
+    DataElementHandler(IdentifiableObjectStore<DataElement> dataElementStore,
+                       ObjectStyleHandler styleHandler) {
+        super(dataElementStore);
+        this.styleHandler = styleHandler;
     }
 
-    @Test
-    public void call_style_handler() throws Exception {
-        dataElementHandler.handle(dataElement);
-        verify(styleHandler).handle(eq(dataElement.style()), anyString(), anyString());
-    }
-
-    @Test
-    public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<DataElement> genericHandler =
-                new DataElementHandler(null, null);
+    @Override
+    protected void afterObjectHandled(DataElement dateElement, HandleAction action) {
+        styleHandler.handle(dateElement.style(), dateElement.uid(), DataElementTableInfo.TABLE_INFO.name());
     }
 }

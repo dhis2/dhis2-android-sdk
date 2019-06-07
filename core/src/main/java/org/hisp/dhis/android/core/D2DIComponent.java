@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.common.internal.CommonPackageDIModule;
 import org.hisp.dhis.android.core.constant.internal.ConstantPackageDIModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
-import org.hisp.dhis.android.core.dataapproval.DataApprovalPackageDIModule;
+import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalPackageDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.internal.DataElementPackageDIModule;
 import org.hisp.dhis.android.core.dataset.DataSet;

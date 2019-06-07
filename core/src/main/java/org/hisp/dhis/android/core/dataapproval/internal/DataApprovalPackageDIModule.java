@@ -26,26 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataapproval;
+package org.hisp.dhis.android.core.dataapproval.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
+import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
+import org.hisp.dhis.android.core.dataapproval.DataApproval;
 
-import java.util.List;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+@Module(includes = {
+        DataApprovalEntityDIModule.class
+})
 
-interface DataApprovalService {
+public class DataApprovalPackageDIModule {
 
-    @GET("dataApprovals/multiple")
-    Call<List<DataApproval>> getDataApprovals(
-            @Query("fields") @Which Fields<DataApproval> fields,
-            @Query("wf") String workflow,
-            @Query("startDate") String startDate,
-            @Query("endDate") String endDate,
-            @Query("ou") String organisationUnit,
-            @Query("aoc") String attributeOptionCombo
-    );
+    @Provides
+    @Reusable
+    QueryCallFactory<DataApproval, DataApprovalQuery> dataApprovalCallFactory(
+            DataApprovalCallFactory dataApprovalCallFactory) {
+
+        return dataApprovalCallFactory;
+    }
+
+    @Provides
+    @Reusable
+    DataApprovalService dataApprovalService(Retrofit retrofit) {
+        return retrofit.create(DataApprovalService.class);
+    }
+
 }

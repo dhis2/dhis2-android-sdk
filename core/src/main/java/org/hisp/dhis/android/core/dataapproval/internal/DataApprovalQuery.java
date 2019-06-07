@@ -26,33 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataapproval;
+package org.hisp.dhis.android.core.dataapproval.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import com.google.auto.value.AutoValue;
 
-final class DataApprovalFields {
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
 
-    static final String WORKFLOW = "wf";
-    static final String ORGANISATION_UNIT = "ou";
-    static final String PERIOD = "pe";
-    static final String ATTRIBUTE_OPTION_COMBO = "aoc";
-    static final String STATE = "state";
+import java.util.Collection;
+import java.util.Date;
 
-    private static FieldsHelper<DataApproval> fieldsHelper = new FieldsHelper<>();
+@AutoValue
+public abstract class DataApprovalQuery extends BaseQuery {
 
-    static final Field<DataApproval, String> lastUpdated = fieldsHelper.lastUpdated();
+    public abstract Collection<String> workflowsUids();
 
-    static final Fields<DataApproval> allFields = Fields.<DataApproval>builder().fields(
-            fieldsHelper.<String>field(WORKFLOW),
-            fieldsHelper.<String>field(ORGANISATION_UNIT),
-            fieldsHelper.<String>field(PERIOD),
-            fieldsHelper.<String>field(ATTRIBUTE_OPTION_COMBO),
-            fieldsHelper.<DataApprovalState>field(STATE)
-    ).build();
+    public abstract Collection<String> organisationUnistUids();
 
-    private DataApprovalFields() {
+    public abstract Date startDate();
+
+    public abstract Date endDate();
+
+    public abstract Collection<String> attributeOptionCombosUids();
+
+    public static DataApprovalQuery create(Collection<String> workflowsUids,
+                                           Collection<String> organisationUnitsUids,
+                                           Date startDate,
+                                           Date endDate,
+                                           Collection<String> attributeOptionCombosUids) {
+
+        return new AutoValue_DataApprovalQuery(1, BaseQuery.DEFAULT_PAGE_SIZE,
+                false, workflowsUids, organisationUnitsUids,
+                startDate, endDate, attributeOptionCombosUids);
     }
-
 }

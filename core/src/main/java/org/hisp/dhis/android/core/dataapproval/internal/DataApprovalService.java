@@ -26,32 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataapproval;
+package org.hisp.dhis.android.core.dataapproval.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.di.internal.ObjectWithoutUidStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
+import org.hisp.dhis.android.core.dataapproval.DataApproval;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import java.util.List;
 
-@Module
-public class DataApprovalEntityDIModule implements ObjectWithoutUidStoreProvider<DataApproval> {
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-    @Override
-    @Provides
-    @Reusable
-    public ObjectWithoutUidStore<DataApproval> store(DatabaseAdapter databaseAdapter) {
-        return DataApprovalStore.create(databaseAdapter);
-    }
+interface DataApprovalService {
 
-    @Provides
-    @Reusable
-    public Handler<DataApproval> handler(ObjectWithoutUidStore<DataApproval> dataApprovalStore) {
-        return new ObjectWithoutUidHandlerImpl<>(dataApprovalStore);
-    }
-
+    @GET("dataApprovals/multiple")
+    Call<List<DataApproval>> getDataApprovals(
+            @Query("fields") @Which Fields<DataApproval> fields,
+            @Query("wf") String workflow,
+            @Query("startDate") String startDate,
+            @Query("endDate") String endDate,
+            @Query("ou") String organisationUnit,
+            @Query("aoc") String attributeOptionCombo
+    );
 }

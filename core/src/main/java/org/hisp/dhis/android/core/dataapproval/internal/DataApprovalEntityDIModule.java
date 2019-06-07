@@ -26,33 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataapproval;
+package org.hisp.dhis.android.core.dataapproval.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.di.internal.ObjectWithoutUidStoreProvider;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataapproval.DataApproval;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        DataApprovalEntityDIModule.class
-})
+@Module
+public class DataApprovalEntityDIModule implements ObjectWithoutUidStoreProvider<DataApproval> {
 
-public class DataApprovalPackageDIModule {
-
+    @Override
     @Provides
     @Reusable
-    QueryCallFactory<DataApproval, DataApprovalQuery> dataApprovalCallFactory(
-            DataApprovalCallFactory dataApprovalCallFactory) {
-
-        return dataApprovalCallFactory;
+    public ObjectWithoutUidStore<DataApproval> store(DatabaseAdapter databaseAdapter) {
+        return DataApprovalStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    DataApprovalService dataApprovalService(Retrofit retrofit) {
-        return retrofit.create(DataApprovalService.class);
+    public Handler<DataApproval> handler(ObjectWithoutUidStore<DataApproval> dataApprovalStore) {
+        return new ObjectWithoutUidHandlerImpl<>(dataApprovalStore);
     }
 
 }

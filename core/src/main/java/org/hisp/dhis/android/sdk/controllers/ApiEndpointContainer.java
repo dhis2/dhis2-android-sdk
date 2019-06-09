@@ -40,6 +40,7 @@ public final class ApiEndpointContainer {
     public static final String ORGANISATIONUNITS = "organisationUnits";
     public static final String PROGRAMS = "programs";
     public static final String OPTION_SETS = "optionSets";
+    public static final String OPTION = "options";
     public static final String TRACKED_ENTITY_ATTRIBUTES = "trackedEntityAttributes";
     public static final String TRACKED_ENTITY_ATTRIBUTE_GROUPS = "trackedEntityAttributeGroups";
     public static final String CONSTANTS = "constants";

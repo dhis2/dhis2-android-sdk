@@ -41,6 +41,7 @@ import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.EventsPager;
 import org.hisp.dhis.android.sdk.persistence.models.Interpretation;
+import org.hisp.dhis.android.sdk.persistence.models.Option;
 import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
@@ -229,6 +230,9 @@ public interface DhisApi {
 
     @GET(ApiEndpointContainer.OPTION_SETS + "?paging=false")
     Call<Map<String, List<OptionSet>>> getOptionSets(@QueryMap Map<String, String> queryParams);
+
+    @GET(ApiEndpointContainer.OPTION + "?paging=false&fields=code")
+    Call<Map<String, List<Option>>> getOptions(@Query("filter") String filter);
 
     @GET(ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTE_GROUPS + "?paging=false")
     Call<Map<String, List<TrackedEntityAttributeGroup>>> getTrackedEntityAttributeGroups(@QueryMap Map<String, String> queryParams);

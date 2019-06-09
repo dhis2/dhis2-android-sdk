@@ -54,6 +54,8 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.EventsPager;
+import org.hisp.dhis.android.sdk.persistence.models.Option;
+import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship;
@@ -650,13 +652,27 @@ final class TrackerDataLoader extends ResourceController {
         }
 
 
-        //doesnt work with both attribute filter and query
-        if (queryString != null && !queryString.isEmpty() && valueParams.isEmpty()) {
-            QUERY_MAP_FULL.put("query", "LIKE:"
-                    + queryString);//todo: make a map where we can use more than one of each key
-        }
+
         List<TrackedEntityInstance> trackedEntityInstances = null;
+        Map<String, List<Option>> listOptions = null;
         try {
+            listOptions = dhisApi.getOptions("displayName:like:"+queryString).execute().body();
+
+            if(listOptions.get("options").size() > 0) {
+                //queryString = listOptions.get("options").get(0).getCode();
+                String concatQuery = "IN:" + queryString;
+                for(Option option: listOptions.get("options"))
+                    concatQuery = concatQuery + ";" +option.getCode().replace(":", "");
+
+                QUERY_MAP_FULL.put("query", concatQuery.trim());
+            }
+
+            //doesnt work with both attribute filter and query
+            else if (queryString != null && !queryString.isEmpty() && valueParams.isEmpty()) {
+                QUERY_MAP_FULL.put("query", "LIKE:"
+                        + queryString);//todo: make a map where we can use more than one of each key
+            }
+//https://play.dhis2.org/2.29/api/trackedEntityInstances?skipPaging=true&ou=DiszpKrYNg8&filter=name=IN%3AOthers%3B13-Others%3B4-Oral%3A%20Others%3BOthers%3BOthers%3BO-U&program=IpHINAT79UW
             trackedEntityInstances = unwrapResponse(dhisApi
                     .getTrackedEntityInstances(organisationUnitUid,
                             QUERY_MAP_FULL).execute().body(), ApiEndpointContainer.TRACKED_ENTITY_INSTANCES);

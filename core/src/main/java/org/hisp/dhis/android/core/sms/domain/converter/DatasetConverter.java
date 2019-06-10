@@ -16,15 +16,18 @@ import io.reactivex.Single;
 
 public class DatasetConverter extends Converter<List<DataValue>> {
 
+    private final String dataSet;
     private final String orgUnit;
     private final String period;
     private final String attributeOptionComboUid;
 
     public DatasetConverter(LocalDbRepository localDbRepository,
+                            String dataSet,
                             String orgUnit,
                             String period,
                             String attributeOptionComboUid) {
         super(localDbRepository);
+        this.dataSet = dataSet;
         this.orgUnit = orgUnit;
         this.period = period;
         this.attributeOptionComboUid = attributeOptionComboUid;
@@ -38,6 +41,7 @@ public class DatasetConverter extends Converter<List<DataValue>> {
             subm.setUserID(user);
             subm.setOrgUnit(orgUnit);
             subm.setPeriod(period);
+            subm.setDataSet(dataSet);
             subm.setAttributeOptionCombo(attributeOptionComboUid);
             subm.setValues(translateValues(values));
             return subm;

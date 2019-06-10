@@ -49,8 +49,8 @@ public class SmsSubmitCase {
         return convert(new EnrollmentConverter(localDbRepository, enrollmentUid));
     }
 
-    public Single<Integer> convertDataSet(String orgUnit, String period, String attributeOptionComboUid) {
-        return convert(new DatasetConverter(localDbRepository, orgUnit, period, attributeOptionComboUid));
+    public Single<Integer> convertDataSet(String dataSet, String orgUnit, String period, String attributeOptionComboUid) {
+        return convert(new DatasetConverter(localDbRepository, dataSet, orgUnit, period, attributeOptionComboUid));
     }
 
     private Single<Integer> convert(Converter<?> converter) {

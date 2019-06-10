@@ -32,7 +32,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
-import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
+import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;

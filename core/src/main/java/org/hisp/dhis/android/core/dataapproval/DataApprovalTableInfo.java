@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.dataapproval;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalFields;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public class DataApprovalTableInfo {

@@ -33,6 +33,7 @@ import android.content.ContentValues;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 
 import androidx.annotation.NonNull;
 

@@ -36,9 +36,9 @@ import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
 
 public final class OptionFields {
 
-    final static String SORT_ORDER = "sortOrder";
+    public final static String SORT_ORDER = "sortOrder";
     public final static String OPTION_SET = "optionSet";
-    final static String STYLE = "style";
+    public final static String STYLE = "style";
 
     private static final FieldsHelper<Option> fh = new FieldsHelper<>();
 

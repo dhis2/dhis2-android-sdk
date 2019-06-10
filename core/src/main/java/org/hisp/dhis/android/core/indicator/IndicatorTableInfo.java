@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.indicator;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.indicator.internal.IndicatorFields;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public final class IndicatorTableInfo {

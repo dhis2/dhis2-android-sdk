@@ -30,11 +30,7 @@ package org.hisp.dhis.android.core.datavalue;
 
 import android.database.Cursor;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
@@ -44,44 +40,38 @@ import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbStateColumnAdapter;
 import org.hisp.dhis.android.core.period.PeriodType;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 @AutoValue
 public abstract class DataSetReport implements Model {
 
     @NonNull
-    @ColumnName(DataSetReportSQLStatementBuilder.DATASET_UID_ALIAS)
     public abstract String dataSetUid();
 
     @NonNull
-    @ColumnName(DataSetReportSQLStatementBuilder.DATASET_NAME_ALIAS)
     public abstract String dataSetDisplayName();
 
     @NonNull
-    @ColumnName(DataSetReportSQLStatementBuilder.PERIOD_ALIAS)
     public abstract String period();
 
     @NonNull
-    @ColumnName(DataSetReportSQLStatementBuilder.PERIOD_TYPE_ALIAS)
     @ColumnAdapter(DbPeriodTypeColumnAdapter.class)
     public abstract PeriodType periodType();
 
     @NonNull
-    @ColumnName(DataSetReportSQLStatementBuilder.ORGANISATION_UNIT_UID_ALIAS)
     public abstract String organisationUnitUid();
 
     @NonNull
-    @ColumnName(DataSetReportSQLStatementBuilder.ORGANISATION_UNIT_NAME_ALIAS)
     public abstract String organisationUnitDisplayName();
 
     @NonNull
-    @ColumnName(DataSetReportSQLStatementBuilder.ATTRIBUTE_OPTION_COMBO_UID_ALIAS)
     public abstract String attributeOptionComboUid();
 
     @NonNull
-    @ColumnName(DataSetReportSQLStatementBuilder.ATTRIBUTE_OPTION_COMBO_NAME_ALIAS)
     public abstract String attributeOptionComboDisplayName();
 
     @NonNull
-    @ColumnName(DataSetReportSQLStatementBuilder.VALUE_COUNT_ALIAS)
     public abstract Integer valueCount();
 
     @Nullable
@@ -89,7 +79,7 @@ public abstract class DataSetReport implements Model {
     public abstract State state();
 
     @NonNull
-    static DataSetReport create(Cursor cursor) {
+    public static DataSetReport create(Cursor cursor) {
         return AutoValue_DataSetReport.createFromCursor(cursor);
     }
 

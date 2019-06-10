@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -49,11 +48,6 @@ public final class DataSetOrganisationUnitLinkTableInfo {
             return new Columns();
         }
     };
-
-    public static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            DataSetTableInfo.TABLE_INFO,
-            Columns.ORGANISATION_UNIT,
-            Columns.DATA_SET);
 
     private DataSetOrganisationUnitLinkTableInfo() {
     }

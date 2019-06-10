@@ -39,7 +39,10 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.imports.DataValueImportSummary;
+import org.hisp.dhis.android.core.datavalue.internal.DataValueFields;
+import org.hisp.dhis.android.core.datavalue.internal.DataValuePostCall;
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStore;
+import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 
 import java.util.Map;
 import java.util.concurrent.Callable;

@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.legendset.LegendSet;
-import org.hisp.dhis.android.core.legendset.LegendSetFields;
+import org.hisp.dhis.android.core.legendset.internal.LegendSetFields;
 
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
 

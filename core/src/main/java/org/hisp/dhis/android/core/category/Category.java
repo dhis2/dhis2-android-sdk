@@ -76,6 +76,6 @@ public abstract class Category extends BaseIdentifiableObject implements Model {
 
         public abstract Builder dataDimensionType(String dimensionType);
 
-        abstract Category build();
+        public abstract Category build();
     }
 }

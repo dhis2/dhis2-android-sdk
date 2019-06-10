@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity.search;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.data.api.OuMode;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -77,7 +77,7 @@ public class TrackedEntityInstanceQueryCallFactory {
     private List<TrackedEntityInstance> queryTrackedEntityInstances(TrackedEntityInstanceQueryOnline query)
             throws D2Error {
 
-        OuMode mode = query.orgUnitMode();
+        OrganisationUnitMode mode = query.orgUnitMode();
         String orgUnitModeStr = mode == null ? null : mode.toString();
 
         String orgUnits = Utils.joinCollectionWithSeparator(query.orgUnits(), ";");

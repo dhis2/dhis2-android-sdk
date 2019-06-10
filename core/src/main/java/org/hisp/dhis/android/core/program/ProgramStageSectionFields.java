@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementFields;
+import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
 
 public final class ProgramStageSectionFields {
 

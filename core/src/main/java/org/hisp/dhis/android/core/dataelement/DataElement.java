@@ -85,7 +85,7 @@ public abstract class DataElement extends BaseNameableObject
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid categoryCombo();
 
-    String categoryComboUid() {
+    public String categoryComboUid() {
         ObjectWithUid combo = categoryCombo();
         return combo == null ? CategoryCombo.DEFAULT_UID : combo.uid();
     }

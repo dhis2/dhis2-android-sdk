@@ -32,6 +32,7 @@ import android.content.ContentValues;
 
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

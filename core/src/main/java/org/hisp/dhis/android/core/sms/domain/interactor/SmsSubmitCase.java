@@ -114,6 +114,9 @@ public class SmsSubmitCase {
         if (converter instanceof EnrollmentConverter) {
             return LocalDbRepository.SubmissionType.ENROLLMENT;
         }
+        if (converter instanceof DatasetConverter) {
+            return LocalDbRepository.SubmissionType.DATA_SET;
+        }
         return null;
     }
 

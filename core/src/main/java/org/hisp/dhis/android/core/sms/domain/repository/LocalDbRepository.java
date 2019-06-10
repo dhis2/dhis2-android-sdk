@@ -66,6 +66,6 @@ public interface LocalDbRepository {
                                              State state);
 
     enum SubmissionType {
-        SIMPLE_EVENT, TRACKER_EVENT, ENROLLMENT
+        SIMPLE_EVENT, TRACKER_EVENT, ENROLLMENT, DATA_SET
     }
 }

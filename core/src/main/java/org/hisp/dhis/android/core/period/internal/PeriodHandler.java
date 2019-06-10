@@ -26,33 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.period.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.period.internal.PeriodStore;
-import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl;
+import org.hisp.dhis.android.core.period.Period;
 
-import java.util.Collections;
-import java.util.Map;
+import javax.inject.Inject;
 
-import dagger.Module;
-import dagger.Provides;
 import dagger.Reusable;
 
-@Module
-public final class PeriodEntityDIModule {
+@Reusable
+public final class PeriodHandler {
+    private final PeriodStore store;
+    private final ParentPeriodGenerator generator;
 
-    @Provides
-    @Reusable
-    PeriodStore store(DatabaseAdapter databaseAdapter) {
-        return PeriodStoreImpl.create(databaseAdapter);
+    @Inject
+    PeriodHandler(PeriodStore store, ParentPeriodGenerator generator) {
+        this.store = store;
+        this.generator = generator;
     }
 
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Period>> childrenAppenders() {
-        return Collections.emptyMap();
+    public void generateAndPersist() {
+        for (Period period : generator.generatePeriods()) {
+            store.updateOrInsertWhere(period);
+        }
     }
 }

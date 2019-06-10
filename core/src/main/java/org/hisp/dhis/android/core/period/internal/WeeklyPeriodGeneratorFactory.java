@@ -26,33 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.period.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.period.internal.PeriodStore;
-import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl;
+import org.hisp.dhis.android.core.period.PeriodType;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.Calendar;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class PeriodEntityDIModule {
-
-    @Provides
-    @Reusable
-    PeriodStore store(DatabaseAdapter databaseAdapter) {
-        return PeriodStoreImpl.create(databaseAdapter);
+final class WeeklyPeriodGeneratorFactory {
+    private WeeklyPeriodGeneratorFactory() {
     }
 
+    static WeeklyPeriodGenerator weekly(Calendar calendar) {
+        return new WeeklyPeriodGenerator(calendar, PeriodType.Weekly, Calendar.MONDAY, "W");
+    }
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Period>> childrenAppenders() {
-        return Collections.emptyMap();
+    static WeeklyPeriodGenerator wednesday(Calendar calendar) {
+        return new WeeklyPeriodGenerator(calendar, PeriodType.WeeklyWednesday, Calendar.WEDNESDAY, "WedW");
+    }
+
+    static WeeklyPeriodGenerator thursday(Calendar calendar) {
+        return new WeeklyPeriodGenerator(calendar, PeriodType.WeeklyThursday, Calendar.THURSDAY, "ThuW");
+    }
+
+    static WeeklyPeriodGenerator saturday(Calendar calendar) {
+        return new WeeklyPeriodGenerator(calendar, PeriodType.WeeklySaturday, Calendar.SATURDAY, "SatW");
+    }
+
+    static WeeklyPeriodGenerator sunday(Calendar calendar) {
+        return new WeeklyPeriodGenerator(calendar, PeriodType.WeeklySunday, Calendar.SUNDAY, "SunW");
     }
 }

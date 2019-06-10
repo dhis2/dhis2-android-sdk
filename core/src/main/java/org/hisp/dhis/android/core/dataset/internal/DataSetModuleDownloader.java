@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.indicator.IndicatorType;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.period.PeriodHandler;
+import org.hisp.dhis.android.core.period.internal.PeriodHandler;
 
 import java.util.List;
 import java.util.Set;

@@ -26,33 +26,46 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.period.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.period.internal.PeriodStore;
-import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl;
+import org.hisp.dhis.android.core.period.PeriodType;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.Calendar;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+final class NMonthlyPeriodGenerator extends AbstractPeriodGenerator {
 
-@Module
-public final class PeriodEntityDIModule {
+    private final int durationInMonths;
+    private final String idAdditionalString;
+    private final int startMonth;
 
-    @Provides
-    @Reusable
-    PeriodStore store(DatabaseAdapter databaseAdapter) {
-        return PeriodStoreImpl.create(databaseAdapter);
+    NMonthlyPeriodGenerator(Calendar calendar, PeriodType periodType, int durationInMonths,
+                            String idAdditionalString, int startMonth) {
+        super(calendar, "yyyy", periodType);
+        this.durationInMonths = durationInMonths;
+        this.idAdditionalString = idAdditionalString;
+        this.startMonth = startMonth;
     }
 
+    @Override
+    protected void moveToStartOfCurrentPeriod() {
+        calendar.set(Calendar.DATE, 1);
+        int currentMonth = calendar.get(Calendar.MONTH);
+        if (currentMonth < startMonth) {
+            calendar.add(Calendar.YEAR, -1);
+        }
+        int monthsFromStart = currentMonth - startMonth;
+        int startMonth = monthsFromStart - (monthsFromStart % durationInMonths);
+        calendar.set(Calendar.MONTH, startMonth);
+    }
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Period>> childrenAppenders() {
-        return Collections.emptyMap();
+    @Override
+    protected void movePeriods(int number) {
+        calendar.add(Calendar.MONTH, durationInMonths * number);
+    }
+
+    @Override
+    protected String generateId() {
+        int periodNumber = calendar.get(Calendar.MONTH) / durationInMonths + 1;
+        return idFormatter.format(calendar.getTime()) + idAdditionalString + periodNumber;
     }
 }

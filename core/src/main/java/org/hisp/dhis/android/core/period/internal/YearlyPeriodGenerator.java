@@ -26,33 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.period.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.period.internal.PeriodStore;
-import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl;
+import org.hisp.dhis.android.core.period.PeriodType;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.Calendar;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+final class YearlyPeriodGenerator extends AbstractPeriodGenerator {
+    private final int firstMonth;
+    private final String suffix;
 
-@Module
-public final class PeriodEntityDIModule {
-
-    @Provides
-    @Reusable
-    PeriodStore store(DatabaseAdapter databaseAdapter) {
-        return PeriodStoreImpl.create(databaseAdapter);
+    YearlyPeriodGenerator(Calendar calendar, PeriodType periodType, int firstMonth, String suffix) {
+        super(calendar, "yyyy", periodType);
+        this.firstMonth = firstMonth;
+        this.suffix = suffix;
     }
 
+    @Override
+    protected void moveToStartOfCurrentPeriod() {
+        calendar.set(Calendar.DATE, 1);
+        if (calendar.get(Calendar.MONTH) < firstMonth) {
+            calendar.add(Calendar.YEAR, -1);
+        }
+        calendar.set(Calendar.MONTH, firstMonth);
+    }
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Period>> childrenAppenders() {
-        return Collections.emptyMap();
+    @Override
+    protected String generateId() {
+        String year = idFormatter.format(calendar.getTime());
+        return year + suffix;
+    }
+
+    @Override
+    protected void movePeriods(int number) {
+        calendar.add(Calendar.YEAR, number);
     }
 }

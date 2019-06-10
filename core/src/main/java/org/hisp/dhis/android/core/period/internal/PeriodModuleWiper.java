@@ -26,33 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.period.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.period.internal.PeriodStore;
-import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl;
+import org.hisp.dhis.android.core.period.PeriodTableInfo;
+import org.hisp.dhis.android.core.wipe.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.TableWiper;
 
-import java.util.Collections;
-import java.util.Map;
+import javax.inject.Inject;
 
-import dagger.Module;
-import dagger.Provides;
 import dagger.Reusable;
 
-@Module
-public final class PeriodEntityDIModule {
+@Reusable
+public final class PeriodModuleWiper implements ModuleWiper {
 
-    @Provides
-    @Reusable
-    PeriodStore store(DatabaseAdapter databaseAdapter) {
-        return PeriodStoreImpl.create(databaseAdapter);
+    private final TableWiper tableWiper;
+
+    @Inject
+    PeriodModuleWiper(TableWiper tableWiper) {
+        this.tableWiper = tableWiper;
     }
 
+    @Override
+    public void wipeMetadata() {
+        tableWiper.wipeTables(PeriodTableInfo.TABLE_INFO);
+    }
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Period>> childrenAppenders() {
-        return Collections.emptyMap();
+    @Override
+    public void wipeData() {
+        // No metadata to wipe
     }
 }

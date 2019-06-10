@@ -26,33 +26,48 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.period.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.period.internal.PeriodStore;
-import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl;
+import org.hisp.dhis.android.core.period.PeriodType;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.Calendar;
+import java.util.Date;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+final class BiWeeklyPeriodGenerator extends AbstractPeriodGenerator {
 
-@Module
-public final class PeriodEntityDIModule {
-
-    @Provides
-    @Reusable
-    PeriodStore store(DatabaseAdapter databaseAdapter) {
-        return PeriodStoreImpl.create(databaseAdapter);
+    BiWeeklyPeriodGenerator(Calendar calendar) {
+        super(calendar, "yyyy", PeriodType.BiWeekly);
     }
 
+    @Override
+    protected void moveToStartOfCurrentPeriod() {
+        calendar.getTime();
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);
+        calendar.setMinimalDaysInFirstWeek(4);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Period>> childrenAppenders() {
-        return Collections.emptyMap();
+        Calendar cal = (Calendar) calendar.clone();
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY + 3);
+        Integer weekOfYear = cal.get(Calendar.WEEK_OF_YEAR);
+        Boolean secondWeekOfBiWeek = weekOfYear % 2 == 0;
+        if (secondWeekOfBiWeek) {
+            calendar.add(Calendar.WEEK_OF_YEAR, -1);
+        }
+    }
+
+    @Override
+    protected void movePeriods(int number) {
+        calendar.add(Calendar.WEEK_OF_YEAR, number * 2);
+    }
+
+    @Override
+    protected String generateId() {
+        Calendar cal = (Calendar) calendar.clone();
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY + 3);
+        Date fourthWeekDay = cal.getTime();
+        String year = idFormatter.format(fourthWeekDay);
+        Integer weekOfYear = cal.get(Calendar.WEEK_OF_YEAR);
+        Integer biWeekOfYear = (int) Math.ceil((double) weekOfYear / 2.0);
+        return year + "BiW" + biWeekOfYear;
     }
 }

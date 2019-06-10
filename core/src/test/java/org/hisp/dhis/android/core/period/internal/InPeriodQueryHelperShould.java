@@ -26,51 +26,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+package org.hisp.dhis.android.core.period.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.CollectionRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.period.DatePeriod;
-import org.hisp.dhis.android.core.period.internal.InPeriodQueryHelper;
-import org.hisp.dhis.android.core.period.Period;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import androidx.annotation.NonNull;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public final class DateFilterConnector<R extends ReadOnlyCollectionRepository<?>> extends BaseFilterConnector<R, Date> {
+@RunWith(JUnit4.class)
+public class InPeriodQueryHelperShould {
 
-    DateFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
-                        RepositoryScope scope,
-                        String key) {
-        super(repositoryFactory, scope, key);
-    }
+    @Test
+    public void generate_one_requested_period() throws Exception {
 
-    public R before(Date value) {
-        return newWithWrappedScope("<", value);
-    }
+        Date date1 = BaseIdentifiableObject.DATE_FORMAT.parse("2001-12-24T12:24:25.203");
+        Date date2 = BaseIdentifiableObject.DATE_FORMAT.parse("2002-12-24T12:24:25.203");
+        Date date3 = BaseIdentifiableObject.DATE_FORMAT.parse("2003-12-24T12:24:25.203");
+        Date date4 = BaseIdentifiableObject.DATE_FORMAT.parse("2004-12-24T12:24:25.203");
+        Date date5 = BaseIdentifiableObject.DATE_FORMAT.parse("2005-12-24T12:24:25.203");
+        Date date6 = BaseIdentifiableObject.DATE_FORMAT.parse("2006-12-24T12:24:25.203");
 
-    public R after(Date value) {
-        return newWithWrappedScope(">", value);
-    }
+        List<DatePeriod> datePeriods = Lists.newArrayList(
+                DatePeriod.create(date1, date2),
+                DatePeriod.create(date3, date4),
+                DatePeriod.create(date5, date6));
 
-    public R inDatePeriods(@NonNull List<DatePeriod> datePeriods) {
-        return newWithWrappedScope(InPeriodQueryHelper.buildInPeriodsQuery(key, datePeriods));
-    }
+        String inPeriodQuery = InPeriodQueryHelper.buildInPeriodsQuery("COL1", datePeriods);
 
-    public R inPeriods(@NonNull List<Period> periods) {
-        List<DatePeriod> datePeriods = new ArrayList<>();
-        for (Period period : periods) {
-            datePeriods.add(DatePeriod.builder().startDate(period.startDate()).endDate(period.endDate()).build());
-        }
-        return inDatePeriods(datePeriods);
-    }
-
-    protected String wrapValue(Date value) {
-        return "'" + BaseIdentifiableObject.DATE_FORMAT.format(value) + "'";
+        assertThat(inPeriodQuery).isEqualTo(
+                "(COL1 >= '2001-12-24T12:24:25.203' AND COL1 <= '2002-12-24T12:24:25.203') OR " +
+                        "(COL1 >= '2003-12-24T12:24:25.203' AND COL1 <= '2004-12-24T12:24:25.203') OR " +
+                        "(COL1 >= '2005-12-24T12:24:25.203' AND COL1 <= '2006-12-24T12:24:25.203')"
+        );
     }
 }

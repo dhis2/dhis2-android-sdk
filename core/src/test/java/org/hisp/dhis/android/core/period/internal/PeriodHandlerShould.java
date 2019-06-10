@@ -26,33 +26,60 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.period.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.period.internal.PeriodStore;
-import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl;
+import org.assertj.core.util.Lists;
+import org.hisp.dhis.android.core.period.Period;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import java.util.Collections;
-import java.util.Map;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+@RunWith(JUnit4.class)
+public class PeriodHandlerShould {
 
-@Module
-public final class PeriodEntityDIModule {
+    @Mock
+    private PeriodStore store;
 
-    @Provides
-    @Reusable
-    PeriodStore store(DatabaseAdapter databaseAdapter) {
-        return PeriodStoreImpl.create(databaseAdapter);
+    @Mock
+    private ParentPeriodGenerator generator;
+
+    @Mock
+    private Period p1;
+
+    @Mock
+    private Period p2;
+
+    // object to test
+    private PeriodHandler periodHandler;
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        periodHandler = new PeriodHandler(store, generator);
+        when(generator.generatePeriods()).thenReturn(Lists.newArrayList(p1, p2));
     }
 
+    @Test
+    public void call_generator_to_generate_periods() throws Exception {
+        periodHandler.generateAndPersist();
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Period>> childrenAppenders() {
-        return Collections.emptyMap();
+        verify(generator).generatePeriods();
+        verifyNoMoreInteractions(generator);
+    }
+
+    @Test
+    public void call_store_to_persist_periods() throws Exception {
+        periodHandler.generateAndPersist();
+
+        verify(store).updateOrInsertWhere(p1);
+        verify(store).updateOrInsertWhere(p2);
+        verifyNoMoreInteractions(store);
     }
 }

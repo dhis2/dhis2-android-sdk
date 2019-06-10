@@ -26,33 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.period.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.period.internal.PeriodStore;
-import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl;
+import java.util.Calendar;
 
-import java.util.Collections;
-import java.util.Map;
+final class NMonthlyPeriodGenerators {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+    final PeriodGenerator biMonthly;
+    final PeriodGenerator quarter;
+    final PeriodGenerator sixMonthly;
+    final PeriodGenerator sixMonthlyApril;
 
-@Module
-public final class PeriodEntityDIModule {
-
-    @Provides
-    @Reusable
-    PeriodStore store(DatabaseAdapter databaseAdapter) {
-        return PeriodStoreImpl.create(databaseAdapter);
+    NMonthlyPeriodGenerators(PeriodGenerator biMonthly,
+                                     PeriodGenerator quarter,
+                                     PeriodGenerator sixMonthly,
+                                     PeriodGenerator sixMonthlyApril) {
+        this.biMonthly = biMonthly;
+        this.quarter = quarter;
+        this.sixMonthly = sixMonthly;
+        this.sixMonthlyApril = sixMonthlyApril;
     }
 
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Period>> childrenAppenders() {
-        return Collections.emptyMap();
+    static NMonthlyPeriodGenerators create(Calendar calendar) {
+        return new NMonthlyPeriodGenerators(
+                NMonthlyPeriodGeneratorFactory.biMonthly(calendar),
+                NMonthlyPeriodGeneratorFactory.quarter(calendar),
+                NMonthlyPeriodGeneratorFactory.sixMonthly(calendar),
+                NMonthlyPeriodGeneratorFactory.sixMonthlyApril(calendar)
+        );
     }
 }

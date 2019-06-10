@@ -26,33 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.period.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.period.internal.PeriodStore;
-import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl;
+import java.util.Calendar;
 
-import java.util.Collections;
-import java.util.Map;
+final class WeeklyPeriodGenerators {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+    final PeriodGenerator weekly;
+    final PeriodGenerator weeklyWednesday;
+    final PeriodGenerator weeklyThursday;
+    final PeriodGenerator weeklySaturday;
+    final PeriodGenerator weeklySunday;
 
-@Module
-public final class PeriodEntityDIModule {
-
-    @Provides
-    @Reusable
-    PeriodStore store(DatabaseAdapter databaseAdapter) {
-        return PeriodStoreImpl.create(databaseAdapter);
+    WeeklyPeriodGenerators(PeriodGenerator weekly,
+                           PeriodGenerator weeklyWednesday,
+                           PeriodGenerator weeklyThursday,
+                           PeriodGenerator weeklySaturday,
+                           PeriodGenerator weeklySunday) {
+        this.weekly = weekly;
+        this.weeklyWednesday = weeklyWednesday;
+        this.weeklyThursday = weeklyThursday;
+        this.weeklySaturday = weeklySaturday;
+        this.weeklySunday = weeklySunday;
     }
 
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Period>> childrenAppenders() {
-        return Collections.emptyMap();
+    static WeeklyPeriodGenerators create(Calendar calendar) {
+        return new WeeklyPeriodGenerators(
+                WeeklyPeriodGeneratorFactory.weekly(calendar),
+                WeeklyPeriodGeneratorFactory.wednesday(calendar),
+                WeeklyPeriodGeneratorFactory.thursday(calendar),
+                WeeklyPeriodGeneratorFactory.saturday(calendar),
+                WeeklyPeriodGeneratorFactory.sunday(calendar)
+        );
     }
 }

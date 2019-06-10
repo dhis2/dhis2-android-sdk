@@ -26,33 +26,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.period.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.period.internal.PeriodStore;
-import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl;
+import org.hisp.dhis.android.core.period.Period;
+import org.hisp.dhis.android.core.period.PeriodType;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.Date;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
-@Module
-public final class PeriodEntityDIModule {
+import io.reactivex.annotations.NonNull;
 
-    @Provides
-    @Reusable
-    PeriodStore store(DatabaseAdapter databaseAdapter) {
-        return PeriodStoreImpl.create(databaseAdapter);
+@Singleton
+public class PeriodHelper {
+
+    private final PeriodStore periodStore;
+
+    @Inject
+    PeriodHelper(PeriodStore periodStore) {
+        this.periodStore = periodStore;
     }
 
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Period>> childrenAppenders() {
-        return Collections.emptyMap();
+    public Period getPeriod(@NonNull PeriodType periodType, @NonNull Date date) {
+        return periodStore.selectPeriodByTypeAndDate(periodType, date);
     }
 }

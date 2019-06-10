@@ -26,51 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+package org.hisp.dhis.android.core.period.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.CollectionRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.period.DatePeriod;
-import org.hisp.dhis.android.core.period.internal.InPeriodQueryHelper;
-import org.hisp.dhis.android.core.period.Period;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import androidx.annotation.NonNull;
+public final class InPeriodQueryHelper {
 
-public final class DateFilterConnector<R extends ReadOnlyCollectionRepository<?>> extends BaseFilterConnector<R, Date> {
-
-    DateFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
-                        RepositoryScope scope,
-                        String key) {
-        super(repositoryFactory, scope, key);
+    private InPeriodQueryHelper(){
     }
 
-    public R before(Date value) {
-        return newWithWrappedScope("<", value);
-    }
+    public static String buildInPeriodsQuery(String key, List<DatePeriod> datePeriods) {
+        WhereClauseBuilder builder = new WhereClauseBuilder();
+        for (int i = 0; i < datePeriods.size(); i++) {
+            builder.appendComplexQuery(buildWhereClause(key, datePeriods, i));
 
-    public R after(Date value) {
-        return newWithWrappedScope(">", value);
-    }
-
-    public R inDatePeriods(@NonNull List<DatePeriod> datePeriods) {
-        return newWithWrappedScope(InPeriodQueryHelper.buildInPeriodsQuery(key, datePeriods));
-    }
-
-    public R inPeriods(@NonNull List<Period> periods) {
-        List<DatePeriod> datePeriods = new ArrayList<>();
-        for (Period period : periods) {
-            datePeriods.add(DatePeriod.builder().startDate(period.startDate()).endDate(period.endDate()).build());
+            if (i != datePeriods.size() - 1) {
+                builder
+                        .appendOperator(" OR ");
+            }
         }
-        return inDatePeriods(datePeriods);
+
+        return builder.build();
     }
 
-    protected String wrapValue(Date value) {
-        return "'" + BaseIdentifiableObject.DATE_FORMAT.format(value) + "'";
+    private static String buildWhereClause(String key, List<DatePeriod> datePeriods, int i) {
+        return new WhereClauseBuilder()
+                .appendKeyGreaterOrEqStringValue(key,
+                        BaseIdentifiableObject.DATE_FORMAT.format(datePeriods.get(i).startDate()))
+                .appendKeyLessThanOrEqStringValue(key,
+                        BaseIdentifiableObject.DATE_FORMAT.format(datePeriods.get(i).endDate()))
+                .build();
     }
 }

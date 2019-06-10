@@ -25,34 +25,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.period.internal;
 
-package org.hisp.dhis.android.core.period;
+import org.hisp.dhis.android.core.period.Period;
+import org.hisp.dhis.android.core.period.PeriodType;
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.period.internal.PeriodStore;
-import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl;
+import java.util.Calendar;
 
-import java.util.Collections;
-import java.util.Map;
+public abstract class PeriodGeneratorBaseShould {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+    protected final PeriodType periodType;
+    protected final Calendar calendar;
+    private final int calendarCode;
+    private final int incrementsAmount;
 
-@Module
-public final class PeriodEntityDIModule {
-
-    @Provides
-    @Reusable
-    PeriodStore store(DatabaseAdapter databaseAdapter) {
-        return PeriodStoreImpl.create(databaseAdapter);
+    PeriodGeneratorBaseShould(PeriodType periodType, int calendarCode) {
+        this(periodType, calendarCode, 1);
     }
 
+    PeriodGeneratorBaseShould(PeriodType periodType, int calendarCode, int incrementsAmount) {
+        this.periodType = periodType;
+        this.calendar = Calendar.getInstance();
+        this.calendarCode = calendarCode;
+        this.incrementsAmount = incrementsAmount;
+    }
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Period>> childrenAppenders() {
-        return Collections.emptyMap();
+    Period generateExpectedPeriod(String id, Calendar cal) {
+        Calendar startCalendar = (Calendar) cal.clone();
+        AbstractPeriodGenerator.setCalendarToStartTimeOfADay(startCalendar);
+        setStartCalendar(startCalendar);
+        Calendar endCalendar = (Calendar) startCalendar.clone();
+        endCalendar.add(calendarCode, incrementsAmount);
+        endCalendar.add(Calendar.MILLISECOND, -1);
+        return Period.builder()
+                .periodId(id)
+                .periodType(periodType)
+                .startDate(startCalendar.getTime())
+                .endDate(endCalendar.getTime())
+                .build();
+    }
+
+    protected void setStartCalendar(Calendar calendar) {
+        // do nothing.
     }
 }

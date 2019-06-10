@@ -26,33 +26,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.period.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.period.internal.PeriodStore;
-import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl;
+import org.hisp.dhis.android.core.period.PeriodType;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.Calendar;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class PeriodEntityDIModule {
-
-    @Provides
-    @Reusable
-    PeriodStore store(DatabaseAdapter databaseAdapter) {
-        return PeriodStoreImpl.create(databaseAdapter);
+final class YearlyPeriodGeneratorFactory {
+    private YearlyPeriodGeneratorFactory() {
     }
 
+    static YearlyPeriodGenerator yearly(Calendar calendar) {
+        return new YearlyPeriodGenerator(calendar, PeriodType.Yearly, Calendar.JANUARY, "");
+    }
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Period>> childrenAppenders() {
-        return Collections.emptyMap();
+    static YearlyPeriodGenerator financialApril(Calendar calendar) {
+        return new YearlyPeriodGenerator(calendar, PeriodType.FinancialApril, Calendar.APRIL, "April");
+    }
+
+    static YearlyPeriodGenerator financialJuly(Calendar calendar) {
+        return new YearlyPeriodGenerator(calendar, PeriodType.FinancialJuly, Calendar.JULY, "July");
+    }
+
+    static YearlyPeriodGenerator financialOct(Calendar calendar) {
+        return new YearlyPeriodGenerator(calendar, PeriodType.FinancialOct, Calendar.OCTOBER, "Oct");
     }
 }

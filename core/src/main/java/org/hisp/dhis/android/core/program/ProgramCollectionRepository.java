@@ -39,6 +39,8 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.program.internal.ProgramFields;
+import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
 
 import java.util.List;
 import java.util.Map;

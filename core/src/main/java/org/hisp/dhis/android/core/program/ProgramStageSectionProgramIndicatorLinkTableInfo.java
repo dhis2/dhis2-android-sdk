@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -48,15 +47,10 @@ public final class ProgramStageSectionProgramIndicatorLinkTableInfo {
         }
     };
 
-    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            ProgramIndicatorTableInfo.TABLE_INFO,
-            Columns.PROGRAM_STAGE_SECTION,
-            Columns.PROGRAM_INDICATOR);
-
     private ProgramStageSectionProgramIndicatorLinkTableInfo() {
     }
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
 
         public static final String PROGRAM_STAGE_SECTION = "programStageSection";
         public static final String PROGRAM_INDICATOR = "programIndicator";

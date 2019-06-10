@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.maintenance.internal.MaintenanceModuleWiper;
 import org.hisp.dhis.android.core.option.internal.OptionModuleWiper;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleWiper;
 import org.hisp.dhis.android.core.period.internal.PeriodModuleWiper;
-import org.hisp.dhis.android.core.program.ProgramModuleWiper;
+import org.hisp.dhis.android.core.program.internal.ProgramModuleWiper;
 import org.hisp.dhis.android.core.relationship.RelationshipModuleWiper;
 import org.hisp.dhis.android.core.resource.ResourceModuleWiper;
 import org.hisp.dhis.android.core.settings.SystemSettingModuleWiper;

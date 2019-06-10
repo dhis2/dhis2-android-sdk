@@ -22,13 +22,22 @@ Maven dependency
 
 # Workflow
 
-Currently, the SDK is primarily oriented to build apps that work most of the time in an offline mode.
+Currently, the SDK is primarily oriented to build apps that work most of the time in an offline mode. In short, the SDK maintains a local database instance that is used to get all the work done (create forms, manage data, ...). From time to time, this local database instance is synchronized with the server.
 
-1. Sync metadata
-2. Download aggregated data
-3. Download tracker data
-4. Download event data
-5. Upload data
+A typical workflow would be like this:
+
+1. Login
+2. Sync metadata: the SDK the metadata so it is available to be used at any time. Metadata sync is totally user-dependent (see [Synchronization](...) for more details)
+3. Download data:
+4. Do the work: at this point the app is able to create the data entry forms and show some existing data. Then the user can edit/delete/update data.
+5. Upload data: from time to time, the work done in the local database instance is sent to the server.
+6. Sync metadata: it is recommended to sync metadata quite often to detect changes in metadata configuration.
+
+## Metadata synchronization
+
+What is synced?
+
+Corrupted configurations
 
 # Module architecture
 

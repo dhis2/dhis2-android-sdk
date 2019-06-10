@@ -5,6 +5,10 @@ import android.content.SharedPreferences;
 
 import org.hisp.dhis.android.core.ObjectMapperFactory;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCollectionRepository;
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationStore;
+import org.hisp.dhis.android.core.datavalue.DataValue;
+import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
@@ -20,6 +24,7 @@ import org.hisp.dhis.smscompression.models.Metadata;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -44,6 +49,9 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     private final MetadataIdsStore metadataIdsStore;
     private final OngoingSubmissionsStore ongoingSubmissionsStore;
+    private final DataValueModule dataValueModule;
+    private final DataSetCompleteRegistrationStore dataSetStore;
+    private final DataSetCompleteRegistrationCollectionRepository dataSetRepository;
 
     @Inject
     public LocalDbRepositoryImpl(Context ctx,
@@ -52,7 +60,10 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
                                  EventModule eventModule,
                                  EnrollmentModule enrollmentModule,
                                  EventStore eventStore,
-                                 EnrollmentStore enrollmentStore) {
+                                 EnrollmentStore enrollmentStore,
+                                 DataValueModule dataValueModule,
+                                 DataSetCompleteRegistrationStore dataSetStore,
+                                 DataSetCompleteRegistrationCollectionRepository dataSetRepository) {
         this.context = ctx;
         this.userModule = userModule;
         this.trackedEntityModule = trackedEntityModule;
@@ -60,6 +71,9 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
         this.enrollmentModule = enrollmentModule;
         this.eventStore = eventStore;
         this.enrollmentStore = enrollmentStore;
+        this.dataValueModule = dataValueModule;
+        this.dataSetStore = dataSetStore;
+        this.dataSetRepository = dataSetRepository;
         metadataIdsStore = new MetadataIdsStore(context);
         ongoingSubmissionsStore = new OngoingSubmissionsStore(context);
     }
@@ -232,5 +246,29 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     @Override
     public Completable removeOngoingSubmission(Integer id) {
         return ongoingSubmissionsStore.removeOngoingSubmission(id);
+    }
+
+    @Override
+    public Single<List<DataValue>> getDataValues(String orgUnit, String period, String attributeOptionComboUid) {
+        return Single.fromCallable(() -> dataValueModule.dataValues
+                .byOrganisationUnitUid().eq(orgUnit)
+                .byPeriod().eq(period)
+                .byAttributeOptionComboUid().eq(attributeOptionComboUid)
+                .get());
+    }
+
+    @Override
+    public Completable updateDataSetSubmissionState(String orgUnit,
+                                                    String period,
+                                                    String attributeOptionComboUid,
+                                                    State state) {
+        return Single.fromCallable(() -> dataSetRepository
+                .byAttributeOptionComboUid().eq(attributeOptionComboUid)
+                .byPeriod().eq(period)
+                .byOrganisationUnitUid().eq(orgUnit)
+                .one().get()
+        ).flatMapCompletable(dataSet ->
+                Completable.fromAction(() -> dataSetStore.setState(dataSet, state))
+        );
     }
 }

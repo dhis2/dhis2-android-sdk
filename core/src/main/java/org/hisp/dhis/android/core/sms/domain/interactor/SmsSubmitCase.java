@@ -5,6 +5,7 @@ import androidx.core.util.Pair;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.sms.domain.converter.Converter;
+import org.hisp.dhis.android.core.sms.domain.converter.DatasetConverter;
 import org.hisp.dhis.android.core.sms.domain.converter.EnrollmentConverter;
 import org.hisp.dhis.android.core.sms.domain.converter.SimpleEventConverter;
 import org.hisp.dhis.android.core.sms.domain.converter.TrackerEventConverter;
@@ -46,6 +47,10 @@ public class SmsSubmitCase {
 
     public Single<Integer> convertEnrollment(String enrollmentUid) {
         return convert(new EnrollmentConverter(localDbRepository, enrollmentUid));
+    }
+
+    public Single<Integer> convertDataSet(String orgUnit, String period, String attributeOptionComboUid) {
+        return convert(new DatasetConverter(localDbRepository, orgUnit, period, attributeOptionComboUid));
     }
 
     private Single<Integer> convert(Converter<?> converter) {

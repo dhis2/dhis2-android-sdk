@@ -1,10 +1,12 @@
 package org.hisp.dhis.android.core.sms.domain.repository;
 
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.smscompression.models.Metadata;
 
+import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Completable;
@@ -53,6 +55,15 @@ public interface LocalDbRepository {
     Completable addOngoingSubmission(Integer id, SubmissionType type);
 
     Completable removeOngoingSubmission(Integer id);
+
+    Single<List<DataValue>> getDataValues(String orgUnit,
+                                          String period,
+                                          String attributeOptionComboUid);
+
+    Completable updateDataSetSubmissionState(String orgUnit,
+                                             String period,
+                                             String attributeOptionComboUid,
+                                             State state);
 
     enum SubmissionType {
         SIMPLE_EVENT, TRACKER_EVENT, ENROLLMENT

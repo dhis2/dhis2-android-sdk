@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.common.State;
 
 import java.util.Collection;
 
-interface DataSetCompleteRegistrationStore extends ObjectWithoutUidStore<DataSetCompleteRegistration> {
+public interface DataSetCompleteRegistrationStore extends ObjectWithoutUidStore<DataSetCompleteRegistration> {
 
     Collection<DataSetCompleteRegistration> getDataSetCompleteRegistrationsWithState(State state);
 

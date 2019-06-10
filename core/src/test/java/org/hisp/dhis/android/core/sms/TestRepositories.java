@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.sms;
 
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
@@ -183,6 +184,16 @@ public class TestRepositories {
 
         @Override
         public Completable removeOngoingSubmission(Integer id) {
+            return null;
+        }
+
+        @Override
+        public Single<List<DataValue>> getDataValues(String orgUnit, String period, String attributeOptionComboUid) {
+            return null;
+        }
+
+        @Override
+        public Completable updateDataSetSubmissionState(String orgUnit, String period, String attributeOptionComboUid, State state) {
             return null;
         }
     }

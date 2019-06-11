@@ -26,50 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
+import org.hisp.dhis.android.core.relationship.RelationshipItem;
 
-public final class RelationshipConstraintTableInfo {
+import java.util.List;
 
-    private RelationshipConstraintTableInfo() {
-    }
+import androidx.annotation.NonNull;
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+public interface RelationshipItemStore extends ObjectWithoutUidStore<RelationshipItem> {
+    List<String> getRelationshipUidsForItems(@NonNull RelationshipItem from, @NonNull RelationshipItem to);
 
-        @Override
-        public String name() {
-            return "RelationshipConstraint";
-        }
+    RelationshipItem getForRelationshipUidAndConstraintType(
+            @NonNull String uid,
+            @NonNull RelationshipConstraintType constraintType);
 
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
-
-    static class Columns extends BaseModel.Columns {
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
-                    RelationshipConstraintFields.CONSTRAINT_TYPE,
-                    RelationshipConstraintFields.RELATIONSHIP_ENTITY,
-                    RelationshipConstraintFields.TRACKED_ENTITY_TYPE,
-                    RelationshipConstraintFields.PROGRAM,
-                    RelationshipConstraintFields.PROGRAM_STAGE
-            );
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{
-                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
-                    RelationshipConstraintFields.CONSTRAINT_TYPE
-            };
-        }
-    }
+    List<String> getRelatedTeiUids(List<String> trackedEntityInstanceUids);
 }

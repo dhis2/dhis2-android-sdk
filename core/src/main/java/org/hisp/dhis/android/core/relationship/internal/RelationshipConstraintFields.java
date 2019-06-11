@@ -26,50 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.relationship.RelationshipConstraint;
+import org.hisp.dhis.android.core.relationship.RelationshipEntityType;
 
-public final class RelationshipConstraintTableInfo {
+public final class RelationshipConstraintFields {
 
-    private RelationshipConstraintTableInfo() {
-    }
+    public static final String RELATIONSHIP_TYPE = "relationshipType";
+    public static final String CONSTRAINT_TYPE = "constraintType";
+    public static final String RELATIONSHIP_ENTITY = "relationshipEntity";
+    public static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
+    public static final String PROGRAM = "program";
+    public static final String PROGRAM_STAGE = "programStage";
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    private static final FieldsHelper<RelationshipConstraint> fh = new FieldsHelper<>();
 
-        @Override
-        public String name() {
-            return "RelationshipConstraint";
-        }
+    static final Field<RelationshipConstraint, String> lastUpdated = fh.lastUpdated();
 
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
+    static final Fields<RelationshipConstraint> allFields = Fields.<RelationshipConstraint>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.<RelationshipEntityType>field(RELATIONSHIP_ENTITY),
+                    fh.nestedFieldWithUid(TRACKED_ENTITY_TYPE),
+                    fh.nestedFieldWithUid(PROGRAM),
+                    fh.nestedFieldWithUid(PROGRAM_STAGE)
+            ).build();
 
-    static class Columns extends BaseModel.Columns {
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
-                    RelationshipConstraintFields.CONSTRAINT_TYPE,
-                    RelationshipConstraintFields.RELATIONSHIP_ENTITY,
-                    RelationshipConstraintFields.TRACKED_ENTITY_TYPE,
-                    RelationshipConstraintFields.PROGRAM,
-                    RelationshipConstraintFields.PROGRAM_STAGE
-            );
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{
-                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
-                    RelationshipConstraintFields.CONSTRAINT_TYPE
-            };
-        }
+    private RelationshipConstraintFields() {
     }
 }

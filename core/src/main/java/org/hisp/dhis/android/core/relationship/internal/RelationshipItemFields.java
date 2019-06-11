@@ -26,50 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.relationship.RelationshipItem;
+import org.hisp.dhis.android.core.relationship.RelationshipItemEnrollment;
+import org.hisp.dhis.android.core.relationship.RelationshipItemEvent;
+import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance;
 
-public final class RelationshipConstraintTableInfo {
+public final class RelationshipItemFields {
+    public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+    public static final String ENROLLMENT = "enrollment";
+    public static final String EVENT = "event";
 
-    private RelationshipConstraintTableInfo() {
-    }
+    private static final FieldsHelper<RelationshipItem> fh = new FieldsHelper<>();
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    public static final Fields<RelationshipItem> allFields = Fields.<RelationshipItem>builder()
+            .fields(
+                    fh.<RelationshipItemTrackedEntityInstance>nestedField(TRACKED_ENTITY_INSTANCE)
+                            .with(RelationshipItemTrackedEntityInstanceFields.trackedEntityInstance),
+            fh.<RelationshipItemEnrollment>nestedField(ENROLLMENT).with(RelationshipItemEnrollmentFields.enrollment),
+            fh.<RelationshipItemEvent>nestedField(EVENT).with(RelationshipItemEventFields.event)
+    ).build();
 
-        @Override
-        public String name() {
-            return "RelationshipConstraint";
-        }
-
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
-
-    static class Columns extends BaseModel.Columns {
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
-                    RelationshipConstraintFields.CONSTRAINT_TYPE,
-                    RelationshipConstraintFields.RELATIONSHIP_ENTITY,
-                    RelationshipConstraintFields.TRACKED_ENTITY_TYPE,
-                    RelationshipConstraintFields.PROGRAM,
-                    RelationshipConstraintFields.PROGRAM_STAGE
-            );
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{
-                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
-                    RelationshipConstraintFields.CONSTRAINT_TYPE
-            };
-        }
+    private RelationshipItemFields() {
     }
 }

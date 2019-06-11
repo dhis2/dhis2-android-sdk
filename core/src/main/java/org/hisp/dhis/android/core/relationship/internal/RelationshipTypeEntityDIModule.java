@@ -26,50 +26,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.relationship.RelationshipType;
 
-public final class RelationshipConstraintTableInfo {
+import java.util.Collections;
+import java.util.Map;
 
-    private RelationshipConstraintTableInfo() {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+
+@Module
+public final class RelationshipTypeEntityDIModule {
+
+    @Provides
+    @Reusable
+    IdentifiableObjectStore<RelationshipType> store(DatabaseAdapter databaseAdapter) {
+        return RelationshipTypeStore.create(databaseAdapter);
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    @Provides
+    @Reusable
+    Handler<RelationshipType> handler(RelationshipTypeHandler impl) {
+        return impl;
+    }
 
-        @Override
-        public String name() {
-            return "RelationshipConstraint";
-        }
-
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
-
-    static class Columns extends BaseModel.Columns {
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
-                    RelationshipConstraintFields.CONSTRAINT_TYPE,
-                    RelationshipConstraintFields.RELATIONSHIP_ENTITY,
-                    RelationshipConstraintFields.TRACKED_ENTITY_TYPE,
-                    RelationshipConstraintFields.PROGRAM,
-                    RelationshipConstraintFields.PROGRAM_STAGE
-            );
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{
-                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
-                    RelationshipConstraintFields.CONSTRAINT_TYPE
-            };
-        }
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<RelationshipType>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        ChildrenAppender<RelationshipType> childrenAppender = new RelationshipConstraintChildrenAppender(
+                RelationshipConstraintStore.create(databaseAdapter)
+        );
+        return Collections.singletonMap(RelationshipTypeFields.CONSTRAINTS, childrenAppender);
     }
 }

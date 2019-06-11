@@ -26,50 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.junit.runner.RunWith;
 
-public final class RelationshipConstraintTableInfo {
+import androidx.test.runner.AndroidJUnit4;
 
-    private RelationshipConstraintTableInfo() {
+@RunWith(AndroidJUnit4.class)
+public class RelationshipStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Relationship> {
+
+    public RelationshipStoreIntegrationShould() {
+        super(RelationshipStoreImpl.create(DatabaseAdapterFactory.get()),
+                RelationshipTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    @Override
+    protected Relationship buildObject() {
+        return RelationshipSamples.getRelationshipToInsertOnDB();
+    }
 
-        @Override
-        public String name() {
-            return "RelationshipConstraint";
-        }
-
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
-
-    static class Columns extends BaseModel.Columns {
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
-                    RelationshipConstraintFields.CONSTRAINT_TYPE,
-                    RelationshipConstraintFields.RELATIONSHIP_ENTITY,
-                    RelationshipConstraintFields.TRACKED_ENTITY_TYPE,
-                    RelationshipConstraintFields.PROGRAM,
-                    RelationshipConstraintFields.PROGRAM_STAGE
-            );
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{
-                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
-                    RelationshipConstraintFields.CONSTRAINT_TYPE
-            };
-        }
+    @Override
+    protected Relationship buildObjectToUpdate() {
+        return RelationshipSamples.getRelationshipToInsertOnDB().toBuilder()
+                .name("new_name")
+                .build();
     }
 }

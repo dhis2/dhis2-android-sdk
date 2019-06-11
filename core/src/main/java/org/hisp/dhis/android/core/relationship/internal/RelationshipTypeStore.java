@@ -26,50 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import android.database.sqlite.SQLiteStatement;
 
-public final class RelationshipConstraintTableInfo {
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
 
-    private RelationshipConstraintTableInfo() {
-    }
+import androidx.annotation.NonNull;
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+
+public final class RelationshipTypeStore {
+
+    private RelationshipTypeStore() {}
+
+    private static StatementBinder<RelationshipType> BINDER = new IdentifiableStatementBinder<RelationshipType>() {
 
         @Override
-        public String name() {
-            return "RelationshipConstraint";
-        }
-
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
+        public void bindToStatement(@NonNull RelationshipType o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 7, o.bIsToA());
+            sqLiteBind(sqLiteStatement, 8, o.aIsToB());
         }
     };
 
-    static class Columns extends BaseModel.Columns {
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
-                    RelationshipConstraintFields.CONSTRAINT_TYPE,
-                    RelationshipConstraintFields.RELATIONSHIP_ENTITY,
-                    RelationshipConstraintFields.TRACKED_ENTITY_TYPE,
-                    RelationshipConstraintFields.PROGRAM,
-                    RelationshipConstraintFields.PROGRAM_STAGE
-            );
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{
-                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
-                    RelationshipConstraintFields.CONSTRAINT_TYPE
-            };
-        }
+    public static IdentifiableObjectStore<RelationshipType> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, RelationshipTypeTableInfo.TABLE_INFO, BINDER,
+                RelationshipType::create);
     }
 }

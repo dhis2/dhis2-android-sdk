@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentChildrenAppender;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
-import org.hisp.dhis.android.core.relationship.RelationshipChildrenAppender;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipChildrenAppender;
 
 import java.util.HashMap;
 import java.util.Map;

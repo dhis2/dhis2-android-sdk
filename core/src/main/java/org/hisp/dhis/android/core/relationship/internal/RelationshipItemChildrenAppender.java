@@ -25,51 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship.internal;
 
-package org.hisp.dhis.android.core.relationship;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
+import org.hisp.dhis.android.core.relationship.RelationshipItem;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import javax.inject.Inject;
 
-public final class RelationshipConstraintTableInfo {
+import dagger.Reusable;
 
-    private RelationshipConstraintTableInfo() {
+@Reusable
+final class RelationshipItemChildrenAppender extends ChildrenAppender<Relationship> {
+
+    private final RelationshipItemStore store;
+
+    @Inject
+    RelationshipItemChildrenAppender(RelationshipItemStore store) {
+        this.store = store;
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "RelationshipConstraint";
-        }
-
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
-
-    static class Columns extends BaseModel.Columns {
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
-                    RelationshipConstraintFields.CONSTRAINT_TYPE,
-                    RelationshipConstraintFields.RELATIONSHIP_ENTITY,
-                    RelationshipConstraintFields.TRACKED_ENTITY_TYPE,
-                    RelationshipConstraintFields.PROGRAM,
-                    RelationshipConstraintFields.PROGRAM_STAGE
-            );
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{
-                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
-                    RelationshipConstraintFields.CONSTRAINT_TYPE
-            };
-        }
+    @Override
+    protected Relationship appendChildren(Relationship relationship) {
+        RelationshipItem fromItem = store.getForRelationshipUidAndConstraintType(
+                relationship.uid(), RelationshipConstraintType.FROM);
+        RelationshipItem toItem = store.getForRelationshipUidAndConstraintType(
+                relationship.uid(), RelationshipConstraintType.TO);
+        return relationship.toBuilder()
+                .from(fromItem)
+                .to(toItem)
+                .build();
     }
 }

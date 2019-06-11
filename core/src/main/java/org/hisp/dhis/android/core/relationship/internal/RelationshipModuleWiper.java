@@ -25,51 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship.internal;
 
-package org.hisp.dhis.android.core.relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintTableInfo;
+import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo;
+import org.hisp.dhis.android.core.relationship.RelationshipTableInfo;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
+import org.hisp.dhis.android.core.wipe.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.TableWiper;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import javax.inject.Inject;
 
-public final class RelationshipConstraintTableInfo {
+import dagger.Reusable;
 
-    private RelationshipConstraintTableInfo() {
+@Reusable
+public final class RelationshipModuleWiper implements ModuleWiper {
+
+    private final TableWiper tableWiper;
+
+    @Inject
+    RelationshipModuleWiper(TableWiper tableWiper) {
+        this.tableWiper = tableWiper;
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    @Override
+    public void wipeMetadata() {
+        tableWiper.wipeTables(
+                RelationshipTypeTableInfo.TABLE_INFO,
+                RelationshipConstraintTableInfo.TABLE_INFO);
+    }
 
-        @Override
-        public String name() {
-            return "RelationshipConstraint";
-        }
-
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
-
-    static class Columns extends BaseModel.Columns {
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
-                    RelationshipConstraintFields.CONSTRAINT_TYPE,
-                    RelationshipConstraintFields.RELATIONSHIP_ENTITY,
-                    RelationshipConstraintFields.TRACKED_ENTITY_TYPE,
-                    RelationshipConstraintFields.PROGRAM,
-                    RelationshipConstraintFields.PROGRAM_STAGE
-            );
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{
-                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
-                    RelationshipConstraintFields.CONSTRAINT_TYPE
-            };
-        }
+    @Override
+    public void wipeData() {
+        tableWiper.wipeTables(
+                RelationshipTableInfo.TABLE_INFO,
+                RelationshipItemTableInfo.TABLE_INFO);
     }
 }

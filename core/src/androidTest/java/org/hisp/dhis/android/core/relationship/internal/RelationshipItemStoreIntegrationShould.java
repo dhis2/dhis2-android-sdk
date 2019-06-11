@@ -26,50 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.relationship.RelationshipItemSamples;
+import org.hisp.dhis.android.core.relationship.RelationshipItem;
+import org.hisp.dhis.android.core.relationship.RelationshipItemEvent;
+import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.junit.runner.RunWith;
 
-public final class RelationshipConstraintTableInfo {
+import androidx.test.runner.AndroidJUnit4;
 
-    private RelationshipConstraintTableInfo() {
+@RunWith(AndroidJUnit4.class)
+public class RelationshipItemStoreIntegrationShould extends
+        ObjectWithoutUidStoreAbstractIntegrationShould<RelationshipItem> {
+
+    public RelationshipItemStoreIntegrationShould() {
+        super(RelationshipItemStoreImpl.create(DatabaseAdapterFactory.get()),
+                RelationshipItemTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    @Override
+    protected RelationshipItem buildObject() {
+        return RelationshipItemSamples.getRelationshipItem();
+    }
 
-        @Override
-        public String name() {
-            return "RelationshipConstraint";
-        }
-
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
-
-    static class Columns extends BaseModel.Columns {
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
-                    RelationshipConstraintFields.CONSTRAINT_TYPE,
-                    RelationshipConstraintFields.RELATIONSHIP_ENTITY,
-                    RelationshipConstraintFields.TRACKED_ENTITY_TYPE,
-                    RelationshipConstraintFields.PROGRAM,
-                    RelationshipConstraintFields.PROGRAM_STAGE
-            );
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{
-                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
-                    RelationshipConstraintFields.CONSTRAINT_TYPE
-            };
-        }
+    @Override
+    protected RelationshipItem buildObjectToUpdate() {
+        return RelationshipItemSamples.getRelationshipItem().toBuilder()
+                .event(RelationshipItemEvent.builder().event("new_event").build())
+                .build();
     }
 }

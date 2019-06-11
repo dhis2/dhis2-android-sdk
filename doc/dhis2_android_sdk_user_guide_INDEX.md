@@ -16,7 +16,14 @@
 
 ## Installation
 
-Maven dependency
+Include dependency in build.gradle.
+
+```
+dependencies {
+    implementation "org.hisp.dhis:android-core:0.16.3-SNAPSHOT"
+    ...
+}
+```
 
 ## D2 initialization
 
@@ -35,9 +42,37 @@ A typical workflow would be like this:
 
 ## Metadata synchronization
 
-What is synced?
+Command to launch metadata synchronization:
 
-Corrupted configurations
+[//]: # (TODO Include command)
+
+```
+d2...
+```
+
+In order to save bandwidth usage and storage space, the SDK does not synchronize all the metadata in the server but a subset. This subset is defined as the metadata required by the user in order to perform data entry tasks.
+
+Based on that, metadata sync includes the following elements:
+
+- System settings.
+- User information (user credentials, user roles, authorities).
+- Programs assigned to at least one capture/search orgunit **and** accessible by the user with at least data read access.
+  - Related ProgramStages, ProgramIndicators, ProgramRules, TrackedEntityTypes, DataElements and OptionSets.
+- Datasets assigned to at least one capture/search orgunit **and** accessible by the user with at least data read access.
+  - Related DataElements, Indicators, IndicatorTypes and OptionSets.
+- Related CategoryCombos, Categories, etc.
+- Capture and Search orgunits (including descendants).
+- Constants.
+
+### Corrupted configurations
+
+This partial metadata synchronization may expose server-side misconfiguration issues. For example, a ProgramRuleVariable pointing to a DataElement that does not belong to the program anymore. Due to the use of database-level constraints, this misconfiguration will appear as a Foreign Key error.
+
+The SDK does not fail the synchronization, but it stores the errors in a table for inspection. They can be accessed by:
+
+```
+d2.maintenanceModule().foreignKeyViolations
+```
 
 # Module architecture
 
@@ -116,3 +151,5 @@ Compatibility table:
 | tei_count             | N/A       |
 | enrollment_count      | N/A       |
 | organisationunit_count| N/A       |
+
+# Troubleshooting

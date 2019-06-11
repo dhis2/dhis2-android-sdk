@@ -193,7 +193,7 @@ public class TestRepositories {
         }
 
         @Override
-        public Completable updateDataSetSubmissionState(String orgUnit, String period, String attributeOptionComboUid, State state) {
+        public Completable updateDataSetSubmissionState(String dataSet, String orgUnit, String period, String attributeOptionComboUid, State state) {
             return null;
         }
     }

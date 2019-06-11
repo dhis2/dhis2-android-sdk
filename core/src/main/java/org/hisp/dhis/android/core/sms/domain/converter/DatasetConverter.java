@@ -62,7 +62,8 @@ public class DatasetConverter extends Converter<List<DataValue>> {
 
     @Override
     public Completable updateSubmissionState(State state) {
-        return getLocalDbRepository().updateDataSetSubmissionState(orgUnit, period, attributeOptionComboUid, state);
+        return getLocalDbRepository().updateDataSetSubmissionState(
+                dataSet, orgUnit, period, attributeOptionComboUid, state);
     }
 
     @Override

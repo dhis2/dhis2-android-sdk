@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import org.hisp.dhis.android.core.ObjectMapperFactory;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCollectionRepository;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationStore;
 import org.hisp.dhis.android.core.datavalue.DataValue;
@@ -258,17 +259,29 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
-    public Completable updateDataSetSubmissionState(String orgUnit,
+    public Completable updateDataSetSubmissionState(String dataSetId,
+                                                    String orgUnit,
                                                     String period,
                                                     String attributeOptionComboUid,
                                                     State state) {
-        return Single.fromCallable(() -> dataSetRepository
-                .byAttributeOptionComboUid().eq(attributeOptionComboUid)
-                .byPeriod().eq(period)
-                .byOrganisationUnitUid().eq(orgUnit)
-                .one().get()
-        ).flatMapCompletable(dataSet ->
-                Completable.fromAction(() -> dataSetStore.setState(dataSet, state))
-        );
+        return Completable.fromAction(() -> {
+            DataSetCompleteRegistration dataSet = dataSetRepository
+                    .byAttributeOptionComboUid().eq(attributeOptionComboUid)
+                    .byPeriod().eq(period)
+                    .byOrganisationUnitUid().eq(orgUnit)
+                    .one().get();
+            if (dataSet != null) {
+                dataSetStore.setState(dataSet, state);
+                return;
+            }
+            dataSet = DataSetCompleteRegistration.builder()
+                    .dataSet(dataSetId)
+                    .attributeOptionCombo(attributeOptionComboUid)
+                    .period(period)
+                    .organisationUnit(orgUnit)
+                    .state(state)
+                    .build();
+            dataSetStore.insert(dataSet);
+        });
     }
 }

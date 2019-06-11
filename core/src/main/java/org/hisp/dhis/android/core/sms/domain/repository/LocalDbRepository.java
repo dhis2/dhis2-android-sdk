@@ -60,7 +60,8 @@ public interface LocalDbRepository {
                                           String period,
                                           String attributeOptionComboUid);
 
-    Completable updateDataSetSubmissionState(String orgUnit,
+    Completable updateDataSetSubmissionState(String dataSet,
+                                             String orgUnit,
                                              String period,
                                              String attributeOptionComboUid,
                                              State state);

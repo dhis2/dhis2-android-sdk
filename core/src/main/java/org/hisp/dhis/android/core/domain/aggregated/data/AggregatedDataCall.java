@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationQu
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueQuery;
 import org.hisp.dhis.android.core.period.Period;
-import org.hisp.dhis.android.core.period.PeriodStore;
+import org.hisp.dhis.android.core.period.internal.PeriodStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 

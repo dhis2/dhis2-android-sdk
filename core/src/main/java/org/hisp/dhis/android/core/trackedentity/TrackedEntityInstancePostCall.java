@@ -46,9 +46,9 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
-import org.hisp.dhis.android.core.relationship.RelationshipDHISVersionManager;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
-import org.hisp.dhis.android.core.relationship.RelationshipItemStore;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.ArrayList;

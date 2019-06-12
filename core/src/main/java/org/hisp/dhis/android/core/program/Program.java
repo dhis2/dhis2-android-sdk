@@ -165,7 +165,7 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     @ColumnAdapter(CategoryComboWithUidColumnAdapter.class)
     public abstract CategoryCombo categoryCombo();
 
-    String categoryComboUid() {
+    public String categoryComboUid() {
         CategoryCombo combo = categoryCombo();
         return combo == null ? CategoryCombo.DEFAULT_UID : combo.uid();
     }

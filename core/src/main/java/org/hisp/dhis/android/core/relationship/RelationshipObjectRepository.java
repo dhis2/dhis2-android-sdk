@@ -36,6 +36,8 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemElementStoreSelector;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
 
 import java.util.Map;
 

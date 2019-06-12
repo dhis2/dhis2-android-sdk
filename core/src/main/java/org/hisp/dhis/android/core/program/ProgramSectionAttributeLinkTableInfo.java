@@ -28,10 +28,8 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public final class ProgramSectionAttributeLinkTableInfo {
@@ -49,18 +47,13 @@ public final class ProgramSectionAttributeLinkTableInfo {
         }
     };
 
-    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            TrackedEntityAttributeTableInfo.TABLE_INFO,
-            Columns.PROGRAM_SECTION,
-            Columns.ATTRIBUTE);
-
     private ProgramSectionAttributeLinkTableInfo() {
     }
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
 
-        static final String PROGRAM_SECTION = "programSection";
-        static final String ATTRIBUTE = "attribute";
+        public static final String PROGRAM_SECTION = "programSection";
+        public static final String ATTRIBUTE = "attribute";
 
         @Override
         public String[] all() {

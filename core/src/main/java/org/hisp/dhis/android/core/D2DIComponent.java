@@ -60,10 +60,10 @@ import org.hisp.dhis.android.core.maintenance.internal.MaintenancePackageDIModul
 import org.hisp.dhis.android.core.option.internal.OptionPackageDIModule;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitPackageDIModule;
-import org.hisp.dhis.android.core.period.PeriodPackageDIModule;
+import org.hisp.dhis.android.core.period.internal.PeriodPackageDIModule;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramPackageDIModule;
-import org.hisp.dhis.android.core.relationship.RelationshipPackageDIModule;
+import org.hisp.dhis.android.core.program.internal.ProgramPackageDIModule;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipPackageDIModule;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.resource.ResourcePackageDIModule;
 import org.hisp.dhis.android.core.settings.SystemSettingPackageDIModule;

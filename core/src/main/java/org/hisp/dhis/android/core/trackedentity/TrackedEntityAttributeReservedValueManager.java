@@ -44,7 +44,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTa
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeFields;
+import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeFields;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 

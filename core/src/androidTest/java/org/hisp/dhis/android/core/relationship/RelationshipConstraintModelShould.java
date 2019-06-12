@@ -33,6 +33,7 @@ import android.database.MatrixCursor;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintFields;
 import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;

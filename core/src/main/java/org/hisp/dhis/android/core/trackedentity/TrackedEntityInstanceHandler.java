@@ -37,8 +37,8 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
-import org.hisp.dhis.android.core.relationship.RelationshipDHISVersionManager;
-import org.hisp.dhis.android.core.relationship.RelationshipHandler;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
 
 import java.util.Collection;
 import java.util.List;

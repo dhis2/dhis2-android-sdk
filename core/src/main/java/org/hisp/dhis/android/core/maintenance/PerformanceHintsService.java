@@ -35,8 +35,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramRule;
-import org.hisp.dhis.android.core.program.ProgramRuleStore;
-import org.hisp.dhis.android.core.program.ProgramStore;
+import org.hisp.dhis.android.core.program.internal.ProgramRuleStore;
+import org.hisp.dhis.android.core.program.internal.ProgramStore;
 
 import java.util.ArrayList;
 import java.util.List;

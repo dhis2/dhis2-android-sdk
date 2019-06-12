@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.internal.Collecti
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.period.DatePeriod;
-import org.hisp.dhis.android.core.period.InPeriodQueryHelper;
+import org.hisp.dhis.android.core.period.internal.InPeriodQueryHelper;
 import org.hisp.dhis.android.core.period.Period;
 
 import java.util.ArrayList;

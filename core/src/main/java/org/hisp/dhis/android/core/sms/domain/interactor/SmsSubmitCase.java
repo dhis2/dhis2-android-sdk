@@ -6,7 +6,9 @@ import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.sms.domain.converter.Converter;
 import org.hisp.dhis.android.core.sms.domain.converter.DatasetConverter;
+import org.hisp.dhis.android.core.sms.domain.converter.DeletionConverter;
 import org.hisp.dhis.android.core.sms.domain.converter.EnrollmentConverter;
+import org.hisp.dhis.android.core.sms.domain.converter.RelationshipConverter;
 import org.hisp.dhis.android.core.sms.domain.converter.SimpleEventConverter;
 import org.hisp.dhis.android.core.sms.domain.converter.TrackerEventConverter;
 import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;
@@ -59,6 +61,14 @@ public class SmsSubmitCase {
                 orgUnit,
                 period,
                 attributeOptionComboUid));
+    }
+
+    public Single<Integer> convertRelationship(String relationshipUid) {
+        return convert(new RelationshipConverter(localDbRepository, relationshipUid));
+    }
+
+    public Single<Integer> convertDeletion(String itemToDeleteUid) {
+        return convert(new DeletionConverter(localDbRepository, itemToDeleteUid));
     }
 
     private Single<Integer> convert(Converter<?> converter) {
@@ -124,6 +134,12 @@ public class SmsSubmitCase {
         }
         if (converter instanceof DatasetConverter) {
             return LocalDbRepository.SubmissionType.DATA_SET;
+        }
+        if (converter instanceof RelationshipConverter) {
+            return LocalDbRepository.SubmissionType.RELATIONSHIP;
+        }
+        if (converter instanceof DeletionConverter) {
+            return LocalDbRepository.SubmissionType.DELETION;
         }
         return null;
     }

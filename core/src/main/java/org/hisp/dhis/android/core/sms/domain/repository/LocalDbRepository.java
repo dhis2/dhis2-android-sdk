@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.sms.domain.repository;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.smscompression.models.Metadata;
 
@@ -66,7 +67,9 @@ public interface LocalDbRepository {
                                              String attributeOptionComboUid,
                                              State state);
 
+    Single<Relationship> getRelationship(String relationshipUid);
+
     enum SubmissionType {
-        SIMPLE_EVENT, TRACKER_EVENT, ENROLLMENT, DATA_SET
+        SIMPLE_EVENT, TRACKER_EVENT, ENROLLMENT, DATA_SET, RELATIONSHIP, DELETION
     }
 }

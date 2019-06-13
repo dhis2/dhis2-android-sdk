@@ -16,6 +16,8 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.event.EventStore;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipStore;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -53,6 +55,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     private final DataValueModule dataValueModule;
     private final DataSetCompleteRegistrationStore dataSetStore;
     private final DataSetCompleteRegistrationCollectionRepository dataSetRepository;
+    private final RelationshipStore relationshipStore;
 
     @Inject
     public LocalDbRepositoryImpl(Context ctx,
@@ -64,7 +67,8 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
                                  EnrollmentStore enrollmentStore,
                                  DataValueModule dataValueModule,
                                  DataSetCompleteRegistrationStore dataSetStore,
-                                 DataSetCompleteRegistrationCollectionRepository dataSetRepository) {
+                                 DataSetCompleteRegistrationCollectionRepository dataSetRepository,
+                                 RelationshipStore relationshipStore) {
         this.context = ctx;
         this.userModule = userModule;
         this.trackedEntityModule = trackedEntityModule;
@@ -75,6 +79,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
         this.dataValueModule = dataValueModule;
         this.dataSetStore = dataSetStore;
         this.dataSetRepository = dataSetRepository;
+        this.relationshipStore = relationshipStore;
         metadataIdsStore = new MetadataIdsStore(context);
         ongoingSubmissionsStore = new OngoingSubmissionsStore(context);
     }
@@ -283,5 +288,10 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
                     .build();
             dataSetStore.insert(dataSet);
         });
+    }
+
+    @Override
+    public Single<Relationship> getRelationship(String relationshipUid) {
+        return Single.fromCallable(() -> relationshipStore.selectByUid(relationshipUid));
     }
 }

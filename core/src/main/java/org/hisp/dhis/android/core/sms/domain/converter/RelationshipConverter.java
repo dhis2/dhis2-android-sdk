@@ -12,7 +12,7 @@ import io.reactivex.Completable;
 import io.reactivex.Single;
 
 public class RelationshipConverter extends Converter<Relationship> {
-    private String relationshipUid;
+    private final String relationshipUid;
 
     public RelationshipConverter(LocalDbRepository localDbRepository, String relationshipUid) {
         super(localDbRepository);

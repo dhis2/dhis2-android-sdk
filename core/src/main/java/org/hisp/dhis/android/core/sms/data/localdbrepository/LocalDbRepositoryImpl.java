@@ -5,12 +5,7 @@ import android.content.SharedPreferences;
 
 import org.hisp.dhis.android.core.ObjectMapperFactory;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCollectionRepository;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationStore;
 import org.hisp.dhis.android.core.datavalue.DataValue;
-import org.hisp.dhis.android.core.datavalue.DataValueModule;
-import org.hisp.dhis.android.core.datavalue.DataValueStore;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
@@ -27,7 +22,6 @@ import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.smscompression.models.Metadata;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -54,11 +48,8 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     private final MetadataIdsStore metadataIdsStore;
     private final OngoingSubmissionsStore ongoingSubmissionsStore;
-    private final DataValueModule dataValueModule;
-    private final DataValueStore dataValueStore;
-    private final DataSetCompleteRegistrationStore dataSetStore;
-    private final DataSetCompleteRegistrationCollectionRepository dataSetRepository;
     private final RelationshipStore relationshipStore;
+    private final DataSetsStore dataSetsStore;
 
     @Inject
     LocalDbRepositoryImpl(Context ctx,
@@ -68,11 +59,8 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
                           EnrollmentModule enrollmentModule,
                           EventStore eventStore,
                           EnrollmentStore enrollmentStore,
-                          DataValueModule dataValueModule,
-                          DataValueStore dataValueStore,
-                          DataSetCompleteRegistrationStore dataSetStore,
-                          DataSetCompleteRegistrationCollectionRepository dataSetRepository,
-                          RelationshipStore relationshipStore) {
+                          RelationshipStore relationshipStore,
+                          DataSetsStore dataSetsStore) {
         this.context = ctx;
         this.userModule = userModule;
         this.trackedEntityModule = trackedEntityModule;
@@ -80,11 +68,8 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
         this.enrollmentModule = enrollmentModule;
         this.eventStore = eventStore;
         this.enrollmentStore = enrollmentStore;
-        this.dataValueModule = dataValueModule;
-        this.dataSetStore = dataSetStore;
-        this.dataSetRepository = dataSetRepository;
         this.relationshipStore = relationshipStore;
-        this.dataValueStore = dataValueStore;
+        this.dataSetsStore = dataSetsStore;
         metadataIdsStore = new MetadataIdsStore(context);
         ongoingSubmissionsStore = new OngoingSubmissionsStore(context);
     }
@@ -261,12 +246,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     @Override
     public Single<List<DataValue>> getDataValues(String orgUnit, String period, String attributeOptionComboUid) {
-        return Single.fromCallable(() -> dataValueModule.dataValues
-                .byOrganisationUnitUid().eq(orgUnit)
-                .byPeriod().eq(period)
-                .byAttributeOptionComboUid().eq(attributeOptionComboUid)
-                .byState().in(Arrays.asList(State.TO_POST, State.TO_UPDATE))
-                .get());
+        return dataSetsStore.getDataValues(orgUnit, period, attributeOptionComboUid);
     }
 
     @Override
@@ -276,46 +256,11 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
                                                     String attributeOptionComboUid,
                                                     State state) {
         return Completable.mergeArray(
-                updateDataSetValuesState(orgUnit, period, attributeOptionComboUid, state),
-                updateDataSetCompleteRegistrationState(dataSetId, orgUnit, period, attributeOptionComboUid, state)
+                dataSetsStore.updateDataSetValuesState(
+                        orgUnit, period, attributeOptionComboUid, state),
+                dataSetsStore.updateDataSetCompleteRegistrationState(
+                        dataSetId, orgUnit, period, attributeOptionComboUid, state)
         );
-    }
-
-    private Completable updateDataSetValuesState(String orgUnit,
-                                                 String period,
-                                                 String attributeOptionComboUid,
-                                                 State state) {
-        return getDataValues(orgUnit, period, attributeOptionComboUid)
-                .flattenAsObservable(items -> items)
-                .flatMapCompletable(item -> Completable.fromAction(() ->
-                        dataValueStore.setState(item, state))
-                );
-    }
-
-    private Completable updateDataSetCompleteRegistrationState(String dataSetId,
-                                                               String orgUnit,
-                                                               String period,
-                                                               String attributeOptionComboUid,
-                                                               State state) {
-        return Completable.fromAction(() -> {
-            DataSetCompleteRegistration dataSet = dataSetRepository
-                    .byAttributeOptionComboUid().eq(attributeOptionComboUid)
-                    .byPeriod().eq(period)
-                    .byOrganisationUnitUid().eq(orgUnit)
-                    .one().get();
-            if (dataSet != null) {
-                dataSetStore.setState(dataSet, state);
-                return;
-            }
-            dataSet = DataSetCompleteRegistration.builder()
-                    .dataSet(dataSetId)
-                    .attributeOptionCombo(attributeOptionComboUid)
-                    .period(period)
-                    .organisationUnit(orgUnit)
-                    .state(state)
-                    .build();
-            dataSetStore.insert(dataSet);
-        });
     }
 
     @Override

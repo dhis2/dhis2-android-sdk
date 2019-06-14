@@ -11,7 +11,7 @@ import io.reactivex.Completable;
 import io.reactivex.Single;
 
 public class DeletionConverter extends Converter<String> {
-    private String uid;
+    private final String uid;
 
     public DeletionConverter(LocalDbRepository localDbRepository, String uid) {
         super(localDbRepository);

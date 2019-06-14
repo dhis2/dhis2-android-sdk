@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
@@ -194,6 +195,11 @@ public class TestRepositories {
 
         @Override
         public Completable updateDataSetSubmissionState(String dataSet, String orgUnit, String period, String attributeOptionComboUid, State state) {
+            return null;
+        }
+
+        @Override
+        public Single<Relationship> getRelationship(String relationshipUid) {
             return null;
         }
     }

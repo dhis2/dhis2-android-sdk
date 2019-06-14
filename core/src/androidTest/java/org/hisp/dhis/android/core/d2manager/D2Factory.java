@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.d2manager;
 
 import android.content.Context;
 
@@ -36,8 +36,6 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.authentication.internal.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor;
 import org.hisp.dhis.android.core.configuration.Configuration;
-import org.hisp.dhis.android.core.d2manager.D2Configuration;
-import org.hisp.dhis.android.core.d2manager.D2Manager;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collections;
@@ -66,13 +64,16 @@ public class D2Factory {
                 .context(context)
                 .build();
 
-        D2Manager d2Manager = new D2Manager(d2Configuration);
+        D2Manager.setD2Configuration(d2Configuration);
 
-        if (!d2Manager.isD2Configured()) {
-            d2Manager.configureD2(urlWithoutAPI);
+        if (!D2Manager.isServerUrlSet()) {
+            D2Manager.setServerUrl(urlWithoutAPI);
         }
 
-        return d2Manager.getD2();
+        D2 d2 = D2Manager.getD2();
+        D2Manager.clear();
+
+        return d2;
     }
 
     public static D2 create(String urlWithoutAPI, DatabaseAdapter databaseAdapter) {

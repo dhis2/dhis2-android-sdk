@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.Coordinates;
-import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.event.Event;

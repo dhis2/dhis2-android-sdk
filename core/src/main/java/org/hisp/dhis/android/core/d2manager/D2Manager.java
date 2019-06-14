@@ -42,29 +42,53 @@ import io.reactivex.annotations.Nullable;
 
 public final class D2Manager {
 
-    private D2 d2;
-    private final D2Configuration d2Configuration;
-    final DatabaseAdapter databaseAdapter;
-    private final ConfigurationManager configurationManager;
+    private static D2 d2;
+    private static D2Configuration d2Configuration;
+    static DatabaseAdapter databaseAdapter;
+    private static ConfigurationManager configurationManager;
 
-    public D2Manager(@Nullable D2Configuration d2Configuration) {
-        this.d2Configuration = d2Configuration;
-        this.databaseAdapter = newDatabaseAdapter();
-        this.configurationManager = ConfigurationManagerFactory.create(databaseAdapter);
+    private D2Manager() {
     }
 
-    public boolean isD2Configured() {
-        return configurationManager.get() != null;
+    public static void setD2Configuration(@Nullable D2Configuration d2Config) {
+        if (d2Configuration != null) {
+            throw new IllegalArgumentException("D2 Configuration already set");
+        }
+        d2Configuration = d2Config;
+        databaseAdapter = newDatabaseAdapter();
+        configurationManager = ConfigurationManagerFactory.create(databaseAdapter);
     }
 
-    public void configureD2(@NonNull String urlWithoutAPI) {
+    public static boolean isServerUrlSet() {
+        return configurationManager != null && configurationManager.get() != null;
+    }
+
+    public static void setServerUrl(@NonNull String urlWithoutAPI) {
         ConfigurationHelper.validateServerUrl(urlWithoutAPI);
         Configuration configuration = Configuration.forServerUrlStringWithoutAPI(urlWithoutAPI);
         configurationManager.configure(configuration);
-        instantiate(configuration);
+        instantiateD2(configuration);
     }
 
-    private void instantiate(Configuration configuration) {
+    public static D2 getD2() throws IllegalStateException {
+        if (d2 == null) {
+            if (d2Configuration == null) {
+                throw new IllegalArgumentException("D2 Configuration is not yet set");
+            } else {
+                Configuration configuration = configurationManager.get();
+                if (configuration == null) {
+                    throw new IllegalStateException("Server URL is not configured");
+                } else {
+                    instantiateD2(configuration);
+                    return d2;
+                }
+            }
+        } else {
+            return d2;
+        }
+    }
+
+    private static void instantiateD2(Configuration configuration) {
         d2 = new D2.Builder()
                 .configuration(configuration)
                 .databaseAdapter(databaseAdapter)
@@ -73,22 +97,15 @@ public final class D2Manager {
                 .build();
     }
 
-    public D2 getD2() throws IllegalStateException {
-        if (d2 == null) {
-            Configuration configuration = configurationManager.get();
-            if (configuration == null) {
-                throw new IllegalStateException("D2 is not configured");
-            } else {
-                instantiate(configuration);
-                return d2;
-            }
-        } else {
-            return d2;
-        }
-    }
-
-    private DatabaseAdapter newDatabaseAdapter() {
+    private static DatabaseAdapter newDatabaseAdapter() {
         DbOpenHelper dbOpenHelper = new DbOpenHelper(d2Configuration.context(), d2Configuration.databaseName());
         return new SqLiteDatabaseAdapter(dbOpenHelper);
+    }
+
+    static void clear()  {
+        d2Configuration = null;
+        d2 = null;
+        databaseAdapter =  null;
+        configurationManager = null;
     }
 }

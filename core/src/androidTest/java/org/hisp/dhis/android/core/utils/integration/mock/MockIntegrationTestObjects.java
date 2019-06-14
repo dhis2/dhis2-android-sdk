@@ -36,7 +36,7 @@ import com.facebook.stetho.Stetho;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2DIComponent;
-import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.resource.ResourceHandler;

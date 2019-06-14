@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
 
+import androidx.annotation.VisibleForTesting;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
@@ -102,6 +103,7 @@ public final class D2Manager {
         return new SqLiteDatabaseAdapter(dbOpenHelper);
     }
 
+    @VisibleForTesting
     static void clear()  {
         d2Configuration = null;
         d2 = null;

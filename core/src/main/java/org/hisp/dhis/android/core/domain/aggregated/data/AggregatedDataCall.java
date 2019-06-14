@@ -59,7 +59,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -172,16 +171,21 @@ final class AggregatedDataCall {
 
     private Set<String> getWorkflowsUidsFrom(Collection<DataSet> dataSetsWithWorkflow) {
 
-        return dataSetsWithWorkflow.stream()
-                .map(dataSet -> dataSet.workflow().uid())
-                .collect(Collectors.toSet());
+        Set<String> workflowsUids = new HashSet<>();
+        for (DataSet dataSet : dataSetsWithWorkflow) {
+            String uid = dataSet.workflow().uid();
+            workflowsUids.add(uid);
+        }
+        return workflowsUids;
     }
 
     private Set<String> getAttributeOptionCombosUidsFrom(Collection<DataSet> dataSetsWithWorkflow) {
 
-        Set<String> dataSetsWithWorkflowCategoryCombos = dataSetsWithWorkflow.stream()
-                .map(dataSet -> dataSet.categoryCombo().uid())
-                .collect(Collectors.toSet());
+        Set<String> dataSetsWithWorkflowCategoryCombos = new HashSet<>();
+        for (DataSet dataSet : dataSetsWithWorkflow) {
+            String uid = dataSet.categoryCombo().uid();
+            dataSetsWithWorkflowCategoryCombos.add(uid);
+        }
 
         List<CategoryOptionCombo> categoryOptionCombos =
                 categoryOptionComboStore.selectWhere("categoryCombo IN ("
@@ -189,15 +193,21 @@ final class AggregatedDataCall {
                         Utils.withSingleQuotationMarksArray(dataSetsWithWorkflowCategoryCombos))
                         + ")");
 
-        return categoryOptionCombos.stream()
-                .map(categoryOptionCombo -> categoryOptionCombo.uid())
-                .collect(Collectors.toSet());
+        Set<String> attributeOptionCombosUids = new HashSet<>();
+        for (CategoryOptionCombo categoryOptionCombo : categoryOptionCombos) {
+            String uid = categoryOptionCombo.uid();
+            attributeOptionCombosUids.add(uid);
+        }
+        return attributeOptionCombosUids;
     }
 
     private Set<String> getOrganisationUnitsUidsFrom(Collection<UserOrganisationUnitLink> userOrganisationUnitLinks) {
 
-        return userOrganisationUnitLinks.stream()
-                .map(userOrganisationUnitLink -> userOrganisationUnitLink.organisationUnit())
-                .collect(Collectors.toSet());
+        Set<String> organisationUnitsUids = new HashSet<>();
+        for (UserOrganisationUnitLink userOrganisationUnitLink : userOrganisationUnitLinks) {
+            String s = userOrganisationUnitLink.organisationUnit();
+            organisationUnitsUids.add(s);
+        }
+        return organisationUnitsUids;
     }
 }

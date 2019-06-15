@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.category;
 
 import android.database.Cursor;
-import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -42,6 +41,8 @@ import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.data.database.IgnoreCategoryOptionListColumnAdapter;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Category.Builder.class)
@@ -75,6 +76,6 @@ public abstract class Category extends BaseIdentifiableObject implements Model {
 
         public abstract Builder dataDimensionType(String dimensionType);
 
-        abstract Category build();
+        public abstract Category build();
     }
 }

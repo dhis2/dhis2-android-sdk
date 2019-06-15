@@ -32,6 +32,7 @@ import android.content.ContentValues;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.FormType;
+import org.hisp.dhis.android.core.program.internal.ProgramStageFields;
 
 public class CreateProgramStageUtils {
 

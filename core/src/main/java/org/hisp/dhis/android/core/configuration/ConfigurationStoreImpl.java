@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.configuration;
 
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.common.ObjectStoreImpl;
-import org.hisp.dhis.android.core.common.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -40,7 +40,7 @@ public final class ConfigurationStoreImpl extends ObjectStoreImpl<Configuration>
             sqLiteBind(sqLiteStatement, 1, configuration.serverUrl().toString());
 
     private ConfigurationStoreImpl(DatabaseAdapter databaseAdapter,
-                                   SQLStatementBuilder builder) {
+                                   SQLStatementBuilderImpl builder) {
         super(databaseAdapter,  databaseAdapter.compileStatement(builder.insert()), builder, BINDER,
                 Configuration::create);
     }
@@ -53,7 +53,7 @@ public final class ConfigurationStoreImpl extends ObjectStoreImpl<Configuration>
 
     public static ConfigurationStore create(DatabaseAdapter databaseAdapter) {
 
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(ConfigurationTableInfo.TABLE_INFO.name(),
+        SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(ConfigurationTableInfo.TABLE_INFO.name(),
                 ConfigurationTableInfo.TABLE_INFO.columns());
 
         return new ConfigurationStoreImpl(databaseAdapter, statementBuilder);

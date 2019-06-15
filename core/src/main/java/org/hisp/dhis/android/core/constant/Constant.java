@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.constant;
 
 import android.database.Cursor;
-import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -38,6 +37,8 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_Constant.Builder.class)

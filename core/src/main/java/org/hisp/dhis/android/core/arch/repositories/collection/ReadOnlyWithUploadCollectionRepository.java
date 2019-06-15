@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.imports.DataValueImportSummary;
+import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.concurrent.Callable;

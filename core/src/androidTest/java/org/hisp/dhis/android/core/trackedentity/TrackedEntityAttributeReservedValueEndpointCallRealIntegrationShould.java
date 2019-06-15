@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -76,8 +76,8 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
     }
 
     private void login() throws Exception {
-        if (!d2.userModule().isLogged().call()) {
-            d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
+        if (!d2.userModule().isLogged().blockingGet()) {
+            d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
         }
     }
 }

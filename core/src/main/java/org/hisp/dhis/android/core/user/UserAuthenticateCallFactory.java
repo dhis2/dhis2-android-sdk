@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.internal.APIUrlProvider;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -44,12 +44,11 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.wipe.WipeModule;
 
-import java.util.concurrent.Callable;
-
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import dagger.Reusable;
+import io.reactivex.Single;
 import retrofit2.Call;
 
 import static okhttp3.Credentials.basic;
@@ -64,7 +63,7 @@ final class UserAuthenticateCallFactory {
 
     private final UserService userService;
 
-    private final SyncHandler<User> userHandler;
+    private final Handler<User> userHandler;
     private final ResourceHandler resourceHandler;
     private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
@@ -78,7 +77,7 @@ final class UserAuthenticateCallFactory {
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull APICallExecutor apiCallExecutor,
             @NonNull UserService userService,
-            @NonNull SyncHandler<User> userHandler,
+            @NonNull Handler<User> userHandler,
             @NonNull ResourceHandler resourceHandler,
             @NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore,
             @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
@@ -100,33 +99,41 @@ final class UserAuthenticateCallFactory {
         this.apiUrlProvider = apiUrlProvider;
     }
 
-    public Callable<User> getCall(final String username, final String password) {
-        return () -> {
-            throwExceptionIfUsernameNull(username);
-            throwExceptionIfPasswordNull(password);
-            throwExceptionIfAlreadyAuthenticated();
-
-            Call<User> authenticateCall =
-                    userService.authenticate(basic(username, password), UserFields.allFieldsWithoutOrgUnit);
-
+    public Single<User> logIn(final String username, final String password) {
+        return Single.create(emitter -> {
             try {
-                User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,
-                        new UserAuthenticateCallErrorCatcher());
-                return loginOnline(authenticatedUser, username, password);
-            } catch (D2Error d2Error) {
-                if (
-                        d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
-                                d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
-                                d2Error.errorCode() == D2ErrorCode.UNKNOWN_HOST) {
-                    return loginOffline(username, password);
-                } else if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
-                    wipeModule.wipeEverything();
-                    throw d2Error;
-                } else {
-                    throw d2Error;
-                }
+                emitter.onSuccess(loginInternal(username, password));
+            } catch (Throwable t) {
+                emitter.onError(t);
             }
-        };
+        });
+    }
+
+    private User loginInternal(String username, String password) throws D2Error {
+        throwExceptionIfUsernameNull(username);
+        throwExceptionIfPasswordNull(password);
+        throwExceptionIfAlreadyAuthenticated();
+
+        Call<User> authenticateCall =
+                userService.authenticate(basic(username, password), UserFields.allFieldsWithoutOrgUnit);
+
+        try {
+            User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,
+                    new UserAuthenticateCallErrorCatcher());
+            return loginOnline(authenticatedUser, username, password);
+        } catch (D2Error d2Error) {
+            if (
+                    d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
+                            d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
+                            d2Error.errorCode() == D2ErrorCode.UNKNOWN_HOST) {
+                return loginOffline(username, password);
+            } else if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
+                wipeModule.wipeEverything();
+                throw d2Error;
+            } else {
+                throw d2Error;
+            }
+        }
     }
 
     private User loginOnline(User authenticatedUser, String username, String password) throws D2Error {

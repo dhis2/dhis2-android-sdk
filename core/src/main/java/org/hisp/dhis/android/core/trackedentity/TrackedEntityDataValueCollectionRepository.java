@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.DataStatePropagator;
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 
 import java.util.Map;
 

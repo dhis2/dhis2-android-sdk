@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.program.internal.ProgramRuleActionFields;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public final class ProgramRuleActionTableInfo {
@@ -50,7 +51,7 @@ public final class ProgramRuleActionTableInfo {
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
 
         @Override
         public String[] all() {

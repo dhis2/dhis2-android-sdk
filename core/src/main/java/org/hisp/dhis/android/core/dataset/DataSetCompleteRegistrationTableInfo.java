@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationFields;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public final class DataSetCompleteRegistrationTableInfo {

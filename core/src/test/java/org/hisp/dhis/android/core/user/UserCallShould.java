@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.api.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.resource.Resource;
 import org.junit.Before;
@@ -58,7 +58,7 @@ public class UserCallShould extends BaseCallShould {
     private APICallExecutor apiCallExecutor;
 
     @Mock
-    private SyncHandler<User> userHandler;
+    private Handler<User> userHandler;
 
     @Mock
     private retrofit2.Call<User> userCall;

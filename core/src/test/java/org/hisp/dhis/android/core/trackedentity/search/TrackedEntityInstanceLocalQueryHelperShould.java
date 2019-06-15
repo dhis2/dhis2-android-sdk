@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
-import org.hisp.dhis.android.core.data.api.OuMode;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,9 +35,7 @@ import org.junit.runners.JUnit4;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -59,7 +57,7 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
         TrackedEntityInstanceQuery query  = queryBuilder
                 .program("IpHINAT79UW")
                 .orgUnits(Collections.singletonList("DiszpKrYNg8"))
-                .orgUnitMode(OuMode.DESCENDANTS)
+                .orgUnitMode(OrganisationUnitMode.DESCENDANTS)
                 .query(QueryFilter.create(QueryOperator.LIKE,"female"))
                 .build();
 

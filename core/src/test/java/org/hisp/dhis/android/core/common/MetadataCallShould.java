@@ -28,17 +28,19 @@
 package org.hisp.dhis.android.core.common;
 
 import org.assertj.core.util.Lists;
-import org.hisp.dhis.android.core.calls.MetadataCall;
-import org.hisp.dhis.android.core.category.CategoryModuleDownloader;
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
+import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.constant.Constant;
-import org.hisp.dhis.android.core.constant.ConstantModuleDownloader;
+import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader;
 import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.DataSetModuleDownloader;
+import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader;
+import org.hisp.dhis.android.core.domain.metadata.MetadataCall;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModuleDownloader;
+import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner;
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramModuleDownloader;
+import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader;
 import org.hisp.dhis.android.core.settings.SystemSettingModuleDownloader;
 import org.hisp.dhis.android.core.sms.SmsModule;
 import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase;

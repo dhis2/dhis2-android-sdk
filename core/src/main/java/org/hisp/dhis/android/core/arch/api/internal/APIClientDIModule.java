@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.api.internal;
 
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIExecutorsDIModule;
+
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;

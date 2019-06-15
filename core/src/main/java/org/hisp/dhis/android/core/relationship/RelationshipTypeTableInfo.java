@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.relationship;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public final class RelationshipTypeTableInfo {

@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.utils.Utils;

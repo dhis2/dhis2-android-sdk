@@ -29,11 +29,11 @@ package org.hisp.dhis.android.core.arch.repositories.object.internal;
 
 import android.database.sqlite.SQLiteConstraintException;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;

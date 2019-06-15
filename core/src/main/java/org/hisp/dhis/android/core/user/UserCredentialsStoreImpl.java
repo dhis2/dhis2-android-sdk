@@ -29,16 +29,17 @@
 package org.hisp.dhis.android.core.user;
 
 import android.database.sqlite.SQLiteStatement;
-import androidx.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStoreImpl;
-import org.hisp.dhis.android.core.common.SQLStatementBuilder;
-import org.hisp.dhis.android.core.common.SQLStatementWrapper;
-import org.hisp.dhis.android.core.common.UidsHelper;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl;
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
@@ -47,7 +48,7 @@ public final class UserCredentialsStoreImpl extends IdentifiableObjectStoreImpl<
 
     private UserCredentialsStoreImpl(DatabaseAdapter databaseAdapter,
                                      SQLStatementWrapper statementWrapper,
-                                     SQLStatementBuilder statementBuilder) {
+                                     SQLStatementBuilderImpl statementBuilder) {
         super(databaseAdapter, statementWrapper, statementBuilder, BINDER, UserCredentials::create);
     }
 
@@ -69,7 +70,7 @@ public final class UserCredentialsStoreImpl extends IdentifiableObjectStoreImpl<
     };
 
     public static UserCredentialsStore create(DatabaseAdapter databaseAdapter) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(UserCredentialsTableInfo.TABLE_INFO);
+        SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(UserCredentialsTableInfo.TABLE_INFO);
         SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);
         return new UserCredentialsStoreImpl(databaseAdapter, statementWrapper, statementBuilder);
     }

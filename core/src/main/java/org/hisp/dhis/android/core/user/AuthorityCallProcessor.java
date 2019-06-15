@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
-import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
@@ -39,9 +39,9 @@ import java.util.List;
 class AuthorityCallProcessor implements CallProcessor<Authority> {
 
     private final DatabaseAdapter databaseAdapter;
-    private final SyncHandler<Authority> handler;
+    private final Handler<Authority> handler;
 
-    AuthorityCallProcessor(DatabaseAdapter databaseAdapter, SyncHandler<Authority> handler) {
+    AuthorityCallProcessor(DatabaseAdapter databaseAdapter, Handler<Authority> handler) {
         this.databaseAdapter = databaseAdapter;
         this.handler = handler;
     }

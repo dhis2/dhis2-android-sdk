@@ -27,23 +27,20 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.common.Unit;
-
-import java.util.concurrent.Callable;
-
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import androidx.annotation.NonNull;
 import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.reactivex.Completable;
+import io.reactivex.Single;
 
 @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 @Reusable
 public final class UserModule {
 
-    private final Provider<IsUserLoggedInCallable> isUserLoggedInCallProvider;
-    private final Provider<LogOutUserCallable> logoutCallCallProvider;
+    private final IsUserLoggedInCallableFactory isUserLoggedInCallFactory;
+    private final LogOutCallFactory logoutCallCallFactory;
     private final UserAuthenticateCallFactory loginCallFactory;
 
     public final AuthenticatedUserObjectRepository authenticatedUser;
@@ -53,16 +50,16 @@ public final class UserModule {
     public final UserObjectRepository user;
 
     @Inject
-    UserModule(Provider<IsUserLoggedInCallable> isUserLoggedInCallProvider,
-               Provider<LogOutUserCallable> logoutCallCallProvider,
+    UserModule(IsUserLoggedInCallableFactory isUserLoggedInCallFactory,
+               LogOutCallFactory logoutCallCallFactory,
                UserAuthenticateCallFactory loginCallFactory,
                AuthenticatedUserObjectRepository authenticatedUser,
                UserRoleCollectionRepository userRoles,
                AuthorityCollectionRepository authorities,
                UserCredentialsObjectRepository userCredentials,
                UserObjectRepository user) {
-        this.isUserLoggedInCallProvider = isUserLoggedInCallProvider;
-        this.logoutCallCallProvider = logoutCallCallProvider;
+        this.isUserLoggedInCallFactory = isUserLoggedInCallFactory;
+        this.logoutCallCallFactory = logoutCallCallFactory;
         this.loginCallFactory = loginCallFactory;
         this.authenticatedUser = authenticatedUser;
         this.userRoles = userRoles;
@@ -72,17 +69,17 @@ public final class UserModule {
     }
 
     @NonNull
-    public Callable<User> logIn(String username, String password) {
-        return loginCallFactory.getCall(username, password);
+    public Single<User> logIn(String username, String password) {
+        return loginCallFactory.logIn(username, password);
     }
 
     @NonNull
-    public Callable<Unit> logOut() {
-        return logoutCallCallProvider.get();
+    public Completable logOut() {
+        return logoutCallCallFactory.logOut();
     }
 
     @NonNull
-    public Callable<Boolean> isLogged() {
-        return isUserLoggedInCallProvider.get();
+    public Single<Boolean> isLogged() {
+        return isUserLoggedInCallFactory.isLogged();
     }
 }

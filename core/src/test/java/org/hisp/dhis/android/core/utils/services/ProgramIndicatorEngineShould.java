@@ -28,16 +28,16 @@
 
 package org.hisp.dhis.android.core.utils.services;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.AggregationType;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventStore;
+import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;

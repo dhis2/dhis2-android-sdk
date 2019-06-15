@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.di.internal;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public interface ObjectWithoutUidStoreProvider<O> {

@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.api.fields.internal.NestedField;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitFields;
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields;
 
 final class UserFields {
     static final String BIRTHDAY = "birthday";

@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.trackedentity;
 
 
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;

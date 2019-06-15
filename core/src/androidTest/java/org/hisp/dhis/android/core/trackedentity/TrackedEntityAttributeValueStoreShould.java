@@ -31,16 +31,15 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
-import androidx.test.runner.AndroidJUnit4;
 
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,6 +47,8 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hamcrest.core.Is.is;

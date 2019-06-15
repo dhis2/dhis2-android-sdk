@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.user;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 import java.util.List;
 import java.util.Set;
+
+import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
 

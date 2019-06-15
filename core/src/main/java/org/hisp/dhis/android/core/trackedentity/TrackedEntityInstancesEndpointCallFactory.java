@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import javax.inject.Inject;

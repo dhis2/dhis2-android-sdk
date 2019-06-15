@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.organisationunit;
 
 import android.database.Cursor;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -54,6 +52,9 @@ import org.hisp.dhis.android.core.program.Program;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_OrganisationUnit.Builder.class)

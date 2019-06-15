@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.common;
 
-import androidx.annotation.Nullable;
-
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
 import org.hisp.dhis.android.core.utils.Utils;
+
+import androidx.annotation.Nullable;
 
 public abstract class BaseNameableObjectModel extends BaseIdentifiableObjectModel implements NameableObject {
 

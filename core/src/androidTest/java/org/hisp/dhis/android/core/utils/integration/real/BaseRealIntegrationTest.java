@@ -35,7 +35,7 @@ import com.facebook.stetho.Stetho;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2DIComponent;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;

@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.dataset;
 
 import android.database.Cursor;
-import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -47,6 +46,8 @@ import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Section.Builder.class)

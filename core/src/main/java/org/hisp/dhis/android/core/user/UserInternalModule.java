@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core.user;
 
-import androidx.annotation.VisibleForTesting;
-
 import javax.inject.Inject;
 
+import androidx.annotation.VisibleForTesting;
 import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 

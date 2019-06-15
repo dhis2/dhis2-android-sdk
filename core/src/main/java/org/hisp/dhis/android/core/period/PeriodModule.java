@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.period;
 
+import org.hisp.dhis.android.core.period.internal.PeriodHelper;
+
 import javax.inject.Inject;
 
 import dagger.Reusable;

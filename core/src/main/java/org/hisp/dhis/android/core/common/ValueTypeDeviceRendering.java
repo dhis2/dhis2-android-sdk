@@ -29,13 +29,16 @@
 package org.hisp.dhis.android.core.common;
 
 import android.database.Cursor;
-import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.valuetype.renderingtype.internal.ValueTypeRenderingTypeColumnAdapter;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ValueTypeDeviceRendering.Builder.class)

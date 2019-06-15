@@ -28,15 +28,15 @@
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorExecutor;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.List;
 
-public class SingleParentChildStoreImpl<P extends ObjectWithUidInterface, C> implements SingleParentChildStore<P, C> {
+class SingleParentChildStoreImpl<P extends ObjectWithUidInterface, C> implements SingleParentChildStore<P, C> {
 
     private final SingleParentChildProjection childProjection;
 
@@ -45,7 +45,7 @@ public class SingleParentChildStoreImpl<P extends ObjectWithUidInterface, C> imp
 
     private final CursorExecutor<C> cursorExecutor;
 
-    public SingleParentChildStoreImpl(SingleParentChildProjection childProjection,
+    SingleParentChildStoreImpl(SingleParentChildProjection childProjection,
                                       DatabaseAdapter databaseAdapter,
                                       SQLStatementBuilder statementBuilder,
                                       CursorExecutor<C> cursorExecutor) {

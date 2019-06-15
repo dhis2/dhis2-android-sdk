@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.event;
 
 import android.database.Cursor;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
@@ -41,6 +39,9 @@ import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbEventStatusColumnAdapter;
 
 import java.util.Date;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 @Deprecated
 @AutoValue
@@ -65,7 +66,6 @@ public abstract class EventModel extends BaseDataModel {
         public static final String COMPLETE_DATE = "completedDate";
         public static final String DUE_DATE = "dueDate";
         public static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
-        public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
     }
 
     public static EventModel create(Cursor cursor) {
@@ -147,10 +147,6 @@ public abstract class EventModel extends BaseDataModel {
     @ColumnName(Columns.ATTRIBUTE_OPTION_COMBO)
     public abstract String attributeOptionCombo();
 
-    @Nullable
-    @ColumnName(Columns.TRACKED_ENTITY_INSTANCE)
-    public abstract String trackedEntityInstance();
-
     @AutoValue.Builder
     public static abstract class Builder extends BaseDataModel.Builder<Builder> {
         public abstract Builder uid(@NonNull String uid);
@@ -184,8 +180,6 @@ public abstract class EventModel extends BaseDataModel {
         public abstract Builder dueDate(@Nullable Date dueDate);
 
         public abstract Builder attributeOptionCombo(@Nullable String attributeOptionCombo);
-
-        public abstract Builder trackedEntityInstance(@Nullable String trackedEntityInstance);
 
         public abstract EventModel build();
     }

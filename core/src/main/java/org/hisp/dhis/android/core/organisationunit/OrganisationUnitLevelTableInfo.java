@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.organisationunit;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelFields;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public final class OrganisationUnitLevelTableInfo {

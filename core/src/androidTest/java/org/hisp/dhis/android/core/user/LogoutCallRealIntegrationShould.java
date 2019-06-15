@@ -29,13 +29,13 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventCallFactory;
+import org.hisp.dhis.android.core.event.internal.EventCallFactory;
 import org.hisp.dhis.android.core.event.EventTableInfo;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -63,7 +63,7 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void delete_credentials_when_log_out_after_sync_data() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
 
         d2.syncMetaData().call();
 
@@ -73,7 +73,7 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
 
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 
-        d2.userModule().logOut().call();
+        d2.userModule().logOut().blockingAwait();
 
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
         assertThat(isTableEmpty(databaseAdapter(), EventTableInfo.TABLE_INFO.name())).isFalse();
@@ -87,13 +87,13 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
     //@Test
     public void recreate_credentials_when_login_again()
             throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
 
         d2.syncMetaData().call();
 
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 
-        d2.userModule().logOut().call();
+        d2.userModule().logOut().blockingAwait();
 
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 
@@ -102,7 +102,7 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
         assertThat(authenticatedUser).isNotNull();
         assertThat(authenticatedUser.credentials()).isNull();
 
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
 
         authenticatedUser = authenticatedUserStore.selectFirst();
 
@@ -112,8 +112,8 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void response_successful_on_login_logout_and_login() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
-        d2.userModule().logOut().call();
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logOut().blockingAwait();
+        d2.userModule().logIn("android", "Android123").blockingGet();
     }
 }

@@ -28,14 +28,15 @@
 
 package org.hisp.dhis.android.core.event;
 
-import androidx.annotation.VisibleForTesting;
-
 import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.event.internal.EventPersistenceCallFactory;
+import org.hisp.dhis.android.core.event.internal.EventWithLimitCallFactory;
 
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import androidx.annotation.VisibleForTesting;
 import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
-import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
@@ -41,6 +40,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Date;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 

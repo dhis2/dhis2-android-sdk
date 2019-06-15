@@ -28,17 +28,17 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
-import org.hisp.dhis.android.core.relationship.RelationshipDHISVersionManager;
-import org.hisp.dhis.android.core.relationship.RelationshipHandler;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
 
 import java.util.Collection;
 import java.util.List;
@@ -49,12 +49,12 @@ import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
-final class TrackedEntityInstanceHandler extends IdentifiableDataSyncHandlerImpl<TrackedEntityInstance> {
+final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<TrackedEntityInstance> {
     private final RelationshipDHISVersionManager relationshipVersionManager;
     private final RelationshipHandler relationshipHandler;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
-    private final SyncHandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler;
-    private final SyncHandlerWithTransformer<Enrollment> enrollmentHandler;
+    private final HandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler;
+    private final HandlerWithTransformer<Enrollment> enrollmentHandler;
     private final OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner;
 
     @Inject
@@ -62,8 +62,8 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataSyncHandlerImpl
             @NonNull RelationshipDHISVersionManager relationshipVersionManager,
             @NonNull RelationshipHandler relationshipHandler,
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
-            @NonNull SyncHandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler,
-            @NonNull SyncHandlerWithTransformer<Enrollment> enrollmentHandler,
+            @NonNull HandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler,
+            @NonNull HandlerWithTransformer<Enrollment> enrollmentHandler,
             @NonNull OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner) {
         super(trackedEntityInstanceStore);
         this.relationshipVersionManager = relationshipVersionManager;

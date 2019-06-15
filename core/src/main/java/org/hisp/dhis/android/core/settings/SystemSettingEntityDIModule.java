@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.di.internal.ObjectWithoutUidStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collections;
@@ -54,8 +54,8 @@ public final class SystemSettingEntityDIModule implements ObjectWithoutUidStoreP
 
     @Provides
     @Reusable
-    SyncHandler<SystemSetting> handler(ObjectWithoutUidStore<SystemSetting> store) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(store);
+    Handler<SystemSetting> handler(ObjectWithoutUidStore<SystemSetting> store) {
+        return new ObjectWithoutUidHandlerImpl<>(store);
     }
 
     @Provides

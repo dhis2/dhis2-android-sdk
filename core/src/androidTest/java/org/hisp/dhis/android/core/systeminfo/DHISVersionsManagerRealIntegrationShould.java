@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -54,7 +54,7 @@ public class DHISVersionsManagerRealIntegrationShould extends BaseRealIntegratio
 
         DHISVersionManager versionManager = d2.systemInfoModule().versionManager;
 
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
         assertThat(versionManager.getVersion()).isEqualTo(DHISVersion.V2_29);
         assertThat(versionManager.is2_29()).isTrue();
         assertThat(versionManager.is2_30()).isFalse();
@@ -68,7 +68,7 @@ public class DHISVersionsManagerRealIntegrationShould extends BaseRealIntegratio
 
         DHISVersionManager versionManager = d2.systemInfoModule().versionManager;
 
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
         assertThat(versionManager.getVersion()).isEqualTo(DHISVersion.V2_30);
         assertThat(versionManager.is2_29()).isFalse();
         assertThat(versionManager.is2_30()).isTrue();
@@ -82,7 +82,7 @@ public class DHISVersionsManagerRealIntegrationShould extends BaseRealIntegratio
 
         DHISVersionManager versionManager = d2.systemInfoModule().versionManager;
 
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
         assertThat(versionManager.getVersion()).isEqualTo(DHISVersion.V2_31);
         assertThat(versionManager.is2_29()).isFalse();
         assertThat(versionManager.is2_30()).isFalse();

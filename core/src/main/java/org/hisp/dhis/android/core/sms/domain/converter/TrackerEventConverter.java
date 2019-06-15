@@ -33,7 +33,8 @@ public class TrackerEventConverter extends Converter<Event> {
             subm.setEvent(e.uid());
             subm.setProgramStage(e.programStage());
             subm.setTimestamp(e.lastUpdated());
-            subm.setTrackedEntityInstance(e.trackedEntityInstance()); // TODO teiUid should not be needed
+            // TODO enrollment should be set here
+            //subm.setTrackedEntityInstance(e.trackedEntityInstance());
             subm.setValues(convertDataValues(e.attributeOptionCombo(), e.trackedEntityDataValues()));
             subm.setOrgUnit(e.organisationUnit());
             subm.setUserID(user);

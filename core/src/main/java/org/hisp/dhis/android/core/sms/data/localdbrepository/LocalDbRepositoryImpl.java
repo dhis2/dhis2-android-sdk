@@ -11,9 +11,9 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventModule;
-import org.hisp.dhis.android.core.event.EventStore;
+import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.RelationshipStore;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -148,14 +148,8 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     @Override
     public Single<Event> getTrackerEventToSubmit(String eventUid) {
-        return getSimpleEventToSubmit(eventUid).map(event -> {
-            // TODO teiUid should not be needed
-            Enrollment enrollment = enrollmentModule.enrollments.byUid().eq(event.enrollment()).one().get();
-            return event.toBuilder()
-                    .trackedEntityInstance(enrollment.trackedEntityInstance())
-                    .build();
-
-        });
+        // simple event is the same object as tracker event
+        return getSimpleEventToSubmit(eventUid);
     }
 
     @Override

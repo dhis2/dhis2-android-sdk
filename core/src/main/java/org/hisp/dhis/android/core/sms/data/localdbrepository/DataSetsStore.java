@@ -3,10 +3,10 @@ package org.hisp.dhis.android.core.sms.data.localdbrepository;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCollectionRepository;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationStore;
+import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
-import org.hisp.dhis.android.core.datavalue.DataValueStore;
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStore;
 
 import java.util.Arrays;
 import java.util.List;

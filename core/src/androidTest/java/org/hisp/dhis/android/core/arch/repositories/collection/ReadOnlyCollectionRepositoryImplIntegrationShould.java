@@ -68,7 +68,7 @@ public class ReadOnlyCollectionRepositoryImplIntegrationShould extends BaseMockI
     }
 
     @Test
-    public void get_all_relationship_types_without_children_when_calling_get_set() {
+    public void get_all_relationship_types_without_children_when_calling_get() {
         List<RelationshipType> types = relationshipTypeCollectionRepository.get();
         assertThat(types.size()).isEqualTo(2);
 
@@ -79,7 +79,18 @@ public class ReadOnlyCollectionRepositoryImplIntegrationShould extends BaseMockI
     }
 
     @Test
-    public void get_all_relationship_types_with_children_when_calling_get_set_with_children() {
+    public void get_all_relationship_types_without_children_when_calling_get_async() {
+        List<RelationshipType> types = relationshipTypeCollectionRepository.getAsync().blockingGet();
+        assertThat(types.size()).isEqualTo(2);
+
+        for (RelationshipType targetType: types) {
+            RelationshipType referenceType = typeMap.get(targetType.uid());
+            assertTypesWithoutConstraints(targetType, referenceType);
+        }
+    }
+
+    @Test
+    public void get_all_relationship_types_with_children_when_calling_get_with_children() {
         List<RelationshipType> types = relationshipTypeCollectionRepository.withAllChildren().get();
         assertThat(types.size()).isEqualTo(2);
 

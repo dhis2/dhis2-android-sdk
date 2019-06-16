@@ -27,15 +27,17 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import androidx.lifecycle.LiveData;
-import androidx.paging.PagedList;
-
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.Model;
 
 import java.util.List;
 
+import androidx.lifecycle.LiveData;
+import androidx.paging.PagedList;
+import io.reactivex.Single;
+
 public interface ReadOnlyCollectionRepository<M extends Model> {
+    Single<List<M>> getAsync();
     List<M> get();
     LiveData<PagedList<M>> getPaged(int pageSize);
     int count();

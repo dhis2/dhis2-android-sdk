@@ -51,6 +51,10 @@ public interface LocalDbRepository {
 
     Single<Boolean> isModuleEnabled();
 
+    Completable setWaitingForResultEnabled(boolean enabled);
+
+    Single<Boolean> getWaitingForResultEnabled();
+
     Single<Map<Integer, SubmissionType>> getOngoingSubmissions();
 
     Completable addOngoingSubmission(Integer id, SubmissionType type);

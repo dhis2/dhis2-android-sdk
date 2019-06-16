@@ -45,6 +45,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     private final static String KEY_WAITING_RESULT_TIMEOUT = "reading_timeout";
     private static final String KEY_METADATA_CONFIG = "metadata_conf";
     private static final String KEY_MODULE_ENABLED = "module_enabled";
+    private static final String KEY_WAIT_FOR_RESULT = "wait_for_result";
 
     private final MetadataIdsStore metadataIdsStore;
     private final OngoingSubmissionsStore ongoingSubmissionsStore;
@@ -83,7 +84,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     public Single<String> getGatewayNumber() {
         return Single.fromCallable(() ->
                 context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
-                        .getString(KEY_GATEWAY, null)
+                        .getString(KEY_GATEWAY, "")
         );
     }
 
@@ -121,7 +122,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     public Single<String> getConfirmationSenderNumber() {
         return Single.fromCallable(() ->
                 context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
-                        .getString(KEY_CONFIRMATION_SENDER, null)
+                        .getString(KEY_CONFIRMATION_SENDER, "")
         );
     }
 
@@ -220,6 +221,25 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
         return Single.fromCallable(() ->
                 context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
                         .getBoolean(KEY_MODULE_ENABLED, false)
+        );
+    }
+
+    @Override
+    public Completable setWaitingForResultEnabled(boolean enabled) {
+        return Completable.fromAction(() -> {
+            boolean result = context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
+                    .edit().putBoolean(KEY_WAIT_FOR_RESULT, enabled).commit();
+            if (!result) {
+                throw new IOException("Failed writing value to local storage, waiting for result");
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> getWaitingForResultEnabled() {
+        return Single.fromCallable(() ->
+                context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
+                        .getBoolean(KEY_WAIT_FOR_RESULT, false)
         );
     }
 

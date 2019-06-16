@@ -25,6 +25,29 @@ public class ConfigCase {
         this.webApiRepository = webApiRepository;
     }
 
+    public Single<SmsConfig> getSmsModuleConfig() {
+        return Single.zip(
+                localDbRepository.isModuleEnabled(),
+                localDbRepository.getGatewayNumber(),
+                localDbRepository.getWaitingForResultEnabled(),
+                localDbRepository.getConfirmationSenderNumber(),
+                localDbRepository.getWaitingResultTimeout(),
+                SmsConfig::new
+        );
+    }
+
+    public Completable setWaitingForResultEnabled(boolean enabled) {
+        return localDbRepository.setWaitingForResultEnabled(enabled);
+    }
+
+    public Completable setConfirmationSenderNumber(String number) {
+        return localDbRepository.setConfirmationSenderNumber(number);
+    }
+
+    public Completable setWaitingResultTimeout(int timeoutSeconds) {
+        return localDbRepository.setWaitingResultTimeout(timeoutSeconds);
+    }
+
     public Completable setGatewayNumber(String gatewayNumber) {
         if (gatewayNumber == null || gatewayNumber.isEmpty()) {
             return Completable.error(new IllegalArgumentException("Gateway number can't be empty"));
@@ -32,23 +55,8 @@ public class ConfigCase {
         return localDbRepository.setGatewayNumber(gatewayNumber);
     }
 
-    public Single<String> getGatewayNumber() {
-        return localDbRepository.getGatewayNumber();
-    }
-
-    public Completable setResultListeningConfig(String confirmationSenderNumber, Integer timeoutSeconds) {
-        return Completable.mergeArray(
-                localDbRepository.setConfirmationSenderNumber(confirmationSenderNumber),
-                localDbRepository.setWaitingResultTimeout(timeoutSeconds)
-        );
-    }
-
     public Completable setModuleEnabled(boolean enabled) {
         return localDbRepository.setModuleEnabled(enabled);
-    }
-
-    public Single<Boolean> isModuleEnabled() {
-        return localDbRepository.isModuleEnabled();
     }
 
     public Completable setMetadataDownloadConfig(WebApiRepository.GetMetadataIdsConfig metadataIdsConfig) {
@@ -69,7 +77,7 @@ public class ConfigCase {
         }).flatMap(webApiRepository::getMetadataIds
         ).flatMapCompletable(localDbRepository::setMetadataIds);
 
-        return isModuleEnabled().flatMapCompletable(enabled -> {
+        return localDbRepository.isModuleEnabled().flatMapCompletable(enabled -> {
             if (enabled) {
                 return refreshTask;
             } else {
@@ -103,5 +111,45 @@ public class ConfigCase {
 
     private WebApiRepository.GetMetadataIdsConfig getDefaultMetadataDownloadConfig() {
         return new WebApiRepository.GetMetadataIdsConfig();
+    }
+
+    public static class SmsConfig {
+        private final boolean moduleEnabled;
+        private final String gateway;
+        private final boolean waitingForResult;
+        private final String resultSender;
+        private final int resultWaitingTimeout;
+
+        SmsConfig(boolean moduleEnabled,
+                  String gateway,
+                  boolean waitingForResult,
+                  String resultSender,
+                  int resultWaitingTimeout) {
+            this.moduleEnabled = moduleEnabled;
+            this.gateway = gateway;
+            this.waitingForResult = waitingForResult;
+            this.resultSender = resultSender;
+            this.resultWaitingTimeout = resultWaitingTimeout;
+        }
+
+        public boolean isModuleEnabled() {
+            return moduleEnabled;
+        }
+
+        public String getGateway() {
+            return gateway;
+        }
+
+        public boolean isWaitingForResult() {
+            return waitingForResult;
+        }
+
+        public String getResultSender() {
+            return resultSender;
+        }
+
+        public int getResultWaitingTimeout() {
+            return resultWaitingTimeout;
+        }
     }
 }

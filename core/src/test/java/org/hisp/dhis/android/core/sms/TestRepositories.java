@@ -174,6 +174,16 @@ public class TestRepositories {
         }
 
         @Override
+        public Completable setWaitingForResultEnabled(boolean enabled) {
+            return null;
+        }
+
+        @Override
+        public Single<Boolean> getWaitingForResultEnabled() {
+            return null;
+        }
+
+        @Override
         public Single<Map<Integer, SubmissionType>> getOngoingSubmissions() {
             return null;
         }

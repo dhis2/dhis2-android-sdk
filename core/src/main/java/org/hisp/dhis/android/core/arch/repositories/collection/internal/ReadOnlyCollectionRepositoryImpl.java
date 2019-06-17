@@ -31,6 +31,7 @@ import androidx.lifecycle.LiveData;
 import androidx.paging.DataSource;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
+import io.reactivex.Single;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
@@ -81,6 +82,11 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     public List<M> get() {
         return ChildrenAppenderExecutor.appendInObjectCollection(getWithoutChildren(),
                 childrenAppenders, scope.children());
+    }
+
+    @Override
+    public Single<List<M>> getAsync() {
+        return Single.fromCallable(this::get);
     }
 
     @Override

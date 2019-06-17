@@ -59,6 +59,8 @@ public class D2ManagerRealIntegrationShould {
                 .networkInterceptors(Lists.newArrayList(new StethoInterceptor()))
                 .context(InstrumentationRegistry.getTargetContext().getApplicationContext())
                 .build();
+
+        D2Manager.setDatabaseName(null);
     }
 
     @Before

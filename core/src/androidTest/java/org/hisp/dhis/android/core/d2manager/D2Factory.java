@@ -53,7 +53,6 @@ public class D2Factory {
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
 
         D2Configuration d2Configuration = D2Configuration.builder()
-                .databaseName(databaseName)
                 .appName("d2_integration_tests")
                 .appVersion("1.0.0")
                 .readTimeoutInSeconds(30)
@@ -64,6 +63,7 @@ public class D2Factory {
                 .context(context)
                 .build();
 
+        D2Manager.setDatabaseName(databaseName);
         D2Manager.setD2Configuration(d2Configuration);
 
         if (!D2Manager.isServerUrlSet()) {
@@ -72,6 +72,7 @@ public class D2Factory {
 
         D2 d2 = D2Manager.getD2();
         D2Manager.clear();
+        D2Manager.setDatabaseName(null);
 
         return d2;
     }

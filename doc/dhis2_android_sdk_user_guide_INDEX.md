@@ -76,6 +76,36 @@ d2.maintenanceModule().foreignKeyViolations
 
 # Module architecture
 
+Module list:
+
+System:
+
+- maintenanceModule
+- systemInfoModule
+- systemSettingModule
+
+Metadata / data:
+
+- programModule
+- categoryModule
+- constantModule
+- dataElementModule
+- dataSetModule
+- optionModule
+- dataValueModule
+- enrollmentModule
+- eventModule
+- importModule
+- indicatorModule
+- legendSetModule
+- programModule
+- organisationUnitModule
+- periodModuleModule
+- relationshipModule
+- trackedEntityModule
+- userModule
+- smsModule
+
 ## Filters
 
 ## Nested fields

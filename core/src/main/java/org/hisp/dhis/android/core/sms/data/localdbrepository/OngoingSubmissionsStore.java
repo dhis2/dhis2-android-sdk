@@ -7,7 +7,7 @@ import android.util.Log;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.SubmissionType;
 
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -24,24 +24,24 @@ class OngoingSubmissionsStore {
     private static final String TAG = OngoingSubmissionsStore.class.getSimpleName();
     private final static String ONGOING_SUBMISSIONS_FILE = "submissions";
     private final Context context;
-    private Map<Integer, LocalDbRepository.SubmissionType> ongoingSubmissions;
+    private Map<Integer, SubmissionType> ongoingSubmissions;
 
     OngoingSubmissionsStore(Context context) {
         this.context = context;
     }
 
     @SuppressLint("UseSparseArrays")
-    Single<Map<Integer, LocalDbRepository.SubmissionType>> getOngoingSubmissions() {
+    Single<Map<Integer, SubmissionType>> getOngoingSubmissions() {
         return Single.fromCallable(() -> {
             if (ongoingSubmissions != null) {
                 return ongoingSubmissions;
             }
-            Type mapType = new TypeToken<Map<Integer, LocalDbRepository.SubmissionType>>() {
+            Type mapType = new TypeToken<Map<Integer, SubmissionType>>() {
             }.getType();
             InputStreamReader reader = new InputStreamReader(
                     context.openFileInput(ONGOING_SUBMISSIONS_FILE),
                     StandardCharsets.UTF_8);
-            Map<Integer, LocalDbRepository.SubmissionType> submissions =
+            Map<Integer, SubmissionType> submissions =
                     new GsonBuilder().create().fromJson(reader, mapType);
             reader.close();
             return submissions;
@@ -51,7 +51,7 @@ class OngoingSubmissionsStore {
         }).doOnSuccess(submissions -> ongoingSubmissions = submissions);
     }
 
-    Completable addOngoingSubmission(Integer id, LocalDbRepository.SubmissionType type) {
+    Completable addOngoingSubmission(Integer id, SubmissionType type) {
         if (id == null || id < 0 || id > 255) {
             return Completable.error(new IllegalArgumentException("Wrong submission id"));
         }
@@ -77,7 +77,7 @@ class OngoingSubmissionsStore {
         });
     }
 
-    private Completable saveOngoingSubmissions(Map<Integer, LocalDbRepository.SubmissionType> ongoingSubmissions) {
+    private Completable saveOngoingSubmissions(Map<Integer, SubmissionType> ongoingSubmissions) {
         this.ongoingSubmissions = ongoingSubmissions;
         return Completable.fromAction(() -> {
             Writer writer = new OutputStreamWriter(

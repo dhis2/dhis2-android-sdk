@@ -72,8 +72,4 @@ public interface LocalDbRepository {
                                              State state);
 
     Single<Relationship> getRelationship(String relationshipUid);
-
-    enum SubmissionType {
-        SIMPLE_EVENT, TRACKER_EVENT, ENROLLMENT, DATA_SET, RELATIONSHIP, DELETION
-    }
 }

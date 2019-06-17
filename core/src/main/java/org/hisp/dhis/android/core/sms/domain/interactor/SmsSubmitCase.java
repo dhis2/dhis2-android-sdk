@@ -2,7 +2,6 @@ package org.hisp.dhis.android.core.sms.domain.interactor;
 
 import androidx.core.util.Pair;
 
-import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.sms.domain.converter.Converter;
 import org.hisp.dhis.android.core.sms.domain.converter.DatasetConverter;
@@ -14,6 +13,7 @@ import org.hisp.dhis.android.core.sms.domain.converter.TrackerEventConverter;
 import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.SubmissionType;
 
 import java.util.Collection;
 import java.util.List;
@@ -122,31 +122,29 @@ public class SmsSubmitCase {
         });
     }
 
-    private LocalDbRepository.SubmissionType getSubmissionType() {
+    private SubmissionType getSubmissionType() {
         if (converter instanceof TrackerEventConverter) {
-            return LocalDbRepository.SubmissionType.TRACKER_EVENT;
+            return SubmissionType.TRACKER_EVENT;
         }
         if (converter instanceof SimpleEventConverter) {
-            return LocalDbRepository.SubmissionType.SIMPLE_EVENT;
+            return SubmissionType.SIMPLE_EVENT;
         }
         if (converter instanceof EnrollmentConverter) {
-            return LocalDbRepository.SubmissionType.ENROLLMENT;
+            return SubmissionType.ENROLLMENT;
         }
         if (converter instanceof DatasetConverter) {
-            return LocalDbRepository.SubmissionType.DATA_SET;
+            return SubmissionType.DATA_SET;
         }
         if (converter instanceof RelationshipConverter) {
-            return LocalDbRepository.SubmissionType.RELATIONSHIP;
+            return SubmissionType.RELATIONSHIP;
         }
         if (converter instanceof DeletionConverter) {
-            return LocalDbRepository.SubmissionType.DELETION;
+            return SubmissionType.DELETION;
         }
         return null;
     }
 
-    public <T extends BaseDataModel> Completable checkConfirmationSms(final boolean searchReceived,
-                                                                      final Collection<String> requiredStrings,
-                                                                      final T dataModel) {
+    public Completable checkConfirmationSms(final boolean searchReceived) {
         return Single.zip(
                 localDbRepository.getConfirmationSenderNumber(),
                 localDbRepository.getWaitingResultTimeout(),
@@ -156,7 +154,10 @@ public class SmsSubmitCase {
                         searchReceived,
                         pair.second,
                         pair.first,
-                        requiredStrings)
+                        submissionId,
+                        getSubmissionType())
+        ).andThen(
+                converter.updateSubmissionState(State.SYNCED_VIA_SMS)
         );
     }
 

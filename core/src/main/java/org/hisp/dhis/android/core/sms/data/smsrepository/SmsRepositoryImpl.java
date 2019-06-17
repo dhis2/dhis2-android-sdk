@@ -8,6 +8,7 @@ import android.telephony.SmsManager;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.SubmissionType;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,23 +43,6 @@ public class SmsRepositoryImpl implements SmsRepository {
         ).doOnError(throwable ->
                 Log.e(TAG, throwable.getClass().getSimpleName(), throwable)
         ).subscribeOn(Schedulers.newThread());
-    }
-
-    @Override
-    public Completable listenToConfirmationSms(boolean searchReceived,
-                                               int waitingTimeoutSeconds,
-                                               String requiredSender,
-                                               Collection<String> requiredStrings) {
-        SmsReader smsReceiver = new SmsReader(context);
-        Completable waitForSmsAction = smsReceiver.waitToReceiveConfirmationSms(
-                waitingTimeoutSeconds, requiredSender, requiredStrings);
-        if (searchReceived) {
-            return smsReceiver.findConfirmationSms(requiredSender, requiredStrings)
-                    .flatMapCompletable(
-                            found -> found ? Completable.complete() : waitForSmsAction);
-        } else {
-            return waitForSmsAction;
-        }
     }
 
     @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.CyclomaticComplexity"})
@@ -112,6 +96,24 @@ public class SmsRepositoryImpl implements SmsRepository {
             SmsManager sms = SmsManager.getDefault();
             return sms.divideMessage(value);
         });
+    }
+
+    @Override
+    public Completable listenToConfirmationSms(boolean searchReceived,
+                                               int waitingTimeoutSeconds,
+                                               String requiredSender,
+                                               int submissionId,
+                                               SubmissionType submissionType) {
+        SmsReader smsReceiver = new SmsReader(context);
+        Completable waitForSmsAction = smsReceiver.waitToReceiveConfirmationSms(
+                waitingTimeoutSeconds, requiredSender, submissionId, submissionType);
+        if (searchReceived) {
+            return smsReceiver.findConfirmationSms(requiredSender, submissionId, submissionType)
+                    .flatMapCompletable(
+                            found -> found ? Completable.complete() : waitForSmsAction);
+        } else {
+            return waitForSmsAction;
+        }
     }
 
     /**

@@ -1,6 +1,5 @@
 package org.hisp.dhis.android.core.sms.domain.repository;
 
-import java.util.Collection;
 import java.util.List;
 
 import io.reactivex.Completable;
@@ -30,12 +29,14 @@ public interface SmsRepository {
      *
      * @param searchReceived        should also search previously received messages
      * @param waitingTimeoutSeconds After this time error will be returned.
+     * @param submissionType
      * @return Completable that is completed when result sms is successfully received
      */
     Completable listenToConfirmationSms(boolean searchReceived,
                                         int waitingTimeoutSeconds,
                                         String requiredSender,
-                                        Collection<String> requiredStrings);
+                                        int submissionId,
+                                        SubmissionType submissionType);
 
     /**
      * Returned when sms sending error is returned from OS.

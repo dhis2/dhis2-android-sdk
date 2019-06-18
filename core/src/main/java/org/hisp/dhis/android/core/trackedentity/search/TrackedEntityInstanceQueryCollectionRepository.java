@@ -49,6 +49,7 @@ import androidx.paging.DataSource;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 import dagger.Reusable;
+import io.reactivex.Single;
 
 @Reusable
 public final class TrackedEntityInstanceQueryCollectionRepository
@@ -136,6 +137,11 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     @Override
+    public Single<List<TrackedEntityInstance>> getAsync() {
+        return Single.fromCallable(this::get);
+    }
+
+    @Override
     public int count() {
         return get().size();
     }
@@ -147,6 +153,11 @@ public final class TrackedEntityInstanceQueryCollectionRepository
             public TrackedEntityInstance get() {
                 List<TrackedEntityInstance> list = TrackedEntityInstanceQueryCollectionRepository.this.get();
                 return list.isEmpty() ? null : list.get(0);
+            }
+
+            @Override
+            public Single<TrackedEntityInstance> getAsync() {
+                return Single.fromCallable(this::get);
             }
 
             @Override

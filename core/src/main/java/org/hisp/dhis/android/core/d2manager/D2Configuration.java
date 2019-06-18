@@ -40,9 +40,6 @@ import okhttp3.Interceptor;
 @AutoValue
 public abstract class D2Configuration {
 
-    @Nullable
-    public abstract String databaseName();
-
     public abstract String appName();
 
     public abstract String appVersion();
@@ -69,8 +66,6 @@ public abstract class D2Configuration {
 
     @AutoValue.Builder
     public abstract static class Builder {
-
-        public abstract Builder databaseName(String databaseName);
 
         public abstract Builder appName(String appName);
 

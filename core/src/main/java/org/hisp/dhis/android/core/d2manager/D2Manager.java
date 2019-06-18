@@ -43,6 +43,8 @@ import io.reactivex.annotations.Nullable;
 
 public final class D2Manager {
 
+    private static String databaseName = "dhis.db";
+
     private static D2 d2;
     private static D2Configuration d2Configuration;
     static DatabaseAdapter databaseAdapter;
@@ -58,6 +60,11 @@ public final class D2Manager {
         d2Configuration = d2Config;
         databaseAdapter = newDatabaseAdapter();
         configurationManager = ConfigurationManagerFactory.create(databaseAdapter);
+    }
+
+    @VisibleForTesting
+    static void setDatabaseName(String dbName) {
+        databaseName = dbName;
     }
 
     public static boolean isServerUrlSet() {
@@ -99,7 +106,7 @@ public final class D2Manager {
     }
 
     private static DatabaseAdapter newDatabaseAdapter() {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(d2Configuration.context(), d2Configuration.databaseName());
+        DbOpenHelper dbOpenHelper = new DbOpenHelper(d2Configuration.context(), databaseName);
         return new SqLiteDatabaseAdapter(dbOpenHelper);
     }
 

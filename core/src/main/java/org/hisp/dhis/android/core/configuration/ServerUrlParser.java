@@ -27,24 +27,32 @@
  */
 package org.hisp.dhis.android.core.configuration;
 
-import java.util.Locale;
-
 import androidx.annotation.NonNull;
 import okhttp3.HttpUrl;
 
-public final class ConfigurationHelper {
+public final class ServerUrlParser {
 
-    private ConfigurationHelper() {}
-
-    public static void validateServerUrl(@NonNull String serverUrl) {
-        if (serverUrl.endsWith("api/")) {
-            throw new IllegalArgumentException("Server URL must not end with 'api/'");
-        } else if (!serverUrl.endsWith("/")) {
-            throw new IllegalArgumentException("Server URL must end with '/'");
-        }
+    private ServerUrlParser() {
     }
 
-    static HttpUrl getCanonicalServerUrl(String serverUrl) {
-        return HttpUrl.parse(String.format(Locale.US, "%sapi/", serverUrl));
+    private static String appendSlashAndAPI(@NonNull String url) {
+        String trimmedUrl = url.trim();
+        trimmedUrl = trimmedUrl.replace(" ", "");
+
+        String withSlash = trimmedUrl.endsWith("/") ? trimmedUrl : trimmedUrl + "/";
+        return withSlash.endsWith("api/") ? withSlash : withSlash + "api/";
+    }
+
+    public static HttpUrl parse(@NonNull String url) {
+        if (url == null) {
+            throw new IllegalArgumentException("URL is null");
+        }
+        String urlWithSlashAndAPI = appendSlashAndAPI(url);
+        HttpUrl httpUrl = HttpUrl.parse(ServerUrlParser.appendSlashAndAPI(urlWithSlashAndAPI));
+        if (httpUrl == null) {
+            throw new IllegalArgumentException("Malformed HTTP or HTTPS URL");
+        } else {
+            return httpUrl;
+        }
     }
 }

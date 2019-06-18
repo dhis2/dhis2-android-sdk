@@ -35,6 +35,8 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import okhttp3.HttpUrl;
+
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verify;
@@ -50,7 +52,7 @@ public class ConfigurationManagerShould {
 
     private final String SERVER_URL = "http://testserver.org/";
 
-    private final Configuration configuration = Configuration.forServerUrlStringWithoutAPI(SERVER_URL);
+    private final Configuration configuration = Configuration.forServerUrl(HttpUrl.parse(SERVER_URL));
 
     @Before
     public void setUp() throws Exception {

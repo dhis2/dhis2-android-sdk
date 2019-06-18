@@ -16,6 +16,7 @@ import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.SubmissionType;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Completable;
@@ -144,14 +145,14 @@ public class SmsSubmitCase {
         return null;
     }
 
-    public Completable checkConfirmationSms(final boolean searchReceived) {
+    public Completable checkConfirmationSms(final Date fromDate) {
         return Single.zip(
                 localDbRepository.getConfirmationSenderNumber(),
                 localDbRepository.getWaitingResultTimeout(),
                 Pair::create
         ).flatMapCompletable(pair ->
                 smsRepository.listenToConfirmationSms(
-                        searchReceived,
+                        fromDate,
                         pair.second,
                         pair.first,
                         submissionId,

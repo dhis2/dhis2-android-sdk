@@ -12,6 +12,7 @@ import org.hisp.dhis.android.core.sms.domain.repository.SubmissionType;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -99,21 +100,18 @@ public class SmsRepositoryImpl implements SmsRepository {
     }
 
     @Override
-    public Completable listenToConfirmationSms(boolean searchReceived,
+    public Completable listenToConfirmationSms(Date fromDate,
                                                int waitingTimeoutSeconds,
                                                String requiredSender,
                                                int submissionId,
                                                SubmissionType submissionType) {
         SmsReader smsReceiver = new SmsReader(context);
-        Completable waitForSmsAction = smsReceiver.waitToReceiveConfirmationSms(
-                waitingTimeoutSeconds, requiredSender, submissionId, submissionType);
-        if (searchReceived) {
-            return smsReceiver.findConfirmationSms(requiredSender, submissionId, submissionType)
-                    .flatMapCompletable(
-                            found -> found ? Completable.complete() : waitForSmsAction);
-        } else {
-            return waitForSmsAction;
-        }
+        return smsReceiver.findConfirmationSms(
+                fromDate, requiredSender, submissionId, submissionType
+        ).flatMapCompletable(found -> found ? Completable.complete() :
+                smsReceiver.waitToReceiveConfirmationSms(
+                        waitingTimeoutSeconds, requiredSender, submissionId, submissionType)
+        );
     }
 
     /**

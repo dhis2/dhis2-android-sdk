@@ -14,6 +14,7 @@ import android.util.Log;
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.SubmissionType;
 
+import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -61,7 +62,7 @@ class SmsReader {
         });
     }
 
-    Single<Boolean> findConfirmationSms(String requiredSender, int submissionId, SubmissionType submissionType) {
+    Single<Boolean> findConfirmationSms(Date fromDate, String requiredSender, int submissionId, SubmissionType submissionType) {
         return Single.fromCallable(() -> {
             ContentResolver cr = context.getContentResolver();
             Cursor c = cr.query(Telephony.Sms.CONTENT_URI, null, null,
@@ -72,7 +73,9 @@ class SmsReader {
             do {
                 String number = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.ADDRESS));
                 String body = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.BODY));
-                if (isAwaitedMessage(number, body, requiredSender, submissionId, submissionType)) {
+                Date dateReceived = new Date(c.getLong(c.getColumnIndexOrThrow(Telephony.Sms.DATE)));
+                if (isAwaitedMessage(number, body, requiredSender, submissionId, submissionType)
+                        && dateReceived.after(fromDate)) {
                     c.close();
                     return true;
                 }

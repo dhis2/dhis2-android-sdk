@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.d2manager;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.configuration.Configuration;
-import org.hisp.dhis.android.core.configuration.ConfigurationHelper;
 import org.hisp.dhis.android.core.configuration.ConfigurationManager;
 import org.hisp.dhis.android.core.configuration.ConfigurationManagerFactory;
+import org.hisp.dhis.android.core.configuration.ServerUrlParser;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
 import androidx.annotation.VisibleForTesting;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
+import okhttp3.HttpUrl;
 
 public final class D2Manager {
 
@@ -71,9 +72,9 @@ public final class D2Manager {
         return configurationManager != null && configurationManager.get() != null;
     }
 
-    public static void setServerUrl(@NonNull String urlWithoutAPI) {
-        ConfigurationHelper.validateServerUrl(urlWithoutAPI);
-        Configuration configuration = Configuration.forServerUrlStringWithoutAPI(urlWithoutAPI);
+    public static void setServerUrl(@NonNull String url) {
+        HttpUrl httpUrl = ServerUrlParser.parse(url);
+        Configuration configuration = Configuration.forServerUrl(httpUrl);
         configurationManager.configure(configuration);
         instantiateD2(configuration);
     }

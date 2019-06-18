@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.authentication.internal.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor;
 import org.hisp.dhis.android.core.configuration.Configuration;
+import org.hisp.dhis.android.core.configuration.ServerUrlParser;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collections;
@@ -77,9 +78,9 @@ public class D2Factory {
         return d2;
     }
 
-    public static D2 create(String urlWithoutAPI, DatabaseAdapter databaseAdapter) {
+    public static D2 create(String url, DatabaseAdapter databaseAdapter) {
         return new D2.Builder()
-                .configuration(Configuration.forServerUrlStringWithoutAPI(urlWithoutAPI))
+                .configuration(Configuration.forServerUrl(ServerUrlParser.parse(url)))
                 .databaseAdapter(databaseAdapter)
                 .okHttpClient(okHttpClient(databaseAdapter))
                 .context(InstrumentationRegistry.getTargetContext().getApplicationContext())

@@ -31,32 +31,48 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import okhttp3.HttpUrl;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 @RunWith(JUnit4.class)
-public class ConfigurationHelperShould {
+public class ServerUrlParserShould {
+
+    private final HttpUrl EXPECTED = HttpUrl.parse("http://dhis2.org/api/");
 
     @Test(expected = IllegalArgumentException.class)
-    public void validate_error_empty_string() {
-        ConfigurationHelper.validateServerUrl("");
+    public void return_error_empty_string() {
+        ServerUrlParser.parse("");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void validate_error_url_with_api() {
-        ConfigurationHelper.validateServerUrl("http://dhis2.org/api/");
+    public void return_error_null_string() {
+        ServerUrlParser.parse(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void validate_error_url_without_slash() {
-        ConfigurationHelper.validateServerUrl("http://dhis2.org");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void validate_error_url_with_api_without_slash() {
-        ConfigurationHelper.validateServerUrl("http://dhis2.org/api");
+    public void return_error_malformed_url() {
+        ServerUrlParser.parse("malformed url");
     }
 
     @Test
-    public void validate_ok_correct_api() {
-        ConfigurationHelper.validateServerUrl("http://dhis2.org/");
+    public void parse_url_with_no_api_no_slash() {
+        assertThat(ServerUrlParser.parse("http://dhis2.org")).isEqualTo(EXPECTED);
+    }
+
+    @Test
+    public void parse_url_slash() {
+        assertThat(ServerUrlParser.parse("http://dhis2.org/")).isEqualTo(EXPECTED);
+    }
+
+    @Test
+    public void parse_url_slash_api() {
+        assertThat(ServerUrlParser.parse("http://dhis2.org/api")).isEqualTo(EXPECTED);
+    }
+
+    @Test
+    public void parse_url_slash_api_slash() {
+        assertThat(ServerUrlParser.parse("http://dhis2.org/api/")).isEqualTo(EXPECTED);
     }
 }

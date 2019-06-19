@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.api.executors.internal;
 
-import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.arch.call.internal.D2CallWithProgressImpl;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -68,22 +65,20 @@ final class RxAPICallExecutorImpl implements RxAPICallExecutor {
     }
 
     @Override
-    public D2CallWithProgress wrapObservableTransactionally(Observable<D2Progress> observable,
+    public <P> Observable<P> wrapObservableTransactionally(Observable<P> observable,
                                                             boolean cleanForeignKeys) {
         Transaction transaction = databaseAdapter.beginNewTransaction();
-        return new D2CallWithProgressImpl(
-                observable
-                        .doOnComplete(() -> {
-                            if (cleanForeignKeys) {
-                                foreignKeyCleaner.cleanForeignKeyErrors();
-                            }
-                            transaction.setSuccessful();
-                            transaction.end();
-                        }).onErrorResumeNext(throwable -> {
-                            transaction.end();
-                            return Observable.error(mapAndStore(throwable));
-                        })
-        );
+        return observable
+                .doOnComplete(() -> {
+                    if (cleanForeignKeys) {
+                        foreignKeyCleaner.cleanForeignKeyErrors();
+                    }
+                    transaction.setSuccessful();
+                    transaction.end();
+                }).onErrorResumeNext(throwable -> {
+            transaction.end();
+            return Observable.error(mapAndStore(throwable));
+        });
     }
 
     private D2Error mapAndStore(Throwable throwable) {

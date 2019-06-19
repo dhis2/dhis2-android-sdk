@@ -75,7 +75,7 @@ public class AggregatedDataCallRealIntegrationShould extends BaseRealIntegration
         d2.userModule().logIn("android", "Android123").blockingGet();
 
         d2.syncMetaData().call();
-        d2.aggregatedModule().data().download().asObservable().subscribe();
+        d2.aggregatedModule().data().download().subscribe();
     }
 
     //@Test
@@ -83,9 +83,9 @@ public class AggregatedDataCallRealIntegrationShould extends BaseRealIntegration
         d2.userModule().logIn("android", "Android123").blockingGet();
 
         d2.syncMetaData().call();
-        d2.aggregatedModule().data().download().asObservable().subscribe();
+        d2.aggregatedModule().data().download().subscribe();
 
         d2.syncMetaData().call();
-        d2.aggregatedModule().data().download().asObservable().subscribe();
+        d2.aggregatedModule().data().download().subscribe();
     }
 }

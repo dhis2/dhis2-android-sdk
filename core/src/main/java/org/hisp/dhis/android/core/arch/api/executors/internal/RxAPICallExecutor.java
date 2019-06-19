@@ -28,14 +28,11 @@
 
 package org.hisp.dhis.android.core.arch.api.executors.internal;
 
-import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
 public interface RxAPICallExecutor {
     <P> Single<P> wrapSingle(Single<P> single);
 
-    D2CallWithProgress wrapObservableTransactionally(Observable<D2Progress> observable, boolean cleanForeignKeys);
+    <P> Observable<P> wrapObservableTransactionally(Observable<P> observable, boolean cleanForeignKeys);
 }

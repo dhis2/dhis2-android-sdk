@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.domain.aggregated.data;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
-import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
@@ -87,7 +86,7 @@ final class AggregatedDataCall {
         this.rxCallExecutor = rxCallExecutor;
     }
 
-    D2CallWithProgress asCompletable() {
+    Observable<D2Progress> download() {
         D2ProgressManager progressManager = new D2ProgressManager(3);
 
         Observable<D2Progress> observable = systemInfoRepository.download()

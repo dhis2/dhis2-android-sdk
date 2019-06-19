@@ -62,7 +62,7 @@ public class DataValuePostCallRealIntegrationShould extends BaseRealIntegrationT
     public void dataValuesWithToPostState_shouldBeUploaded() throws Exception {
 
         d2.syncMetaData().call();
-        d2.aggregatedModule().data().download().asObservable().subscribe();
+        d2.aggregatedModule().data().download().subscribe();
 
         DataValue dataValue = getTestDataValueWith(State.TO_POST, 1);
 
@@ -82,7 +82,7 @@ public class DataValuePostCallRealIntegrationShould extends BaseRealIntegrationT
     public void dataValuesWithToUpdateState_shouldBeUploaded() throws Exception {
 
         d2.syncMetaData().call();
-        d2.aggregatedModule().data().download().asObservable().subscribe();
+        d2.aggregatedModule().data().download().subscribe();
 
         DataValue dataValue = getTestDataValueWith(State.TO_UPDATE,2);
 

@@ -105,7 +105,7 @@ public final class D2Manager {
         }
     }
 
-    private static boolean isD2Instantiated() {
+    public static boolean isD2Instantiated() {
         return d2 != null;
     }
 

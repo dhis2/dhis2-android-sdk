@@ -48,7 +48,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 public class D2Factory {
 
-    public static D2 create(String urlWithoutAPI, String databaseName) {
+    public static D2 create(String serverUrl, String databaseName) {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
@@ -65,13 +65,12 @@ public class D2Factory {
                 .build();
 
         D2Manager.setDatabaseName(databaseName);
-        D2Manager.setD2Configuration(d2Configuration);
 
-        if (!D2Manager.isServerUrlSet()) {
-            D2Manager.setServerUrl(urlWithoutAPI);
-        }
+        D2 d2 = D2Manager.setUp(d2Configuration)
+                .andThen(D2Manager.setServerUrl(serverUrl))
+                .andThen(D2Manager.instantiateD2())
+                .blockingGet();
 
-        D2 d2 = D2Manager.getD2();
         D2Manager.clear();
         D2Manager.setDatabaseName(null);
 

@@ -65,7 +65,7 @@ public class D2ManagerRealIntegrationShould {
 
     @Before
     public void setUp() {
-        D2Manager.setD2Configuration(d2Configuration);
+        D2Manager.setUp(d2Configuration).blockingAwait();
     }
 
     @After
@@ -110,7 +110,7 @@ public class D2ManagerRealIntegrationShould {
     }
 
     private void configureD2() {
-        D2Manager.setServerUrl(RealServerMother.url);
+        D2Manager.setServerUrl(RealServerMother.url).andThen(D2Manager.instantiateD2()).blockingGet();
     }
 
     private void persistCredentialsInDb() {

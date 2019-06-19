@@ -24,6 +24,7 @@ branches:
   - master
   - develop
   - master-sms
+  - master-dev
 
 script:
 - travis_wait 70 "./build.sh"

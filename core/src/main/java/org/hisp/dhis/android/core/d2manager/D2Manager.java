@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.d2manager;
 
+import android.util.Log;
+
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.configuration.Configuration;
 import org.hisp.dhis.android.core.configuration.ConfigurationManager;
@@ -59,10 +61,14 @@ public final class D2Manager {
 
     public static Completable setUp(@Nullable D2Configuration d2Config) {
         return Completable.fromAction(() -> {
+            long startTime = System.currentTimeMillis();
             d2Configuration = d2Config;
             databaseAdapter = newDatabaseAdapter();
             configurationManager = ConfigurationManagerFactory.create(databaseAdapter);
             configuration = configurationManager.get();
+
+            long setUpTime = System.currentTimeMillis() - startTime;
+            Log.i(D2Manager.class.getName(), "Set up took " + setUpTime + "ms");
         });
     }
 
@@ -107,12 +113,20 @@ public final class D2Manager {
         return Single.fromCallable(() -> {
             ensureSetUp();
             ensureServerUrl();
+
+            long startTime = System.currentTimeMillis();
+
             d2 = new D2.Builder()
                     .configuration(configuration)
                     .databaseAdapter(databaseAdapter)
                     .okHttpClient(OkHttpClientFactory.okHttpClient(d2Configuration, databaseAdapter))
                     .context(d2Configuration.context())
                     .build();
+
+
+            long setUpTime = System.currentTimeMillis() - startTime;
+            Log.i(D2Manager.class.getName(), "D2 instantiation took " + setUpTime + "ms");
+
             return d2;
         });
     }

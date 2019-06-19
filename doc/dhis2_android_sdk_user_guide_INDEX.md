@@ -1,20 +1,22 @@
 <!--DHIS2-SECTION-ID:index-->
 
-# Compatibility: SDK / core / Android
+# SDK Developer user guide
+
+## Compatibility: SDK / core / Android
 
 | SDK      | DHIS2 core       | Android SDK |
 |----------|------------------|-------------|
 | 0.17.0   | 2.30, 2.31, 2.32 | 19 - 28     |
 
-# Overview
+## Overview
 
 - Approach: the sdk is currently oriented to end-user apps (i.e, data encoders)
 - Works offline
 - 
 
-# Getting started
+## Getting started
 
-## Installation
+### Installation
 
 Include dependency in build.gradle.
 
@@ -25,11 +27,21 @@ dependencies {
 }
 ```
 
-## D2 initialization
+### D2 initialization
 
-# Workflow
+In order to start using the SDK, the first step is to initialize a `D2` object.
 
-Currently, the SDK is primarily oriented to build apps that work most of the time in an offline mode. In short, the SDK maintains a local database instance that is used to get all the work done (create forms, manage data, ...). From time to time, this local database instance is synchronized with the server.
+D2Manager, static?
+
+The object `D2Configuration` receives the following attributes:
+
+|  Attribute  |   Required   |   Description |
+|-|-|-|
+| | | |
+
+## Workflow
+
+Currently, the SDK is primarily oriented to build apps that work most of the time in an offline mode. In short, the SDK maintains a local database instance that is used to get the work done locally (create forms, manage data, ...). From time to time, this local database is synchronized with the server.
 
 A typical workflow would be like this:
 
@@ -40,7 +52,29 @@ A typical workflow would be like this:
 5. Upload data: from time to time, the work done in the local database instance is sent to the server.
 6. Sync metadata: it is recommended to sync metadata quite often to detect changes in metadata configuration.
 
-## Metadata synchronization
+### Login/Logout
+
+Before interacting with the server it is required to login into the DHIS 2 instance. Currently, the SDK does only support one pair "user - server" simultaneously. That means that only one user can be authenticated in only one server at the same time.
+
+[//]: # (TODO Include command)
+
+```
+d2...
+```
+After a logout the SDK keeps track of the last logged user so that it is able to differentiate recurring and new users. It also keeps a hash of the user credentials in order to authenticate the user even when there is no connectivity. Given that said, the login method will:
+
+- If an authenticated user already exists: throw an error.
+- If user account has been disabled in server: wipe DB and throw an error.
+- If login is successful:
+  - If user is different than last logged user: wipe DB and try **login online**.
+  - If server is different (even if the user is the same): wipe DB and try **login online**.
+- If no internet connection is present:
+  - If the user has been ever authenticated: 
+    - If server is the same: try **login offline**.
+    - If server is different: throw an error.
+  - If the user has not been authenticated before: throw an error.
+
+### Metadata synchronization
 
 Command to launch metadata synchronization:
 
@@ -64,7 +98,7 @@ Based on that, metadata sync includes the following elements:
 - Capture and Search orgunits (including descendants).
 - Constants.
 
-### Corrupted configurations
+#### Corrupted configurations
 
 This partial metadata synchronization may expose server-side misconfiguration issues. For example, a ProgramRuleVariable pointing to a DataElement that does not belong to the program anymore. Due to the use of database-level constraints, this misconfiguration will appear as a Foreign Key error.
 
@@ -74,7 +108,7 @@ The SDK does not fail the synchronization, but it stores the errors in a table f
 d2.maintenanceModule().foreignKeyViolations
 ```
 
-# Module architecture
+## Module architecture
 
 Module list:
 
@@ -86,7 +120,6 @@ System:
 
 Metadata / data:
 
-- programModule
 - categoryModule
 - constantModule
 - dataElementModule
@@ -106,17 +139,31 @@ Metadata / data:
 - userModule
 - smsModule
 
-## Filters
+### Filters
 
-## Nested fields
+### Nested fields
 
-# Error management
+## Error management
 
-# SMS module
+## SMS module
 
-# DHIS2 version compatibility strategy
+## DHIS2 version compatibility strategy
 
-# Program indicator engine
+The SDK guarantees compatibility with the latest three DHIS 2 releases. To avoid accidental login into unsupported DHIS 2 instances, the SDK blocks connections to version that are not supported yet or that have been deprecated.
+
+Regarding data model and compatibility, the main approach is to extend the data model to be able to support all the DHIS 2 versions. It usually happens that new DHIS 2 versions introduce extra functionality and do not remove existing one, so supporting a new DHIS 2 version usually mean to use the latest data model.
+
+As a general rule the SDK tries to avoid breaking changes in its API and to make new features optional to the user. This rule is followed as much as possible, but there are cases where supporting old and new APIs to avoid breaking has a very high cost. In this scenario the **SDK might introduce breaking changes to be compatible with the new DHIS 2 version**.
+
+### Example: minor change
+
+...
+
+### Example: breaking change
+
+...
+
+## Program indicator engine
 
 The SDK includes its own Program Indicator engine for the evaluation of **in-line Program Indicators**. These kind of indicators are evaluated within the context of an enrollment and they are usually placed in the data entry form offering additional information to the data encoder. This means that, even though they are regular Program Indicators and can be calculated across enrollments, they have provide useful information within a single enrollment.
 
@@ -182,4 +229,4 @@ Compatibility table:
 | enrollment_count      | N/A       |
 | organisationunit_count| N/A       |
 
-# Troubleshooting
+## Troubleshooting

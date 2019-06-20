@@ -57,6 +57,8 @@ public interface LocalDbRepository {
 
     Single<Map<Integer, SubmissionType>> getOngoingSubmissions();
 
+    Single<Integer> generateNextSubmissionId();
+
     Completable addOngoingSubmission(Integer id, SubmissionType type);
 
     Completable removeOngoingSubmission(Integer id);
@@ -72,4 +74,10 @@ public interface LocalDbRepository {
                                              State state);
 
     Single<Relationship> getRelationship(String relationshipUid);
+
+    class TooManySubmissionsException extends IllegalStateException {
+        public TooManySubmissionsException() {
+            super("Too many ongoing submissions at the same time >255");
+        }
+    }
 }

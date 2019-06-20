@@ -190,6 +190,11 @@ public class TestRepositories {
         }
 
         @Override
+        public Single<Integer> generateNextSubmissionId() {
+            return null;
+        }
+
+        @Override
         public Completable addOngoingSubmission(Integer id, SubmissionType type) {
             return null;
         }

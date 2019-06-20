@@ -250,6 +250,11 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
+    public Single<Integer> generateNextSubmissionId() {
+        return ongoingSubmissionsStore.generateNextSubmissionId();
+    }
+
+    @Override
     public Completable addOngoingSubmission(Integer id, SubmissionType type) {
         return ongoingSubmissionsStore.addOngoingSubmission(id, type);
     }

@@ -15,7 +15,6 @@ import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.SubmissionType;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -78,27 +77,14 @@ public class SmsSubmitCase {
         }
         this.converter = converter;
         return checkPreconditions()
-                .andThen(generateSubmissionId()
+                .andThen(localDbRepository.generateNextSubmissionId()
+                        .doOnSuccess(id -> submissionId = id)
                 ).flatMap(converter::readAndConvert
                 ).flatMap(smsRepository::generateSmsParts
                 ).map(parts -> {
                     smsParts = parts;
                     return parts.size();
                 });
-    }
-
-    private Single<Integer> generateSubmissionId() {
-        return localDbRepository.getOngoingSubmissions().flatMap(submissions -> {
-            Collection<Integer> ids = submissions.keySet();
-            for (int i = 0; i <= 255; i++) {
-                if (!ids.contains(i)) {
-                    submissionId = i;
-                    return Single.just(i);
-                }
-            }
-            submissionId = null;
-            return Single.error(new TooManySubmissionsException());
-        });
     }
 
     public Observable<SmsRepository.SmsSendingState> send() {
@@ -121,6 +107,10 @@ public class SmsSubmitCase {
             }
             return Observable.just(state);
         });
+    }
+
+    public Integer getSubmissionId() {
+        return submissionId;
     }
 
     private SubmissionType getSubmissionType() {
@@ -212,12 +202,6 @@ public class SmsSubmitCase {
             NO_USER_LOGGED_IN,
             NO_METADATA_DOWNLOADED,
             SMS_MODULE_DISABLED
-        }
-    }
-
-    public static class TooManySubmissionsException extends IllegalStateException {
-        TooManySubmissionsException() {
-            super("Too many ongoing submissions at the same time >255");
         }
     }
 }

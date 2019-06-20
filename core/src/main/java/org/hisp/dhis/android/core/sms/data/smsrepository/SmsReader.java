@@ -62,7 +62,9 @@ class SmsReader {
         });
     }
 
-    Single<Boolean> findConfirmationSms(Date fromDate, String requiredSender, int submissionId, SubmissionType submissionType) {
+    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
+    Single<Boolean> findConfirmationSms(Date fromDate, String requiredSender,
+                                        int submissionId, SubmissionType submissionType) {
         return Single.fromCallable(() -> {
             ContentResolver cr = context.getContentResolver();
             Cursor c = cr.query(Telephony.Sms.CONTENT_URI, null, null,
@@ -111,6 +113,7 @@ class SmsReader {
         return true;
     }
 
+    @SuppressWarnings({"PMD.UnusedFormalParameter"})
     private boolean isAwaitedMessage(String sender, String message, String requiredSender,
                                      int submissionId, SubmissionType submissionType) {
         if (requiredSender != null &&
@@ -118,17 +121,15 @@ class SmsReader {
                         .contains(requiredSender.toLowerCase(Locale.ROOT)))) {
             return false;
         }
-        if (!message.startsWith(Integer.toString(submissionId))) {
+        int firstSeparator = message.indexOf(':');
+        if (firstSeparator < 0 || firstSeparator >= message.length() - 2) {
             return false;
         }
-        int firstComma = message.indexOf(',');
-        if (firstComma < 0 || firstComma >= message.length() - 2) {
+        int secondSeparator = message.indexOf(':', firstSeparator + 1);
+        if (secondSeparator < 0) {
             return false;
         }
-        int secondComma = message.indexOf(',', firstComma + 1);
-        if (secondComma < 0) {
-            return false;
-        }
-        return message.substring(firstComma + 1, secondComma).equals(submissionType.getText());
+        return message.substring(0, firstSeparator).equals(Integer.toString(submissionId))
+                && message.substring(firstSeparator + 1, secondSeparator).equals("0");
     }
 }

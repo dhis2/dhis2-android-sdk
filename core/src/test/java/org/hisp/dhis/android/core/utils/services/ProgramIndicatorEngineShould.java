@@ -222,7 +222,7 @@ public class ProgramIndicatorEngineShould {
     }
 
     @Test
-    public void parse_static_value() throws Exception {
+    public void parse_static_value() {
         when(programIndicator.expression()).thenReturn("5 * 10");
 
         String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,
@@ -232,7 +232,7 @@ public class ProgramIndicatorEngineShould {
     }
 
     @Test
-    public void parse_one_dataelement() throws Exception {
+    public void parse_one_dataelement() {
         when(programIndicator.expression()).thenReturn(de(programStageUid1, dataElementUid1));
 
         when(value1.value()).thenReturn("3.5");
@@ -243,7 +243,7 @@ public class ProgramIndicatorEngineShould {
     }
 
     @Test
-    public void parse_one_text_dataelement() throws Exception {
+    public void parse_one_text_dataelement() {
         when(programIndicator.expression()).thenReturn(de(programStageUid1, dataElementUid1));
 
         when(value1.value()).thenReturn("text data-value");
@@ -254,7 +254,7 @@ public class ProgramIndicatorEngineShould {
     }
 
     @Test
-    public void parse_operation_two_dataelements() throws Exception {
+    public void parse_operation_two_dataelements() {
         when(programIndicator.expression()).thenReturn(
                 de(programStageUid1, dataElementUid1) + " + " + de(programStageUid1, dataElementUid2));
 
@@ -267,7 +267,7 @@ public class ProgramIndicatorEngineShould {
     }
 
     @Test
-    public void parse_operation_two_mixed_dataelements() throws Exception {
+    public void parse_operation_two_mixed_dataelements() {
         when(programIndicator.expression()).thenReturn(
                 de(programStageUid1, dataElementUid1) + " + " + de(programStageUid1, dataElementUid2));
 
@@ -280,7 +280,7 @@ public class ProgramIndicatorEngineShould {
     }
 
     @Test
-    public void parse_operation_with_parenthesis() throws Exception {
+    public void parse_operation_with_parenthesis() {
         when(programIndicator.expression()).thenReturn(
                 "(" + de(programStageUid1, dataElementUid1) + " + " + de(programStageUid1, dataElementUid2) +
                 ") / " + de(programStageUid1, dataElementUid3));
@@ -295,7 +295,7 @@ public class ProgramIndicatorEngineShould {
     }
 
     @Test
-    public void parse_dataelement_and_constant() throws Exception {
+    public void parse_dataelement_and_constant() {
         when(programIndicator.expression()).thenReturn(
                 de(programStageUid1, dataElementUid1) + " + " + cons(constantUid1));
 
@@ -332,7 +332,7 @@ public class ProgramIndicatorEngineShould {
     }
 
     @Test
-    public void parse_enrollment_status_variable() throws Exception {
+    public void parse_enrollment_status_variable() {
         when(programIndicator.expression()).thenReturn(var("enrollment_status"));
 
         when(enrollment.status()).thenReturn(EnrollmentStatus.ACTIVE);
@@ -367,7 +367,7 @@ public class ProgramIndicatorEngineShould {
     }
 
     @Test
-    public void parse_event_count_variable() throws Exception {
+    public void parse_event_count_variable() {
         when(programIndicator.expression()).thenReturn(var("event_count"));
 
         String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, eventUid1, programIndicatorUid);
@@ -376,7 +376,7 @@ public class ProgramIndicatorEngineShould {
     }
 
     @Test
-    public void parse_value_count_variable() throws Exception {
+    public void parse_value_count_variable() {
         when(programIndicator.expression()).thenReturn(
                 "(" + de(programStageUid1, dataElementUid1) + " + " + de(programStageUid1, dataElementUid2) +
                         ") / " + var("value_count"));
@@ -452,7 +452,7 @@ public class ProgramIndicatorEngineShould {
     }
 
     @Test
-    public void parse_operation_with_zero_values() throws Exception {
+    public void parse_operation_with_zero_values() {
         when(programIndicator.expression()).thenReturn(
                 de(programStageUid2, dataElementUid2) + " * 10");
 
@@ -467,7 +467,7 @@ public class ProgramIndicatorEngineShould {
     }
 
     @Test
-    public void parse_last_aggregation_type() throws Exception {
+    public void parse_last_aggregation_type() {
         when(programIndicator.expression()).thenReturn(
                 de(programStageUid2, dataElementUid4) + " * 10");
 
@@ -486,6 +486,20 @@ public class ProgramIndicatorEngineShould {
 
         assertThat(lastResult).isEqualTo("4 * 10");
     }
+
+    @Test
+    public void default_to_none_on_null_aggregation_type() {
+        when(programIndicator.expression()).thenReturn(de(programStageUid1, dataElementUid1));
+
+        when(value1.value()).thenReturn("10");
+
+        when(programIndicator.aggregationType()).thenReturn(null);
+        String sumResult = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,
+                programIndicatorUid);
+
+        assertThat(sumResult).isEqualTo("10");
+    }
+
 
     // -------------------------------------------------------------------------
     // Supportive methods

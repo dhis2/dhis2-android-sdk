@@ -202,6 +202,20 @@ public class ProgramIndicatorEngineIntegrationShould extends BaseMockIntegration
     }
 
     @Test
+    public void evaluate_division_two_dataelement() {
+        createEnrollment(null, null);
+        createEvent(event1, programStage1, null);
+        insertTrackedEntityDataValue(event1, dataElement1, "3");
+        insertTrackedEntityDataValue(event1, dataElement2, "5");
+
+        setProgramIndicatorExpressionAsAverage(de(programStage1,dataElement1) + " / " + de(programStage1,dataElement2));
+
+        String result = programIndicatorEngine.getProgramIndicatorValue(enrollmentUid, event1, programIndicatorUid);
+
+        assertThat(result).isEqualTo("0.6");
+    }
+
+    @Test
     public void evaluate_last_value_indicators_different_dates() {
         createEnrollment(null, null);
         createEvent(event1, programStage1, twoDaysBefore(), today());

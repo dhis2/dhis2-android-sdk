@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLink;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkTableInfo;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
 final class ProgramStageSectionProgramIndicatorLinkStore {
 

@@ -34,10 +34,10 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.event.EventTableInfo;
-import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
-import org.hisp.dhis.android.core.imports.internal.ImportConflict;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
+import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
+import org.hisp.dhis.android.core.imports.internal.ImportConflict;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import dagger.Reusable;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.getState;
+import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getState;
 
 @Reusable
 public class EventImportHandler {

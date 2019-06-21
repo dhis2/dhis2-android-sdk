@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.data.server;
 
 import org.hisp.dhis.android.core.data.file.IFileReader;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
-import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -219,7 +218,7 @@ public class Dhis2MockServer {
         rfc1123.setTimeZone(UTC);
         String dateHeaderValue = rfc1123.format(dateHeader);
 
-        response.setHeader(HeaderUtils.DATE, dateHeaderValue);
+        response.setHeader("Date", dateHeaderValue);
 
         server.enqueue(response);
     }

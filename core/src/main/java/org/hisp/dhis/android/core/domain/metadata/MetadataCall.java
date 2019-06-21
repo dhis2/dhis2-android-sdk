@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.settings.internal.SystemSettingModuleDownloade
 import org.hisp.dhis.android.core.sms.SmsModule;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserModuleDownloader;
+import org.hisp.dhis.android.core.user.internal.UserModuleDownloader;
 
 import java.util.List;
 import java.util.concurrent.Callable;

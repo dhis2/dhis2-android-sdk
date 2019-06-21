@@ -27,6 +27,10 @@
  */
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.user.internal.IsUserLoggedInCallableFactory;
+import org.hisp.dhis.android.core.user.internal.LogOutCallFactory;
+import org.hisp.dhis.android.core.user.internal.UserAuthenticateCallFactory;
+
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;

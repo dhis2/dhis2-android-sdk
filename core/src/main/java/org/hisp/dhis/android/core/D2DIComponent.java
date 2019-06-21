@@ -72,7 +72,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
-import org.hisp.dhis.android.core.user.UserPackageDIModule;
+import org.hisp.dhis.android.core.user.internal.UserPackageDIModule;
 import org.hisp.dhis.android.core.wipe.WipeDIModule;
 import org.hisp.dhis.android.core.wipe.WipeModule;
 

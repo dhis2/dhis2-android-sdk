@@ -46,7 +46,7 @@ import org.hisp.dhis.android.core.sms.SmsModule;
 import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserModuleDownloader;
+import org.hisp.dhis.android.core.user.internal.UserModuleDownloader;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

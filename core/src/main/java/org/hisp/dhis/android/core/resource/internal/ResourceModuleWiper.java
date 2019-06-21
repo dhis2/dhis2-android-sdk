@@ -26,10 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.resource;
+package org.hisp.dhis.android.core.resource.internal;
 
-import dagger.Module;
+import org.hisp.dhis.android.core.wipe.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.TableWiper;
 
-@Module(includes = {ResourceEntityDIModule.class})
-public final class ResourcePackageDIModule {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+public final class ResourceModuleWiper implements ModuleWiper {
+
+    private final TableWiper tableWiper;
+
+    private final ResourceStore store;
+
+    @Inject
+    ResourceModuleWiper(TableWiper tableWiper, ResourceStore store) {
+        this.tableWiper = tableWiper;
+        this.store = store;
+    }
+
+    @Override
+    public void wipeMetadata() {
+        tableWiper.wipeTables(ResourceTableInfo.TABLE_INFO);
+    }
+
+    @Override
+    public void wipeData() {
+        store.deleteResource(Resource.Type.DATA_VALUE);
+        store.deleteResource(Resource.Type.EVENT);
+        store.deleteResource(Resource.Type.TRACKED_ENTITY_INSTANCE);
+    }
 }

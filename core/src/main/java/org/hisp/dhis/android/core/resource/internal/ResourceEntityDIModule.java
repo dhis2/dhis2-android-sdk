@@ -25,47 +25,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.resource;
 
-import java.util.Date;
+package org.hisp.dhis.android.core.resource.internal;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-@Singleton
-public class ResourceHandler {
-    private final ResourceStore resourceStore;
-    private Date serverDate;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    @Inject
-    public ResourceHandler(ResourceStore resourceStore) {
-        this.resourceStore = resourceStore;
-    }
+@Module
+public final class ResourceEntityDIModule {
 
-    public void setServerDate(Date serverDate) {
-        this.serverDate = new Date(serverDate.getTime());
-    }
-
-    public void handleResource(Resource.Type resourceType) {
-        if (resourceType == null || serverDate == null) {
-            return;
-        }
-
-        Resource resource = Resource.builder()
-                .resourceType(resourceType)
-                .lastSynced(serverDate)
-                .build();
-
-        resourceStore.updateOrInsertWhere(resource);
-    }
-
-    /**
-     * A wrapper to expose resourceStore.getLastUpdated(str).
-     *
-     * @param type Type of the resource.
-     * @return a string representing the last synched date
-     */
-    public String getLastUpdated(Resource.Type type) {
-        return resourceStore.getLastUpdated(type);
+    @Provides
+    @Reusable
+    ResourceStore store(DatabaseAdapter databaseAdapter) {
+        return ResourceStoreImpl.create(databaseAdapter);
     }
 }

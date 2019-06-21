@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.resource;
+package org.hisp.dhis.android.core.resource.internal;
 
 import android.database.Cursor;
 
@@ -82,7 +82,7 @@ public abstract class Resource implements Model {
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_Resource.Builder();
+        return new $$AutoValue_Resource.Builder();
     }
 
     @AutoValue.Builder

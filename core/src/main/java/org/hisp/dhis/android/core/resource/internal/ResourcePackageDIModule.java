@@ -25,13 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.resource;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+package org.hisp.dhis.android.core.resource.internal;
 
-public interface ResourceStore extends ObjectWithoutUidStore<Resource> {
+import dagger.Module;
 
-    String getLastUpdated(Resource.Type type);
-
-    boolean deleteResource(Resource.Type type);
+@Module(includes = {ResourceEntityDIModule.class})
+public final class ResourcePackageDIModule {
 }

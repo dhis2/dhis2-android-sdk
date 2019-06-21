@@ -26,37 +26,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.resource;
+package org.hisp.dhis.android.core.resource.internal;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import javax.inject.Inject;
+public final class ResourceTableInfo {
 
-import dagger.Reusable;
-
-@Reusable
-public final class ResourceModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    private final ResourceStore store;
-
-    @Inject
-    ResourceModuleWiper(TableWiper tableWiper, ResourceStore store) {
-        this.tableWiper = tableWiper;
-        this.store = store;
+    private ResourceTableInfo() {
     }
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(ResourceTableInfo.TABLE_INFO);
-    }
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    @Override
-    public void wipeData() {
-        store.deleteResource(Resource.Type.DATA_VALUE);
-        store.deleteResource(Resource.Type.EVENT);
-        store.deleteResource(Resource.Type.TRACKED_ENTITY_INSTANCE);
+        @Override
+        public String name() {
+            return "Resource";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    public static class Columns extends BaseModel.Columns {
+        public static final String RESOURCE_TYPE = "resourceType";
+        public static final String LAST_SYNCED = "lastSynced";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    RESOURCE_TYPE,
+                    LAST_SYNCED
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return Utils.appendInNewArray(super.whereUpdate(),
+                    RESOURCE_TYPE
+            );
+        }
     }
 }

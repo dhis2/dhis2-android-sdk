@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.resource.Resource;
+import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

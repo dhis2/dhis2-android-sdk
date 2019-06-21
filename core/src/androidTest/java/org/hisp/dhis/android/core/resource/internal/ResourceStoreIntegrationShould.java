@@ -26,13 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.resource;
-
-import android.content.ContentValues;
-import android.database.MatrixCursor;
+package org.hisp.dhis.android.core.resource.internal;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.resource.ResourceModel.Columns;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.resource.ResourceSamples;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,46 +42,47 @@ import androidx.test.runner.AndroidJUnit4;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class ResourceModelShould {
-    private static final Long ID = 2L;
-    private static final String RESOURCE_TYPE = "OrganisationUnit";
+public class ResourceStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<Resource> {
 
-    // timestamp
-    private static final String DATE = "2017-01-18T13:39:00.000";
+    private ResourceStore store;
 
-    @Test
-    public void create_model_when_created_from_database_cursor() throws Exception {
-        MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                Columns.ID, Columns.RESOURCE_TYPE, Columns.LAST_SYNCED
-        });
+    public ResourceStoreIntegrationShould() {
+        super(ResourceStoreImpl.create(DatabaseAdapterFactory.get()), ResourceTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get());
+        this.store = ResourceStoreImpl.create(DatabaseAdapterFactory.get());
+    }
 
-        matrixCursor.addRow(new Object[]{
-                ID, RESOURCE_TYPE, DATE
-        });
+    @Override
+    protected Resource buildObject() {
+        return ResourceSamples.getResource();
+    }
 
-        matrixCursor.moveToFirst();
-
-        Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-
-        ResourceModel resource = ResourceModel.create(matrixCursor);
-        assertThat(resource.id()).isEqualTo(ID);
-        assertThat(resource.resourceType()).isEqualTo(RESOURCE_TYPE);
-        assertThat(resource.lastSynced()).isEqualTo(timeStamp);
+    @Override
+    protected Resource buildObjectToUpdate() {
+        return ResourceSamples.getResource().toBuilder()
+                .lastSynced(new Date())
+                .build();
     }
 
     @Test
-    public void create_content_values_when_created_from_builder() throws Exception {
-        Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-        ResourceModel resource = ResourceModel.builder()
-                .id(ID)
-                .resourceType(RESOURCE_TYPE)
-                .lastSynced(timeStamp)
-                .build();
+    public void return_last_updated() {
+        store.insert(ResourceSamples.getResource());
+        String lastUpdated = store.getLastUpdated(Resource.Type.PROGRAM);
 
-        ContentValues contentValues = resource.toContentValues();
+        assertThat(lastUpdated).isEqualTo(BaseIdentifiableObject.DATE_FORMAT
+                .format(ResourceSamples.getResource().lastSynced()));
+    }
 
-        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.RESOURCE_TYPE)).isEqualTo(RESOURCE_TYPE);
-        assertThat(contentValues.getAsString(Columns.LAST_SYNCED)).isEqualTo(DATE);
+    @Test
+    public void delete_resource() {
+        store.insert(ResourceSamples.getResource());
+
+        String lastUpdatedBefore = store.getLastUpdated(Resource.Type.PROGRAM);
+        assertThat(lastUpdatedBefore).isNotNull();
+
+        store.deleteResource(Resource.Type.PROGRAM);
+
+        String lastUpdatedAfter = store.getLastUpdated(Resource.Type.PROGRAM);
+        assertThat(lastUpdatedAfter).isNull();
     }
 }

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.resource.Resource;
+import org.hisp.dhis.android.core.resource.internal.Resource;
 
 public class ResourceTypeColumnAdapter extends EnumColumnAdapter<Resource.Type> {
     @Override

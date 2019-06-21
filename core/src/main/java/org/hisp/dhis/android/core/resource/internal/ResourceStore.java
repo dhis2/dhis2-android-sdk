@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.resource.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 
-public interface ResourceStore extends ObjectWithoutUidStore<Resource> {
+interface ResourceStore extends ObjectWithoutUidStore<Resource> {
 
     String getLastUpdated(Resource.Type type);
 

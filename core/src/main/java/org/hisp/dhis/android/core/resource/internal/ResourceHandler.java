@@ -27,10 +27,14 @@
  */
 package org.hisp.dhis.android.core.resource.internal;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
 import java.util.Date;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import androidx.annotation.VisibleForTesting;
 
 @Singleton
 public class ResourceHandler {
@@ -67,5 +71,10 @@ public class ResourceHandler {
      */
     public String getLastUpdated(Resource.Type type) {
         return resourceStore.getLastUpdated(type);
+    }
+
+    @VisibleForTesting
+    public static ResourceHandler create(DatabaseAdapter databaseAdapter) {
+        return new ResourceHandler(ResourceStoreImpl.create(databaseAdapter));
     }
 }

@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
-import org.hisp.dhis.android.core.resource.internal.ResourceStoreImpl;
 
 import java.io.IOException;
 import java.util.Date;
@@ -78,7 +77,7 @@ public class MockIntegrationTestObjects {
 
         d2DIComponent = D2DIComponent.create(context, d2.retrofit(), databaseAdapter);
 
-        resourceHandler = new ResourceHandler(ResourceStoreImpl.create(databaseAdapter));
+        resourceHandler = ResourceHandler.create(databaseAdapter);
         resourceHandler.setServerDate(serverDate);
     }
 

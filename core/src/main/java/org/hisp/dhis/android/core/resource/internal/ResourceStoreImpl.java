@@ -39,7 +39,7 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public final class ResourceStoreImpl extends ObjectWithoutUidStoreImpl<Resource> implements ResourceStore {
+final class ResourceStoreImpl extends ObjectWithoutUidStoreImpl<Resource> implements ResourceStore {
 
     private static final StatementBinder<Resource> BINDER = (resource, sqLiteStatement) -> {
         sqLiteBind(sqLiteStatement, 1, resource.resourceType());
@@ -75,7 +75,7 @@ public final class ResourceStoreImpl extends ObjectWithoutUidStoreImpl<Resource>
         return deleteWhere(whereClause);
     }
 
-    public static ResourceStore create(DatabaseAdapter databaseAdapter) {
+    static ResourceStore create(DatabaseAdapter databaseAdapter) {
 
         SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(ResourceTableInfo.TABLE_INFO.name(),
                 ResourceTableInfo.TABLE_INFO.columns());

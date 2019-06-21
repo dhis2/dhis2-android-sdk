@@ -353,8 +353,8 @@ public class ProgramIndicatorEngine {
 
         if (candidates.isEmpty()) {
             return null;
-        } else if (aggregationType.equals(AggregationType.LAST) ||
-                aggregationType.equals(AggregationType.LAST_AVERAGE_ORG_UNIT)) {
+        } else if (AggregationType.LAST.equals(aggregationType) ||
+                AggregationType.LAST_AVERAGE_ORG_UNIT.equals(aggregationType)) {
             return candidates.get(candidates.size() - 1);
         } else {
             return candidates.get(0);

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine;
+import org.hisp.dhis.android.core.arch.api.paging.internal.Paging;
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.Unit;
@@ -41,8 +43,6 @@ import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
-import org.hisp.dhis.android.core.utils.services.ApiPagingEngine;
-import org.hisp.dhis.android.core.utils.services.Paging;
 
 import java.util.Collection;
 import java.util.HashSet;

@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
+import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine;
+import org.hisp.dhis.android.core.arch.api.paging.internal.Paging;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
@@ -42,8 +44,6 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
-import org.hisp.dhis.android.core.utils.services.ApiPagingEngine;
-import org.hisp.dhis.android.core.utils.services.Paging;
 
 import java.util.ArrayList;
 import java.util.Collections;

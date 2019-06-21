@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.services;
+package org.hisp.dhis.android.core.arch.api.paging.internal;
 
 import com.google.auto.value.AutoValue;
 

@@ -94,6 +94,12 @@ public class OrganisationUnitCallUnitShould {
     @Captor
     private ArgumentCaptor<Boolean> pagingCaptor;
 
+    @Captor
+    private ArgumentCaptor<Integer> pageCaptor;
+
+    @Captor
+    private ArgumentCaptor<Integer> pageSizeCaptor;
+
 
     @Mock
     private OrganisationUnit organisationUnit;
@@ -188,7 +194,8 @@ public class OrganisationUnitCallUnitShould {
         when(user.organisationUnits()).thenReturn(new ArrayList<>(organisationUnits));
 
         when(organisationUnitService.getOrganisationUnitWithDescendants(
-                uidCaptor.capture(), fieldsCaptor.capture(), descendantsCaptor.capture(), pagingCaptor.capture()
+                uidCaptor.capture(), fieldsCaptor.capture(), descendantsCaptor.capture(), pagingCaptor.capture(),
+                pageSizeCaptor.capture(), pageCaptor.capture()
         )).thenReturn(retrofitCall);
 
         when(genericCallData.resourceHandler()).thenReturn(resourceHandler);
@@ -208,7 +215,8 @@ public class OrganisationUnitCallUnitShould {
         assertThat(uidCaptor.getValue()).isEqualTo(organisationUnit.uid());
         assertThat(fieldsCaptor.getValue()).isEqualTo(OrganisationUnitFields.allFields);
         assertThat(descendantsCaptor.getValue()).isTrue();
-        assertThat(pagingCaptor.getValue()).isFalse();
+        assertThat(pagingCaptor.getValue()).isTrue();
+        assertThat(pageCaptor.getValue()).isEqualTo(1);
     }
 
     @Test

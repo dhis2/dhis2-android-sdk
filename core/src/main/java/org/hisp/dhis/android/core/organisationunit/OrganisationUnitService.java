@@ -39,19 +39,30 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 interface OrganisationUnitService {
+    String ORGANISATION_UNITS = "organisationUnits";
 
-    @GET("organisationUnits/{uid}")
+    String UID = "uid";
+    String FIELDS = "fields";
+    String FILTER = "filter";
+    String INCLUDE_DESCENDANTS = "includeDescendants";
+    String PAGING = "paging";
+    String PAGE = "page";
+    String PAGE_SIZE = "pageSize";
+
+    @GET(ORGANISATION_UNITS + "/{uid}")
     Call<Payload<OrganisationUnit>> getOrganisationUnitWithDescendants(
-            @Path("uid") String organisationUnitUid,
-            @Query("fields") @Which Fields<OrganisationUnit> fields,
-            @Query("includeDescendants") Boolean descendants,
-            @Query("paging") Boolean paging
+            @Path(UID) String organisationUnitUid,
+            @Query(FIELDS) @Which Fields<OrganisationUnit> fields,
+            @Query(INCLUDE_DESCENDANTS) Boolean descendants,
+            @Query(PAGING) Boolean paging,
+            @Query(PAGE_SIZE) Integer pageSize,
+            @Query(PAGE) Integer page
     );
 
-    @GET("organisationUnits")
+    @GET(ORGANISATION_UNITS)
     Call<Payload<OrganisationUnit>> getSearchOrganisationUnits(
-            @Query("fields") @Which Fields<OrganisationUnit> fields,
-            @Query("filter") @Where Filter<OrganisationUnit, String> filter,
-            @Query("paging") Boolean paging
+            @Query(FIELDS) @Which Fields<OrganisationUnit> fields,
+            @Query(FILTER) @Where Filter<OrganisationUnit, String> filter,
+            @Query(PAGING) Boolean paging
     );
 }

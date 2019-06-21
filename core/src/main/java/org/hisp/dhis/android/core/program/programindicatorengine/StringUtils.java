@@ -26,33 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.support;
+package org.hisp.dhis.android.core.program.programindicatorengine;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+final class StringUtils {
 
-/**
- * @author Lars Helge Overland
- */
-public final class DateUtils {
-
-    static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
-
-    private DateUtils() {
+    private StringUtils() {
         // no instances
     }
 
-    /**
-     * Formats a Date to the format YYYY-MM-DD.
-     *
-     * @param date the Date to parse.
-     * @return A formatted date string. Null if argument is null.
-     */
-    public static String getMediumDateString(Date date) {
-        final SimpleDateFormat format = new SimpleDateFormat();
-
-        format.applyPattern(DEFAULT_DATE_FORMAT);
-
-        return date == null ? null : format.format(date);
+    static boolean isEmpty(CharSequence charSequence) {
+        return charSequence == null || charSequence.length() == 0;
     }
 }

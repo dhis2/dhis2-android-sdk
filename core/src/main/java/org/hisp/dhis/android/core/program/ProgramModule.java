@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine;
+
 import javax.inject.Inject;
 
 import dagger.Reusable;

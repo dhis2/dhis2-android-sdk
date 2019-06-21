@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.support.math;
+package org.hisp.dhis.android.core.program.programindicatorengine;
 
 import org.junit.Test;
 
@@ -34,26 +34,26 @@ import java.text.ParseException;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions.addDays;
-import static org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions.ceil;
-import static org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions.concatenate;
-import static org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions.condition;
-import static org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions.daysBetween;
-import static org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions.floor;
-import static org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions.left;
-import static org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions.length;
-import static org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions.modulus;
-import static org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions.monthsBetween;
-import static org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions.oizp;
-import static org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions.right;
-import static org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions.round;
-import static org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions.split;
-import static org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions.substring;
-import static org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions.validatePattern;
-import static org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions.weeksBetween;
-import static org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions.yearsBetween;
-import static org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions.zing;
-import static org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions.zpvc;
+import static org.hisp.dhis.android.core.program.programindicatorengine.ExpressionFunctions.addDays;
+import static org.hisp.dhis.android.core.program.programindicatorengine.ExpressionFunctions.ceil;
+import static org.hisp.dhis.android.core.program.programindicatorengine.ExpressionFunctions.concatenate;
+import static org.hisp.dhis.android.core.program.programindicatorengine.ExpressionFunctions.condition;
+import static org.hisp.dhis.android.core.program.programindicatorengine.ExpressionFunctions.daysBetween;
+import static org.hisp.dhis.android.core.program.programindicatorengine.ExpressionFunctions.floor;
+import static org.hisp.dhis.android.core.program.programindicatorengine.ExpressionFunctions.left;
+import static org.hisp.dhis.android.core.program.programindicatorengine.ExpressionFunctions.length;
+import static org.hisp.dhis.android.core.program.programindicatorengine.ExpressionFunctions.modulus;
+import static org.hisp.dhis.android.core.program.programindicatorengine.ExpressionFunctions.monthsBetween;
+import static org.hisp.dhis.android.core.program.programindicatorengine.ExpressionFunctions.oizp;
+import static org.hisp.dhis.android.core.program.programindicatorengine.ExpressionFunctions.right;
+import static org.hisp.dhis.android.core.program.programindicatorengine.ExpressionFunctions.round;
+import static org.hisp.dhis.android.core.program.programindicatorengine.ExpressionFunctions.split;
+import static org.hisp.dhis.android.core.program.programindicatorengine.ExpressionFunctions.substring;
+import static org.hisp.dhis.android.core.program.programindicatorengine.ExpressionFunctions.validatePattern;
+import static org.hisp.dhis.android.core.program.programindicatorengine.ExpressionFunctions.weeksBetween;
+import static org.hisp.dhis.android.core.program.programindicatorengine.ExpressionFunctions.yearsBetween;
+import static org.hisp.dhis.android.core.program.programindicatorengine.ExpressionFunctions.zing;
+import static org.hisp.dhis.android.core.program.programindicatorengine.ExpressionFunctions.zpvc;
 import static org.junit.Assert.assertThat;
 
 public class ExpressionFunctionsTest {

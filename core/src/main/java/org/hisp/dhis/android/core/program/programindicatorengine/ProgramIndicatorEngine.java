@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program.programindicatorengine;
 
 
 import org.apache.commons.jexl2.JexlException;
@@ -39,14 +39,15 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.internal.EventStore;
+import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
-import org.hisp.dhis.android.core.utils.support.DateUtils;
-import org.hisp.dhis.android.core.utils.support.ExpressionUtils;
-import org.hisp.dhis.android.core.utils.support.MathUtils;
-import org.hisp.dhis.android.core.utils.support.TextUtils;
+import org.hisp.dhis.android.core.program.programindicatorengine.DateUtils;
+import org.hisp.dhis.android.core.program.programindicatorengine.ExpressionUtils;
+import org.hisp.dhis.android.core.program.programindicatorengine.MathUtils;
+import org.hisp.dhis.android.core.program.programindicatorengine.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;

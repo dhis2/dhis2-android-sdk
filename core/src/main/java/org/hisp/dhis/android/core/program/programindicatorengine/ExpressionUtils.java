@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.support;
+package org.hisp.dhis.android.core.program.programindicatorengine;
 
 import android.util.Log;
 
@@ -36,7 +36,6 @@ import org.apache.commons.jexl2.JexlEngine;
 import org.apache.commons.jexl2.JexlException;
 import org.apache.commons.jexl2.MapContext;
 import org.apache.commons.lang3.StringUtils;
-import org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +44,7 @@ import java.util.regex.Pattern;
 /**
  * @author Lars Helge Overland
  */
-public final class ExpressionUtils {
+final class ExpressionUtils {
     private static final String CLASS_TAG = ExpressionUtils.class.getSimpleName();
     private static final JexlEngine JEXL = new JexlEngine();
     private static final JexlEngine JEXL_STRICT = new JexlEngine();
@@ -126,7 +125,7 @@ public final class ExpressionUtils {
      * @param vars       the variables, can be null.
      * @return the result of the evaluation.
      */
-    public static Double evaluateToDouble(String expression, Map<String, Object> vars) {
+    static Double evaluateToDouble(String expression, Map<String, Object> vars) {
         String result = evaluateToString(expression, vars);
 
         if (!isNumeric(result)) {
@@ -146,7 +145,7 @@ public final class ExpressionUtils {
      * @param vars       the variables, can be null.
      * @return the result of the evaluation.
      */
-    public static String evaluateToString(String expression, Map<String, Object> vars) {
+    static String evaluateToString(String expression, Map<String, Object> vars) {
         Object result = evaluate(expression, vars);
 
         if (result == null) {
@@ -164,7 +163,7 @@ public final class ExpressionUtils {
      * @param vars       the variables, can be null.
      * @return true or false.
      */
-    public static boolean isTrue(String expression, Map<String, Object> vars) {
+    static boolean isTrue(String expression, Map<String, Object> vars) {
         Object result = evaluate(expression, vars);
 
         return result instanceof Boolean && (Boolean) result;
@@ -178,7 +177,7 @@ public final class ExpressionUtils {
      * @param vars       the variables, can be null.
      * @return true or false.
      */
-    public static boolean isBoolean(String expression, Map<String, Object> vars) {
+    static boolean isBoolean(String expression, Map<String, Object> vars) {
         try {
             Object result = evaluate(expression, vars);
 
@@ -188,7 +187,7 @@ public final class ExpressionUtils {
         }
     }
 
-    public static boolean isBoolean(String value) {
+    static boolean isBoolean(String value) {
         return value != null && ("true".equals(value) || "false".equals(value));
     }
 
@@ -200,7 +199,7 @@ public final class ExpressionUtils {
      * @param vars       the variables, can be null.
      * @return true or false.
      */
-    public static boolean isValid(String expression, Map<String, Object> vars) {
+    static boolean isValid(String expression, Map<String, Object> vars) {
         try {
             Object result = evaluate(expression, vars, true);
 
@@ -217,7 +216,7 @@ public final class ExpressionUtils {
      * @param value the value.
      * @return true or false.
      */
-    public static boolean isNumeric(String value) {
+    static boolean isNumeric(String value) {
         return NUMERIC_PATTERN.matcher(value).matches();
     }
 
@@ -227,7 +226,7 @@ public final class ExpressionUtils {
      * @param expression the expression.
      * @return an SQL clause.
      */
-    public static String asSql(String expression) {
+    static String asSql(String expression) {
         if (expression == null) {
             return null;
         }

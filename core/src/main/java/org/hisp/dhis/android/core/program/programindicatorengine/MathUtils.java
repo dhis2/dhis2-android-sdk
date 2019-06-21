@@ -26,14 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.support;
+package org.hisp.dhis.android.core.program.programindicatorengine;
 
 import java.util.regex.Pattern;
 
 /**
  * @author Lars Helge Overland
  */
-public final class MathUtils {
+final class MathUtils {
 
     private static final String NUMERIC_REGEXP = "^(-?0|-?[1-9]\\d*)(\\.\\d+)?(E(-)?\\d+)?$";
     private static final Pattern NUMERIC_PATTERN = Pattern.compile(NUMERIC_REGEXP);
@@ -65,7 +65,7 @@ public final class MathUtils {
      * @param value the value to round off.
      * @return a rounded off number.
      */
-    public static double getRounded(double value) {
+    static double getRounded(double value) {
         if (value < 1d && value > -1d) {
             return getRounded(value, 2);
         } else {
@@ -79,7 +79,7 @@ public final class MathUtils {
      * @param value the value.
      * @return true if the provided string argument is to be considered numeric.
      */
-    public static boolean isNumeric(String value) {
+    static boolean isNumeric(String value) {
         return value != null && isDouble(value) && NUMERIC_PATTERN.matcher(value).matches();
     }
 

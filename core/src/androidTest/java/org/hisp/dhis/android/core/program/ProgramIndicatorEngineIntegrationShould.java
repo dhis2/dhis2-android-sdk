@@ -52,6 +52,7 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStor
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore;
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore;
 import org.hisp.dhis.android.core.program.internal.ProgramStore;
+import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;

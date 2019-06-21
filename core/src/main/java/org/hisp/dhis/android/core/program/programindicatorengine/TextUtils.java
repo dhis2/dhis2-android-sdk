@@ -26,14 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.support;
+package org.hisp.dhis.android.core.program.programindicatorengine;
 
 import java.util.regex.Matcher;
 
 /**
  * @author Lars Helge Overland
  */
-public final class TextUtils {
+final class TextUtils {
 
     private TextUtils() {
         // no instances
@@ -47,7 +47,7 @@ public final class TextUtils {
      * @param separator the separator of the array items.
      * @return a string.
      */
-    public static String toString(String[] array, String separator) {
+    static String toString(String[] array, String separator) {
         StringBuilder builder = new StringBuilder();
 
         if (array != null && array.length > 0) {
@@ -68,7 +68,7 @@ public final class TextUtils {
      * @param object the object.
      * @return the string representation.
      */
-    public static String toString(Object object) {
+    static String toString(Object object) {
         return object == null ? null : object.toString();
     }
 
@@ -80,7 +80,7 @@ public final class TextUtils {
      * @param sb      the string buffer.
      * @return a string.
      */
-    public static String appendTail(Matcher matcher, StringBuffer sb) {
+    static String appendTail(Matcher matcher, StringBuffer sb) {
         matcher.appendTail(sb);
         return sb.toString();
     }
@@ -91,7 +91,7 @@ public final class TextUtils {
      * @param value the input string.
      * @return the quoted string.
      */
-    public static String quote(String value) {
+    static String quote(String value) {
         return MathUtils.isNumeric(value) ? value : "\"" + value.replace("\"", "\\\"") + "\"";
     }
 
@@ -101,7 +101,7 @@ public final class TextUtils {
      * @param value the input numeric value.
      * @return a string.
      */
-    public static String fromDouble(Double value) {
+    static String fromDouble(Double value) {
         if (value != null && !Double.isNaN(value)) {
             Double rounded = MathUtils.getRounded(value, 2);
             return String.valueOf(rounded).replaceAll("\\.0+$", "");

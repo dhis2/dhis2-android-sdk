@@ -26,8 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.support;
+package org.hisp.dhis.android.core.program.programindicatorengine;
 
+import org.hisp.dhis.android.core.program.programindicatorengine.ExpressionUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;

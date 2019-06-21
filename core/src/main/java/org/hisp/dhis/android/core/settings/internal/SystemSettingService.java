@@ -25,24 +25,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
+import org.hisp.dhis.android.core.settings.SystemSettings;
 
-final class SystemSettingsFields {
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-    static final String KEY_FLAG = "keyFlag";
-    static final String KEY_STYLE = "keyStyle";
-
-    private static FieldsHelper<SystemSettings> fh = new FieldsHelper<>();
-    static final Fields<SystemSettings> allFields = Fields.<SystemSettings>builder()
-            .fields(
-                    fh.<String>field(KEY_FLAG),
-                    fh.<String>field(KEY_STYLE)
-            ).build();
-
-    private SystemSettingsFields() {
-    }
+interface SystemSettingService {
+    @GET("systemSettings")
+    Call<SystemSettings> getSystemSettings(@Query("fields") @Which Fields<SystemSettings> fields);
 }

@@ -25,32 +25,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+package org.hisp.dhis.android.core.settings.internal;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
+import retrofit2.Retrofit;
 
-@Reusable
-public final class SystemSettingModuleWiper implements ModuleWiper {
+@Module(includes = {SystemSettingEntityDIModule.class})
+public final class SystemSettingPackageDIModule {
 
-    private final TableWiper tableWiper;
-
-    @Inject
-    SystemSettingModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTable(SystemSettingTableInfo.TABLE_INFO);
-    }
-
-    @Override
-    public void wipeData() {
-        // No data to wipe
+    @Provides
+    @Reusable
+    SystemSettingService service(Retrofit retrofit) {
+        return retrofit.create(SystemSettingService.class);
     }
 }

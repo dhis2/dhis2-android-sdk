@@ -26,19 +26,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings.internal;
+
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.di.internal.ObjectWithoutUidStoreProvider;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.settings.SystemSetting;
+
+import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {SystemSettingEntityDIModule.class})
-public final class SystemSettingPackageDIModule {
+@Module
+public final class SystemSettingEntityDIModule implements ObjectWithoutUidStoreProvider<SystemSetting> {
+
+    @Override
+    @Provides
+    @Reusable
+    public ObjectWithoutUidStore<SystemSetting> store(DatabaseAdapter databaseAdapter) {
+        return SystemSettingStore.create(databaseAdapter);
+    }
 
     @Provides
     @Reusable
-    SystemSettingService service(Retrofit retrofit) {
-        return retrofit.create(SystemSettingService.class);
+    Handler<SystemSetting> handler(ObjectWithoutUidStore<SystemSetting> store) {
+        return new ObjectWithoutUidHandlerImpl<>(store);
+    }
+
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<SystemSetting>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

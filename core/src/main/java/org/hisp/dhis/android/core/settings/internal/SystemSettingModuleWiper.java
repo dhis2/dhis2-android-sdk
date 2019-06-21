@@ -25,34 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal;
 
-package org.hisp.dhis.android.core.settings;
+import org.hisp.dhis.android.core.settings.SystemSettingTableInfo;
+import org.hisp.dhis.android.core.wipe.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.TableWiper;
 
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import javax.inject.Inject;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import dagger.Reusable;
 
-final class SystemSettingStore {
+@Reusable
+public final class SystemSettingModuleWiper implements ModuleWiper {
 
-    private static final StatementBinder<SystemSetting> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.key());
-        sqLiteBind(sqLiteStatement, 2, o.value());
-    };
+    private final TableWiper tableWiper;
 
-    private static final WhereStatementBinder<SystemSetting> WHERE_UPDATE_BINDER
-            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 3, o.key());
+    @Inject
+    SystemSettingModuleWiper(TableWiper tableWiper) {
+        this.tableWiper = tableWiper;
+    }
 
-    private static final WhereStatementBinder<SystemSetting> WHERE_DELETE_BINDER
-            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.key());
+    @Override
+    public void wipeMetadata() {
+        tableWiper.wipeTable(SystemSettingTableInfo.TABLE_INFO);
+    }
 
-    private SystemSettingStore() {}
-
-    public static ObjectWithoutUidStore<SystemSetting> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemSettingTableInfo.TABLE_INFO, BINDER,
-                WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, SystemSetting::create);
+    @Override
+    public void wipeData() {
+        // No data to wipe
     }
 }

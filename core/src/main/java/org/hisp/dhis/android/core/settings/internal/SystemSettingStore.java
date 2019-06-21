@@ -26,32 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.settings.SystemSettingSamples;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.settings.SystemSetting;
+import org.hisp.dhis.android.core.settings.SystemSettingTableInfo;
 
-import androidx.test.runner.AndroidJUnit4;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-@RunWith(AndroidJUnit4.class)
-public class SystemSettingStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<SystemSetting> {
+final class SystemSettingStore {
 
-    public SystemSettingStoreIntegrationShould() {
-        super(SystemSettingStore.create(DatabaseAdapterFactory.get()), SystemSettingTableInfo.TABLE_INFO,
-                DatabaseAdapterFactory.get());
-    }
+    private static final StatementBinder<SystemSetting> BINDER = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.key());
+        sqLiteBind(sqLiteStatement, 2, o.value());
+    };
 
-    @Override
-    protected SystemSetting buildObject() {
-        return SystemSettingSamples.getSystemSetting();
-    }
+    private static final WhereStatementBinder<SystemSetting> WHERE_UPDATE_BINDER
+            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 3, o.key());
 
-    @Override
-    protected SystemSetting buildObjectToUpdate() {
-        return SystemSettingSamples.getSystemSetting().toBuilder()
-                .value("new_value")
-                .build();
+    private static final WhereStatementBinder<SystemSetting> WHERE_DELETE_BINDER
+            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.key());
+
+    private SystemSettingStore() {}
+
+    public static ObjectWithoutUidStore<SystemSetting> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemSettingTableInfo.TABLE_INFO, BINDER,
+                WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, SystemSetting::create);
     }
 }

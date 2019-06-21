@@ -26,41 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.di.internal.ObjectWithoutUidStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.settings.SystemSettingSamples;
+import org.hisp.dhis.android.core.settings.SystemSetting;
+import org.hisp.dhis.android.core.settings.SystemSettingTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.junit.runner.RunWith;
 
-import java.util.Collections;
-import java.util.Map;
+import androidx.test.runner.AndroidJUnit4;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+@RunWith(AndroidJUnit4.class)
+public class SystemSettingStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<SystemSetting> {
 
-@Module
-public final class SystemSettingEntityDIModule implements ObjectWithoutUidStoreProvider<SystemSetting> {
+    public SystemSettingStoreIntegrationShould() {
+        super(SystemSettingStore.create(DatabaseAdapterFactory.get()), SystemSettingTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get());
+    }
 
     @Override
-    @Provides
-    @Reusable
-    public ObjectWithoutUidStore<SystemSetting> store(DatabaseAdapter databaseAdapter) {
-        return SystemSettingStore.create(databaseAdapter);
+    protected SystemSetting buildObject() {
+        return SystemSettingSamples.getSystemSetting();
     }
 
-    @Provides
-    @Reusable
-    Handler<SystemSetting> handler(ObjectWithoutUidStore<SystemSetting> store) {
-        return new ObjectWithoutUidHandlerImpl<>(store);
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<SystemSetting>> childrenAppenders() {
-        return Collections.emptyMap();
+    @Override
+    protected SystemSetting buildObjectToUpdate() {
+        return SystemSettingSamples.getSystemSetting().toBuilder()
+                .value("new_value")
+                .build();
     }
 }

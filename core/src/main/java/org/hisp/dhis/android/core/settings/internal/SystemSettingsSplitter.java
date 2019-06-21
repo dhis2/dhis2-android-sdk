@@ -26,7 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings.internal;
+
+import org.hisp.dhis.android.core.settings.SystemSetting;
+import org.hisp.dhis.android.core.settings.SystemSettings;
 
 import java.util.ArrayList;
 import java.util.List;

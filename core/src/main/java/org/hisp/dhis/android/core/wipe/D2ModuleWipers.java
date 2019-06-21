@@ -46,7 +46,7 @@ import org.hisp.dhis.android.core.period.internal.PeriodModuleWiper;
 import org.hisp.dhis.android.core.program.internal.ProgramModuleWiper;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipModuleWiper;
 import org.hisp.dhis.android.core.resource.internal.ResourceModuleWiper;
-import org.hisp.dhis.android.core.settings.SystemSettingModuleWiper;
+import org.hisp.dhis.android.core.settings.internal.SystemSettingModuleWiper;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModuleWiper;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModuleWiper;
 import org.hisp.dhis.android.core.user.UserModuleWiper;

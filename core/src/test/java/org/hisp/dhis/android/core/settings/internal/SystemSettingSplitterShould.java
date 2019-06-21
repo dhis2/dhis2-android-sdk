@@ -25,29 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleDownloader;
-import org.hisp.dhis.android.core.common.Unit;
+package org.hisp.dhis.android.core.settings.internal;
 
-import java.util.concurrent.Callable;
+import org.hisp.dhis.android.core.settings.SystemSetting;
+import org.hisp.dhis.android.core.settings.SystemSettings;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import javax.inject.Inject;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.List;
 
-import dagger.Reusable;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-@Reusable
-public class SystemSettingModuleDownloader implements MetadataModuleDownloader<Unit> {
+@RunWith(JUnit4.class)
+public class SystemSettingSplitterShould {
 
-    private final SystemSettingCall call;
+    private SystemSettings settingsPojo = SystemSettings.builder().keyFlag("aFlag").keyStyle("aStyle").build();
+    private SystemSettingsSplitter systemSettingsSplitter = new SystemSettingsSplitter();
 
-    @Inject
-    SystemSettingModuleDownloader(SystemSettingCall call) {
-        this.call = call;
+    @Test
+    public void build_flag_setting() throws IOException, ParseException {
+        List<SystemSetting> settingList = systemSettingsSplitter.splitSettings(settingsPojo);
+        SystemSetting flag = settingList.get(0);
+        assertThat(flag.key()).isEqualTo(SystemSetting.SystemSettingKey.FLAG);
+        assertThat(flag.value()).isEqualTo("aFlag");
     }
 
-    @Override
-    public Callable<Unit> downloadMetadata() {
-        return call;
+    @Test
+    public void build_style_setting() throws IOException, ParseException {
+        List<SystemSetting> settingList = systemSettingsSplitter.splitSettings(settingsPojo);
+        SystemSetting style = settingList.get(1);
+        assertThat(style.key()).isEqualTo(SystemSetting.SystemSettingKey.STYLE);
+        assertThat(style.value()).isEqualTo("aStyle");
     }
 }

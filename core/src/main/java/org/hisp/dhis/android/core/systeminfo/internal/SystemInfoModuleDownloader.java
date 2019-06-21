@@ -25,10 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.systeminfo.internal;
 
 import org.hisp.dhis.android.core.arch.modules.internal.RxMetadataModuleDownloader;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 
 import javax.inject.Inject;
 

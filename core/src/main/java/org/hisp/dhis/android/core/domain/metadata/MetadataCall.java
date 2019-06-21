@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader;
 import org.hisp.dhis.android.core.settings.internal.SystemSettingModuleDownloader;
 import org.hisp.dhis.android.core.sms.SmsModule;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoModuleDownloader;
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserModuleDownloader;
 

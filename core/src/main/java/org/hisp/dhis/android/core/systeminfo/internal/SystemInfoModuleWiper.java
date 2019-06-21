@@ -25,8 +25,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.systeminfo.internal;
 
+import org.hisp.dhis.android.core.systeminfo.SystemInfoTableInfo;
 import org.hisp.dhis.android.core.wipe.ModuleWiper;
 import org.hisp.dhis.android.core.wipe.TableWiper;
 

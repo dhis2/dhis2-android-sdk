@@ -44,16 +44,14 @@ interface OrganisationUnitService {
     String UID = "uid";
     String FIELDS = "fields";
     String FILTER = "filter";
-    String INCLUDE_DESCENDANTS = "includeDescendants";
     String PAGING = "paging";
     String PAGE = "page";
     String PAGE_SIZE = "pageSize";
 
-    @GET(ORGANISATION_UNITS + "/{uid}")
-    Call<Payload<OrganisationUnit>> getOrganisationUnitWithDescendants(
-            @Path(UID) String organisationUnitUid,
+    @GET(ORGANISATION_UNITS)
+    Call<Payload<OrganisationUnit>> getOrganisationUnits(
             @Query(FIELDS) @Which Fields<OrganisationUnit> fields,
-            @Query(INCLUDE_DESCENDANTS) Boolean descendants,
+            @Query(FILTER) @Where Filter<OrganisationUnit, String> filter,
             @Query(PAGING) Boolean paging,
             @Query(PAGE_SIZE) Integer pageSize,
             @Query(PAGE) Integer page

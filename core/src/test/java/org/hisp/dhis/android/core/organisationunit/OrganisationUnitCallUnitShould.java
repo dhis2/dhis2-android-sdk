@@ -33,9 +33,9 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -59,8 +59,8 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -83,13 +83,10 @@ public class OrganisationUnitCallUnitShould {
 
     //Captors for the organisationUnitService arguments:
     @Captor
-    private ArgumentCaptor<String> uidCaptor;
-
-    @Captor
     private ArgumentCaptor<Fields<OrganisationUnit>> fieldsCaptor;
 
     @Captor
-    private ArgumentCaptor<Boolean> descendantsCaptor;
+    private ArgumentCaptor<Filter<OrganisationUnit, String>> filtersCaptor;
 
     @Captor
     private ArgumentCaptor<Boolean> pagingCaptor;
@@ -120,9 +117,6 @@ public class OrganisationUnitCallUnitShould {
 
     @Mock
     private GenericCallData genericCallData;
-
-    @Mock
-    private D2Error d2Error;
 
     @Mock
     private OrganisationUnitHandler organisationUnitHandler;
@@ -193,8 +187,8 @@ public class OrganisationUnitCallUnitShould {
         organisationUnits = Collections.singletonList(organisationUnit);
         when(user.organisationUnits()).thenReturn(new ArrayList<>(organisationUnits));
 
-        when(organisationUnitService.getOrganisationUnitWithDescendants(
-                uidCaptor.capture(), fieldsCaptor.capture(), descendantsCaptor.capture(), pagingCaptor.capture(),
+        when(organisationUnitService.getOrganisationUnits(
+                fieldsCaptor.capture(), filtersCaptor.capture(), pagingCaptor.capture(),
                 pageSizeCaptor.capture(), pageCaptor.capture()
         )).thenReturn(retrofitCall);
 
@@ -212,9 +206,9 @@ public class OrganisationUnitCallUnitShould {
 
         organisationUnitCall.call();
 
-        assertThat(uidCaptor.getValue()).isEqualTo(organisationUnit.uid());
         assertThat(fieldsCaptor.getValue()).isEqualTo(OrganisationUnitFields.allFields);
-        assertThat(descendantsCaptor.getValue()).isTrue();
+        assertThat(filtersCaptor.getValue().operator()).isEqualTo("like");
+        assertThat(filtersCaptor.getValue().field()).isEqualTo(OrganisationUnitFields.path);
         assertThat(pagingCaptor.getValue()).isTrue();
         assertThat(pageCaptor.getValue()).isEqualTo(1);
     }

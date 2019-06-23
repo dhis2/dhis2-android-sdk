@@ -154,8 +154,8 @@ class OrganisationUnitCallFactory {
     }
 
     private retrofit2.Call<Payload<OrganisationUnit>> getOrganisationUnitAndDescendants(OrganisationUnitQuery query) {
-        return organisationUnitService.getOrganisationUnitWithDescendants(
-                query.orgUnit(), OrganisationUnitFields.allFields, true,
+        return organisationUnitService.getOrganisationUnits(
+                OrganisationUnitFields.allFields, OrganisationUnitFields.path.like(query.orgUnit()),
                 query.paging(), query.pageSize(), query.page());
     }
 

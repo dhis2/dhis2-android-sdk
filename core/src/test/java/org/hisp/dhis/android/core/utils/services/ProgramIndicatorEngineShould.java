@@ -263,7 +263,7 @@ public class ProgramIndicatorEngineShould {
 
         String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid1, programIndicatorUid);
 
-        assertThat(result).isEqualTo("3.5 + 2");
+        assertThat(result).isEqualTo("3.5 + 2.0");
     }
 
     @Test
@@ -291,7 +291,7 @@ public class ProgramIndicatorEngineShould {
 
         String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid1, programIndicatorUid);
 
-        assertThat(result).isEqualTo("(2.5 + 2) / 1.5");
+        assertThat(result).isEqualTo("(2.5 + 2.0) / 1.5");
     }
 
     @Test
@@ -386,7 +386,7 @@ public class ProgramIndicatorEngineShould {
 
         String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid1, programIndicatorUid);
 
-        assertThat(result).isEqualTo("(3.5 + 2) / 2");
+        assertThat(result).isEqualTo("(3.5 + 2.0) / 2");
     }
 
     @Test
@@ -426,9 +426,9 @@ public class ProgramIndicatorEngineShould {
         String resultWithEvent2 = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, eventUid2_1,
                 programIndicatorUid);
 
-        assertThat(resultWithoutEvent).isEqualTo("3.5 + 2");
-        assertThat(resultWithEvent1).isEqualTo("3.5 + 2");
-        assertThat(resultWithEvent2).isEqualTo("3.5 + 2");
+        assertThat(resultWithoutEvent).isEqualTo("3.5 + 2.0");
+        assertThat(resultWithEvent1).isEqualTo("3.5 + 2.0");
+        assertThat(resultWithEvent2).isEqualTo("3.5 + 2.0");
     }
 
     @Test
@@ -478,13 +478,13 @@ public class ProgramIndicatorEngineShould {
         String sumResult = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,
                 programIndicatorUid);
 
-        assertThat(sumResult).isEqualTo("2 * 10");
+        assertThat(sumResult).isEqualTo("2.0 * 10");
 
         when(programIndicator.aggregationType()).thenReturn(AggregationType.LAST);
         String lastResult = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,
                 programIndicatorUid);
 
-        assertThat(lastResult).isEqualTo("4 * 10");
+        assertThat(lastResult).isEqualTo("4.0 * 10");
     }
 
     @Test
@@ -497,7 +497,7 @@ public class ProgramIndicatorEngineShould {
         String sumResult = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,
                 programIndicatorUid);
 
-        assertThat(sumResult).isEqualTo("10");
+        assertThat(sumResult).isEqualTo("10.0");
     }
 
 

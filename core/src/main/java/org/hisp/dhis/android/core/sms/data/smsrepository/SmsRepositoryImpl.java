@@ -87,7 +87,7 @@ public class SmsRepositoryImpl implements SmsRepository {
         } else if (stateReceiver.isError()) {
             e.onError(new ReceivedErrorException(stateReceiver.getErrorCode()));
         } else {
-            e.onError(new TimeoutException());
+            e.onError(new ResultResponseException(ResultResponseIssue.TIMEOUT));
         }
     }
 

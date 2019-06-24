@@ -23,6 +23,8 @@ import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
+import static org.hisp.dhis.android.core.sms.domain.repository.SmsRepository.ResultResponseIssue.RECEIVED_ERROR;
+
 class SmsReader {
     private final static String TAG = SmsReader.class.getSimpleName();
     private final Context context;
@@ -40,9 +42,13 @@ class SmsReader {
                     receiver.set(new BroadcastReceiver() {
                         @Override
                         public void onReceive(Context context, Intent intent) {
-                            if (isAwaitedMessage(intent, requiredSender,
-                                    submissionId, submissionType)) {
-                                s.onComplete();
+                            try {
+                                if (isAwaitedSuccessMessage(intent, requiredSender,
+                                        submissionId, submissionType)) {
+                                    s.onComplete();
+                                }
+                            } catch (Exception ex) {
+                                s.onError(ex);
                             }
                         }
                     });
@@ -50,7 +56,8 @@ class SmsReader {
                             new IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION));
                 }
         ).timeout(waitingTimeoutSeconds, TimeUnit.SECONDS, Schedulers.newThread(),
-                Completable.error(new SmsRepository.TimeoutException())
+                Completable.error(new SmsRepository.ResultResponseException(
+                        SmsRepository.ResultResponseIssue.TIMEOUT))
         ).doFinally(() -> {
             if (receiver.get() != null) {
                 try {
@@ -73,10 +80,19 @@ class SmsReader {
                 return false;
             }
             do {
-                String number = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.ADDRESS));
-                String body = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.BODY));
-                Date dateReceived = new Date(c.getLong(c.getColumnIndexOrThrow(Telephony.Sms.DATE)));
-                if (isAwaitedMessage(number, body, requiredSender, submissionId, submissionType)
+                String number;
+                String body;
+                Date dateReceived;
+                try {
+                    number = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.ADDRESS));
+                    body = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.BODY));
+                    dateReceived = new Date(c.getLong(c.getColumnIndexOrThrow(Telephony.Sms.DATE)));
+                } catch (Exception e) {
+                    // failed reading this message, go to the next one
+                    continue;
+                }
+                if (isAwaitedSuccessMessage(
+                        number, body, requiredSender, submissionId, submissionType)
                         && dateReceived.after(fromDate)) {
                     c.close();
                     return true;
@@ -84,38 +100,38 @@ class SmsReader {
             } while (c.moveToNext());
             c.close();
             return false;
-        }).onErrorResumeNext(throwable -> {
-            Log.e(TAG, throwable.getClass().getSimpleName(), throwable);
-            return Single.just(false);
         });
     }
 
-    private boolean isAwaitedMessage(Intent intent, String requiredSender,
-                                     int submissionId, SubmissionType submissionType) {
+    private boolean isAwaitedSuccessMessage(Intent intent, String requiredSender,
+                                            int submissionId, SubmissionType submissionType)
+            throws SmsRepository.ResultResponseException {
         Bundle bundle = intent.getExtras();
-        if (bundle != null) {
-            // get sms objects
-            Object[] pdus = (Object[]) bundle.get("pdus");
-            if (pdus == null || pdus.length == 0) {
-                return false;
-            }
-            // large message might be broken into many
-            SmsMessage[] messages = new SmsMessage[pdus.length];
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < pdus.length; i++) {
-                messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
-                sb.append(messages[i].getMessageBody());
-            }
-            String sender = messages[0].getOriginatingAddress();
-            String message = sb.toString();
-            return isAwaitedMessage(sender, message, requiredSender, submissionId, submissionType);
+        if (bundle == null) {
+            return false;
         }
-        return true;
+        // get sms objects
+        Object[] pdus = (Object[]) bundle.get("pdus");
+        if (pdus == null || pdus.length == 0) {
+            return false;
+        }
+        // large message might be broken into many
+        SmsMessage[] messages = new SmsMessage[pdus.length];
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < pdus.length; i++) {
+            messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
+            sb.append(messages[i].getMessageBody());
+        }
+        String sender = messages[0].getOriginatingAddress();
+        String message = sb.toString();
+        return isAwaitedSuccessMessage(sender, message, requiredSender,
+                submissionId, submissionType);
     }
 
     @SuppressWarnings({"PMD.UnusedFormalParameter"})
-    private boolean isAwaitedMessage(String sender, String message, String requiredSender,
-                                     int submissionId, SubmissionType submissionType) {
+    private boolean isAwaitedSuccessMessage(String sender, String message, String requiredSender,
+                                            int submissionId, SubmissionType submissionType)
+            throws SmsRepository.ResultResponseException {
         if (requiredSender != null &&
                 (sender == null || !sender.toLowerCase(Locale.ROOT)
                         .contains(requiredSender.toLowerCase(Locale.ROOT)))) {
@@ -129,7 +145,13 @@ class SmsReader {
         if (secondSeparator < 0) {
             return false;
         }
-        return message.substring(0, firstSeparator).equals(Integer.toString(submissionId))
-                && message.substring(firstSeparator + 1, secondSeparator).equals("0");
+        if (!message.substring(0, firstSeparator).equals(Integer.toString(submissionId))) {
+            return false;
+        }
+        // it's awaited message
+        if (message.substring(firstSeparator + 1, secondSeparator).equals("0")) {
+            return true;
+        }
+        throw new SmsRepository.ResultResponseException(RECEIVED_ERROR);
     }
 }

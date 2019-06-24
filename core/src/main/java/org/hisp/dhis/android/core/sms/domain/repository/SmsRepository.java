@@ -57,9 +57,22 @@ public interface SmsRepository {
     }
 
     /**
-     * Returned when timeout occurs
+     * Returned when not received successful response message
      */
-    class TimeoutException extends Exception {
+    class ResultResponseException extends Exception {
+        final ResultResponseIssue reason;
+
+        public ResultResponseException(ResultResponseIssue reason) {
+            this.reason = reason;
+        }
+
+        public ResultResponseIssue getReason() {
+            return reason;
+        }
+    }
+
+    enum ResultResponseIssue {
+        TIMEOUT, RECEIVED_ERROR, OTHER
     }
 
     /**

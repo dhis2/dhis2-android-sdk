@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.data.program;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
-import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
 import org.hisp.dhis.android.core.program.ProgramRuleActionType;
 import org.hisp.dhis.android.core.program.ProgramStage;
@@ -57,7 +56,7 @@ public class ProgramRuleActionSamples {
                 .programRuleActionType(ProgramRuleActionType.ASSIGN)
                 .programStage(ProgramStage.builder().uid("ps").build())
                 .dataElement(DataElement.builder().uid("de").build())
-                .programRule(ProgramRule.builder().uid("pr").build())
+                .programRule(ObjectWithUid.create("pr"))
                 .option(ObjectWithUid.create("option"))
                 .optionGroup(ObjectWithUid.create("option_group"))
                 .build();

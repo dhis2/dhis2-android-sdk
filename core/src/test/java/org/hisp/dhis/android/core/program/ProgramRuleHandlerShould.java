@@ -28,10 +28,11 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +42,8 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -51,7 +54,7 @@ public class ProgramRuleHandlerShould {
     private IdentifiableObjectStore<ProgramRule> programRuleStore;
 
     @Mock
-    private SyncHandler<ProgramRuleAction> programRuleActionHandler;
+    private SyncHandlerWithTransformer<ProgramRuleAction> programRuleActionHandler;
 
     @Mock
     private ProgramRule programRule;
@@ -83,7 +86,7 @@ public class ProgramRuleHandlerShould {
     @Test
     public void call_program_rule_action_handler() {
         programRuleHandler.handle(programRule);
-        verify(programRuleActionHandler).handleMany(programRuleActions);
+        verify(programRuleActionHandler).handleMany(same(programRuleActions), any(Transformer.class));
     }
 
     @Test

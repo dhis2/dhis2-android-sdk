@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleEntityD
 import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingEntityDIModule;
 import org.hisp.dhis.android.core.common.valuetype.rendering.internal.ValueTypeRenderingEntityDIModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import dagger.Module;

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
+import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine;
 
 import javax.inject.Inject;
 

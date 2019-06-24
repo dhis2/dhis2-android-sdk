@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.arch.db.stores.internal;
 
 import android.database.Cursor;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
@@ -43,7 +41,9 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import androidx.annotation.NonNull;
+
+import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 public class IdentifiableObjectStoreImpl<M extends Model & ObjectWithUidInterface>

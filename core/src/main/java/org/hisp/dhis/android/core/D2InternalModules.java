@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.category.internal.CategoryInternalModule;
-import org.hisp.dhis.android.core.user.UserInternalModule;
+import org.hisp.dhis.android.core.user.internal.UserInternalModule;
 
 import javax.inject.Inject;
 

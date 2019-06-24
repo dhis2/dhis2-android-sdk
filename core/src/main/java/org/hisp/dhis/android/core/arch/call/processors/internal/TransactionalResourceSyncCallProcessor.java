@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.resource.Resource;
+import org.hisp.dhis.android.core.resource.internal.Resource;
 
 import java.util.List;
 

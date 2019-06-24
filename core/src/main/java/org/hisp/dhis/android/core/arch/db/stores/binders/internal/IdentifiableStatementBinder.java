@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.common.IdentifiableObject;
 
 import androidx.annotation.NonNull;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
 public abstract class IdentifiableStatementBinder<O extends IdentifiableObject> implements StatementBinder<O> {
 

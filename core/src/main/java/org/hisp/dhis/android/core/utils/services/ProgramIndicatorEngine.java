@@ -362,18 +362,24 @@ public class ProgramIndicatorEngine {
     }
 
     private String formatDataValue(TrackedEntityDataValue dataValue) {
-        if (dataElementStore.selectByUid(dataValue.dataElement())
-                .valueType() == ValueType.BOOLEAN) {
-            if (dataValue.value().equals("true")) {
-                return "1";
-            } else {
-                return "0";
-            }
-        } else if (dataValue.value().endsWith(".")) {
-            return (dataValue.value() + "0");
-        } else {
-            return dataValue.value();
+
+        DataElement dataElement = dataElementStore.selectByUid(dataValue.dataElement());
+
+        if (dataElement.valueType() == ValueType.BOOLEAN) {
+            return dataValue.value().equals("true") ? "1" : "0";
         }
+
+        if (MathUtils.isNumeric(dataValue.value())) {
+            if (dataValue.value().endsWith(".")) {
+                return (dataValue.value() + "0");
+            }
+
+            if (!dataValue.value().contains(".")) {
+                return (dataValue.value() + ".0");
+            }
+        }
+
+        return dataValue.value();
     }
 
     private static boolean isZeroOrPositive(String value) {

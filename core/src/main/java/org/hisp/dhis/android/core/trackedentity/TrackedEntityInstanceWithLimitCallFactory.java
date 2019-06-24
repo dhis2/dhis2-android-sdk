@@ -33,16 +33,17 @@ import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
 import org.hisp.dhis.android.core.arch.call.D2CallWithProgressImpl;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.D2ProgressManager;
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
 import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.utils.services.ApiPagingEngine;
 import org.hisp.dhis.android.core.utils.services.Paging;
@@ -165,35 +166,38 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
 
         List<TeiQuery.Builder> builders = new ArrayList<>();
         if (limitByOrgUnit) {
+            List<String> captureOrgUnitUids = getCaptureOrgUnitUids();
             if (limitByProgram) {
-                for (OrganisationUnitProgramLink link : organisationUnitProgramLinkStore.selectAll()) {
+                for (OrganisationUnitProgramLink link :
+                        getOrganisationUnitProgramLinksByOrgunitUids(captureOrgUnitUids)) {
                     builders.add(getTeiBuilderForOrgUnit(lastUpdated, link.organisationUnit()).program(link.program()));
                 }
             } else {
-                for (String orgUnitUid: getOrgUnitUids()) {
+                for (String orgUnitUid : captureOrgUnitUids) {
                     builders.add(getTeiBuilderForOrgUnit(lastUpdated, orgUnitUid));
                 }
             }
         } else {
+            List<String> rootCaptureOrgUnitUids = getRootCaptureOrgUnitUids();
             if (limitByProgram) {
                 Set<String> programs = new HashSet<>();
                 for (OrganisationUnitProgramLink link : organisationUnitProgramLinkStore.selectAll()) {
                     programs.add(link.program());
                 }
                 for (String program : programs) {
-                    builders.add(getTeiBuilderForRoot(lastUpdated).program(program));
+                    builders.add(getTeiBuilderForRootOrgunits(lastUpdated, rootCaptureOrgUnitUids).program(program));
                 }
             } else {
-                builders.add(getTeiBuilderForRoot(lastUpdated));
+                builders.add(getTeiBuilderForRootOrgunits(lastUpdated, rootCaptureOrgUnitUids));
             }
         }
         return builders;
     }
 
-    private TeiQuery.Builder getTeiBuilderForRoot(String lastUpdated) {
+    private TeiQuery.Builder getTeiBuilderForRootOrgunits(String lastUpdated, List<String> rootOrgunitUids) {
         return TeiQuery.builder()
                 .lastUpdatedStartDate(lastUpdated)
-                .orgUnits(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids())
+                .orgUnits(rootOrgunitUids)
                 .ouMode(OuMode.DESCENDANTS);
     }
 
@@ -236,19 +240,21 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
         }
     }
 
-    private Set<String> getOrgUnitUids() {
-        List<UserOrganisationUnitLink> userOrganisationUnitLinks = userOrganisationUnitLinkStore.selectAll();
+    private List<String> getRootCaptureOrgUnitUids() {
+        return userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids();
+    }
 
-        Set<String> organisationUnitUids = new HashSet<>();
+    private List<String> getCaptureOrgUnitUids() {
+        return userOrganisationUnitLinkStore
+                .queryOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
+    }
 
-        for (UserOrganisationUnitLink userOrganisationUnitLink : userOrganisationUnitLinks) {
-            if (userOrganisationUnitLink.organisationUnitScope().equals(
-                    OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name())) {
-                organisationUnitUids.add(userOrganisationUnitLink.organisationUnit());
-            }
-        }
-
-        return organisationUnitUids;
+    private List<OrganisationUnitProgramLink> getOrganisationUnitProgramLinksByOrgunitUids(List<String> uids) {
+        return organisationUnitProgramLinkStore.selectWhere(
+                new WhereClauseBuilder().appendInKeyStringValues(
+                        OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
+                        uids
+                ).build());
     }
 
     private Observable<D2Progress> updateResource(D2ProgressManager progressManager, BooleanWrapper allOkay) {

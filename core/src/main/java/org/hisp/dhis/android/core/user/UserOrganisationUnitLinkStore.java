@@ -29,10 +29,13 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 import java.util.List;
 
 public interface UserOrganisationUnitLinkStore extends LinkModelStore<UserOrganisationUnitLink> {
 
     List<String> queryRootCaptureOrganisationUnitUids() throws RuntimeException;
+
+    List<String> queryOrganisationUnitUidsByScope(OrganisationUnit.Scope scope);
 }

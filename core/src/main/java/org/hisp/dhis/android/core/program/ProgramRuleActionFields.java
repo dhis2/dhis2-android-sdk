@@ -59,7 +59,6 @@ final class ProgramRuleActionFields {
                     fh.<ProgramRuleActionType>field(PROGRAM_RULE_ACTION_TYPE),
                     fh.nestedFieldWithUid(PROGRAM_STAGE),
                     fh.nestedFieldWithUid(DATA_ELEMENT),
-                    fh.nestedFieldWithUid(PROGRAM_RULE),
                     fh.nestedFieldWithUid(OPTION),
                     fh.nestedFieldWithUid(OPTION_GROUP)
                     ).build();

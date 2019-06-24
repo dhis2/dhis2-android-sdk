@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramRule;
@@ -54,6 +54,7 @@ import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
 import org.hisp.dhis.android.core.user.UserCredentialsTableInfo;
 import org.hisp.dhis.android.core.user.UserTableInfo;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -199,7 +200,7 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
                     .uid("action_uid")
                     .name("name")
                     .programRuleActionType(ProgramRuleActionType.ASSIGN)
-                    .programRule(ProgramRule.builder().uid(PROGRAM_RULE_UID).build())
+                    .programRule(ObjectWithUid.create(PROGRAM_RULE_UID))
                     .build();
 
             ProgramRuleActionStore.create(d2.databaseAdapter()).insert(programRuleAction);

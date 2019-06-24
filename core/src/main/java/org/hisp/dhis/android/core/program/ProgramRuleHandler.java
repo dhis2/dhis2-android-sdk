@@ -28,9 +28,10 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 
 import javax.inject.Inject;
@@ -39,12 +40,12 @@ import dagger.Reusable;
 
 @Reusable
 final class ProgramRuleHandler extends IdentifiableSyncHandlerImpl<ProgramRule> {
-    private final SyncHandler<ProgramRuleAction> programRuleActionHandler;
+    private final SyncHandlerWithTransformer<ProgramRuleAction> programRuleActionHandler;
     private final OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner;
 
     @Inject
     ProgramRuleHandler(IdentifiableObjectStore<ProgramRule> programRuleStore,
-                       SyncHandler<ProgramRuleAction> programRuleActionHandler,
+                       SyncHandlerWithTransformer<ProgramRuleAction> programRuleActionHandler,
                        OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner) {
         super(programRuleStore);
         this.programRuleActionHandler = programRuleActionHandler;
@@ -53,7 +54,8 @@ final class ProgramRuleHandler extends IdentifiableSyncHandlerImpl<ProgramRule> 
 
     @Override
     protected void afterObjectHandled(ProgramRule programRule, HandleAction handleAction) {
-        programRuleActionHandler.handleMany(programRule.programRuleActions());
+        programRuleActionHandler.handleMany(programRule.programRuleActions(),
+                pra -> pra.toBuilder().programRule(ObjectWithUid.create(programRule.uid())).build());
         if (handleAction == HandleAction.Update) {
             programRuleActionCleaner.deleteOrphan(programRule, programRule.programRuleActions());
         }

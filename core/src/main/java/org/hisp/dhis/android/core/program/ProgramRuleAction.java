@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
-import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -43,12 +42,13 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DataElementWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ProgramIndicatorWithUidColumnAdapter;
-import org.hisp.dhis.android.core.data.database.ProgramRuleWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ProgramStageSectionWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ProgramStageWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.TrackedEntityAttributeWithUidColumnAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramRuleAction.Builder.class)
@@ -98,8 +98,8 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject implement
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(ProgramRuleWithUidColumnAdapter.class)
-    public abstract ProgramRule programRule();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid programRule();
 
     @Nullable
     @JsonProperty()
@@ -144,7 +144,7 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject implement
 
         public abstract Builder dataElement(DataElement dataElement);
 
-        public abstract Builder programRule(ProgramRule programRule);
+        public abstract Builder programRule(ObjectWithUid programRule);
 
         public abstract Builder option(ObjectWithUid option);
 

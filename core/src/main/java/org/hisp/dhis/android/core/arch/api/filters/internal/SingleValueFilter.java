@@ -60,6 +60,10 @@ public abstract class SingleValueFilter<T, K> implements Filter<T, K> {
         return create(field, "eq", value);
     }
 
+    public static <T, K> Filter<T, K> like(@NonNull Field<T, K> field, @Nullable String value) {
+        return create(field, "like", value);
+    }
+
     @Override
     public String generateString() {
         StringBuilder builder = new StringBuilder();

@@ -26,36 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.api;
+package org.hisp.dhis.android.core.organisationunit;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.Property;
-
-import java.util.Collection;
+import org.hisp.dhis.android.core.common.BaseQuery;
 
 @AutoValue
-public abstract class Field<Parent, Child> implements Property<Parent, Child> {
+abstract class OrganisationUnitQuery extends BaseQuery {
 
-    public <V> Filter<Parent, Child> eq(V value) {
-        return SingleValueFilter.eq(this, value.toString());
+    private static int DEFAULT_PAGE_SIZE = 500;
+
+    @Nullable
+    public abstract String orgUnit();
+
+    public static Builder builder() {
+        return new AutoValue_OrganisationUnitQuery.Builder()
+                .page(1)
+                .pageSize(DEFAULT_PAGE_SIZE)
+                .paging(true);
     }
 
-    public Filter<Parent, Child> gt(String value) {
-        return SingleValueFilter.gt(this, value);
-    }
+    @AutoValue.Builder
+    public abstract static class Builder extends BaseQuery.Builder<Builder> {
+        public abstract Builder orgUnit(String orgUnit);
 
-    public Filter<Parent, Child> like(String value) {
-        return SingleValueFilter.like(this, value);
-    }
-
-    public Filter<Parent, Child> in(Collection<String> values) {
-        return InFilter.create(this, values);
-    }
-
-    public static <T, K> Field<T, K> create(@NonNull String name) {
-        return new AutoValue_Field<>(name);
+        public abstract OrganisationUnitQuery build();
     }
 }

@@ -48,7 +48,7 @@ public final class OrganisationUnitFields {
 
     static final Field<OrganisationUnit, String> uid = fh.uid();
     private static final Field<OrganisationUnit, String> displayName = fh.displayName();
-    private static final Field<OrganisationUnit, String> path = Field.create(PATH);
+    static final Field<OrganisationUnit, String> path = Field.create(PATH);
     private static final Field<OrganisationUnit, String> openingDate = Field.create(OPENING_DATE);
     private static final Field<OrganisationUnit, String> closedDate = Field.create(CLOSED_DATE);
 

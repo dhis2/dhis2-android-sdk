@@ -44,10 +44,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
-import org.hisp.dhis.android.core.program.programindicatorengine.DateUtils;
-import org.hisp.dhis.android.core.program.programindicatorengine.ExpressionUtils;
-import org.hisp.dhis.android.core.program.programindicatorengine.MathUtils;
-import org.hisp.dhis.android.core.program.programindicatorengine.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;

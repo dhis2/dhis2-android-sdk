@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.data.database;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.Model;
 import org.junit.Before;
 import org.junit.Test;

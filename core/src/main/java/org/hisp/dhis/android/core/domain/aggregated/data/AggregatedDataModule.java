@@ -27,11 +27,12 @@
  */
 package org.hisp.dhis.android.core.domain.aggregated.data;
 
-import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
+import org.hisp.dhis.android.core.arch.call.D2Progress;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Observable;
 
 @Reusable
 public final class AggregatedDataModule {
@@ -43,7 +44,7 @@ public final class AggregatedDataModule {
         this.aggregatedDataCall = aggregatedDataCall;
     }
 
-    public D2CallWithProgress download() {
-        return aggregatedDataCall.asCompletable();
+    public Observable<D2Progress> download() {
+        return aggregatedDataCall.download();
     }
 }

@@ -28,16 +28,16 @@
 
 package org.hisp.dhis.android.core.utils.integration.mock;
 
-import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.data.imports.TrackerImportConflictSamples;
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
-import org.hisp.dhis.android.core.imports.TrackerImportConflictStore;
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
-import org.hisp.dhis.android.core.maintenance.D2ErrorStore;
+import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -70,7 +70,7 @@ public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockInte
     }
 
     private static void login() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
     }
 
     private static void downloadMetadata() throws Exception {
@@ -78,7 +78,7 @@ public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockInte
     }
 
     private static void downloadTrackedEntityInstances() {
-        d2.trackedEntityModule().downloadTrackedEntityInstances(2, false, false).asObservable().subscribe();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(2, false, false).subscribe();
     }
 
     private static void downloadEvents() throws Exception {
@@ -86,7 +86,7 @@ public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockInte
     }
 
     private static void downloadAggregatedData() {
-        d2.aggregatedModule().data().download().asObservable().subscribe();
+        d2.aggregatedModule().data().download().subscribe();
     }
 
     private static void storeSomeD2Errors() {

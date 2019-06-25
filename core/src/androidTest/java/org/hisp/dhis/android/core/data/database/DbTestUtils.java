@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import androidx.annotation.NonNull;
-
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
 
 public final class DbTestUtils {
     private DbTestUtils() {

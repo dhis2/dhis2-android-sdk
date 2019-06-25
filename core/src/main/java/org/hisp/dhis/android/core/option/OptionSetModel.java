@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.option;
 
 import android.database.Cursor;
-import androidx.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
@@ -39,6 +38,8 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
+
+import androidx.annotation.Nullable;
 
 @Deprecated
 @AutoValue

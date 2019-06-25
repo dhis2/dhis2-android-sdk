@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.indicator;
 
 import android.database.Cursor;
-import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.LinkModelAbstractShould;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel.Columns;
@@ -40,6 +39,8 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.List;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 

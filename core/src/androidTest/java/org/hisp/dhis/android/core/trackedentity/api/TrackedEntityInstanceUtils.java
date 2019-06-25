@@ -32,11 +32,11 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
-import org.hisp.dhis.android.core.imports.BaseImportSummary;
-import org.hisp.dhis.android.core.imports.EnrollmentImportSummary;
-import org.hisp.dhis.android.core.imports.EventImportSummary;
+import org.hisp.dhis.android.core.imports.internal.BaseImportSummary;
+import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary;
+import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
 import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.TEIImportSummary;
+import org.hisp.dhis.android.core.imports.internal.TEIImportSummary;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
@@ -220,7 +220,7 @@ class TrackedEntityInstanceUtils {
     private static Enrollment createValidEnrollmentAndEvent(String teiUid) {
         Date refDate = getValidDate();
         String enrollmentUid = codeGenerator.generate();
-        Event event = createValidEvent(teiUid, enrollmentUid);
+        Event event = createValidEvent(enrollmentUid);
 
         return getEnrollment(enrollmentUid, teiUid, refDate).toBuilder()
                 .events(Collections.singletonList(event)).build();
@@ -229,7 +229,7 @@ class TrackedEntityInstanceUtils {
     private static Enrollment createEnrollmentAndFutureEvent(String teiUid) {
         Date refDate = getValidDate();
         String enrollmentUid = codeGenerator.generate();
-        Event event = createFutureEvent(teiUid, enrollmentUid);
+        Event event = createFutureEvent(enrollmentUid);
 
         return getEnrollment(enrollmentUid, teiUid, refDate).toBuilder()
                 .events(Collections.singletonList(event)).build();
@@ -238,7 +238,7 @@ class TrackedEntityInstanceUtils {
     private static Enrollment createEnrollmentAndEventWithInvalidDataElement(String teiUid) {
         Date refDate = getValidDate();
         String enrollmentUid = codeGenerator.generate();
-        Event event = createEventWithInvalidDataElement(teiUid, enrollmentUid);
+        Event event = createEventWithInvalidDataElement(enrollmentUid);
 
         return getEnrollment(enrollmentUid, teiUid, refDate).toBuilder()
                 .events(Collections.singletonList(event)).build();
@@ -247,7 +247,7 @@ class TrackedEntityInstanceUtils {
     private static Enrollment createEnrollmentAndEventWithValidAndInvalidDataValue(String teiUid) {
         Date refDate = getValidDate();
         String enrollmentUid = codeGenerator.generate();
-        Event event = createEventWithValidAndInvalidDataValue(teiUid, enrollmentUid);
+        Event event = createEventWithValidAndInvalidDataValue(enrollmentUid);
 
         return getEnrollment(enrollmentUid, teiUid, refDate).toBuilder()
                 .events(Collections.singletonList(event)).build();
@@ -256,7 +256,7 @@ class TrackedEntityInstanceUtils {
     private static Enrollment createCompletedEnrollmentWithEvent(String teiUid) {
         Date refDate = getValidDate();
         String enrollmentUid = codeGenerator.generate();
-        Event event = createValidCompletedEvent(teiUid, enrollmentUid);
+        Event event = createValidCompletedEvent(enrollmentUid);
 
         return getEnrollment(enrollmentUid, teiUid, refDate).toBuilder()
                 .status(EnrollmentStatus.COMPLETED)
@@ -270,8 +270,8 @@ class TrackedEntityInstanceUtils {
                 .events(Collections.emptyList()).notes(Collections.emptyList()).build();
     }
 
-    private static Event createValidEvent(String teiUid, String enrollmentUid) {
-        return createEvent(teiUid, enrollmentUid, getValidDate(),
+    private static Event createValidEvent(String enrollmentUid) {
+        return createEvent(enrollmentUid, getValidDate(),
                 Collections.singletonList(TrackedEntityDataValue.builder()
                         .dataElement(validNumberDataElementUid)
                         .value("9")
@@ -279,7 +279,7 @@ class TrackedEntityInstanceUtils {
                         .build()));
     }
 
-    private static Event createValidCompletedEvent(String teiUid, String enrollmentUid) {
+    private static Event createValidCompletedEvent(String enrollmentUid) {
         Date refDate = getValidDate();
         List<TrackedEntityDataValue> values = Collections.singletonList(TrackedEntityDataValue.builder()
                 .dataElement(validNumberDataElementUid)
@@ -291,15 +291,15 @@ class TrackedEntityInstanceUtils {
                 .created(refDate).lastUpdated(refDate).program(validProgramUid).programStage(validProgramStageUid)
                 .organisationUnit(validOrgUnitUid).eventDate(refDate).status(EventStatus.COMPLETED).deleted(false)
                 .trackedEntityDataValues(values).attributeOptionCombo(validCategoryComboOptionUid)
-                .trackedEntityInstance(teiUid).build();
+                .build();
     }
 
-    private static Event createFutureEvent(String teiUid, String enrollmentUid) {
-        return createEvent(teiUid, enrollmentUid, getFutureDate(), Collections.emptyList());
+    private static Event createFutureEvent(String enrollmentUid) {
+        return createEvent(enrollmentUid, getFutureDate(), Collections.emptyList());
     }
 
-    private static Event createEventWithInvalidDataElement(String teiUid, String enrollmentUid) {
-        return createEvent(teiUid, enrollmentUid, getValidDate(),
+    private static Event createEventWithInvalidDataElement(String enrollmentUid) {
+        return createEvent(enrollmentUid, getValidDate(),
                 Collections.singletonList(TrackedEntityDataValue.builder()
                         .dataElement("invalidUid")
                         .value("value")
@@ -307,8 +307,8 @@ class TrackedEntityInstanceUtils {
                         .build()));
     }
 
-    private static Event createEventWithValidAndInvalidDataValue(String teiUid, String enrollmentUid) {
-        return createEvent(teiUid, enrollmentUid, getValidDate(),
+    private static Event createEventWithValidAndInvalidDataValue(String enrollmentUid) {
+        return createEvent(enrollmentUid, getValidDate(),
                 Arrays.asList(
                         TrackedEntityDataValue.builder()
                                 .dataElement(validNumberDataElementUid)
@@ -322,14 +322,14 @@ class TrackedEntityInstanceUtils {
                                 .build()));
     }
 
-    private static Event createEvent(String teiUid, String enrollmentUid, Date refDate,
+    private static Event createEvent(String enrollmentUid, Date refDate,
                                      List<TrackedEntityDataValue> values) {
 
         return Event.builder().uid(codeGenerator.generate()).enrollment(enrollmentUid)
                 .created(refDate).lastUpdated(refDate).program(validProgramUid).programStage(validProgramStageUid)
                 .organisationUnit(validOrgUnitUid).eventDate(refDate).status(EventStatus.ACTIVE).deleted(false)
                 .trackedEntityDataValues(values).attributeOptionCombo(validCategoryComboOptionUid)
-                .trackedEntityInstance(teiUid).build();
+                .build();
     }
 
     private static Date getValidDate() {

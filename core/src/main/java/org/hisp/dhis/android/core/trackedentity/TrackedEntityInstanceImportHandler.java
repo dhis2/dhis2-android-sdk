@@ -30,15 +30,15 @@ package org.hisp.dhis.android.core.trackedentity;
 
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
-import org.hisp.dhis.android.core.imports.EnrollmentImportSummaries;
-import org.hisp.dhis.android.core.imports.ImportConflict;
-import org.hisp.dhis.android.core.imports.TEIImportSummary;
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentImportHandler;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
+import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummaries;
+import org.hisp.dhis.android.core.imports.internal.ImportConflict;
+import org.hisp.dhis.android.core.imports.internal.TEIImportSummary;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,7 +49,7 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import dagger.Reusable;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.getState;
+import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getState;
 
 @Reusable
 public final class TrackedEntityInstanceImportHandler {

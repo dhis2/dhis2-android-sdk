@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.imports.internal.WebResponse;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.concurrent.Callable;

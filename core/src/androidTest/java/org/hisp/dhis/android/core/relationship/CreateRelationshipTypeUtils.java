@@ -32,6 +32,7 @@ import android.content.ContentValues;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields;
 
 public class CreateRelationshipTypeUtils {
     private static final String CODE = "test_code";

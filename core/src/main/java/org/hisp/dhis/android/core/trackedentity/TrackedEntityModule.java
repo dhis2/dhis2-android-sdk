@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
+import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
 
 import java.util.Collection;
@@ -39,6 +39,7 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.reactivex.Observable;
 
 @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 @Reusable
@@ -82,9 +83,9 @@ public final class TrackedEntityModule {
         this.trackedEntityInstanceQuery = trackedEntityInstanceQuery;
     }
 
-    public D2CallWithProgress downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit,
-                                                             boolean limitByProgram) {
-        return withLimitCallFactory.getCall(teiLimit, limitByOrgUnit, limitByProgram);
+    public Observable<D2Progress> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit,
+                                                                 boolean limitByProgram) {
+        return withLimitCallFactory.download(teiLimit, limitByOrgUnit, limitByProgram);
     }
 
     public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {

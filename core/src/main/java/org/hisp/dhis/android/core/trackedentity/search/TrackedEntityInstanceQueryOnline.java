@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.trackedentity.search;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseQuery;
-import org.hisp.dhis.android.core.common.SafeDateFormat;
-import org.hisp.dhis.android.core.data.api.OuMode;
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
+import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,7 +50,7 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     abstract List<String> orgUnits();
 
     @Nullable
-    abstract OuMode orgUnitMode();
+    abstract OrganisationUnitMode orgUnitMode();
 
     @Nullable
     abstract String program();
@@ -126,7 +126,7 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     abstract static class Builder extends BaseQuery.Builder<Builder> {
         abstract Builder orgUnits(List<String> orgUnits);
 
-        abstract Builder orgUnitMode(OuMode orgUnitMode);
+        abstract Builder orgUnitMode(OrganisationUnitMode orgUnitMode);
 
         abstract Builder program(String program);
 

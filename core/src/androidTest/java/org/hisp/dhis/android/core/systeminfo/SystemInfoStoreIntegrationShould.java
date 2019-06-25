@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
-import androidx.test.runner.AndroidJUnit4;
-
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class SystemInfoStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<SystemInfo> {

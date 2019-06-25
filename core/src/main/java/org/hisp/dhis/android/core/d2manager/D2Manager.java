@@ -28,67 +28,125 @@
 
 package org.hisp.dhis.android.core.d2manager;
 
+import android.util.Log;
+
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.configuration.Configuration;
-import org.hisp.dhis.android.core.configuration.ConfigurationHelper;
 import org.hisp.dhis.android.core.configuration.ConfigurationManager;
 import org.hisp.dhis.android.core.configuration.ConfigurationManagerFactory;
+import org.hisp.dhis.android.core.configuration.ServerUrlParser;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
 
+import androidx.annotation.VisibleForTesting;
+import io.reactivex.Completable;
+import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
+import okhttp3.HttpUrl;
 
 public final class D2Manager {
 
-    private D2 d2;
-    private final D2Configuration d2Configuration;
-    final DatabaseAdapter databaseAdapter;
-    private final ConfigurationManager configurationManager;
+    private static String databaseName = "dhis.db";
 
-    public D2Manager(@Nullable D2Configuration d2Configuration) {
-        this.d2Configuration = d2Configuration;
-        this.databaseAdapter = newDatabaseAdapter();
-        this.configurationManager = ConfigurationManagerFactory.create(databaseAdapter);
+    private static D2 d2;
+    private static D2Configuration d2Configuration;
+    static DatabaseAdapter databaseAdapter;
+    private static ConfigurationManager configurationManager;
+    private static Configuration configuration;
+
+    private D2Manager() {
     }
 
-    public boolean isD2Configured() {
-        return configurationManager.get() != null;
+    public static Completable setUp(@Nullable D2Configuration d2Config) {
+        return Completable.fromAction(() -> {
+            long startTime = System.currentTimeMillis();
+            d2Configuration = d2Config;
+            databaseAdapter = newDatabaseAdapter();
+            configurationManager = ConfigurationManagerFactory.create(databaseAdapter);
+            configuration = configurationManager.get();
+
+            long setUpTime = System.currentTimeMillis() - startTime;
+            Log.i(D2Manager.class.getName(), "Set up took " + setUpTime + "ms");
+        });
     }
 
-    public void configureD2(@NonNull String urlWithoutAPI) {
-        ConfigurationHelper.validateServerUrl(urlWithoutAPI);
-        Configuration configuration = Configuration.forServerUrlStringWithoutAPI(urlWithoutAPI);
-        configurationManager.configure(configuration);
-        instantiate(configuration);
+    public static boolean isServerUrlSet() {
+        return configuration != null;
     }
 
-    private void instantiate(Configuration configuration) {
-        d2 = new D2.Builder()
-                .configuration(configuration)
-                .databaseAdapter(databaseAdapter)
-                .okHttpClient(OkHttpClientFactory.okHttpClient(d2Configuration, databaseAdapter))
-                .context(d2Configuration.context())
-                .build();
+    public static Completable setServerUrl(@NonNull String url) {
+        return Completable.fromAction(() -> {
+            ensureSetUp();
+            HttpUrl httpUrl = ServerUrlParser.parse(url);
+            configuration = Configuration.forServerUrl(httpUrl);
+            configurationManager.configure(configuration);
+        });
     }
 
-    public D2 getD2() throws IllegalStateException {
+    public static D2 getD2() throws IllegalStateException {
         if (d2 == null) {
-            Configuration configuration = configurationManager.get();
-            if (configuration == null) {
-                throw new IllegalStateException("D2 is not configured");
-            } else {
-                instantiate(configuration);
-                return d2;
-            }
+            throw new IllegalStateException("D2 is not instantiated yet");
         } else {
             return d2;
         }
     }
 
-    private DatabaseAdapter newDatabaseAdapter() {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(d2Configuration.context(), d2Configuration.databaseName());
+    private static void ensureSetUp() {
+        if (d2Configuration == null) {
+            throw new IllegalStateException("You have to setUp first");
+        }
+    }
+
+    private static void ensureServerUrl() {
+        if (configuration == null) {
+            throw new IllegalStateException("You have to configure server URL first");
+        }
+    }
+
+    public static boolean isD2Instantiated() {
+        return d2 != null;
+    }
+
+    public static Single<D2> instantiateD2() {
+        return Single.fromCallable(() -> {
+            ensureSetUp();
+            ensureServerUrl();
+
+            long startTime = System.currentTimeMillis();
+
+            d2 = new D2.Builder()
+                    .configuration(configuration)
+                    .databaseAdapter(databaseAdapter)
+                    .okHttpClient(OkHttpClientFactory.okHttpClient(d2Configuration, databaseAdapter))
+                    .context(d2Configuration.context())
+                    .build();
+
+
+            long setUpTime = System.currentTimeMillis() - startTime;
+            Log.i(D2Manager.class.getName(), "D2 instantiation took " + setUpTime + "ms");
+
+            return d2;
+        });
+    }
+
+    private static DatabaseAdapter newDatabaseAdapter() {
+        DbOpenHelper dbOpenHelper = new DbOpenHelper(d2Configuration.context(), databaseName);
         return new SqLiteDatabaseAdapter(dbOpenHelper);
+    }
+
+    @VisibleForTesting
+    static void setDatabaseName(String dbName) {
+        databaseName = dbName;
+    }
+
+    @VisibleForTesting
+    static void clear() {
+        d2Configuration = null;
+        d2 = null;
+        databaseAdapter =  null;
+        configurationManager = null;
+        configuration = null;
     }
 }

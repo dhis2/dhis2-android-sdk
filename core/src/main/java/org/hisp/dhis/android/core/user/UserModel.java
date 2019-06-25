@@ -29,13 +29,14 @@
 package org.hisp.dhis.android.core.user;
 
 import android.database.Cursor;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.utils.Utils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 @Deprecated
 @AutoValue

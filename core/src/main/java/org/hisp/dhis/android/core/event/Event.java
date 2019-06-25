@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.event;
 
 import android.database.Cursor;
-import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -47,10 +46,13 @@ import org.hisp.dhis.android.core.data.database.DataDeleteColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbEventStatusColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityDataValueListColumnAdapter;
+import org.hisp.dhis.android.core.event.internal.EventFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
 import java.util.Date;
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Event.Builder.class)
@@ -130,10 +132,6 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
     public abstract String attributeOptionCombo();
 
     @Nullable
-    @JsonIgnore()
-    public abstract String trackedEntityInstance();
-
-    @Nullable
     @JsonProperty(EventFields.TRACKED_ENTITY_DATA_VALUES)
     @ColumnAdapter(IgnoreTrackedEntityDataValueListColumnAdapter.class)
     public abstract List<TrackedEntityDataValue> trackedEntityDataValues();
@@ -186,8 +184,6 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
         public abstract Builder deleted(Boolean deleted);
 
         public abstract Builder attributeOptionCombo(String attributeOptionCombo);
-
-        public abstract Builder trackedEntityInstance(String trackedEntityInstance);
 
         @JsonProperty(EventFields.TRACKED_ENTITY_DATA_VALUES)
         public abstract Builder trackedEntityDataValues(List<TrackedEntityDataValue> trackedEntityDataValues);

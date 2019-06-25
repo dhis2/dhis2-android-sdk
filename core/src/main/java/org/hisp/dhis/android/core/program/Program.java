@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
-import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -64,6 +63,8 @@ import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Program.Builder.class)
@@ -164,7 +165,7 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     @ColumnAdapter(CategoryComboWithUidColumnAdapter.class)
     public abstract CategoryCombo categoryCombo();
 
-    String categoryComboUid() {
+    public String categoryComboUid() {
         CategoryCombo combo = categoryCombo();
         return combo == null ? CategoryCombo.DEFAULT_UID : combo.uid();
     }

@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
-import static org.hisp.dhis.android.core.legendset.LegendSetFields.SYMBOLIZER;
+import static org.hisp.dhis.android.core.legendset.internal.LegendSetFields.SYMBOLIZER;
 
 public final class LegendSetTableInfo {
 

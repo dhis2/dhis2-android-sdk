@@ -28,23 +28,23 @@
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorExecutorImpl;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.List;
 
-public class ObjectWithUidChildStoreImpl<P extends ObjectWithUidInterface> implements ObjectWithUidChildStore<P> {
+class ObjectWithUidChildStoreImpl<P extends ObjectWithUidInterface> implements ObjectWithUidChildStore<P> {
 
     private final LinkTableChildProjection linkTableChildProjection;
 
     private final DatabaseAdapter databaseAdapter;
     private final SQLStatementBuilder statementBuilder;
 
-    public ObjectWithUidChildStoreImpl(LinkTableChildProjection linkTableChildProjection,
+    ObjectWithUidChildStoreImpl(LinkTableChildProjection linkTableChildProjection,
                                        DatabaseAdapter databaseAdapter,
                                        SQLStatementBuilder statementBuilder) {
         this.linkTableChildProjection = linkTableChildProjection;

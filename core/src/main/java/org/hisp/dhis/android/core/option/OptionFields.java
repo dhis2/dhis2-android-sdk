@@ -28,17 +28,17 @@
 
 package org.hisp.dhis.android.core.option;
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleFields;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
 
 public final class OptionFields {
 
-    final static String SORT_ORDER = "sortOrder";
+    public final static String SORT_ORDER = "sortOrder";
     public final static String OPTION_SET = "optionSet";
-    final static String STYLE = "style";
+    public final static String STYLE = "style";
 
     private static final FieldsHelper<Option> fh = new FieldsHelper<>();
 

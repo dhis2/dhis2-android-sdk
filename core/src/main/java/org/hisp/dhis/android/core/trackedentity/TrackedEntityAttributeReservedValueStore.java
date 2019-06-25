@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
-import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueTableInfo.Columns;
 
@@ -42,7 +42,7 @@ import java.util.Date;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
 public final class TrackedEntityAttributeReservedValueStore
         extends ObjectWithoutUidStoreImpl<TrackedEntityAttributeReservedValue>
@@ -76,7 +76,7 @@ public final class TrackedEntityAttributeReservedValueStore
 
     private TrackedEntityAttributeReservedValueStore(
             DatabaseAdapter databaseAdapter,
-            SQLStatementBuilder builder,
+            SQLStatementBuilderImpl builder,
             StatementBinder<TrackedEntityAttributeReservedValue> binder,
             WhereStatementBinder<TrackedEntityAttributeReservedValue> whereUpdateBinder,
             WhereStatementBinder<TrackedEntityAttributeReservedValue> whereDeleteBinder) {
@@ -125,8 +125,8 @@ public final class TrackedEntityAttributeReservedValueStore
 
     public static TrackedEntityAttributeReservedValueStoreInterface create(DatabaseAdapter databaseAdapter) {
 
-        SQLStatementBuilder statementBuilder =
-                new SQLStatementBuilder(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO);
+        SQLStatementBuilderImpl statementBuilder =
+                new SQLStatementBuilderImpl(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO);
 
         return new TrackedEntityAttributeReservedValueStore(databaseAdapter, statementBuilder,
                 BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER);

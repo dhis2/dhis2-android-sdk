@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.indicator;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -48,18 +47,13 @@ public final class DataSetIndicatorLinkTableInfo {
         }
     };
 
-    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            IndicatorTableInfo.TABLE_INFO,
-            Columns.DATA_SET,
-            Columns.INDICATOR);
-
     private DataSetIndicatorLinkTableInfo() {
     }
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
 
-        static final String DATA_SET = "dataSet";
-        private static final String INDICATOR = "indicator";
+        public static final String DATA_SET = "dataSet";
+        public static final String INDICATOR = "indicator";
 
         @Override
         public String[] all() {

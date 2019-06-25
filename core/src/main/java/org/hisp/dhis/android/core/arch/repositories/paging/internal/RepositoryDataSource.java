@@ -27,6 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.paging.internal;
 
+import androidx.annotation.NonNull;
+import androidx.paging.ItemKeyedDataSource;
+
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
@@ -34,21 +37,18 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore;
 
 import java.util.List;
 import java.util.Map;
 
-import androidx.annotation.NonNull;
-import androidx.paging.ItemKeyedDataSource;
-
 public final class RepositoryDataSource<M extends Model> extends ItemKeyedDataSource<M, M> {
 
-    private final ObjectStore<M> store;
+    private final ReadableStore<M> store;
     private final RepositoryScope scope;
     private final Map<String, ChildrenAppender<M>> childrenAppenders;
 
-    public RepositoryDataSource(ObjectStore<M> store,
+    public RepositoryDataSource(ReadableStore<M> store,
                                 RepositoryScope scope,
                                 Map<String, ChildrenAppender<M>> childrenAppenders) {
         this.store = store;
@@ -60,7 +60,7 @@ public final class RepositoryDataSource<M extends Model> extends ItemKeyedDataSo
     public void loadInitial(@NonNull LoadInitialParams<M> params, @NonNull LoadInitialCallback<M> callback) {
         String whereClause = new WhereClauseFromScopeBuilder(new WhereClauseBuilder()).getWhereClause(scope);
         List<M> withoutChildren = store.selectWhere(whereClause,
-                OrderByClauseBuilder.orderByFromItems(scope.orderBy()), params.requestedLoadSize);
+                OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()), params.requestedLoadSize);
         callback.onResult(appendChildren(withoutChildren));
     }
 
@@ -77,9 +77,10 @@ public final class RepositoryDataSource<M extends Model> extends ItemKeyedDataSo
     private void loadPages(@NonNull LoadParams<M> params, @NonNull LoadCallback<M> callback, boolean reversed) {
         WhereClauseBuilder whereClauseBuilder = new WhereClauseBuilder();
         OrderByClauseBuilder.addSortingClauses(whereClauseBuilder, scope.orderBy(),
-                params.key.toContentValues(), reversed);
+                params.key.toContentValues(), reversed, scope.pagingKey());
         String whereClause = new WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(scope);
-        List<M> withoutChildren = store.selectWhere(whereClause, OrderByClauseBuilder.orderByFromItems(scope.orderBy()),
+        List<M> withoutChildren = store.selectWhere(whereClause,
+                OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
                 params.requestedLoadSize);
         callback.onResult(appendChildren(withoutChildren));
     }

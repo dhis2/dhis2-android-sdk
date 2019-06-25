@@ -29,9 +29,7 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public final class SectionGreyedFieldsLinkTableInfo {
@@ -49,18 +47,13 @@ public final class SectionGreyedFieldsLinkTableInfo {
         }
     };
 
-    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            DataElementOperandTableInfo.TABLE_INFO,
-            Columns.SECTION,
-            Columns.DATA_ELEMENT_OPERAND);
-
     private SectionGreyedFieldsLinkTableInfo() {
     }
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
 
-        static final String SECTION = "section";
-        static final String DATA_ELEMENT_OPERAND = "dataElementOperand";
+        public static final String SECTION = "section";
+        public static final String DATA_ELEMENT_OPERAND = "dataElementOperand";
 
         @Override
         public String[] all() {

@@ -36,6 +36,8 @@ import org.hisp.dhis.android.core.common.Model;
 
 import java.util.Map;
 
+import io.reactivex.Single;
+
 public abstract class ReadOnlyObjectRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
         implements ReadOnlyObjectRepository<M> {
 
@@ -56,6 +58,11 @@ public abstract class ReadOnlyObjectRepositoryImpl<M extends Model, R extends Re
     @Override
     public final M get() {
         return ChildrenAppenderExecutor.appendInObject(getWithoutChildren(), childrenAppenders, scope.children());
+    }
+
+    @Override
+    public final Single<M> getAsync() {
+        return Single.fromCallable(this::get);
     }
 
     @Override

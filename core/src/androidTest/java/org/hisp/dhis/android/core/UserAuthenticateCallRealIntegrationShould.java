@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core;
 
-import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
+import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -49,35 +49,35 @@ public class UserAuthenticateCallRealIntegrationShould extends BaseRealIntegrati
 
     //@Test
     public void not_wipe_after_second_login_with_same_user() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
 
         d2.syncMetaData().call();
 
-        d2.userModule().logOut().call();
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logOut().blockingAwait();
+        d2.userModule().logIn("android", "Android123").blockingGet();
     }
 
     //@Test
     public void wipe_after_second_login_with_different_user() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
 
         d2.syncMetaData().call();
 
-        d2.userModule().logOut().call();
-        d2.userModule().logIn("admin", "district").call();
+        d2.userModule().logOut().blockingAwait();
+        d2.userModule().logIn("admin", "district").blockingGet();
     }
 
     //@Test
     public void wipe_after_second_login_with_equivalent_user_in_different_server() throws Exception {
         d2 = D2Factory.create("https://play.dhis2.org/2.29/api/", databaseAdapter());
 
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
 
         d2.syncMetaData().call();
 
         d2 = D2Factory.create("https://play.dhis2.org/android-current/api/", databaseAdapter());
 
-        d2.userModule().logOut().call();
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logOut().blockingAwait();
+        d2.userModule().logIn("android", "Android123").blockingGet();
     }
 }

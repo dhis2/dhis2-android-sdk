@@ -96,7 +96,7 @@ public final class DatabaseAssert {
         int count;
 
         try {
-            cursor = databaseAdapter.query("SELECT COUNT(*) from " + tableName, null);
+            cursor = databaseAdapter.query("SELECT COUNT(*) from " + tableName);
             cursor.moveToFirst();
             count = cursor.getInt(0);
         } finally {

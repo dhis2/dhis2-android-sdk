@@ -26,13 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.organisationunit.internal;
 
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseQuery;
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
 
 @AutoValue
 abstract class OrganisationUnitQuery extends BaseQuery {

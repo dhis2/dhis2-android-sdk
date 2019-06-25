@@ -47,6 +47,10 @@ public abstract class Field<Parent, Child> implements Property<Parent, Child> {
         return SingleValueFilter.gt(this, value);
     }
 
+    public Filter<Parent, Child> like(String value) {
+        return SingleValueFilter.like(this, value);
+    }
+
     public Filter<Parent, Child> in(Collection<String> values) {
         return InFilter.create(this, values);
     }

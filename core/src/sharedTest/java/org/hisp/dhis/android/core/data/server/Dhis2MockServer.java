@@ -152,7 +152,7 @@ public class Dhis2MockServer {
                     return createMockResponse(CATEGORY_COMBOS_JSON);
                 } else if (path.startsWith("/api/categories?")) {
                     return createMockResponse(CATEGORIES_JSON);
-                } else if (path.startsWith("/api/organisationUnits/")) {
+                } else if (path.startsWith("/api/organisationUnits?")) {
                     return createMockResponse(ORGANISATION_UNITS_JSON);
                 } else if (path.startsWith("/api/organisationUnitLevels?")) {
                     return createMockResponse(ORGANISATION_UNIT_LEVELS_JSON);

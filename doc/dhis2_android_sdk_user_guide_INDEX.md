@@ -14,6 +14,10 @@
 - Works offline
 - 
 
+## Libraries
+
+
+
 ## Getting started
 
 ### Installation
@@ -22,7 +26,7 @@ Include dependency in build.gradle.
 
 ```
 dependencies {
-    implementation "org.hisp.dhis:android-core:0.16.3-SNAPSHOT"
+    implementation "org.hisp.dhis:android-core:0.17.0-SNAPSHOT"
     ...
 }
 ```
@@ -38,6 +42,83 @@ The object `D2Configuration` receives the following attributes:
 |  Attribute  |   Required   |   Description |
 |-|-|-|
 | | | |
+
+## Modules and repositories
+
+`D2` object is the entry point to interact with the SDK. The SDK forces `D2` object to be a singleton across the application.
+
+Modules are the layer below `D2`. They act as a wrapper for related functionality. A module includes some related repositories and might expose some services and helpers.
+
+Repositories act as a facade for the DB (or web API in some cases). They offer read capabilities for metadata and read/write for data.
+
+### Dealing with return types: RxJava
+
+The SDK uses RxJava classes (Single, Completable, Flowable) as the preferred return type for all the methods. The reasons for choosing RxJava classes are mainly two:
+
+- **To facilitate the asynchronous treatment of returned objects.** Most of the actions in the SDK are time consuming and must be executed in a secondary thread. These return types force the app to deal with the asynchronous behavior.
+- **To notify about progress.** Methods like metadata or data sync might take several minutes to finish. From user experience it is very helpful to have a sense of progress.
+
+This does not mean that applications are forced to use RxJava in their code: they are only force to deal with their asynchronous behavior. RxJava classes include built-in methods to make them synchronous.
+
+For example, the same query using RxJava and AsyncTask:
+
+*Using RxJava*
+
+```
+d2.programModule().programs
+    .subscribeOn(Schedulers.io())
+    .observeOn(AndroidSchedulers.mainThread())
+    .getAsync()
+    .subscribe(programs -> {}); //List<Program>
+```
+
+*Using AsyncTask*
+
+```
+new AsyncTask<Void, Void, List<Program>>() {
+    protected List<Program> doInBackground() {
+        return d2.programModule().programs.getAsync().blockingGet();
+    } 
+    
+    protected void onPostExecute(List<Program> programs) {
+
+    } 
+ }.execute();
+
+```
+
+### Filters
+
+### Nested fields
+
+### Module list
+
+System:
+
+- maintenanceModule
+- systemInfoModule
+- systemSettingModule
+
+Metadata / data:
+
+- categoryModule
+- constantModule
+- dataElementModule
+- dataSetModule
+- optionModule
+- dataValueModule
+- enrollmentModule
+- eventModule
+- importModule
+- indicatorModule
+- legendSetModule
+- programModule
+- organisationUnitModule
+- periodModuleModule
+- relationshipModule
+- trackedEntityModule
+- userModule
+- smsModule
 
 ## Workflow
 
@@ -56,11 +137,12 @@ A typical workflow would be like this:
 
 Before interacting with the server it is required to login into the DHIS 2 instance. Currently, the SDK does only support one pair "user - server" simultaneously. That means that only one user can be authenticated in only one server at the same time.
 
-[//]: # (TODO Include command)
+```
+d2.userModule().logIn(username, password)
 
+d2.userModule().logOut()
 ```
-d2...
-```
+
 After a logout the SDK keeps track of the last logged user so that it is able to differentiate recurring and new users. It also keeps a hash of the user credentials in order to authenticate the user even when there is no connectivity. Given that said, the login method will:
 
 - If an authenticated user already exists: throw an error.
@@ -69,10 +151,12 @@ After a logout the SDK keeps track of the last logged user so that it is able to
   - If user is different than last logged user: wipe DB and try **login online**.
   - If server is different (even if the user is the same): wipe DB and try **login online**.
 - If no internet connection is present:
-  - If the user has been ever authenticated: 
+  - If the user has been ever authenticated:
     - If server is the same: try **login offline**.
     - If server is different: throw an error.
   - If the user has not been authenticated before: throw an error.
+
+Logout method removes user credentials, so a new login is required before any interaction with the server. Metadata and data is preserved so a user is able to logout/login without losing any information.
 
 ### Metadata synchronization
 
@@ -107,41 +191,6 @@ The SDK does not fail the synchronization, but it stores the errors in a table f
 ```
 d2.maintenanceModule().foreignKeyViolations
 ```
-
-## Module architecture
-
-Module list:
-
-System:
-
-- maintenanceModule
-- systemInfoModule
-- systemSettingModule
-
-Metadata / data:
-
-- categoryModule
-- constantModule
-- dataElementModule
-- dataSetModule
-- optionModule
-- dataValueModule
-- enrollmentModule
-- eventModule
-- importModule
-- indicatorModule
-- legendSetModule
-- programModule
-- organisationUnitModule
-- periodModuleModule
-- relationshipModule
-- trackedEntityModule
-- userModule
-- smsModule
-
-### Filters
-
-### Nested fields
 
 ## Error management
 

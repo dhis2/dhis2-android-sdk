@@ -122,6 +122,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
                         "DiszpKrYNg8", "bRowv6yZOF2"));
 
         assertThat(eventStore.selectByUid(eventUid).state(), is(State.TO_POST));
+        eventStore.delete(eventUid);
     }
 
     private void assertThatSetTeiToUpdateWhenEnrollmentPropagation(State state) throws D2Error {

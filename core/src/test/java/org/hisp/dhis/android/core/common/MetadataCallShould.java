@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.common;
 
 import org.assertj.core.util.Lists;
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
+import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.constant.Constant;
@@ -37,7 +38,6 @@ import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader;
 import org.hisp.dhis.android.core.domain.metadata.MetadataCall;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader;
@@ -51,15 +51,20 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.AdditionalAnswers;
 import org.mockito.Mock;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.observers.TestObserver;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -69,6 +74,9 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Mock
     private User user;
+
+    @Mock
+    private RxAPICallExecutor rxAPICallExecutor;
 
     @Mock
     private Program program;
@@ -128,9 +136,6 @@ public class MetadataCallShould extends BaseCallShould {
     private ObjectStore<D2Error> d2ErrorStore;
 
     @Mock
-    private ForeignKeyCleaner foreignKeyCleaner;
-
-    @Mock
     private SmsModule smsModule;
     @Mock
     private ConfigCase configCase;
@@ -169,9 +174,11 @@ public class MetadataCallShould extends BaseCallShould {
 
         when(d2ErrorStore.insert(any(D2Error.class))).thenReturn(0L);
 
+        when(rxAPICallExecutor.wrapObservableTransactionally(any(Observable.class), anyBoolean())).then(AdditionalAnswers.returnsFirstArg());
+
         // Metadata call
         metadataCall = new MetadataCall(
-                new D2CallExecutor(databaseAdapter, d2ErrorStore),
+                rxAPICallExecutor,
                 systemInfoDownloader,
                 systemSettingDownloader,
                 userDownloader,
@@ -180,66 +187,69 @@ public class MetadataCallShould extends BaseCallShould {
                 organisationUnitDownloader,
                 dataSetDownloader,
                 constantDownloader,
-                foreignKeyCleaner,
                 smsModule);
     }
 
     @Test
-    public void succeed_when_endpoint_calls_succeed() throws Exception {
-        metadataCall.call();
+    public void succeed_when_endpoint_calls_succeed() {
+        metadataCall.download();
     }
 
-    @Test(expected = D2Error.class)
-    public void fail_when_system_info_call_fail() throws Exception {
+    @Test
+    public void fail_when_system_info_call_fail() {
         when(systemInfoDownloader.downloadMetadata()).thenReturn(Completable.error(d2Error));
-        metadataCall.call();
+        TestObserver<D2Progress> testObserver = metadataCall.download().test();
+
+        List<Throwable> errors = testObserver.errors();
+        testObserver.assertError(D2Error.class);
+        testObserver.dispose();
     }
 
     @Test(expected = D2Error.class)
     public void fail_when_system_setting_call_fail() throws Exception {
         when(systemSettingDownloadCall.call()).thenThrow(d2Error);
-        metadataCall.call();
+        metadataCall.download();
     }
 
     @Test(expected = D2Error.class)
     public void fail_when_user_call_fail() throws Exception {
         when(userCall.call()).thenThrow(d2Error);
-        metadataCall.call();
+        metadataCall.download();
     }
 
     @Test(expected = D2Error.class)
     public void fail_when_category_download_call_fail() throws Exception {
         when(categoryDownloadCall.call()).thenThrow(d2Error);
-        metadataCall.call();
+        metadataCall.download();
     }
 
     @Test(expected = D2Error.class)
     public void fail_when_program_call_fail() throws Exception {
         when(programDownloadCall.call()).thenThrow(d2Error);
-        metadataCall.call();
+        metadataCall.download();
     }
 
     @Test(expected = D2Error.class)
     public void fail_when_organisation_unit_call_fail() throws Exception {
         when(organisationUnitDownloadCall.call()).thenThrow(d2Error);
-        metadataCall.call();
+        metadataCall.download();
     }
 
     @Test(expected = D2Error.class)
     public void fail_when_dataset_parent_call_fail() throws Exception {
         when(dataSetDownloadCall.call()).thenThrow(d2Error);
-        metadataCall.call();
+        metadataCall.download();
     }
 
     @Test(expected = D2Error.class)
     public void fail_when_constant_call_fail() throws Exception {
         when(constantCall.call()).thenThrow(d2Error);
-        metadataCall.call();
+        metadataCall.download();
     }
 
     @Test
-    public void call_foreign_key_cleaner() throws Exception {
-        metadataCall.call();
-        verify(foreignKeyCleaner).cleanForeignKeyErrors();
+    public void call_foreign_key_cleaner() {
+        metadataCall.download();
+        verify(rxAPICallExecutor).wrapObservableTransactionally(any(), eq(true));
     }
 }

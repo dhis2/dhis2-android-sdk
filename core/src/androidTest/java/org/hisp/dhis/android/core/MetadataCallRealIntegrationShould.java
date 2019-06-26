@@ -75,7 +75,7 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
     public void response_successful_on_sync_meta_data_once() throws Exception {
         d2.userModule().logIn("android", "Android123").blockingGet();
 
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
 
         //TODO: add aditional sync + break point.
         //when debugger stops at the new break point manually change metadata online & resume.
@@ -89,10 +89,10 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
         d2.userModule().logIn("android", "Android123").blockingGet();
 
         //first sync:
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
 
         //second sync:
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
     }
 
     //@Test

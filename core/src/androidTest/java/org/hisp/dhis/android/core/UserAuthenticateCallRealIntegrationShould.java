@@ -51,7 +51,7 @@ public class UserAuthenticateCallRealIntegrationShould extends BaseRealIntegrati
     public void not_wipe_after_second_login_with_same_user() throws Exception {
         d2.userModule().logIn("android", "Android123").blockingGet();
 
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
 
         d2.userModule().logOut().blockingAwait();
         d2.userModule().logIn("android", "Android123").blockingGet();
@@ -61,7 +61,7 @@ public class UserAuthenticateCallRealIntegrationShould extends BaseRealIntegrati
     public void wipe_after_second_login_with_different_user() throws Exception {
         d2.userModule().logIn("android", "Android123").blockingGet();
 
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
 
         d2.userModule().logOut().blockingAwait();
         d2.userModule().logIn("admin", "district").blockingGet();
@@ -73,7 +73,7 @@ public class UserAuthenticateCallRealIntegrationShould extends BaseRealIntegrati
 
         d2.userModule().logIn("android", "Android123").blockingGet();
 
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
 
         d2 = D2Factory.create("https://play.dhis2.org/android-current/api/", databaseAdapter());
 

@@ -80,7 +80,8 @@ final class RxAPICallExecutorImpl implements RxAPICallExecutor {
     }
 
     private D2Error mapAndStore(Throwable throwable) {
-        D2Error d2Error = errorMapper.mapRetrofitException(throwable, errorMapper.getRxObjectErrorBuilder());
+        D2Error d2Error = throwable instanceof D2Error ? (D2Error) throwable
+                : errorMapper.mapRetrofitException(throwable, errorMapper.getRxObjectErrorBuilder());
         errorStore.insert(d2Error);
         return d2Error;
     }

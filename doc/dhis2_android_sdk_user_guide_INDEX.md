@@ -33,15 +33,36 @@ dependencies {
 
 ### D2 initialization
 
-In order to start using the SDK, the first step is to initialize a `D2` object.
+In order to start using the SDK, the first step is to initialize a `D2` object. The helper class `D2Manager` offers static methods to setup and initialize the `D2` instance. Also, it ensures that `D2` is a singleton across the application.
 
-D2Manager, static?
+```
+D2Configuration configuration = D2Configuration.builder()
+    .appName("app_name").appVersion("1.0.0")
+    .context(context)
+    .readTimeoutInSeconds(30)
+    .connectTimeoutInSeconds(30)
+    .writeTimeoutInSeconds(30)
+    .build();
+
+Single<D2> d2Single = D2Manager.setUp(d2Configuration)
+                .andThen(D2Manager.setServerUrl(serverUrl))
+                .andThen(D2Manager.instantiateD2());
+
+D2 d2 = D2Manager.getD2();
+```
 
 The object `D2Configuration` receives the following attributes:
 
-|  Attribute  |   Required   |   Description |
+|  Attribute    |   Required    |   Description |
 |-|-|-|
-| | | |
+| context       | true          | Application context |
+| appName       | true          | Use to create the "user-agent" header |
+| appVersion    | true          | Use to create the "user-agent" header |
+| readTimeoutInSeconds | true   | Read timeout for http queries |
+| connectTimeoutInSeconds | true| Connect timeout for http queries |
+| writeTimeoutInSeconds | true  | Write timeout for http queries |
+| interceptors  | false         | Interceptors for OkHttpClient |
+| networkInterceptors | false   | NetworkInterceptors for OkHttpClient |
 
 ## Modules and repositories
 
@@ -277,5 +298,44 @@ Compatibility table:
 | tei_count             | N/A       |
 | enrollment_count      | N/A       |
 | organisationunit_count| N/A       |
+
+## Debugging
+
+Besides the regular debugging tools in AndroidStudio, the library [Stetho](http://facebook.github.io/stetho/) allows the use of Chrome Developer Tools for debugging network traffic and explore the database.
+
+Setup up Stetho by adding the following dependencies in your gradle file:
+
+```
+dependencies {
+    implementation 'com.facebook.stetho:stetho:1.5.0'
+    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
+}
+```
+
+Then add a network interceptor in `D2Configuration` object:
+
+```
+D2Configuration.builder()
+    ...
+    .networkInterceptors(Collections.singletonList(new StethoInterceptor()))
+    ...
+    .build();
+```
+
+Finally enable initialize Stetho in the `Application` class:
+
+```
+if (DEBUG) {
+    Stetho.initializeWithDefaults(this);
+}
+```
+
+At this point you should be able to debug the app/sdk by using Chrome Inspector Tools:
+
+- Run a test in debug mode and set a breakpoint.
+- In Chrome Browser open the [device inspector](chrome://inspect/devices#devices).
+- Select the remote target and click on Inspect. A new windows will appear showing the Chrome developer tools.
+- Explore database in "Resources > Web SQL".
+- Explore network traffic in "Network".
 
 ## Troubleshooting

@@ -28,12 +28,16 @@
 
 package org.hisp.dhis.android.core;
 
+import android.util.Log;
+
 import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;
+
+import io.reactivex.schedulers.Schedulers;
 
 public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
     /**
@@ -82,6 +86,16 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
         //This way I can make sure that additive (updates) work as well.
         //The changes could be to one of the programs, adding stuff to it.
         // adding a new program..etc.
+    }
+
+    //@Test
+    public void download_metadata_in_io_scheduler() throws Exception {
+        d2.userModule().logIn("android", "Android123")
+                .flatMapObservable(user -> d2.syncMetaData())
+                .subscribeOn(Schedulers.io())
+                .subscribe(progress -> Log.i("META", progress.lastCall()));
+
+        Thread.sleep(60000);
     }
 
     //@Test

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.api.executors.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner;
 
@@ -67,8 +66,7 @@ final class RxAPICallExecutorImpl implements RxAPICallExecutor {
     @Override
     public <P> Observable<P> wrapObservableTransactionally(Observable<P> observable,
                                                             boolean cleanForeignKeys) {
-        Transaction transaction = databaseAdapter.beginNewTransaction();
-        return observable
+        return Observable.fromCallable(databaseAdapter::beginNewTransaction).flatMap(transaction -> observable
                 .doOnComplete(() -> {
                     if (cleanForeignKeys) {
                         foreignKeyCleaner.cleanForeignKeyErrors();
@@ -76,9 +74,9 @@ final class RxAPICallExecutorImpl implements RxAPICallExecutor {
                     transaction.setSuccessful();
                     transaction.end();
                 }).onErrorResumeNext(throwable -> {
-            transaction.end();
-            return Observable.error(mapAndStore(throwable));
-        });
+                    transaction.end();
+                    return Observable.error(mapAndStore(throwable));
+                }));
     }
 
     private D2Error mapAndStore(Throwable throwable) {

@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventCreateProjection;
+import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 
 import java.util.Date;
@@ -56,6 +57,7 @@ final class EventProjectionTransformer implements Transformer<EventCreateProject
                 .programStage(projection.programStage())
                 .organisationUnit(projection.organisationUnit())
                 .attributeOptionCombo(projection.attributeOptionCombo())
+                .status(EventStatus.ACTIVE)
                 .build();
     }
 }

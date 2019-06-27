@@ -74,7 +74,7 @@ public class AggregatedDataCallRealIntegrationShould extends BaseRealIntegration
     public void response_successful_on_sync_data_once() throws Exception {
         d2.userModule().logIn("android", "Android123").blockingGet();
 
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
         d2.aggregatedModule().data().download().subscribe();
     }
 
@@ -82,10 +82,10 @@ public class AggregatedDataCallRealIntegrationShould extends BaseRealIntegration
     public void response_successful_on_sync_data_value_two_times() throws Exception {
         d2.userModule().logIn("android", "Android123").blockingGet();
 
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
         d2.aggregatedModule().data().download().subscribe();
 
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
         d2.aggregatedModule().data().download().subscribe();
     }
 }

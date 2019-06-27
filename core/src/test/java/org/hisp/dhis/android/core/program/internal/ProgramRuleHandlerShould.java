@@ -30,8 +30,9 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
 import org.junit.Before;
@@ -43,6 +44,8 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -53,7 +56,7 @@ public class ProgramRuleHandlerShould {
     private IdentifiableObjectStore<ProgramRule> programRuleStore;
 
     @Mock
-    private Handler<ProgramRuleAction> programRuleActionHandler;
+    private HandlerWithTransformer<ProgramRuleAction> programRuleActionHandler;
 
     @Mock
     private ProgramRule programRule;
@@ -85,7 +88,7 @@ public class ProgramRuleHandlerShould {
     @Test
     public void call_program_rule_action_handler() {
         programRuleHandler.handle(programRule);
-        verify(programRuleActionHandler).handleMany(programRuleActions);
+        verify(programRuleActionHandler).handleMany(same(programRuleActions), any(Transformer.class));
     }
 
     @Test

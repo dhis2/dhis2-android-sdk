@@ -30,8 +30,9 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
 
@@ -41,12 +42,12 @@ import dagger.Reusable;
 
 @Reusable
 final class ProgramRuleHandler extends IdentifiableHandlerImpl<ProgramRule> {
-    private final Handler<ProgramRuleAction> programRuleActionHandler;
+    private final HandlerWithTransformer<ProgramRuleAction> programRuleActionHandler;
     private final OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner;
 
     @Inject
     ProgramRuleHandler(IdentifiableObjectStore<ProgramRule> programRuleStore,
-                       Handler<ProgramRuleAction> programRuleActionHandler,
+                       HandlerWithTransformer<ProgramRuleAction> programRuleActionHandler,
                        OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner) {
         super(programRuleStore);
         this.programRuleActionHandler = programRuleActionHandler;
@@ -55,7 +56,8 @@ final class ProgramRuleHandler extends IdentifiableHandlerImpl<ProgramRule> {
 
     @Override
     protected void afterObjectHandled(ProgramRule programRule, HandleAction handleAction) {
-        programRuleActionHandler.handleMany(programRule.programRuleActions());
+        programRuleActionHandler.handleMany(programRule.programRuleActions(),
+                pra -> pra.toBuilder().programRule(ObjectWithUid.create(programRule.uid())).build());
         if (handleAction == HandleAction.Update) {
             programRuleActionCleaner.deleteOrphan(programRule, programRule.programRuleActions());
         }

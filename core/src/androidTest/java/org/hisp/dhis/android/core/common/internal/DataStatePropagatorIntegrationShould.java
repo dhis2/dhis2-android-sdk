@@ -115,7 +115,17 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
         assertThatDoNotSetTeiToUpdateWhenTrackedEntityDataValuePropagation(State.TO_DELETE);
     }
 
-    public void assertThatSetTeiToUpdateWhenEnrollmentPropagation(State state) throws D2Error {
+    @Test
+    public void do_not_fail_with_events_without_registration() throws D2Error {
+        String eventUid = d2.eventModule().events.add(
+                EventCreateProjection.create(null, "lxAQ7Zs9VYR", "dBwrot7S420",
+                        "DiszpKrYNg8", "bRowv6yZOF2"));
+
+        assertThat(eventStore.selectByUid(eventUid).state(), is(State.TO_POST));
+        eventStore.delete(eventUid);
+    }
+
+    private void assertThatSetTeiToUpdateWhenEnrollmentPropagation(State state) throws D2Error {
         String teiUid = d2.trackedEntityModule().trackedEntityInstances.add(
                 TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp"));
         trackedEntityInstanceStore.setState(teiUid, state);
@@ -126,7 +136,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
         trackedEntityInstanceStore.delete(teiUid);
     }
 
-    public void assertThatDoNotSetTeiToUpdateWhenEnrollmentPropagation(State state) throws D2Error {
+    private void assertThatDoNotSetTeiToUpdateWhenEnrollmentPropagation(State state) throws D2Error {
         String teiUid = d2.trackedEntityModule().trackedEntityInstances.add(
                 TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp"));
         trackedEntityInstanceStore.setState(teiUid, state);
@@ -137,7 +147,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
         trackedEntityInstanceStore.delete(teiUid);
     }
 
-    public void assertThatSetTeiToUpdateWhenEventPropagation(State state) throws D2Error {
+    private void assertThatSetTeiToUpdateWhenEventPropagation(State state) throws D2Error {
         String teiUid = d2.trackedEntityModule().trackedEntityInstances.add(
                 TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp"));
         String enrolmentUid = d2.enrollmentModule().enrollments.add(EnrollmentCreateProjection.create(
@@ -153,7 +163,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
         trackedEntityInstanceStore.delete(teiUid);
     }
 
-    public void assertThatDoNotSetTeiToUpdateWhenEventPropagation(State state) throws D2Error {
+    private void assertThatDoNotSetTeiToUpdateWhenEventPropagation(State state) throws D2Error {
         String teiUid = d2.trackedEntityModule().trackedEntityInstances.add(
                 TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp"));
         String enrolmentUid = d2.enrollmentModule().enrollments.add(EnrollmentCreateProjection.create(
@@ -169,7 +179,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
         trackedEntityInstanceStore.delete(teiUid);
     }
 
-    public void assertThatSetTeiToUpdateWhenTrackedEntityDataValuePropagation(State state) throws D2Error {
+    private void assertThatSetTeiToUpdateWhenTrackedEntityDataValuePropagation(State state) throws D2Error {
         String teiUid = d2.trackedEntityModule().trackedEntityInstances.add(
                 TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp"));
         String enrolmentUid = d2.enrollmentModule().enrollments.add(EnrollmentCreateProjection.create(
@@ -190,7 +200,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
         trackedEntityInstanceStore.delete(teiUid);
     }
 
-    public void assertThatDoNotSetTeiToUpdateWhenTrackedEntityDataValuePropagation(State state) throws D2Error {
+    private void assertThatDoNotSetTeiToUpdateWhenTrackedEntityDataValuePropagation(State state) throws D2Error {
         String teiUid = d2.trackedEntityModule().trackedEntityInstances.add(
                 TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp"));
         String enrolmentUid = d2.enrollmentModule().enrollments.add(EnrollmentCreateProjection.create(

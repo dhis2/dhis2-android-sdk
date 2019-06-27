@@ -19,9 +19,6 @@
           "content": "The hemoglobin value cannot be above 99",
           "dataElement": {
             "id": "vANAXwtLwcT"
-          },
-          "programRule": {
-            "id": "dahuKlP7jR2"
           }
         }
       ]
@@ -62,9 +59,6 @@
           "dataElement": {
             "id": "Ok9OQpitjQr"
           },
-          "programRule": {
-            "id": "xOe5qCzRS0Y"
-          },
           "option": {
             "id": "egT1YqFWsVk"
           },
@@ -95,9 +89,6 @@
           "content": "Hemoglobin value lower than normal",
           "dataElement": {
             "id": "vANAXwtLwcT"
-          },
-          "programRule": {
-            "id": "GC4gpdoSD4r"
           }
         }
       ]

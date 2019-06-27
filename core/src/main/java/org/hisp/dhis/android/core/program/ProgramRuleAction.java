@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DataElementWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ProgramIndicatorWithUidColumnAdapter;
-import org.hisp.dhis.android.core.data.database.ProgramRuleWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ProgramStageSectionWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ProgramStageWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.TrackedEntityAttributeWithUidColumnAdapter;
@@ -99,8 +98,8 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject implement
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(ProgramRuleWithUidColumnAdapter.class)
-    public abstract ProgramRule programRule();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid programRule();
 
     @Nullable
     @JsonProperty()
@@ -145,7 +144,7 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject implement
 
         public abstract Builder dataElement(DataElement dataElement);
 
-        public abstract Builder programRule(ProgramRule programRule);
+        public abstract Builder programRule(ObjectWithUid programRule);
 
         public abstract Builder option(ObjectWithUid option);
 

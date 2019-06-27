@@ -26,14 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.organisationunit.internal;
 
-import org.hisp.dhis.android.core.program.ProgramRule;
+import androidx.annotation.Nullable;
 
-public class ProgramRuleWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<ProgramRule> {
+import com.google.auto.value.AutoValue;
 
-    @Override
-    protected ProgramRule build(String uid) {
-        return ProgramRule.builder().uid(uid).build();
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
+
+@AutoValue
+abstract class OrganisationUnitQuery extends BaseQuery {
+
+    private static int DEFAULT_PAGE_SIZE = 500;
+
+    @Nullable
+    public abstract String orgUnit();
+
+    public static Builder builder() {
+        return new AutoValue_OrganisationUnitQuery.Builder()
+                .page(1)
+                .pageSize(DEFAULT_PAGE_SIZE)
+                .paging(true);
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder extends BaseQuery.Builder<Builder> {
+        public abstract Builder orgUnit(String orgUnit);
+
+        public abstract OrganisationUnitQuery build();
     }
 }

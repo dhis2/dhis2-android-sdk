@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.user.internal;
 import android.database.sqlite.SQLiteStatement;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -79,5 +80,14 @@ public final class UserOrganisationUnitLinkStoreImpl extends LinkModelStoreImpl<
                         Columns.ROOT + " = 1 " + "AND "
                                 + Columns.ORGANISATION_UNIT_SCOPE + " = '"
                                 + OrganisationUnit.Scope.SCOPE_DATA_CAPTURE + "'");
+    }
+
+    @Override
+    public List<String> queryOrganisationUnitUidsByScope(OrganisationUnit.Scope scope) {
+        return selectStringColumnsWhereClause(Columns.ORGANISATION_UNIT,
+                new WhereClauseBuilder().appendKeyStringValue(
+                        Columns.ORGANISATION_UNIT_SCOPE,
+                        scope.name()
+                ).build());
     }
 }

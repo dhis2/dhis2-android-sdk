@@ -31,6 +31,8 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyOneObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
+import org.hisp.dhis.android.core.user.internal.UserCredentialsFields;
+import org.hisp.dhis.android.core.user.internal.UserCredentialsStore;
 
 import java.util.Map;
 

@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkHelper;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkHelper;
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 
 import javax.inject.Inject;
 

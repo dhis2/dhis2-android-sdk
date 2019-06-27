@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.authentication.internal.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor;
 import org.hisp.dhis.android.core.configuration.Configuration;
+import org.hisp.dhis.android.core.configuration.ServerUrlParser;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collections;
@@ -47,7 +48,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 public class D2Factory {
 
-    public static D2 create(String urlWithoutAPI, String databaseName) {
+    public static D2 create(String serverUrl, String databaseName) {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
@@ -64,22 +65,21 @@ public class D2Factory {
                 .build();
 
         D2Manager.setDatabaseName(databaseName);
-        D2Manager.setD2Configuration(d2Configuration);
 
-        if (!D2Manager.isServerUrlSet()) {
-            D2Manager.setServerUrl(urlWithoutAPI);
-        }
+        D2 d2 = D2Manager.setUp(d2Configuration)
+                .andThen(D2Manager.setServerUrl(serverUrl))
+                .andThen(D2Manager.instantiateD2())
+                .blockingGet();
 
-        D2 d2 = D2Manager.getD2();
         D2Manager.clear();
         D2Manager.setDatabaseName(null);
 
         return d2;
     }
 
-    public static D2 create(String urlWithoutAPI, DatabaseAdapter databaseAdapter) {
+    public static D2 create(String url, DatabaseAdapter databaseAdapter) {
         return new D2.Builder()
-                .configuration(Configuration.forServerUrlStringWithoutAPI(urlWithoutAPI))
+                .configuration(Configuration.forServerUrl(ServerUrlParser.parse(url)))
                 .databaseAdapter(databaseAdapter)
                 .okHttpClient(okHttpClient(databaseAdapter))
                 .context(InstrumentationRegistry.getTargetContext().getApplicationContext())

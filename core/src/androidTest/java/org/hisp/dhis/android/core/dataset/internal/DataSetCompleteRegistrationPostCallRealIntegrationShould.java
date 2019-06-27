@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCollectionRepository;
@@ -66,7 +66,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
     public void upload_data_set_complete_registrations_with_to_post_state() throws Exception {
         d2.userModule().logIn("android", "Android123").blockingGet();
         d2.syncMetaData().call();
-        d2.aggregatedModule().data().download().asObservable().subscribe();
+        d2.aggregatedModule().data().download().subscribe();
 
         DataSetCompleteRegistration dataSetCompleteRegistration
                 = getTestDataSetCompleteRegistrationWith(State.TO_POST, "2018");
@@ -89,7 +89,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
     public void upload_data_set_complete_registrations_with_to_update_state() throws Exception {
         d2.userModule().logIn("android", "Android123").blockingGet();
         d2.syncMetaData().call();
-        d2.aggregatedModule().data().download().asObservable().subscribe();
+        d2.aggregatedModule().data().download().subscribe();
 
         DataSetCompleteRegistration dataSetCompleteRegistration
                 = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2018");
@@ -109,7 +109,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
     public void update_and_delete_different_data_set_complete_registrations() throws Exception {
         d2.userModule().logIn("android", "Android123").blockingGet();
         d2.syncMetaData().call();
-        d2.aggregatedModule().data().download().asObservable().subscribe();
+        d2.aggregatedModule().data().download().subscribe();
 
         DataSetCompleteRegistration toDeleteDataSetCompleteRegistration
                 = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2019");
@@ -135,7 +135,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
     public void delete_data_set_complete_registrations_with_to_delete_state() throws Exception {
         d2.userModule().logIn("android", "Android123").blockingGet();
         d2.syncMetaData().call();
-        d2.aggregatedModule().data().download().asObservable().subscribe();
+        d2.aggregatedModule().data().download().subscribe();
 
         DataSetCompleteRegistration dataSetCompleteRegistration
                 = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2018");

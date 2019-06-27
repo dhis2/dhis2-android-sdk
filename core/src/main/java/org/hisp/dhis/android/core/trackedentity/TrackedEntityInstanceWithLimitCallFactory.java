@@ -29,23 +29,21 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
-import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
+import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine;
+import org.hisp.dhis.android.core.arch.api.paging.internal.Paging;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.arch.call.internal.D2CallWithProgressImpl;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
-import org.hisp.dhis.android.core.resource.Resource;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.internal.Resource;
+import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
-import org.hisp.dhis.android.core.utils.services.ApiPagingEngine;
-import org.hisp.dhis.android.core.utils.services.Paging;
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -102,23 +100,26 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
         this.endpointCallFactory = endpointCallFactory;
     }
 
-    public D2CallWithProgress getCall(final int teiLimit, final boolean limitByOrgUnit, boolean limitByProgram) {
-        D2ProgressManager progressManager = new D2ProgressManager(null);
-        if (userOrganisationUnitLinkStore.count() == 0) {
-            return new D2CallWithProgressImpl(Observable.just(
-                    progressManager.increaseProgress(TrackedEntityInstance.class, true)));
-        } else {
-            BooleanWrapper allOkay = new BooleanWrapper(true);
+    public Observable<D2Progress> download(final int teiLimit, final boolean limitByOrgUnit, boolean limitByProgram) {
+        Observable<D2Progress> observable = Observable.defer(() -> {
+            D2ProgressManager progressManager = new D2ProgressManager(null);
+            if (userOrganisationUnitLinkStore.count() == 0) {
+                return Observable.just(
+                        progressManager.increaseProgress(TrackedEntityInstance.class, true));
+            } else {
+                BooleanWrapper allOkay = new BooleanWrapper(true);
 
-            Observable<D2Progress> concatObservable = Observable.concat(
-                    downloadSystemInfo(progressManager),
-                    downloadTeis(progressManager, teiLimit, limitByOrgUnit, limitByProgram, allOkay),
-                    downloadRelationshipTeis(progressManager),
-                    updateResource(progressManager, allOkay)
-            );
+                return Observable.concat(
+                        downloadSystemInfo(progressManager),
+                        downloadTeis(progressManager, teiLimit, limitByOrgUnit, limitByProgram, allOkay),
+                        downloadRelationshipTeis(progressManager),
+                        updateResource(progressManager, allOkay)
+                );
+            }
+        });
 
-            return rxCallExecutor.wrapObservableTransactionally(concatObservable, true);
-        }
+        return rxCallExecutor.wrapObservableTransactionally(observable, true);
+
     }
 
     private Observable<D2Progress> downloadSystemInfo(D2ProgressManager progressManager) {

@@ -78,7 +78,7 @@ public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockInte
     }
 
     private static void downloadTrackedEntityInstances() {
-        d2.trackedEntityModule().downloadTrackedEntityInstances(2, false, false).asObservable().subscribe();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(2, false, false).subscribe();
     }
 
     private static void downloadEvents() throws Exception {
@@ -86,7 +86,7 @@ public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockInte
     }
 
     private static void downloadAggregatedData() {
-        d2.aggregatedModule().data().download().asObservable().subscribe();
+        d2.aggregatedModule().data().download().subscribe();
     }
 
     private static void storeSomeD2Errors() {

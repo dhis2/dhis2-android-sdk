@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
 public final class PeriodStoreImpl extends ObjectWithoutUidStoreImpl<Period> implements PeriodStore {
 

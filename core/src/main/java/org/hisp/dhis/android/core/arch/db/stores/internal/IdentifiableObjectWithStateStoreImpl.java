@@ -31,8 +31,6 @@ package org.hisp.dhis.android.core.arch.db.stores.internal;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
@@ -44,9 +42,11 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import androidx.annotation.NonNull;
+
+import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.common.BaseDataModel.Columns.STATE;
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class IdentifiableObjectWithStateStoreImpl<M extends Model & ObjectWithUidInterface>
         extends IdentifiableObjectStoreImpl<M> implements IdentifiableObjectWithStateStore<M> {

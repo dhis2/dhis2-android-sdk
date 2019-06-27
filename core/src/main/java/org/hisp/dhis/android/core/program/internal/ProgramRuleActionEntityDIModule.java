@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -53,7 +53,7 @@ public final class ProgramRuleActionEntityDIModule {
 
     @Provides
     @Reusable
-    Handler<ProgramRuleAction> handler(IdentifiableObjectStore<ProgramRuleAction> store) {
+    HandlerWithTransformer<ProgramRuleAction> handler(IdentifiableObjectStore<ProgramRuleAction> store) {
         return new IdentifiableHandlerImpl<>(store);
     }
 

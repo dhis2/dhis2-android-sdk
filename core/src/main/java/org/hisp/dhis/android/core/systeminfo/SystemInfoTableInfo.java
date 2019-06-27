@@ -50,7 +50,7 @@ public final class SystemInfoTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),

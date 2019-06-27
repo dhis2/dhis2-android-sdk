@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -45,16 +46,16 @@ import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
-import org.hisp.dhis.android.core.program.internal.ProgramRuleActionStore;
 import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo;
 import org.hisp.dhis.android.core.program.ProgramRuleActionType;
-import org.hisp.dhis.android.core.program.internal.ProgramRuleStore;
 import org.hisp.dhis.android.core.program.ProgramRuleTableInfo;
+import org.hisp.dhis.android.core.program.internal.ProgramRuleActionStore;
+import org.hisp.dhis.android.core.program.internal.ProgramRuleStore;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
-import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
 import org.hisp.dhis.android.core.user.UserCredentialsTableInfo;
 import org.hisp.dhis.android.core.user.UserTableInfo;
+import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.After;
 import org.junit.Before;
@@ -201,7 +202,7 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
                     .uid("action_uid")
                     .name("name")
                     .programRuleActionType(ProgramRuleActionType.ASSIGN)
-                    .programRule(ProgramRule.builder().uid(PROGRAM_RULE_UID).build())
+                    .programRule(ObjectWithUid.create(PROGRAM_RULE_UID))
                     .build();
 
             ProgramRuleActionStore.create(d2.databaseAdapter()).insert(programRuleAction);
@@ -260,7 +261,7 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
     private void givenAMetadataInDatabase() {
         try {
             dhis2MockServer.setRequestDispatcher();
-            d2.syncMetaData().call();
+            d2.syncMetaData().blockingSubscribe();
         } catch (Exception ignore) {
         }
     }

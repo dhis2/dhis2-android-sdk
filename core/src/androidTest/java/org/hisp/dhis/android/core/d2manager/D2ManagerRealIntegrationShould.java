@@ -34,7 +34,7 @@ import com.google.common.collect.Lists;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
-import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
+import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;

@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.datavalue.DataValue;
-import org.hisp.dhis.android.core.resource.Resource;
+import org.hisp.dhis.android.core.resource.internal.Resource;
 
 import javax.inject.Inject;
 

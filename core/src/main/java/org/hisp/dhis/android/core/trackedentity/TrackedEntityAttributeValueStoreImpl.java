@@ -45,7 +45,7 @@ import java.util.Map;
 
 import androidx.annotation.NonNull;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
 public final class TrackedEntityAttributeValueStoreImpl
         extends ObjectWithoutUidStoreImpl<TrackedEntityAttributeValue> implements TrackedEntityAttributeValueStore {

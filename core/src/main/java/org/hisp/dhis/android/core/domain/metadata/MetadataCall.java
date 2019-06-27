@@ -27,34 +27,39 @@
  */
 package org.hisp.dhis.android.core.domain.metadata;
 
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
+import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
+import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader;
-import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader;
-import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader;
-import org.hisp.dhis.android.core.settings.SystemSettingModuleDownloader;
+import org.hisp.dhis.android.core.settings.SystemSetting;
+import org.hisp.dhis.android.core.settings.internal.SystemSettingModuleDownloader;
 import org.hisp.dhis.android.core.sms.SmsModule;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoModuleDownloader;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserModuleDownloader;
+import org.hisp.dhis.android.core.user.internal.UserModuleDownloader;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import dagger.Reusable;
+import io.reactivex.Observable;
 
 @Reusable
-public class MetadataCall implements Callable<Unit> {
+public class MetadataCall {
 
-    private final D2CallExecutor d2CallExecutor;
+    private final RxAPICallExecutor rxCallExecutor;
 
     private final SystemInfoModuleDownloader systemInfoDownloader;
     private final SystemSettingModuleDownloader systemSettingDownloader;
@@ -64,11 +69,10 @@ public class MetadataCall implements Callable<Unit> {
     private final OrganisationUnitModuleDownloader organisationUnitDownloadModule;
     private final DataSetModuleDownloader dataSetDownloader;
     private final ConstantModuleDownloader constantModuleDownloader;
-    private final ForeignKeyCleaner foreignKeyCleaner;
     private final SmsModule smsModule;
 
     @Inject
-    public MetadataCall(@NonNull D2CallExecutor d2CallExecutor,
+    public MetadataCall(@NonNull RxAPICallExecutor rxCallExecutor,
                         @NonNull SystemInfoModuleDownloader systemInfoDownloader,
                         @NonNull SystemSettingModuleDownloader systemSettingDownloader,
                         @NonNull UserModuleDownloader userModuleDownloader,
@@ -77,9 +81,8 @@ public class MetadataCall implements Callable<Unit> {
                         @NonNull OrganisationUnitModuleDownloader organisationUnitDownloadModule,
                         @NonNull DataSetModuleDownloader dataSetDownloader,
                         @NonNull ConstantModuleDownloader constantModuleDownloader,
-                        @NonNull ForeignKeyCleaner foreignKeyCleaner,
                         @NonNull SmsModule smsModule) {
-        this.d2CallExecutor = d2CallExecutor;
+        this.rxCallExecutor = rxCallExecutor;
         this.systemInfoDownloader = systemInfoDownloader;
         this.systemSettingDownloader = systemSettingDownloader;
         this.userModuleDownloader = userModuleDownloader;
@@ -88,35 +91,50 @@ public class MetadataCall implements Callable<Unit> {
         this.organisationUnitDownloadModule = organisationUnitDownloadModule;
         this.dataSetDownloader = dataSetDownloader;
         this.constantModuleDownloader = constantModuleDownloader;
-        this.foreignKeyCleaner = foreignKeyCleaner;
         this.smsModule = smsModule;
     }
 
-    @Override
-    public Unit call() throws Exception {
+    public Observable<D2Progress> download() {
 
-        return d2CallExecutor.executeD2CallTransactionally(() -> {
-            systemInfoDownloader.downloadMetadata().blockingAwait();
+        return rxCallExecutor.wrapObservableTransactionally(Observable.create(emitter -> {
+                    D2ProgressManager progressManager = new D2ProgressManager(9);
 
-            systemSettingDownloader.downloadMetadata().call();
+                    systemInfoDownloader.downloadMetadata().blockingAwait();
+                    emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
 
-            User user = userModuleDownloader.downloadMetadata().call();
+                    systemSettingDownloader.downloadMetadata().call();
+                    emitter.onNext(progressManager.increaseProgress(SystemSetting.class, false));
 
-            List<Program> programs = programDownloader.downloadMetadata().call();
 
-            List<DataSet> dataSets = dataSetDownloader.downloadMetadata().call();
+                    User user = userModuleDownloader.downloadMetadata().call();
+                    emitter.onNext(progressManager.increaseProgress(User.class, false));
 
-            categoryDownloader.downloadMetadata().call();
 
-            organisationUnitDownloadModule.downloadMetadata(user, programs, dataSets).call();
+                    List<Program> programs = programDownloader.downloadMetadata().call();
+                    emitter.onNext(progressManager.increaseProgress(Program.class, false));
 
-            constantModuleDownloader.downloadMetadata().call();
 
-            smsModule.configCase().refreshMetadataIdsCallable().call();
+                    List<DataSet> dataSets = dataSetDownloader.downloadMetadata().call();
+                    emitter.onNext(progressManager.increaseProgress(DataSet.class, false));
 
-            foreignKeyCleaner.cleanForeignKeyErrors();
 
-            return new Unit();
-        });
+                    categoryDownloader.downloadMetadata().call();
+                    emitter.onNext(progressManager.increaseProgress(Category.class, false));
+
+
+                    organisationUnitDownloadModule.downloadMetadata(user, programs, dataSets).call();
+                    emitter.onNext(progressManager.increaseProgress(OrganisationUnit.class, false));
+
+
+                    constantModuleDownloader.downloadMetadata().call();
+                    emitter.onNext(progressManager.increaseProgress(Constant.class, false));
+
+
+                    smsModule.configCase().refreshMetadataIdsCallable().call();
+                    emitter.onNext(progressManager.increaseProgress(SmsModule.class, false));
+
+                    emitter.onComplete();
+                }
+        ), true);
     }
 }

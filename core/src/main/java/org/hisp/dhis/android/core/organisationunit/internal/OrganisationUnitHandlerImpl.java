@@ -44,8 +44,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkHelper;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreImpl;
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkHelper;
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStoreImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;

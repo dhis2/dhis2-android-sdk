@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalRes
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.resource.Resource;
+import org.hisp.dhis.android.core.resource.internal.Resource;
 
 import javax.inject.Inject;
 

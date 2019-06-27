@@ -35,8 +35,8 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.resource.Resource;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.internal.Resource;
+import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.user.User;
 
 import java.util.ArrayList;
@@ -137,16 +137,27 @@ class OrganisationUnitCallFactory {
     private Set<OrganisationUnit> downloadOrgunits(Set<String> orguntis) throws D2Error {
         Set<OrganisationUnit> organisationUnits = new HashSet<>();
         for (String uid : orguntis) {
-            organisationUnits.addAll(apiCallExecutor.executePayloadCall(
-                    getOrganisationUnitAndDescendants(uid)));
+            OrganisationUnitQuery.Builder queryBuilder = OrganisationUnitQuery.builder().orgUnit(uid);
+
+            List<OrganisationUnit> pageOrgunits;
+            OrganisationUnitQuery pageQuery;
+            do {
+                pageQuery = queryBuilder.build();
+                pageOrgunits = apiCallExecutor.executePayloadCall(getOrganisationUnitAndDescendants(pageQuery));
+                organisationUnits.addAll(pageOrgunits);
+
+                queryBuilder.page(pageQuery.page() + 1);
+            }
+            while (pageOrgunits.size() == pageQuery.pageSize());
         }
 
         return organisationUnits;
     }
 
-    private retrofit2.Call<Payload<OrganisationUnit>> getOrganisationUnitAndDescendants(@NonNull String uid) {
-        return organisationUnitService.getOrganisationUnitWithDescendants(
-                uid, OrganisationUnitFields.allFields, true, false);
+    private retrofit2.Call<Payload<OrganisationUnit>> getOrganisationUnitAndDescendants(OrganisationUnitQuery query) {
+        return organisationUnitService.getOrganisationUnits(
+                OrganisationUnitFields.allFields, OrganisationUnitFields.path.like(query.orgUnit()),
+                query.paging(), query.pageSize(), query.page());
     }
 
     private Set<Program> getLinkedPrograms(Set<OrganisationUnit> capture, @NonNull Set<String> programUids) {

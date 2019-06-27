@@ -140,7 +140,7 @@ d2.eventModule().events
     ...
 ```
 
-will return the events assigned to "DiszpKrYNg8" **and** whose eventDate is after "2019-05-05".
+will return the events assigned to the orgunit "DiszpKrYNg8" **AND** whose eventDate is after "2019-05-05".
 
 #### Order by
 
@@ -159,7 +159,20 @@ will order by EventDate descendant in first place, and then by LastUpdated desce
 
 ### Include nested fields
 
+Repositories return classes that are not an exact match of database tables: they are more complex objects that might include some properties obtained from other tables. For example, the `Event` class has a property called `trackedEntityDataValues` that include a list of TrackedEntityDataValues. The main reason to choose this kind of objects is to absorb the complexity of dealing with link tables so the app does not have to care about building links between objects.
 
+Due to performance issues, this kind of properties are not included by default: they must be queried explicitly. In the repositories, the properties that are not included by default and need to be queried are prefixed by the keyword "with".
+
+Several properties can be appended in the same query in any order. For example, a query like
+
+```
+d2.programModule().programs
+    .withStyle()
+    .withTrackedEntityType()
+    ...
+```
+
+will return a program with a nested `ObjectStyle` (color, icon) and a nested `TrackedEntityType`.
 
 ### Module list
 

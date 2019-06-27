@@ -5,7 +5,7 @@ import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.smscompression.models.Metadata;
+import org.hisp.dhis.smscompression.models.SMSMetadata;
 
 import java.util.List;
 import java.util.Map;
@@ -29,9 +29,9 @@ public interface LocalDbRepository {
 
     Completable setConfirmationSenderNumber(String number);
 
-    Single<Metadata> getMetadataIds();
+    Single<SMSMetadata> getMetadataIds();
 
-    Completable setMetadataIds(Metadata metadata);
+    Completable setMetadataIds(SMSMetadata metadata);
 
     Single<Event> getTrackerEventToSubmit(String eventUid);
 

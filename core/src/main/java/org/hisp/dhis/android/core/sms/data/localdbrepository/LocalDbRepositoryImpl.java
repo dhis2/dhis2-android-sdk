@@ -20,7 +20,7 @@ import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;
-import org.hisp.dhis.smscompression.models.Metadata;
+import org.hisp.dhis.smscompression.models.SMSMetadata;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -139,12 +139,12 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
-    public Single<Metadata> getMetadataIds() {
+    public Single<SMSMetadata> getMetadataIds() {
         return metadataIdsStore.getMetadataIds();
     }
 
     @Override
-    public Completable setMetadataIds(final Metadata metadata) {
+    public Completable setMetadataIds(final SMSMetadata metadata) {
         return metadataIdsStore.setMetadataIds(metadata);
     }
 

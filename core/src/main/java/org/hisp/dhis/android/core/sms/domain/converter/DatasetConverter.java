@@ -6,6 +6,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.smscompression.models.AggregateDatasetSMSSubmission;
+import org.hisp.dhis.smscompression.models.SMSDataValue;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 
 import java.util.ArrayList;
@@ -49,10 +50,10 @@ public class DatasetConverter extends Converter<List<DataValue>> {
     }
 
     @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
-    private List<org.hisp.dhis.smscompression.models.DataValue> translateValues(List<DataValue> values) {
-        ArrayList<org.hisp.dhis.smscompression.models.DataValue> list = new ArrayList<>();
+    private List<SMSDataValue> translateValues(List<DataValue> values) {
+        ArrayList<SMSDataValue> list = new ArrayList<>();
         for (DataValue value : values) {
-            list.add(new org.hisp.dhis.smscompression.models.DataValue(
+            list.add(new SMSDataValue(
                     value.categoryOptionCombo(),
                     value.dataElement(),
                     value.value()));

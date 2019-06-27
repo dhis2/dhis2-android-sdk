@@ -1,6 +1,6 @@
 package org.hisp.dhis.android.core.sms.domain.repository;
 
-import org.hisp.dhis.smscompression.models.Metadata;
+import org.hisp.dhis.smscompression.models.SMSMetadata;
 
 import io.reactivex.Single;
 
@@ -9,7 +9,7 @@ public interface WebApiRepository {
     /**
      * @return Metadata object that contains ids lists needed to properly compress sms data
      */
-    Single<Metadata> getMetadataIds(GetMetadataIdsConfig config);
+    Single<SMSMetadata> getMetadataIds(GetMetadataIdsConfig config);
 
     class GetMetadataIdsConfig {
         public boolean dataElements = true;

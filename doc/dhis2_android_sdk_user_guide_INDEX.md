@@ -104,7 +104,7 @@ new AsyncTask<Void, Void, List<Program>>() {
     protected void onPostExecute(List<Program> programs) {
 
     } 
- }.execute();
+}.execute();
 
 ```
 
@@ -157,7 +157,7 @@ d2.eventModule().events
 
 will order by EventDate descendant in first place, and then by LastUpdated descendant.
 
-### Include nested fields
+#### Include nested fields
 
 Repositories return classes that are not an exact match of database tables: they are more complex objects that might include some properties obtained from other tables. For example, the `Event` class has a property called `trackedEntityDataValues` that include a list of TrackedEntityDataValues. The main reason to choose this kind of objects is to absorb the complexity of dealing with link tables so the app does not have to care about building links between objects.
 
@@ -280,6 +280,52 @@ The SDK does not fail the synchronization, but it stores the errors in a table f
 ```
 d2.maintenanceModule().foreignKeyViolations
 ```
+
+### Tracker data download
+
+By default, the SDK only downloads TrackedEntityInstances and Events that are located in user capture scope.
+
+```
+d2.trackedEntityModule().downloadTrackedEntityInstances(500, false, false)
+```
+
+It keeps track of the latest successful download in order to void downloading unmodified data. It makes use of paging with a best effort strategy: in case a page fails to be downloaded or persisted, it is skipped and the rest of pages are persisted.
+
+Currently it is possible to specify the maximum number of TEIs to download and apply this limit globally, per program and/or per orgunit. For example:
+
+- Given a max number N, we can download the following number of TEIs in total:
+  - Globally: N
+  - Per orgunit: N x (Number of orgunits)
+  - Per program: N x (Number of programs)
+  - Per orgunit AND per program: N x (Number of combinations orgunit-program)
+
+TrackedEntityInstances located in search scope can be downloaded with a different method. In this case it is required to provide the TEI uid, which might be obtained with a search query.
+
+```
+d2.downloadTrackedEntityInstancesByUid(uid-list)
+```
+
+[//]: # (Include glass protected download)
+
+There is a similar method for Events with the same behavior.
+
+```
+d2.eventModule().downloadSingleEvents(500, false, false)
+```
+
+### Tracker data creation
+
+### Tracker data upload
+
+#### Tracker conflicts
+
+### Aggregated data download
+
+### Aggregated data creation
+
+### Aggregated data upload
+
+### Data states
 
 ## Error management
 

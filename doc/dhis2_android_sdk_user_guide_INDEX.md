@@ -108,9 +108,58 @@ new AsyncTask<Void, Void, List<Program>>() {
 
 ```
 
-### Filters
+### Query building
 
-### Nested fields
+Repositories offer a builder syntax with compile-time validation to access the resources. A typical query is composed of some modifiers (filter, order, nested fields) and ends with an action (get, count, getPaged,...).
+
+```
+// Generic syntax
+d2.<module>.<repository>
+    .[ filter | orderBy | nested fields ]
+    .<action>;
+
+// An example for events
+d2.eventModule().events
+    .byOrganisationUnitUid().eq("DiszpKrYNg8")
+    .byEventDate().after(Date("2019-05-05"))
+    .orderByEventDate(DESC)
+    .withTrackedEntityDataValues()
+    .get();
+```
+
+#### Filters
+
+Repositories expose the list of available filters prefixed by the keyword "by". The list of filter operators available for each filter is dependant on the filter value type: for example, a value type `Date` will offer operators like `after`, `before`, `inPeriods`, while a value type `Boolean` will offer `isFalse` or `isTrue`.
+
+Several filters can be appended to the same query in any order. Filters are joined globally using the operator "AND". This means that a query like
+
+```
+d2.eventModule().events
+    .byOrganisationUnitUid().eq("DiszpKrYNg8")
+    .byEventDate().after(Date("2019-05-05"))
+    ...
+```
+
+will return the events assigned to "DiszpKrYNg8" **and** whose eventDate is after "2019-05-05".
+
+#### Order by
+
+Ordering modifiers are prefixed by the keyword "orderBy".
+
+Several "orderBy" modifiers can be appended to the same query. The order of the "orderBy" modifiers within the query determines the order priority. This means that a query like
+
+```
+d2.eventModule().events
+    .orderByEventDate(DESC)
+    .orderByLastUpdated(DESC)
+    ...
+```
+
+will order by EventDate descendant in first place, and then by LastUpdated descendant.
+
+### Include nested fields
+
+
 
 ### Module list
 
@@ -183,25 +232,31 @@ Logout method removes user credentials, so a new login is required before any in
 
 Command to launch metadata synchronization:
 
-[//]: # (TODO Include command)
-
 ```
-d2...
+d2.syncMetaData()
 ```
 
-In order to save bandwidth usage and storage space, the SDK does not synchronize all the metadata in the server but a subset. This subset is defined as the metadata required by the user in order to perform data entry tasks.
+In order to save bandwidth usage and storage space, the SDK does not synchronize all the metadata in the server but a subset. This subset is defined as the metadata required by the user in order to perform data entry tasks: render programs and datasets, execute program rules, evaluate in-line program indicators, etc.
 
 Based on that, metadata sync includes the following elements:
 
-- System settings.
-- User information (user credentials, user roles, authorities).
-- Programs assigned to at least one capture/search orgunit **and** accessible by the user with at least data read access.
-  - Related ProgramStages, ProgramIndicators, ProgramRules, TrackedEntityTypes, DataElements and OptionSets.
-- Datasets assigned to at least one capture/search orgunit **and** accessible by the user with at least data read access.
-  - Related DataElements, Indicators, IndicatorTypes and OptionSets.
-- Related CategoryCombos, Categories, etc.
-- Capture and Search orgunits (including descendants).
-- Constants.
+|   Element             |   Condition |
+|-----------------------|-------------|
+| System info           | - |
+| System settings       | KeyFlag, KeyStyle |
+| User                  | Only authenticated user |
+| UserRole              | Roles assigned to authenticated user |
+| Authority             | Authorities assigned to authenticated user |
+| Program               | Programs that user has (at least) read data access to and that are assigned to any orgunit visible by the user |
+| RelationshipTypes     | - |
+| OptionGroups          | Server is greater than 2.29 |
+| DataSet               | DataSets that user has (at least) read data access to and that are assigned to any orgunit visible by the user |
+| Indicators            | Indicators assigned to any dataSet |
+| OrganisationUnit      | OrganisationUnits in CAPTURE or SEARCH scope (include descendants) |
+| OrganisationUnitGroup | Groups assigned to downloaded organisationUnits |
+| OrganisationUnitLevel | - |
+| Constant              | - |
+| SMS Module metadata   | Only if SMS module enabled |
 
 #### Corrupted configurations
 

@@ -281,7 +281,22 @@ The SDK does not fail the synchronization, but it stores the errors in a table f
 d2.maintenanceModule().foreignKeyViolations
 ```
 
-### Tracker data download
+### Data states
+
+Data objects have a read-only `state` property that indicates the current state of the object in terms of synchronization with the server. This state is maintained by the SDK.
+
+The possible states are:
+
+- `SYNCED`. The element is synced with the server. There are no local changes for this value.
+- `TO_POST`. Data created locally that does not exist in the server yet.
+- `TO_UPDATE`. Data modified locally that exists in the server.
+- `TO_DELETE`. Data deleted locally that still exists in the server.
+- `ERROR`. Data that received an error from the server after the last upload.
+- `WARNING`. Data that received a warning from the server after the last upload.
+
+### Tracker data
+
+#### Tracker data download
 
 By default, the SDK only downloads TrackedEntityInstances and Events that are located in user capture scope.
 
@@ -299,7 +314,7 @@ Currently it is possible to specify the maximum number of TEIs to download and a
   - Per program: N x (Number of programs)
   - Per orgunit AND per program: N x (Number of combinations orgunit-program)
 
-TrackedEntityInstances located in search scope can be downloaded with a different method. In this case it is required to provide the TEI uid, which might be obtained with a search query.
+TrackedEntityInstances located in search scope can be downloaded by using a different method. In this case it is required to provide the TEI uid, which might be obtained with a search query.
 
 ```
 d2.downloadTrackedEntityInstancesByUid(uid-list)
@@ -313,19 +328,60 @@ There is a similar method for Events with the same behavior.
 d2.eventModule().downloadSingleEvents(500, false, false)
 ```
 
-### Tracker data creation
+#### Tracker data write
 
-### Tracker data upload
+In general, there are two different cases to manage data creation/edition/deletion: the case where the object is identifiable (that is, it has an `uid` property) and the case where the object is not identifiable.
 
-#### Tracker conflicts
+**Identifiable objects** (TrackedEntityInstance, Enrollment, Event). These repositories have an `uid()` method that gives you access to edition methods for a single object. In case the object does not exist yet, it is required to create it first. A typical workflow to create/edit an object would be:
 
-### Aggregated data download
+- Use the `CreateProjection` class to add a new instance in the repository.
+- Save the uid returned by this method.
+- Use the `uid()` method with the previous uid to get access to edition methods.
 
-### Aggregated data creation
+And in code this would look like:
 
-### Aggregated data upload
+```
+String eventUid = d2.eventModule().events.add(
+    EventCreateProjection.create("enrollent", "program", "programStage", "orgUnit", "attCombo"));
 
-### Data states
+d2.eventModule().events.uid(eventUid).setStatus(COMPLETED);
+```
+
+**Non-identifiable objects** (TrackedEntityAttributeValue, TrackedEntityDataValue). These repositories have a `value()` method that gives you access to edition methods for a single object. The parameters accepted by this method are the parameters that unambiguously identify a value.
+
+For example, writing a TrackedEntityDataValue would be like:
+
+```
+d2.trackedEntityModule().trackedEntityDataValues.value(eventUid, dataElementid).set(“5”);
+```
+
+#### Tracker data upload
+
+TrackedEntityInstance and Event repositories have an `upload()` method to upload Tracker data and Event data (without registration) respectively. If the repository scope has been reduced by filter methods, only filtered objects will be uploaded.
+
+```
+d2.( trackedEntityModule() | eventModule() )
+    .[ filters ]
+    .upload();
+```
+
+##### Tracker conflicts
+
+Server response is parsed to ensure that data has been correctly uploaded to the server. In case the server response includes import conflicts, these conflicts are stored in the database, so the app can check them and take an action to solve them.
+
+```
+d2.importModule().trackerImportConflicts
+```
+
+Conflicts linked to a TrackedEntityInstance, Enrollment or Event are automatically removed after a successful upload of the object.
+
+### Aggregated data
+
+#### Aggregated data download
+
+#### Aggregated data write
+
+#### Aggregated data upload
 
 ## Error management
 

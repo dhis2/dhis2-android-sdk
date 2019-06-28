@@ -80,7 +80,7 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends BaseRea
 
         TrackedEntityInstanceQuery query = queryBuilder.query(QueryFilter.create("jorge")).build();
         List<TrackedEntityInstance> queryResponse =
-                d2.trackedEntityModule().trackedEntityInstanceQuery.onlineOnly().query(query).get();
+                d2.trackedEntityModule().trackedEntityInstanceQuery.on.onlineOnly().query(query).get();
         assertThat(queryResponse).isNotEmpty();
     }
 
@@ -155,7 +155,7 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends BaseRea
         List<QueryItem> filterList = new ArrayList<>(1);
         filterList.add(QueryItem.create("w75KJ2mc4zz", QueryFilter.create(QueryOperator.LIKE, "jorge")));
 
-        TrackedEntityInstanceQuery query = queryBuilder.filter(filterList).build();
+        TrackedEntityInstanceQuery query = queryBuilder.qu.filter(filterList).build();
         List<TrackedEntityInstance> queryResponse =
                 d2.trackedEntityModule().trackedEntityInstanceQuery.onlineOnly().query(query).get();
         assertThat(queryResponse).isNotEmpty();

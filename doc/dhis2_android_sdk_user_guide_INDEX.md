@@ -375,6 +375,35 @@ d2.importModule().trackerImportConflicts
 
 Conflicts linked to a TrackedEntityInstance, Enrollment or Event are automatically removed after a successful upload of the object.
 
+#### Tracker data query (search)
+
+DHIS2 has a functionality to filter TrackedEntityInstances by related properties, like attributes, orgunits, programs or enrollment dates. In the SDK, this functionality is exposed in the `TrackedEntityInstanceQueryCollectionRepository`.
+
+This repository requires a `TrackedEntityInstanceQuery` object, which contains the query filters.
+
+Additionally, this repository offers different strategies to fetch data:
+
+- **Offline only**: show only TEIs stored locally.
+- **Offline first**: show TEIs stored locally in first place; then show TEIs in the server (duplicated TEIs are not shown).
+- **Online only**: show only TEIs in the server.
+- **Online fist**: show TEIs in the server in first place; then show TEIs stored locally.
+
+Example:
+
+```
+TrackedEntityInstanceQuery query = TrackedEntityInstanceQuery.builder()
+                .paging(true).page(1).pageSize(50)
+                .orgUnits("orgunitUid").orgUnitMode(DESCENDANTS)
+                .program("programUid")
+                .query(QueryFilter.builder()
+                        .filter("filter")
+                        .operator(LIKE)
+                        .build())
+                .build();
+
+d2.trackedEntityModule().trackedEntityInstanceQuery.query(query).offlineFirst()
+```
+
 ### Aggregated data
 
 #### Aggregated data download

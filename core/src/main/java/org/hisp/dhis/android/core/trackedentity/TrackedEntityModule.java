@@ -93,7 +93,7 @@ public final class TrackedEntityModule {
      * @param teiLimit Max number of TrackedEntityInstances to download.
      * @param limitByOrgUnit If true, the limit of TEIs is considered per organisation unit.
      * @param limitByProgram If true, the limit of TEIs is considered per program.
-     * @return An {@link Observable} that notifies about the progress.
+     * @return An Observable that notifies about the progress.
      */
     public Observable<D2Progress> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit,
                                                                  boolean limitByProgram) {

@@ -46,8 +46,9 @@ PROTECTED programs:
 #### Overwriting existing data
 
 In general all the downloaded data is stored and set as `SYNCED`. Although there are some exceptions:
-- Tracker elements with errors. 
-- Tracker elements with warnings. 
+
+- Tracker elements with errors.
+- Tracker elements with warnings.
 - Tracker elements with pending updates.
 
 These exceptions ensure that no updated data or data with errors or warnings is lost during the download process.
@@ -63,7 +64,7 @@ After an upload, the SDK will analyze the import summaries and update the **stat
 #### Strategies
 
 - **Tracked entity instances**. The SDK uses `CREATE_AND_UPDATE` for 2.29 and `SYNC` for later versions.
-- **Single events**. The `CREATE_AND_UPDATE` strategy is used to synchronize single events.
+- **Single events**. The SDK uses `CREATE_AND_UPDATE` for 2.29 and `SYNC` for later versions.
 
 #### States
 
@@ -79,11 +80,11 @@ After an upload, the SDK will analyze the import summaries and update the **stat
 After an upload, the SDK will analyze the import summaries and take the next actions.
 
 - If the response success:
-    - Set the **state** property of each element to `SYNCED`.
-- If there are conflicts:
-    - Set the **state** property to `ERROR` or `WARNING` for the element with the conflict.
-    - Propagate errors and warnings from enrollments and events up to tracked entity instance level giving errors higher priority than warnings.
-    - Store the import conflicts.
+  - Set the **state** property of each element to `SYNCED`.
+- If there are conflicts: 
+  - Set the **state** property to `ERROR` or `WARNING` for the element with the conflict.
+  - Propagate errors and warnings from enrollments and events up to tracked entity instance level giving errors higher priority than warnings.
+  - Store the import conflicts.
 
 ## Reserved values
 

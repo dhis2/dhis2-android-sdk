@@ -73,21 +73,46 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         this.scope = scope;
     }
 
+    /**
+     * Only TrackedEntityInstances coming from the server are shown in the list.
+     * <br><b>Important:</b> Internet connection is required to use this mode.
+     *
+     * @return
+     */
     public TrackedEntityInstanceQueryCollectionRepository onlineOnly() {
         return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
                 scope.toBuilder().mode(RepositoryMode.ONLINE_ONLY).build());
     }
 
+    /**
+     * Only TrackedEntityInstances coming from local database are shown in the list.
+     *
+     * @return
+     */
     public TrackedEntityInstanceQueryCollectionRepository offlineOnly() {
         return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
                 scope.toBuilder().mode(RepositoryMode.OFFLINE_ONLY).build());
     }
 
+    /**
+     * TrackedEntityInstances coming from the server are shown in first place. Once there are no more results online,
+     * it continues with TrackedEntityInstances in local database.
+     * <br><b>Important:</b> Internet connection is required to use this mode.
+     *
+     * @return
+     */
     public TrackedEntityInstanceQueryCollectionRepository onlineFirst() {
         return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
                 scope.toBuilder().mode(RepositoryMode.ONLINE_FIRST).build());
     }
 
+    /**
+     * TrackedEntityInstances coming from local database are shown in first place. Once there are no more results, it
+     * continues with TrackedEntityInstances coming from the server. This method may speed up the initial load.
+     * <br><b>Important:</b> Internet connection is required to use this mode.
+     *
+     * @return
+     */
     public TrackedEntityInstanceQueryCollectionRepository offlineFirst() {
         return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
                 scope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build());

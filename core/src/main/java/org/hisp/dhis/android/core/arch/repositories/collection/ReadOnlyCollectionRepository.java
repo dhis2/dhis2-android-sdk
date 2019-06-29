@@ -37,9 +37,44 @@ import androidx.paging.PagedList;
 import io.reactivex.Single;
 
 public interface ReadOnlyCollectionRepository<M extends Model> {
+
+    /**
+     * Query returning a Single object. As querying might be a
+     * time-consuming task, this method facilitates dealing with asynchronous behavior.
+     *
+     * @return A Single object emitting a list of elements.
+     */
     Single<List<M>> getAsync();
+
+    /**
+     * Get the list of elements. Important: this is blocking method and it should be executed in a
+     * separated thread.
+     *
+     * @return List of elements
+     */
     List<M> get();
+
+    /**
+     * Handy method to use in conjunction with PagedListAdapter to build
+     * paged lists.
+     *
+     * @param pageSize Length of the page
+     * @return A LiveData object of PagedList of elements
+     */
     LiveData<PagedList<M>> getPaged(int pageSize);
+
+    /**
+     * Get a count of elements. Important: this is a blocking method and it should be executed in
+     * a separated thread.
+     *
+     * @return Element count
+     */
     int count();
+
+    /**
+     * Get a {@link ReadOnlyObjectRepository} pointing to the first element in the list.
+     *
+     * @return Object repository
+     */
     ReadOnlyObjectRepository<M> one();
 }

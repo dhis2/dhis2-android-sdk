@@ -18,7 +18,7 @@ elif [ "$TRAVIS_JDK_VERSION" != "$JDK" ]; then
   echo "Skipping snapshot deployment: wrong JDK. Expected '$JDK' but was '$TRAVIS_JDK_VERSION'."
 elif [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
   echo "Skipping snapshot deployment: was pull request."
-elif [ "$TRAVIS_BRANCH" != "$MASTER_BRANCH" OR "$TRAVIS_BRANCH" != "$MASTERDEV_BRANCH" ]; then
+elif [ "$TRAVIS_BRANCH" != "$MASTER_BRANCH" ] && [ "$TRAVIS_BRANCH" != "$MASTERDEV_BRANCH" ]; then
   echo "Skipping snapshot deployment: wrong branch. Expected '$MASTER_BRANCH' or '$MASTERDEV_BRANCH' but was '$TRAVIS_BRANCH'."
 else
   echo "Deploying snapshot..."

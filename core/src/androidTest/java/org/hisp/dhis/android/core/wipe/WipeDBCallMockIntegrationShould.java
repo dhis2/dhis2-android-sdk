@@ -57,7 +57,7 @@ public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmpt
     }
 
     private void givenAMetadataInDatabase() throws Exception {
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
     }
 
     private void givenAEventInDatabase() {

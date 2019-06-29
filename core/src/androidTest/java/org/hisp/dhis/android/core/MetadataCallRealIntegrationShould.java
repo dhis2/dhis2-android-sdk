@@ -28,12 +28,16 @@
 
 package org.hisp.dhis.android.core;
 
+import android.util.Log;
+
 import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;
+
+import io.reactivex.schedulers.Schedulers;
 
 public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
     /**
@@ -75,7 +79,7 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
     public void response_successful_on_sync_meta_data_once() throws Exception {
         d2.userModule().logIn("android", "Android123").blockingGet();
 
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
 
         //TODO: add aditional sync + break point.
         //when debugger stops at the new break point manually change metadata online & resume.
@@ -85,14 +89,24 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
     }
 
     //@Test
+    public void download_metadata_in_io_scheduler() throws Exception {
+        d2.userModule().logIn("android", "Android123")
+                .flatMapObservable(user -> d2.syncMetaData())
+                .subscribeOn(Schedulers.io())
+                .subscribe(progress -> Log.i("META", progress.lastCall()));
+
+        Thread.sleep(60000);
+    }
+
+    //@Test
     public void response_successful_on_sync_meta_data_two_times() throws Exception {
         d2.userModule().logIn("android", "Android123").blockingGet();
 
         //first sync:
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
 
         //second sync:
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
     }
 
     //@Test

@@ -31,11 +31,12 @@ package org.hisp.dhis.android.core.event;
 import com.google.auto.value.AutoValue;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 @AutoValue
 public abstract class EventCreateProjection {
 
-    @NonNull
+    @Nullable
     public abstract String enrollment();
 
     @NonNull

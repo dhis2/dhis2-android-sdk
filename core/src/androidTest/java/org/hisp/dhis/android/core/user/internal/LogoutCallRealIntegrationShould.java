@@ -66,7 +66,7 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
     public void delete_credentials_when_log_out_after_sync_data() throws Exception {
         d2.userModule().logIn("android", "Android123").blockingGet();
 
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
 
         Callable<List<Event>> eventCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
 
@@ -90,7 +90,7 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
             throws Exception {
         d2.userModule().logIn("android", "Android123").blockingGet();
 
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
 
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 

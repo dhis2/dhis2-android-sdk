@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 
 import java.util.Date;
@@ -54,6 +55,7 @@ final class EnrollmentProjectionTransformer implements Transformer<EnrollmentCre
                 .organisationUnit(projection.organisationUnit())
                 .program(projection.program())
                 .trackedEntityInstance(projection.trackedEntityInstance())
+                .status(EnrollmentStatus.ACTIVE)
                 .build();
     }
 }

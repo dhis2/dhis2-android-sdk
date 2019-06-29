@@ -61,9 +61,11 @@ public final class DataStatePropagator {
     }
 
     public void propagateEventUpdate(Event event) {
-        Enrollment enrollment = enrollmentStore.selectByUid(event.enrollment());
-        enrollmentStore.setStateForUpdate(enrollment.uid());
-        trackedEntityInstanceStore.setStateForUpdate(enrollment.trackedEntityInstance());
+        if (event.enrollment() != null) {
+            Enrollment enrollment = enrollmentStore.selectByUid(event.enrollment());
+            enrollmentStore.setStateForUpdate(enrollment.uid());
+            setTeiStateForUpdate(enrollment.trackedEntityInstance());
+        }
     }
 
     public void propagateTrackedEntityDataValueUpdate(TrackedEntityDataValue dataValue) {

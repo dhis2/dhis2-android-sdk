@@ -50,7 +50,7 @@ import java.util.List;
 import androidx.annotation.Nullable;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramIndicator.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_ProgramIndicator.Builder.class)
 public abstract class ProgramIndicator extends BaseNameableObject implements Model {
 
     @Nullable
@@ -95,7 +95,8 @@ public abstract class ProgramIndicator extends BaseNameableObject implements Mod
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_ProgramIndicator.Builder();
+        return new $$AutoValue_ProgramIndicator.Builder()
+                .aggregationType(AggregationType.NONE);
     }
 
     @AutoValue.Builder

@@ -68,7 +68,7 @@ public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends 
     public void query_and_download_tracked_entity_instances() throws Exception {
         login();
 
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
 
         TrackedEntityInstanceQuery query = queryBuilder.build();
         List<TrackedEntityInstance> queriedTeis =

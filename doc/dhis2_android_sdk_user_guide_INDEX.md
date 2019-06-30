@@ -101,11 +101,11 @@ d2.programModule().programs
 new AsyncTask<Void, Void, List<Program>>() {
     protected List<Program> doInBackground() {
         return d2.programModule().programs.getAsync().blockingGet();
-    } 
+    }
     
     protected void onPostExecute(List<Program> programs) {
 
-    } 
+    }
 }.execute();
 ```
 
@@ -427,13 +427,48 @@ d2.trackedEntityModule().reservedValueManager.getValue("attributeUid", "orgunitU
 
 #### Aggregated data download
 
+```java
+d2.aggregatedModule().data().download()
+```
+
+By default, the SDK downloads aggregated data values and dataset complete registration values corresponding to:
+
+- **DataSets**: all available dataSets (those the use has at least read data access to).
+- **OrganisationUnits**: capture scope.
+- **Periods**: all available periods, which means at least:
+  - Days: last 60 days.
+  - Weeks: last 13 weeks (including starting day variants).
+  - Biweekly: last 13 bi-weeks.
+  - Monthly: last 12 months.
+  - Bimonthly: last 6 bi-months.
+  - Quarters: last 5 quarters.
+  - Sixmonthly: last 5 six-months (starting in January and April).
+  - Yearly: last 5 years (including financial year variants).
+
+It keeps track of the latest successful download in order to void downloading unmodified server data.
+
 #### Aggregated data write
+
+DataValueCollectionRepository has a `value()` method that gives access to edition methods. The parameters accepted by this method are the parameters that unambiguosly identify a value.
+
+```java
+DataValueObjectRepository valueRepository =
+    d2.dataValueModule().dataValues.value("periodId", "orgunitId", "dataElementId", "categoryOptionComboId", "attributeOptionComboId");
+
+valueRepository.set("value")
+```
 
 #### Aggregated data upload
 
+DataValueCollectionRepository has an `uplaod()` method to upload aggregated data values.
+
+```java
+d2.dataValueModule().dataValues.upload();
+```
+
 ## Error management
 
-## SMS module
+[//]: # (Include ## SMS module)
 
 ## DHIS2 version compatibility strategy
 
@@ -452,6 +487,31 @@ As a general rule the SDK tries to avoid breaking changes in its API and to make
 ...
 
 ## Direct database interaction
+
+Repository methods cover most of the needs of the application. But in some cases the application might want to interact directly with the database. SDK model classes include helpers to transform from `Cursor`.
+
+For example, read the list of constants using repositories and interacting directly with the database.
+
+```java
+// Using repositories
+d2.constantModule().constants.get() // List<Constant>
+
+// Direct database interaction
+String query = "SELECT * FROM " + ConstantTableInfo.TABLE_INFO.name();
+try (Cursor cursor = Sdk.d2().databaseAdapter().query(query)) {
+    List<Constant> constantList = new ArrayList<>();
+    if (cursor.getCount() > 0) {
+        cursor.moveToFirst();
+        do {
+            collection.add(Constant.create(cursor));
+        }
+        while (cursor.moveToNext());
+    }
+    return constantList; // List<Constant>
+}
+```
+
+`TableInfo` classes include some useful information about table structure, like table and column names.
 
 ## Program rule engine
 

@@ -466,6 +466,19 @@ DataValueCollectionRepository has an `uplaod()` method to upload aggregated data
 d2.dataValueModule().dataValues.upload();
 ```
 
+#### DataSet reports
+
+A DataSetReport in the SDK is a handy representation of the existing aggregated data. It would the equivalent of some kind of DataSet instance: a DataSetReport represents a unique combination of DataSet - Period - Orgunit - AttributeOptionCombo and includes extra information like sync state, value count or displayName for some properties.
+
+```java
+d2.dataValueModule().dataSetReports
+    .byDataSetUid().eq("dataSetUid")
+    .[ filters ]
+    .get()
+```
+
+**Important**: a Data set report in the SDK is not the same as a Data set report in Web UI. In Web UI, DataSetReports have a sense of aggregation of data values over time and hierarchy.
+
 ## Error management
 
 [//]: # (Include ## SMS module)
@@ -488,7 +501,9 @@ As a general rule the SDK tries to avoid breaking changes in its API and to make
 
 ## Direct database interaction
 
-Repository methods cover most of the needs of the application. But in some cases the application might want to interact directly with the database. SDK model classes include helpers to transform from `Cursor`.
+Repository methods cover most of the needs of the application. But in some cases the application might want to interact directly with the database.
+
+The SDK exposes a DatabaseAdapter object to execute raw statements in the database. Also, SDK model classes include helper methods to create instances from a `Cursor`.
 
 For example, read the list of constants using repositories and interacting directly with the database.
 

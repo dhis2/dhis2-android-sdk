@@ -10,13 +10,15 @@
 
 ## Overview
 
-- Approach: the sdk is currently oriented to end-user apps (i.e, data encoders)
-- Works offline
-- 
+Android library that abstracts the complexity of interaction with DHIS2 api.
+
+Goals:
+
+- Work offline (internal database).
+- Communicate with DHIS2 instances.
+- Facilitate the development of Android apps.
 
 ## Libraries
-
-
 
 ## Getting started
 
@@ -24,7 +26,7 @@
 
 Include dependency in build.gradle.
 
-```
+```gradle
 dependencies {
     implementation "org.hisp.dhis:android-core:0.17.0-SNAPSHOT"
     ...
@@ -35,7 +37,7 @@ dependencies {
 
 In order to start using the SDK, the first step is to initialize a `D2` object. The helper class `D2Manager` offers static methods to setup and initialize the `D2` instance. Also, it ensures that `D2` is a singleton across the application.
 
-```
+```java
 D2Configuration configuration = D2Configuration.builder()
     .appName("app_name").appVersion("1.0.0")
     .context(context)
@@ -85,7 +87,7 @@ For example, the same query using RxJava and AsyncTask:
 
 *Using RxJava*
 
-```
+```java
 d2.programModule().programs
     .subscribeOn(Schedulers.io())
     .observeOn(AndroidSchedulers.mainThread())
@@ -95,24 +97,23 @@ d2.programModule().programs
 
 *Using AsyncTask*
 
-```
+```java
 new AsyncTask<Void, Void, List<Program>>() {
     protected List<Program> doInBackground() {
         return d2.programModule().programs.getAsync().blockingGet();
-    } 
+    }
     
     protected void onPostExecute(List<Program> programs) {
 
-    } 
+    }
 }.execute();
-
 ```
 
 ### Query building
 
 Repositories offer a builder syntax with compile-time validation to access the resources. A typical query is composed of some modifiers (filter, order, nested fields) and ends with an action (get, count, getPaged,...).
 
-```
+```java
 // Generic syntax
 d2.<module>.<repository>
     .[ filter | orderBy | nested fields ]
@@ -133,7 +134,7 @@ Repositories expose the list of available filters prefixed by the keyword "by". 
 
 Several filters can be appended to the same query in any order. Filters are joined globally using the operator "AND". This means that a query like
 
-```
+```java
 d2.eventModule().events
     .byOrganisationUnitUid().eq("DiszpKrYNg8")
     .byEventDate().after(Date("2019-05-05"))
@@ -148,7 +149,7 @@ Ordering modifiers are prefixed by the keyword "orderBy".
 
 Several "orderBy" modifiers can be appended to the same query. The order of the "orderBy" modifiers within the query determines the order priority. This means that a query like
 
-```
+```java
 d2.eventModule().events
     .orderByEventDate(DESC)
     .orderByLastUpdated(DESC)
@@ -165,7 +166,7 @@ Due to performance issues, this kind of properties are not included by default: 
 
 Several properties can be appended in the same query in any order. For example, a query like
 
-```
+```java
 d2.programModule().programs
     .withStyle()
     .withTrackedEntityType()
@@ -220,7 +221,7 @@ A typical workflow would be like this:
 
 Before interacting with the server it is required to login into the DHIS 2 instance. Currently, the SDK does only support one pair "user - server" simultaneously. That means that only one user can be authenticated in only one server at the same time.
 
-```
+```java
 d2.userModule().logIn(username, password)
 
 d2.userModule().logOut()
@@ -245,7 +246,7 @@ Logout method removes user credentials, so a new login is required before any in
 
 Command to launch metadata synchronization:
 
-```
+```java
 d2.syncMetaData()
 ```
 
@@ -277,7 +278,7 @@ This partial metadata synchronization may expose server-side misconfiguration is
 
 The SDK does not fail the synchronization, but it stores the errors in a table for inspection. They can be accessed by:
 
-```
+```java
 d2.maintenanceModule().foreignKeyViolations
 ```
 
@@ -300,7 +301,7 @@ The possible states are:
 
 By default, the SDK only downloads TrackedEntityInstances and Events that are located in user capture scope.
 
-```
+```java
 d2.trackedEntityModule().downloadTrackedEntityInstances(500, false, false)
 ```
 
@@ -316,7 +317,7 @@ Currently it is possible to specify the maximum number of TEIs to download and a
 
 TrackedEntityInstances located in search scope can be downloaded by using a different method. In this case it is required to provide the TEI uid, which might be obtained with a search query.
 
-```
+```java
 d2.downloadTrackedEntityInstancesByUid(uid-list)
 ```
 
@@ -324,7 +325,7 @@ d2.downloadTrackedEntityInstancesByUid(uid-list)
 
 There is a similar method for Events with the same behavior.
 
-```
+```java
 d2.eventModule().downloadSingleEvents(500, false, false)
 ```
 
@@ -340,7 +341,7 @@ In general, there are two different cases to manage data creation/edition/deleti
 
 And in code this would look like:
 
-```
+```java
 String eventUid = d2.eventModule().events.add(
     EventCreateProjection.create("enrollent", "program", "programStage", "orgUnit", "attCombo"));
 
@@ -351,7 +352,7 @@ d2.eventModule().events.uid(eventUid).setStatus(COMPLETED);
 
 For example, writing a TrackedEntityDataValue would be like:
 
-```
+```java
 d2.trackedEntityModule().trackedEntityDataValues.value(eventUid, dataElementid).set(“5”);
 ```
 
@@ -359,7 +360,7 @@ d2.trackedEntityModule().trackedEntityDataValues.value(eventUid, dataElementid).
 
 TrackedEntityInstance and Event repositories have an `upload()` method to upload Tracker data and Event data (without registration) respectively. If the repository scope has been reduced by filter methods, only filtered objects will be uploaded.
 
-```
+```java
 d2.( trackedEntityModule() | eventModule() )
     .[ filters ]
     .upload();
@@ -369,7 +370,7 @@ d2.( trackedEntityModule() | eventModule() )
 
 Server response is parsed to ensure that data has been correctly uploaded to the server. In case the server response includes import conflicts, these conflicts are stored in the database, so the app can check them and take an action to solve them.
 
-```
+```java
 d2.importModule().trackerImportConflicts
 ```
 
@@ -390,7 +391,7 @@ Additionally, this repository offers different strategies to fetch data:
 
 Example:
 
-```
+```java
 TrackedEntityInstanceQuery query = TrackedEntityInstanceQuery.builder()
                 .paging(true).page(1).pageSize(50)
                 .orgUnits("orgunitUid").orgUnitMode(DESCENDANTS)
@@ -404,17 +405,83 @@ TrackedEntityInstanceQuery query = TrackedEntityInstanceQuery.builder()
 d2.trackedEntityModule().trackedEntityInstanceQuery.query(query).offlineFirst()
 ```
 
+#### Tracker data: reserved values
+
+Tracked Entity Attributes configured as "unique" and "automatically generated" are generated by the server following a pattern defined by the user. These values can only be generated by the server, which means that we need to reserve them in advance so we can make use of them when operating offline.
+
+```java
+d2.trackedEntityModule().reservedValueManager.syncReservedValues("attributeUid", "orgunitUid", numValues)
+```
+
+The app is responsible for triggering the synchronization of reserved values before going offline.
+
+Depending on the time the app expects to be offline, it can decide the quantity of values to reserve. In case the attribute pattern is dependant on the orgunit code, the SDK will reserve values for all the relevant orgunits. More details about the logic in Javadoc.
+
+Reserved values can be obtained by:
+
+```java
+d2.trackedEntityModule().reservedValueManager.getValue("attributeUid", "orgunitUid")
+```
+
 ### Aggregated data
 
 #### Aggregated data download
 
+```java
+d2.aggregatedModule().data().download()
+```
+
+By default, the SDK downloads aggregated data values and dataset complete registration values corresponding to:
+
+- **DataSets**: all available dataSets (those the use has at least read data access to).
+- **OrganisationUnits**: capture scope.
+- **Periods**: all available periods, which means at least:
+  - Days: last 60 days.
+  - Weeks: last 13 weeks (including starting day variants).
+  - Biweekly: last 13 bi-weeks.
+  - Monthly: last 12 months.
+  - Bimonthly: last 6 bi-months.
+  - Quarters: last 5 quarters.
+  - Sixmonthly: last 5 six-months (starting in January and April).
+  - Yearly: last 5 years (including financial year variants).
+
+It keeps track of the latest successful download in order to void downloading unmodified server data.
+
 #### Aggregated data write
+
+DataValueCollectionRepository has a `value()` method that gives access to edition methods. The parameters accepted by this method are the parameters that unambiguosly identify a value.
+
+```java
+DataValueObjectRepository valueRepository =
+    d2.dataValueModule().dataValues.value("periodId", "orgunitId", "dataElementId", "categoryOptionComboId", "attributeOptionComboId");
+
+valueRepository.set("value")
+```
 
 #### Aggregated data upload
 
+DataValueCollectionRepository has an `uplaod()` method to upload aggregated data values.
+
+```java
+d2.dataValueModule().dataValues.upload();
+```
+
+#### DataSet reports
+
+A DataSetReport in the SDK is a handy representation of the existing aggregated data. It would the equivalent of some kind of DataSet instance: a DataSetReport represents a unique combination of DataSet - Period - Orgunit - AttributeOptionCombo and includes extra information like sync state, value count or displayName for some properties.
+
+```java
+d2.dataValueModule().dataSetReports
+    .byDataSetUid().eq("dataSetUid")
+    .[ filters ]
+    .get()
+```
+
+**Important**: a Data set report in the SDK is not the same as a Data set report in Web UI. In Web UI, DataSetReports have a sense of aggregation of data values over time and hierarchy.
+
 ## Error management
 
-## SMS module
+[//]: # (Include ## SMS module)
 
 ## DHIS2 version compatibility strategy
 
@@ -432,6 +499,41 @@ As a general rule the SDK tries to avoid breaking changes in its API and to make
 
 ...
 
+## Direct database interaction
+
+Repository methods cover most of the needs of the application. But in some cases the application might want to interact directly with the database.
+
+The SDK exposes a DatabaseAdapter object to execute raw statements in the database. Also, SDK model classes include helper methods to create instances from a `Cursor`.
+
+For example, read the list of constants using repositories and interacting directly with the database.
+
+```java
+// Using repositories
+d2.constantModule().constants.get() // List<Constant>
+
+// Direct database interaction
+String query = "SELECT * FROM " + ConstantTableInfo.TABLE_INFO.name();
+try (Cursor cursor = Sdk.d2().databaseAdapter().query(query)) {
+    List<Constant> constantList = new ArrayList<>();
+    if (cursor.getCount() > 0) {
+        cursor.moveToFirst();
+        do {
+            collection.add(Constant.create(cursor));
+        }
+        while (cursor.moveToNext());
+    }
+    return constantList; // List<Constant>
+}
+```
+
+`TableInfo` classes include some useful information about table structure, like table and column names.
+
+## Program rule engine
+
+The program rule engine is not provided within the SDK. It is implemented in a separate library, so the same code is used by backend and android apps.
+
+More info [dhis2-rule-engine](https://github.com/dhis2/dhis2-rule-engine).
+
 ## Program indicator engine
 
 The SDK includes its own Program Indicator engine for the evaluation of **in-line Program Indicators**. These kind of indicators are evaluated within the context of an enrollment and they are usually placed in the data entry form offering additional information to the data encoder. This means that, even though they are regular Program Indicators and can be calculated across enrollments, they have provide useful information within a single enrollment.
@@ -442,7 +544,7 @@ A bad example, "Number of active TEIs": it would always be 1.
 
 In order to trigger the Program Indicator Engine, just execute:
 
-```
+```java
 d2.programModule()
     .programIndicatorEngine
     .getProgramIndicatorValue(<enrollment-uid>, <event-uid>, <program-indicator-uid>);
@@ -504,7 +606,7 @@ Besides the regular debugging tools in AndroidStudio, the library [Stetho](http:
 
 Setup up Stetho by adding the following dependencies in your gradle file:
 
-```
+```gradle
 dependencies {
     implementation 'com.facebook.stetho:stetho:1.5.0'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
@@ -513,7 +615,7 @@ dependencies {
 
 Then add a network interceptor in `D2Configuration` object:
 
-```
+```java
 D2Configuration.builder()
     ...
     .networkInterceptors(Collections.singletonList(new StethoInterceptor()))
@@ -523,7 +625,7 @@ D2Configuration.builder()
 
 Finally enable initialize Stetho in the `Application` class:
 
-```
+```java
 if (DEBUG) {
     Stetho.initializeWithDefaults(this);
 }

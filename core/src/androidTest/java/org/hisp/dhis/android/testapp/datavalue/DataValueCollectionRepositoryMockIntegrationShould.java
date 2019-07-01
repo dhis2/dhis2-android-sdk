@@ -71,7 +71,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
         List<DataValue> dataValues =
                 d2.dataValueModule().dataValues
                         .byPeriod()
-                        .eq("201809")
+                        .eq("2018")
                         .get();
 
         assertThat(dataValues.size(), is(1));
@@ -189,7 +189,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void return_data_value_object_repository() {
         DataValueObjectRepository objectRepository = d2.dataValueModule().dataValues
-                .value("201809", "DiszpKrYNg8", "g9eOBujte1U",
+                .value("2018", "DiszpKrYNg8", "g9eOBujte1U",
                         "Gmbgme7z9BF", "bRowv6yZOF2");
         assertThat(objectRepository.exists(), is(Boolean.TRUE));
         assertThat(objectRepository.get().value(), is("10"));

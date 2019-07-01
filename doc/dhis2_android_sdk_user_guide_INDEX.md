@@ -76,12 +76,12 @@ Repositories act as a facade for the DB (or web API in some cases). They offer r
 
 ### Dealing with return types: RxJava
 
-The SDK uses RxJava classes (Single, Completable, Flowable) as the preferred return type for all the methods. The reasons for choosing RxJava classes are mainly two:
+The SDK uses RxJava classes (Observable, Single, Completable, Flowable) as the preferred return type for all the methods. The reasons for choosing RxJava classes are mainly two:
 
 - **To facilitate the asynchronous treatment of returned objects.** Most of the actions in the SDK are time consuming and must be executed in a secondary thread. These return types force the app to deal with the asynchronous behavior.
 - **To notify about progress.** Methods like metadata or data sync might take several minutes to finish. From user experience it is very helpful to have a sense of progress.
 
-This does not mean that applications are forced to use RxJava in their code: they are only force to deal with their asynchronous behavior. RxJava classes include built-in methods to make them synchronous.
+This does not mean that applications are forced to use RxJava in their code: they are only forced to deal with their asynchronous behavior. RxJava classes include built-in methods to make them synchronous.
 
 For example, the same query using RxJava and AsyncTask:
 
@@ -230,11 +230,11 @@ d2.userModule().logOut()
 After a logout the SDK keeps track of the last logged user so that it is able to differentiate recurring and new users. It also keeps a hash of the user credentials in order to authenticate the user even when there is no connectivity. Given that said, the login method will:
 
 - If an authenticated user already exists: throw an error.
-- If user account has been disabled in server: wipe DB and throw an error.
-- If login is successful:
+- If Online:
   - If user is different than last logged user: wipe DB and try **login online**.
   - If server is different (even if the user is the same): wipe DB and try **login online**.
-- If no internet connection is present:
+  - If user account has been disabled in server: wipe DB and throw an error.
+- If Offline:
   - If the user has been ever authenticated:
     - If server is the same: try **login offline**.
     - If server is different: throw an error.

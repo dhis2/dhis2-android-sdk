@@ -55,7 +55,7 @@ public class ConvertTest {
         assertEquals(subm.getOrgUnit(), MockObjects.orgUnit);
         assertEquals(subm.getTrackerProgram(), MockObjects.program);
         for (SMSAttributeValue item : subm.getValues()) {
-            assertTrue(containsAttributeValue(MockObjects.getTestValues(), item));
+            assertTrue(containsAttributeValue(MockObjects.getTestAttributeValues(), item));
         }
     }
 

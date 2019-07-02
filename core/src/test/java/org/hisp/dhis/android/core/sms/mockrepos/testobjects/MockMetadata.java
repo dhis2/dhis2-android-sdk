@@ -18,7 +18,7 @@ public class MockMetadata extends SMSMetadata {
 
     public List<String> getTrackedEntityAttributes() {
         ArrayList<String> attrs = new ArrayList<>();
-        for (TrackedEntityAttributeValue item : MockObjects.getTestValues()) {
+        for (TrackedEntityAttributeValue item : MockObjects.getTestAttributeValues()) {
             attrs.add(item.trackedEntityAttribute());
         }
         return attrs;

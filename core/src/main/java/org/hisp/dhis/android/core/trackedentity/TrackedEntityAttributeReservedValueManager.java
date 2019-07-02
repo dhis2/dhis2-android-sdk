@@ -91,6 +91,15 @@ public final class TrackedEntityAttributeReservedValueManager {
         this.trackedEntityAttributeReservedValueQueryCallFactory = trackedEntityAttributeReservedValueQueryCallFactory;
     }
 
+    /**
+     * Get a reserved value and remove it from database. If the number of available values is below a threshold
+     * (default {@link #MIN_TO_TRY_FILL}) it tries to synchronize before returning a value.
+     *
+     * @param attribute Attribute uid
+     * @param organisationUnitUid Optional organisation uid
+     * @return Value of tracked entity attribute
+     * @throws D2Error If there are no more reserved values available in database
+     */
     @SuppressFBWarnings("DE_MIGHT_IGNORE")
     public String getValue(String attribute, String organisationUnitUid) throws D2Error {
         OrganisationUnit organisationUnit = organisationUnitUid == null ? null :
@@ -109,6 +118,22 @@ public final class TrackedEntityAttributeReservedValueManager {
         }
     }
 
+    /**
+     * Synchronization of TrackedEntityInstance reserved values. The number of reserved values is filled up to the
+     * numberOfValuesToFillUp. If not defined, it defaults to {@link #FILL_UP_TO}.
+     * <br><br>
+     * If an attribute uid is defined, the synchronization is only triggered for this attribute. If not defined, the
+     * synchronization is triggered for all the attributes with the property "generated" set to true.
+     * <br><br>
+     * If an organisationunit uid is defined, only TrackedEntityAttributes linked to programs that are linked to this
+     * organisationunit are considered for syncing. If not defined, the SDK checks if TrackedEntityAttribute pattern
+     * contains ORGUNIT_CODE. If so, it reserves values for each orgunit assigned to the program and applies the limit
+     * per orgunit. If not, the limit is applied per attribute.
+     *
+     * @param attribute An optional attribute uid
+     * @param organisationUnitUid An optional organisationunit uid
+     * @param numberOfValuesToFillUp An optional maximum number of values to reserve
+     */
     public void syncReservedValues(String attribute, String organisationUnitUid, Integer numberOfValuesToFillUp) {
 
         if (attribute == null) {

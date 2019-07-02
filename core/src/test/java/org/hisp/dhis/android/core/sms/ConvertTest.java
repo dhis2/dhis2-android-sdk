@@ -5,8 +5,8 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.sms.domain.interactor.QrCodeCase;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.smscompression.SMSSubmissionReader;
-import org.hisp.dhis.smscompression.models.AttributeValue;
 import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission;
+import org.hisp.dhis.smscompression.models.SMSAttributeValue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -54,13 +54,13 @@ public class ConvertTest {
         assertEquals(subm.getTrackedEntityType(), TestRepositories.trackedEntityType);
         assertEquals(subm.getOrgUnit(), enrollment.organisationUnit());
         assertEquals(subm.getTrackerProgram(), enrollment.program());
-        for (AttributeValue item : subm.getValues()) {
+        for (SMSAttributeValue item : subm.getValues()) {
             assertTrue(containsAttributeValue(TestRepositories.getTestValues(), item));
         }
     }
 
     private boolean containsAttributeValue(ArrayList<TrackedEntityAttributeValue> values,
-                                           AttributeValue item) {
+                                           SMSAttributeValue item) {
         for (TrackedEntityAttributeValue value : values) {
             if (Objects.equals(value.trackedEntityAttribute(), item.getAttribute()) &&
                     Objects.equals(value.value(), item.getValue())) {

@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.sms.domain.repository.SubmissionType;
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.smscompression.models.Metadata;
+import org.hisp.dhis.smscompression.models.SMSMetadata;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,14 +56,14 @@ public class TestRepositories {
     public static String trackedEntityType = "nEenWmSyUEp";
 
     public static class TestWebApiRepository implements WebApiRepository {
-        public Metadata metadata;
+        public SMSMetadata metadata;
 
         public TestWebApiRepository() {
             metadata = new TestMetadata();
         }
 
         @Override
-        public Single<Metadata> getMetadataIds(GetMetadataIdsConfig config) {
+        public Single<SMSMetadata> getMetadataIds(GetMetadataIdsConfig config) {
             return Single.fromCallable(() -> metadata);
         }
     }
@@ -73,7 +73,7 @@ public class TestRepositories {
         private String gatewayNumber = null;
         private String confirmationSenderNumber = null;
         private Integer resultWaitingTimeout = 120;
-        public Metadata metadata = new TestMetadata();
+        public SMSMetadata metadata = new TestMetadata();
 
         public TestLocalDbRepository() {
             metadata.lastSyncDate = new Date();
@@ -115,12 +115,12 @@ public class TestRepositories {
         }
 
         @Override
-        public Single<Metadata> getMetadataIds() {
+        public Single<SMSMetadata> getMetadataIds() {
             return Single.fromCallable(() -> metadata);
         }
 
         @Override
-        public Completable setMetadataIds(Metadata metadata) {
+        public Completable setMetadataIds(SMSMetadata metadata) {
             return Completable.complete();
         }
 
@@ -251,7 +251,7 @@ public class TestRepositories {
                 .build();
     }
 
-    public static class TestMetadata extends Metadata {
+    public static class TestMetadata extends SMSMetadata {
         Enrollment enrollment = getTestEnrollment(enrollmentUid, teiUid);
 
         public List<String> getUsers() {

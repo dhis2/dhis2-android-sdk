@@ -38,4 +38,4 @@ Feature packages contain at least:
 
 ## Local database
 
-SQLBrite library is used for migrations. The database has a version number defined in `DbOpenHelper`. In case the device has an outdated database, it will execute the pending migrations up to the current version number. Migrations are defined in `assets/migrations`
+SQLBrite library is used for migrations. The database has a version number defined in `DbOpenHelper`. In case the device has an outdated database, it will execute the pending migrations up to the current version number. Migrations are defined in `assets/migrations`.

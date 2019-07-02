@@ -37,7 +37,7 @@ public abstract class BaseMockIntegrationTestMetadataEnqueable extends BaseMockI
         boolean isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.MetadataEnqueable);
         if (isNewInstance) {
             objects.dhis2MockServer.enqueueMetadataResponses();
-            objects.d2.syncMetaData().call();
+            objects.d2.syncMetaData().blockingSubscribe();
         }
     }
 }

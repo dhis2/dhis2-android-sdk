@@ -59,7 +59,7 @@ public class TeisCallRealIntegrationShould extends BaseRealIntegrationTest {
     public void download_tracked_entity_instances() throws Exception {
         d2.userModule().logIn("android", "Android123").blockingGet();
 
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
 
         TestObserver<D2Progress> testObserver = d2.trackedEntityModule().downloadTrackedEntityInstances(5, false, false)
                 .doOnEach(e -> Log.w("EVENT", e.toString()))

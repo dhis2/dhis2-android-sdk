@@ -77,7 +77,7 @@ public class NotePostCallRealIntegrationShould extends BaseRealIntegrationTest {
     public void downloadUpdateAndSyncTei() throws Exception {
         d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
 
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
 
         d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList("AlvUHPP2Mes")).call();
 

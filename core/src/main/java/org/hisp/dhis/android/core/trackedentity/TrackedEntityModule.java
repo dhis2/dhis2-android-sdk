@@ -83,15 +83,44 @@ public final class TrackedEntityModule {
         this.trackedEntityInstanceQuery = trackedEntityInstanceQuery;
     }
 
+    /**
+     * Downloads and persists TrackedEntityInstances from the server. Only instances in capture scope are downloaded.
+     * This method keeps track of the latest successful download in order to void downloading unmodified data.
+     *
+     * It makes use of paging with a best effort strategy: in case a page fails to be downloaded or persisted, it is
+     * skipped and the rest of pages are persisted.
+     *
+     * @param teiLimit Max number of TrackedEntityInstances to download.
+     * @param limitByOrgUnit If true, the limit of TEIs is considered per organisation unit.
+     * @param limitByProgram If true, the limit of TEIs is considered per program.
+     * @return An Observable that notifies about the progress.
+     */
     public Observable<D2Progress> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit,
                                                                  boolean limitByProgram) {
         return withLimitCallFactory.download(teiLimit, limitByOrgUnit, limitByProgram);
     }
 
+    /**
+     * Downloads and persists a list of TrackedEntityInstances. This method could be used to download
+     * TrackedEntityInstances located in search scope once their uids have been obtained by a search query.
+     *
+     * It downloads the TEIs with all their visible programs.
+     *
+     * @param uids List of TrackedEntityInstance uids
+     * @return -
+     */
     public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {
         return downloadAndPersistCallFactory.getCall(uids);
     }
 
+    /**
+     * Download and persists a list of TrackedEntityInstances for a specific program. This method is required to
+     * download glass-protected TrackedEntityInstances.
+     *
+     * @param uids List of TrackedEntityInstance uids
+     * @param program Program uid
+     * @return -
+     */
     public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids,
                                                                                      String program) {
         return downloadAndPersistCallFactory.getCall(uids, program);

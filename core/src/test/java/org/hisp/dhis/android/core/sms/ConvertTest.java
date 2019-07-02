@@ -1,8 +1,10 @@
 
 package org.hisp.dhis.android.core.sms;
 
-import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.sms.domain.interactor.QrCodeCase;
+import org.hisp.dhis.android.core.sms.mockrepos.MockLocalDbRepository;
+import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockMetadata;
+import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockObjects;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.smscompression.SMSSubmissionReader;
 import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission;
@@ -25,14 +27,11 @@ public class ConvertTest {
 
     @Test
     public void backAndForth() throws Exception {
+        MockLocalDbRepository testLocalDb = new MockLocalDbRepository();
 
-        TestRepositories.TestLocalDbRepository testLocalDb =
-                new TestRepositories.TestLocalDbRepository();
-
-        Enrollment enrollment = TestRepositories.getTestEnrollment(TestRepositories.enrollmentUid, TestRepositories.teiUid);
         AtomicReference<String> result = new AtomicReference<>();
         new QrCodeCase(testLocalDb)
-                .generateEnrollmentCode(enrollment.uid())
+                .generateEnrollmentCode(MockObjects.enrollmentUid)
                 .test()
                 .assertNoErrors()
                 .assertValueCount(1)
@@ -45,17 +44,18 @@ public class ConvertTest {
         byte[] smsBytes = Base64.getDecoder().decode(result.get());
 
         SMSSubmissionReader reader = new SMSSubmissionReader();
-        EnrollmentSMSSubmission subm = (EnrollmentSMSSubmission) reader.readSubmission(smsBytes,
-                new TestRepositories.TestMetadata());
+        EnrollmentSMSSubmission subm = (EnrollmentSMSSubmission) reader.readSubmission(
+                smsBytes, new MockMetadata());
         assertNotNull(subm);
-        assertEquals(subm.getUserID(), TestRepositories.TestLocalDbRepository.userId);
-        assertEquals(subm.getEnrollment(), enrollment.uid());
-        assertEquals(subm.getTrackedEntityInstance(), enrollment.trackedEntityInstance());
-        assertEquals(subm.getTrackedEntityType(), TestRepositories.trackedEntityType);
-        assertEquals(subm.getOrgUnit(), enrollment.organisationUnit());
-        assertEquals(subm.getTrackerProgram(), enrollment.program());
+
+        assertEquals(subm.getUserID(), MockObjects.user);
+        assertEquals(subm.getEnrollment(), MockObjects.enrollmentUid);
+        assertEquals(subm.getTrackedEntityInstance(), MockObjects.teiUid);
+        assertEquals(subm.getTrackedEntityType(), MockObjects.trackedEntityType);
+        assertEquals(subm.getOrgUnit(), MockObjects.orgUnit);
+        assertEquals(subm.getTrackerProgram(), MockObjects.program);
         for (SMSAttributeValue item : subm.getValues()) {
-            assertTrue(containsAttributeValue(TestRepositories.getTestValues(), item));
+            assertTrue(containsAttributeValue(MockObjects.getTestValues(), item));
         }
     }
 

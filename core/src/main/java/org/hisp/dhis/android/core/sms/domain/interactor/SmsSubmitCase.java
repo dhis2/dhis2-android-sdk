@@ -203,5 +203,29 @@ public class SmsSubmitCase {
             NO_METADATA_DOWNLOADED,
             SMS_MODULE_DISABLED
         }
+
+        @Override
+        public String getMessage() {
+            switch (type) {
+                case NO_NETWORK:
+                    return "No network";
+                case NO_CHECK_NETWORK_PERMISSION:
+                    return "No check network permission";
+                case NO_RECEIVE_SMS_PERMISSION:
+                    return "No receive sms permission";
+                case NO_SEND_SMS_PERMISSION:
+                    return "No send sms permission";
+                case NO_GATEWAY_NUMBER_SET:
+                    return "No gateway number set";
+                case NO_USER_LOGGED_IN:
+                    return "No user logged in";
+                case NO_METADATA_DOWNLOADED:
+                    return "No metadata downloaded";
+                case SMS_MODULE_DISABLED:
+                    return "Sms module disabled";
+                default:
+                    return super.getMessage();
+            }
+        }
     }
 }

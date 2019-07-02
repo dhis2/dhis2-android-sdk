@@ -29,6 +29,7 @@ public class MockObjects {
     public static String period = "2019";
     public static String relationship = "Tj1ddhpeCFL";
     public static String relationshipType = "R74HPJyNLs9";
+    public static String dataSetUid = "R75HPJyNLs2";
 
     public static Enrollment getTestEnrollment() {
         return Enrollment.builder()
@@ -88,7 +89,7 @@ public class MockObjects {
                 .trackedEntityDataValues(getTeiDataValues())
                 .organisationUnit(orgUnit)
                 .enrollment(enrollmentUid)
-                .program(programStage)
+                .programStage(programStage)
                 .build();
     }
 

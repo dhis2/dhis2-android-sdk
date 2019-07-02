@@ -21,7 +21,7 @@ import io.reactivex.Completable;
 import io.reactivex.Single;
 
 public class MockLocalDbRepository implements LocalDbRepository {
-    private String gatewayNumber = null;
+    private String gatewayNumber = "525525";
     private String confirmationSenderNumber = null;
     private Integer resultWaitingTimeout = 120;
     private SMSMetadata metadata = new MockMetadata();

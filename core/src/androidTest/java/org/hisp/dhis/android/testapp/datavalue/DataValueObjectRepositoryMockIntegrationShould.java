@@ -109,7 +109,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
                 .value("no_period", "no_org_unit", "no_data_element",
                         "no_category", "no_attribute").exists(), is(Boolean.FALSE));
         assertThat(d2.dataValueModule().dataValues
-                .value("201809", "DiszpKrYNg8", "g9eOBujte1U",
+                .value("2018", "DiszpKrYNg8", "g9eOBujte1U",
                         "Gmbgme7z9BF", "bRowv6yZOF2").exists(), is(Boolean.TRUE));
     }
 

@@ -32,8 +32,8 @@ import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
@@ -80,7 +80,7 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends BaseRea
 
         TrackedEntityInstanceQuery query = queryBuilder.query(QueryFilter.create("jorge")).build();
         List<TrackedEntityInstance> queryResponse =
-                d2.trackedEntityModule().trackedEntityInstanceQuery.on.onlineOnly().query(query).get();
+                d2.trackedEntityModule().trackedEntityInstanceQuery.onlineOnly().query(query).get();
         assertThat(queryResponse).isNotEmpty();
     }
 
@@ -155,7 +155,7 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends BaseRea
         List<QueryItem> filterList = new ArrayList<>(1);
         filterList.add(QueryItem.create("w75KJ2mc4zz", QueryFilter.create(QueryOperator.LIKE, "jorge")));
 
-        TrackedEntityInstanceQuery query = queryBuilder.qu.filter(filterList).build();
+        TrackedEntityInstanceQuery query = queryBuilder.filter(filterList).build();
         List<TrackedEntityInstance> queryResponse =
                 d2.trackedEntityModule().trackedEntityInstanceQuery.onlineOnly().query(query).get();
         assertThat(queryResponse).isNotEmpty();

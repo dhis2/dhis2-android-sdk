@@ -2,17 +2,20 @@ package org.hisp.dhis.android.core.sms.domain.interactor;
 
 import androidx.core.util.Pair;
 
-import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.sms.domain.converter.Converter;
+import org.hisp.dhis.android.core.sms.domain.converter.DatasetConverter;
+import org.hisp.dhis.android.core.sms.domain.converter.DeletionConverter;
 import org.hisp.dhis.android.core.sms.domain.converter.EnrollmentConverter;
+import org.hisp.dhis.android.core.sms.domain.converter.RelationshipConverter;
 import org.hisp.dhis.android.core.sms.domain.converter.SimpleEventConverter;
 import org.hisp.dhis.android.core.sms.domain.converter.TrackerEventConverter;
 import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.SubmissionType;
 
-import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Completable;
@@ -36,18 +39,36 @@ public class SmsSubmitCase {
         this.deviceStateRepository = deviceStateRepository;
     }
 
-    public Single<Integer> convertTrackerEvent(String eventUid,
-                                               String teiUid) {
-        return convert(new TrackerEventConverter(localDbRepository, eventUid, teiUid));
+    public Single<Integer> convertTrackerEvent(String eventUid) {
+        return convert(new TrackerEventConverter(localDbRepository, eventUid));
     }
 
     public Single<Integer> convertSimpleEvent(String eventUid) {
         return convert(new SimpleEventConverter(localDbRepository, eventUid));
     }
 
-    public Single<Integer> convertEnrollment(String enrollmentUid,
-                                             String teiUid) {
-        return convert(new EnrollmentConverter(localDbRepository, enrollmentUid, teiUid));
+    public Single<Integer> convertEnrollment(String enrollmentUid) {
+        return convert(new EnrollmentConverter(localDbRepository, enrollmentUid));
+    }
+
+    public Single<Integer> convertDataSet(String dataSet,
+                                          String orgUnit,
+                                          String period,
+                                          String attributeOptionComboUid) {
+        return convert(new DatasetConverter(
+                localDbRepository,
+                dataSet,
+                orgUnit,
+                period,
+                attributeOptionComboUid));
+    }
+
+    public Single<Integer> convertRelationship(String relationshipUid) {
+        return convert(new RelationshipConverter(localDbRepository, relationshipUid));
+    }
+
+    public Single<Integer> convertDeletion(String itemToDeleteUid) {
+        return convert(new DeletionConverter(localDbRepository, itemToDeleteUid));
     }
 
     private Single<Integer> convert(Converter<?> converter) {
@@ -56,27 +77,14 @@ public class SmsSubmitCase {
         }
         this.converter = converter;
         return checkPreconditions()
-                .andThen(generateSubmissionId()
+                .andThen(localDbRepository.generateNextSubmissionId()
+                        .doOnSuccess(id -> submissionId = id)
                 ).flatMap(converter::readAndConvert
                 ).flatMap(smsRepository::generateSmsParts
                 ).map(parts -> {
                     smsParts = parts;
                     return parts.size();
                 });
-    }
-
-    private Single<Integer> generateSubmissionId() {
-        return localDbRepository.getOngoingSubmissions().flatMap(submissions -> {
-            Collection<Integer> ids = submissions.keySet();
-            for (int i = 0; i <= 255; i++) {
-                if (!ids.contains(i)) {
-                    submissionId = i;
-                    return Single.just(i);
-                }
-            }
-            submissionId = null;
-            return Single.error(new TooManySubmissionsException());
-        });
     }
 
     public Observable<SmsRepository.SmsSendingState> send() {
@@ -101,32 +109,46 @@ public class SmsSubmitCase {
         });
     }
 
-    private LocalDbRepository.SubmissionType getSubmissionType() {
+    public Integer getSubmissionId() {
+        return submissionId;
+    }
+
+    private SubmissionType getSubmissionType() {
         if (converter instanceof TrackerEventConverter) {
-            return LocalDbRepository.SubmissionType.TRACKER_EVENT;
+            return SubmissionType.TRACKER_EVENT;
         }
         if (converter instanceof SimpleEventConverter) {
-            return LocalDbRepository.SubmissionType.SIMPLE_EVENT;
+            return SubmissionType.SIMPLE_EVENT;
         }
         if (converter instanceof EnrollmentConverter) {
-            return LocalDbRepository.SubmissionType.ENROLLMENT;
+            return SubmissionType.ENROLLMENT;
+        }
+        if (converter instanceof DatasetConverter) {
+            return SubmissionType.DATA_SET;
+        }
+        if (converter instanceof RelationshipConverter) {
+            return SubmissionType.RELATIONSHIP;
+        }
+        if (converter instanceof DeletionConverter) {
+            return SubmissionType.DELETION;
         }
         return null;
     }
 
-    public <T extends BaseDataModel> Completable checkConfirmationSms(final boolean searchReceived,
-                                                                      final Collection<String> requiredStrings,
-                                                                      final T dataModel) {
+    public Completable checkConfirmationSms(final Date fromDate) {
         return Single.zip(
                 localDbRepository.getConfirmationSenderNumber(),
                 localDbRepository.getWaitingResultTimeout(),
                 Pair::create
         ).flatMapCompletable(pair ->
                 smsRepository.listenToConfirmationSms(
-                        searchReceived,
+                        fromDate,
                         pair.second,
                         pair.first,
-                        requiredStrings)
+                        submissionId,
+                        getSubmissionType())
+        ).andThen(
+                converter.updateSubmissionState(State.SYNCED_VIA_SMS)
         );
     }
 
@@ -181,11 +203,29 @@ public class SmsSubmitCase {
             NO_METADATA_DOWNLOADED,
             SMS_MODULE_DISABLED
         }
-    }
 
-    public static class TooManySubmissionsException extends IllegalStateException {
-        TooManySubmissionsException() {
-            super("Too many ongoing submissions at the same time >255");
+        @Override
+        public String getMessage() {
+            switch (type) {
+                case NO_NETWORK:
+                    return "No network";
+                case NO_CHECK_NETWORK_PERMISSION:
+                    return "No check network permission";
+                case NO_RECEIVE_SMS_PERMISSION:
+                    return "No receive sms permission";
+                case NO_SEND_SMS_PERMISSION:
+                    return "No send sms permission";
+                case NO_GATEWAY_NUMBER_SET:
+                    return "No gateway number set";
+                case NO_USER_LOGGED_IN:
+                    return "No user logged in";
+                case NO_METADATA_DOWNLOADED:
+                    return "No metadata downloaded";
+                case SMS_MODULE_DISABLED:
+                    return "Sms module disabled";
+                default:
+                    return super.getMessage();
+            }
         }
     }
 }

@@ -8,9 +8,11 @@ import android.telephony.SmsManager;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.SubmissionType;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,23 +44,6 @@ public class SmsRepositoryImpl implements SmsRepository {
         ).doOnError(throwable ->
                 Log.e(TAG, throwable.getClass().getSimpleName(), throwable)
         ).subscribeOn(Schedulers.newThread());
-    }
-
-    @Override
-    public Completable listenToConfirmationSms(boolean searchReceived,
-                                               int waitingTimeoutSeconds,
-                                               String requiredSender,
-                                               Collection<String> requiredStrings) {
-        SmsReader smsReceiver = new SmsReader(context);
-        Completable waitForSmsAction = smsReceiver.waitToReceiveConfirmationSms(
-                waitingTimeoutSeconds, requiredSender, requiredStrings);
-        if (searchReceived) {
-            return smsReceiver.findConfirmationSms(requiredSender, requiredStrings)
-                    .flatMapCompletable(
-                            found -> found ? Completable.complete() : waitForSmsAction);
-        } else {
-            return waitForSmsAction;
-        }
     }
 
     @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.CyclomaticComplexity"})
@@ -102,7 +87,7 @@ public class SmsRepositoryImpl implements SmsRepository {
         } else if (stateReceiver.isError()) {
             e.onError(new ReceivedErrorException(stateReceiver.getErrorCode()));
         } else {
-            e.onError(new TimeoutException());
+            e.onError(new ResultResponseException(ResultResponseIssue.TIMEOUT));
         }
     }
 
@@ -112,6 +97,21 @@ public class SmsRepositoryImpl implements SmsRepository {
             SmsManager sms = SmsManager.getDefault();
             return sms.divideMessage(value);
         });
+    }
+
+    @Override
+    public Completable listenToConfirmationSms(Date fromDate,
+                                               int waitingTimeoutSeconds,
+                                               String requiredSender,
+                                               int submissionId,
+                                               SubmissionType submissionType) {
+        SmsReader smsReceiver = new SmsReader(context);
+        return smsReceiver.findConfirmationSms(
+                fromDate, requiredSender, submissionId, submissionType
+        ).flatMapCompletable(found -> found ? Completable.complete() :
+                smsReceiver.waitToReceiveConfirmationSms(
+                        waitingTimeoutSeconds, requiredSender, submissionId, submissionType)
+        );
     }
 
     /**

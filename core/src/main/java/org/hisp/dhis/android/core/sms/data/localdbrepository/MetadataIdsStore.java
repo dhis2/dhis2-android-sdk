@@ -3,7 +3,7 @@ package org.hisp.dhis.android.core.sms.data.localdbrepository;
 import android.content.Context;
 
 import org.hisp.dhis.android.core.ObjectMapperFactory;
-import org.hisp.dhis.smscompression.models.Metadata;
+import org.hisp.dhis.smscompression.models.SMSMetadata;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -16,14 +16,14 @@ class MetadataIdsStore {
         this.context = context;
     }
 
-    Single<Metadata> getMetadataIds() {
+    Single<SMSMetadata> getMetadataIds() {
         return Single.fromCallable(() ->
                 ObjectMapperFactory.objectMapper().readValue(
-                        context.openFileInput(METADATA_FILE), Metadata.class
+                        context.openFileInput(METADATA_FILE), SMSMetadata.class
                 ));
     }
 
-    Completable setMetadataIds(final Metadata metadata) {
+    Completable setMetadataIds(final SMSMetadata metadata) {
         return Completable.fromAction(() ->
                 ObjectMapperFactory.objectMapper().writeValue(
                         context.openFileOutput(METADATA_FILE, Context.MODE_PRIVATE), metadata

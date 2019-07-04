@@ -7,8 +7,8 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.smscompression.models.AttributeValue;
 import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission;
+import org.hisp.dhis.smscompression.models.SMSAttributeValue;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 
 import java.util.ArrayList;
@@ -21,12 +21,10 @@ import io.reactivex.Single;
 public class EnrollmentConverter extends Converter<TrackedEntityInstance> {
 
     private final String enrollmentUid;
-    private final String teiUid;
 
-    public EnrollmentConverter(LocalDbRepository localDbRepository, String enrollmentUid, String teiUid) {
+    public EnrollmentConverter(LocalDbRepository localDbRepository, String enrollmentUid) {
         super(localDbRepository);
         this.enrollmentUid = enrollmentUid;
-        this.teiUid = teiUid;
     }
 
     @Override
@@ -56,7 +54,7 @@ public class EnrollmentConverter extends Converter<TrackedEntityInstance> {
             subm.setTrackedEntityInstance(enrollment.trackedEntityInstance());
             subm.setEnrollment(enrollment.uid());
             subm.setTimestamp(new Date());
-            ArrayList<AttributeValue> values = new ArrayList<>();
+            ArrayList<SMSAttributeValue> values = new ArrayList<>();
             for (TrackedEntityAttributeValue attr : attributeValues) {
                 values.add(createAttributeValue(attr.trackedEntityAttribute(), attr.value()));
             }
@@ -72,10 +70,10 @@ public class EnrollmentConverter extends Converter<TrackedEntityInstance> {
 
     @Override
     public Single<TrackedEntityInstance> readItemFromDb() {
-        return getLocalDbRepository().getTeiEnrollmentToSubmit(enrollmentUid, teiUid);
+        return getLocalDbRepository().getTeiEnrollmentToSubmit(enrollmentUid);
     }
 
-    private AttributeValue createAttributeValue(String attribute, String value) {
-        return new AttributeValue(attribute, value);
+    private SMSAttributeValue createAttributeValue(String attribute, String value) {
+        return new SMSAttributeValue(attribute, value);
     }
 }

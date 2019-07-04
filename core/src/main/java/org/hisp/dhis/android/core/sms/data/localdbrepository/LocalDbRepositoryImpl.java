@@ -5,21 +5,26 @@ import android.content.SharedPreferences;
 
 import org.hisp.dhis.android.core.ObjectMapperFactory;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.event.internal.EventStore;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.SubmissionType;
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;
-import org.hisp.dhis.smscompression.models.Metadata;
+import org.hisp.dhis.smscompression.models.SMSMetadata;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -41,18 +46,23 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     private final static String KEY_WAITING_RESULT_TIMEOUT = "reading_timeout";
     private static final String KEY_METADATA_CONFIG = "metadata_conf";
     private static final String KEY_MODULE_ENABLED = "module_enabled";
+    private static final String KEY_WAIT_FOR_RESULT = "wait_for_result";
 
     private final MetadataIdsStore metadataIdsStore;
     private final OngoingSubmissionsStore ongoingSubmissionsStore;
+    private final RelationshipStore relationshipStore;
+    private final DataSetsStore dataSetsStore;
 
     @Inject
-    public LocalDbRepositoryImpl(Context ctx,
-                                 UserModule userModule,
-                                 TrackedEntityModule trackedEntityModule,
-                                 EventModule eventModule,
-                                 EnrollmentModule enrollmentModule,
-                                 EventStore eventStore,
-                                 EnrollmentStore enrollmentStore) {
+    LocalDbRepositoryImpl(Context ctx,
+                          UserModule userModule,
+                          TrackedEntityModule trackedEntityModule,
+                          EventModule eventModule,
+                          EnrollmentModule enrollmentModule,
+                          EventStore eventStore,
+                          EnrollmentStore enrollmentStore,
+                          RelationshipStore relationshipStore,
+                          DataSetsStore dataSetsStore) {
         this.context = ctx;
         this.userModule = userModule;
         this.trackedEntityModule = trackedEntityModule;
@@ -60,6 +70,8 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
         this.enrollmentModule = enrollmentModule;
         this.eventStore = eventStore;
         this.enrollmentStore = enrollmentStore;
+        this.relationshipStore = relationshipStore;
+        this.dataSetsStore = dataSetsStore;
         metadataIdsStore = new MetadataIdsStore(context);
         ongoingSubmissionsStore = new OngoingSubmissionsStore(context);
     }
@@ -73,7 +85,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     public Single<String> getGatewayNumber() {
         return Single.fromCallable(() ->
                 context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
-                        .getString(KEY_GATEWAY, null)
+                        .getString(KEY_GATEWAY, "")
         );
     }
 
@@ -111,7 +123,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     public Single<String> getConfirmationSenderNumber() {
         return Single.fromCallable(() ->
                 context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
-                        .getString(KEY_CONFIRMATION_SENDER, null)
+                        .getString(KEY_CONFIRMATION_SENDER, "")
         );
     }
 
@@ -127,18 +139,19 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
-    public Single<Metadata> getMetadataIds() {
+    public Single<SMSMetadata> getMetadataIds() {
         return metadataIdsStore.getMetadataIds();
     }
 
     @Override
-    public Completable setMetadataIds(final Metadata metadata) {
+    public Completable setMetadataIds(final SMSMetadata metadata) {
         return metadataIdsStore.setMetadataIds(metadata);
     }
 
     @Override
     public Single<Event> getTrackerEventToSubmit(String eventUid) {
-        return getSimpleEventToSubmit(eventUid); // no difference at the moment
+        // simple event is the same object as tracker event
+        return getSimpleEventToSubmit(eventUid);
     }
 
     @Override
@@ -150,11 +163,11 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
-    public Single<TrackedEntityInstance> getTeiEnrollmentToSubmit(String enrollmentUid, String teiUid) {
+    public Single<TrackedEntityInstance> getTeiEnrollmentToSubmit(String enrollmentUid) {
         return Single.fromCallable(() -> {
             Enrollment enrollment = enrollmentModule.enrollments.byUid().eq(enrollmentUid).one().get();
             return trackedEntityModule.trackedEntityInstances.withTrackedEntityAttributeValues()
-                    .byUid().eq(teiUid).one().get().toBuilder()
+                    .byUid().eq(enrollment.trackedEntityInstance()).one().get().toBuilder()
                     .enrollments(Collections.singletonList(enrollment))
                     .build();
         });
@@ -213,8 +226,32 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
+    public Completable setWaitingForResultEnabled(boolean enabled) {
+        return Completable.fromAction(() -> {
+            boolean result = context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
+                    .edit().putBoolean(KEY_WAIT_FOR_RESULT, enabled).commit();
+            if (!result) {
+                throw new IOException("Failed writing value to local storage, waiting for result");
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> getWaitingForResultEnabled() {
+        return Single.fromCallable(() ->
+                context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
+                        .getBoolean(KEY_WAIT_FOR_RESULT, false)
+        );
+    }
+
+    @Override
     public Single<Map<Integer, SubmissionType>> getOngoingSubmissions() {
         return ongoingSubmissionsStore.getOngoingSubmissions();
+    }
+
+    @Override
+    public Single<Integer> generateNextSubmissionId() {
+        return ongoingSubmissionsStore.generateNextSubmissionId();
     }
 
     @Override
@@ -225,5 +262,29 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     @Override
     public Completable removeOngoingSubmission(Integer id) {
         return ongoingSubmissionsStore.removeOngoingSubmission(id);
+    }
+
+    @Override
+    public Single<List<DataValue>> getDataValues(String orgUnit, String period, String attributeOptionComboUid) {
+        return dataSetsStore.getDataValues(orgUnit, period, attributeOptionComboUid);
+    }
+
+    @Override
+    public Completable updateDataSetSubmissionState(String dataSetId,
+                                                    String orgUnit,
+                                                    String period,
+                                                    String attributeOptionComboUid,
+                                                    State state) {
+        return Completable.mergeArray(
+                dataSetsStore.updateDataSetValuesState(
+                        orgUnit, period, attributeOptionComboUid, state),
+                dataSetsStore.updateDataSetCompleteRegistrationState(
+                        dataSetId, orgUnit, period, attributeOptionComboUid, state)
+        );
+    }
+
+    @Override
+    public Single<Relationship> getRelationship(String relationshipUid) {
+        return Single.fromCallable(() -> relationshipStore.selectByUid(relationshipUid));
     }
 }

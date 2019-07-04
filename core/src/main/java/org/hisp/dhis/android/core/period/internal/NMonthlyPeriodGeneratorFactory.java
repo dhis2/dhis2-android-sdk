@@ -37,8 +37,7 @@ final class NMonthlyPeriodGeneratorFactory {
     }
 
     static NMonthlyPeriodGenerator biMonthly(Calendar calendar) {
-        return new NMonthlyPeriodGenerator(calendar, PeriodType.BiMonthly, 2,
-                "B", Calendar.JANUARY);
+        return new BiMonthlyPeriodGenerator(calendar);
     }
 
     static NMonthlyPeriodGenerator quarter(Calendar calendar) {

@@ -55,7 +55,6 @@ import org.hisp.dhis.android.core.utils.Utils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -138,11 +137,9 @@ final class AggregatedDataCall {
         Set<String> attributeOptionComboUids = getAttributeOptionCombosUidsFrom(dataSetsWithWorkflow);
         Set<String> organisationUnitsUids = getOrganisationUnitsUidsFrom(userOrganisationUnitLinks);
 
-        Date startDate = periodStore.getOldestPeriodStartDate();
-        Date endDate = new Date();
 
         DataApprovalQuery dataApprovalQuery = DataApprovalQuery.create(workflowUids,
-                organisationUnitsUids, startDate, endDate, attributeOptionComboUids);
+                organisationUnitsUids, periodIds, attributeOptionComboUids);
 
         Single<D2Progress> dataApprovalSingle = Single.fromCallable(
                 dataApprovalCallFactory.create(dataApprovalQuery)).map(dataApprovals ->

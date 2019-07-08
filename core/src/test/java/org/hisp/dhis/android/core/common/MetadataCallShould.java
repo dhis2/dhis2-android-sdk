@@ -195,11 +195,11 @@ public class MetadataCallShould extends BaseCallShould {
         metadataCall.download().blockingSubscribe();
     }
 
-    /*@Test TODO FIX ANDROSDK-879
+    @Test
     public void fail_when_system_info_call_fail() {
         when(systemInfoDownloader.downloadMetadata()).thenReturn(Completable.error(d2Error));
         downloadAndAssertError();
-    } */
+    }
 
     @Test
     public void fail_when_system_setting_call_fail() throws Exception {

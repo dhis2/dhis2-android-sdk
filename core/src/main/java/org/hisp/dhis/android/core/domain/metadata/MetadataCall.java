@@ -55,6 +55,7 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 @Reusable
 public class MetadataCall {
@@ -95,12 +96,15 @@ public class MetadataCall {
     }
 
     public Observable<D2Progress> download() {
+        D2ProgressManager progressManager = new D2ProgressManager(9);
 
-        return rxCallExecutor.wrapObservableTransactionally(Observable.create(emitter -> {
-                    D2ProgressManager progressManager = new D2ProgressManager(9);
+        Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
+                progressManager.increaseProgress(SystemInfo.class, false));
 
-                    systemInfoDownloader.downloadMetadata().blockingAwait();
-                    emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
+        return rxCallExecutor.wrapObservableTransactionally(
+                systemInfoDownload.flatMapObservable(systemInfoProgress -> Observable.create(emitter -> {
+
+                    emitter.onNext(systemInfoProgress);
 
                     systemSettingDownloader.downloadMetadata().call();
                     emitter.onNext(progressManager.increaseProgress(SystemSetting.class, false));
@@ -134,7 +138,7 @@ public class MetadataCall {
                     emitter.onNext(progressManager.increaseProgress(SmsModule.class, false));
 
                     emitter.onComplete();
-                }
-        ), true);
+
+                })), true);
     }
 }

@@ -72,7 +72,7 @@ public class Dhis2MockServer {
     private static final String TRACKED_ENTITY_INSTANCES_JSON = "trackedentity/tracked_entity_instances.json";
     private static final String DATA_VALUES_JSON = "datavalue/data_values.json";
     private static final String DATA_SET_COMPLETE_REGISTRATIONS_JSON = "dataset/data_set_complete_registrations.json";
-    private static final String DATA_APPROVALS_JSON = "dataapproval/data_approvals_multiple.json";
+    private static final String DATA_APPROVALS_MULTIPLE_JSON = "dataapproval/data_approvals_multiple.json";
     private static final String ORGANISATION_UNITS_JSON = "organisationunit/organisation_units.json";
     private static final String SMS_METADATA_IDS = "sms/metadata_ids.json";
 
@@ -169,7 +169,7 @@ public class Dhis2MockServer {
                 } else if (path.startsWith("/api/completeDataSetRegistrations?")) {
                     return createMockResponse(DATA_SET_COMPLETE_REGISTRATIONS_JSON);
                 } else if (path.startsWith("/api/dataApprovals/multiple?")) {
-                    return createMockResponse(DATA_APPROVALS_JSON);
+                    return createMockResponse(DATA_APPROVALS_MULTIPLE_JSON);
                 } else {
                     return new MockResponse().setResponseCode(404).setBody("Path not present in Dhis2MockServer dispatcher");
                 }

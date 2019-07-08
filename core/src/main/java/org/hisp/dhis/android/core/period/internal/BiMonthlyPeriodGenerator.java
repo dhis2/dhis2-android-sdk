@@ -32,40 +32,15 @@ import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Calendar;
 
-class NMonthlyPeriodGenerator extends AbstractPeriodGenerator {
+public class BiMonthlyPeriodGenerator extends NMonthlyPeriodGenerator {
 
-    final int durationInMonths;
-    final String idAdditionalString;
-    final int startMonth;
-
-    NMonthlyPeriodGenerator(Calendar calendar, PeriodType periodType, int durationInMonths,
-                            String idAdditionalString, int startMonth) {
-        super(calendar, "yyyy", periodType);
-        this.durationInMonths = durationInMonths;
-        this.idAdditionalString = idAdditionalString;
-        this.startMonth = startMonth;
-    }
-
-    @Override
-    protected void moveToStartOfCurrentPeriod() {
-        calendar.set(Calendar.DATE, 1);
-        int currentMonth = calendar.get(Calendar.MONTH);
-        if (currentMonth < startMonth) {
-            calendar.add(Calendar.YEAR, -1);
-        }
-        int monthsFromStart = currentMonth - startMonth;
-        int startMonth = monthsFromStart - (monthsFromStart % durationInMonths);
-        calendar.set(Calendar.MONTH, startMonth);
-    }
-
-    @Override
-    protected void movePeriods(int number) {
-        calendar.add(Calendar.MONTH, durationInMonths * number);
+    BiMonthlyPeriodGenerator(Calendar calendar) {
+        super(calendar, PeriodType.BiMonthly, 2, "B", Calendar.JANUARY);
     }
 
     @Override
     protected String generateId() {
         int periodNumber = calendar.get(Calendar.MONTH) / durationInMonths + 1;
-        return idFormatter.format(calendar.getTime()) + idAdditionalString + periodNumber;
+        return idFormatter.format(calendar.getTime()) + String.format("%02d", periodNumber) + idAdditionalString;
     }
 }

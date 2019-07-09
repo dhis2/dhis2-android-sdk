@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.event;
 
+import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository;
@@ -46,15 +47,14 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.event.internal.EventFields;
 import org.hisp.dhis.android.core.event.internal.EventPostCall;
 import org.hisp.dhis.android.core.event.internal.EventStore;
-import org.hisp.dhis.android.core.imports.internal.WebResponse;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Observable;
 
 @Reusable
 public final class EventCollectionRepository
@@ -82,11 +82,11 @@ public final class EventCollectionRepository
     }
 
     @Override
-    public Callable<WebResponse> upload() {
-        return () -> postCall.call(
-                byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE)
-                        .byEnrollmentUid().isNull()
-                        .getWithoutChildren());
+    public Observable<D2Progress> upload() {
+        return Observable.fromCallable(() -> byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE)
+                .byEnrollmentUid().isNull()
+                .getWithoutChildren())
+                .flatMap(postCall::uploadEvents);
     }
 
     @Override

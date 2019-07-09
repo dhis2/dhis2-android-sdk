@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
@@ -42,12 +44,11 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse;
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandler;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
@@ -60,6 +61,7 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import dagger.Reusable;
+import io.reactivex.Observable;
 
 @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.ExcessiveImports"})
 @Reusable
@@ -114,29 +116,36 @@ public final class TrackedEntityInstancePostCall {
         this.apiCallExecutor = apiCallExecutor;
     }
 
-    public TEIWebResponse call(List<TrackedEntityInstance> filteredTrackedEntityInstances) throws D2Error {
-        List<TrackedEntityInstance> trackedEntityInstancesToPost = queryDataToSync(filteredTrackedEntityInstances);
+    public Observable<D2Progress> uploadTrackedEntityInstances(
+            List<TrackedEntityInstance> filteredTrackedEntityInstances) {
+        return Observable.create(emitter -> {
+            List<TrackedEntityInstance> trackedEntityInstancesToPost = queryDataToSync(filteredTrackedEntityInstances);
 
-        // if size is 0, then no need to do network request
-        if (trackedEntityInstancesToPost.isEmpty()) {
-            return TEIWebResponse.empty();
-        }
+            // if size is 0, then no need to do network request
+            if (trackedEntityInstancesToPost.isEmpty()) {
+                emitter.onComplete();
+            } else {
+                D2ProgressManager progressManager = new D2ProgressManager(1);
 
-        TrackedEntityInstancePayload trackedEntityInstancePayload = new TrackedEntityInstancePayload();
-        trackedEntityInstancePayload.trackedEntityInstances = trackedEntityInstancesToPost;
+                TrackedEntityInstancePayload trackedEntityInstancePayload = new TrackedEntityInstancePayload();
+                trackedEntityInstancePayload.trackedEntityInstances = trackedEntityInstancesToPost;
 
-        String strategy;
-        if (versionManager.is2_29()) {
-            strategy = "CREATE_AND_UPDATE";
-        } else {
-            strategy = "SYNC";
-        }
+                String strategy;
+                if (versionManager.is2_29()) {
+                    strategy = "CREATE_AND_UPDATE";
+                } else {
+                    strategy = "SYNC";
+                }
 
-        TEIWebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                trackedEntityInstanceService.postTrackedEntityInstances(trackedEntityInstancePayload, strategy),
-                Collections.singletonList(409), TEIWebResponse.class);
-        teiWebResponseHandler.handleWebResponse(webResponse);
-        return webResponse;
+                TEIWebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
+                        trackedEntityInstanceService.postTrackedEntityInstances(trackedEntityInstancePayload, strategy),
+                        Collections.singletonList(409), TEIWebResponse.class);
+                teiWebResponseHandler.handleWebResponse(webResponse);
+
+                emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance.class, true));
+                emitter.onComplete();
+            }
+        });
     }
 
     @NonNull

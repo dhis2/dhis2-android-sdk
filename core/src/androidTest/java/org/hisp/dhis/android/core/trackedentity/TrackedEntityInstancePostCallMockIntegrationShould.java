@@ -50,10 +50,10 @@ import org.hisp.dhis.android.core.program.internal.ProgramStageStore;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStoreImpl;
 import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipStoreImpl;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStoreImpl;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStoreImpl;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -147,22 +147,22 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
     }
 
     @Test
-    public void handle_import_conflicts_correctly() throws Exception {
+    public void handle_import_conflicts_correctly() {
         storeTrackedEntityInstance();
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
         assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(3);
     }
 
     @Test
-    public void delete_old_import_conflicts() throws Exception {
+    public void delete_old_import_conflicts() {
         storeTrackedEntityInstance();
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
         assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(3);
 
 
@@ -173,19 +173,19 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         EventStoreImpl.create(databaseAdapter).setState("event2Id", State.TO_POST);
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_3.json");
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
         assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(1);
     }
 
     @Test
-    public void handle_tei_deletions() throws Exception {
+    public void handle_tei_deletions() {
         storeTrackedEntityInstance();
 
         TrackedEntityInstanceStoreImpl.create(databaseAdapter).setState("teiId", State.TO_DELETE);
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
         assertThat(d2.trackedEntityModule().trackedEntityInstances.count()).isEqualTo(0);
         assertThat(d2.enrollmentModule().enrollments.count()).isEqualTo(0);

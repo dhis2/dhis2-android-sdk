@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.Coordinates;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
@@ -98,7 +98,7 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
         createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid1,
                 dataElementUid, attributeOptionCombo);
 
-        d2.eventModule().events.upload().call();
+        d2.eventModule().events.upload().blockingSubscribe();
     }
 
     // commented out since it is a flaky test that works against a real server.
@@ -200,7 +200,7 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
     }
 
     private void pushDummyEvent() throws Exception {
-        d2.eventModule().events.upload().call();
+        d2.eventModule().events.upload().blockingSubscribe();
     }
 
     private void downloadMetadata() throws Exception {

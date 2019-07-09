@@ -33,12 +33,12 @@ import com.google.common.collect.Lists;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.Coordinates;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.Event;
@@ -155,7 +155,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, featureType,
                 event1Uid, enrollment1Uid, trackedEntityInstance1Uid, trackedEntityAttributeUid, dataElementUid);
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
     }
 
 
@@ -212,7 +212,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         insertATei(newUid, tei, featureType);
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
         d2.wipeModule().wipeEverything();
         downloadMetadata();
@@ -237,7 +237,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         insertATei(newUid1, tei, tei.featureType());
         insertATei(newUid2, tei, tei.featureType());
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
         d2.wipeModule().wipeEverything();
         downloadMetadata();
@@ -260,7 +260,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         insertATei(newUid1, tei, tei.featureType());
         insertATei(newUid2, tei, tei.featureType());
 
-        d2.trackedEntityModule().trackedEntityInstances.byUid().eq(newUid1).upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.byUid().eq(newUid1).upload().blockingSubscribe();
 
         d2.wipeModule().wipeEverything();
         downloadMetadata();
@@ -292,14 +292,14 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         insertATei(newUid, tei, featureType);
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
         List<TrackedEntityInstance> response =
                 d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid)).call();
         assertThat(response.size()).isEqualTo(1);
 
         trackedEntityInstanceStore.setState(newUid, State.TO_DELETE);
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
         try {
             d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid)).call();
@@ -327,7 +327,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 teiBUid, relationshipType.uid());
         d2.relationshipModule().relationships.add(newRelationship);
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
         d2.wipeModule().wipeEverything();
         downloadMetadata();
@@ -372,7 +372,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         d2.relationshipModule().relationships.add(RelationshipHelper.teiToTeiRelationship(t0.uid(), t1.uid(),
                 relationshipType.uid()));
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
     }
 
     //@Test
@@ -397,11 +397,11 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 relationshipType.uid());
         relationshipsRepository.add(newRelationship);
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
         relationshipsRepository.uid(newRelationship.uid()).delete();
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
     }
 
     //@Test
@@ -420,7 +420,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         enrollmentStore.setState(enrollment.uid(), State.TO_UPDATE);
         eventStore.setState(eventUid, State.TO_DELETE);
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
         d2.wipeModule().wipeEverything();
         downloadMetadata();
@@ -548,7 +548,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     }
 
     private void postTrackedEntityInstances() throws Exception {
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
     }
 
     private void downloadMetadata() throws Exception {

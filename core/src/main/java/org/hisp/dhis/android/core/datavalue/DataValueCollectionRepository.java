@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
+import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
@@ -42,14 +43,13 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueFields;
 import org.hisp.dhis.android.core.datavalue.internal.DataValuePostCall;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore;
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Observable;
 
 @Reusable
 public final class DataValueCollectionRepository
@@ -71,8 +71,8 @@ public final class DataValueCollectionRepository
     }
 
     @Override
-    public Callable<DataValueImportSummary> upload() {
-        return postCall;
+    public Observable<D2Progress> upload() {
+        return postCall.uploadDataValues();
     }
 
     public DataValueObjectRepository value(String period,

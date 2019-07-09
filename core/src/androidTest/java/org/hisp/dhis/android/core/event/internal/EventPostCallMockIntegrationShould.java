@@ -85,22 +85,22 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
     }
 
     @Test
-    public void handle_import_conflicts_correctly() throws Exception {
+    public void handle_import_conflicts_correctly() {
         storeEvents();
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts.json");
 
-        d2.eventModule().events.upload().call();
+        d2.eventModule().events.upload().blockingSubscribe();
 
         assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(3);
     }
 
     @Test
-    public void delete_old_import_conflicts() throws Exception {
+    public void delete_old_import_conflicts() {
         storeEvents();
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts.json");
-        d2.eventModule().events.upload().call();
+        d2.eventModule().events.upload().blockingSubscribe();
         assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(3);
 
         eventStore.setState("event1Id", State.TO_POST);
@@ -108,12 +108,12 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
         eventStore.setState("event3Id", State.TO_POST);
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts2.json");
-        d2.eventModule().events.upload().call();
+        d2.eventModule().events.upload().blockingSubscribe();
         assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(2);
     }
 
     @Test
-    public void handle_event_deletions() throws Exception {
+    public void handle_event_deletions() {
         storeEvents();
         assertThat(d2.eventModule().events.count()).isEqualTo(4);
 
@@ -121,7 +121,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts2.json");
 
-        d2.eventModule().events.upload().call();
+        d2.eventModule().events.upload().blockingSubscribe();
 
         assertThat(d2.eventModule().events.count()).isEqualTo(3);
     }

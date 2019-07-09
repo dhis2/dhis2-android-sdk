@@ -39,7 +39,6 @@ import org.junit.Before;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 public class TrackedEntityInstanceCallRealIntegrationShould extends BaseRealIntegrationTest {
 
@@ -63,10 +62,8 @@ public class TrackedEntityInstanceCallRealIntegrationShould extends BaseRealInte
 
         d2.syncMetaData().blockingSubscribe();
 
-        Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
-                d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList("IaxoagO9899"));
-
-        List<TrackedEntityInstance> teiResponse = trackedEntityInstanceByUidEndPointCall.call();
+        List<TrackedEntityInstance> teiResponse = d2.trackedEntityModule()
+                .downloadTrackedEntityInstancesByUid(Lists.newArrayList("IaxoagO9899")).blockingGet();
 
         Truth.assertThat(teiResponse.isEmpty()).isFalse();
     }

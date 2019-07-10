@@ -27,14 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
-import androidx.lifecycle.LiveData;
-import androidx.paging.DataSource;
-import androidx.paging.LivePagedListBuilder;
-import androidx.paging.PagedList;
-import io.reactivex.Single;
-
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
@@ -45,10 +40,15 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore;
 
 import java.util.List;
 import java.util.Map;
+
+import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
+import io.reactivex.Single;
 
 public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnlyCollectionRepository<M>>
         implements ReadOnlyCollectionRepository<M> {
@@ -108,6 +108,11 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     @Override
     public int count() {
         return store.countWhere(getWhereClause());
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return count() == 0;
     }
 
     protected String getWhereClause() {

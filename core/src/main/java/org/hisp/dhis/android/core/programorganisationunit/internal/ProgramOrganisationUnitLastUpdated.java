@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.programorganisationunit.internal;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 
 import androidx.annotation.Nullable;

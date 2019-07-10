@@ -62,7 +62,7 @@ public final class D2Manager {
     public static Completable setUp(@Nullable D2Configuration d2Config) {
         return Completable.fromAction(() -> {
             long startTime = System.currentTimeMillis();
-            d2Configuration = d2Config;
+            d2Configuration = D2ConfigurationValidator.validateAndSetDefaultValues(d2Config);
             databaseAdapter = newDatabaseAdapter();
             configurationManager = ConfigurationManagerFactory.create(databaseAdapter);
             configuration = configurationManager.get();

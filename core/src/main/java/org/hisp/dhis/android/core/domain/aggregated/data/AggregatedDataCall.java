@@ -45,11 +45,11 @@ import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationQu
 import org.hisp.dhis.android.core.dataset.internal.DataSetFields;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueQuery;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.internal.PeriodStore;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -139,11 +139,10 @@ final class AggregatedDataCall {
         List<DataSet> dataSetsWithWorkflow =
                 dataSetStore.selectWhere(DataSetFields.WORKFLOW + " IS NOT NULL");
 
-        List<UserOrganisationUnitLink> userOrganisationUnitLinks = organisationUnitStore.selectAll();
-
         Set<String> workflowUids = getWorkflowsUidsFrom(dataSetsWithWorkflow);
         Set<String> attributeOptionComboUids = getAttributeOptionCombosUidsFrom(dataSetsWithWorkflow);
-        Set<String> organisationUnitsUids = getOrganisationUnitsUidsFrom(userOrganisationUnitLinks);
+        List<String> organisationUnitsUids = organisationUnitStore.queryOrganisationUnitUidsByScope(
+                                                                    OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
 
 
         DataApprovalQuery dataApprovalQuery = DataApprovalQuery.create(workflowUids,
@@ -207,15 +206,5 @@ final class AggregatedDataCall {
             attributeOptionCombosUids.add(uid);
         }
         return attributeOptionCombosUids;
-    }
-
-    private Set<String> getOrganisationUnitsUidsFrom(Collection<UserOrganisationUnitLink> userOrganisationUnitLinks) {
-
-        Set<String> organisationUnitsUids = new HashSet<>();
-        for (UserOrganisationUnitLink userOrganisationUnitLink : userOrganisationUnitLinks) {
-            String s = userOrganisationUnitLink.organisationUnit();
-            organisationUnitsUids.add(s);
-        }
-        return organisationUnitsUids;
     }
 }

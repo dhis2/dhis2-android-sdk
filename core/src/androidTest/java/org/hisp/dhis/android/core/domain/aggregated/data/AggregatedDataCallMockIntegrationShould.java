@@ -38,6 +38,7 @@ public class AggregatedDataCallMockIntegrationShould extends BaseMockIntegration
 
     @Test
     public void emit_progress() {
+
         TestObserver<D2Progress> testObserver = d2.aggregatedModule().data().download().test();
         testObserver.assertValueCount(4);
 

@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueQuery;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.internal.PeriodStore;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
@@ -68,6 +69,7 @@ import io.reactivex.Single;
 final class AggregatedDataCall {
 
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
+    private final DHISVersionManager dhisVersionManager;
     private final QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory;
     private final QueryCallFactory<DataSetCompleteRegistration,
             DataSetCompleteRegistrationQuery> dataSetCompleteRegistrationCallFactory;
@@ -80,6 +82,7 @@ final class AggregatedDataCall {
 
     @Inject
     AggregatedDataCall(@NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
+                       @NonNull DHISVersionManager dhisVersionManager,
                        @NonNull QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory,
                        @NonNull QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
                                dataSetCompleteRegistrationCallFactory,
@@ -90,6 +93,7 @@ final class AggregatedDataCall {
                        @NonNull CategoryOptionComboStore categoryOptionComboStore,
                        @NonNull RxAPICallExecutor rxCallExecutor) {
         this.systemInfoRepository = systemInfoRepository;
+        this.dhisVersionManager = dhisVersionManager;
         this.dataValueCallFactory = dataValueCallFactory;
         this.dataSetCompleteRegistrationCallFactory = dataSetCompleteRegistrationCallFactory;
         this.dataApprovalCallFactory = dataApprovalCallFactory;
@@ -98,10 +102,14 @@ final class AggregatedDataCall {
         this.organisationUnitStore = organisationUnitStore;
         this.categoryOptionComboStore = categoryOptionComboStore;
         this.rxCallExecutor = rxCallExecutor;
+
     }
 
     Observable<D2Progress> download() {
-        D2ProgressManager progressManager = new D2ProgressManager(4);
+
+        int totalCalls = dhisVersionManager.is2_29() ? 3 : 4;
+
+        D2ProgressManager progressManager = new D2ProgressManager(totalCalls);
 
         Observable<D2Progress> observable = systemInfoRepository.download()
                 .toSingle(() -> progressManager.increaseProgressAndCompleteWithCount(SystemInfo.class))
@@ -151,8 +159,11 @@ final class AggregatedDataCall {
             add(Single.just(systemInfoProgress));
             add(dataValueSingle);
             add(dataSetCompleteRegistrationSingle);
-            add(dataApprovalSingle);
         }};
+
+        if (!dhisVersionManager.is2_29()) {
+            list.add(dataApprovalSingle);
+        }
 
         return Single.merge(list).toObservable();
     }

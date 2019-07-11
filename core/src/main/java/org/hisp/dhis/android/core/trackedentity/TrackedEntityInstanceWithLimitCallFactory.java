@@ -276,8 +276,8 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
         return Single.fromCallable(() -> {
             if (allOkay.get()) {
                 resourceHandler.handleResource(resourceType);
-                programOrganisationUnitLastUpdatedHandler.handleMany(programOrganisationUnitSet);
             }
+            programOrganisationUnitLastUpdatedHandler.handleMany(programOrganisationUnitSet);
             return progressManager.increaseProgress(TrackedEntityInstance.class, true);
         }).toObservable();
     }

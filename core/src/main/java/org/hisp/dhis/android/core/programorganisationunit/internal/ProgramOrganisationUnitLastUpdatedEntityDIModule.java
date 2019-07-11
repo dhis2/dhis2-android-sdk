@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.programorganisationunit.internal;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.di.internal.ObjectWithoutUidEntityDIModule;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -37,17 +39,21 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class ProgramOrganisationUnitLastUpdatedEntityDIModule {
+public final class ProgramOrganisationUnitLastUpdatedEntityDIModule
+        implements ObjectWithoutUidEntityDIModule<ProgramOrganisationUnitLastUpdated> {
 
+    @Override
     @Provides
     @Reusable
-    ProgramOrganisationUnitLastUpdatedStore store(DatabaseAdapter databaseAdapter) {
+    public ObjectWithoutUidStore<ProgramOrganisationUnitLastUpdated> store(DatabaseAdapter databaseAdapter) {
         return ProgramOrganisationUnitLastUpdatedStore.create(databaseAdapter);
     }
 
+    @Override
     @Provides
     @Reusable
-    public Handler<ProgramOrganisationUnitLastUpdated> handler(ProgramOrganisationUnitLastUpdatedStore store) {
+    public Handler<ProgramOrganisationUnitLastUpdated> handler(
+            ObjectWithoutUidStore<ProgramOrganisationUnitLastUpdated> store) {
         return new ObjectWithoutUidHandlerImpl<>(store);
     }
 }

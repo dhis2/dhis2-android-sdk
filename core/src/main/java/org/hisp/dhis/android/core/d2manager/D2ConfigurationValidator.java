@@ -38,6 +38,10 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 class D2ConfigurationValidator {
+
+    private D2ConfigurationValidator() {
+    }
+
     static D2Configuration validateAndSetDefaultValues(D2Configuration input) throws D2Error {
         return input.toBuilder()
                 .appName(mergeAppName(input.appName(), input.context()))

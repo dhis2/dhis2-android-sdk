@@ -4,8 +4,10 @@ import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.smscompression.SMSConsts;
 import org.hisp.dhis.smscompression.models.SMSDataValue;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 import org.hisp.dhis.smscompression.models.SimpleEventSMSSubmission;
@@ -36,8 +38,30 @@ public class SimpleEventConverter extends Converter<Event> {
             subm.setValues(convertDataValues(e.attributeOptionCombo(), e.trackedEntityDataValues()));
             subm.setOrgUnit(e.organisationUnit());
             subm.setUserID(user);
+            subm.setEventStatus(translateStatus(e.status()));
             return subm;
         });
+    }
+
+    static SMSConsts.SMSEventStatus translateStatus(EventStatus status) {
+        if (status == null) {
+            return null;
+        }
+        switch (status) {
+            case ACTIVE:
+                return SMSConsts.SMSEventStatus.ACTIVE;
+            case COMPLETED:
+                return SMSConsts.SMSEventStatus.COMPLETED;
+            case SCHEDULE:
+                return SMSConsts.SMSEventStatus.SCHEDULE;
+            case SKIPPED:
+                return SMSConsts.SMSEventStatus.SKIPPED;
+            case VISITED:
+                return SMSConsts.SMSEventStatus.VISITED;
+            case OVERDUE:
+                return SMSConsts.SMSEventStatus.OVERDUE;
+        }
+        return null;
     }
 
     @Override

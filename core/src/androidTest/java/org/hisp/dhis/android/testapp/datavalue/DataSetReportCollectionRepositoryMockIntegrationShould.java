@@ -63,15 +63,15 @@ public class DataSetReportCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_period() {
         List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
-                .byPeriod().eq("201808")
+                .byPeriod().eq("2018")
                 .get();
         assertThat(dataSetReports.size(), is(1));
     }
 
     @Test
-    public void filter_by_period_type() throws ParseException {
+    public void filter_by_period_type() {
         List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
-                .byPeriodType().eq(PeriodType.Monthly)
+                .byPeriodType().eq(PeriodType.Yearly)
                 .get();
         assertThat(dataSetReports.size(), is(3));
     }
@@ -81,7 +81,7 @@ public class DataSetReportCollectionRepositoryMockIntegrationShould extends Base
         List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
                 .byPeriodStartDate().after(BaseIdentifiableObject.parseDate("2018-07-15T00:00:00.000"))
                 .get();
-        assertThat(dataSetReports.size(), is(2));
+        assertThat(dataSetReports.size(), is(1));
     }
 
     @Test
@@ -89,7 +89,7 @@ public class DataSetReportCollectionRepositoryMockIntegrationShould extends Base
         List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
                 .byPeriodEndDate().after(BaseIdentifiableObject.parseDate("2018-07-15T00:00:00.000"))
                 .get();
-        assertThat(dataSetReports.size(), is(3));
+        assertThat(dataSetReports.size(), is(2));
     }
 
     @Test

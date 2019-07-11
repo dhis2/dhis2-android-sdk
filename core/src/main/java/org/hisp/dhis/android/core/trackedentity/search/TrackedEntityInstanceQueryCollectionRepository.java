@@ -172,6 +172,11 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     @Override
+    public boolean isEmpty() {
+        return count() == 0;
+    }
+
+    @Override
     public ReadOnlyObjectRepository<TrackedEntityInstance> one() {
         return new ReadOnlyObjectRepository<TrackedEntityInstance>() {
             @Override

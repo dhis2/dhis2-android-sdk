@@ -30,14 +30,14 @@ package org.hisp.dhis.android.core.d2manager;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.util.Log;
 
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
-class D2ConfigurationValidator {
+final class D2ConfigurationValidator {
 
     private D2ConfigurationValidator() {
     }
@@ -94,10 +94,9 @@ class D2ConfigurationValidator {
 
     private static String getAndroidVersionNumber(Context context) {
         try {
-            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return pInfo.versionName;
+            return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            Log.e(D2ConfigurationValidator.class.getSimpleName(), e.toString());
             return null;
         }
     }

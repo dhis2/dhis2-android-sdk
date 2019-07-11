@@ -6,7 +6,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.smscompression.models.DataValue;
+import org.hisp.dhis.smscompression.models.SMSDataValue;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 import org.hisp.dhis.smscompression.models.TrackerEventSMSSubmission;
 
@@ -18,12 +18,10 @@ import io.reactivex.Single;
 
 public class TrackerEventConverter extends Converter<Event> {
     private final String eventUid;
-    private final String teiUid;
 
-    public TrackerEventConverter(LocalDbRepository localDbRepository, String eventUid, String teiUid) {
+    public TrackerEventConverter(LocalDbRepository localDbRepository, String eventUid) {
         super(localDbRepository);
         this.eventUid = eventUid;
-        this.teiUid = teiUid;
     }
 
     @Override
@@ -35,7 +33,7 @@ public class TrackerEventConverter extends Converter<Event> {
             subm.setEvent(e.uid());
             subm.setProgramStage(e.programStage());
             subm.setTimestamp(e.lastUpdated());
-            subm.setTrackedEntityInstance(teiUid);
+            subm.setEnrollment(e.enrollment());
             subm.setValues(convertDataValues(e.attributeOptionCombo(), e.trackedEntityDataValues()));
             subm.setOrgUnit(e.organisationUnit());
             subm.setUserID(user);
@@ -54,14 +52,14 @@ public class TrackerEventConverter extends Converter<Event> {
     }
 
     @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
-    private List<DataValue> convertDataValues(String catOptionCombo,
-                                              List<TrackedEntityDataValue> trackedEntityDataValues) {
-        ArrayList<DataValue> dataValues = new ArrayList<>();
+    private List<SMSDataValue> convertDataValues(String catOptionCombo,
+                                                 List<TrackedEntityDataValue> trackedEntityDataValues) {
+        ArrayList<SMSDataValue> dataValues = new ArrayList<>();
         if (trackedEntityDataValues == null) {
             return dataValues;
         }
         for (TrackedEntityDataValue tedv : trackedEntityDataValues) {
-            dataValues.add(new DataValue(catOptionCombo, tedv.dataElement(), tedv.value()));
+            dataValues.add(new SMSDataValue(catOptionCombo, tedv.dataElement(), tedv.value()));
         }
         return dataValues;
     }

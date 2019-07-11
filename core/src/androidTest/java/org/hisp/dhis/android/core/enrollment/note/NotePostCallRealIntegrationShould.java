@@ -32,8 +32,8 @@ import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.note.internal.NoteStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -87,7 +87,7 @@ public class NotePostCallRealIntegrationShould extends BaseRealIntegrationTest {
 
         addNote();
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
         d2.wipeModule().wipeEverything();
     }

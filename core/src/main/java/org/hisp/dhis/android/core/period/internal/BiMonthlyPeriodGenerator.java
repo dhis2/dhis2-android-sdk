@@ -26,13 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.collection;
+package org.hisp.dhis.android.core.period.internal;
 
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.period.PeriodType;
 
-import io.reactivex.Observable;
+import java.util.Calendar;
 
-public interface ReadOnlyWithUploadCollectionRepository<M extends Model> extends ReadOnlyCollectionRepository<M> {
-    Observable<D2Progress> upload();
+public class BiMonthlyPeriodGenerator extends NMonthlyPeriodGenerator {
+
+    BiMonthlyPeriodGenerator(Calendar calendar) {
+        super(calendar, PeriodType.BiMonthly, 2, "B", Calendar.JANUARY);
+    }
+
+    @Override
+    protected String generateId() {
+        int periodNumber = calendar.get(Calendar.MONTH) / durationInMonths + 1;
+        return idFormatter.format(calendar.getTime()) + String.format("%02d", periodNumber) + idAdditionalString;
+    }
 }

@@ -1,6 +1,6 @@
 package org.hisp.dhis.android.core.sms.domain.repository;
 
-import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Completable;
@@ -28,14 +28,18 @@ public interface SmsRepository {
     /**
      * Starts process of listening to result confirmation sms
      *
-     * @param searchReceived        should also search previously received messages
-     * @param waitingTimeoutSeconds After this time error will be returned.
-     * @return Completable that is completed when result sms is successfully received
+     * @param fromDate              don't check messages older than this
+     * @param waitingTimeoutSeconds after this time error will be returned
+     * @param requiredSender        messages from other senders will not be read
+     * @param submissionId          submission ID to recognize message
+     * @param submissionType        submission type to recognize message
+     * @return completed when found
      */
-    Completable listenToConfirmationSms(boolean searchReceived,
+    Completable listenToConfirmationSms(Date fromDate,
                                         int waitingTimeoutSeconds,
                                         String requiredSender,
-                                        Collection<String> requiredStrings);
+                                        int submissionId,
+                                        SubmissionType submissionType);
 
     /**
      * Returned when sms sending error is returned from OS.
@@ -53,9 +57,22 @@ public interface SmsRepository {
     }
 
     /**
-     * Returned when timeout occurs
+     * Returned when not received successful response message
      */
-    class TimeoutException extends Exception {
+    class ResultResponseException extends Exception {
+        final ResultResponseIssue reason;
+
+        public ResultResponseException(ResultResponseIssue reason) {
+            this.reason = reason;
+        }
+
+        public ResultResponseIssue getReason() {
+            return reason;
+        }
+    }
+
+    enum ResultResponseIssue {
+        TIMEOUT, RECEIVED_ERROR, OTHER
     }
 
     /**

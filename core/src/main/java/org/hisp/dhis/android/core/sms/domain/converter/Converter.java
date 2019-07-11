@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.smscompression.SMSSubmissionWriter;
-import org.hisp.dhis.smscompression.models.Metadata;
+import org.hisp.dhis.smscompression.models.SMSMetadata;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 
 import io.reactivex.Completable;
@@ -40,7 +40,7 @@ public abstract class Converter<P> {
      * @param dataItem object to convert
      * @return text ready to be sent by sms
      */
-    private Single<String> convert(@NonNull P dataItem, Metadata metadata, String user, Integer submissionId) {
+    private Single<String> convert(@NonNull P dataItem, SMSMetadata metadata, String user, Integer submissionId) {
         return convert(dataItem, user, submissionId).map(submission -> {
             SMSSubmissionWriter writer = new SMSSubmissionWriter(metadata);
             return base64(writer.compress(submission));
@@ -74,10 +74,10 @@ public abstract class Converter<P> {
 
     private class CompressionData {
         final String user;
-        final Metadata metadata;
+        final SMSMetadata metadata;
         final P item;
 
-        CompressionData(Metadata metadata, String user, P item) {
+        CompressionData(SMSMetadata metadata, String user, P item) {
             this.user = user;
             this.metadata = metadata;
             this.item = item;

@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.internal.ProgramFields;
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -167,6 +168,10 @@ public final class ProgramCollectionRepository
 
     public EnumFilterConnector<ProgramCollectionRepository, FeatureType> byFeatureType() {
         return cf.enumC(ProgramFields.FEATURE_TYPE);
+    }
+
+    public ProgramCollectionRepository byOrganisationUnitUid(String uid) {
+        return byOrganisationUnitList(Collections.singletonList(uid));
     }
 
     public ProgramCollectionRepository byOrganisationUnitList(List<String> uids) {

@@ -63,7 +63,7 @@ public class DataSetReportCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_period() {
         List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
-                .byPeriod().eq("2018")
+                .byPeriod().eq("2019")
                 .get();
         assertThat(dataSetReports.size(), is(1));
     }

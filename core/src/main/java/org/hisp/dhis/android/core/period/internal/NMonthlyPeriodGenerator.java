@@ -32,11 +32,11 @@ import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Calendar;
 
-final class NMonthlyPeriodGenerator extends AbstractPeriodGenerator {
+class NMonthlyPeriodGenerator extends AbstractPeriodGenerator {
 
-    private final int durationInMonths;
-    private final String idAdditionalString;
-    private final int startMonth;
+    final int durationInMonths;
+    final String idAdditionalString;
+    final int startMonth;
 
     NMonthlyPeriodGenerator(Calendar calendar, PeriodType periodType, int durationInMonths,
                             String idAdditionalString, int startMonth) {

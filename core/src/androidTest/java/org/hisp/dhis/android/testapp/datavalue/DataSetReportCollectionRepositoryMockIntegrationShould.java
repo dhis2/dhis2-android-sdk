@@ -69,7 +69,7 @@ public class DataSetReportCollectionRepositoryMockIntegrationShould extends Base
     }
 
     @Test
-    public void filter_by_period_type() throws ParseException {
+    public void filter_by_period_type() {
         List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
                 .byPeriodType().eq(PeriodType.Yearly)
                 .get();

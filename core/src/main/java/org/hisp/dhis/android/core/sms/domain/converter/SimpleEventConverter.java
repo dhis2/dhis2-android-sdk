@@ -60,8 +60,9 @@ public class SimpleEventConverter extends Converter<Event> {
                 return SMSConsts.SMSEventStatus.VISITED;
             case OVERDUE:
                 return SMSConsts.SMSEventStatus.OVERDUE;
+            default:
+                return null;
         }
-        return null;
     }
 
     @Override

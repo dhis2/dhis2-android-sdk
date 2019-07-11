@@ -28,16 +28,16 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
-import org.hisp.dhis.android.core.relationship.RelationshipDHISVersionManager;
-import org.hisp.dhis.android.core.relationship.RelationshipHandler;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,10 +69,10 @@ public class TrackedEntityInstanceHandlerShould {
     private TrackedEntityInstanceStore trackedEntityInstanceStore;
 
     @Mock
-    private SyncHandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler;
+    private HandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler;
 
     @Mock
-    private SyncHandlerWithTransformer<Enrollment> enrollmentHandler;
+    private HandlerWithTransformer<Enrollment> enrollmentHandler;
 
     @Mock
     private TrackedEntityInstance trackedEntityInstance;

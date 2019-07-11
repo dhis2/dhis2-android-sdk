@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.data.database.EnumColumnAdapter;
 
-public class ProgramStageSectionRenderingTypeColumnAdapter extends EnumColumnAdapter<ProgramStageSectionRenderingType> {
+class ProgramStageSectionRenderingTypeColumnAdapter extends EnumColumnAdapter<ProgramStageSectionRenderingType> {
     @Override
     protected Class<ProgramStageSectionRenderingType> getEnumClass() {
         return ProgramStageSectionRenderingType.class;

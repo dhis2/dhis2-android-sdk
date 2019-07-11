@@ -31,10 +31,10 @@ package org.hisp.dhis.android.core;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
+import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -57,12 +57,11 @@ public class TeisCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void download_tracked_entity_instances() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
 
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
 
         TestObserver<D2Progress> testObserver = d2.trackedEntityModule().downloadTrackedEntityInstances(5, false, false)
-                .asObservable()
                 .doOnEach(e -> Log.w("EVENT", e.toString()))
                 .test();
 
@@ -71,5 +70,7 @@ public class TeisCallRealIntegrationShould extends BaseRealIntegrationTest {
         int count = TrackedEntityInstanceStoreImpl.create(databaseAdapter()).count();
 
         assertThat(count >= 5).isTrue();
+
+        testObserver.dispose();
     }
 }

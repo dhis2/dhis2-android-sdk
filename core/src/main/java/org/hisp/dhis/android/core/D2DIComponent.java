@@ -30,49 +30,49 @@ package org.hisp.dhis.android.core;
 
 import android.content.Context;
 
-import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.di.RepositoriesDIModule;
-import org.hisp.dhis.android.core.calls.MetadataCall;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule;
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.repositories.di.internal.RepositoriesDIModule;
 import org.hisp.dhis.android.core.category.CategoryOption;
-import org.hisp.dhis.android.core.category.CategoryPackageDIModule;
-import org.hisp.dhis.android.core.common.CommonPackageDIModule;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.constant.ConstantPackageDIModule;
+import org.hisp.dhis.android.core.category.internal.CategoryPackageDIModule;
+import org.hisp.dhis.android.core.common.internal.CommonPackageDIModule;
+import org.hisp.dhis.android.core.constant.internal.ConstantPackageDIModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
-import org.hisp.dhis.android.core.dataapproval.DataApprovalPackageDIModule;
+import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalPackageDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementPackageDIModule;
+import org.hisp.dhis.android.core.dataelement.internal.DataElementPackageDIModule;
 import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.DataSetPackageDIModule;
-import org.hisp.dhis.android.core.datavalue.DataValuePackageDIModule;
+import org.hisp.dhis.android.core.dataset.internal.DataSetPackageDIModule;
+import org.hisp.dhis.android.core.datavalue.internal.DataValuePackageDIModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
-import org.hisp.dhis.android.core.enrollment.EnrollmentPackageDIModule;
-import org.hisp.dhis.android.core.event.EventPackageDIModule;
-import org.hisp.dhis.android.core.event.EventPostCall;
-import org.hisp.dhis.android.core.imports.ImportPackageDIModule;
-import org.hisp.dhis.android.core.indicator.IndicatorPackageDIModule;
-import org.hisp.dhis.android.core.legendset.LegendPackageDIModule;
-import org.hisp.dhis.android.core.maintenance.MaintenancePackageDIModule;
-import org.hisp.dhis.android.core.option.OptionPackageDIModule;
+import org.hisp.dhis.android.core.domain.metadata.MetadataCall;
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentPackageDIModule;
+import org.hisp.dhis.android.core.event.internal.EventPackageDIModule;
+import org.hisp.dhis.android.core.event.internal.EventPostCall;
+import org.hisp.dhis.android.core.imports.internal.ImportPackageDIModule;
+import org.hisp.dhis.android.core.indicator.internal.IndicatorPackageDIModule;
+import org.hisp.dhis.android.core.legendset.internal.LegendPackageDIModule;
+import org.hisp.dhis.android.core.maintenance.internal.MaintenancePackageDIModule;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitPackageDIModule;
-import org.hisp.dhis.android.core.period.PeriodPackageDIModule;
+import org.hisp.dhis.android.core.option.internal.OptionPackageDIModule;
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitPackageDIModule;
+import org.hisp.dhis.android.core.period.internal.PeriodPackageDIModule;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramPackageDIModule;
-import org.hisp.dhis.android.core.relationship.RelationshipPackageDIModule;
+import org.hisp.dhis.android.core.program.internal.ProgramPackageDIModule;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
-import org.hisp.dhis.android.core.resource.ResourcePackageDIModule;
-import org.hisp.dhis.android.core.settings.SystemSettingPackageDIModule;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipPackageDIModule;
+import org.hisp.dhis.android.core.resource.internal.ResourcePackageDIModule;
+import org.hisp.dhis.android.core.settings.internal.SystemSettingPackageDIModule;
 import org.hisp.dhis.android.core.sms.SmsDIModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
-import org.hisp.dhis.android.core.user.UserPackageDIModule;
+import org.hisp.dhis.android.core.user.internal.UserPackageDIModule;
 import org.hisp.dhis.android.core.wipe.WipeDIModule;
 import org.hisp.dhis.android.core.wipe.WipeModule;
 
@@ -136,7 +136,7 @@ public interface D2DIComponent {
     @VisibleForTesting
     UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory();
     @VisibleForTesting
-    SyncHandler<RelationshipType> relationshipTypeHandler();
+    Handler<RelationshipType> relationshipTypeHandler();
     @VisibleForTesting
     TrackedEntityInstancePostCall trackedEntityInstancePostCall();
     @VisibleForTesting

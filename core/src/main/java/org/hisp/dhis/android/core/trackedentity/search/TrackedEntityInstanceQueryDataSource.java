@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppenderExecutor;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFields;
@@ -43,9 +43,9 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import androidx.paging.ItemKeyedDataSource;
 
-import static org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode.OFFLINE_FIRST;
-import static org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode.OFFLINE_ONLY;
-import static org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode.ONLINE_FIRST;
+import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.OFFLINE_FIRST;
+import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.OFFLINE_ONLY;
+import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.ONLINE_FIRST;
 
 public final class TrackedEntityInstanceQueryDataSource
         extends ItemKeyedDataSource<TrackedEntityInstance, TrackedEntityInstance> {

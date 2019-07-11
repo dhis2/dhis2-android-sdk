@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.data.api.OuMode;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -104,7 +104,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
         orgUnits.add("ou2");
 
         query = TrackedEntityInstanceQueryOnline.builder().
-                orgUnits(orgUnits).orgUnitMode(OuMode.ACCESSIBLE).program("program")
+                orgUnits(orgUnits).orgUnitMode(OrganisationUnitMode.ACCESSIBLE).program("program")
                 .programStartDate(new Date()).programEndDate(new Date())
                 .query("queryStr").attribute(attribute).filter(filter)
                 .paging(false).page(2).pageSize(33).build();

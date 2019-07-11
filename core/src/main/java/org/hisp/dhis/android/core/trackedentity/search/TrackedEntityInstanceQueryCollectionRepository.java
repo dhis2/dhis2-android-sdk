@@ -27,17 +27,12 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
-import androidx.lifecycle.LiveData;
-import androidx.paging.DataSource;
-import androidx.paging.LivePagedListBuilder;
-import androidx.paging.PagedList;
-
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppenderExecutor;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFields;
@@ -49,7 +44,12 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
 import dagger.Reusable;
+import io.reactivex.Single;
 
 @Reusable
 public final class TrackedEntityInstanceQueryCollectionRepository
@@ -73,21 +73,46 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         this.scope = scope;
     }
 
+    /**
+     * Only TrackedEntityInstances coming from the server are shown in the list.
+     * <br><b>Important:</b> Internet connection is required to use this mode.
+     *
+     * @return
+     */
     public TrackedEntityInstanceQueryCollectionRepository onlineOnly() {
         return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
                 scope.toBuilder().mode(RepositoryMode.ONLINE_ONLY).build());
     }
 
+    /**
+     * Only TrackedEntityInstances coming from local database are shown in the list.
+     *
+     * @return
+     */
     public TrackedEntityInstanceQueryCollectionRepository offlineOnly() {
         return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
                 scope.toBuilder().mode(RepositoryMode.OFFLINE_ONLY).build());
     }
 
+    /**
+     * TrackedEntityInstances coming from the server are shown in first place. Once there are no more results online,
+     * it continues with TrackedEntityInstances in local database.
+     * <br><b>Important:</b> Internet connection is required to use this mode.
+     *
+     * @return
+     */
     public TrackedEntityInstanceQueryCollectionRepository onlineFirst() {
         return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
                 scope.toBuilder().mode(RepositoryMode.ONLINE_FIRST).build());
     }
 
+    /**
+     * TrackedEntityInstances coming from local database are shown in first place. Once there are no more results, it
+     * continues with TrackedEntityInstances coming from the server. This method may speed up the initial load.
+     * <br><b>Important:</b> Internet connection is required to use this mode.
+     *
+     * @return
+     */
     public TrackedEntityInstanceQueryCollectionRepository offlineFirst() {
         return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
                 scope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build());
@@ -137,6 +162,11 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     @Override
+    public Single<List<TrackedEntityInstance>> getAsync() {
+        return Single.fromCallable(this::get);
+    }
+
+    @Override
     public int count() {
         return get().size();
     }
@@ -148,6 +178,11 @@ public final class TrackedEntityInstanceQueryCollectionRepository
             public TrackedEntityInstance get() {
                 List<TrackedEntityInstance> list = TrackedEntityInstanceQueryCollectionRepository.this.get();
                 return list.isEmpty() ? null : list.get(0);
+            }
+
+            @Override
+            public Single<TrackedEntityInstance> getAsync() {
+                return Single.fromCallable(this::get);
             }
 
             @Override

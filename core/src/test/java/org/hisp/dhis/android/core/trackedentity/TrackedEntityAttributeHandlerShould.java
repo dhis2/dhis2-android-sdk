@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,7 +81,7 @@ public class TrackedEntityAttributeHandlerShould {
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableSyncHandlerImpl<TrackedEntityAttribute> genericHandler =
+        IdentifiableHandlerImpl<TrackedEntityAttribute> genericHandler =
                 new TrackedEntityAttributeHandler(null, null);
     }
 

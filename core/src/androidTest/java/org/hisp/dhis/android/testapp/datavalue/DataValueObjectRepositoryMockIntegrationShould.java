@@ -30,7 +30,7 @@ package org.hisp.dhis.android.testapp.datavalue;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValueObjectRepository;
-import org.hisp.dhis.android.core.datavalue.DataValueStore;
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -109,7 +109,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
                 .value("no_period", "no_org_unit", "no_data_element",
                         "no_category", "no_attribute").exists(), is(Boolean.FALSE));
         assertThat(d2.dataValueModule().dataValues
-                .value("201809", "DiszpKrYNg8", "g9eOBujte1U",
+                .value("2018", "DiszpKrYNg8", "g9eOBujte1U",
                         "Gmbgme7z9BF", "bRowv6yZOF2").exists(), is(Boolean.TRUE));
     }
 

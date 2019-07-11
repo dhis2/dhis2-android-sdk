@@ -28,17 +28,20 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.imports.DataValueImportSummary;
+import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationFields;
+import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationPostCall;
+import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore;
+import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -54,7 +57,7 @@ public final class DataSetCompleteRegistrationCollectionRepository
         implements ReadWriteCollectionRepository<DataSetCompleteRegistration>,
         ReadOnlyWithUploadCollectionRepository<DataSetCompleteRegistration> {
 
-    private final SyncHandler<DataSetCompleteRegistration> handler;
+    private final Handler<DataSetCompleteRegistration> handler;
     private final DataSetCompleteRegistrationPostCall postCall;
 
     @Inject
@@ -62,7 +65,7 @@ public final class DataSetCompleteRegistrationCollectionRepository
             final DataSetCompleteRegistrationStore store,
             final Map<String, ChildrenAppender<DataSetCompleteRegistration>> childrenAppenders,
             final RepositoryScope scope,
-            final SyncHandler<DataSetCompleteRegistration> handler,
+            final Handler<DataSetCompleteRegistration> handler,
             final DataSetCompleteRegistrationPostCall postCall) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new DataSetCompleteRegistrationCollectionRepository(store, childrenAppenders,

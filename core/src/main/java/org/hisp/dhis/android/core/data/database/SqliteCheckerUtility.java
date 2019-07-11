@@ -54,8 +54,7 @@ final public class SqliteCheckerUtility {
         if (value != -1) {
             while (cursor.moveToNext()){
                 String tableName = cursor.getString(value);
-                Cursor resTable = databaseAdapter.query(
-                        "SELECT * from " + tableName, null);
+                Cursor resTable = databaseAdapter.query("SELECT * from " + tableName);
                 if (resTable.getCount() > 0) {
                     isDatabaseEmpty = false;
                     break;
@@ -64,36 +63,6 @@ final public class SqliteCheckerUtility {
         }
         cursor.close();
         return isDatabaseEmpty;
-    }
-
-    public static Boolean ifValueExist(String tableName, String fieldName, String fieldValue,
-            DatabaseAdapter db) {
-        boolean isExist = false;
-        Cursor cursor = db.query(
-                "SELECT " + fieldName + " from " + tableName + " where " + fieldName + " = '"
-                        + fieldValue + "'", null);
-        int value = cursor.getCount();
-        if (value == 1) {
-            isExist = true;
-        }
-        cursor.close();
-        return isExist;
-    }
-
-    public static boolean isFieldExist(String tableName, String fieldName,  DatabaseAdapter db) {
-        boolean isExist = false;
-        Cursor cursor = db.query("PRAGMA table_info(" + tableName + ")", null);
-        int value = cursor.getColumnIndex("name");
-        if (value != -1) {
-            while (cursor.moveToNext()) {
-                if (cursor.getString(value).equals(fieldName)) {
-                    isExist = true;
-                    break;
-                }
-            }
-        }
-        cursor.close();
-        return isExist;
     }
 
     public static boolean ifTableExist(String table, DatabaseAdapter db) {

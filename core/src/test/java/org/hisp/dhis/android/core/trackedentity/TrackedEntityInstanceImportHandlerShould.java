@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
-import org.hisp.dhis.android.core.imports.EnrollmentImportSummaries;
-import org.hisp.dhis.android.core.imports.EnrollmentImportSummary;
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentImportHandler;
+import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummaries;
+import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary;
 import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.TEIImportSummary;
+import org.hisp.dhis.android.core.imports.internal.TEIImportSummary;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.junit.Before;
 import org.junit.Test;

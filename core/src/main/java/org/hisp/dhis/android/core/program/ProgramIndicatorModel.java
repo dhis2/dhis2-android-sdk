@@ -29,17 +29,18 @@
 package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.AggregationType;
-import org.hisp.dhis.android.core.common.AggregationTypeColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.common.internal.AggregationTypeColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 @Deprecated
 @AutoValue

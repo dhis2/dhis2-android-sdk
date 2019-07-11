@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -56,10 +56,10 @@ public final class ProgramIndicatorLegendSetLinkTableInfo {
     private ProgramIndicatorLegendSetLinkTableInfo() {
     }
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
 
-        static final String PROGRAM_INDICATOR = "programIndicator";
-        static final String LEGEND_SET = "legendSet";
+        public static final String PROGRAM_INDICATOR = "programIndicator";
+        public static final String LEGEND_SET = "legendSet";
 
         @Override
         public String[] all() {

@@ -29,11 +29,13 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import android.content.ContentValues;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class CreateDataElementUtils {
     private static final long ID = 2L;

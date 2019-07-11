@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import androidx.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -38,6 +36,8 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.database.TrackedEntityInstanceWithUidColumnAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+
+import androidx.annotation.Nullable;
 
 /**
  * @deprecated since 2.29. Only internal use

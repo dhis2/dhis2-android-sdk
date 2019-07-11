@@ -38,6 +38,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.data.database.DbDataApprovalStateColumnAdapter;
+import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalFields;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

@@ -41,6 +41,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -232,7 +233,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     public void filter_by_tracked_entity_instance() {
         List<Event> events =
                 d2.eventModule().events
-                        .byTrackedEntityInstaceUid().eq("nWrB0TfWlvh")
+                        .byTrackedEntityInstanceUids(Collections.singletonList("nWrB0TfWlvh"))
                         .get();
 
         assertThat(events.size(), is(1));

@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.dataset.DataSetModule;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
-import org.hisp.dhis.android.core.imports.ImportModule;
+import org.hisp.dhis.android.core.imports.internal.ImportModule;
 import org.hisp.dhis.android.core.indicator.IndicatorModule;
 import org.hisp.dhis.android.core.legendset.LegendSetModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;

@@ -28,12 +28,13 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteValueObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteWithValueObjectRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithValueObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.Date;

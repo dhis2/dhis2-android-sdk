@@ -28,9 +28,10 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 public final class RelationshipFields {
@@ -46,7 +47,7 @@ public final class RelationshipFields {
     private static final String TO = "to";
 
     // Used only for children appending, can't be used in query
-    static final String ITEMS = "items";
+    public static final String ITEMS = "items";
 
     private static FieldsHelper<Relationship229Compatible> fh = new FieldsHelper<>();
 

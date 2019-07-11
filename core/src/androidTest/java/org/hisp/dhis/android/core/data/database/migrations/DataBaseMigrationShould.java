@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.data.database.migrations;
 
 import android.database.sqlite.SQLiteDatabase;
-import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
@@ -41,6 +39,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import androidx.test.InstrumentationRegistry;
+import androidx.test.runner.AndroidJUnit4;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.ifTableExist;

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseQuery;
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 import javax.annotation.Nullable;

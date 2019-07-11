@@ -30,13 +30,13 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
-import org.hisp.dhis.android.core.common.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ import java.util.Map;
 
 import androidx.annotation.NonNull;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
 public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStoreImpl<TrackedEntityDataValue>
         implements TrackedEntityDataValueStore {
@@ -78,7 +78,7 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
             TrackedEntityDataValueTableInfo.TABLE_INFO, TrackedEntityDataValueTableInfo.Columns.EVENT);
 
     private TrackedEntityDataValueStoreImpl(DatabaseAdapter databaseAdapter,
-                                            SQLStatementBuilder builder,
+                                            SQLStatementBuilderImpl builder,
                                             StatementBinder<TrackedEntityDataValue> binder,
                                             WhereStatementBinder<TrackedEntityDataValue> whereUpdateBinder,
                                             WhereStatementBinder<TrackedEntityDataValue> whereDeleteBinder,
@@ -149,7 +149,7 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
     }
 
     public static TrackedEntityDataValueStore create(DatabaseAdapter databaseAdapter) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
+        SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(
                 TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
                 TrackedEntityDataValueTableInfo.TABLE_INFO.columns());
 

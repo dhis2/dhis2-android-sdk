@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.junit.Before;
@@ -45,9 +45,9 @@ import java.util.Map;
 
 import androidx.paging.ItemKeyedDataSource;
 
-import static org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode.OFFLINE_FIRST;
-import static org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode.OFFLINE_ONLY;
-import static org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode.ONLINE_ONLY;
+import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.OFFLINE_FIRST;
+import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.OFFLINE_ONLY;
+import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.ONLINE_ONLY;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;

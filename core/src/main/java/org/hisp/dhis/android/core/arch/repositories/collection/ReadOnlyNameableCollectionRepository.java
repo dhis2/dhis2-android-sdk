@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.repositories.filters.NameableFilters;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.NameableFilters;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.NameableObject;
 

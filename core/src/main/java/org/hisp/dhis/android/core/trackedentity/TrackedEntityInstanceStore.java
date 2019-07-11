@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectWithStateStore;
 
 import java.util.List;
 

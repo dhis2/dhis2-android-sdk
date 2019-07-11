@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.data.database.RelationshipItemEnrollmentColumn
 import org.hisp.dhis.android.core.data.database.RelationshipItemEventColumnAdapter;
 import org.hisp.dhis.android.core.data.database.RelationshipItemTrackedEntityInstanceColumnAdapter;
 import org.hisp.dhis.android.core.data.database.RelationshipWithUidColumnAdapter;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemFields;
 
 import androidx.annotation.Nullable;
 

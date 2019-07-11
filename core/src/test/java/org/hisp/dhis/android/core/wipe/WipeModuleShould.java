@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.wipe;
 
-import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.junit.Before;

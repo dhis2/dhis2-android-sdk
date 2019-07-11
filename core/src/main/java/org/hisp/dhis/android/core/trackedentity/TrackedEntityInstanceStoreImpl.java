@@ -28,19 +28,19 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectWithStateStoreImpl;
 import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStoreImpl;
-import org.hisp.dhis.android.core.common.SQLStatementBuilder;
-import org.hisp.dhis.android.core.common.SQLStatementWrapper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
 public final class TrackedEntityInstanceStoreImpl extends IdentifiableObjectWithStateStoreImpl<TrackedEntityInstance>
         implements TrackedEntityInstanceStore {
@@ -60,7 +60,7 @@ public final class TrackedEntityInstanceStoreImpl extends IdentifiableObjectWith
 
     public TrackedEntityInstanceStoreImpl(DatabaseAdapter databaseAdapter,
                                           SQLStatementWrapper statementWrapper,
-                                          SQLStatementBuilder builder) {
+                                          SQLStatementBuilderImpl builder) {
         super(databaseAdapter, statementWrapper, builder, BINDER, TrackedEntityInstance::create);
     }
 
@@ -105,7 +105,7 @@ public final class TrackedEntityInstanceStoreImpl extends IdentifiableObjectWith
     }
 
     public static TrackedEntityInstanceStore create(DatabaseAdapter databaseAdapter) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
+        SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(
                 TrackedEntityInstanceTableInfo.TABLE_INFO.name(),
                 TrackedEntityInstanceTableInfo.TABLE_INFO.columns());
         SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);

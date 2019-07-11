@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
-import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -44,6 +43,8 @@ import org.hisp.dhis.android.core.data.database.DataElementWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreValueTypeRenderingAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_ProgramStageDataElement.Builder.class)

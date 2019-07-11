@@ -1,7 +1,8 @@
 package org.hisp.dhis.android.core.sms.domain.interactor;
 
 import org.hisp.dhis.android.core.sms.domain.converter.EnrollmentConverter;
-import org.hisp.dhis.android.core.sms.domain.converter.EventConverter;
+import org.hisp.dhis.android.core.sms.domain.converter.SimpleEventConverter;
+import org.hisp.dhis.android.core.sms.domain.converter.TrackerEventConverter;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 
 import io.reactivex.Single;
@@ -13,8 +14,12 @@ public class QrCodeCase {
         this.localDbRepository = localDbRepository;
     }
 
-    public Single<String> generateEventCode(String eventUid, String teiUid) {
-        return new EventConverter(localDbRepository, eventUid, teiUid).readAndConvert();
+    public Single<String> generateSimpleEventCode(String eventUid) {
+        return new SimpleEventConverter(localDbRepository, eventUid).readAndConvert();
+    }
+
+    public Single<String> generateTrackerEventCode(String eventUid, String teiUid) {
+        return new TrackerEventConverter(localDbRepository, eventUid, teiUid).readAndConvert();
     }
 
     public Single<String> generateEnrollmentCode(String enrollmentUid, String teiUid) {

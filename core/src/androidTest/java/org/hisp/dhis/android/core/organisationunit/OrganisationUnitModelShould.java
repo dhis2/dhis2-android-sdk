@@ -30,15 +30,17 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
-import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo.Columns;
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields;
 import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 

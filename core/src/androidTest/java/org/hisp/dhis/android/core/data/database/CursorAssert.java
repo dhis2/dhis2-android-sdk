@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.data.database;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+
 import androidx.annotation.NonNull;
 
 import static com.google.common.truth.Truth.assertThat;

@@ -28,10 +28,8 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public final class UserOrganisationUnitLinkTableInfo {
@@ -49,17 +47,12 @@ public final class UserOrganisationUnitLinkTableInfo {
         }
     };
 
-    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            OrganisationUnitTableInfo.TABLE_INFO,
-            Columns.USER,
-            Columns.ORGANISATION_UNIT);
-
     private UserOrganisationUnitLinkTableInfo() {
     }
 
     public static class Columns extends BaseModel.Columns {
 
-        static final String USER = "user";
+        public static final String USER = "user";
         public static final String ORGANISATION_UNIT = "organisationUnit";
         public static final String ORGANISATION_UNIT_SCOPE = "organisationUnitScope";
         public static final String ROOT = "root";

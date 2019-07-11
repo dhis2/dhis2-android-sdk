@@ -28,12 +28,13 @@
 package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
-import androidx.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
+
+import androidx.annotation.NonNull;
 
 @AutoValue
 public abstract class ProgramStageSectionDataElementLink implements Model {

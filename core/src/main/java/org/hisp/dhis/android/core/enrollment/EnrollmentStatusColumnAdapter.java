@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.data.database.EnumColumnAdapter;
+
+import androidx.annotation.NonNull;
 
 class EnrollmentStatusColumnAdapter extends EnumColumnAdapter<EnrollmentStatus> {
 

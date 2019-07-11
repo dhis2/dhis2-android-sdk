@@ -28,8 +28,7 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -48,15 +47,10 @@ public final class OrganisationUnitOrganisationUnitGroupLinkTableInfo {
         }
     };
 
-    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            OrganisationUnitGroupTableInfo.TABLE_INFO,
-            Columns.ORGANISATION_UNIT,
-            Columns.ORGANISATION_UNIT_GROUP);
-
     private OrganisationUnitOrganisationUnitGroupLinkTableInfo() {
     }
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
 
         public static final String ORGANISATION_UNIT = "organisationUnit";
         public static final String ORGANISATION_UNIT_GROUP = "organisationUnitGroup";

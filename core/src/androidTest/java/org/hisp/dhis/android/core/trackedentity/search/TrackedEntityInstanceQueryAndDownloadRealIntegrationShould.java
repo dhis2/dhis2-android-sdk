@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.core.trackedentity.search;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.data.api.OuMode;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
+import org.hisp.dhis.android.core.d2manager.D2Factory;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -61,14 +61,14 @@ public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends 
 
         queryBuilder = TrackedEntityInstanceQuery.builder()
                 .paging(true).page(1).pageSize(50)
-                .orgUnits(orgUnits).orgUnitMode(OuMode.ACCESSIBLE);
+                .orgUnits(orgUnits).orgUnitMode(OrganisationUnitMode.ACCESSIBLE);
     }
 
     //@Test
     public void query_and_download_tracked_entity_instances() throws Exception {
         login();
 
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
 
         TrackedEntityInstanceQuery query = queryBuilder.build();
         List<TrackedEntityInstance> queriedTeis =
@@ -85,7 +85,7 @@ public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends 
         assertThat(queriedTeis.size()).isEqualTo(downloadedTeis.size());
     }
 
-    private void login() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+    private void login() {
+        d2.userModule().logIn("android", "Android123").blockingGet();
     }
 }

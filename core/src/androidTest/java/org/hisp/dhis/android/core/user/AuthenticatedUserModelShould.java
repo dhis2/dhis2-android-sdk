@@ -30,11 +30,12 @@ package org.hisp.dhis.android.core.user;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
-import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 

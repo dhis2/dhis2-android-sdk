@@ -28,9 +28,10 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.dataset.internal.DataInputPeriodFields;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public class DataInputPeriodTableInfo {
@@ -50,9 +51,9 @@ public class DataInputPeriodTableInfo {
         }
     };
 
-    static class Columns extends BaseDataModel.Columns {
+    public static class Columns extends BaseDataModel.Columns {
 
-        static final String DATA_SET = "dataSet";
+        public static final String DATA_SET = "dataSet";
 
         @Override
         public String[] all() {

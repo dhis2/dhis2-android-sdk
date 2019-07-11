@@ -55,7 +55,7 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
     }
 
     private void reserveValues() {
-        d2.trackedEntityModule().reservedValueManager.syncReservedValues("xs8A6tQJY0s", "orgUnitUid", numberToReserve);
+        d2.trackedEntityModule().reservedValueManager.blockingSyncReservedValues("xs8A6tQJY0s", "orgUnitUid", numberToReserve);
     }
 
     // @Test

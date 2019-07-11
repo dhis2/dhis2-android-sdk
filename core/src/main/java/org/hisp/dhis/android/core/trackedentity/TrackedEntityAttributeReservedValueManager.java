@@ -29,8 +29,10 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 
+import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
@@ -41,11 +43,10 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
-import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeFields;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
+import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeFields;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 
 import java.util.ArrayList;
@@ -56,6 +57,9 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 
 @Reusable
 public final class TrackedEntityAttributeReservedValueManager {
@@ -71,6 +75,8 @@ public final class TrackedEntityAttributeReservedValueManager {
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final QueryCallFactory<TrackedEntityAttributeReservedValue,
             TrackedEntityAttributeReservedValueQuery> trackedEntityAttributeReservedValueQueryCallFactory;
+
+    private D2ProgressManager d2ProgressManager = new D2ProgressManager(null);
 
     @Inject
     TrackedEntityAttributeReservedValueManager(
@@ -101,21 +107,40 @@ public final class TrackedEntityAttributeReservedValueManager {
      * @throws D2Error If there are no more reserved values available in database
      */
     @SuppressFBWarnings("DE_MIGHT_IGNORE")
-    public String getValue(String attribute, String organisationUnitUid) throws D2Error {
-        OrganisationUnit organisationUnit = organisationUnitUid == null ? null :
-                OrganisationUnitStore.create(databaseAdapter).selectByUid(organisationUnitUid);
-        syncReservedValue(attribute, organisationUnit, null);
+    public String blockingGetValue(String attribute, String organisationUnitUid) {
+        return getValue(attribute, organisationUnitUid).blockingGet();
+    }
 
-        TrackedEntityAttributeReservedValue reservedValue = store.popOne(attribute, organisationUnitUid);
+    /**
+     * Get a reserved value and remove it from database. If the number of available values is below a threshold
+     * (default {@link #MIN_TO_TRY_FILL}) it tries to synchronize before returning a value.
+     *
+     * @param attribute Attribute uid
+     * @param organisationUnitUid Optional organisation uid
+     * @return Single with value of tracked entity attribute
+     * @throws D2Error If there are no more reserved values available in database (inside Single)
+     */
+    public Single<String> getValue(String attribute, String organisationUnitUid) {
 
-        if (reservedValue == null) {
-            throw D2Error.builder()
-                    .errorCode(D2ErrorCode.NO_RESERVED_VALUES)
-                    .errorDescription("There are no reserved values")
-                    .errorComponent(D2ErrorComponent.Database).build();
-        } else {
-            return reservedValue.value();
-        }
+        return systemInfoRepository.download()
+                .andThen(Completable.fromAction(
+                        () -> syncReservedValue(attribute, getOrganisationUnit(organisationUnitUid), null)))
+                .andThen(Single.create(emitter -> {
+                    TrackedEntityAttributeReservedValue reservedValue = store.popOne(attribute, organisationUnitUid);
+
+                    if (reservedValue == null) {
+                        emitter.onError(D2Error.builder()
+                                .errorCode(D2ErrorCode.NO_RESERVED_VALUES)
+                                .errorDescription("There are no reserved values")
+                                .errorComponent(D2ErrorComponent.Database).build());
+                    } else {
+                        emitter.onSuccess(reservedValue.value());
+                    }
+                }));
+    }
+
+    private OrganisationUnit getOrganisationUnit(String uid) {
+        return uid == null ? null : organisationUnitStore.selectByUid(uid);
     }
 
     /**
@@ -130,31 +155,73 @@ public final class TrackedEntityAttributeReservedValueManager {
      * contains ORGUNIT_CODE. If so, it reserves values for each orgunit assigned to the program and applies the limit
      * per orgunit. If not, the limit is applied per attribute.
      *
-     * @param attribute An optional attribute uid
-     * @param organisationUnitUid An optional organisationunit uid
+     * @param attribute              An optional attribute uid
+     * @param organisationUnitUid    An optional organisationunit uid
      * @param numberOfValuesToFillUp An optional maximum number of values to reserve
      */
-    public void syncReservedValues(String attribute, String organisationUnitUid, Integer numberOfValuesToFillUp) {
+    public void blockingSyncReservedValues(String attribute, String organisationUnitUid, Integer numberOfValuesToFillUp) {
+        syncReservedValues(attribute, organisationUnitUid, numberOfValuesToFillUp).blockingSubscribe();
+    }
 
+    /**
+     * Synchronization of TrackedEntityInstance reserved values. The number of reserved values is filled up to the
+     * numberOfValuesToFillUp. If not defined, it defaults to {@link #FILL_UP_TO}.
+     * <br><br>
+     * If an attribute uid is defined, the synchronization is only triggered for this attribute. If not defined, the
+     * synchronization is triggered for all the attributes with the property "generated" set to true.
+     * <br><br>
+     * If an organisationunit uid is defined, only TrackedEntityAttributes linked to programs that are linked to this
+     * organisationunit are considered for syncing. If not defined, the SDK checks if TrackedEntityAttribute pattern
+     * contains ORGUNIT_CODE. If so, it reserves values for each orgunit assigned to the program and applies the limit
+     * per orgunit. If not, the limit is applied per attribute.
+     *
+     * @param attribute              An optional attribute uid
+     * @param organisationUnitUid    An optional organisationunit uid
+     * @param numberOfValuesToFillUp An optional maximum number of values to reserve
+     * @return Single with value of tracked entity attribute
+     */
+    public Observable<D2Progress> syncReservedValues(String attribute, String organisationUnitUid,
+                                                     Integer numberOfValuesToFillUp) {
+        return systemInfoRepository.download()
+                .andThen(syncReservedValuesInternal(attribute, organisationUnitUid, numberOfValuesToFillUp));
+    }
+
+    private Observable<D2Progress> syncReservedValuesInternal(String attribute, String organisationUnitUid,
+                                                     Integer numberOfValuesToFillUp) {
         if (attribute == null) {
-            syncAllTrackedEntityAttributeReservedValues(numberOfValuesToFillUp, organisationUnitUid);
+            return syncAllTrackedEntityAttributeReservedValues(numberOfValuesToFillUp, organisationUnitUid);
         } else if (organisationUnitUid == null) {
-            syncTrackedEntityAttributeReservedValue(attribute, numberOfValuesToFillUp);
+            return syncTrackedEntityAttributeReservedValue(attribute, numberOfValuesToFillUp);
         } else {
-            OrganisationUnit organisationUnit = organisationUnitStore.selectByUid(organisationUnitUid);
-            syncReservedValue(attribute, organisationUnit, numberOfValuesToFillUp);
+            return Single.fromCallable(() -> {
+                OrganisationUnit organisationUnit = organisationUnitStore.selectByUid(organisationUnitUid);
+                syncReservedValue(attribute, organisationUnit, numberOfValuesToFillUp);
+                return increaseProgress();
+            }).toObservable();
         }
     }
 
-    private void syncTrackedEntityAttributeReservedValue(String attribute, Integer numberOfValuesToFillUp) {
-        List<OrganisationUnit> organisationUnits = getAttributeWithOUCodeOrgUnits(attribute);
+    private D2Progress increaseProgress() {
+        return d2ProgressManager.increaseProgress(TrackedEntityAttributeReservedValue.class, false);
+    }
 
+    private Observable<D2Progress> syncTrackedEntityAttributeReservedValue(String attribute,
+                                                                           Integer numberOfValuesToFillUp) {
+        List<OrganisationUnit> organisationUnits = getAttributeWithOUCodeOrgUnits(attribute);
         if (organisationUnits.isEmpty()) {
-            syncReservedValue(attribute, null, numberOfValuesToFillUp);
+            return Single.fromCallable(() -> {
+                syncReservedValue(attribute, null, numberOfValuesToFillUp);
+                return increaseProgress();
+            }).toObservable();
         } else {
-            for (OrganisationUnit organisationUnit : organisationUnits) {
-                syncReservedValue(attribute, organisationUnit, numberOfValuesToFillUp);
-            }
+            return Observable.create(emitter -> {
+                for (OrganisationUnit organisationUnit : organisationUnits) {
+                    syncReservedValue(attribute, organisationUnit, numberOfValuesToFillUp);
+                    emitter.onNext(increaseProgress());
+                }
+                emitter.onComplete();
+            });
+
         }
     }
 
@@ -187,8 +254,6 @@ public final class TrackedEntityAttributeReservedValueManager {
     private void fillReservedValues(String trackedEntityAttributeUid, OrganisationUnit organisationUnit,
                                     Integer numberToReserve) throws D2Error {
 
-        systemInfoRepository.download().blockingAwait();
-
         String trackedEntityAttributePattern;
         try {
             trackedEntityAttributePattern =
@@ -216,11 +281,11 @@ public final class TrackedEntityAttributeReservedValueManager {
                 + OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM;
         String pTEAProgram = ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name() + dot
                 + ProgramTrackedEntityAttributeFields.PROGRAM;
-        String pTEATrackedEntityAttribute =  ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name() + dot
+        String pTEATrackedEntityAttribute = ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name() + dot
                 + ProgramTrackedEntityAttributeFields.TRACKED_ENTITY_ATTRIBUTE;
-        String tEAUid =  TrackedEntityAttributeTableInfo.TABLE_INFO.name() + dot +
+        String tEAUid = TrackedEntityAttributeTableInfo.TABLE_INFO.name() + dot +
                 BaseIdentifiableObjectModel.Columns.UID;
-        String tEAPattern =  TrackedEntityAttributeTableInfo.TABLE_INFO.name() + dot +
+        String tEAPattern = TrackedEntityAttributeTableInfo.TABLE_INFO.name() + dot +
                 TrackedEntityAttributeFields.PATTERN;
 
         String queryStatement = "SELECT " + OrganisationUnitTableInfo.TABLE_INFO.name() + ".* FROM (" +
@@ -228,7 +293,7 @@ public final class TrackedEntityAttributeReservedValueManager {
                 join + OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name() + on + oUUid + eq + oUPLOrganisationUnit +
                 join + ProgramTableInfo.TABLE_INFO.name() + on + oUPLProgram + eq + programUid +
                 join + ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name() + on + programUid + eq + pTEAProgram +
-                join +  TrackedEntityAttributeTableInfo.TABLE_INFO.name() + on + tEAUid +
+                join + TrackedEntityAttributeTableInfo.TABLE_INFO.name() + on + tEAUid +
                 eq + pTEATrackedEntityAttribute + ") " +
                 " WHERE " + new WhereClauseBuilder()
                 .appendKeyStringValue(tEAUid, attribute)
@@ -248,19 +313,23 @@ public final class TrackedEntityAttributeReservedValueManager {
         return organisationUnits;
     }
 
-    private void syncAllTrackedEntityAttributeReservedValues(Integer numberOfValuesToFillUp,
-                                                             String organisationUnitUid) {
+    private Observable<D2Progress> syncAllTrackedEntityAttributeReservedValues(Integer numberOfValuesToFillUp,
+                                                                               String organisationUnitUid) {
         String selectStatement = generateAllTrackedEntityAttributeReservedValuesSelectStatement(organisationUnitUid);
+
+        List<Observable<D2Progress>> observables = new ArrayList<>();
 
         try (Cursor cursor = databaseAdapter.query(selectStatement)) {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 do {
                     String ownerUid = cursor.getString(0);
-                    syncReservedValues(ownerUid, null, numberOfValuesToFillUp);
+                    observables.add(syncReservedValuesInternal(ownerUid, null, numberOfValuesToFillUp));
                 } while (cursor.moveToNext());
             }
         }
+
+        return Observable.merge(observables);
     }
 
     private static String generateAllTrackedEntityAttributeReservedValuesSelectStatement(String organisationUnitUid) {
@@ -281,8 +350,8 @@ public final class TrackedEntityAttributeReservedValueManager {
 
         if (organisationUnitUid != null) {
             selectStatement = selectStatement.concat(" AND " + pTEATEAColumn + " = " + tEAUidColumn +
-                                    " AND " + pTEAProgramColumn + " = " + oUPLProgramColumn +
-                                    " AND " + oUPLOrganisationUnitColumn + " = '" + organisationUnitUid + "'");
+                    " AND " + pTEAProgramColumn + " = " + oUPLProgramColumn +
+                    " AND " + oUPLOrganisationUnitColumn + " = '" + organisationUnitUid + "'");
         }
 
         return selectStatement.concat(";");

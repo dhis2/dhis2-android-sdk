@@ -35,11 +35,14 @@ import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.helpers.internal.TrackedEntityInstanceHelper;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
+import org.hisp.dhis.android.core.programorganisationunit.internal.ProgramOrganisationUnitLastUpdated;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
@@ -48,6 +51,7 @@ import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -65,6 +69,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
 
     private final RxAPICallExecutor rxCallExecutor;
     private final ResourceHandler resourceHandler;
+    private final Handler<ProgramOrganisationUnitLastUpdated> programOrganisationUnitLastUpdatedHandler;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final LinkModelStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
@@ -75,6 +80,8 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     private final TrackedEntityInstancePersistenceCallFactory persistenceCallFactory;
     private final TrackedEntityInstancesEndpointCallFactory endpointCallFactory;
 
+    private Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet;
+
     // TODO use scheduler for parallel download
     // private final Scheduler teiDownloadScheduler = Schedulers.from(Executors.newFixedThreadPool(6));
 
@@ -82,6 +89,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     TrackedEntityInstanceWithLimitCallFactory(
             RxAPICallExecutor rxCallExecutor,
             ResourceHandler resourceHandler,
+            Handler<ProgramOrganisationUnitLastUpdated> programOrganisationUnitLastUpdatedHandler,
             UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             LinkModelStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore,
             ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
@@ -91,6 +99,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
             TrackedEntityInstancesEndpointCallFactory endpointCallFactory) {
         this.rxCallExecutor = rxCallExecutor;
         this.resourceHandler = resourceHandler;
+        this.programOrganisationUnitLastUpdatedHandler = programOrganisationUnitLastUpdatedHandler;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
         this.systemInfoRepository = systemInfoRepository;
@@ -99,6 +108,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
         this.relationshipDownloadCallFactory = relationshipDownloadCallFactory;
         this.persistenceCallFactory = persistenceCallFactory;
         this.endpointCallFactory = endpointCallFactory;
+        this.programOrganisationUnitSet = new HashSet<>();
     }
 
     public Observable<D2Progress> download(final int teiLimit, final boolean limitByOrgUnit, boolean limitByProgram) {
@@ -145,9 +155,13 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
                             // TODO .subscribeOn(teiDownloadScheduler);
                         });
 
+        Date serverDate = systemInfoRepository.get().serverDate();
+
         return teiDownloadObservable.map(
                 teiList -> {
                     persistenceCallFactory.getCall(teiList).call();
+                    programOrganisationUnitSet.addAll(
+                            TrackedEntityInstanceHelper.getProgramOrganisationUnitTuple(teiList, serverDate));
                     return progressManager.increaseProgress(TrackedEntityInstance.class, false);
                 });
     }
@@ -262,6 +276,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
         return Single.fromCallable(() -> {
             if (allOkay.get()) {
                 resourceHandler.handleResource(resourceType);
+                programOrganisationUnitLastUpdatedHandler.handleMany(programOrganisationUnitSet);
             }
             return progressManager.increaseProgress(TrackedEntityInstance.class, true);
         }).toObservable();

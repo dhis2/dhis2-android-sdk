@@ -10,12 +10,12 @@ import android.telephony.ServiceState;
 import android.telephony.TelephonyManager;
 
 import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;
-import org.reactivestreams.Publisher;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import io.reactivex.Single;
+import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -44,18 +44,20 @@ public class DeviceStateRepositoryImpl implements DeviceStateRepository {
         // When failed to get current status or too low sdk version
         // Have to register listener
         AtomicReference<PhoneStateListener> listener = new AtomicReference<>();
-        return Single.fromPublisher((Publisher<Boolean>) s -> {
+        return Single.create((SingleOnSubscribe<Boolean>) emitter -> {
+            if (emitter.isDisposed()) {
+                return;
+            }
             // Set a listener on a telephony manager to get
             listener.set(new PhoneStateListener() {
                 @Override
                 public void onServiceStateChanged(ServiceState serviceState) {
-                    if (listener.get() == null) {
+                    if (listener.get() == null || emitter.isDisposed()) {
                         return;
                     }
-                    s.onNext(serviceState.getState() == ServiceState.STATE_IN_SERVICE);
                     telephonyManager.listen(listener.get(), PhoneStateListener.LISTEN_NONE);
                     listener.set(null);
-                    s.onComplete();
+                    emitter.onSuccess(serviceState.getState() == ServiceState.STATE_IN_SERVICE);
                 }
             });
             telephonyManager.listen(listener.get(), PhoneStateListener.LISTEN_SERVICE_STATE);

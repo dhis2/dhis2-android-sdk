@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.utils;
 
 
-import androidx.annotation.NonNull;
-
 import java.util.Random;
+
+import androidx.annotation.NonNull;
 
 public final class CodeGeneratorImpl implements CodeGenerator {
     private static final String LETTERS = "abcdefghijklmnopqrstuvwxyz"

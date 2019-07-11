@@ -30,7 +30,7 @@ package org.hisp.dhis.android.testapp.datavalue;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValueObjectRepository;
-import org.hisp.dhis.android.core.datavalue.DataValueStore;
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;

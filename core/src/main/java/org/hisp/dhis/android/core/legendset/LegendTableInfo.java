@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
-import static org.hisp.dhis.android.core.legendset.LegendFields.COLOR;
-import static org.hisp.dhis.android.core.legendset.LegendFields.END_VALUE;
-import static org.hisp.dhis.android.core.legendset.LegendFields.START_VALUE;
+import static org.hisp.dhis.android.core.legendset.internal.LegendFields.COLOR;
+import static org.hisp.dhis.android.core.legendset.internal.LegendFields.END_VALUE;
+import static org.hisp.dhis.android.core.legendset.internal.LegendFields.START_VALUE;
 
 public final class LegendTableInfo {
 
@@ -55,8 +55,8 @@ public final class LegendTableInfo {
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
-        final static String LEGEND_SET = "legendSet";
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public final static String LEGEND_SET = "legendSet";
 
         @Override
         public String[] all() {

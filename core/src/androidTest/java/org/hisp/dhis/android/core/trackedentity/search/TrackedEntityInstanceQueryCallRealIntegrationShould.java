@@ -31,11 +31,11 @@ package org.hisp.dhis.android.core.trackedentity.search;
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.data.api.OuMode;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
+import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -63,7 +63,7 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends BaseRea
 
         queryBuilder = TrackedEntityInstanceQuery.builder()
                 .paging(true).page(1).pageSize(50)
-                .orgUnits(orgUnits).orgUnitMode(OuMode.ACCESSIBLE).program("IpHINAT79UW");
+                .orgUnits(orgUnits).orgUnitMode(OrganisationUnitMode.ACCESSIBLE).program("IpHINAT79UW");
     }
 
     //@Test
@@ -528,7 +528,7 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends BaseRea
         }
     }
 
-    private void login() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+    private void login() {
+        d2.userModule().logIn("android", "Android123").blockingGet();
     }
 }

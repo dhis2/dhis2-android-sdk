@@ -32,13 +32,13 @@ import android.content.Context;
 import android.os.StrictMode;
 
 import org.hisp.dhis.android.BuildConfig;
+import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory;
+import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory;
+import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
+import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.category.CategoryModule;
-import org.hisp.dhis.android.core.common.SSLContextInitializer;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.configuration.Configuration;
 import org.hisp.dhis.android.core.constant.ConstantModule;
-import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
-import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetModule;
@@ -46,7 +46,7 @@ import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
-import org.hisp.dhis.android.core.imports.ImportModule;
+import org.hisp.dhis.android.core.imports.internal.ImportModule;
 import org.hisp.dhis.android.core.indicator.IndicatorModule;
 import org.hisp.dhis.android.core.legendset.LegendSetModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
@@ -62,10 +62,9 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.android.core.wipe.WipeModule;
 
-import java.util.concurrent.Callable;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
+import io.reactivex.Observable;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -111,8 +110,8 @@ public final class D2 {
     }
 
     @NonNull
-    public Callable<Unit> syncMetaData() {
-        return d2DIComponent.metadataCall();
+    public Observable<D2Progress> syncMetaData() {
+        return d2DIComponent.metadataCall().download();
     }
 
     @NonNull

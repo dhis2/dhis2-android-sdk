@@ -29,12 +29,13 @@
 package org.hisp.dhis.android.core.organisationunit;
 
 import android.database.Cursor;
-import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 public abstract class OrganisationUnitOrganisationUnitGroupLink implements Model {

@@ -30,17 +30,19 @@ package org.hisp.dhis.android.core.common;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
-import androidx.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetStore;
+import org.hisp.dhis.android.core.option.internal.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionSetTableInfo;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static org.hisp.dhis.android.core.common.StoreMocks.optionSetCursorAssert;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;

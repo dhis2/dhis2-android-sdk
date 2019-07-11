@@ -27,26 +27,26 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
+import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-final class TrackedEntityTypeHandler extends IdentifiableSyncHandlerImpl<TrackedEntityType> {
+final class TrackedEntityTypeHandler extends IdentifiableHandlerImpl<TrackedEntityType> {
 
     private final ObjectStyleHandler styleHandler;
-    private final OrderedLinkSyncHandler<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute> attributeHandler;
+    private final OrderedLinkHandler<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute> attributeHandler;
 
     @Inject
     TrackedEntityTypeHandler(IdentifiableObjectStore<TrackedEntityType> trackedEntityTypeStore,
                              ObjectStyleHandler styleHandler,
-                             OrderedLinkSyncHandler<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute>
+                             OrderedLinkHandler<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute>
                                      attributeHandler) {
         super(trackedEntityTypeStore);
         this.styleHandler = styleHandler;

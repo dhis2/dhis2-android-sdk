@@ -34,7 +34,7 @@ import com.google.common.collect.Lists;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
-import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
+import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -47,7 +47,6 @@ import static com.google.common.truth.Truth.assertThat;
 public class D2ManagerRealIntegrationShould {
 
     private static D2Configuration d2Configuration;
-    private D2Manager d2Manager;
 
     @BeforeClass
     public static void setUpClass() {
@@ -60,29 +59,32 @@ public class D2ManagerRealIntegrationShould {
                 .networkInterceptors(Lists.newArrayList(new StethoInterceptor()))
                 .context(InstrumentationRegistry.getTargetContext().getApplicationContext())
                 .build();
+
+        D2Manager.setDatabaseName(null);
     }
 
     @Before
     public void setUp() {
-        d2Manager = new D2Manager(d2Configuration);
+        D2Manager.setUp(d2Configuration).blockingAwait();
     }
 
     @After
     public void tearDown() {
-        if (d2Manager.databaseAdapter != null && d2Manager.databaseAdapter.database() != null) {
-            d2Manager.databaseAdapter.database().close();
+        if (D2Manager.databaseAdapter != null) {
+            D2Manager.databaseAdapter.database().close();
         }
+        D2Manager.clear();
     }
 
     @Test
     public void return_false_if_not_configured() {
-        assertThat(d2Manager.isD2Configured()).isFalse();
+        assertThat(D2Manager.isServerUrlSet()).isFalse();
     }
 
     @Test
     public void return_true_if_configured() {
         configureD2();
-        assertThat(d2Manager.isD2Configured()).isTrue();
+        assertThat(D2Manager.isServerUrlSet()).isTrue();
     }
 
     @Test
@@ -90,7 +92,7 @@ public class D2ManagerRealIntegrationShould {
         configureD2();
         persistCredentialsInDb();
 
-        UserCredentials userCredentials = d2Manager.getD2().userModule().userCredentials.get();
+        UserCredentials userCredentials = D2Manager.getD2().userModule().userCredentials.get();
         assertThat(userCredentials.user().uid().equals("user")).isTrue();
     }
 
@@ -102,19 +104,19 @@ public class D2ManagerRealIntegrationShould {
     public void create_a_d2_instance_which_downloads_and_persists_data_from_server() throws Exception {
         configureD2();
 
-        d2Manager.getD2().userModule().logIn("android", "Android123").call();
+        D2Manager.getD2().userModule().logIn("android", "Android123").blockingGet();
 
-        assertThat(d2Manager.getD2().userModule().authenticatedUser.get().user() != null).isTrue();
+        assertThat(D2Manager.getD2().userModule().authenticatedUser.get().user() != null).isTrue();
     }
 
     private void configureD2() {
-        d2Manager.configureD2(RealServerMother.url);
+        D2Manager.setServerUrl(RealServerMother.url).andThen(D2Manager.instantiateD2()).blockingGet();
     }
 
     private void persistCredentialsInDb() {
-        d2Manager.getD2().databaseAdapter().database().setForeignKeyConstraintsEnabled(Boolean.FALSE);
+        D2Manager.getD2().databaseAdapter().database().setForeignKeyConstraintsEnabled(Boolean.FALSE);
 
-        UserCredentialsStoreImpl.create(d2Manager.getD2().databaseAdapter()).insert(UserCredentials.builder()
+        UserCredentialsStoreImpl.create(D2Manager.getD2().databaseAdapter()).insert(UserCredentials.builder()
                 .user(User.builder().uid("user").build()).uid("uid").username("username").build());
     }
 }

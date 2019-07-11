@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.common;
 
-import androidx.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 
 import org.hisp.dhis.android.core.data.database.IgnoreObjectStyleAdapter;
+
+import androidx.annotation.Nullable;
 
 public interface ObjectWithStyle<O, B extends ObjectWithStyle.Builder<O, B>> {
 

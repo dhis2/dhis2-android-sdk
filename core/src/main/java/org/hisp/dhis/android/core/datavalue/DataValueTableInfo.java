@@ -28,15 +28,16 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.datavalue.internal.DataValueFields;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public class DataValueTableInfo {
 
     // Different BD column names than API fields.
-    static final String ORGANISATION_UNIT =  "organisationUnit";
+    public static final String ORGANISATION_UNIT =  "organisationUnit";
     private static final String FOLLOW_UP = "followUp";
 
     private DataValueTableInfo() {}

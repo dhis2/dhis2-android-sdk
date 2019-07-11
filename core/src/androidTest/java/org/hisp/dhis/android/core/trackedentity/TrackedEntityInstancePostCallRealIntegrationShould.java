@@ -31,21 +31,20 @@ package org.hisp.dhis.android.core.trackedentity;
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.Coordinates;
-import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
-import org.hisp.dhis.android.core.event.EventStore;
-import org.hisp.dhis.android.core.event.EventStoreImpl;
+import org.hisp.dhis.android.core.event.internal.EventStore;
+import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -59,6 +58,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionRepository;
 import org.hisp.dhis.android.core.utils.CodeGenerator;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -201,7 +201,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     //@Test
     public void post_a_tei() throws Exception {
         downloadMetadata();
-        d2.trackedEntityModule().downloadTrackedEntityInstances(4, true, false).asObservable().subscribe();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(4, true, false).subscribe();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
@@ -227,7 +227,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     //@Test
     public void post_more_than_one_tei() throws Exception {
         downloadMetadata();
-        d2.trackedEntityModule().downloadTrackedEntityInstances(4, true, false).asObservable().subscribe();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(4, true, false).subscribe();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
@@ -250,7 +250,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     //@Test
     public void post_teis_filtering_what_to_post() throws Exception {
         downloadMetadata();
-        d2.trackedEntityModule().downloadTrackedEntityInstances(4, true, false).asObservable().subscribe();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(4, true, false).subscribe();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
@@ -281,7 +281,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     //@Test
     public void post_one_tei_and_delete_it() throws Exception {
         downloadMetadata();
-        d2.trackedEntityModule().downloadTrackedEntityInstances(1, true, false).asObservable().subscribe();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(1, true, false).subscribe();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
@@ -312,7 +312,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     //@Test
     public void post_new_relationship_to_client_created_tei() throws Exception {
         downloadMetadata();
-        d2.trackedEntityModule().downloadTrackedEntityInstances(5, true, false).asObservable().subscribe();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(5, true, false).subscribe();
 
         TrackedEntityInstance teiA = trackedEntityInstanceStore.selectFirst();
         RelationshipType relationshipType = d2.relationshipModule().relationshipTypes.get().iterator().next();
@@ -360,7 +360,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     public void create_tei_to_tei_relationship() throws Exception {
         downloadMetadata();
 
-        d2.trackedEntityModule().downloadTrackedEntityInstances(5,  false, false).asObservable().subscribe();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(5,  false, false).subscribe();
         List<TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.selectAll();
         assertThat(trackedEntityInstances.size() >= 5).isTrue();
 
@@ -379,7 +379,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     public void create_and_delete_tei_to_tei_relationship() throws Exception {
         downloadMetadata();
 
-        d2.trackedEntityModule().downloadTrackedEntityInstances(10,  false, false).asObservable().subscribe();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(10,  false, false).subscribe();
         List<TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.selectAll();
 
         assertThat(trackedEntityInstances.size() == 10).isTrue();
@@ -479,7 +479,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 .status(EventStatus.ACTIVE).coordinate(Coordinates.create(13.21, 12.21)).program(programUid)
                 .programStage(programStageUid).organisationUnit(orgUnitUid).eventDate(refDate).dueDate(refDate)
                 .completedDate(refDate).state(State.TO_POST).attributeOptionCombo(categoryComboOptionUid)
-                .trackedEntityInstance(trackedEntityInstanceUid).build();
+                .build();
 
         eventStore.insert(event);
 
@@ -552,9 +552,9 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     }
 
     private void downloadMetadata() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").blockingGet();
 
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
     }
 
     private boolean verifyEventCategoryAttributes(Event event, Event downloadedEvent) {

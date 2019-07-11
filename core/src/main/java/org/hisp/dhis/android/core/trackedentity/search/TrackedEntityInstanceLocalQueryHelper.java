@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.api.OuMode;
-import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
@@ -41,8 +41,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
-import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitFields.PARENT;
-import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitFields.PATH;
+import static org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields.PARENT;
+import static org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields.PATH;
 import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueFields.VALUE;
 
 final class TrackedEntityInstanceLocalQueryHelper {
@@ -136,12 +136,12 @@ final class TrackedEntityInstanceLocalQueryHelper {
 
     private static boolean hasOrgunits(TrackedEntityInstanceQuery query) {
         return !query.orgUnits().isEmpty() &&
-                !OuMode.ALL.equals(query.orgUnitMode()) &&
-                !OuMode.ACCESSIBLE.equals(query.orgUnitMode());
+                !OrganisationUnitMode.ALL.equals(query.orgUnitMode()) &&
+                !OrganisationUnitMode.ACCESSIBLE.equals(query.orgUnitMode());
     }
 
     private static void appendOrgunitWhere(WhereClauseBuilder where, TrackedEntityInstanceQuery query) {
-        OuMode ouMode = query.orgUnitMode() == null ? OuMode.SELECTED : query.orgUnitMode();
+        OrganisationUnitMode ouMode = query.orgUnitMode() == null ? OrganisationUnitMode.SELECTED : query.orgUnitMode();
 
         WhereClauseBuilder inner = new WhereClauseBuilder();
         switch (ouMode) {

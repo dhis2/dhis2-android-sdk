@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.core.utils;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 
 import java.util.ArrayList;
@@ -40,6 +37,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * A collection of utility abstractions

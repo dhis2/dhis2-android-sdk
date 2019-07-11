@@ -53,11 +53,11 @@ public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmpt
     }
 
     private void givenALoginInDatabase() throws Exception {
-        d2.userModule().logIn("user", "password").call();
+        d2.userModule().logIn("user", "password").blockingGet();
     }
 
     private void givenAMetadataInDatabase() throws Exception {
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
     }
 
     private void givenAEventInDatabase() {

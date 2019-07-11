@@ -28,14 +28,11 @@
 
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public final class CategoryCategoryOptionLinkTableInfo {
-
-
 
     public static final TableInfo TABLE_INFO = new TableInfo() {
 
@@ -50,19 +47,14 @@ public final class CategoryCategoryOptionLinkTableInfo {
         }
     };
 
-    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            CategoryOptionTableInfo.TABLE_INFO,
-            Columns.CATEGORY,
-            Columns.CATEGORY_OPTION);
-
     private CategoryCategoryOptionLinkTableInfo() {
     }
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
 
-        static final String CATEGORY = "category";
-        private static final String CATEGORY_OPTION = "categoryOption";
-        private static final String SORT_ORDER = "sortOrder";
+        public static final String CATEGORY = "category";
+        public static final String CATEGORY_OPTION = "categoryOption";
+        public static final String SORT_ORDER = "sortOrder";
 
         @Override
         public String[] all() {

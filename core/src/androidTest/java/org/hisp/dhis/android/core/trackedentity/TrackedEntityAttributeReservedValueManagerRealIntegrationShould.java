@@ -29,27 +29,27 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore;
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramStore;
+import org.hisp.dhis.android.core.program.internal.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
+import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStore;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -111,7 +111,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 
         manager = d2.trackedEntityModule().reservedValueManager;
 
-        SyncHandler<TrackedEntityAttributeReservedValue> handler = new ObjectWithoutUidSyncHandlerImpl<>(store);
+        Handler<TrackedEntityAttributeReservedValue> handler = new ObjectWithoutUidHandlerImpl<>(store);
 
         List<TrackedEntityAttributeReservedValue> trackedEntityAttributeReservedValues = new ArrayList<>();
 
@@ -258,7 +258,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 //    @Test
     public void sync_all_tracked_entity_instances() throws Exception {
         assertThat(selectAll().size(), is(3));
-        d2.syncMetaData().call();
+        d2.syncMetaData().blockingSubscribe();
         d2.trackedEntityModule().reservedValueManager.syncReservedValues(null, null,null);
 
         /* 100 Reserved values by default * 2 TEA with generated property true on server = 200 */
@@ -325,8 +325,8 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 
     private void login() {
         try {
-            if (!d2.userModule().isLogged().call()) {
-                d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
+            if (!d2.userModule().isLogged().blockingGet()) {
+                d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
             }
         } catch (Exception ignored) {
         }

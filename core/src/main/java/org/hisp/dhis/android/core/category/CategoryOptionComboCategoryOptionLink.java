@@ -29,12 +29,13 @@
 package org.hisp.dhis.android.core.category;
 
 import android.database.Cursor;
-import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 public abstract class CategoryOptionComboCategoryOptionLink implements Model {
@@ -49,7 +50,7 @@ public abstract class CategoryOptionComboCategoryOptionLink implements Model {
         return new AutoValue_CategoryOptionComboCategoryOptionLink.Builder();
     }
 
-    static CategoryOptionComboCategoryOptionLink create(Cursor cursor) {
+    public static CategoryOptionComboCategoryOptionLink create(Cursor cursor) {
         return AutoValue_CategoryOptionComboCategoryOptionLink.createFromCursor(cursor);
     }
 

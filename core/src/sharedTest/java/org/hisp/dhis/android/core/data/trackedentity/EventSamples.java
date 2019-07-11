@@ -57,7 +57,6 @@ public class EventSamples {
                 .completedDate(getDate("2014-08-20T12:28:56.409"))
                 .dueDate(getDate("2014-08-20T12:28:56.409"))
                 .attributeOptionCombo("attribute_option_combo")
-                .trackedEntityInstance("tracked_entity_instance")
                 .state(State.TO_POST)
                 .deleted(false)
                 .build();

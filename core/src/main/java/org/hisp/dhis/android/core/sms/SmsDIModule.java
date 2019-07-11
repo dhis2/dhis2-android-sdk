@@ -3,7 +3,7 @@ package org.hisp.dhis.android.core.sms;
 import android.content.Context;
 
 import org.hisp.dhis.android.core.sms.data.DeviceStateRepositoryImpl;
-import org.hisp.dhis.android.core.sms.data.LocalDbRepositoryImpl;
+import org.hisp.dhis.android.core.sms.data.localdbrepository.LocalDbRepositoryImpl;
 import org.hisp.dhis.android.core.sms.data.smsrepository.SmsRepositoryImpl;
 import org.hisp.dhis.android.core.sms.data.webapirepository.WebApiRepositoryImpl;
 import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;

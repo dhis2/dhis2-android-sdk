@@ -28,8 +28,9 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintFields;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public final class RelationshipConstraintTableInfo {

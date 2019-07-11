@@ -28,18 +28,16 @@
 
 package org.hisp.dhis.android.core.event;
 
-import androidx.annotation.VisibleForTesting;
-
-import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.event.internal.EventPersistenceCallFactory;
 import org.hisp.dhis.android.core.event.internal.EventWithLimitCallFactory;
 
-import java.util.concurrent.Callable;
-
 import javax.inject.Inject;
 
+import androidx.annotation.VisibleForTesting;
 import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.reactivex.Observable;
 
 @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 @Reusable
@@ -73,7 +71,7 @@ public final class EventModule {
      * @param limitByProgram If true, the limit of Events is considered per program.
      * @return -
      */
-    public Callable<Unit> downloadSingleEvents(int eventLimit, boolean limitByOrgUnit, boolean limitByProgram) {
-        return eventWithLimitCallFactory.getCall(eventLimit, limitByOrgUnit, limitByProgram);
+    public Observable<D2Progress> downloadSingleEvents(int eventLimit, boolean limitByOrgUnit, boolean limitByProgram) {
+        return eventWithLimitCallFactory.downloadSingleEvents(eventLimit, limitByOrgUnit, limitByProgram);
     }
 }

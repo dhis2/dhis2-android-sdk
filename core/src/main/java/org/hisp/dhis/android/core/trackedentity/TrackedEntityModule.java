@@ -33,13 +33,13 @@ import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuer
 
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 @Reusable
@@ -109,7 +109,7 @@ public final class TrackedEntityModule {
      * @param uids List of TrackedEntityInstance uids
      * @return -
      */
-    public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {
+    public Single<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {
         return downloadAndPersistCallFactory.getCall(uids);
     }
 
@@ -121,7 +121,7 @@ public final class TrackedEntityModule {
      * @param program Program uid
      * @return -
      */
-    public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids,
+    public Single<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids,
                                                                                      String program) {
         return downloadAndPersistCallFactory.getCall(uids, program);
     }

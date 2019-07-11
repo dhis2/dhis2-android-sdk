@@ -69,20 +69,20 @@ public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockInte
         dhis2MockServer.shutdown();
     }
 
-    private static void login() throws Exception {
+    private static void login() {
         d2.userModule().logIn("android", "Android123").blockingGet();
     }
 
-    private static void downloadMetadata() throws Exception {
+    private static void downloadMetadata() {
         d2.syncMetaData().blockingSubscribe();
     }
 
     private static void downloadTrackedEntityInstances() {
-        d2.trackedEntityModule().downloadTrackedEntityInstances(2, false, false).subscribe();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(2, false, false).blockingSubscribe();
     }
 
-    private static void downloadEvents() throws Exception {
-        d2.eventModule().downloadSingleEvents(2, false, false).call();
+    private static void downloadEvents() {
+        d2.eventModule().downloadSingleEvents(2, false, false).blockingSubscribe();
     }
 
     private static void downloadAggregatedData() {

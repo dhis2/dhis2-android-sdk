@@ -63,6 +63,7 @@ import io.reactivex.Observable;
 import io.reactivex.Single;
 
 @Reusable
+@SuppressWarnings({"PMD.ExcessiveImports"})
 public final class TrackedEntityInstanceWithLimitCallFactory {
 
     private final Resource.Type resourceType = Resource.Type.TRACKED_ENTITY_INSTANCE;
@@ -80,7 +81,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     private final TrackedEntityInstancePersistenceCallFactory persistenceCallFactory;
     private final TrackedEntityInstancesEndpointCallFactory endpointCallFactory;
 
-    private Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet;
+    private final Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet;
 
     // TODO use scheduler for parallel download
     // private final Scheduler teiDownloadScheduler = Schedulers.from(Executors.newFixedThreadPool(6));

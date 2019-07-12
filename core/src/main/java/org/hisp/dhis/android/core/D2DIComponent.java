@@ -84,7 +84,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 import retrofit2.Retrofit;
 
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.ExcessivePublicCount"})
 @Singleton
 @Component(modules = {
         AppContextDIModule.class,

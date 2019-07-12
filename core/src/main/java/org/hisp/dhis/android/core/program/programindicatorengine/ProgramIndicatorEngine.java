@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
@@ -103,6 +104,7 @@ public class ProgramIndicatorEngine {
     private final EnrollmentStore enrollmentStore;
     private final EventStore eventStore;
     private final IdentifiableObjectStore<DataElement> dataElementStore;
+    private final IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
     private final IdentifiableObjectStore<Constant> constantStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
@@ -112,6 +114,7 @@ public class ProgramIndicatorEngine {
                            EnrollmentStore enrollmentStore,
                            EventStore eventStore,
                            IdentifiableObjectStore<DataElement> dataElementStore,
+                           IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore,
                            IdentifiableObjectStore<Constant> constantStore,
                            TrackedEntityAttributeValueStore trackedEntityAttributeValueStore) {
         this.programIndicatorStore = programIndicatorStore;
@@ -119,6 +122,7 @@ public class ProgramIndicatorEngine {
         this.enrollmentStore = enrollmentStore;
         this.eventStore = eventStore;
         this.dataElementStore = dataElementStore;
+        this.trackedEntityAttributeStore = trackedEntityAttributeStore;
         this.constantStore = constantStore;
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
     }
@@ -204,7 +208,7 @@ public class ProgramIndicatorEngine {
                 if (dataValue == null || dataValue.value() == null || dataValue.value().isEmpty()) {
                     value = "0";
                 } else {
-                    value = formatDataValue(dataValue);
+                    value = formatTEDV(dataValue);
                     valueCount++;
                     zeroPosValueCount = isZeroOrPositive(value) ? (zeroPosValueCount + 1) : zeroPosValueCount;
                 }
@@ -228,7 +232,7 @@ public class ProgramIndicatorEngine {
                             attributeValue.value().isEmpty()) {
                         value = NULL_REPLACEMENT;
                     } else {
-                        value = attributeValue.value();
+                        value = formatTEAV(attributeValue);
 
                         valueCount++;
                         zeroPosValueCount = isZeroOrPositive(value) ? (zeroPosValueCount + 1) : zeroPosValueCount;
@@ -239,7 +243,7 @@ public class ProgramIndicatorEngine {
                 Constant constant = constantStore.selectByUid(uid);
 
                 if (constant != null) {
-                    matcher.appendReplacement(buffer, String.valueOf(constant.value()));
+                    matcher.appendReplacement(buffer, formatConstant(constant));
                 }
             } else if (KEY_PROGRAM_VARIABLE.equals(key)) {
                 String value = null;
@@ -256,7 +260,7 @@ public class ProgramIndicatorEngine {
                     } else if (ENROLLMENT_STATUS.equals(uid)) {
                         value =  cachedEnrollment.status() == null ? null : cachedEnrollment.status().name();
                     } else if (EVENT_COUNT.equals(uid)) {
-                        value = eventStore.countEventsForEnrollment(enrollment).toString();
+                        value = formatCount(eventStore.countEventsForEnrollment(enrollment));
                     }
                 }
 
@@ -290,9 +294,9 @@ public class ProgramIndicatorEngine {
             String var = matcher.group(1);
 
             if (VAR_VALUE_COUNT.equals(var)) {
-                matcher.appendReplacement(buffer, String.valueOf(valueCount));
+                matcher.appendReplacement(buffer, formatCount(valueCount));
             } else if (VAR_ZERO_POS_VALUE_COUNT.equals(var)) {
-                matcher.appendReplacement(buffer, String.valueOf(zeroPosValueCount));
+                matcher.appendReplacement(buffer, formatCount(zeroPosValueCount));
             }
         }
 
@@ -357,25 +361,42 @@ public class ProgramIndicatorEngine {
         }
     }
 
-    private String formatDataValue(TrackedEntityDataValue dataValue) {
-
+    private String formatTEDV(TrackedEntityDataValue dataValue) {
         DataElement dataElement = dataElementStore.selectByUid(dataValue.dataElement());
+        return formatValue(dataValue.value(), dataElement.valueType());
+    }
 
-        if (dataElement.valueType() == ValueType.BOOLEAN) {
-            return dataValue.value().equals("true") ? "1" : "0";
+    private String formatTEAV(TrackedEntityAttributeValue attributeValue) {
+        TrackedEntityAttribute attribute =
+                trackedEntityAttributeStore.selectByUid(attributeValue.trackedEntityAttribute());
+        return formatValue(attributeValue.value(), attribute.valueType());
+    }
+
+    private String formatConstant(Constant constant) {
+        String value = String.valueOf(constant.value());
+        return formatValue(value, ValueType.NUMBER);
+    }
+
+    private String formatCount(Integer count) {
+        return (count + ".0");
+    }
+
+    private String formatValue(String value, ValueType valueType) {
+        if (valueType == ValueType.BOOLEAN) {
+            return "true".equals(value) ? "1" : "0";
         }
 
-        if (MathUtils.isNumeric(dataValue.value())) {
-            if (dataValue.value().endsWith(".")) {
-                return (dataValue.value() + "0");
+        if (MathUtils.isNumeric(value)) {
+            if (value.endsWith(".")) {
+                return (value + "0");
             }
 
-            if (!dataValue.value().contains(".")) {
-                return (dataValue.value() + ".0");
+            if (!value.contains(".")) {
+                return (value + ".0");
             }
         }
 
-        return dataValue.value();
+        return value;
     }
 
     private static boolean isZeroOrPositive(String value) {

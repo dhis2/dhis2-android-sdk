@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
@@ -127,6 +128,9 @@ public class ProgramIndicatorEngineShould {
     private String dataElementUid3 = "vJeQc8NlWu6";
     private String dataElementUid4 = "jnyUQYDwj7K";
 
+    @Mock
+    private TrackedEntityAttribute trackedEntityAttribute;
+
     private String attributeUid = "UQ0qSNHEpLt";
 
     private String programStageUid1 = "un3rUMhluNu";
@@ -148,6 +152,8 @@ public class ProgramIndicatorEngineShould {
     @Mock
     private IdentifiableObjectStore<DataElement> dataElementStore;
     @Mock
+    private IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
+    @Mock
     private IdentifiableObjectStore<Constant> constantStore;
     @Mock
     private TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
@@ -159,7 +165,8 @@ public class ProgramIndicatorEngineShould {
     public void setUp() throws Exception {
 
         programIndicatorEngine = new ProgramIndicatorEngine(programIndicatorStore, trackedEntityDataValueStore,
-                enrollmentStore, eventStore, dataElementStore, constantStore, trackedEntityAttributeValueStore);
+                enrollmentStore, eventStore, dataElementStore, trackedEntityAttributeStore,
+                constantStore, trackedEntityAttributeValueStore);
 
         when(programIndicatorStore.selectByUid(programIndicatorUid)).thenReturn
                 (programIndicator);
@@ -215,6 +222,9 @@ public class ProgramIndicatorEngineShould {
         when(dataElementStore.selectByUid(dataElementUid2)).thenReturn(dataElement);
         when(dataElementStore.selectByUid(dataElementUid3)).thenReturn(dataElement);
         when(dataElementStore.selectByUid(dataElementUid4)).thenReturn(dataElement);
+
+        when(trackedEntityAttribute.valueType()).thenReturn(ValueType.NUMBER);
+        when(trackedEntityAttributeStore.selectByUid(attributeUid)).thenReturn(trackedEntityAttribute);
 
         when(trackedEntityAttributeValueStore.queryByTrackedEntityInstance(trackedEntityInstanceUid))
                 .thenReturn(Collections.singletonList(attributeValue));
@@ -373,7 +383,7 @@ public class ProgramIndicatorEngineShould {
 
         String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, eventUid1, programIndicatorUid);
 
-        assertThat(result).isEqualTo("2");
+        assertThat(result).isEqualTo("2.0");
     }
 
     @Test
@@ -387,7 +397,7 @@ public class ProgramIndicatorEngineShould {
 
         String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid1, programIndicatorUid);
 
-        assertThat(result).isEqualTo("(3.5 + 2.0) / 2");
+        assertThat(result).isEqualTo("(3.5 + 2.0) / 2.0");
     }
 
     @Test
@@ -398,7 +408,7 @@ public class ProgramIndicatorEngineShould {
 
         String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null, programIndicatorUid);
 
-        assertThat(result).isEqualTo("1989");
+        assertThat(result).isEqualTo("1989.0");
     }
 
     @Test

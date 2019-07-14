@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 import io.reactivex.Completable;
@@ -33,7 +34,7 @@ class MetadataIdsStore {
                     InputStream is = null;
                     try {
                         is = context.openFileInput(METADATA_FILE);
-                        JsonReader reader = new JsonReader(new InputStreamReader(is));
+                        JsonReader reader = new JsonReader(new InputStreamReader(is, StandardCharsets.UTF_8));
                         return getGson().fromJson(reader, SMSMetadata.class);
                     } finally {
                         if (is != null) {
@@ -47,7 +48,7 @@ class MetadataIdsStore {
     Completable setMetadataIds(final SMSMetadata metadata) {
         return Completable.fromAction(() -> {
                     OutputStream fos = context.openFileOutput(METADATA_FILE, Context.MODE_PRIVATE);
-                    JsonWriter writer = new JsonWriter(new OutputStreamWriter(fos));
+                    JsonWriter writer = new JsonWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8));
                     getGson().toJson(metadata, SMSMetadata.class, writer);
                     writer.flush();
                     writer.close();
@@ -61,12 +62,15 @@ class MetadataIdsStore {
                 .create();
     }
 
-    class DateLongFormatTypeAdapter extends TypeAdapter<Date> {
+    static class DateLongFormatTypeAdapter extends TypeAdapter<Date> {
 
         @Override
         public void write(JsonWriter out, Date value) throws IOException {
-            if (value != null) out.value(value.getTime());
-            else out.nullValue();
+            if (value == null) {
+                out.nullValue();
+            } else {
+                out.value(value.getTime());
+            }
         }
 
         @Override

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.dataapproval.DataApprovalCollectionRepository;
+
 import javax.inject.Inject;
 
 import dagger.Reusable;
@@ -40,13 +42,16 @@ public final class DataSetModule {
     public final DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations;
     public final DataSetCollectionRepository dataSets;
     public final SectionCollectionRepository sections;
+    public final DataApprovalCollectionRepository dataApprovals;
 
     @Inject
     DataSetModule(DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations,
                   DataSetCollectionRepository dataSets,
-                  SectionCollectionRepository sections) {
+                  SectionCollectionRepository sections,
+                  DataApprovalCollectionRepository dataApprovalCollectionRepository) {
         this.dataSetCompleteRegistrations = dataSetCompleteRegistrations;
         this.dataSets = dataSets;
         this.sections = sections;
+        this.dataApprovals = dataApprovalCollectionRepository;
     }
 }

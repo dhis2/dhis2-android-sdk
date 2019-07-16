@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
+import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.imports.internal.WebResponse;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 
-import java.util.concurrent.Callable;
+import io.reactivex.Observable;
 
 public interface ReadWriteWithUploadWithUidCollectionRepository<M extends Model & ObjectWithUidInterface, C>
         extends ReadWriteWithUidCollectionRepository<M, C> {
-    Callable<WebResponse> upload() throws D2Error;
+    Observable<D2Progress> upload();
 }

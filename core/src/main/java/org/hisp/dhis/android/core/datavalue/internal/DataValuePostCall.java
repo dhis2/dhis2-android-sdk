@@ -29,21 +29,23 @@
 package org.hisp.dhis.android.core.datavalue.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import dagger.Reusable;
+import io.reactivex.Observable;
 
 @Reusable
-public final class DataValuePostCall implements Callable<DataValueImportSummary> {
+public final class DataValuePostCall {
 
     private final DataValueService dataValueService;
     private final DataValueStore dataValueStore;
@@ -59,25 +61,29 @@ public final class DataValuePostCall implements Callable<DataValueImportSummary>
         this.apiCallExecutor = apiCallExecutor;
     }
 
-    @Override
-    public DataValueImportSummary call() throws Exception {
-        Collection<DataValue> toPostDataValues = new ArrayList<>();
+    public Observable<D2Progress> uploadDataValues() {
+        return Observable.create(emitter -> {
+            Collection<DataValue> toPostDataValues = new ArrayList<>();
 
-        appendPostableDataValues(toPostDataValues);
-        appendUpdatableDataValues(toPostDataValues);
+            appendPostableDataValues(toPostDataValues);
+            appendUpdatableDataValues(toPostDataValues);
 
-        if (toPostDataValues.isEmpty()) {
-            return DataValueImportSummary.EMPTY;
-        }
+            if (toPostDataValues.isEmpty()) {
+                emitter.onComplete();
+            } else {
+                D2ProgressManager progressManager = new D2ProgressManager(1);
 
-        DataValueSet dataValueSet = new DataValueSet(toPostDataValues);
+                DataValueSet dataValueSet = new DataValueSet(toPostDataValues);
 
-        DataValueImportSummary dataValueImportSummary = apiCallExecutor.executeObjectCall(
-                dataValueService.postDataValues(dataValueSet));
+                DataValueImportSummary dataValueImportSummary = apiCallExecutor.executeObjectCall(
+                        dataValueService.postDataValues(dataValueSet));
 
-        handleImportSummary(dataValueSet, dataValueImportSummary);
+                handleImportSummary(dataValueSet, dataValueImportSummary);
 
-        return dataValueImportSummary;
+                emitter.onNext(progressManager.increaseProgress(DataValue.class, true));
+                emitter.onComplete();
+            }
+        });
     }
 
     private void appendPostableDataValues(Collection<DataValue> dataValues) {

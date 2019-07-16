@@ -53,7 +53,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import androidx.annotation.NonNull;
 
@@ -66,12 +65,9 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
     public void download_tracked_entity_instance_enrollments_and_events() throws Exception {
         String teiUid = "PgmUFEQYZdt";
 
-        Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
-                d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
-
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_payload.json");
 
-        trackedEntityInstanceByUidEndPointCall.call();
+        d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid)).blockingGet();
 
         verifyDownloadedTrackedEntityInstancePayload("trackedentity/tracked_entity_instance_payload.json", teiUid);
     }
@@ -81,20 +77,15 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
             throws Exception {
         String teiUid = "PgmUFEQYZdt";
 
-        Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
-                d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
-
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_payload.json");
 
-        trackedEntityInstanceByUidEndPointCall.call();
-
-        trackedEntityInstanceByUidEndPointCall = d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
+        d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid)).blockingGet();
 
         EnrollmentStoreImpl.create(databaseAdapter).setState("p6xHz0sbDlx", State.TO_DELETE);
 
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_with_removed_data_payload.json");
 
-        trackedEntityInstanceByUidEndPointCall.call();
+        d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid)).blockingGet();
 
         verifyDownloadedTrackedEntityInstancePayload("trackedentity/tracked_entity_instance_with_removed_data_payload.json",
                 teiUid);
@@ -104,15 +95,13 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
     public void download_glass_protected_tracked_entity_instance() throws Exception {
         String teiUid = "PgmUFEQYZdt";
 
-        Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
-                d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid), "program");
 
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance.json");
         // TODO disabled since it makes the previous test fail (enqueue too many). Review
         //dhis2MockServer.enqueueMockResponse("trackedentity/glass/break_glass_successful.json");
         //dhis2MockServer.enqueueMockResponse(401, "trackedentity/glass/glass_protected_tei_failure.json");
 
-        trackedEntityInstanceByUidEndPointCall.call();
+        d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid), "program").blockingGet();
 
         verifyDownloadedTrackedEntityInstance("trackedentity/tracked_entity_instance.json", teiUid);
     }

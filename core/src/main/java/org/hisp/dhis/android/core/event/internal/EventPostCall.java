@@ -29,9 +29,11 @@
 package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.imports.internal.EventWebResponse;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
+import org.hisp.dhis.android.core.imports.internal.EventWebResponse;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
@@ -45,6 +47,7 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import dagger.Reusable;
+import io.reactivex.Observable;
 
 @Reusable
 public final class EventPostCall {
@@ -74,25 +77,30 @@ public final class EventPostCall {
         this.eventImportHandler = eventImportHandler;
     }
 
-    public EventWebResponse call(List<Event> filteredEvents) throws Exception {
-        List<Event> eventsToPost = queryDataToSync(filteredEvents);
+    public Observable<D2Progress> uploadEvents(List<Event> filteredEvents) {
+        return Observable.create(emitter -> {
+            List<Event> eventsToPost = queryDataToSync(filteredEvents);
 
-        // if there is nothing to send, return null
-        if (eventsToPost.isEmpty()) {
-            return EventWebResponse.empty();
-        }
+            // if there is nothing to send, return null
+            if (eventsToPost.isEmpty()) {
+                emitter.onComplete();
+            } else {
+                D2ProgressManager progressManager = new D2ProgressManager(1);
 
-        EventPayload eventPayload = new EventPayload();
-        eventPayload.events = eventsToPost;
+                EventPayload eventPayload = new EventPayload();
+                eventPayload.events = eventsToPost;
 
-        String strategy = versionManager.is2_29() ? "CREATE_AND_UPDATE" : "SYNC";
+                String strategy = versionManager.is2_29() ? "CREATE_AND_UPDATE" : "SYNC";
 
-        EventWebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                eventService.postEvents(eventPayload, strategy), Collections.singletonList(409),
-                EventWebResponse.class);
+                EventWebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
+                        eventService.postEvents(eventPayload, strategy), Collections.singletonList(409),
+                        EventWebResponse.class);
 
-        handleWebResponse(webResponse);
-        return webResponse;
+                handleWebResponse(webResponse);
+                emitter.onNext(progressManager.increaseProgress(Event.class, true));
+                emitter.onComplete();
+            }
+        });
     }
 
     @NonNull

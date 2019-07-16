@@ -33,12 +33,12 @@ import com.google.common.collect.Lists;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.Coordinates;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.Event;
@@ -64,8 +64,8 @@ import org.junit.Before;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Callable;
 
+import io.reactivex.observers.TestObserver;
 import retrofit2.Response;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -155,7 +155,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, featureType,
                 event1Uid, enrollment1Uid, trackedEntityInstance1Uid, trackedEntityAttributeUid, dataElementUid);
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
     }
 
 
@@ -184,10 +184,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         downloadMetadata();
 
 
-        Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
-                d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(trackedEntityInstanceUid));
-
-        trackedEntityInstanceByUidEndPointCall.call();
+        d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(trackedEntityInstanceUid))
+                .blockingGet();
 
         TrackedEntityInstance downloadedTrackedEntityInstance = getTrackedEntityInstanceFromDB(trackedEntityInstanceUid);
         Enrollment downloadedEnrollment = getEnrollmentsByTrackedEntityInstanceFromDb(trackedEntityInstanceUid);
@@ -212,12 +210,12 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         insertATei(newUid, tei, featureType);
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
         d2.wipeModule().wipeEverything();
         downloadMetadata();
 
-        List<TrackedEntityInstance> response =  d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid)).call();
+        List<TrackedEntityInstance> response =  d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid)).blockingGet();
 
         TrackedEntityInstance updatedTei = response.get(0);
 
@@ -237,12 +235,12 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         insertATei(newUid1, tei, tei.featureType());
         insertATei(newUid2, tei, tei.featureType());
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
         d2.wipeModule().wipeEverything();
         downloadMetadata();
 
-        List<TrackedEntityInstance> teiList =  d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid1)).call();
+        List<TrackedEntityInstance> teiList =  d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid1)).blockingGet();
 
         assertThat(teiList.size() == 1).isTrue();
     }
@@ -260,17 +258,17 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         insertATei(newUid1, tei, tei.featureType());
         insertATei(newUid2, tei, tei.featureType());
 
-        d2.trackedEntityModule().trackedEntityInstances.byUid().eq(newUid1).upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.byUid().eq(newUid1).upload().blockingSubscribe();
 
         d2.wipeModule().wipeEverything();
         downloadMetadata();
 
-        List<TrackedEntityInstance> teiList =  d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid1)).call();
+        List<TrackedEntityInstance> teiList =  d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid1)).blockingGet();
         assertThat(teiList.size() == 1).isTrue();
 
         boolean teiDownloadedSuccessfully = true;
         try {
-            d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid2)).call();
+            d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid2)).blockingGet();
         } catch (Exception e) {
             teiDownloadedSuccessfully = false;
         }
@@ -292,21 +290,22 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         insertATei(newUid, tei, featureType);
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
         List<TrackedEntityInstance> response =
-                d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid)).call();
+                d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid)).blockingGet();
         assertThat(response.size()).isEqualTo(1);
 
         trackedEntityInstanceStore.setState(newUid, State.TO_DELETE);
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
-        try {
-            d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid)).call();
-        } catch (D2Error e) {
-            assertThat(e.errorComponent()).isEqualTo(D2ErrorComponent.Server);
-            assertThat(e.errorCode()).isEqualTo(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE);
-        }
+        TestObserver<List<TrackedEntityInstance>> testObserver = d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid)).test();
+        testObserver.awaitTerminalEvent();
+
+        D2Error e = (D2Error) testObserver.errors().get(0);
+
+        assertThat(e.errorComponent()).isEqualTo(D2ErrorComponent.Server);
+        assertThat(e.errorCode()).isEqualTo(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE);
     }
 
     //@Test
@@ -327,15 +326,15 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 teiBUid, relationshipType.uid());
         d2.relationshipModule().relationships.add(newRelationship);
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
         d2.wipeModule().wipeEverything();
         downloadMetadata();
 
-        List<TrackedEntityInstance> responseTeiA =  d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiA.uid())).call();
+        List<TrackedEntityInstance> responseTeiA =  d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiA.uid())).blockingGet();
         assertThat(responseTeiA.size() == 1).isTrue();
 
-        List<TrackedEntityInstance> responseTeiB =  d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiBUid)).call();
+        List<TrackedEntityInstance> responseTeiB =  d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiBUid)).blockingGet();
         assertThat(responseTeiB.size() == 1).isTrue();
 
         List<Relationship> relationships = d2.relationshipModule().relationships.getByItem(RelationshipHelper.teiItem(teiA.uid()));
@@ -372,7 +371,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         d2.relationshipModule().relationships.add(RelationshipHelper.teiToTeiRelationship(t0.uid(), t1.uid(),
                 relationshipType.uid()));
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
     }
 
     //@Test
@@ -397,17 +396,17 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 relationshipType.uid());
         relationshipsRepository.add(newRelationship);
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
         relationshipsRepository.uid(newRelationship.uid()).delete();
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
     }
 
     //@Test
     public void post_a_tei_and_delete_one_event() throws Exception {
         downloadMetadata();
-        d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList("LxMVYhJm3Jp")).call();
+        d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList("LxMVYhJm3Jp")).blockingGet();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
@@ -420,11 +419,11 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         enrollmentStore.setState(enrollment.uid(), State.TO_UPDATE);
         eventStore.setState(eventUid, State.TO_DELETE);
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
         d2.wipeModule().wipeEverything();
         downloadMetadata();
-        d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList("LxMVYhJm3Jp")).call();
+        d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList("LxMVYhJm3Jp")).blockingGet();
 
         Boolean deleted = true;
         for (Event eventToCheck : eventStore.selectAll()) {
@@ -548,7 +547,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     }
 
     private void postTrackedEntityInstances() throws Exception {
-        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
     }
 
     private void downloadMetadata() throws Exception {

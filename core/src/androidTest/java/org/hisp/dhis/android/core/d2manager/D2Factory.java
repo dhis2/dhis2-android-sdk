@@ -54,7 +54,6 @@ public class D2Factory {
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
 
         D2Configuration d2Configuration = D2Configuration.builder()
-                .appName("d2_integration_tests")
                 .appVersion("1.0.0")
                 .readTimeoutInSeconds(30)
                 .connectTimeoutInSeconds(30)

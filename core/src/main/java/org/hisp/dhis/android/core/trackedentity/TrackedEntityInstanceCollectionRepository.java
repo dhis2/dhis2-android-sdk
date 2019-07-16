@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository;
@@ -41,18 +42,17 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
-import org.hisp.dhis.android.core.imports.internal.WebResponse;
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.period.FeatureType;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Observable;
 
 @Reusable
 public final class TrackedEntityInstanceCollectionRepository
@@ -78,8 +78,10 @@ public final class TrackedEntityInstanceCollectionRepository
     }
 
     @Override
-    public Callable<WebResponse> upload() {
-        return () -> postCall.call(byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).getWithoutChildren());
+    public Observable<D2Progress> upload() {
+        return Observable.fromCallable(() ->
+                byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).getWithoutChildren()
+        ).flatMap(postCall::uploadTrackedEntityInstances);
     }
 
     @Override

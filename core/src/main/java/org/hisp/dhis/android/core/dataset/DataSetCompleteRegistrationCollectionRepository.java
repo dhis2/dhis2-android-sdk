@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository;
@@ -41,14 +42,13 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationFields;
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationPostCall;
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore;
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Observable;
 
 @Reusable
 public final class DataSetCompleteRegistrationCollectionRepository
@@ -80,8 +80,8 @@ public final class DataSetCompleteRegistrationCollectionRepository
     }
 
     @Override
-    public Callable<DataValueImportSummary> upload() {
-        return postCall;
+    public Observable<D2Progress> upload() {
+        return postCall.uploadDataSetCompleteRegistrations();
     }
 
 

@@ -271,6 +271,14 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
 
     @Test
+    public void filter_by_orgunit_uid() {
+        List<Program> programs = d2.programModule().programs
+                .byOrganisationUnitUid("DiszpKrYNg8")
+                .get();
+        assertThat(programs.size(), is(1));
+    }
+
+    @Test
     public void filter_by_orgunit_list() {
         List<Program> programs = d2.programModule().programs
                 .byOrganisationUnitList(Collections.singletonList("DiszpKrYNg8"))

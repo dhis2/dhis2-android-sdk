@@ -45,13 +45,13 @@ import static org.hamcrest.core.Is.is;
 public class EventWithLimitCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
 
     @Test
-    public void download_events() throws Exception {
+    public void download_events() {
         int eventLimitByOrgUnit = 1;
 
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("event/events_1.json");
 
-        d2.eventModule().downloadSingleEvents(eventLimitByOrgUnit, false, false).call();
+        d2.eventModule().downloadSingleEvents(eventLimitByOrgUnit, false, false).blockingSubscribe();
 
         EventStore eventStore = EventStoreImpl.create(databaseAdapter);
 

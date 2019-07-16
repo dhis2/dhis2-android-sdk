@@ -26,45 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.period.internal;
 
-import com.google.common.collect.Lists;
-import com.google.common.truth.Truth;
+import org.hisp.dhis.android.core.period.PeriodType;
 
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
-import org.junit.Before;
+import java.util.Calendar;
 
-import java.io.IOException;
-import java.util.List;
+public class BiMonthlyPeriodGenerator extends NMonthlyPeriodGenerator {
 
-public class TrackedEntityInstanceCallRealIntegrationShould extends BaseRealIntegrationTest {
-
-    private D2 d2;
-
-    @Override
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
-
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+    BiMonthlyPeriodGenerator(Calendar calendar) {
+        super(calendar, PeriodType.BiMonthly, 2, "B", Calendar.JANUARY);
     }
 
-    //This test is commented because technically it is flaky.
-    //It depends on a live server to operate and the login is hardcoded here.
-    //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-
-    //@Test
-    public void download_tei_enrollments_and_events() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
-
-        d2.syncMetaData().blockingSubscribe();
-
-        List<TrackedEntityInstance> teiResponse = d2.trackedEntityModule()
-                .downloadTrackedEntityInstancesByUid(Lists.newArrayList("IaxoagO9899")).blockingGet();
-
-        Truth.assertThat(teiResponse.isEmpty()).isFalse();
+    @Override
+    protected String generateId() {
+        int periodNumber = calendar.get(Calendar.MONTH) / durationInMonths + 1;
+        return idFormatter.format(calendar.getTime()) + String.format("%02d", periodNumber) + idAdditionalString;
     }
 }

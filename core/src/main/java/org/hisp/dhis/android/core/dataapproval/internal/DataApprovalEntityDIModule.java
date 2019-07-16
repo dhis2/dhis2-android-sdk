@@ -32,8 +32,12 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.di.internal.ObjectWithoutUidStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataapproval.DataApproval;
+
+import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -53,6 +57,12 @@ public class DataApprovalEntityDIModule implements ObjectWithoutUidStoreProvider
     @Reusable
     public Handler<DataApproval> handler(ObjectWithoutUidStore<DataApproval> dataApprovalStore) {
         return new ObjectWithoutUidHandlerImpl<>(dataApprovalStore);
+    }
+
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<DataApproval>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 
 }

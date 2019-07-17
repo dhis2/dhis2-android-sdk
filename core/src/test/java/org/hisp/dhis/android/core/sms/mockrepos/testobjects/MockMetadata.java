@@ -9,39 +9,29 @@ import java.util.Collections;
 import java.util.List;
 
 public class MockMetadata extends SMSMetadata {
-    public List<String> getUsers() {
-        return Collections.singletonList(MockObjects.user);
+
+    public MockMetadata() {
+        users = Collections.singletonList(new ID(MockObjects.user));
+        trackedEntityTypes = Collections.singletonList(new ID(MockObjects.teiUid));
+        trackedEntityAttributes = getTrackedEntityAttributes();
+        programs = Collections.singletonList(new ID(MockObjects.program));
+        organisationUnits = Collections.singletonList(new ID(MockObjects.orgUnit));
+        categoryOptionCombos = Collections.singletonList(new ID(MockObjects.categoryOptionCombo));
+        dataElements = getDataElements();
     }
 
-    public List<String> getTrackedEntityTypes() {
-        return Collections.singletonList(MockObjects.teiUid);
-    }
-
-    public List<String> getTrackedEntityAttributes() {
-        ArrayList<String> attrs = new ArrayList<>();
+    private List<ID> getTrackedEntityAttributes() {
+        ArrayList<ID> attrs = new ArrayList<>();
         for (TrackedEntityAttributeValue item : MockObjects.getTestAttributeValues()) {
-            attrs.add(item.trackedEntityAttribute());
+            attrs.add(new ID(item.trackedEntityAttribute()));
         }
         return attrs;
     }
 
-    public List<String> getPrograms() {
-        return Collections.singletonList(MockObjects.program);
-    }
-
-    public List<String> getOrganisationUnits() {
-        return Collections.singletonList(MockObjects.orgUnit);
-    }
-
-    public List<String> getCategoryOptionCombos() {
-        return Collections.singletonList(MockObjects.categoryOptionCombo);
-    }
-
-    @Override
-    public List<String> getDataElements() {
-        ArrayList<String> attrs = new ArrayList<>();
+    private List<ID> getDataElements() {
+        ArrayList<ID> attrs = new ArrayList<>();
         for (DataValue item : MockObjects.getDataValues()) {
-            attrs.add(item.dataElement());
+            attrs.add(new ID(item.dataElement()));
         }
         return attrs;
     }

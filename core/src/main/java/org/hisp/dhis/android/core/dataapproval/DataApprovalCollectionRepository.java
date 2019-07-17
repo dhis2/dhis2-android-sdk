@@ -26,43 +26,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataapproval.internal;
+package org.hisp.dhis.android.core.dataapproval;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.di.internal.ObjectWithoutUidStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataapproval.DataApproval;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-import java.util.Collections;
 import java.util.Map;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module
-public class DataApprovalEntityDIModule implements ObjectWithoutUidStoreProvider<DataApproval> {
+@Reusable
+public class DataApprovalCollectionRepository extends ReadOnlyCollectionRepositoryImpl<DataApproval,
+        DataApprovalCollectionRepository> {
 
-    @Override
-    @Provides
-    @Reusable
-    public ObjectWithoutUidStore<DataApproval> store(DatabaseAdapter databaseAdapter) {
-        return DataApprovalStore.create(databaseAdapter);
+
+    @Inject
+    DataApprovalCollectionRepository(final ObjectWithoutUidStore<DataApproval> dataApprovalStore,
+                                     final Map<String, ChildrenAppender<DataApproval>> childrenAppenders,
+                                     final RepositoryScope repositoryScope) {
+
+        super(dataApprovalStore, childrenAppenders, repositoryScope, new FilterConnectorFactory<>(repositoryScope,
+                s -> new DataApprovalCollectionRepository(dataApprovalStore, childrenAppenders, s)));
     }
 
-    @Provides
-    @Reusable
-    public Handler<DataApproval> handler(ObjectWithoutUidStore<DataApproval> dataApprovalStore) {
-        return new ObjectWithoutUidHandlerImpl<>(dataApprovalStore);
+    public StringFilterConnector<DataApprovalCollectionRepository> byWorkflowUid() {
+        return cf.string(DataApprovalTableInfo.Columns.WORKFLOW);
     }
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<DataApproval>> childrenAppenders() {
-        return Collections.emptyMap();
+    public StringFilterConnector<DataApprovalCollectionRepository> byOrganisationUnitUid() {
+        return cf.string(DataApprovalTableInfo.Columns.ORGANISATION_UNIT);
+    }
+
+    public StringFilterConnector<DataApprovalCollectionRepository> byPeriodId() {
+        return cf.string(DataApprovalTableInfo.Columns.PERIOD);
+    }
+
+    public StringFilterConnector<DataApprovalCollectionRepository> byAttributeOptionComboUid() {
+        return cf.string(DataApprovalTableInfo.Columns.ATTRIBUTE_OPTION_COMBO);
     }
 
 }

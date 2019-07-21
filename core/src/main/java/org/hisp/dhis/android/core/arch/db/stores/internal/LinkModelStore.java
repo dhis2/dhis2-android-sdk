@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
-import org.hisp.dhis.android.core.common.Model;
-
 import androidx.annotation.NonNull;
+
+import org.hisp.dhis.android.core.common.Model;
 
 public interface LinkModelStore<M extends Model> extends ObjectStore<M> {
     void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
+    int deleteAllLinks();
 }

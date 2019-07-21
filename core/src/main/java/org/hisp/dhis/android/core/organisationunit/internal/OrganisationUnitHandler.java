@@ -34,5 +34,6 @@ import org.hisp.dhis.android.core.user.User;
 import java.util.Set;
 
 interface OrganisationUnitHandler extends HandlerWithTransformer<OrganisationUnit> {
+    void resetLinks();
     void setData(Set<String> programUids, Set<String> dataSetUids, User user, OrganisationUnit.Scope scope);
 }

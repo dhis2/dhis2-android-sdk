@@ -27,27 +27,23 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
-import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
-import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.user.User;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
@@ -60,83 +56,69 @@ class OrganisationUnitCallFactory {
 
     private final APICallExecutor apiCallExecutor;
     private final ResourceHandler resourceHandler;
-    private final CollectionCleaner<Program> programCollectionCleaner;
-    private final CollectionCleaner<DataSet> dataSetCollectionCleaner;
-    private final CollectionCleaner<OrganisationUnitGroup> organisationUnitGroupCollectionCleaner;
 
     @Inject
     OrganisationUnitCallFactory(@NonNull OrganisationUnitService organisationUnitService,
                                 @NonNull OrganisationUnitHandler handler,
                                 @NonNull APICallExecutor apiCallExecutor,
-                                @NonNull ResourceHandler resourceHandler,
-                                @NonNull CollectionCleaner<Program> programCollectionCleaner,
-                                @NonNull CollectionCleaner<DataSet> dataSetCollectionCleaner,
-                                @NonNull CollectionCleaner<OrganisationUnitGroup>
-                                        organisationUnitGroupCollectionCleaner) {
+                                @NonNull ResourceHandler resourceHandler) {
         this.organisationUnitService = organisationUnitService;
         this.handler = handler;
         this.apiCallExecutor = apiCallExecutor;
         this.resourceHandler = resourceHandler;
-        this.programCollectionCleaner = programCollectionCleaner;
-        this.dataSetCollectionCleaner = dataSetCollectionCleaner;
-        this.organisationUnitGroupCollectionCleaner = organisationUnitGroupCollectionCleaner;
     }
 
-    public Callable<List<OrganisationUnit>> create(final User user,
-                                                   final Set<String> programUids,
-                                                   final Set<String> dataSetUids) {
+    public Callable<Unit> create(final User user,
+                                 final Set<String> programUids,
+                                 final Set<String> dataSetUids) {
 
         return () -> {
-            Set<OrganisationUnit> allOrgunits = new HashSet<>();
-            Set<OrganisationUnit> capture = downloadCaptureOrgunits(user, programUids, dataSetUids);
-            Set<OrganisationUnit> search = downloadSearchOrgunits(user, programUids, dataSetUids);
+            handler.resetLinks();
 
-            allOrgunits.addAll(capture);
-            allOrgunits.addAll(search);
+            downloadCaptureOrgunits(user, programUids, dataSetUids);
+            downloadSearchOrgunits(user, programUids, dataSetUids);
 
-            if (programUids != null) {
+            // TODO Build a mechanism to remove unused Programs, Datasets and OrgunitGroups
+            /*if (programUids != null) {
                 programCollectionCleaner.deleteNotPresent(getLinkedPrograms(allOrgunits, programUids));
             }
             if (dataSetUids != null) {
                 dataSetCollectionCleaner.deleteNotPresent(getLinkedDatasets(allOrgunits, dataSetUids));
             }
-            organisationUnitGroupCollectionCleaner.deleteNotPresent(getLinkedGroups(allOrgunits));
+            organisationUnitGroupCollectionCleaner.deleteNotPresent(getLinkedGroups(allOrgunits));*/
 
             resourceHandler.handleResource(Resource.Type.ORGANISATION_UNIT);
 
-            return new ArrayList<>(allOrgunits);
+            return new Unit();
         };
     }
 
-    private Set<OrganisationUnit> downloadCaptureOrgunits(final User user,
-                                                          final Set<String> programUids,
-                                                          final Set<String> dataSetUids) throws D2Error {
+    private void downloadCaptureOrgunits(final User user,
+                                         final Set<String> programUids,
+                                         final Set<String> dataSetUids) throws D2Error {
         Set<String> captureOrgunitsUids = findRoots(user.organisationUnits());
-        Set<OrganisationUnit> captureOrgunits = downloadOrgunits(captureOrgunitsUids);
-
-        handler.setData(programUids, dataSetUids, user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
-
-        handler.handleMany(captureOrgunits, new OrganisationUnitDisplayPathTransformer());
-
-        return captureOrgunits;
+        downloadOrgunits(captureOrgunitsUids, user,
+                OrganisationUnit.Scope.SCOPE_DATA_CAPTURE, programUids, dataSetUids);
     }
 
-    private Set<OrganisationUnit> downloadSearchOrgunits(final User user,
-                                                           final Set<String> programUids,
-                                                           final Set<String> dataSetUids) throws D2Error {
+    private void downloadSearchOrgunits(final User user,
+                                        final Set<String> programUids,
+                                        final Set<String> dataSetUids) throws D2Error {
         Set<String> searchOrgunitsUids = findRoots(user.teiSearchOrganisationUnits());
-        Set<OrganisationUnit> searchOrgunits = downloadOrgunits(searchOrgunitsUids);
-
-        handler.setData(programUids, dataSetUids, user, OrganisationUnit.Scope.SCOPE_TEI_SEARCH);
-
-        handler.handleMany(searchOrgunits, new OrganisationUnitDisplayPathTransformer());
-
-        return searchOrgunits;
+        downloadOrgunits(searchOrgunitsUids, user,
+                OrganisationUnit.Scope.SCOPE_TEI_SEARCH, programUids, dataSetUids);
     }
 
-    private Set<OrganisationUnit> downloadOrgunits(Set<String> orguntis) throws D2Error {
-        Set<OrganisationUnit> organisationUnits = new HashSet<>();
-        for (String uid : orguntis) {
+    private void downloadOrgunits(final Set<String> orgUnits,
+                                  final User user,
+                                  final OrganisationUnit.Scope scope,
+                                  final Set<String> programUids,
+                                  final Set<String> dataSetUids) throws D2Error {
+
+        handler.setData(programUids, dataSetUids, user, scope);
+        OrganisationUnitDisplayPathTransformer transformer = new OrganisationUnitDisplayPathTransformer();
+
+        for (String uid : orgUnits) {
             OrganisationUnitQuery.Builder queryBuilder = OrganisationUnitQuery.builder().orgUnit(uid);
 
             List<OrganisationUnit> pageOrgunits;
@@ -144,14 +126,13 @@ class OrganisationUnitCallFactory {
             do {
                 pageQuery = queryBuilder.build();
                 pageOrgunits = apiCallExecutor.executePayloadCall(getOrganisationUnitAndDescendants(pageQuery));
-                organisationUnits.addAll(pageOrgunits);
+
+                handler.handleMany(pageOrgunits, transformer);
 
                 queryBuilder.page(pageQuery.page() + 1);
             }
             while (pageOrgunits.size() == pageQuery.pageSize());
         }
-
-        return organisationUnits;
     }
 
     private retrofit2.Call<Payload<OrganisationUnit>> getOrganisationUnitAndDescendants(OrganisationUnitQuery query) {
@@ -160,7 +141,7 @@ class OrganisationUnitCallFactory {
                 query.paging(), query.pageSize(), query.page());
     }
 
-    private Set<Program> getLinkedPrograms(Set<OrganisationUnit> capture, @NonNull Set<String> programUids) {
+    /*private Set<Program> getLinkedPrograms(Set<OrganisationUnit> capture, @NonNull Set<String> programUids) {
         Set<Program> linkedPrograms = new HashSet<>();
         for (OrganisationUnit orgunit : capture) {
             List<Program> orgUnitPrograms = orgunit.programs();
@@ -199,5 +180,5 @@ class OrganisationUnitCallFactory {
             }
         }
         return linkedGroups;
-    }
+    }*/
 }

@@ -34,9 +34,9 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.android.core.program.Program;
@@ -124,18 +124,8 @@ public class OrganisationUnitCallUnitShould {
     @Mock
     private OrganisationUnitHandler organisationUnitHandler;
 
-    @Mock
-    private CollectionCleaner<Program> programCollectionCleaner;
-
-    @Mock
-    private CollectionCleaner<DataSet> dataSetCollectionCleaner;
-
-    @Mock
-    private CollectionCleaner<OrganisationUnitGroup> organisationUnitGroupCollectionCleaner;
-
-
     //the call we are testing:
-    private Callable<List<OrganisationUnit>> organisationUnitCall;
+    private Callable<Unit> organisationUnitCall;
 
     @Before
     public void setUp() throws IOException {
@@ -182,8 +172,7 @@ public class OrganisationUnitCallUnitShould {
         when(user.nationality()).thenReturn("user_nationality");
 
         organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService, organisationUnitHandler,
-                apiCallExecutor, resourceHandler, programCollectionCleaner, dataSetCollectionCleaner,
-                organisationUnitGroupCollectionCleaner)
+                apiCallExecutor, resourceHandler)
                 .create(user, new HashSet<>(), new HashSet<>());
 
         //Return only one organisationUnit.
@@ -223,7 +212,7 @@ public class OrganisationUnitCallUnitShould {
 
         organisationUnitCall.call();
 
-        verify(organisationUnitHandler,  times(2)).handleMany(anyCollectionOf(OrganisationUnit.class),
+        verify(organisationUnitHandler,  times(1)).handleMany(anyCollectionOf(OrganisationUnit.class),
                 any(Transformer.class));
     }
 
@@ -233,16 +222,16 @@ public class OrganisationUnitCallUnitShould {
         organisationUnitCall.call();
         organisationUnitCall.call();
 
-        verify(organisationUnitHandler, times(4)).handleMany(anyCollectionOf(OrganisationUnit.class),
+        verify(organisationUnitHandler, times(2)).handleMany(anyCollectionOf(OrganisationUnit.class),
                 any(Transformer.class));
     }
 
-    @Test
+    /*@Test
     public void call_collection_cleaners() throws Exception {
         organisationUnitCall.call();
 
         verify(programCollectionCleaner).deleteNotPresent(anyCollectionOf(Program.class));
         verify(dataSetCollectionCleaner).deleteNotPresent(anyCollectionOf(DataSet.class));
         verify(organisationUnitGroupCollectionCleaner).deleteNotPresent(anyCollectionOf(OrganisationUnitGroup.class));
-    }
+    }*/
 }

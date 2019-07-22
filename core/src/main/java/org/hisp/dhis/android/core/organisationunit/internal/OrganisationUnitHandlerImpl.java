@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
@@ -48,15 +50,11 @@ import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkHelper;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStoreImpl;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
+@SuppressWarnings({"PMD.ExcessiveImports"})
 class OrganisationUnitHandlerImpl extends IdentifiableHandlerImpl<OrganisationUnit>
         implements OrganisationUnitHandler {
     private final LinkHandler<OrganisationUnit, UserOrganisationUnitLink> userOrganisationUnitLinkHandler;
@@ -71,10 +69,6 @@ class OrganisationUnitHandlerImpl extends IdentifiableHandlerImpl<OrganisationUn
     private Set<String> dataSetUids;
     private OrganisationUnit.Scope scope;
 
-    private Set<String> userOrganisationUnitUids;
-
-    private Set<OrganisationUnit> userOrganisationUnitsToAdd;
-
     OrganisationUnitHandlerImpl(@NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
                                 @NonNull LinkHandler<OrganisationUnit, UserOrganisationUnitLink>
                                         userOrganisationUnitLinkHandler,
@@ -82,7 +76,7 @@ class OrganisationUnitHandlerImpl extends IdentifiableHandlerImpl<OrganisationUn
                                     organisationUnitProgramLinkHandler,
                                 @NonNull LinkHandler<DataSet, DataSetOrganisationUnitLink>
                                     dataSetOrganisationUnitLinkHandler,
-                                @Nullable Handler<OrganisationUnitGroup> organisationUnitGroupHandler,
+                                @NonNull Handler<OrganisationUnitGroup> organisationUnitGroupHandler,
                                 @NonNull LinkHandler<OrganisationUnitGroup,
                                                                         OrganisationUnitOrganisationUnitGroupLink>
                                         organisationUnitGroupLinkHandler) {
@@ -93,8 +87,14 @@ class OrganisationUnitHandlerImpl extends IdentifiableHandlerImpl<OrganisationUn
         this.organisationUnitGroupLinkHandler = organisationUnitGroupLinkHandler;
         this.organisationUnitProgramLinkHandler = organisationUnitProgramLinkHandler;
         this.dataSetOrganisationUnitLinkHandler = dataSetOrganisationUnitLinkHandler;
-        this.userOrganisationUnitUids = new HashSet<>();
-        this.userOrganisationUnitsToAdd = new HashSet<>();
+    }
+
+    @Override
+    public void resetLinks() {
+        userOrganisationUnitLinkHandler.resetAllLinks();
+        organisationUnitProgramLinkHandler.resetAllLinks();
+        dataSetOrganisationUnitLinkHandler.resetAllLinks();
+        organisationUnitGroupLinkHandler.resetAllLinks();
     }
 
     @Override
@@ -107,13 +107,10 @@ class OrganisationUnitHandlerImpl extends IdentifiableHandlerImpl<OrganisationUn
 
     @Override
     protected void afterObjectHandled(OrganisationUnit organisationUnit, HandleAction action) {
-
         addUserOrganisationUnitLink(organisationUnit);
         addOrganisationUnitProgramLink(organisationUnit);
         addOrganisationUnitDataSetLink(organisationUnit);
-
         organisationUnitGroupHandler.handleMany(organisationUnit.organisationUnitGroups());
-
         addOrganisationUnitOrganisationUnitGroupLink(organisationUnit);
     }
 
@@ -164,32 +161,17 @@ class OrganisationUnitHandlerImpl extends IdentifiableHandlerImpl<OrganisationUn
     }
 
     private void addUserOrganisationUnitLink(@NonNull OrganisationUnit organisationUnit) {
-
-        // TODO Check if this is necessary to avoid duplicates
-        if (userOrganisationUnitUids.add(organisationUnit.uid())) {
-            userOrganisationUnitsToAdd.add(organisationUnit);
-        }
-
-    }
-
-    private void handleUserOrganisationUnitLinks() {
         UserOrganisationUnitLink.Builder builder = UserOrganisationUnitLink.builder()
                 .organisationUnitScope(scope.name()).user(user.uid());
 
-        userOrganisationUnitLinkHandler.handleMany(scope.name(), userOrganisationUnitsToAdd,
-                organisationUnit -> builder
-                        .organisationUnit(organisationUnit.uid())
-                        .root(UserOrganisationUnitLinkHelper.isRoot(scope, user, organisationUnit))
+        // TODO MasterUid set to "" to avoid cleaning link table. Orgunits are paged, so the whole orguntit list is
+        //  not available in the handler. Maybe the store should not be a linkStore.
+        userOrganisationUnitLinkHandler.handleMany("", Collections.singletonList(organisationUnit),
+                orgUnit -> builder
+                        .organisationUnit(orgUnit.uid())
+                        .root(UserOrganisationUnitLinkHelper.isRoot(scope, user, orgUnit))
                         .build()
         );
-
-        userOrganisationUnitUids = new HashSet<>();
-        userOrganisationUnitsToAdd = new HashSet<>();
-    }
-
-    @Override
-    protected void afterCollectionHandled(Collection<OrganisationUnit> organisationUnits) {
-        handleUserOrganisationUnitLinks();
     }
 
     public static OrganisationUnitHandler create(DatabaseAdapter databaseAdapter) {

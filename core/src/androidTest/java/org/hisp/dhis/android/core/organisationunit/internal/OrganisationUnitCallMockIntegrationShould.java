@@ -35,17 +35,11 @@ import com.google.common.collect.Sets;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupTableInfo;
-import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
@@ -72,7 +66,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrationTestEmptyEnqueable {
     
     //The return of the organisationUnitCall to be tested:
-    private Callable<List<OrganisationUnit>> organisationUnitCall;
+    private Callable<Unit> organisationUnitCall;
 
     private OrganisationUnit expectedAfroArabicClinic = OrganisationUnitSamples.getAfroArabClinic();
     private OrganisationUnit expectedAdonkiaCHP = OrganisationUnitSamples.getAdonkiaCHP();
@@ -106,16 +100,9 @@ public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrati
                 OrganisationUnitHandlerImpl.create(databaseAdapter);
 
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter);
-        CollectionCleaner<Program> programCollectionCleaner =
-                new CollectionCleanerImpl<>(ProgramTableInfo.TABLE_INFO.name(), databaseAdapter);
-        CollectionCleaner<DataSet> dataSetCollectionCleaner =
-                new CollectionCleanerImpl<>(DataSetTableInfo.TABLE_INFO.name(), databaseAdapter);
-        CollectionCleaner<OrganisationUnitGroup> organisationUnitGroupCollectionCleaner =
-                new CollectionCleanerImpl<>(OrganisationUnitGroupTableInfo.TABLE_INFO.name(), databaseAdapter);
 
         organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService,
-                organisationUnitHandler, apiCallExecutor, objects.resourceHandler, programCollectionCleaner,
-                dataSetCollectionCleaner, organisationUnitGroupCollectionCleaner).create(user, programUids, null);
+                organisationUnitHandler, apiCallExecutor, objects.resourceHandler).create(user, programUids, null);
     }
 
     private void insertProgramWithUid(String uid) {

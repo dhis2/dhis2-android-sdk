@@ -81,8 +81,6 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     private final TrackedEntityInstancePersistenceCallFactory persistenceCallFactory;
     private final TrackedEntityInstancesEndpointCallFactory endpointCallFactory;
 
-    private final Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet;
-
     // TODO use scheduler for parallel download
     // private final Scheduler teiDownloadScheduler = Schedulers.from(Executors.newFixedThreadPool(6));
 
@@ -109,12 +107,12 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
         this.relationshipDownloadCallFactory = relationshipDownloadCallFactory;
         this.persistenceCallFactory = persistenceCallFactory;
         this.endpointCallFactory = endpointCallFactory;
-        this.programOrganisationUnitSet = new HashSet<>();
     }
 
     public Observable<D2Progress> download(final int teiLimit, final boolean limitByOrgUnit, boolean limitByProgram) {
         Observable<D2Progress> observable = Observable.defer(() -> {
             D2ProgressManager progressManager = new D2ProgressManager(null);
+            Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet = new HashSet<>();
             if (userOrganisationUnitLinkStore.count() == 0) {
                 return Observable.just(
                         progressManager.increaseProgress(TrackedEntityInstance.class, true));
@@ -123,9 +121,10 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
 
                 return Observable.concat(
                         downloadSystemInfo(progressManager),
-                        downloadTeis(progressManager, teiLimit, limitByOrgUnit, limitByProgram, allOkay),
+                        downloadTeis(progressManager, teiLimit, limitByOrgUnit, limitByProgram, allOkay,
+                                programOrganisationUnitSet),
                         downloadRelationshipTeis(progressManager),
-                        updateResource(progressManager, allOkay)
+                        updateResource(progressManager, allOkay, programOrganisationUnitSet)
                 );
             }
         });
@@ -144,7 +143,8 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
                                                 int teiLimit,
                                                 boolean limitByOrgUnit,
                                                 boolean limitByProgram,
-                                                BooleanWrapper allOkay) {
+                                                BooleanWrapper allOkay,
+                                                Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet) {
 
         int pageSize = TeiQuery.builder().build().pageSize();
         List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, teiLimit);
@@ -273,7 +273,8 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
                 ).build());
     }
 
-    private Observable<D2Progress> updateResource(D2ProgressManager progressManager, BooleanWrapper allOkay) {
+    private Observable<D2Progress> updateResource(D2ProgressManager progressManager, BooleanWrapper allOkay,
+                                                  Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet) {
         return Single.fromCallable(() -> {
             if (allOkay.get()) {
                 resourceHandler.handleResource(resourceType);

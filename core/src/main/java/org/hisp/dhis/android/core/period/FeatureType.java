@@ -29,5 +29,25 @@
 package org.hisp.dhis.android.core.period;
 
 public enum FeatureType {
-    POINT, POLYGON, MULTI_POLYGON, NONE
+
+    POINT("POINT", "Point"),
+    POLYGON("POLYGON", "Polygon"),
+    MULTI_POLYGON("MULTI_POLYGON", "MultiPolygon"),
+    NONE("NONE", "None");
+
+    private final String featureType;
+    private final String geometryType;
+
+    private FeatureType(String featureType, String geometryType) {
+        this.featureType = featureType;
+        this.geometryType = geometryType;
+    }
+
+    public String getFeatureType() {
+        return featureType;
+    }
+
+    public String getGeometryType() {
+        return geometryType;
+    }
 }

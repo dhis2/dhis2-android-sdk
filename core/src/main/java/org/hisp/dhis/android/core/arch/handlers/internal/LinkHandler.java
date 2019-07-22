@@ -33,4 +33,5 @@ import java.util.Collection;
 
 public interface LinkHandler<S, O extends Model> {
     void handleMany(String masterUid, Collection<S> slaves, Transformer<S, O> transformer);
+    void resetAllLinks();
 }

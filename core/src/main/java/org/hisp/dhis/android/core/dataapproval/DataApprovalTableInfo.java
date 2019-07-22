@@ -56,6 +56,7 @@ public class DataApprovalTableInfo {
         public static String ORGANISATION_UNIT = "organisationUnit";
         public static String PERIOD = "period";
         public static String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
+        public static String STATE = DataApprovalFields.STATE;
 
         @Override
         public String[] all() {
@@ -64,7 +65,7 @@ public class DataApprovalTableInfo {
                     ORGANISATION_UNIT,
                     PERIOD,
                     ATTRIBUTE_OPTION_COMBO,
-                    DataApprovalFields.STATE);
+                    STATE);
         }
 
         @Override

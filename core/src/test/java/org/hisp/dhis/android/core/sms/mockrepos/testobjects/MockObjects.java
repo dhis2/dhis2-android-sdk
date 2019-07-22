@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.sms.mockrepos.testobjects;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance;
@@ -78,6 +79,7 @@ public class MockObjects {
                 .lastUpdated(new Date())
                 .trackedEntityDataValues(getTeiDataValues())
                 .organisationUnit(orgUnit)
+                .status(EventStatus.COMPLETED)
                 .build();
     }
 
@@ -90,6 +92,7 @@ public class MockObjects {
                 .organisationUnit(orgUnit)
                 .enrollment(enrollmentUid)
                 .programStage(programStage)
+                .status(EventStatus.COMPLETED)
                 .build();
     }
 

@@ -40,8 +40,10 @@ import okhttp3.Interceptor;
 @AutoValue
 public abstract class D2Configuration {
 
+    @Nullable
     public abstract String appName();
 
+    @Nullable
     public abstract String appVersion();
 
     public abstract Integer readTimeoutInSeconds();

@@ -24,7 +24,7 @@ public class DeletionConverter extends Converter<String> {
             DeleteSMSSubmission subm = new DeleteSMSSubmission();
             subm.setSubmissionID(submissionId);
             subm.setUserID(user);
-            subm.setUid(uid);
+            subm.setEvent(uid);
             return subm;
         });
     }

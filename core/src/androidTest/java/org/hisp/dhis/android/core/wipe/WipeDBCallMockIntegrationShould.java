@@ -52,15 +52,15 @@ public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmpt
         DatabaseAssert.assertThatDatabase(databaseAdapter).isEmpty();
     }
 
-    private void givenALoginInDatabase() throws Exception {
+    private void givenALoginInDatabase() {
         d2.userModule().logIn("user", "password").blockingGet();
     }
 
-    private void givenAMetadataInDatabase() throws Exception {
+    private void givenAMetadataInDatabase() {
         d2.syncMetaData().blockingSubscribe();
     }
 
     private void givenAEventInDatabase() {
-        d2.eventModule().downloadSingleEvents(1, false, false);
+        d2.eventModule().downloadSingleEvents(1, false, false).blockingSubscribe();
     }
 }

@@ -37,6 +37,7 @@ public class TrackerEventConverter extends Converter<Event> {
             subm.setValues(convertDataValues(e.attributeOptionCombo(), e.trackedEntityDataValues()));
             subm.setOrgUnit(e.organisationUnit());
             subm.setUserID(user);
+            subm.setEventStatus(SimpleEventConverter.translateStatus(e.status()));
             return subm;
         });
     }

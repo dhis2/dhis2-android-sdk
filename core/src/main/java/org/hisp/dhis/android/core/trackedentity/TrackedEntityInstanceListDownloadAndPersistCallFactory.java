@@ -41,11 +41,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Single;
 import retrofit2.Call;
 
 @Reusable
@@ -79,17 +79,17 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
         this.trackedEntityInstanceService = trackedEntityInstanceService;
     }
 
-    public Callable<List<TrackedEntityInstance>> getCall(final Collection<String> trackedEntityInstanceUids) {
-        return () -> downloadAndPersist(trackedEntityInstanceUids, null);
+    public Single<List<TrackedEntityInstance>> getCall(final Collection<String> trackedEntityInstanceUids) {
+        return Single.fromCallable(() -> downloadAndPersistBlocking(trackedEntityInstanceUids, null));
     }
 
-    public Callable<List<TrackedEntityInstance>> getCall(final Collection<String> trackedEntityInstanceUids,
-                                                         final String program) {
-        return () -> downloadAndPersist(trackedEntityInstanceUids, program);
+    public Single<List<TrackedEntityInstance>> getCall(final Collection<String> trackedEntityInstanceUids,
+                                                       final String program) {
+        return Single.fromCallable(() -> downloadAndPersistBlocking(trackedEntityInstanceUids, program));
     }
 
-    private List<TrackedEntityInstance> downloadAndPersist(final Collection<String> trackedEntityInstanceUids,
-                                                           final String program) throws D2Error {
+    private List<TrackedEntityInstance> downloadAndPersistBlocking(final Collection<String> trackedEntityInstanceUids,
+                                                                   final String program) throws D2Error {
 
         return d2CallExecutor.executeD2CallTransactionally(() -> {
             if (trackedEntityInstanceUids == null) {

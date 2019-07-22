@@ -36,8 +36,8 @@ ext {
             buildToolsVersion: "28.0.3",
             minSdkVersion    : 19,
             targetSdkVersion : 28,
-            versionCode      : 170,
-            versionName      : "0.17.0-SNAPSHOT"
+            versionCode      : 172,
+            versionName      : "0.17.2-SNAPSHOT"
     ]
 
     libraries = [
@@ -193,7 +193,7 @@ dependencies {
     api "joda-time:joda-time:2.9.9"
 
     // sms compression library
-    api 'com.github.eHealthAfrica:dhis2-sms-compression:0.0.16'
+    api 'com.github.eHealthAfrica:dhis2-sms-compression:0.1.5'
 
     // Extension which generates mappers for work with cursor and content values
     api "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"

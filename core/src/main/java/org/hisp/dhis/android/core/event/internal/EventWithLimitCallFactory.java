@@ -30,9 +30,10 @@ package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine;
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging;
+import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -48,12 +49,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import dagger.Reusable;
+import io.reactivex.Observable;
 
 @Reusable
 public final class EventWithLimitCallFactory {
@@ -88,61 +89,77 @@ public final class EventWithLimitCallFactory {
         this.persistenceCallFactory = persistenceCallFactory;
     }
 
-    public Callable<Unit> getCall(final int eventLimit, final boolean limitByOrgUnit, final boolean limitByProgram) {
-        return () -> getEvents(eventLimit, limitByOrgUnit, limitByProgram);
+    public Observable<D2Progress> downloadSingleEvents(final int eventLimit,
+                                                       final boolean limitByOrgUnit,
+                                                       final boolean limitByProgram) {
+        D2ProgressManager progressManager = new D2ProgressManager(2);
+        return Observable.merge(
+                downloadSystemInfo(progressManager),
+                downloadEventsInternal(eventLimit, limitByOrgUnit, limitByProgram, progressManager)
+        );
     }
 
-    private Unit getEvents(int eventLimit, boolean limitByOrgUnit, boolean limitByProgram) {
-        Collection<String> organisationUnitUids;
-        boolean successfulSync = true;
+    private Observable<D2Progress> downloadEventsInternal(int eventLimit,
+                                                          boolean limitByOrgUnit,
+                                                          boolean limitByProgram,
+                                                          D2ProgressManager progressManager) {
+        return Observable.create(emitter -> {
+            Collection<String> organisationUnitUids;
+            boolean successfulSync = true;
 
-        EventQuery.Builder eventQueryBuilder = EventQuery.builder();
-        int pageSize = eventQueryBuilder.build().pageSize();
+            EventQuery.Builder eventQueryBuilder = EventQuery.builder();
+            int pageSize = eventQueryBuilder.build().pageSize();
 
-        systemInfoRepository.download().blockingAwait();
+            String lastUpdatedStartDate = resourceHandler.getLastUpdated(resourceType);
+            eventQueryBuilder.lastUpdatedStartDate(lastUpdatedStartDate);
 
-        String lastUpdatedStartDate = resourceHandler.getLastUpdated(resourceType);
-        eventQueryBuilder.lastUpdatedStartDate(lastUpdatedStartDate);
-
-        if (limitByOrgUnit) {
-            organisationUnitUids = getOrgUnitUids();
-        } else {
-            organisationUnitUids = userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids();
-            eventQueryBuilder.ouMode(OrganisationUnitMode.DESCENDANTS);
-        }
-
-        int eventsCount = 0;
-        for (String orgUnitUid : organisationUnitUids) {
             if (limitByOrgUnit) {
-                eventsCount = 0;
+                organisationUnitUids = getOrgUnitUids();
+            } else {
+                organisationUnitUids = userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids();
+                eventQueryBuilder.ouMode(OrganisationUnitMode.DESCENDANTS);
             }
-            if (eventsCount >= eventLimit) {
-                break;
-            }
-            eventQueryBuilder.orgUnit(orgUnitUid);
 
-            for (String programUid : programStore.queryWithoutRegistrationProgramUids()) {
-                if (limitByProgram) {
+            int eventsCount = 0;
+            for (String orgUnitUid : organisationUnitUids) {
+                if (limitByOrgUnit) {
                     eventsCount = 0;
                 }
                 if (eventsCount >= eventLimit) {
                     break;
                 }
+                eventQueryBuilder.orgUnit(orgUnitUid);
 
-                eventQueryBuilder.program(programUid);
+                for (String programUid : programStore.queryWithoutRegistrationProgramUids()) {
+                    if (limitByProgram) {
+                        eventsCount = 0;
+                    }
+                    if (eventsCount >= eventLimit) {
+                        break;
+                    }
 
-                EventsWithPagingResult result = getEventsForOrgUnitProgramCombination(eventQueryBuilder,
-                        pageSize, eventLimit - eventsCount);
-                eventsCount = eventsCount + result.eventCount;
-                successfulSync = successfulSync && result.successfulSync;
+                    eventQueryBuilder.program(programUid);
+
+                    EventsWithPagingResult result = getEventsForOrgUnitProgramCombination(eventQueryBuilder,
+                            pageSize, eventLimit - eventsCount);
+                    eventsCount = eventsCount + result.eventCount;
+                    successfulSync = successfulSync && result.successfulSync;
+                }
             }
-        }
 
-        if (successfulSync) {
-            resourceHandler.handleResource(resourceType);
-        }
+            if (successfulSync) {
+                resourceHandler.handleResource(resourceType);
+            }
 
-        return new Unit();
+            emitter.onNext(progressManager.increaseProgress(Event.class, true));
+            emitter.onComplete();
+        });
+    }
+
+    private Observable<D2Progress> downloadSystemInfo(D2ProgressManager progressManager) {
+        return systemInfoRepository.download()
+                .toSingle(() -> progressManager.increaseProgress(SystemInfo.class, false))
+                .toObservable();
     }
 
     private EventsWithPagingResult getEventsForOrgUnitProgramCombination(EventQuery.Builder eventQueryBuilder,

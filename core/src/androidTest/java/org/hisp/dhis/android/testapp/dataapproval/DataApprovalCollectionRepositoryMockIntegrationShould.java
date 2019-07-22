@@ -26,78 +26,67 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.testapp.datavalue;
+package org.hisp.dhis.android.testapp.dataapproval;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.datavalue.DataSetReport;
-import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.dataapproval.DataApproval;
+import org.hisp.dhis.android.core.dataapproval.DataApprovalState;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.text.ParseException;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(D2JunitRunner.class)
-public class DataSetReportCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
+public class DataApprovalCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
     public void find_all() {
-        List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
+        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals
                 .get();
-        assertThat(dataSetReports.size(), is(3));
+        assertThat(dataApprovals.size(), is(1));
     }
 
     @Test
-    public void filter_by_dataset() {
-        List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
-                .byDataSetUid().eq("lyLU2wR22tC")
+    public void filter_by_workflow() {
+        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals
+                .byWorkflowUid().eq("rIUL3hYOjJc")
                 .get();
-        assertThat(dataSetReports.size(), is(3));
-    }
-
-    @Test
-    public void filter_by_period() {
-        List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
-                .byPeriod().eq("2019")
-                .get();
-        assertThat(dataSetReports.size(), is(1));
-    }
-
-    @Test
-    public void filter_by_period_type() {
-        List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
-                .byPeriodType().eq(PeriodType.Yearly)
-                .get();
-        assertThat(dataSetReports.size(), is(3));
-    }
-
-    @Test
-    public void filter_by_period_start_date() throws ParseException {
-        List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
-                .byPeriodStartDate().after(BaseIdentifiableObject.parseDate("2018-07-15T00:00:00.000"))
-                .get();
-        assertThat(dataSetReports.size(), is(1));
-    }
-
-    @Test
-    public void filter_by_period_end_date() throws ParseException {
-        List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
-                .byPeriodEndDate().after(BaseIdentifiableObject.parseDate("2018-07-15T00:00:00.000"))
-                .get();
-        assertThat(dataSetReports.size(), is(2));
+        assertThat(dataApprovals.size(), is(1));
     }
 
     @Test
     public void filter_by_organisation_unit() {
-        List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
+        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals
                 .byOrganisationUnitUid().eq("DiszpKrYNg8")
                 .get();
-        assertThat(dataSetReports.size(), is(3));
+        assertThat(dataApprovals.size(), is(1));
     }
 
+    @Test
+    public void filter_by_period() {
+        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals
+                .byPeriodId().eq("2019")
+                .get();
+        assertThat(dataApprovals.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_attribute_option_combo() {
+        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals
+                .byAttributeOptionComboUid().eq("Gmbgme7z9BF")
+                .get();
+        assertThat(dataApprovals.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_state() {
+        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals
+                .byState().eq(DataApprovalState.UNAPPROVED_ABOVE)
+                .get();
+        assertThat(dataApprovals.size(), is(1));
+    }
 }

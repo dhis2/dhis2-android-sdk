@@ -38,9 +38,7 @@ import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoR
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.dataapproval.DataApproval;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -54,9 +52,6 @@ final class DataApprovalCallFactory extends QueryCallFactoryImpl<DataApproval,
 
     private final Handler<DataApproval> handler;
     private final DataApprovalService service;
-
-    private final SimpleDateFormat simpleDateFormat =
-            new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
     @Inject
     DataApprovalCallFactory(GenericCallData genericCallData,
@@ -79,8 +74,7 @@ final class DataApprovalCallFactory extends QueryCallFactoryImpl<DataApproval,
                 return service.getDataApprovals(
                         DataApprovalFields.allFields,
                         commaSeparatedCollectionValues(dataApprovalQuery.workflowsUids()),
-                        simpleDateFormat.format(dataApprovalQuery.startDate()),
-                        simpleDateFormat.format(dataApprovalQuery.endDate()),
+                        commaSeparatedCollectionValues(dataApprovalQuery.periodIds()),
                         commaSeparatedCollectionValues(dataApprovalQuery.organisationUnistUids()),
                         commaSeparatedCollectionValues(dataApprovalQuery.attributeOptionCombosUids())
                 );

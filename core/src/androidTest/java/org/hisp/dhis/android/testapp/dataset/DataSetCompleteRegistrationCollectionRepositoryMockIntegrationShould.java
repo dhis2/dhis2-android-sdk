@@ -52,7 +52,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                 d2.dataSetModule().dataSetCompleteRegistrations
                         .get();
 
-        assertThat(dataSetCompleteRegistrations.size(), is(5));
+        assertThat(dataSetCompleteRegistrations.size(), is(3));
     }
 
     @Test
@@ -74,7 +74,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                         .eq("lyLU2wR22tC")
                         .get();
 
-        assertThat(dataSetCompleteRegistrations.size(), is(5));
+        assertThat(dataSetCompleteRegistrations.size(), is(3));
     }
 
     @Test
@@ -85,7 +85,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                         .eq("DiszpKrYNg8")
                         .get();
 
-        assertThat(dataSetCompleteRegistrations.size(), is(5));
+        assertThat(dataSetCompleteRegistrations.size(), is(3));
     }
 
     @Test
@@ -95,7 +95,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                         .byAttributeOptionComboUid()
                         .eq("bRowv6yZOF2").get();
 
-        assertThat(dataSetCompleteRegistrations.size(), is(5));
+        assertThat(dataSetCompleteRegistrations.size(), is(3));
     }
 
     @Test
@@ -106,7 +106,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                         .after(simpleDateFormat.parse("2010-08-03"))
                         .get();
 
-        assertThat(dataSetCompleteRegistrations.size(), is(2));
+        assertThat(dataSetCompleteRegistrations.size(), is(1));
     }
 
     @Test
@@ -117,7 +117,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                         .before(simpleDateFormat.parse("2010-08-03"))
                         .get();
 
-        assertThat(dataSetCompleteRegistrations.size(), is(3));
+        assertThat(dataSetCompleteRegistrations.size(), is(2));
     }
 
     @Test

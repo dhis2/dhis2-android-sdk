@@ -50,4 +50,9 @@ public class LinkHandlerImpl<S, O extends Model> implements LinkHandler<S, O> {
             }
         }
     }
+
+    @Override
+    public void resetAllLinks() {
+        store.deleteAllLinks();
+    }
 }

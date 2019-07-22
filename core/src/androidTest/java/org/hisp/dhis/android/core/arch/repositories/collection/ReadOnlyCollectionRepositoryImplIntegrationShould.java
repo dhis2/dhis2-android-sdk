@@ -113,4 +113,25 @@ public class ReadOnlyCollectionRepositoryImplIntegrationShould extends BaseMockI
 
         assertThat(count).isEqualTo(1);
     }
+
+    @Test
+    public void get_isEmpty_with_unrestricted_scope() {
+        boolean isEmpty = relationshipTypeCollectionRepository.isEmpty();
+
+        assertThat(isEmpty).isEqualTo(false);
+    }
+
+    @Test
+    public void get_isEmpty_with_restricted_scope() {
+        boolean isEmpty = relationshipTypeCollectionRepository.byUid().eq(RELATIONSHIP_TYPE_UID_1).isEmpty();
+
+        assertThat(isEmpty).isEqualTo(false);
+    }
+
+    @Test
+    public void get_isEmpty_with_zero_elements_scope() {
+        boolean isEmpty = relationshipTypeCollectionRepository.byCode().eq("non-existing").isEmpty();
+
+        assertThat(isEmpty).isEqualTo(true);
+    }
 }

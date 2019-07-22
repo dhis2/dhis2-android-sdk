@@ -78,14 +78,8 @@ class OrganisationUnitCallFactory {
             downloadCaptureOrgunits(user, programUids, dataSetUids);
             downloadSearchOrgunits(user, programUids, dataSetUids);
 
-            // TODO Build a mechanism to remove unused Programs, Datasets and OrgunitGroups
-            /*if (programUids != null) {
-                programCollectionCleaner.deleteNotPresent(getLinkedPrograms(allOrgunits, programUids));
-            }
-            if (dataSetUids != null) {
-                dataSetCollectionCleaner.deleteNotPresent(getLinkedDatasets(allOrgunits, dataSetUids));
-            }
-            organisationUnitGroupCollectionCleaner.deleteNotPresent(getLinkedGroups(allOrgunits));*/
+            // TODO Build a mechanism to remove unused (not assigned to any orgunit) Programs,
+            //  Datasets and OrgunitGroups
 
             resourceHandler.handleResource(Resource.Type.ORGANISATION_UNIT);
 
@@ -140,45 +134,4 @@ class OrganisationUnitCallFactory {
                 OrganisationUnitFields.allFields, OrganisationUnitFields.path.like(query.orgUnit()),
                 query.paging(), query.pageSize(), query.page());
     }
-
-    /*private Set<Program> getLinkedPrograms(Set<OrganisationUnit> capture, @NonNull Set<String> programUids) {
-        Set<Program> linkedPrograms = new HashSet<>();
-        for (OrganisationUnit orgunit : capture) {
-            List<Program> orgUnitPrograms = orgunit.programs();
-            if (orgUnitPrograms != null) {
-                for (Program program : orgUnitPrograms) {
-                    if (programUids.contains(program.uid())) {
-                        linkedPrograms.add(program);
-                    }
-                }
-            }
-        }
-        return linkedPrograms;
-    }
-
-    private Set<DataSet> getLinkedDatasets(Set<OrganisationUnit> capture, @NonNull Set<String> dataSetUids) {
-        Set<DataSet> linkedDatasets = new HashSet<>();
-        for (OrganisationUnit orgunit : capture) {
-            List<DataSet> orgUnitPrograms = orgunit.dataSets();
-            if (orgUnitPrograms != null) {
-                for (DataSet dataSet : orgUnitPrograms) {
-                    if (dataSetUids.contains(dataSet.uid())) {
-                        linkedDatasets.add(dataSet);
-                    }
-                }
-            }
-        }
-        return linkedDatasets;
-    }
-
-    private Set<OrganisationUnitGroup> getLinkedGroups(Set<OrganisationUnit> capture) {
-        Set<OrganisationUnitGroup> linkedGroups = new HashSet<>();
-        for (OrganisationUnit orgunit : capture) {
-            List<OrganisationUnitGroup> orgUnitGroups = orgunit.organisationUnitGroups();
-            if (orgUnitGroups != null) {
-                linkedGroups.addAll(orgUnitGroups);
-            }
-        }
-        return linkedGroups;
-    }*/
 }

@@ -32,14 +32,10 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
-import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.user.User;
@@ -225,13 +221,4 @@ public class OrganisationUnitCallUnitShould {
         verify(organisationUnitHandler, times(2)).handleMany(anyCollectionOf(OrganisationUnit.class),
                 any(Transformer.class));
     }
-
-    /*@Test
-    public void call_collection_cleaners() throws Exception {
-        organisationUnitCall.call();
-
-        verify(programCollectionCleaner).deleteNotPresent(anyCollectionOf(Program.class));
-        verify(dataSetCollectionCleaner).deleteNotPresent(anyCollectionOf(DataSet.class));
-        verify(organisationUnitGroupCollectionCleaner).deleteNotPresent(anyCollectionOf(OrganisationUnitGroup.class));
-    }*/
 }

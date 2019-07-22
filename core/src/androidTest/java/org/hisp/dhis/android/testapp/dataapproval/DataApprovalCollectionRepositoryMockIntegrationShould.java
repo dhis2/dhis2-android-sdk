@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.testapp.dataapproval;
 
 import org.hisp.dhis.android.core.dataapproval.DataApproval;
+import org.hisp.dhis.android.core.dataapproval.DataApprovalState;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
@@ -77,6 +78,14 @@ public class DataApprovalCollectionRepositoryMockIntegrationShould extends BaseM
     public void filter_by_attribute_option_combo() {
         List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals
                 .byAttributeOptionComboUid().eq("Gmbgme7z9BF")
+                .get();
+        assertThat(dataApprovals.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_state() {
+        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals
+                .byState().eq(DataApprovalState.UNAPPROVED_ABOVE)
                 .get();
         assertThat(dataApprovals.size(), is(1));
     }

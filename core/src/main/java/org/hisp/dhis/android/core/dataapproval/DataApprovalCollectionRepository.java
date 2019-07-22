@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.dataapproval;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
@@ -69,6 +70,10 @@ public class DataApprovalCollectionRepository extends ReadOnlyCollectionReposito
 
     public StringFilterConnector<DataApprovalCollectionRepository> byAttributeOptionComboUid() {
         return cf.string(DataApprovalTableInfo.Columns.ATTRIBUTE_OPTION_COMBO);
+    }
+
+    public EnumFilterConnector<DataApprovalCollectionRepository, DataApprovalState> byState() {
+        return cf.enumC(DataApprovalTableInfo.Columns.STATE);
     }
 
 }

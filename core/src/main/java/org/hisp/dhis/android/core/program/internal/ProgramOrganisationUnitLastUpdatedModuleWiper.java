@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.programorganisationunit.internal;
+package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.wipe.ModuleWiper;
 import org.hisp.dhis.android.core.wipe.TableWiper;

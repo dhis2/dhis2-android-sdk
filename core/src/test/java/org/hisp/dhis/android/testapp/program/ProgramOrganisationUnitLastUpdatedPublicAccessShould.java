@@ -26,10 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.programorganisationunit.internal;
+package org.hisp.dhis.android.testapp.program;
 
-import dagger.Module;
+import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLastUpdated;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.mockito.Mock;
 
-@Module(includes = {ProgramOrganisationUnitLastUpdatedEntityDIModule.class})
-public final class ProgramOrganisationUnitLastUpdatedPackageDIModule {
+public class ProgramOrganisationUnitLastUpdatedPublicAccessShould
+        extends BasePublicAccessShould<ProgramOrganisationUnitLastUpdated> {
+
+    @Mock
+    private ProgramOrganisationUnitLastUpdated object;
+
+    @Override
+    public ProgramOrganisationUnitLastUpdated object() {
+        return object;
+    }
+
+    @Override
+    public void has_public_create_method() {
+        ProgramOrganisationUnitLastUpdated.create(null);
+    }
+
+    @Override
+    public void has_public_builder_method() {
+        ProgramOrganisationUnitLastUpdated.builder();
+    }
+
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
+    }
 }

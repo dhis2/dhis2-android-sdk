@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.arch.helpers.internal;
 
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.programorganisationunit.internal.ProgramOrganisationUnitLastUpdated;
+import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLastUpdated;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import java.util.Date;

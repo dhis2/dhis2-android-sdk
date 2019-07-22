@@ -26,31 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.programorganisationunit;
+package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.programorganisationunit.internal.ProgramOrganisationUnitLastUpdated;
+import dagger.Module;
 
-import java.text.ParseException;
-import java.util.Date;
-
-public class ProgramOrganisationUnitLastUpdatedSamples {
-
-    public static ProgramOrganisationUnitLastUpdated get() {
-        return ProgramOrganisationUnitLastUpdated.builder()
-                .id(1L)
-                .program("program_uid")
-                .organisationUnit("organisation_uid")
-                .lastSynced(getDate("2017-11-29T11:27:46.935"))
-                .build();
-    }
-
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+@Module(includes = {ProgramOrganisationUnitLastUpdatedEntityDIModule.class})
+public final class ProgramOrganisationUnitLastUpdatedPackageDIModule {
 }

@@ -26,35 +26,50 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.testapp.programorganisationunit;
+package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.programorganisationunit.internal.ProgramOrganisationUnitLastUpdated;
-import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
-import org.mockito.Mock;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public class ProgramOrganisationUnitLastUpdatedPublicAccessShould
-        extends BasePublicAccessShould<ProgramOrganisationUnitLastUpdated> {
+public final class ProgramOrganisationUnitLastUpdatedTableInfo {
 
-    @Mock
-    private ProgramOrganisationUnitLastUpdated object;
-
-    @Override
-    public ProgramOrganisationUnitLastUpdated object() {
-        return object;
+    private ProgramOrganisationUnitLastUpdatedTableInfo() {
     }
 
-    @Override
-    public void has_public_create_method() {
-        ProgramOrganisationUnitLastUpdated.create(null);
-    }
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    @Override
-    public void has_public_builder_method() {
-        ProgramOrganisationUnitLastUpdated.builder();
-    }
+        @Override
+        public String name() {
+            return "ProgramOrganisationUnitLastUpdated";
+        }
 
-    @Override
-    public void has_public_to_builder_method() {
-        object().toBuilder();
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    public static class Columns extends BaseModel.Columns {
+        public static final String PROGRAM = "program";
+        public static final String ORGANISATION_UNIT = "organisationUnit";
+        public static final String LAST_SYNCED = "lastSynced";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    PROGRAM,
+                    ORGANISATION_UNIT,
+                    LAST_SYNCED
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return Utils.appendInNewArray(super.whereUpdate(),
+                    PROGRAM,
+                    ORGANISATION_UNIT
+            );
+        }
     }
 }

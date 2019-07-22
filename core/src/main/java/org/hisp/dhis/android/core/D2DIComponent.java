@@ -65,7 +65,7 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitPack
 import org.hisp.dhis.android.core.period.internal.PeriodPackageDIModule;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.internal.ProgramPackageDIModule;
-import org.hisp.dhis.android.core.programorganisationunit.internal.ProgramOrganisationUnitLastUpdatedPackageDIModule;
+import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLastUpdatedPackageDIModule;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipPackageDIModule;
 import org.hisp.dhis.android.core.resource.internal.ResourcePackageDIModule;

@@ -26,50 +26,54 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.programorganisationunit.internal;
+package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import android.database.Cursor;
+
+import androidx.annotation.Nullable;
+
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.google.auto.value.AutoValue;
+
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
-public final class ProgramOrganisationUnitLastUpdatedTableInfo {
+import java.util.Date;
 
-    private ProgramOrganisationUnitLastUpdatedTableInfo() {
+@AutoValue
+public abstract class ProgramOrganisationUnitLastUpdated implements Model {
+
+    @Nullable
+    public abstract String program();
+
+    @Nullable
+    public abstract String organisationUnit();
+
+    @Nullable
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date lastSynced();
+
+    public static ProgramOrganisationUnitLastUpdated create(Cursor cursor) {
+        return $AutoValue_ProgramOrganisationUnitLastUpdated.createFromCursor(cursor);
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    public abstract Builder toBuilder();
 
-        @Override
-        public String name() {
-            return "ProgramOrganisationUnitLastUpdated";
-        }
+    public static Builder builder() {
+        return new $$AutoValue_ProgramOrganisationUnitLastUpdated.Builder();
+    }
 
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
+    @AutoValue.Builder
+    public abstract static class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder id(Long id);
 
-    public static class Columns extends BaseModel.Columns {
-        public static final String PROGRAM = "program";
-        public static final String ORGANISATION_UNIT = "organisationUnit";
-        public static final String LAST_SYNCED = "lastSynced";
+        public abstract Builder program(String program);
 
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    PROGRAM,
-                    ORGANISATION_UNIT,
-                    LAST_SYNCED
-            );
-        }
+        public abstract Builder organisationUnit(String organisationUnit);
 
-        @Override
-        public String[] whereUpdate() {
-            return Utils.appendInNewArray(super.whereUpdate(),
-                    PROGRAM,
-                    ORGANISATION_UNIT
-            );
-        }
+        public abstract Builder lastSynced(Date lastSynced);
+
+        public abstract ProgramOrganisationUnitLastUpdated build();
     }
 }

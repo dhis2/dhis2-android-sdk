@@ -26,54 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.programorganisationunit.internal;
+package org.hisp.dhis.android.core.program.internal;
 
-import android.database.Cursor;
+import androidx.test.runner.AndroidJUnit4;
 
-import androidx.annotation.Nullable;
-
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.program.ProgramOrganisationUnitLastUpdatedSamples;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.junit.runner.RunWith;
 
 import java.util.Date;
 
-@AutoValue
-public abstract class ProgramOrganisationUnitLastUpdated implements Model {
+@RunWith(AndroidJUnit4.class)
+public class ProgramOrganisationUnitLastUpdatedStoreIntegrationShould
+        extends ObjectWithoutUidStoreAbstractIntegrationShould<ProgramOrganisationUnitLastUpdated> {
 
-    @Nullable
-    public abstract String program();
-
-    @Nullable
-    public abstract String organisationUnit();
-
-    @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date lastSynced();
-
-    public static ProgramOrganisationUnitLastUpdated create(Cursor cursor) {
-        return $AutoValue_ProgramOrganisationUnitLastUpdated.createFromCursor(cursor);
+    public ProgramOrganisationUnitLastUpdatedStoreIntegrationShould() {
+        super(ProgramOrganisationUnitLastUpdatedStore.create(DatabaseAdapterFactory.get()),
+                ProgramOrganisationUnitLastUpdatedTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new $$AutoValue_ProgramOrganisationUnitLastUpdated.Builder();
+    @Override
+    protected ProgramOrganisationUnitLastUpdated buildObject() {
+        return ProgramOrganisationUnitLastUpdatedSamples.get();
     }
 
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseModel.Builder<Builder> {
-        public abstract Builder id(Long id);
-
-        public abstract Builder program(String program);
-
-        public abstract Builder organisationUnit(String organisationUnit);
-
-        public abstract Builder lastSynced(Date lastSynced);
-
-        public abstract ProgramOrganisationUnitLastUpdated build();
+    @Override
+    protected ProgramOrganisationUnitLastUpdated buildObjectToUpdate() {
+        return ProgramOrganisationUnitLastUpdatedSamples.get().toBuilder()
+                .lastSynced(new Date())
+                .build();
     }
 }

@@ -26,35 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.programorganisationunit.internal;
+package org.hisp.dhis.android.core.program.internal;
 
-import androidx.test.runner.AndroidJUnit4;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.di.internal.ObjectWithoutUidEntityDIModule;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.programorganisationunit.ProgramOrganisationUnitLastUpdatedSamples;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
-import org.junit.runner.RunWith;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-import java.util.Date;
+@Module
+public final class ProgramOrganisationUnitLastUpdatedEntityDIModule
+        implements ObjectWithoutUidEntityDIModule<ProgramOrganisationUnitLastUpdated> {
 
-@RunWith(AndroidJUnit4.class)
-public class ProgramOrganisationUnitLastUpdatedStoreIntegrationShould
-        extends ObjectWithoutUidStoreAbstractIntegrationShould<ProgramOrganisationUnitLastUpdated> {
-
-    public ProgramOrganisationUnitLastUpdatedStoreIntegrationShould() {
-        super(ProgramOrganisationUnitLastUpdatedStore.create(DatabaseAdapterFactory.get()),
-                ProgramOrganisationUnitLastUpdatedTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+    @Override
+    @Provides
+    @Reusable
+    public ObjectWithoutUidStore<ProgramOrganisationUnitLastUpdated> store(DatabaseAdapter databaseAdapter) {
+        return ProgramOrganisationUnitLastUpdatedStore.create(databaseAdapter);
     }
 
     @Override
-    protected ProgramOrganisationUnitLastUpdated buildObject() {
-        return ProgramOrganisationUnitLastUpdatedSamples.get();
-    }
-
-    @Override
-    protected ProgramOrganisationUnitLastUpdated buildObjectToUpdate() {
-        return ProgramOrganisationUnitLastUpdatedSamples.get().toBuilder()
-                .lastSynced(new Date())
-                .build();
+    @Provides
+    @Reusable
+    public Handler<ProgramOrganisationUnitLastUpdated> handler(
+            ObjectWithoutUidStore<ProgramOrganisationUnitLastUpdated> store) {
+        return new ObjectWithoutUidHandlerImpl<>(store);
     }
 }

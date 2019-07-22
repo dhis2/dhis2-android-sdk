@@ -26,34 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.programorganisationunit.internal;
+package org.hisp.dhis.android.core.data.program;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.di.internal.ObjectWithoutUidEntityDIModule;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLastUpdated;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import java.text.ParseException;
+import java.util.Date;
 
-@Module
-public final class ProgramOrganisationUnitLastUpdatedEntityDIModule
-        implements ObjectWithoutUidEntityDIModule<ProgramOrganisationUnitLastUpdated> {
+public class ProgramOrganisationUnitLastUpdatedSamples {
 
-    @Override
-    @Provides
-    @Reusable
-    public ObjectWithoutUidStore<ProgramOrganisationUnitLastUpdated> store(DatabaseAdapter databaseAdapter) {
-        return ProgramOrganisationUnitLastUpdatedStore.create(databaseAdapter);
+    public static ProgramOrganisationUnitLastUpdated get() {
+        return ProgramOrganisationUnitLastUpdated.builder()
+                .id(1L)
+                .program("program_uid")
+                .organisationUnit("organisation_uid")
+                .lastSynced(getDate("2017-11-29T11:27:46.935"))
+                .build();
     }
 
-    @Override
-    @Provides
-    @Reusable
-    public Handler<ProgramOrganisationUnitLastUpdated> handler(
-            ObjectWithoutUidStore<ProgramOrganisationUnitLastUpdated> store) {
-        return new ObjectWithoutUidHandlerImpl<>(store);
+    private static Date getDate(String dateStr) {
+        try {
+            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

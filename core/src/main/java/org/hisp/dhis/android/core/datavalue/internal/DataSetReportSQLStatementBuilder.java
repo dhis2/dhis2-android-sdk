@@ -55,32 +55,33 @@ public class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBui
     private static final String AOC_TABLE_ALIAS = "aoc";
 
     private static final String VALUE_COUNT_ALIAS = "valueCount";
-    private static final String DATASET_UID_ALIAS = "dataSetUid";
+    public static final String DATASET_UID_ALIAS = "dataSetUid";
     private static final String DATASET_NAME_ALIAS = "dataSetDisplayName";
-    private static final String PERIOD_ALIAS = "period";
-    private static final String PERIOD_TYPE_ALIAS = "periodType";
-    private static final String ORGANISATION_UNIT_UID_ALIAS = "organisationUnitUid";
+    public static final String PERIOD_ALIAS = "period";
+    public static final String PERIOD_TYPE_ALIAS = "periodType";
+    public static final String PERIOD_START_DATE_ALIAS = "periodStartDate";
+    public static final String PERIOD_END_DATE_ALIAS = "periodEndDate";
+    public static final String ORGANISATION_UNIT_UID_ALIAS = "organisationUnitUid";
     private static final String ORGANISATION_UNIT_NAME_ALIAS = "organisationUnitDisplayName";
-    private static final String ATTRIBUTE_OPTION_COMBO_UID_ALIAS = "attributeOptionComboUid";
+    public static final String ATTRIBUTE_OPTION_COMBO_UID_ALIAS = "attributeOptionComboUid";
     private static final String ATTRIBUTE_OPTION_COMBO_NAME_ALIAS = "attributeOptionComboDisplayName";
 
     public static final String DATAVALUE_ID = DATAVALUE_TABLE_ALIAS + "." + BaseDataModel.Columns.ID;
-    public static final String DATASET_UID = DATASET_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
-    static final String DATASET_NAME = DATASET_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.DISPLAY_NAME;
-    public static final String PERIOD = DATAVALUE_TABLE_ALIAS + "." + DataValueFields.PERIOD;
-    public static final String PERIOD_TYPE = PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.PERIOD_TYPE;
-    public static final String ORGANISATION_UNIT_UID = ORGUNIT_TABLE_ALIAS + "." +
+    private static final String DATASET_UID = DATASET_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
+    private static final String DATASET_NAME =
+            DATASET_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.DISPLAY_NAME;
+    private static final String PERIOD = DATAVALUE_TABLE_ALIAS + "." + DataValueFields.PERIOD;
+    private static final String PERIOD_TYPE = PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.PERIOD_TYPE;
+    private static final String PERIOD_START_DATE = PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.START_DATE;
+    private static final String PERIOD_END_DATE = PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.END_DATE;
+    private static final String ORGANISATION_UNIT_UID = ORGUNIT_TABLE_ALIAS + "." +
             BaseIdentifiableObjectModel.Columns.UID;
-    static final String ORGANISATION_UNIT_NAME =
+    private static final String ORGANISATION_UNIT_NAME =
             ORGUNIT_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.DISPLAY_NAME;
-    public static final String ATTRIBUTE_OPTION_COMBO_UID = AOC_TABLE_ALIAS + "." +
+    private static final String ATTRIBUTE_OPTION_COMBO_UID = AOC_TABLE_ALIAS + "." +
             BaseIdentifiableObjectModel.Columns.UID;
-    static final String ATTRIBUTE_OPTION_COMBO_NAME =
+    private static final String ATTRIBUTE_OPTION_COMBO_NAME =
             AOC_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.DISPLAY_NAME;
-
-    public static final String PERIOD_START_DATE = PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.START_DATE;
-    public static final String PERIOD_END_DATE = PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.END_DATE;
-
 
     private static final String STATE = DATAVALUE_TABLE_ALIAS + "." + BaseDataModel.Columns.STATE;
 
@@ -98,12 +99,14 @@ public class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBui
                     getJoinOrganisationUnit() +
                     getJoinAttributeOptionCombo();
 
-    private static final String SELECT_CLAUSE = "SELECT " +
-            DATAVALUE_ID + ", " +
+    private static final String INNER_SELECT_CLAUSE = "SELECT " +
+            DATAVALUE_ID + AS + BaseDataModel.Columns.ID + ", " +
             DATASET_UID + AS + DATASET_UID_ALIAS + "," +
             DATASET_NAME + AS + DATASET_NAME_ALIAS + "," +
             PERIOD + AS + PERIOD_ALIAS + "," +
             PERIOD_TYPE + AS + PERIOD_TYPE_ALIAS + "," +
+            PERIOD_START_DATE + AS + PERIOD_START_DATE_ALIAS + "," +
+            PERIOD_END_DATE + AS + PERIOD_END_DATE_ALIAS + "," +
             ORGANISATION_UNIT_UID + AS + ORGANISATION_UNIT_UID_ALIAS + "," +
             ORGANISATION_UNIT_NAME + AS + ORGANISATION_UNIT_NAME_ALIAS + "," +
             ATTRIBUTE_OPTION_COMBO_UID + AS + ATTRIBUTE_OPTION_COMBO_UID_ALIAS + "," +
@@ -120,9 +123,11 @@ public class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBui
             ORGANISATION_UNIT_UID + "," +
             ATTRIBUTE_OPTION_COMBO_UID;
 
+    private static final String SELECT_CLAUSE = "SELECT * FROM (" + INNER_SELECT_CLAUSE + GROUP_BY_CLAUSE +")";
+
     @Override
     public String selectWhere(String whereClause) {
-        return SELECT_CLAUSE + " WHERE " + whereClause + GROUP_BY_CLAUSE;
+        return SELECT_CLAUSE + " WHERE " + whereClause;
     }
 
     @Override
@@ -132,7 +137,7 @@ public class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBui
 
     @Override
     public String selectAll() {
-        return  SELECT_CLAUSE + GROUP_BY_CLAUSE;
+        return  SELECT_CLAUSE;
     }
 
     @Override
@@ -156,8 +161,8 @@ public class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBui
     }
 
     @Override
-    public String selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType) {
-        return selectWhere("1", orderingColumName + " " + orderingType, 1);
+    public String selectOneOrderedBy(String orderingColumnName, SQLOrderType orderingType) {
+        return selectWhere("1", orderingColumnName + " " + orderingType, 1);
     }
 
     private static String getJoinPeriod() {

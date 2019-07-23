@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.android.core.datavalue.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.datavalue.DataSetReportCollectionRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -43,15 +41,6 @@ public final class DataSetReportEntityDIModule {
     @Reusable
     DataSetReportStore store(DatabaseAdapter databaseAdapter) {
         return DataSetReportStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    DataSetReportCollectionRepository repository(DataSetReportStore store) {
-        return new DataSetReportCollectionRepository(store,
-                RepositoryScope.empty().toBuilder()
-                        .pagingKey(DataSetReportSQLStatementBuilder.DATAVALUE_ID)
-                        .build());
     }
 
 }

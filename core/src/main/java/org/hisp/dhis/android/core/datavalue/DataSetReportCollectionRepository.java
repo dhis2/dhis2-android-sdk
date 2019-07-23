@@ -56,31 +56,31 @@ public final class DataSetReportCollectionRepository
     }
 
     public StringFilterConnector<DataSetReportCollectionRepository> byDataSetUid() {
-        return cf.string(DataSetReportSQLStatementBuilder.DATASET_UID);
+        return cf.string(DataSetReportSQLStatementBuilder.DATASET_UID_ALIAS);
     }
 
     public StringFilterConnector<DataSetReportCollectionRepository> byPeriod() {
-        return cf.string(DataSetReportSQLStatementBuilder.PERIOD);
+        return cf.string(DataSetReportSQLStatementBuilder.PERIOD_ALIAS);
     }
 
     public EnumFilterConnector<DataSetReportCollectionRepository, PeriodType> byPeriodType() {
-        return cf.enumC(DataSetReportSQLStatementBuilder.PERIOD_TYPE);
+        return cf.enumC(DataSetReportSQLStatementBuilder.PERIOD_TYPE_ALIAS);
     }
 
     public DateFilterConnector<DataSetReportCollectionRepository> byPeriodStartDate() {
-        return cf.date(DataSetReportSQLStatementBuilder.PERIOD_START_DATE);
+        return cf.date(DataSetReportSQLStatementBuilder.PERIOD_START_DATE_ALIAS);
     }
 
     public DateFilterConnector<DataSetReportCollectionRepository> byPeriodEndDate() {
-        return cf.date(DataSetReportSQLStatementBuilder.PERIOD_END_DATE);
+        return cf.date(DataSetReportSQLStatementBuilder.PERIOD_END_DATE_ALIAS);
     }
 
     public StringFilterConnector<DataSetReportCollectionRepository> byOrganisationUnitUid() {
-        return cf.string(DataSetReportSQLStatementBuilder.ORGANISATION_UNIT_UID);
+        return cf.string(DataSetReportSQLStatementBuilder.ORGANISATION_UNIT_UID_ALIAS);
     }
 
     public StringFilterConnector<DataSetReportCollectionRepository> byAttributeOptionComboUid() {
-        return cf.string(DataSetReportSQLStatementBuilder.ATTRIBUTE_OPTION_COMBO_UID);
+        return cf.string(DataSetReportSQLStatementBuilder.ATTRIBUTE_OPTION_COMBO_UID_ALIAS);
     }
 
 }

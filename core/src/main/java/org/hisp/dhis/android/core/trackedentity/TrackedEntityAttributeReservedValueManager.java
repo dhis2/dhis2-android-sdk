@@ -76,7 +76,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     private final QueryCallFactory<TrackedEntityAttributeReservedValue,
             TrackedEntityAttributeReservedValueQuery> trackedEntityAttributeReservedValueQueryCallFactory;
 
-    private D2ProgressManager d2ProgressManager = new D2ProgressManager(null);
+    private final D2ProgressManager d2ProgressManager = new D2ProgressManager(null);
 
     @Inject
     TrackedEntityAttributeReservedValueManager(
@@ -144,14 +144,14 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     /**
-     * Synchronization of TrackedEntityInstance reserved values. The number of reserved values is filled up to the
+     * Download of TrackedEntityInstance reserved values. The number of reserved values is filled up to the
      * numberOfValuesToFillUp. If not defined, it defaults to {@link #FILL_UP_TO}.
      * <br><br>
-     * If an attribute uid is defined, the synchronization is only triggered for this attribute. If not defined, the
-     * synchronization is triggered for all the attributes with the property "generated" set to true.
+     * If an attribute uid is defined, the download is only triggered for this attribute. If not defined, the
+     * download is triggered for all the attributes with the property "generated" set to true.
      * <br><br>
      * If an organisationunit uid is defined, only TrackedEntityAttributes linked to programs that are linked to this
-     * organisationunit are considered for syncing. If not defined, the SDK checks if TrackedEntityAttribute pattern
+     * organisationunit are considered for download. If not defined, the SDK checks if TrackedEntityAttribute pattern
      * contains ORGUNIT_CODE. If so, it reserves values for each orgunit assigned to the program and applies the limit
      * per orgunit. If not, the limit is applied per attribute.
      *
@@ -159,19 +159,20 @@ public final class TrackedEntityAttributeReservedValueManager {
      * @param organisationUnitUid    An optional organisationunit uid
      * @param numberOfValuesToFillUp An optional maximum number of values to reserve
      */
-    public void blockingSyncReservedValues(String attribute, String organisationUnitUid, Integer numberOfValuesToFillUp) {
-        syncReservedValues(attribute, organisationUnitUid, numberOfValuesToFillUp).blockingSubscribe();
+    public void blockingDownloadReservedValues(String attribute, String organisationUnitUid,
+                                               Integer numberOfValuesToFillUp) {
+        downloadReservedValues(attribute, organisationUnitUid, numberOfValuesToFillUp).blockingSubscribe();
     }
 
     /**
-     * Synchronization of TrackedEntityInstance reserved values. The number of reserved values is filled up to the
+     * Download of TrackedEntityInstance reserved values. The number of reserved values is filled up to the
      * numberOfValuesToFillUp. If not defined, it defaults to {@link #FILL_UP_TO}.
      * <br><br>
-     * If an attribute uid is defined, the synchronization is only triggered for this attribute. If not defined, the
-     * synchronization is triggered for all the attributes with the property "generated" set to true.
+     * If an attribute uid is defined, the download is only triggered for this attribute. If not defined, the
+     * download is triggered for all the attributes with the property "generated" set to true.
      * <br><br>
      * If an organisationunit uid is defined, only TrackedEntityAttributes linked to programs that are linked to this
-     * organisationunit are considered for syncing. If not defined, the SDK checks if TrackedEntityAttribute pattern
+     * organisationunit are considered for download. If not defined, the SDK checks if TrackedEntityAttribute pattern
      * contains ORGUNIT_CODE. If so, it reserves values for each orgunit assigned to the program and applies the limit
      * per orgunit. If not, the limit is applied per attribute.
      *
@@ -180,8 +181,8 @@ public final class TrackedEntityAttributeReservedValueManager {
      * @param numberOfValuesToFillUp An optional maximum number of values to reserve
      * @return Single with value of tracked entity attribute
      */
-    public Observable<D2Progress> syncReservedValues(String attribute, String organisationUnitUid,
-                                                     Integer numberOfValuesToFillUp) {
+    public Observable<D2Progress> downloadReservedValues(String attribute, String organisationUnitUid,
+                                                         Integer numberOfValuesToFillUp) {
         return systemInfoRepository.download()
                 .andThen(syncReservedValuesInternal(attribute, organisationUnitUid, numberOfValuesToFillUp));
     }

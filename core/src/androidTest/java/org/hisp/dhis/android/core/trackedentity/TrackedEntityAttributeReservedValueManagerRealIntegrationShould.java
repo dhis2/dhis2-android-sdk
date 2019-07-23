@@ -191,54 +191,54 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 
 //    @Test
     public void sync_reserved_values_for_one_tracked_entity_attribute() {
-        d2.trackedEntityModule().reservedValueManager.blockingSyncReservedValues(ownerUid, null,100);
+        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(ownerUid, null,100);
         assertThat(selectAll().size(), is(100));
     }
 
 //    @Test
     public void sync_20_reserved_values_for_one_tracked_entity_attribute() {
-        d2.trackedEntityModule().reservedValueManager.blockingSyncReservedValues(ownerUid, null,20);
+        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(ownerUid, null,20);
         assertThat(selectAll().size(), is(20));
     }
 
 //    @Test
     public void sync_100_reserved_values_when_not_number_of_values_to_reserve_is_specified() {
-        d2.trackedEntityModule().reservedValueManager.blockingSyncReservedValues(ownerUid, null,null);
+        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(ownerUid, null,null);
         assertThat(selectAll().size(), is(100));
     }
 
 //    @Test
     public void sync_pop_sync_again_and_have_99_reserved_values_when_not_number_of_values_to_reserve_is_specified()
             throws D2Error {
-        d2.trackedEntityModule().reservedValueManager.blockingSyncReservedValues(ownerUid, null,null);
+        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(ownerUid, null,null);
         assertThat(selectAll().size(), is(100));
         d2.trackedEntityModule().reservedValueManager.blockingGetValue(ownerUid, organisationUnitUid);
         assertThat(selectAll().size(), is(99));
-        d2.trackedEntityModule().reservedValueManager.blockingSyncReservedValues(ownerUid, organisationUnitUid,null);
+        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(ownerUid, organisationUnitUid,null);
         assertThat(selectAll().size(), is(99));
     }
 
 //    @Test
     public void fill_up_to_100_values_if_db_does_not_have_at_least_50_values_when_not_number_of_values_to_reserve_is_specified()
             throws D2Error {
-        d2.trackedEntityModule().reservedValueManager.blockingSyncReservedValues(ownerUid, null,50);
+        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(ownerUid, null,50);
         assertThat(selectAll().size(), is(50));
-        d2.trackedEntityModule().reservedValueManager.blockingSyncReservedValues(ownerUid, organisationUnitUid,null);
+        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(ownerUid, organisationUnitUid,null);
         assertThat(selectAll().size(), is(50));
         d2.trackedEntityModule().reservedValueManager.blockingGetValue(ownerUid, organisationUnitUid);
         assertThat(selectAll().size(), is(49));
-        d2.trackedEntityModule().reservedValueManager.blockingSyncReservedValues(ownerUid, organisationUnitUid,null);
+        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(ownerUid, organisationUnitUid,null);
         assertThat(selectAll().size(), is(100));
     }
 
 //    @Test
     public void sync_pop_sync_again_and_have_99_reserved_values_if_less_than_existing_values_are_requested()
             throws D2Error {
-        d2.trackedEntityModule().reservedValueManager.blockingSyncReservedValues(ownerUid, null,100);
+        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(ownerUid, null,100);
         assertThat(selectAll().size(), is(100));
         d2.trackedEntityModule().reservedValueManager.blockingGetValue(ownerUid, organisationUnitUid);
         assertThat(selectAll().size(), is(99));
-        d2.trackedEntityModule().reservedValueManager.blockingSyncReservedValues(ownerUid, organisationUnitUid,20);
+        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(ownerUid, organisationUnitUid,20);
         assertThat(selectAll().size(), is(99));
     }
 
@@ -259,7 +259,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
     public void sync_all_tracked_entity_instances() throws Exception {
         assertThat(selectAll().size(), is(3));
         d2.syncMetaData().blockingSubscribe();
-        d2.trackedEntityModule().reservedValueManager.blockingSyncReservedValues(null, null,null);
+        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(null, null,null);
 
         /* 100 Reserved values by default * 2 TEA with generated property true on server = 200 */
         assertThat(selectAll().size(), is(200));
@@ -267,50 +267,50 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 
 //    @Test
     public void create_the_right_query_when_nothing_is_passed() {
-        manager.blockingSyncReservedValues(null, null, null);
+        manager.blockingDownloadReservedValues(null, null, null);
         assertQueryIsCreatedRight(97);
     }
 
 //    @Test
     public void create_the_right_query_when_only_an_attribute_is_passed() {
-        manager.blockingSyncReservedValues(ownerUid, null, null);
+        manager.blockingDownloadReservedValues(ownerUid, null, null);
         assertQueryIsCreatedRight(97);
     }
 
 //    @Test
     public void create_the_right_query_when_only_a_organisation_unit_is_passed() {
-        manager.blockingSyncReservedValues(null, organisationUnit.uid(), null);
+        manager.blockingDownloadReservedValues(null, organisationUnit.uid(), null);
         assertQueryIsCreatedRight(97);
     }
 
 //    @Test
     public void create_the_right_query_when_an_attribute_and_a_organisation_unit_is_passed() {
-        manager.blockingSyncReservedValues(ownerUid, organisationUnitUid, null);
+        manager.blockingDownloadReservedValues(ownerUid, organisationUnitUid, null);
         assertQueryIsCreatedRight(97);
     }
 
 //    @Test
     public void create_the_right_query_when_a_number_of_values_to_fill_up_is_passed() {
-        manager.blockingSyncReservedValues(null, null, 20);
+        manager.blockingDownloadReservedValues(null, null, 20);
         assertQueryIsCreatedRight(17);
     }
 
 
 //    @Test
     public void create_the_right_query_when_a_number_of_values_to_fill_up_and_an_attribute_is_passed() {
-        manager.blockingSyncReservedValues(ownerUid, null, 20);
+        manager.blockingDownloadReservedValues(ownerUid, null, 20);
         assertQueryIsCreatedRight(17);
     }
 
 //    @Test
     public void create_the_right_query_when_a_number_of_values_to_fill_up_and_a_organisation_unit_is_passed() {
-        manager.blockingSyncReservedValues(null, organisationUnitUid, 20);
+        manager.blockingDownloadReservedValues(null, organisationUnitUid, 20);
         assertQueryIsCreatedRight(17);
     }
 
 //    @Test
     public void create_the_right_query_when_all_arguments_are_passed() {
-        manager.blockingSyncReservedValues(ownerUid, organisationUnitUid, 20);
+        manager.blockingDownloadReservedValues(ownerUid, organisationUnitUid, 20);
         assertQueryIsCreatedRight(17);
     }
 

@@ -70,6 +70,9 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     @Nullable
     abstract Date programEndDate();
 
+    @Nullable
+    abstract String trackedEntityType();
+
     String formattedProgramStartDate() {
         return programStartDate() == null ? null : QUERY_FORMAT.format(programStartDate());
     }
@@ -116,6 +119,7 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
                 .program(teiQuery.program())
                 .programStartDate(teiQuery.programStartDate())
                 .programEndDate(teiQuery.programEndDate())
+                .trackedEntityType(teiQuery.trackedEntityType())
                 .page(teiQuery.page())
                 .pageSize(teiQuery.pageSize())
                 .paging(teiQuery.paging())
@@ -139,6 +143,8 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         abstract Builder programStartDate(Date programStartDate);
 
         abstract Builder programEndDate(Date programEndDate);
+
+        abstract Builder trackedEntityType(String trackedEntityType);
 
         abstract TrackedEntityInstanceQueryOnline build();
     }

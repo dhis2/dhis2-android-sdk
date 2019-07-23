@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 
 import java.util.List;
@@ -91,6 +92,11 @@ final class TrackedEntityInstanceLocalQueryHelper {
                     dot(ORGUNIT_ALIAS, UID));
 
             appendOrgunitWhere(where, query);
+        }
+
+        if (query.trackedEntityType() != null) {
+            where.appendKeyStringValue(dot(TEI_ALIAS, TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE),
+                    query.trackedEntityType());
         }
 
         appendQueryWhere(where, query);

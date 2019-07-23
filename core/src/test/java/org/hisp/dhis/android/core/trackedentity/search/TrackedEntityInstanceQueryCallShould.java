@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.trackedentity.search;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 import org.junit.Before;
@@ -53,10 +53,10 @@ import retrofit2.Call;
 
 import static junit.framework.Assert.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -105,7 +105,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
 
         query = TrackedEntityInstanceQueryOnline.builder().
                 orgUnits(orgUnits).orgUnitMode(OrganisationUnitMode.ACCESSIBLE).program("program")
-                .programStartDate(new Date()).programEndDate(new Date())
+                .programStartDate(new Date()).programEndDate(new Date()).trackedEntityType("teiTypeStr")
                 .query("queryStr").attribute(attribute).filter(filter)
                 .paging(false).page(2).pageSize(33).build();
 
@@ -140,6 +140,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
                 eq(query.program()),
                 eq(query.formattedProgramStartDate()),
                 eq(query.formattedProgramEndDate()),
+                eq(query.trackedEntityType()),
                 eq(query.query()),
                 eq(query.attribute()),
                 eq(query.filter()),
@@ -175,7 +176,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
     }
 
     private OngoingStubbing<Call<SearchGrid>> whenServiceQuery() {
-        return when(service.query(anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyListOf(String.class), anyListOf(String.class), anyBoolean(), anyInt(), anyInt()));
+        return when(service.query(anyString(), anyString(), anyString(), anyString(), anyString(),
+                anyString(), anyString(), anyList(), anyList(), anyBoolean(), anyInt(), anyInt()));
     }
 }

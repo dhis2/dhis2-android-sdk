@@ -52,7 +52,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                 d2.dataValueModule().dataValues
                         .get();
 
-        assertThat(dataValues.size(), is(3));
+        assertThat(dataValues.size(), is(4));
     }
 
     @Test
@@ -63,7 +63,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                         .eq("g9eOBujte1U")
                         .get();
 
-        assertThat(dataValues.size(), is(3));
+        assertThat(dataValues.size(), is(4));
     }
 
     @Test
@@ -85,7 +85,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                         .eq("DiszpKrYNg8")
                         .get();
 
-        assertThat(dataValues.size(), is(3));
+        assertThat(dataValues.size(), is(4));
     }
 
     @Test
@@ -96,7 +96,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                         .eq("Gmbgme7z9BF")
                         .get();
 
-        assertThat(dataValues.size(), is(3));
+        assertThat(dataValues.size(), is(4));
     }
 
     @Test
@@ -107,7 +107,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                         .eq("bRowv6yZOF2")
                         .get();
 
-        assertThat(dataValues.size(), is(3));
+        assertThat(dataValues.size(), is(4));
     }
 
     @Test
@@ -173,7 +173,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                         .isFalse()
                         .get();
 
-        assertThat(dataValues.size(), is(2));
+        assertThat(dataValues.size(), is(3));
     }
 
     @Test
@@ -183,7 +183,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                         .byState().eq(State.SYNCED)
                         .get();
 
-        assertThat(dataValues.size(), is(3));
+        assertThat(dataValues.size(), is(4));
     }
 
     @Test

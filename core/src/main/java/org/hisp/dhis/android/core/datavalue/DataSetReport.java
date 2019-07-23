@@ -40,19 +40,16 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbStateColumnAdapter;
-import org.hisp.dhis.android.core.datavalue.internal.DataSetReportSQLStatementBuilder;
+import org.hisp.dhis.android.core.data.database.IsColumnNotNullColumnAdapter;
 import org.hisp.dhis.android.core.period.PeriodType;
+
+import java.util.Date;
 
 @AutoValue
 public abstract class DataSetReport implements Model {
-
-    /* ColumnName set explicitly because it is used in paging as the PAGING_KEY */
-    @Override
-    @Nullable
-    @ColumnName(DataSetReportSQLStatementBuilder.DATAVALUE_ID)
-    public abstract Long id();
 
     @NonNull
     public abstract String dataSetUid();
@@ -81,6 +78,15 @@ public abstract class DataSetReport implements Model {
 
     @NonNull
     public abstract Integer valueCount();
+
+    @NonNull
+    @ColumnName("completionDate")
+    @ColumnAdapter(IsColumnNotNullColumnAdapter.class)
+    public abstract Boolean completed();
+
+    @Nullable
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date completionDate();
 
     @Nullable
     @ColumnAdapter(DbStateColumnAdapter.class)
@@ -118,6 +124,10 @@ public abstract class DataSetReport implements Model {
         public abstract Builder attributeOptionComboDisplayName(String attributeOptionComboDisplayName);
 
         public abstract Builder valueCount(Integer valueCount);
+
+        public abstract Builder completed(Boolean completed);
+
+        public abstract Builder completionDate(Date completionDate);
 
         public abstract Builder state(State state);
 

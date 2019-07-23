@@ -60,6 +60,7 @@ public interface TrackedEntityInstanceService {
     String PROGRAM = "program";
     String PROGRAM_START_DATE = "programStartDate";
     String PROGRAM_END_DATE = "programEndDate";
+    String TRACKED_ENTITY_TYPE = "trackedEntityType";
     String INCLUDE_ALL_ATTRIBUTES = "includeAllAttributes";
     String FILTER = "filter";
     String STRATEGY = "strategy";
@@ -114,6 +115,7 @@ public interface TrackedEntityInstanceService {
             @Query(PROGRAM) String program,
             @Query(PROGRAM_START_DATE) String programStartDate,
             @Query(PROGRAM_END_DATE) String programEndDate,
+            @Query(TRACKED_ENTITY_TYPE) String trackedEntityType,
             @Query(QUERY) String query,
             @Query(ATTRIBUTE) List<String> attribute,
             @Query(FILTER) List<String> filter,

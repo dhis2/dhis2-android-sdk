@@ -34,7 +34,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
@@ -42,17 +41,10 @@ import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbStateColumnAdapter;
-import org.hisp.dhis.android.core.datavalue.internal.DataSetReportSQLStatementBuilder;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 @AutoValue
 public abstract class DataSetReport implements Model {
-
-    /* ColumnName set explicitly because it is used in paging as the PAGING_KEY */
-    @Override
-    @Nullable
-    @ColumnName(DataSetReportSQLStatementBuilder.DATAVALUE_ID)
-    public abstract Long id();
 
     @NonNull
     public abstract String dataSetUid();

@@ -25,52 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package org.hisp.dhis.android.core;
-
-import android.util.Log;
+package org.hisp.dhis.android.core.domain.metadata;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
-import org.junit.Before;
 
-import java.io.IOException;
+import javax.inject.Inject;
 
-import io.reactivex.observers.TestObserver;
+import dagger.Reusable;
+import io.reactivex.Observable;
 
-import static com.google.common.truth.Truth.assertThat;
+@Reusable
+public final class MetadataModule {
 
-public class TeisCallRealIntegrationShould extends BaseRealIntegrationTest {
+    private final MetadataCall metadataCall;
 
-    private D2 d2;
-
-    @Before
-    @Override
-    public void setUp() throws IOException {
-        super.setUp();
-
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+    @Inject
+    MetadataModule(MetadataCall metadataCall) {
+        this.metadataCall = metadataCall;
     }
 
-    //@Test
-    public void download_tracked_entity_instances() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+    public Observable<D2Progress> download() {
+        return metadataCall.download();
+    }
 
-        d2.metadataModule().blockingDownload();
-
-        TestObserver<D2Progress> testObserver = d2.trackedEntityModule().downloadTrackedEntityInstances(5, false, false)
-                .doOnEach(e -> Log.w("EVENT", e.toString()))
-                .test();
-
-        testObserver.awaitTerminalEvent();
-
-        int count = TrackedEntityInstanceStoreImpl.create(databaseAdapter()).count();
-
-        assertThat(count >= 5).isTrue();
-
-        testObserver.dispose();
+    public void blockingDownload() {
+        metadataCall.blockingDownload();
     }
 }

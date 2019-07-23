@@ -35,7 +35,6 @@ import org.hisp.dhis.android.BuildConfig;
 import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory;
 import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory;
 import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
-import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.category.CategoryModule;
 import org.hisp.dhis.android.core.configuration.Configuration;
 import org.hisp.dhis.android.core.constant.ConstantModule;
@@ -44,6 +43,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetModule;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
+import org.hisp.dhis.android.core.domain.metadata.MetadataModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.imports.internal.ImportModule;
@@ -64,7 +64,6 @@ import org.hisp.dhis.android.core.wipe.WipeModule;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
-import io.reactivex.Observable;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -109,9 +108,8 @@ public final class D2 {
         return databaseAdapter;
     }
 
-    @NonNull
-    public Observable<D2Progress> syncMetaData() {
-        return d2DIComponent.metadataCall().download();
+    public MetadataModule metadataModule() {
+        return d2DIComponent.metadataModule();
     }
 
     @NonNull

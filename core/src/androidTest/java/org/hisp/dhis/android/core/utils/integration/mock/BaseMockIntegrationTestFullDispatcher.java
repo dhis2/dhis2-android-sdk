@@ -74,7 +74,7 @@ public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockInte
     }
 
     private static void downloadMetadata() {
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
     }
 
     private static void downloadTrackedEntityInstances() {

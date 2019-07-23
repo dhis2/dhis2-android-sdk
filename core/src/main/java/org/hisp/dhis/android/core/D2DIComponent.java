@@ -49,7 +49,7 @@ import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.internal.DataSetPackageDIModule;
 import org.hisp.dhis.android.core.datavalue.internal.DataValuePackageDIModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
-import org.hisp.dhis.android.core.domain.metadata.MetadataCall;
+import org.hisp.dhis.android.core.domain.metadata.MetadataModule;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentPackageDIModule;
 import org.hisp.dhis.android.core.event.internal.EventPackageDIModule;
 import org.hisp.dhis.android.core.event.internal.EventPostCall;
@@ -71,7 +71,6 @@ import org.hisp.dhis.android.core.sms.SmsDIModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.user.internal.UserPackageDIModule;
 import org.hisp.dhis.android.core.wipe.WipeDIModule;
 import org.hisp.dhis.android.core.wipe.WipeModule;
@@ -121,8 +120,8 @@ public interface D2DIComponent {
 
     D2InternalModules internalModules();
     D2Modules modules();
+    MetadataModule metadataModule();
     AggregatedModule aggregatedModule();
-    MetadataCall metadataCall();
     WipeModule wipeModule();
 
     @VisibleForTesting
@@ -133,8 +132,6 @@ public interface D2DIComponent {
     UidsCallFactory<DataElement> dataElementCallFactory();
     @VisibleForTesting
     ListCallFactory<DataSet> dataSetCallFactory();
-    @VisibleForTesting
-    UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory();
     @VisibleForTesting
     Handler<RelationshipType> relationshipTypeHandler();
     @VisibleForTesting

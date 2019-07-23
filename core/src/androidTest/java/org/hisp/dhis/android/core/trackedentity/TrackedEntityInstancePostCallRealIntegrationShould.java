@@ -553,7 +553,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     private void downloadMetadata() throws Exception {
         d2.userModule().logIn("android", "Android123").blockingGet();
 
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
     }
 
     private boolean verifyEventCategoryAttributes(Event event, Event downloadedEvent) {

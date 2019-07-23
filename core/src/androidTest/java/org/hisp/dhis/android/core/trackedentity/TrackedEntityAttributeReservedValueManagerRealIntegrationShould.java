@@ -258,7 +258,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 //    @Test
     public void sync_all_tracked_entity_instances() throws Exception {
         assertThat(selectAll().size(), is(3));
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
         d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(null, null,null);
 
         /* 100 Reserved values by default * 2 TEA with generated property true on server = 200 */

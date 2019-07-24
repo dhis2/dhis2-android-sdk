@@ -30,6 +30,7 @@
   "expiryDays": 0,
   "minAttributesRequiredToSearch": 3,
   "maxTeiCountToReturn": 2,
+  "featureType": "MULTI_POLYGON",
   "categoryCombo": {
     "id": "p0KPaWEg3cf"
   },

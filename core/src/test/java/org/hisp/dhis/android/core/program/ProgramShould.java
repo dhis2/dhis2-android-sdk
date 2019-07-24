@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -76,6 +77,7 @@ public class ProgramShould extends BaseObjectShould implements ObjectShould {
         assertThat(program.useFirstStageDuringRegistration()).isFalse();
         assertThat(program.minAttributesRequiredToSearch()).isEqualTo(3);
         assertThat(program.maxTeiCountToReturn()).isEqualTo(2);
+        assertThat(program.featureType()).isEqualTo(FeatureType.MULTI_POLYGON);
 
         assertThat(program.displayFrontPageList()).isFalse();
         assertThat(program.programType()).isEqualTo(ProgramType.WITH_REGISTRATION);

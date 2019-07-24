@@ -36,10 +36,15 @@ import androidx.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.database.DbGeometryTypeColumnAdapter;
+import org.hisp.dhis.android.core.data.serialization.GeometryTypeDeserializer;
+import org.hisp.dhis.android.core.data.serialization.GeometryTypeSerializer;
+import org.hisp.dhis.android.core.data.serialization.JsonElementStringConverter;
+import org.hisp.dhis.android.core.data.serialization.StringJsonElementSerializer;
 import org.hisp.dhis.android.core.period.FeatureType;
 
 @AutoValue
@@ -48,11 +53,13 @@ public abstract class Geometry extends BaseModel {
 
     @Nullable
     @JsonProperty()
+    @JsonSerialize(using = GeometryTypeSerializer.class)
     @ColumnAdapter(DbGeometryTypeColumnAdapter.class)
     public abstract FeatureType type();
 
     @Nullable
     @JsonProperty()
+    @JsonSerialize(using = StringJsonElementSerializer.class)
     public abstract String coordinates();
 
     @NonNull
@@ -69,8 +76,11 @@ public abstract class Geometry extends BaseModel {
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseModel.Builder<Builder> {
+
+        @JsonDeserialize(using = GeometryTypeDeserializer.class)
         public abstract Builder type(FeatureType type);
 
+        @JsonDeserialize(converter = JsonElementStringConverter.class)
         public abstract Builder coordinates(String coordinates);
 
         public abstract Geometry build();

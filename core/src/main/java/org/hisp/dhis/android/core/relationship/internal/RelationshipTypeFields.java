@@ -38,6 +38,9 @@ public final class RelationshipTypeFields {
 
     public static final String B_IS_TO_A = "bIsToA";
     public static final String A_IS_TO_B = "aIsToB";
+    public static final String FROM_TO_NAME = "fromToName";
+    public static final String TO_FROM_NAME = "toFromName";
+    public static final String BIDIRECTIONAL = "bidirectional";
     public static final String FROM_CONSTRAINT = "fromConstraint";
     public static final String TO_CONSTRAINT = "toConstraint";
 
@@ -53,6 +56,9 @@ public final class RelationshipTypeFields {
             .fields(
                     fh.<String>field(B_IS_TO_A),
                     fh.<String>field(A_IS_TO_B),
+                    fh.<String>field(FROM_TO_NAME),
+                    fh.<String>field(TO_FROM_NAME),
+                    fh.<String>field(BIDIRECTIONAL),
                     fh.<RelationshipConstraint>nestedField(FROM_CONSTRAINT)
                             .with(RelationshipConstraintFields.allFields),
                     fh.<RelationshipConstraint>nestedField(TO_CONSTRAINT)

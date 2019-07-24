@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -39,11 +41,10 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.data.database.IgnoreRelationshipConstraintAdapter;
-
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.data.database.IgnoreStringColumnAdapter;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_RelationshipType.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_RelationshipType.Builder.class)
 public abstract class RelationshipType extends BaseIdentifiableObject implements Model {
 
     /**
@@ -51,7 +52,8 @@ public abstract class RelationshipType extends BaseIdentifiableObject implements
      */
     @Deprecated
     @Nullable
-    public abstract String bIsToA();
+    @ColumnAdapter(IgnoreStringColumnAdapter.class)
+    abstract String bIsToA();
 
     /* Field name doesn't correspond with column name (typo: upper case A) We can keep the inconsistency
         as it will be removed when 2.29 is no longer supported */
@@ -60,8 +62,14 @@ public abstract class RelationshipType extends BaseIdentifiableObject implements
      */
     @Deprecated
     @Nullable
-    @ColumnName(RelationshipTypeTableInfo.Columns.A_IS_TO_B_WITH_UPPER_CASE_A)
-    public abstract String aIsToB();
+    @ColumnAdapter(IgnoreStringColumnAdapter.class)
+    abstract String aIsToB();
+
+    @Nullable
+    public abstract String fromToName();
+
+    @Nullable
+    public abstract String toFromName();
 
     @Nullable
     @ColumnAdapter(IgnoreRelationshipConstraintAdapter.class)
@@ -71,8 +79,11 @@ public abstract class RelationshipType extends BaseIdentifiableObject implements
     @ColumnAdapter(IgnoreRelationshipConstraintAdapter.class)
     public abstract RelationshipConstraint toConstraint();
 
+    @Nullable
+    public abstract Boolean bidirectional();
+
     public static Builder builder() {
-        return new AutoValue_RelationshipType.Builder();
+        return new $$AutoValue_RelationshipType.Builder();
     }
 
     public static RelationshipType create(Cursor cursor) {
@@ -86,14 +97,30 @@ public abstract class RelationshipType extends BaseIdentifiableObject implements
     public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        public abstract Builder bIsToA(String bIsToA);
+        abstract Builder bIsToA(String bIsToA);
 
-        public abstract Builder aIsToB(String aIsToB);
+        abstract Builder aIsToB(String aIsToB);
+
+        public abstract Builder fromToName(String fromToName);
+
+        public abstract Builder toFromName(String toFromName);
 
         public abstract Builder fromConstraint(RelationshipConstraint fromConstraint);
 
         public abstract Builder toConstraint(RelationshipConstraint toConstraint);
 
-        public abstract RelationshipType build();
+        public abstract Builder bidirectional(Boolean bidirectional);
+
+        abstract RelationshipType autoBuild();
+
+        // Auxiliary fields to access values
+        abstract String bIsToA();
+        abstract String aIsToB();
+
+        public RelationshipType build() {
+            if (bIsToA() != null) fromToName(bIsToA());
+            if (aIsToB() != null) toFromName(aIsToB());
+            return autoBuild();
+        }
     }
 }

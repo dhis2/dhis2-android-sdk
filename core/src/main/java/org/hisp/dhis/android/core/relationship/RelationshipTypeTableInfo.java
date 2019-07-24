@@ -58,11 +58,16 @@ public final class RelationshipTypeTableInfo {
         as it will be removed when 2.29 is no longer supported */
         static final String A_IS_TO_B_WITH_UPPER_CASE_A = "AIsToB";
 
+        public static final String FROM_TO_NAME = RelationshipTypeFields.FROM_TO_NAME;
+        public static final String TO_FROM_NAME = RelationshipTypeFields.TO_FROM_NAME;
+        public static final String BIDIRECTIONAL = RelationshipTypeFields.BIDIRECTIONAL;
+
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
-                    RelationshipTypeFields.B_IS_TO_A,
-                    A_IS_TO_B_WITH_UPPER_CASE_A
+                    FROM_TO_NAME,
+                    TO_FROM_NAME,
+                    BIDIRECTIONAL
             );
         }
     }

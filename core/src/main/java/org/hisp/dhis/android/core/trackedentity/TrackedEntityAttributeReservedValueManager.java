@@ -181,11 +181,15 @@ public final class TrackedEntityAttributeReservedValueManager {
 
         } catch (D2Error ignored) {
             // Synchronization was not successful.
+        } catch (RuntimeException e) {
+            // Exception coming from systemInfo when there is no Internet connection
+            // TODO This should throw an exception if the app has called the method syncValues explicitly. Anyway,
+            //  the app currently blocks the method in the UI if there is no internet connection.
         }
     }
 
     private void fillReservedValues(String trackedEntityAttributeUid, OrganisationUnit organisationUnit,
-                                    Integer numberToReserve) throws D2Error {
+                                    Integer numberToReserve) throws D2Error, RuntimeException {
 
         systemInfoRepository.download().blockingAwait();
 

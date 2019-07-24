@@ -38,7 +38,7 @@ public enum FeatureType {
     private final String featureType;
     private final String geometryType;
 
-    private FeatureType(String featureType, String geometryType) {
+    FeatureType(String featureType, String geometryType) {
         this.featureType = featureType;
         this.geometryType = geometryType;
     }
@@ -49,5 +49,14 @@ public enum FeatureType {
 
     public String getGeometryType() {
         return geometryType;
+    }
+
+    public static FeatureType valueOfFeatureType(String featureType) {
+        for (FeatureType value : values()) {
+            if (value.featureType.equals(featureType) || value.geometryType.equals(featureType)) {
+                return value;
+            }
+        }
+        return null;
     }
 }

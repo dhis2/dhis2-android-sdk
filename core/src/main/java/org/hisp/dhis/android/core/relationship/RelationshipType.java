@@ -116,10 +116,12 @@ public abstract class RelationshipType extends BaseIdentifiableObject implements
         // Auxiliary fields to access values
         abstract String bIsToA();
         abstract String aIsToB();
+        abstract Boolean bidirectional();
 
         public RelationshipType build() {
             if (bIsToA() != null) fromToName(bIsToA());
             if (aIsToB() != null) toFromName(aIsToB());
+            if (bidirectional() == null) bidirectional(false);
             return autoBuild();
         }
     }

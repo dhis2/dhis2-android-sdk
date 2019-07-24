@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.relationship.RelationshipType;
 
 public final class RelationshipTypeFields {
 
-    public static final String B_IS_TO_A = "bIsToA";
-    public static final String A_IS_TO_B = "aIsToB";
+    private static final String B_IS_TO_A = "bIsToA";
+    private static final String A_IS_TO_B = "aIsToB";
     public static final String FROM_TO_NAME = "fromToName";
     public static final String TO_FROM_NAME = "toFromName";
     public static final String BIDIRECTIONAL = "bidirectional";

@@ -58,5 +58,8 @@ public class RelationshipType29Should extends BaseObjectShould implements Object
                 BaseIdentifiableObject.DATE_FORMAT.parse("2014-04-14T13:53:20.166"));
         assertThat(relationshipType.aIsToB()).isEqualTo("Mother");
         assertThat(relationshipType.bIsToA()).isEqualTo("Child");
+        assertThat(relationshipType.toFromName()).isEqualTo("Mother");
+        assertThat(relationshipType.fromToName()).isEqualTo("Child");
+        assertThat(relationshipType.bidirectional()).isFalse();
     }
 }

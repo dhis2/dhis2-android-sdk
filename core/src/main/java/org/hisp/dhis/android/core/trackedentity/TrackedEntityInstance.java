@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -38,22 +40,20 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.data.database.DataDeleteColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreEnrollmentListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreRelationship229CompatibleListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityAttributeValueListColumnAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 
 import java.util.Date;
 import java.util.List;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_TrackedEntityInstance.Builder.class)
@@ -91,14 +91,18 @@ public abstract class TrackedEntityInstance extends BaseDataModel
     @JsonProperty()
     public abstract String trackedEntityType();
 
+    /**
+     * @deprecated since 2.30, replaced by {@link #geometry()}
+     */
     @Nullable
     @JsonProperty()
+    @Deprecated
     public abstract String coordinates();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DbFeatureTypeColumnAdapter.class)
-    public abstract FeatureType featureType();
+    @ColumnAdapter(DbGeometryColumnAdapter.class)
+    public abstract Geometry geometry();
 
     @Nullable
     @JsonProperty()
@@ -151,9 +155,10 @@ public abstract class TrackedEntityInstance extends BaseDataModel
 
         public abstract Builder trackedEntityType(String trackedEntityType);
 
+        @Deprecated
         public abstract Builder coordinates(String coordinates);
 
-        public abstract Builder featureType(FeatureType featureType);
+        public abstract Builder geometry(Geometry geometry);
 
         public abstract Builder deleted(Boolean deleted);
 

@@ -122,8 +122,12 @@ public final class TrackedEntityInstanceCollectionRepository
         return cf.string(TrackedEntityInstanceFields.COORDINATES);
     }
 
-    public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, FeatureType> byFeatureType() {
-        return cf.enumC(TrackedEntityInstanceFields.FEATURE_TYPE);
+    public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, FeatureType> byGeometryType() {
+        return cf.enumC(TrackedEntityInstanceTableInfo.Columns.GEOMETRY_TYPE);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byGeometryCoordinates() {
+        return cf.string(TrackedEntityInstanceTableInfo.Columns.GEOMETRY_COORDINATES);
     }
 
     public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> byState() {

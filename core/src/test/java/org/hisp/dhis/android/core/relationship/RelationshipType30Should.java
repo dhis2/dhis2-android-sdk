@@ -67,5 +67,7 @@ public class RelationshipType30Should extends BaseObjectShould implements Object
         assertThat(relationshipType.toConstraint().relationshipEntity()).isEqualTo(RelationshipEntityType.PROGRAM_INSTANCE);
         assertThat(relationshipType.toConstraint().program().uid()).isEqualTo("WSGAb5XwJ3Y");
         assertThat(relationshipType.bidirectional()).isFalse();
+        assertThat(relationshipType.access().data().read()).isTrue();
+        assertThat(relationshipType.access().data().write()).isFalse();
     }
 }

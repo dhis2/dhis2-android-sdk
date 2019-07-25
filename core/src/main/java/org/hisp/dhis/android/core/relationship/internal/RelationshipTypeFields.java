@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.relationship.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 
@@ -43,6 +45,7 @@ public final class RelationshipTypeFields {
     public static final String BIDIRECTIONAL = "bidirectional";
     public static final String FROM_CONSTRAINT = "fromConstraint";
     public static final String TO_CONSTRAINT = "toConstraint";
+    private static final String ACCESS = "access";
 
     // Used only for children appending, can't be used in query
     static final String CONSTRAINTS = "constraints";
@@ -62,7 +65,8 @@ public final class RelationshipTypeFields {
                     fh.<RelationshipConstraint>nestedField(FROM_CONSTRAINT)
                             .with(RelationshipConstraintFields.allFields),
                     fh.<RelationshipConstraint>nestedField(TO_CONSTRAINT)
-                            .with(RelationshipConstraintFields.allFields)
+                            .with(RelationshipConstraintFields.allFields),
+                    fh.<Access>nestedField(ACCESS).with(Access.data.with(DataAccess.allFields))
             ).build();
 
     private RelationshipTypeFields() {

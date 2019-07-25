@@ -54,20 +54,18 @@ public final class RelationshipTypeTableInfo {
 
     static class Columns extends BaseIdentifiableObjectModel.Columns {
 
-        /* Field name doesn't correspond with column name (typo: upper case A) We can keep the inconsistency
-        as it will be removed when 2.29 is no longer supported */
-        static final String A_IS_TO_B_WITH_UPPER_CASE_A = "AIsToB";
-
         public static final String FROM_TO_NAME = RelationshipTypeFields.FROM_TO_NAME;
         public static final String TO_FROM_NAME = RelationshipTypeFields.TO_FROM_NAME;
         public static final String BIDIRECTIONAL = RelationshipTypeFields.BIDIRECTIONAL;
+        public static final String ACCESS_DATA_WRITE = "accessDataWrite";
 
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
                     FROM_TO_NAME,
                     TO_FROM_NAME,
-                    BIDIRECTIONAL
+                    BIDIRECTIONAL,
+                    ACCESS_DATA_WRITE
             );
         }
     }

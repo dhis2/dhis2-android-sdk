@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableSt
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
@@ -54,6 +55,7 @@ public final class RelationshipTypeStore {
             sqLiteBind(sqLiteStatement, 7, o.fromToName());
             sqLiteBind(sqLiteStatement, 8, o.toFromName());
             sqLiteBind(sqLiteStatement, 9, o.bidirectional());
+            sqLiteBind(sqLiteStatement, 10, AccessHelper.getAccessDataWrite(o.access()));
         }
     };
 

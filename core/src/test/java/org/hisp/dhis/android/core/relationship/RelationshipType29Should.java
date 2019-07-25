@@ -61,5 +61,7 @@ public class RelationshipType29Should extends BaseObjectShould implements Object
         assertThat(relationshipType.toFromName()).isEqualTo("Mother");
         assertThat(relationshipType.fromToName()).isEqualTo("Child");
         assertThat(relationshipType.bidirectional()).isFalse();
+        assertThat(relationshipType.access().data().read()).isTrue();
+        assertThat(relationshipType.access().data().write()).isTrue();
     }
 }

@@ -17,7 +17,7 @@
     "manage": true,
     "data": {
       "read": true,
-      "write": true
+      "write": false
     }
   },
   "toConstraint": {

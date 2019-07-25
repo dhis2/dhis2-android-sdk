@@ -4,6 +4,18 @@
   "name": "Mother-Child_b-to-a_(Person-Person)",
   "id": "V2kkHafqs8G",
   "displayName": "Mother-Child_b-to-a_(Person-Person)",
+  "access": {
+    "read": true,
+    "update": true,
+    "externalize": false,
+    "delete": true,
+    "write": true,
+    "manage": true,
+    "data": {
+      "read": true,
+      "write": false
+    }
+  },
   "fromConstraint": {
     "relationshipEntity": "TRACKED_ENTITY_INSTANCE",
     "trackedEntityType": {

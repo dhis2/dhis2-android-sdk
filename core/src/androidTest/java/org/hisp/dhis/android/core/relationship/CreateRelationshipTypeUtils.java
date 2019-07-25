@@ -67,6 +67,7 @@ public class CreateRelationshipTypeUtils {
         relationshipType.put(RelationshipTypeTableInfo.Columns.TO_FROM_NAME, TO_FROM_NAME);
         relationshipType.put(RelationshipTypeTableInfo.Columns.FROM_TO_NAME, FROM_TO_NAME);
         relationshipType.put(RelationshipTypeTableInfo.Columns.BIDIRECTIONAL, 0);
+        relationshipType.put(RelationshipTypeTableInfo.Columns.ACCESS_DATA_WRITE, 1);
 
         return relationshipType;
     }

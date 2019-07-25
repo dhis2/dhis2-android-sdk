@@ -53,10 +53,9 @@ public final class TrackedEntityInstanceStoreImpl extends IdentifiableObjectWith
         sqLiteBind(sqLiteStatement, 5, o.lastUpdatedAtClient());
         sqLiteBind(sqLiteStatement, 6, o.organisationUnit());
         sqLiteBind(sqLiteStatement, 7, o.trackedEntityType());
-        sqLiteBind(sqLiteStatement, 8, o.coordinates());
-        sqLiteBind(sqLiteStatement, 9, o.geometry() == null ? null : o.geometry().type());
-        sqLiteBind(sqLiteStatement, 10, o.geometry() == null ? null : o.geometry().coordinates());
-        sqLiteBind(sqLiteStatement, 11, o.state());
+        sqLiteBind(sqLiteStatement, 8, o.geometry() == null ? null : o.geometry().type());
+        sqLiteBind(sqLiteStatement, 9, o.geometry() == null ? null : o.geometry().coordinates());
+        sqLiteBind(sqLiteStatement, 10, o.state());
     };
 
     public TrackedEntityInstanceStoreImpl(DatabaseAdapter databaseAdapter,

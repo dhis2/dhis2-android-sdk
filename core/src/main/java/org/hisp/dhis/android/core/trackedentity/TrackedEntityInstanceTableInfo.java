@@ -69,7 +69,6 @@ public final class TrackedEntityInstanceTableInfo {
                     LAST_UPDATED_AT_CLIENT,
                     ORGANISATION_UNIT,
                     TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE,
-                    TrackedEntityInstanceFields.COORDINATES,
                     GEOMETRY_TYPE,
                     GEOMETRY_COORDINATES,
                     BaseDataModel.Columns.STATE

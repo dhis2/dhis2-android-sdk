@@ -118,10 +118,6 @@ public final class TrackedEntityInstanceCollectionRepository
         return cf.string(TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE);
     }
 
-    public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byCoordinates() {
-        return cf.string(TrackedEntityInstanceFields.COORDINATES);
-    }
-
     public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, FeatureType> byGeometryType() {
         return cf.enumC(TrackedEntityInstanceTableInfo.Columns.GEOMETRY_TYPE);
     }

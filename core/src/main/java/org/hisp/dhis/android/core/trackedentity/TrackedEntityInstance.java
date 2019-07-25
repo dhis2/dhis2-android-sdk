@@ -48,8 +48,10 @@ import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreEnrollmentListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreRelationship229CompatibleListColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreStringColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityAttributeValueListColumnAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 
 import java.util.Date;
@@ -97,7 +99,8 @@ public abstract class TrackedEntityInstance extends BaseDataModel
     @Nullable
     @JsonProperty()
     @Deprecated
-    public abstract String coordinates();
+    @ColumnAdapter(IgnoreStringColumnAdapter.class)
+    abstract String coordinates();
 
     @Nullable
     @JsonProperty()
@@ -155,8 +158,11 @@ public abstract class TrackedEntityInstance extends BaseDataModel
 
         public abstract Builder trackedEntityType(String trackedEntityType);
 
+        /**
+         * @deprecated since 2.30, replaced by {@link #geometry()}
+         */
         @Deprecated
-        public abstract Builder coordinates(String coordinates);
+        abstract Builder coordinates(String coordinates);
 
         public abstract Builder geometry(Geometry geometry);
 
@@ -170,6 +176,19 @@ public abstract class TrackedEntityInstance extends BaseDataModel
 
         public abstract Builder enrollments(List<Enrollment> enrollments);
 
-        public abstract TrackedEntityInstance build();
+        abstract TrackedEntityInstance autoBuild();
+
+        // Auxiliary fields to access values
+        abstract String coordinates();
+        abstract Geometry geometry();
+        public TrackedEntityInstance build() {
+            if (coordinates() != null && geometry() == null) {
+                geometry(Geometry.builder()
+                        .type(FeatureType.POINT)
+                        .coordinates(coordinates())
+                        .build());
+            }
+            return autoBuild();
+        }
     }
 }

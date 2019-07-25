@@ -65,7 +65,6 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitPack
 import org.hisp.dhis.android.core.period.internal.PeriodPackageDIModule;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.internal.ProgramPackageDIModule;
-import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLastUpdatedPackageDIModule;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipPackageDIModule;
 import org.hisp.dhis.android.core.resource.internal.ResourcePackageDIModule;
@@ -111,7 +110,6 @@ import retrofit2.Retrofit;
         PeriodPackageDIModule.class,
         ProgramPackageDIModule.class,
         RelationshipPackageDIModule.class,
-        ProgramOrganisationUnitLastUpdatedPackageDIModule.class,
         ResourcePackageDIModule.class,
         SystemInfoPackageDIModule.class,
         SystemSettingPackageDIModule.class,
@@ -173,8 +171,6 @@ public interface D2DIComponent {
         Builder periodPackageDIModule(PeriodPackageDIModule periodPackageDIModule);
         Builder programPackageDIModule(ProgramPackageDIModule programPackageDIModule);
         Builder relationshipDIModule(RelationshipPackageDIModule relationshipPackageDIModule);
-        Builder programOrganisationUnitLastUpdatedPackageDIModule(
-                ProgramOrganisationUnitLastUpdatedPackageDIModule programOrganisationUnitLastUpdatedPackageDIModule);
         Builder resourcePackageDIModule(ResourcePackageDIModule resourcePackageDIModule);
         Builder systemInfoPackageDIModule(SystemInfoPackageDIModule systemInfoPackageDIModule);
         Builder systemSettingPackageDIModule(SystemSettingPackageDIModule systemSettingPackageDIModule);

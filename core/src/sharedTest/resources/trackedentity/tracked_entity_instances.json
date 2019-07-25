@@ -7,7 +7,6 @@
       "orgUnit": "DiszpKrYNg8",
       "trackedEntityInstance": "nWrB0TfWlvh",
       "deleted": false,
-      "featureType": "NONE",
       "relationships": [
         {
           "lastUpdated": "2019-02-07T08:06:28.369",
@@ -117,7 +116,13 @@
       "orgUnit": "DiszpKrYNg8",
       "trackedEntityInstance": "nWrB0TfWlvD",
       "deleted": false,
-      "featureType": "POINT",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.0,
+          9.0
+        ]
+      },
       "relationships": [],
       "attributes": [
         {

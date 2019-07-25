@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.data.trackedentity;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -49,7 +50,10 @@ public class TrackedEntityInstanceSamples {
                 .organisationUnit("organisation_unit")
                 .trackedEntityType("tracked_entity_type")
                 .coordinates("coordinates")
-                .featureType(FeatureType.MULTI_POLYGON)
+                .geometry(Geometry.builder()
+                        .type(FeatureType.POLYGON)
+                        .coordinates("[11.0, 11.0]")
+                        .build())
                 .state(State.TO_POST)
                 .deleted(false)
                 .build();

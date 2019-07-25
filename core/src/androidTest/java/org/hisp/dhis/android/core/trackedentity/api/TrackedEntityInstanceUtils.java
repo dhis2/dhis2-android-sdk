@@ -64,7 +64,6 @@ class TrackedEntityInstanceUtils {
     private static String validNumberDataElementUid = "a3kGcGDCuk6"; // MCH Apgar Score
     private static String trackedEntityTypeUid = "nEenWmSyUEp"; // Person
     private static String validTrackedEntityAttributeUid = "w75KJ2mc4zz"; // First name
-    private static String coordinates = "[9,9]";
     private static FeatureType featureType = FeatureType.POINT;
     private static Geometry geometry = Geometry.builder().type(featureType).coordinates("[-11.96, 9.49]").build();
 
@@ -84,7 +83,6 @@ class TrackedEntityInstanceUtils {
                 .lastUpdated(refDate)
                 .organisationUnit(orgUnitUid)
                 .trackedEntityType(trackedEntityTypeUid)
-                .coordinates(coordinates)
                 .geometry(geometry)
                 .deleted(false)
                 .trackedEntityAttributeValues(attributes)

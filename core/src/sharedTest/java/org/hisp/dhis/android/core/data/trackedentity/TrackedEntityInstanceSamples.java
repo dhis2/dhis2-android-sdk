@@ -49,7 +49,6 @@ public class TrackedEntityInstanceSamples {
                 .lastUpdatedAtClient("last_updated_at_client")
                 .organisationUnit("organisation_unit")
                 .trackedEntityType("tracked_entity_type")
-                .coordinates("coordinates")
                 .geometry(Geometry.builder()
                         .type(FeatureType.POLYGON)
                         .coordinates("[11.0, 11.0]")

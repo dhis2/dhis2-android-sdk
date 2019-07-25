@@ -28,9 +28,11 @@
 
 package org.hisp.dhis.android.testapp.trackedentity;
 
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceObjectRepository;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
@@ -72,13 +74,16 @@ public class TrackedEntityInstanceObjectRepositoryMockIntegrationShould extends 
     }
 
     @Test
-    public void update_coordinates() throws D2Error {
-        String coordinates = "[11, 10]";
+    public void update_geometry() throws D2Error {
+        Geometry geometry = Geometry.builder()
+                .type(FeatureType.POINT)
+                .coordinates("[11, 10]")
+                .build();
 
         TrackedEntityInstanceObjectRepository repository = objectRepository();
 
-        repository.setCoordinates(coordinates);
-        assertThat(repository.get().coordinates(), is(coordinates));
+        repository.setGeometry(geometry);
+        assertThat(repository.get().geometry(), is(geometry));
 
         repository.delete();
     }

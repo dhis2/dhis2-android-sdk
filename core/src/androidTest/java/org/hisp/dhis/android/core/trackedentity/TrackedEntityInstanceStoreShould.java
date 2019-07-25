@@ -61,7 +61,6 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
     private static final String UID = "test_uid";
     private static final String ORGANISATION_UNIT = "test_organisationUnit";
     private static final String TRACKED_ENTITY = "test_trackedEntity";
-    private static final String COORDINATES = "[9,9]";
     private static final FeatureType GEOMETRY_TYPE = FeatureType.POINT;
     private static final String GEOMETRY_COORDINATES = "[10.02, 9.87]";
     private static final State STATE = State.ERROR;
@@ -85,7 +84,6 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
             Columns.LAST_UPDATED_AT_CLIENT,
             Columns.ORGANISATION_UNIT,
             TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE,
-            TrackedEntityInstanceFields.COORDINATES,
             Columns.GEOMETRY_TYPE,
             Columns.GEOMETRY_COORDINATES,
             BaseDataModel.Columns.STATE
@@ -109,7 +107,6 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
                 .lastUpdatedAtClient(LAST_UPDATED_AT_CLIENT)
                 .organisationUnit(ORGANISATION_UNIT)
                 .trackedEntityType(TRACKED_ENTITY)
-                .coordinates(COORDINATES)
                 .geometry(Geometry.builder().type(GEOMETRY_TYPE).coordinates(GEOMETRY_COORDINATES).build())
                 .state(STATE)
                 .build();

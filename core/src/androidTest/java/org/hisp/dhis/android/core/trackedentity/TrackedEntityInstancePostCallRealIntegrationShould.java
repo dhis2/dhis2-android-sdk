@@ -458,7 +458,6 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 .lastUpdated(refDate)
                 .organisationUnit(orgUnitUid)
                 .trackedEntityType(trackedEntityUid)
-                .coordinates(coordinates)
                 .geometry(geometry)
                 .state(State.TO_POST)
                 .build();

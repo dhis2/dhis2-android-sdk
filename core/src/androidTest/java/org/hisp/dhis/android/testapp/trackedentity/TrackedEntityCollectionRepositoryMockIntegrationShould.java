@@ -128,16 +128,6 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     }
 
     @Test
-    public void filter_by_coordinates() {
-        List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
-                        .byCoordinates().eq("[9,9]")
-                        .get();
-
-        assertThat(trackedEntityInstances.size(), is(1));
-    }
-
-    @Test
     public void filter_by_geometry_type() {
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances

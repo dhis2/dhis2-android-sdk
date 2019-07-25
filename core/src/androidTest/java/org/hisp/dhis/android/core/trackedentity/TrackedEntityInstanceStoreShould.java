@@ -32,8 +32,11 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -50,8 +53,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
@@ -61,7 +62,8 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
     private static final String ORGANISATION_UNIT = "test_organisationUnit";
     private static final String TRACKED_ENTITY = "test_trackedEntity";
     private static final String COORDINATES = "[9,9]";
-    private static final FeatureType FEATURE_TYPE = FeatureType.POINT;
+    private static final FeatureType GEOMETRY_TYPE = FeatureType.POINT;
+    private static final String GEOMETRY_COORDINATES = "[10.02, 9.87]";
     private static final State STATE = State.ERROR;
     private static final String CREATED_AT_CLIENT = "2016-04-28T23:44:28.126";
     private static final String LAST_UPDATED_AT_CLIENT = "2016-04-28T23:44:28.126";
@@ -84,7 +86,8 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
             Columns.ORGANISATION_UNIT,
             TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE,
             TrackedEntityInstanceFields.COORDINATES,
-            TrackedEntityInstanceFields.FEATURE_TYPE,
+            Columns.GEOMETRY_TYPE,
+            Columns.GEOMETRY_COORDINATES,
             BaseDataModel.Columns.STATE
     };
 
@@ -107,7 +110,7 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
                 .organisationUnit(ORGANISATION_UNIT)
                 .trackedEntityType(TRACKED_ENTITY)
                 .coordinates(COORDINATES)
-                .featureType(FEATURE_TYPE)
+                .geometry(Geometry.builder().type(GEOMETRY_TYPE).coordinates(GEOMETRY_COORDINATES).build())
                 .state(STATE)
                 .build();
     }

@@ -138,10 +138,20 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     }
 
     @Test
-    public void filter_by_feature_type() {
+    public void filter_by_geometry_type() {
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances
-                        .byFeatureType().eq(FeatureType.POINT)
+                        .byGeometryType().eq(FeatureType.POINT)
+                        .get();
+
+        assertThat(trackedEntityInstances.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_geometry_coordinates() {
+        List<TrackedEntityInstance> trackedEntityInstances =
+                d2.trackedEntityModule().trackedEntityInstances
+                        .byGeometryCoordinates().eq("[9.0, 9.0]")
                         .get();
 
         assertThat(trackedEntityInstances.size(), is(1));

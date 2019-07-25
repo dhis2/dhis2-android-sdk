@@ -28,14 +28,15 @@
 
 package org.hisp.dhis.android.core.trackedentity.api;
 
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.internal.BaseImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
-import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.internal.TEIImportSummary;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
@@ -65,6 +66,7 @@ class TrackedEntityInstanceUtils {
     private static String validTrackedEntityAttributeUid = "w75KJ2mc4zz"; // First name
     private static String coordinates = "[9,9]";
     private static FeatureType featureType = FeatureType.POINT;
+    private static Geometry geometry = Geometry.builder().type(featureType).coordinates("[-11.96, 9.49]").build();
 
     private static String validCategoryComboOptionUid = "HllvX50cXC0"; // Default
 
@@ -83,7 +85,7 @@ class TrackedEntityInstanceUtils {
                 .organisationUnit(orgUnitUid)
                 .trackedEntityType(trackedEntityTypeUid)
                 .coordinates(coordinates)
-                .featureType(featureType)
+                .geometry(geometry)
                 .deleted(false)
                 .trackedEntityAttributeValues(attributes)
                 .relationships(relationships)

@@ -26,54 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.program.internal;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
+import androidx.test.runner.AndroidJUnit4;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.program.ProgramOrganisationUnitLastUpdatedSamples;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.junit.runner.RunWith;
 
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
+import java.util.Date;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+@RunWith(AndroidJUnit4.class)
+public class ProgramOrganisationUnitLastUpdatedStoreIntegrationShould
+        extends ObjectWithoutUidStoreAbstractIntegrationShould<ProgramOrganisationUnitLastUpdated> {
 
-public class DbOpenHelper extends SQLBriteOpenHelper {
-
-    public static final int VERSION = 53;
-
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
-    }
-
-    public DbOpenHelper(Context context, String databaseName, int testVersion) {
-        super(context, databaseName, null, testVersion);
+    public ProgramOrganisationUnitLastUpdatedStoreIntegrationShould() {
+        super(ProgramOrganisationUnitLastUpdatedStore.create(DatabaseAdapterFactory.get()),
+                ProgramOrganisationUnitLastUpdatedTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
     }
 
     @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
-
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            db.setForeignKeyConstraintsEnabled(true);
-        }
-
-        db.enableWriteAheadLogging();
+    protected ProgramOrganisationUnitLastUpdated buildObject() {
+        return ProgramOrganisationUnitLastUpdatedSamples.get();
     }
 
-    // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional
     @Override
-    public Map<String, List<String>> parse(int newVersion) throws IOException {
-        Map<String, List<String>> versionMigrations = super.parse(newVersion);
-        List<String> seeds = versionMigrations.get("seeds");
-        if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<>());
-        }
-        return versionMigrations;
+    protected ProgramOrganisationUnitLastUpdated buildObjectToUpdate() {
+        return ProgramOrganisationUnitLastUpdatedSamples.get().toBuilder()
+                .lastSynced(new Date())
+                .build();
     }
 }

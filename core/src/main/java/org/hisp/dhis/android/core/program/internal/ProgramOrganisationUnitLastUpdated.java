@@ -26,54 +26,54 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.program.internal;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
+import android.database.Cursor;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.google.auto.value.AutoValue;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
-public class DbOpenHelper extends SQLBriteOpenHelper {
+import java.util.Date;
 
-    public static final int VERSION = 52;
+@AutoValue
+public abstract class ProgramOrganisationUnitLastUpdated implements Model {
 
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
+    @Nullable
+    public abstract String program();
+
+    @Nullable
+    public abstract String organisationUnit();
+
+    @Nullable
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date lastSynced();
+
+    public static ProgramOrganisationUnitLastUpdated create(Cursor cursor) {
+        return $AutoValue_ProgramOrganisationUnitLastUpdated.createFromCursor(cursor);
     }
 
-    public DbOpenHelper(Context context, String databaseName, int testVersion) {
-        super(context, databaseName, null, testVersion);
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new $$AutoValue_ProgramOrganisationUnitLastUpdated.Builder();
     }
 
-    @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
+    @AutoValue.Builder
+    public abstract static class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder id(Long id);
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            db.setForeignKeyConstraintsEnabled(true);
-        }
+        public abstract Builder program(String program);
 
-        db.enableWriteAheadLogging();
-    }
+        public abstract Builder organisationUnit(String organisationUnit);
 
-    // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional
-    @Override
-    public Map<String, List<String>> parse(int newVersion) throws IOException {
-        Map<String, List<String>> versionMigrations = super.parse(newVersion);
-        List<String> seeds = versionMigrations.get("seeds");
-        if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<>());
-        }
-        return versionMigrations;
+        public abstract Builder lastSynced(Date lastSynced);
+
+        public abstract ProgramOrganisationUnitLastUpdated build();
     }
 }

@@ -35,11 +35,14 @@ import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.helpers.internal.TrackedEntityInstanceHelper;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
+import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLastUpdated;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
@@ -48,6 +51,7 @@ import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,12 +63,14 @@ import io.reactivex.Observable;
 import io.reactivex.Single;
 
 @Reusable
+@SuppressWarnings({"PMD.ExcessiveImports"})
 public final class TrackedEntityInstanceWithLimitCallFactory {
 
     private final Resource.Type resourceType = Resource.Type.TRACKED_ENTITY_INSTANCE;
 
     private final RxAPICallExecutor rxCallExecutor;
     private final ResourceHandler resourceHandler;
+    private final Handler<ProgramOrganisationUnitLastUpdated> programOrganisationUnitLastUpdatedHandler;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final LinkModelStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
@@ -82,6 +88,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     TrackedEntityInstanceWithLimitCallFactory(
             RxAPICallExecutor rxCallExecutor,
             ResourceHandler resourceHandler,
+            Handler<ProgramOrganisationUnitLastUpdated> programOrganisationUnitLastUpdatedHandler,
             UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             LinkModelStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore,
             ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
@@ -91,6 +98,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
             TrackedEntityInstancesEndpointCallFactory endpointCallFactory) {
         this.rxCallExecutor = rxCallExecutor;
         this.resourceHandler = resourceHandler;
+        this.programOrganisationUnitLastUpdatedHandler = programOrganisationUnitLastUpdatedHandler;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
         this.systemInfoRepository = systemInfoRepository;
@@ -104,6 +112,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     public Observable<D2Progress> download(final int teiLimit, final boolean limitByOrgUnit, boolean limitByProgram) {
         Observable<D2Progress> observable = Observable.defer(() -> {
             D2ProgressManager progressManager = new D2ProgressManager(null);
+            Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet = new HashSet<>();
             if (userOrganisationUnitLinkStore.count() == 0) {
                 return Observable.just(
                         progressManager.increaseProgress(TrackedEntityInstance.class, true));
@@ -112,9 +121,10 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
 
                 return Observable.concat(
                         downloadSystemInfo(progressManager),
-                        downloadTeis(progressManager, teiLimit, limitByOrgUnit, limitByProgram, allOkay),
+                        downloadTeis(progressManager, teiLimit, limitByOrgUnit, limitByProgram, allOkay,
+                                programOrganisationUnitSet),
                         downloadRelationshipTeis(progressManager),
-                        updateResource(progressManager, allOkay)
+                        updateResource(progressManager, allOkay, programOrganisationUnitSet)
                 );
             }
         });
@@ -133,7 +143,8 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
                                                 int teiLimit,
                                                 boolean limitByOrgUnit,
                                                 boolean limitByProgram,
-                                                BooleanWrapper allOkay) {
+                                                BooleanWrapper allOkay,
+                                                Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet) {
 
         int pageSize = TeiQuery.builder().build().pageSize();
         List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, teiLimit);
@@ -145,9 +156,13 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
                             // TODO .subscribeOn(teiDownloadScheduler);
                         });
 
+        Date serverDate = systemInfoRepository.get().serverDate();
+
         return teiDownloadObservable.map(
                 teiList -> {
                     persistenceCallFactory.getCall(teiList).call();
+                    programOrganisationUnitSet.addAll(
+                            TrackedEntityInstanceHelper.getProgramOrganisationUnitTuple(teiList, serverDate));
                     return progressManager.increaseProgress(TrackedEntityInstance.class, false);
                 });
     }
@@ -258,11 +273,13 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
                 ).build());
     }
 
-    private Observable<D2Progress> updateResource(D2ProgressManager progressManager, BooleanWrapper allOkay) {
+    private Observable<D2Progress> updateResource(D2ProgressManager progressManager, BooleanWrapper allOkay,
+                                                  Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet) {
         return Single.fromCallable(() -> {
             if (allOkay.get()) {
                 resourceHandler.handleResource(resourceType);
             }
+            programOrganisationUnitLastUpdatedHandler.handleMany(programOrganisationUnitSet);
             return progressManager.increaseProgress(TrackedEntityInstance.class, true);
         }).toObservable();
     }

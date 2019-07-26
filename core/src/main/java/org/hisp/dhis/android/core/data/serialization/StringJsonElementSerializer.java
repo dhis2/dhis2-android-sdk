@@ -38,6 +38,6 @@ public class StringJsonElementSerializer extends JsonSerializer<String> {
 
     @Override
     public void serialize(String value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-        gen.writeRaw(": " + value);
+        gen.writeRawValue(value);
     }
 }

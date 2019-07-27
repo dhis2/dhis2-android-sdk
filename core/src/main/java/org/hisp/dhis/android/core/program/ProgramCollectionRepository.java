@@ -106,10 +106,6 @@ public final class ProgramCollectionRepository
         return cf.bool(ProgramFields.SELECT_INCIDENT_DATES_IN_FUTURE);
     }
 
-    public BooleanFilterConnector<ProgramCollectionRepository> byCaptureCoordinates() {
-        return cf.bool(ProgramFields.CAPTURE_COORDINATES);
-    }
-
     public BooleanFilterConnector<ProgramCollectionRepository> byUseFirstStageDuringRegistration() {
         return cf.bool(ProgramFields.USE_FIRST_STAGE_DURING_REGISTRATION);
     }

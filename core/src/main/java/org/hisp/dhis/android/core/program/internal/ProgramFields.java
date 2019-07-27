@@ -56,7 +56,7 @@ public final class ProgramFields {
     public static final String IGNORE_OVERDUE_EVENTS = "ignoreOverdueEvents";
     public static final String RELATIONSHIP_FROM_A = "relationshipFromA";
     public static final String SELECT_INCIDENT_DATES_IN_FUTURE = "selectIncidentDatesInFuture";
-    public static final String CAPTURE_COORDINATES = "captureCoordinates";
+    private static final String CAPTURE_COORDINATES = "captureCoordinates";
     public static final String USE_FIRST_STAGE_DURING_REGISTRATION = "useFirstStageDuringRegistration";
     public static final String DISPLAY_FRONT_PAGE_LIST = "displayFrontPageList";
     public static final String PROGRAM_TYPE = "programType";

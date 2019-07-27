@@ -51,10 +51,10 @@ public final class TrackedEntityInstanceFields {
     public final static String TRACKED_ENTITY_ATTRIBUTE_VALUES = "attributes";
     final static String RELATIONSHIPS = "relationships";
     final static String TRACKED_ENTITY_TYPE = "trackedEntityType";
-    final static String COORDINATES = "coordinates";
+    private final static String COORDINATES = "coordinates";
     private final static String DELETED = "deleted";
     final static String ENROLLMENTS = "enrollments";
-    final static String GEOMETRY = "geometry";
+    private final static String GEOMETRY = "geometry";
 
     private static final FieldsHelper<TrackedEntityInstance> fh = new FieldsHelper<>();
 

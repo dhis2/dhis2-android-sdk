@@ -26,41 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.data.database;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
 import org.hisp.dhis.android.core.period.FeatureType;
-import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.program.internal.ProgramFields;
 
-import javax.inject.Inject;
+public class DBCaptureCoordinatesFromFeatureTypeColumnAdapter implements ColumnTypeAdapter<Boolean> {
 
-import dagger.Reusable;
+    @Override
+    public Boolean fromCursor(Cursor cursor, String columnName) {
+        int featureTypeColumnIndex = cursor.getColumnIndex(ProgramFields.FEATURE_TYPE);
+        String featureTypeStr = cursor.getString(featureTypeColumnIndex);
 
-@Reusable
-class ProgramDHISVersionManager {
-
-    private final DHISVersionManager versionManager;
-
-    @Inject
-    ProgramDHISVersionManager(DHISVersionManager versionManager) {
-        this.versionManager = versionManager;
-    }
-
-    Program addCaptureCoordinatesOrFeatureType(Program program) {
-        if (versionManager.is2_29() || versionManager.is2_30()) {
-            return addFeatureType(program);
-        } else {
-            return addCaptureCoordinates(program);
+        FeatureType featureType
+                = null;
+        if (featureTypeStr != null) {
+            try {
+                featureType = FeatureType.valueOfFeatureType(featureTypeStr);
+            } catch (Exception exception) {
+                throw new RuntimeException("Unknown FeatureType type", exception);
+            }
         }
+
+        return featureType == null ? null : featureType != FeatureType.NONE;
     }
 
-    private Program addFeatureType(Program program) {
-        FeatureType featureType = program.captureCoordinates() ? FeatureType.POINT : FeatureType.NONE;
-        return program.toBuilder().featureType(featureType).build();
-    }
-
-    private Program addCaptureCoordinates(Program program) {
-        boolean captureCoordinates = program.featureType() != FeatureType.NONE;
-        return program.toBuilder().captureCoordinates(captureCoordinates).build();
+    @Override
+    public void toContentValues(ContentValues values, String columnName, Boolean value) {
     }
 }

@@ -175,17 +175,6 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
     }
 
     @Test
-    public void filter_by_capture_coordinates() {
-        List<ProgramStage> programStages =
-                d2.programModule().programStages
-                        .byCaptureCoordinates()
-                        .isTrue()
-                        .get();
-
-        assertThat(programStages.size(), is(1));
-    }
-
-    @Test
     public void filter_by_feature_type() {
         List<ProgramStage> programStages =
                 d2.programModule().programStages

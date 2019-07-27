@@ -54,7 +54,6 @@ public class ProgramStageSamples {
                 .reportDateToUse("report_date_to_use")
                 .openAfterEnrollment(Boolean.TRUE)
                 .repeatable(Boolean.TRUE)
-                .captureCoordinates(Boolean.TRUE)
                 .featureType(FeatureType.MULTI_POLYGON)
                 .formType(FormType.CUSTOM)
                 .displayGenerateEventBox(Boolean.FALSE)

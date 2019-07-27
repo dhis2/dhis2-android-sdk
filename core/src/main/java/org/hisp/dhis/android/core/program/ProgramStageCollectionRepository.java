@@ -92,13 +92,6 @@ public final class ProgramStageCollectionRepository
         return cf.bool(ProgramStageFields.REPEATABLE);
     }
 
-    /**
-     * @deprecated since 2.29, replaced by {@link #byFeatureType()}
-     */
-    public BooleanFilterConnector<ProgramStageCollectionRepository> byCaptureCoordinates() {
-        return cf.bool(ProgramStageFields.CAPTURE_COORDINATES);
-    }
-
     public EnumFilterConnector<ProgramStageCollectionRepository, FeatureType> byFeatureType() {
         return cf.enumC(ProgramStageFields.FEATURE_TYPE);
     }

@@ -58,7 +58,7 @@ public final class ProgramStageFields {
      * @deprecated since 2.29, replaced by {@link #FEATURE_TYPE}
      */
     @Deprecated
-    public static final String CAPTURE_COORDINATES = "captureCoordinates";
+    private static final String CAPTURE_COORDINATES = "captureCoordinates";
     public static final String FEATURE_TYPE = "featureType";
     public static final String FORM_TYPE = "formType";
     public static final String DISPLAY_GENERATE_EVENT_BOX = "displayGenerateEventBox";

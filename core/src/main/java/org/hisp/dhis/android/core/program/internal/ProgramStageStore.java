@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.program.internal;
 
 import android.database.sqlite.SQLiteStatement;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
@@ -40,8 +42,6 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageTableInfo;
-
-import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
@@ -60,21 +60,20 @@ public final class ProgramStageStore {
             sqLiteBind(sqLiteStatement, 12, o.reportDateToUse());
             sqLiteBind(sqLiteStatement, 13, o.openAfterEnrollment());
             sqLiteBind(sqLiteStatement, 14, o.repeatable());
-            sqLiteBind(sqLiteStatement, 15, o.captureCoordinates());
-            sqLiteBind(sqLiteStatement, 16, o.formType().name());
-            sqLiteBind(sqLiteStatement, 17, o.displayGenerateEventBox());
-            sqLiteBind(sqLiteStatement, 18, o.generatedByEnrollmentDate());
-            sqLiteBind(sqLiteStatement, 19, o.autoGenerateEvent());
-            sqLiteBind(sqLiteStatement, 20, o.sortOrder());
-            sqLiteBind(sqLiteStatement, 21, o.hideDueDate());
-            sqLiteBind(sqLiteStatement, 22, o.blockEntryForm());
-            sqLiteBind(sqLiteStatement, 23, o.minDaysFromStart());
-            sqLiteBind(sqLiteStatement, 24, o.standardInterval());
-            sqLiteBind(sqLiteStatement, 25, UidsHelper.getUidOrNull(o.program()));
-            sqLiteBind(sqLiteStatement, 26, o.periodType());
-            sqLiteBind(sqLiteStatement, 27, AccessHelper.getAccessDataWrite(o.access()));
-            sqLiteBind(sqLiteStatement, 28, o.remindCompleted());
-            sqLiteBind(sqLiteStatement, 29, o.featureType());
+            sqLiteBind(sqLiteStatement, 15, o.formType().name());
+            sqLiteBind(sqLiteStatement, 16, o.displayGenerateEventBox());
+            sqLiteBind(sqLiteStatement, 17, o.generatedByEnrollmentDate());
+            sqLiteBind(sqLiteStatement, 18, o.autoGenerateEvent());
+            sqLiteBind(sqLiteStatement, 19, o.sortOrder());
+            sqLiteBind(sqLiteStatement, 20, o.hideDueDate());
+            sqLiteBind(sqLiteStatement, 21, o.blockEntryForm());
+            sqLiteBind(sqLiteStatement, 22, o.minDaysFromStart());
+            sqLiteBind(sqLiteStatement, 23, o.standardInterval());
+            sqLiteBind(sqLiteStatement, 24, UidsHelper.getUidOrNull(o.program()));
+            sqLiteBind(sqLiteStatement, 25, o.periodType());
+            sqLiteBind(sqLiteStatement, 26, AccessHelper.getAccessDataWrite(o.access()));
+            sqLiteBind(sqLiteStatement, 27, o.remindCompleted());
+            sqLiteBind(sqLiteStatement, 28, o.featureType());
         }
     };
 

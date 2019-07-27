@@ -34,13 +34,14 @@ import android.database.Cursor;
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
 import org.hisp.dhis.android.core.period.FeatureType;
-import org.hisp.dhis.android.core.program.internal.ProgramFields;
 
 public class DBCaptureCoordinatesFromFeatureTypeColumnAdapter implements ColumnTypeAdapter<Boolean> {
 
+    private static final String FEATURE_TYPE = "featureType";
+
     @Override
     public Boolean fromCursor(Cursor cursor, String columnName) {
-        int featureTypeColumnIndex = cursor.getColumnIndex(ProgramFields.FEATURE_TYPE);
+        int featureTypeColumnIndex = cursor.getColumnIndex(FEATURE_TYPE);
         String featureTypeStr = cursor.getString(featureTypeColumnIndex);
 
         FeatureType featureType

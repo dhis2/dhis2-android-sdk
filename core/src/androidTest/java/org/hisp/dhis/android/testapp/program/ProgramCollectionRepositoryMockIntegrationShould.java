@@ -142,14 +142,6 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     }
 
     @Test
-    public void filter_by_capture_coordinates() {
-        List<Program> programs = d2.programModule().programs
-                .byCaptureCoordinates().isFalse()
-                .get();
-        assertThat(programs.size(), is(1));
-    }
-
-    @Test
     public void filter_by_feature_type() {
         List<Program> programs = d2.programModule().programs
                 .byFeatureType().eq(FeatureType.NONE)

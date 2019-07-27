@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.data.program;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramType;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
@@ -57,7 +58,6 @@ public class ProgramSamples {
                 .ignoreOverdueEvents(false)
                 .relationshipFromA(true)
                 .selectIncidentDatesInFuture(true)
-                .captureCoordinates(true)
                 .useFirstStageDuringRegistration(true)
                 .displayFrontPageList(false)
                 .programType(ProgramType.WITH_REGISTRATION)
@@ -72,6 +72,7 @@ public class ProgramSamples {
                 .completeEventsExpiryDays(3)
                 .minAttributesRequiredToSearch(1)
                 .maxTeiCountToReturn(2)
+                .featureType(FeatureType.POINT)
                 .build();
         return builder.build();
     }

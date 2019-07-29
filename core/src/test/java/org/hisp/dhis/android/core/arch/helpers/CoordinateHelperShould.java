@@ -25,56 +25,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.helpers;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.period.FeatureType;
+import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.List;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public final class CoordinateHelper {
+public class CoordinateHelperShould {
 
-    private CoordinateHelper() {}
+    private final static Double longitude = 43.34532;
+    private final static Double latitude = -23.98234;
 
-    public static Double getLatitude(Coordinates coordinates) {
-        return coordinates == null ? null : coordinates.latitude();
+    @Test
+    public void get_coordinates_from_geometry() {
+        Geometry geometry = Geometry.builder()
+                .type(FeatureType.POINT)
+                .coordinates(Lists.newArrayList(longitude, latitude).toString())
+                .build();
+
+        Coordinates coordinates = CoordinateHelper.getCoordinatesFromGeometry(geometry);
+
+        assertThat(coordinates.longitude()).isEqualTo(longitude);
+        assertThat(coordinates.latitude()).isEqualTo(latitude);
     }
 
-    public static Double getLongitude(Coordinates coordinates) {
-        return coordinates == null ? null : coordinates.longitude();
-    }
+    @Test
+    public void get_geometry_from_coordinates() {
+        Coordinates coordinates = Coordinates.create(latitude, longitude);
 
-    public static Coordinates getCoordinatesFromGeometry(Geometry geometry) {
-        try {
-            if (geometry.type() == FeatureType.POINT && geometry.coordinates() != null) {
-                ObjectMapper mapper = new ObjectMapper();
-                List<Double> coordinateTokens = mapper.readValue(geometry.coordinates(),
-                        new TypeReference<List<Double>>(){});
+        Geometry geometry = CoordinateHelper.getGeometryFromCoordinates(coordinates);
 
-                return Coordinates.create(coordinateTokens.get(1), coordinateTokens.get(0));
-            } else {
-                return null;
-            }
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public static Geometry getGeometryFromCoordinates(Coordinates coordinates) {
-        if (coordinates != null && coordinates.longitude() != null && coordinates.latitude() != null) {
-            List<Double> coordinatesList = Arrays.asList(coordinates.longitude(), coordinates.latitude());
-
-            return Geometry.builder()
-                    .type(FeatureType.POINT)
-                    .coordinates(coordinatesList.toString())
-                    .build();
-        } else {
-            return null;
-        }
+        assertThat(geometry.type()).isEqualTo(FeatureType.POINT);
+        assertThat(geometry.coordinates()).isEqualTo("[43.34532, -23.98234]");
     }
 }

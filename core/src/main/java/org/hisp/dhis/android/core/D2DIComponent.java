@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core;
 
 import android.content.Context;
 
+import androidx.annotation.VisibleForTesting;
+
 import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule;
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
@@ -78,11 +80,10 @@ import org.hisp.dhis.android.core.wipe.WipeModule;
 
 import javax.inject.Singleton;
 
-import androidx.annotation.VisibleForTesting;
 import dagger.Component;
 import retrofit2.Retrofit;
 
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.ExcessivePublicCount"})
 @Singleton
 @Component(modules = {
         AppContextDIModule.class,

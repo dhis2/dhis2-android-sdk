@@ -41,6 +41,8 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.hamcrest.core.IsNull.notNullValue;
 
 @RunWith(D2JunitRunner.class)
 public class DataSetReportCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -49,7 +51,7 @@ public class DataSetReportCollectionRepositoryMockIntegrationShould extends Base
     public void find_all() {
         List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
                 .get();
-        assertThat(dataSetReports.size(), is(3));
+        assertThat(dataSetReports.size(), is(4));
     }
 
     @Test
@@ -57,7 +59,7 @@ public class DataSetReportCollectionRepositoryMockIntegrationShould extends Base
         List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
                 .byDataSetUid().eq("lyLU2wR22tC")
                 .get();
-        assertThat(dataSetReports.size(), is(3));
+        assertThat(dataSetReports.size(), is(4));
     }
 
     @Test
@@ -81,7 +83,7 @@ public class DataSetReportCollectionRepositoryMockIntegrationShould extends Base
         List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
                 .byPeriodStartDate().after(BaseIdentifiableObject.parseDate("2018-07-15T00:00:00.000"))
                 .get();
-        assertThat(dataSetReports.size(), is(1));
+        assertThat(dataSetReports.size(), is(2));
     }
 
     @Test
@@ -89,7 +91,7 @@ public class DataSetReportCollectionRepositoryMockIntegrationShould extends Base
         List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
                 .byPeriodEndDate().after(BaseIdentifiableObject.parseDate("2018-07-15T00:00:00.000"))
                 .get();
-        assertThat(dataSetReports.size(), is(2));
+        assertThat(dataSetReports.size(), is(3));
     }
 
     @Test
@@ -97,7 +99,22 @@ public class DataSetReportCollectionRepositoryMockIntegrationShould extends Base
         List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
                 .byOrganisationUnitUid().eq("DiszpKrYNg8")
                 .get();
-        assertThat(dataSetReports.size(), is(3));
+        assertThat(dataSetReports.size(), is(4));
+    }
+
+    @Test
+    public void fill_completion_information() {
+        List<DataSetReport> dataSetReportCompleted = d2.dataValueModule().dataSetReports
+                .byPeriod().eq("2019")
+                .get();
+        assertThat(dataSetReportCompleted.get(0).completed(), is(true));
+        assertThat(dataSetReportCompleted.get(0).completionDate(), is(notNullValue()));
+
+        List<DataSetReport> dataSetReportUncompleted = d2.dataValueModule().dataSetReports
+                .byPeriod().eq("201907")
+                .get();
+        assertThat(dataSetReportUncompleted.get(0).completed(), is(false));
+        assertThat(dataSetReportUncompleted.get(0).completionDate(), is(nullValue()));
     }
 
 }

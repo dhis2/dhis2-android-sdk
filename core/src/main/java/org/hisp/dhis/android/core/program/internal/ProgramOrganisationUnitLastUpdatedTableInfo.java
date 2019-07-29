@@ -26,44 +26,50 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.maintenance;
+package org.hisp.dhis.android.core.program.internal;
 
-public enum D2ErrorCode {
-    ALREADY_AUTHENTICATED,
-    ALREADY_EXECUTED,
-    API_UNSUCCESSFUL_RESPONSE,
-    API_INVALID_QUERY,
-    API_RESPONSE_PROCESS_ERROR,
-    APP_NAME_NOT_SET,
-    APP_VERSION_NOT_SET,
-    BAD_CREDENTIALS,
-    CANT_CREATE_EXISTING_OBJECT,
-    CANT_DELETE_NON_EXISTING_OBJECT,
-    COULD_NOT_RESERVE_VALUE_ON_SERVER,
-    LOGIN_USERNAME_NULL,
-    LOGIN_PASSWORD_NULL,
-    MIGHT_BE_RUNNING_LOW_ON_AVAILABLE_VALUES,
-    NO_AUTHENTICATED_USER,
-    NO_AUTHENTICATED_USER_OFFLINE,
-    NOT_ENOUGH_VALUES_LEFT_TO_RESERVE_ON_SERVER,
-    DIFFERENT_AUTHENTICATED_USER_OFFLINE,
-    DIFFERENT_SERVER_OFFLINE,
-    INVALID_DHIS_VERSION,
-    NO_RESERVED_VALUES,
-    OBJECT_CANT_BE_UPDATED,
-    OBJECT_CANT_BE_INSERTED,
-    OWNERSHIP_ACCESS_DENIED,
-    SEARCH_GRID_PARSE,
-    SOCKET_TIMEOUT,
-    RELATIONSHIPS_CANT_BE_UPDATED,
-    TOO_MANY_ORG_UNITS,
-    TOO_MANY_PERIODS,
-    UNEXPECTED,
-    UNKNOWN_HOST,
-    URL_NOT_FOUND,
-    USER_ACCOUNT_DISABLED,
-    USER_ACCOUNT_LOCKED,
-    VALUE_CANT_BE_SET,
-    VALUES_RESERVATION_TOOK_TOO_LONG,
-    SSL_ERROR
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
+
+public final class ProgramOrganisationUnitLastUpdatedTableInfo {
+
+    private ProgramOrganisationUnitLastUpdatedTableInfo() {
+    }
+
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "ProgramOrganisationUnitLastUpdated";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    public static class Columns extends BaseModel.Columns {
+        public static final String PROGRAM = "program";
+        public static final String ORGANISATION_UNIT = "organisationUnit";
+        public static final String LAST_SYNCED = "lastSynced";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    PROGRAM,
+                    ORGANISATION_UNIT,
+                    LAST_SYNCED
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return Utils.appendInNewArray(super.whereUpdate(),
+                    PROGRAM,
+                    ORGANISATION_UNIT
+            );
+        }
+    }
 }

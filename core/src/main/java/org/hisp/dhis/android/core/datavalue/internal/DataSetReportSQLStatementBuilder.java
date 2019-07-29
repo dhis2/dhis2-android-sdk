@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo;
@@ -44,8 +45,10 @@ public class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBui
 
     private static final String AS = " AS ";
     private static final String INNER_JOIN = " INNER JOIN ";
+    private static final String LEFT_JOIN = " LEFT JOIN ";
     private static final String ON = " ON ";
     private static final String EQ = " = ";
+    private static final String AND = " AND ";
 
     private static final String DATAVALUE_TABLE_ALIAS = "dv";
     private static final String PERIOD_TABLE_ALIAS = "pe";
@@ -53,6 +56,7 @@ public class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBui
     private static final String ORGUNIT_TABLE_ALIAS = "ou";
     private static final String DATASET_TABLE_ALIAS = "ds";
     private static final String AOC_TABLE_ALIAS = "aoc";
+    private static final String COMPLETE_TABLE_ALIAS = "dscr";
 
     private static final String VALUE_COUNT_ALIAS = "valueCount";
     public static final String DATASET_UID_ALIAS = "dataSetUid";
@@ -65,6 +69,7 @@ public class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBui
     private static final String ORGANISATION_UNIT_NAME_ALIAS = "organisationUnitDisplayName";
     public static final String ATTRIBUTE_OPTION_COMBO_UID_ALIAS = "attributeOptionComboUid";
     private static final String ATTRIBUTE_OPTION_COMBO_NAME_ALIAS = "attributeOptionComboDisplayName";
+    private static final String COMPLETION_DATE_ALIAS = "completionDate";
 
     public static final String DATAVALUE_ID = DATAVALUE_TABLE_ALIAS + "." + BaseDataModel.Columns.ID;
     private static final String DATASET_UID = DATASET_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
@@ -82,6 +87,8 @@ public class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBui
             BaseIdentifiableObjectModel.Columns.UID;
     private static final String ATTRIBUTE_OPTION_COMBO_NAME =
             AOC_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.DISPLAY_NAME;
+    private static final String COMPLETION_DATE =
+            COMPLETE_TABLE_ALIAS + "." + DataSetCompleteRegistrationTableInfo.Columns.DATE;
 
     private static final String STATE = DATAVALUE_TABLE_ALIAS + "." + BaseDataModel.Columns.STATE;
 
@@ -97,10 +104,11 @@ public class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBui
                     getJoinDataSetElement() +
                     getJoinDataSet() +
                     getJoinOrganisationUnit() +
-                    getJoinAttributeOptionCombo();
+                    getJoinAttributeOptionCombo() +
+                    getJoinDataSetCompleteRegistration();
 
     private static final String INNER_SELECT_CLAUSE = "SELECT " +
-            DATAVALUE_ID + AS + BaseDataModel.Columns.ID + ", " +
+            DATAVALUE_ID + AS + BaseDataModel.Columns.ID + "," +
             DATASET_UID + AS + DATASET_UID_ALIAS + "," +
             DATASET_NAME + AS + DATASET_NAME_ALIAS + "," +
             PERIOD + AS + PERIOD_ALIAS + "," +
@@ -111,7 +119,8 @@ public class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBui
             ORGANISATION_UNIT_NAME + AS + ORGANISATION_UNIT_NAME_ALIAS + "," +
             ATTRIBUTE_OPTION_COMBO_UID + AS + ATTRIBUTE_OPTION_COMBO_UID_ALIAS + "," +
             ATTRIBUTE_OPTION_COMBO_NAME + AS + ATTRIBUTE_OPTION_COMBO_NAME_ALIAS + "," +
-            "COUNT(*)" + AS + VALUE_COUNT_ALIAS + ", " +
+            "COUNT(*)" + AS + VALUE_COUNT_ALIAS + "," +
+            COMPLETION_DATE + AS + COMPLETION_DATE_ALIAS + "," +
             STATE + ", " +
             // Auxiliary field to order the 'state' column and to prioritize TO_POST and TO_UPDATE
             SELECT_STATE_ORDERING +
@@ -192,5 +201,17 @@ public class DataSetReportSQLStatementBuilder implements ReadOnlySQLStatementBui
         return INNER_JOIN + CategoryOptionComboTableInfo.TABLE_INFO.name() + AS + AOC_TABLE_ALIAS +
                 ON + DATAVALUE_TABLE_ALIAS + "." + DataValueFields.ATTRIBUTE_OPTION_COMBO + EQ +
                 AOC_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
+    }
+
+    private static String getJoinDataSetCompleteRegistration() {
+        return LEFT_JOIN + DataSetCompleteRegistrationTableInfo.TABLE_INFO.name() + AS + COMPLETE_TABLE_ALIAS +
+                ON + DATASET_UID + EQ +
+                    COMPLETE_TABLE_ALIAS + "." + DataSetCompleteRegistrationTableInfo.Columns.DATA_SET +
+                AND + PERIOD + EQ +
+                    COMPLETE_TABLE_ALIAS + "." + DataSetCompleteRegistrationTableInfo.Columns.PERIOD +
+                AND + ORGANISATION_UNIT_UID + EQ +
+                    COMPLETE_TABLE_ALIAS + "." + DataSetCompleteRegistrationTableInfo.Columns.ORGANISATION_UNIT +
+                AND + ATTRIBUTE_OPTION_COMBO_UID + EQ +
+                    COMPLETE_TABLE_ALIAS + "." + DataSetCompleteRegistrationTableInfo.Columns.ATTRIBUTE_OPTION_COMBO;
     }
 }

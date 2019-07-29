@@ -57,8 +57,8 @@ public final class EnrollmentTableInfo {
         static final String CREATED_AT_CLIENT = "createdAtClient";
         static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
         static final String ORGANISATION_UNIT = "organisationUnit";
-        static final String LATITUDE = "latitude";
-        static final String LONGITUDE = "longitude";
+        static final String GEOMETRY_TYPE = "geometryType";
+        static final String GEOMETRY_COORDINATES = "geometryCoordinates";
 
         @Override
         public String[] all() {
@@ -75,8 +75,8 @@ public final class EnrollmentTableInfo {
                     EnrollmentFields.FOLLOW_UP,
                     EnrollmentFields.STATUS,
                     EnrollmentFields.TRACKED_ENTITY_INSTANCE,
-                    LATITUDE,
-                    LONGITUDE,
+                    GEOMETRY_TYPE,
+                    GEOMETRY_COORDINATES,
                     BaseDataModel.Columns.STATE
             );
         }

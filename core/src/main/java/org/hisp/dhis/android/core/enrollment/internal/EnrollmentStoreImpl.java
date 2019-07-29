@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatement
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectWithStateStoreImpl;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
-import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -66,11 +65,10 @@ public final class EnrollmentStoreImpl
         sqLiteBind(sqLiteStatement, 10, o.followUp());
         sqLiteBind(sqLiteStatement, 11, o.status());
         sqLiteBind(sqLiteStatement, 12, o.trackedEntityInstance());
-        sqLiteBind(sqLiteStatement, 13, CoordinateHelper.getLatitude(o.coordinate()));
-        sqLiteBind(sqLiteStatement, 14, CoordinateHelper.getLongitude(o.coordinate()));
+        sqLiteBind(sqLiteStatement, 13, o.geometry() == null ? null : o.geometry().type());
+        sqLiteBind(sqLiteStatement, 14, o.geometry() == null ? null : o.geometry().coordinates());
         sqLiteBind(sqLiteStatement, 15, o.state());
     };
-
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
             EnrollmentTableInfo.TABLE_INFO, EnrollmentFields.TRACKED_ENTITY_INSTANCE);

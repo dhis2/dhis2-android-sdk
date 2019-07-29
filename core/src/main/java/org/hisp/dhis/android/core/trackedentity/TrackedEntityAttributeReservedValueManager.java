@@ -63,6 +63,7 @@ import io.reactivex.Observable;
 import io.reactivex.Single;
 
 @Reusable
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class TrackedEntityAttributeReservedValueManager {
 
     private static final Integer MIN_TO_TRY_FILL = 50;
@@ -122,8 +123,9 @@ public final class TrackedEntityAttributeReservedValueManager {
      * @throws D2Error If there are no more reserved values available in database (inside Single)
      */
     public Single<String> getValue(String attribute, String organisationUnitUid) {
-        Completable optionalDownload = downloadValuesIfBelowThreshold(attribute, getOrganisationUnit(organisationUnitUid),
-                null, new BooleanWrapper(false)).onErrorComplete();
+        Completable optionalDownload = downloadValuesIfBelowThreshold(
+                attribute, getOrganisationUnit(organisationUnitUid), null, new BooleanWrapper(false)
+        ).onErrorComplete();
 
         return optionalDownload.andThen(Single.create(emitter -> {
             TrackedEntityAttributeReservedValue reservedValue = store.popOne(attribute, organisationUnitUid);
@@ -220,7 +222,8 @@ public final class TrackedEntityAttributeReservedValueManager {
                     .toObservable();
         } else {
             return Observable.fromIterable(organisationUnits).flatMapSingle(organisationUnit ->
-                    downloadValuesIfBelowThreshold(attribute, organisationUnit, numberOfValuesToFillUp, systemInfoDownloaded)
+                    downloadValuesIfBelowThreshold(
+                            attribute, organisationUnit, numberOfValuesToFillUp, systemInfoDownloaded)
                             .onErrorComplete()
                             .toSingle(this::increaseProgress));
         }
@@ -269,8 +272,8 @@ public final class TrackedEntityAttributeReservedValueManager {
             }
 
             executor.executeD2Call(reservedValueQueryCallFactory.create(
-                    TrackedEntityAttributeReservedValueQuery.create(
-                            trackedEntityAttributeUid, numberToReserve, organisationUnit, trackedEntityAttributePattern)));
+                    TrackedEntityAttributeReservedValueQuery.create(trackedEntityAttributeUid, numberToReserve,
+                            organisationUnit, trackedEntityAttributePattern)));
         }));
     }
 

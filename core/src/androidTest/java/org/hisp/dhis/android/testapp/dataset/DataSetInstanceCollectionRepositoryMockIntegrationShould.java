@@ -26,10 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.testapp.datavalue;
+package org.hisp.dhis.android.testapp.dataset;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.datavalue.DataSetReport;
+import org.hisp.dhis.android.core.dataset.DataSetInstance;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -41,63 +41,80 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 
 @RunWith(D2JunitRunner.class)
-public class DataSetReportCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
+public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
     public void find_all() {
-        List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
+        List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances
                 .get();
-        assertThat(dataSetReports.size(), is(3));
+        assertThat(dataSetInstances.size(), is(4));
     }
 
     @Test
     public void filter_by_dataset() {
-        List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
+        List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances
                 .byDataSetUid().eq("lyLU2wR22tC")
                 .get();
-        assertThat(dataSetReports.size(), is(3));
+        assertThat(dataSetInstances.size(), is(4));
     }
 
     @Test
     public void filter_by_period() {
-        List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
+        List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances
                 .byPeriod().eq("2019")
                 .get();
-        assertThat(dataSetReports.size(), is(1));
+        assertThat(dataSetInstances.size(), is(1));
     }
 
     @Test
     public void filter_by_period_type() {
-        List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
+        List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances
                 .byPeriodType().eq(PeriodType.Yearly)
                 .get();
-        assertThat(dataSetReports.size(), is(3));
+        assertThat(dataSetInstances.size(), is(3));
     }
 
     @Test
     public void filter_by_period_start_date() throws ParseException {
-        List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
+        List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances
                 .byPeriodStartDate().after(BaseIdentifiableObject.parseDate("2018-07-15T00:00:00.000"))
                 .get();
-        assertThat(dataSetReports.size(), is(1));
+        assertThat(dataSetInstances.size(), is(2));
     }
 
     @Test
     public void filter_by_period_end_date() throws ParseException {
-        List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
+        List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances
                 .byPeriodEndDate().after(BaseIdentifiableObject.parseDate("2018-07-15T00:00:00.000"))
                 .get();
-        assertThat(dataSetReports.size(), is(2));
+        assertThat(dataSetInstances.size(), is(3));
     }
 
     @Test
     public void filter_by_organisation_unit() {
-        List<DataSetReport> dataSetReports = d2.dataValueModule().dataSetReports
+        List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances
                 .byOrganisationUnitUid().eq("DiszpKrYNg8")
                 .get();
-        assertThat(dataSetReports.size(), is(3));
+        assertThat(dataSetInstances.size(), is(4));
+    }
+
+    @Test
+    public void fill_completion_information() {
+        List<DataSetInstance> dataSetInstanceCompleted = d2.dataSetModule().dataSetInstances
+                .byPeriod().eq("2019")
+                .get();
+        assertThat(dataSetInstanceCompleted.get(0).completed(), is(true));
+        assertThat(dataSetInstanceCompleted.get(0).completionDate(), is(notNullValue()));
+
+        List<DataSetInstance> dataSetInstanceUncompleted = d2.dataSetModule().dataSetInstances
+                .byPeriod().eq("201907")
+                .get();
+        assertThat(dataSetInstanceUncompleted.get(0).completed(), is(false));
+        assertThat(dataSetInstanceUncompleted.get(0).completionDate(), is(nullValue()));
     }
 
 }

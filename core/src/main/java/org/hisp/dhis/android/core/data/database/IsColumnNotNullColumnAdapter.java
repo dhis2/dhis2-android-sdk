@@ -26,26 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue.internal;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStatementBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStoreImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.datavalue.DataSetReport;
+import android.content.ContentValues;
+import android.database.Cursor;
 
-public final class DataSetReportStore extends ReadableStoreImpl<DataSetReport> {
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-    private DataSetReportStore(DatabaseAdapter databaseAdapter,
-                               ReadOnlySQLStatementBuilder builder,
-                               CursorModelFactory<DataSetReport> modelFactory) {
-        super(databaseAdapter, builder, modelFactory);
+public class IsColumnNotNullColumnAdapter implements ColumnTypeAdapter<Boolean> {
+
+    @Override
+    public Boolean fromCursor(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        return !cursor.isNull(columnIndex);
     }
 
-    static DataSetReportStore create(DatabaseAdapter databaseAdapter) {
-        return new DataSetReportStore(
-                databaseAdapter,
-                new DataSetReportSQLStatementBuilder(),
-                DataSetReport::create);
+    @Override
+    public void toContentValues(ContentValues values, String columnName, Boolean value) {
+        // This adapter is only used to read from db
     }
 }

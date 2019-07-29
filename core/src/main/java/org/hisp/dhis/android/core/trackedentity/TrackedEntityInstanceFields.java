@@ -50,7 +50,7 @@ public final class TrackedEntityInstanceFields {
     final static String ORGANISATION_UNIT = "orgUnit";
     public final static String TRACKED_ENTITY_ATTRIBUTE_VALUES = "attributes";
     final static String RELATIONSHIPS = "relationships";
-    final static String TRACKED_ENTITY_TYPE = "trackedEntityType";
+    public final static String TRACKED_ENTITY_TYPE = "trackedEntityType";
     private final static String COORDINATES = "coordinates";
     private final static String DELETED = "deleted";
     final static String ENROLLMENTS = "enrollments";

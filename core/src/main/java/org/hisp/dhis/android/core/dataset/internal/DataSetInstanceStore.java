@@ -26,10 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.dataset.internal;
 
-import dagger.Module;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStoreImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataset.DataSetInstance;
 
-@Module(includes = {ProgramOrganisationUnitLastUpdatedEntityDIModule.class})
-public final class ProgramOrganisationUnitLastUpdatedPackageDIModule {
+public final class DataSetInstanceStore extends ReadableStoreImpl<DataSetInstance> {
+
+    private DataSetInstanceStore(DatabaseAdapter databaseAdapter,
+                                 ReadOnlySQLStatementBuilder builder,
+                                 CursorModelFactory<DataSetInstance> modelFactory) {
+        super(databaseAdapter, builder, modelFactory);
+    }
+
+    static DataSetInstanceStore create(DatabaseAdapter databaseAdapter) {
+        return new DataSetInstanceStore(
+                databaseAdapter,
+                new DataSetInstanceSQLStatementBuilder(),
+                DataSetInstance::create);
+    }
 }

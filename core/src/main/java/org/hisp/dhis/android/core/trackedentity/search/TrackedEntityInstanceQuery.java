@@ -70,6 +70,9 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
     @Nullable
     public abstract Date programEndDate();
 
+    @Nullable
+    public abstract String trackedEntityType();
+
     public String formattedProgramStartDate() {
         return programStartDate() == null ? null : QUERY_FORMAT.format(programStartDate());
     }
@@ -108,6 +111,8 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
         public abstract Builder programStartDate(Date programStartDate);
 
         public abstract Builder programEndDate(Date programEndDate);
+
+        public abstract Builder trackedEntityType(String trackedEntityType);
 
         public abstract TrackedEntityInstanceQuery build();
     }

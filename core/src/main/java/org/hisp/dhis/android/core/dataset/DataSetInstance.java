@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.dataset;
 
 import android.database.Cursor;
 
@@ -40,19 +40,16 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbStateColumnAdapter;
-import org.hisp.dhis.android.core.datavalue.internal.DataSetReportSQLStatementBuilder;
+import org.hisp.dhis.android.core.data.database.IsColumnNotNullColumnAdapter;
 import org.hisp.dhis.android.core.period.PeriodType;
 
-@AutoValue
-public abstract class DataSetReport implements Model {
+import java.util.Date;
 
-    /* ColumnName set explicitly because it is used in paging as the PAGING_KEY */
-    @Override
-    @Nullable
-    @ColumnName(DataSetReportSQLStatementBuilder.DATAVALUE_ID)
-    public abstract Long id();
+@AutoValue
+public abstract class DataSetInstance implements Model {
 
     @NonNull
     public abstract String dataSetUid();
@@ -82,19 +79,28 @@ public abstract class DataSetReport implements Model {
     @NonNull
     public abstract Integer valueCount();
 
+    @NonNull
+    @ColumnName("completionDate")
+    @ColumnAdapter(IsColumnNotNullColumnAdapter.class)
+    public abstract Boolean completed();
+
+    @Nullable
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date completionDate();
+
     @Nullable
     @ColumnAdapter(DbStateColumnAdapter.class)
     public abstract State state();
 
     @NonNull
-    public static DataSetReport create(Cursor cursor) {
-        return AutoValue_DataSetReport.createFromCursor(cursor);
+    public static DataSetInstance create(Cursor cursor) {
+        return AutoValue_DataSetInstance.createFromCursor(cursor);
     }
 
-    public abstract DataSetReport.Builder toBuilder();
+    public abstract DataSetInstance.Builder toBuilder();
 
-    public static DataSetReport.Builder builder() {
-        return new $AutoValue_DataSetReport.Builder();
+    public static DataSetInstance.Builder builder() {
+        return new $$AutoValue_DataSetInstance.Builder();
     }
 
     @AutoValue.Builder
@@ -119,8 +125,12 @@ public abstract class DataSetReport implements Model {
 
         public abstract Builder valueCount(Integer valueCount);
 
+        public abstract Builder completed(Boolean completed);
+
+        public abstract Builder completionDate(Date completionDate);
+
         public abstract Builder state(State state);
 
-        public abstract DataSetReport build();
+        public abstract DataSetInstance build();
     }
 }

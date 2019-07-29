@@ -51,25 +51,34 @@ public final class DataSetCompleteRegistrationTableInfo {
         }
     };
 
-    static class Columns extends BaseDataModel.Columns {
+    public static class Columns extends BaseDataModel.Columns {
+
+        public static final String PERIOD = DataSetCompleteRegistrationFields.PERIOD;
+        public static final String DATA_SET = DataSetCompleteRegistrationFields.DATA_SET;
+        public static final String ORGANISATION_UNIT = DataSetCompleteRegistrationFields.ORGANISATION_UNIT;
+        public static final String ATTRIBUTE_OPTION_COMBO = DataSetCompleteRegistrationFields.ATTRIBUTE_OPTION_COMBO;
+        public static final String DATE = DataSetCompleteRegistrationFields.DATE;
+        public static final String STORED_BY = DataSetCompleteRegistrationFields.STORED_BY;
+
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
-                    DataSetCompleteRegistrationFields.PERIOD,
-                    DataSetCompleteRegistrationFields.DATA_SET,
-                    DataSetCompleteRegistrationFields.ORGANISATION_UNIT,
-                    DataSetCompleteRegistrationFields.ATTRIBUTE_OPTION_COMBO,
-                    DataSetCompleteRegistrationFields.DATE,
-                    DataSetCompleteRegistrationFields.STORED_BY,
+                    PERIOD,
+                    DATA_SET,
+                    ORGANISATION_UNIT,
+                    ATTRIBUTE_OPTION_COMBO,
+                    DATE,
+                    STORED_BY,
                     STATE);
         }
 
         @Override
         public String[] whereUpdate() {
-            return new String[]{DataSetCompleteRegistrationFields.PERIOD,
-                    DataSetCompleteRegistrationFields.DATA_SET,
-                    DataSetCompleteRegistrationFields.ORGANISATION_UNIT,
-                    DataSetCompleteRegistrationFields.ATTRIBUTE_OPTION_COMBO};
+            return new String[]{
+                    PERIOD,
+                    DATA_SET,
+                    ORGANISATION_UNIT,
+                    ATTRIBUTE_OPTION_COMBO};
         }
     }
 }

@@ -26,32 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.dataset.internal;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-public final class ProgramOrganisationUnitLastUpdatedModuleWiper implements ModuleWiper {
+@Module
+public final class DataSetInstanceEntityDIModule {
 
-    private final TableWiper tableWiper;
-
-    @Inject
-    ProgramOrganisationUnitLastUpdatedModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    @Provides
+    @Reusable
+    DataSetInstanceStore store(DatabaseAdapter databaseAdapter) {
+        return DataSetInstanceStore.create(databaseAdapter);
     }
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(ProgramOrganisationUnitLastUpdatedTableInfo.TABLE_INFO);
-    }
-
-    @Override
-    public void wipeData() {
-        tableWiper.wipeTables(ProgramOrganisationUnitLastUpdatedTableInfo.TABLE_INFO);
-    }
 }

@@ -33,11 +33,10 @@ import org.hisp.dhis.android.core.data.dataset.DataSetSamples;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
-import androidx.test.runner.AndroidJUnit4;
-
-@RunWith(AndroidJUnit4.class)
+@RunWith(D2JunitRunner.class)
 public class DataSetStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<DataSet> {
 
     public DataSetStoreIntegrationShould() {

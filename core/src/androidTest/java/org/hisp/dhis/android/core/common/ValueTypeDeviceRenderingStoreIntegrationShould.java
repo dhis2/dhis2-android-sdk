@@ -32,12 +32,11 @@ import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.Valu
 import org.hisp.dhis.android.core.data.common.ValueTypeDeviceRenderingSamples;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
-import androidx.test.runner.AndroidJUnit4;
-
-@RunWith(AndroidJUnit4.class)
-public class ValueTypeDeviceRenderingStoreIntegrationShould 
+@RunWith(D2JunitRunner.class)
+public class ValueTypeDeviceRenderingStoreIntegrationShould
         extends ObjectWithoutUidStoreAbstractIntegrationShould<ValueTypeDeviceRendering> {
 
     public ValueTypeDeviceRenderingStoreIntegrationShould() {

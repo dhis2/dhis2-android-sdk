@@ -33,11 +33,10 @@ import org.hisp.dhis.android.core.data.database.IdentifiableDataObjectStoreAbstr
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceSamples;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
-import androidx.test.runner.AndroidJUnit4;
-
-@RunWith(AndroidJUnit4.class)
+@RunWith(D2JunitRunner.class)
 public class TrackedEntityInstanceStoreIntegrationShould extends
         IdentifiableDataObjectStoreAbstractIntegrationShould<TrackedEntityInstance> {
 

@@ -34,22 +34,17 @@ import org.hisp.dhis.android.core.data.period.PeriodSamples;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodTableInfo;
 import org.hisp.dhis.android.core.period.PeriodType;
-import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl;
-import org.hisp.dhis.android.core.period.internal.PeriodHandler;
-import org.hisp.dhis.android.core.period.internal.PeriodStore;
-import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl;
 import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.text.ParseException;
 import java.util.Date;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import static com.google.common.truth.Truth.assertThat;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(D2JunitRunner.class)
 public class PeriodStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<Period> {
 
     private PeriodStore periodStore;

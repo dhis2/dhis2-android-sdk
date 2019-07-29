@@ -43,15 +43,18 @@ public final class DataSetModule {
     public final DataSetCollectionRepository dataSets;
     public final SectionCollectionRepository sections;
     public final DataApprovalCollectionRepository dataApprovals;
+    public final DataSetInstanceCollectionRepository dataSetInstances;
 
     @Inject
     DataSetModule(DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations,
                   DataSetCollectionRepository dataSets,
                   SectionCollectionRepository sections,
-                  DataApprovalCollectionRepository dataApprovalCollectionRepository) {
+                  DataApprovalCollectionRepository dataApprovalCollectionRepository,
+                  DataSetInstanceCollectionRepository dataSetInstanceCollectionRepository) {
         this.dataSetCompleteRegistrations = dataSetCompleteRegistrations;
         this.dataSets = dataSets;
         this.sections = sections;
         this.dataApprovals = dataApprovalCollectionRepository;
+        this.dataSetInstances = dataSetInstanceCollectionRepository;
     }
 }

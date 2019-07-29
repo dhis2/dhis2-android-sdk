@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue.internal;
+package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -35,12 +35,12 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class DataSetReportEntityDIModule {
+public final class DataSetInstanceEntityDIModule {
 
     @Provides
     @Reusable
-    DataSetReportStore store(DatabaseAdapter databaseAdapter) {
-        return DataSetReportStore.create(databaseAdapter);
+    DataSetInstanceStore store(DatabaseAdapter databaseAdapter) {
+        return DataSetInstanceStore.create(databaseAdapter);
     }
 
 }

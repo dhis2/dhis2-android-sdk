@@ -251,12 +251,12 @@ public abstract class ProgramStage extends BaseIdentifiableObject
         abstract Boolean captureCoordinates();
         abstract FeatureType featureType();
         public ProgramStage build() {
-            if (captureCoordinates() != null && featureType() == null) {
+            if (featureType() != null) {
+                captureCoordinates(featureType() != FeatureType.NONE);
+            } else if (captureCoordinates() != null) {
                 featureType(captureCoordinates() ? FeatureType.POINT : FeatureType.NONE);
             }
-            if (featureType() != null && captureCoordinates() == null) {
-                captureCoordinates(featureType() != FeatureType.NONE);
-            }
+
             return autoBuild();
         }
     }

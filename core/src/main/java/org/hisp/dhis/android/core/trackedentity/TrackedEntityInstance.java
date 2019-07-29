@@ -182,14 +182,13 @@ public abstract class TrackedEntityInstance extends BaseDataModel
         abstract String coordinates();
         abstract Geometry geometry();
         public TrackedEntityInstance build() {
-            if (coordinates() != null && geometry() == null) {
+            if (geometry() != null) {
+                coordinates(geometry().coordinates());
+            } else if (coordinates() != null) {
                 geometry(Geometry.builder()
                         .type(FeatureType.POINT)
                         .coordinates(coordinates())
                         .build());
-            }
-            if (geometry() != null && coordinates() == null) {
-                coordinates(geometry().coordinates());
             }
             return autoBuild();
         }

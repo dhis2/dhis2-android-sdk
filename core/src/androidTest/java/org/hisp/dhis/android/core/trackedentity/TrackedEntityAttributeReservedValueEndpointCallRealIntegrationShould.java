@@ -55,13 +55,18 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
     }
 
     private void reserveValues() {
-        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues("xs8A6tQJY0s", "orgUnitUid", numberToReserve);
+        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues("xs8A6tQJY0s", null, numberToReserve);
+    }
+
+    private String getValue() {
+        return d2.trackedEntityModule().reservedValueManager.blockingGetValue("xs8A6tQJY0s", null);
     }
 
     // @Test
-    public void download_reserved_values() throws Exception {
+    public void reserve_and_download() throws Exception {
         login();
         reserveValues();
+        String value = getValue();
     }
 
     // @Test

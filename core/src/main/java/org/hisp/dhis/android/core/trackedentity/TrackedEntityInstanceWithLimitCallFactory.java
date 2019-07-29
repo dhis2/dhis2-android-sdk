@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
+import org.hisp.dhis.android.core.utils.internal.BooleanWrapper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -276,22 +277,6 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
             this.isSuccess = isSuccess;
             this.teiList = teiList;
             this.paging = paging;
-        }
-    }
-
-    private static class BooleanWrapper {
-        private boolean value;
-
-        BooleanWrapper(boolean value) {
-            this.value = value;
-        }
-
-        boolean get() {
-            return value;
-        }
-
-        void set(boolean value) {
-            this.value = value;
         }
     }
 }

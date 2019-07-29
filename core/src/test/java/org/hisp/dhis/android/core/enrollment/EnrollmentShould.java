@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -63,5 +64,7 @@ public class EnrollmentShould extends BaseObjectShould implements ObjectShould {
         assertThat(enrollment.status()).isEqualTo(EnrollmentStatus.ACTIVE);
         assertThat(enrollment.coordinate()).isEqualTo(Coordinates.create(10.03, 11.11));
         assertThat(enrollment.trackedEntityInstance()).isEqualTo("D2dUWKQErfQ");
+        assertThat(enrollment.geometry().type()).isEqualTo(FeatureType.POINT);
+        assertThat(enrollment.geometry().coordinates()).isEqualTo("[11.11, 10.03]");
     }
 }

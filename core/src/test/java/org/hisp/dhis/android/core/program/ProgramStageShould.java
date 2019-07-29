@@ -66,7 +66,7 @@ public class ProgramStageShould  extends BaseObjectShould implements ObjectShoul
         assertThat(programStage.allowGenerateNextVisit()).isFalse();
         assertThat(programStage.autoGenerateEvent()).isTrue();
         assertThat(programStage.blockEntryForm()).isFalse();
-        assertThat(programStage.captureCoordinates()).isFalse();
+        assertThat(programStage.captureCoordinates()).isTrue();
         assertThat(programStage.displayGenerateEventBox()).isFalse();
         assertThat(programStage.executionDateLabel()).isNull();
         assertThat(programStage.formType()).isEqualTo(FormType.DEFAULT);

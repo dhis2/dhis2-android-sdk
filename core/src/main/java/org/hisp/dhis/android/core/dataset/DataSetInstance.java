@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.dataset;
 
 import android.database.Cursor;
 
@@ -49,7 +49,7 @@ import org.hisp.dhis.android.core.period.PeriodType;
 import java.util.Date;
 
 @AutoValue
-public abstract class DataSetReport implements Model {
+public abstract class DataSetInstance implements Model {
 
     @NonNull
     public abstract String dataSetUid();
@@ -93,14 +93,14 @@ public abstract class DataSetReport implements Model {
     public abstract State state();
 
     @NonNull
-    public static DataSetReport create(Cursor cursor) {
-        return AutoValue_DataSetReport.createFromCursor(cursor);
+    public static DataSetInstance create(Cursor cursor) {
+        return AutoValue_DataSetInstance.createFromCursor(cursor);
     }
 
-    public abstract DataSetReport.Builder toBuilder();
+    public abstract DataSetInstance.Builder toBuilder();
 
-    public static DataSetReport.Builder builder() {
-        return new $AutoValue_DataSetReport.Builder();
+    public static DataSetInstance.Builder builder() {
+        return new $$AutoValue_DataSetInstance.Builder();
     }
 
     @AutoValue.Builder
@@ -131,6 +131,6 @@ public abstract class DataSetReport implements Model {
 
         public abstract Builder state(State state);
 
-        public abstract DataSetReport build();
+        public abstract DataSetInstance build();
     }
 }

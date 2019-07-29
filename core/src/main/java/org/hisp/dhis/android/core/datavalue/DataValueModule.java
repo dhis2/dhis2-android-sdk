@@ -39,12 +39,8 @@ public final class DataValueModule {
 
     public final DataValueCollectionRepository dataValues;
 
-    public final DataSetReportCollectionRepository dataSetReports;
-
     @Inject
-    DataValueModule(DataValueCollectionRepository dataValueCollectionRepository,
-                    DataSetReportCollectionRepository dataSetReportCollectionRepository) {
+    DataValueModule(DataValueCollectionRepository dataValueCollectionRepository) {
         this.dataValues = dataValueCollectionRepository;
-        this.dataSetReports = dataSetReportCollectionRepository;
     }
 }

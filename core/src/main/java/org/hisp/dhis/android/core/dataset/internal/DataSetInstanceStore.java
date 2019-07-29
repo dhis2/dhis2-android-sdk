@@ -26,26 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue.internal;
+package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.datavalue.DataSetReport;
+import org.hisp.dhis.android.core.dataset.DataSetInstance;
 
-public final class DataSetReportStore extends ReadableStoreImpl<DataSetReport> {
+public final class DataSetInstanceStore extends ReadableStoreImpl<DataSetInstance> {
 
-    private DataSetReportStore(DatabaseAdapter databaseAdapter,
-                               ReadOnlySQLStatementBuilder builder,
-                               CursorModelFactory<DataSetReport> modelFactory) {
+    private DataSetInstanceStore(DatabaseAdapter databaseAdapter,
+                                 ReadOnlySQLStatementBuilder builder,
+                                 CursorModelFactory<DataSetInstance> modelFactory) {
         super(databaseAdapter, builder, modelFactory);
     }
 
-    static DataSetReportStore create(DatabaseAdapter databaseAdapter) {
-        return new DataSetReportStore(
+    static DataSetInstanceStore create(DatabaseAdapter databaseAdapter) {
+        return new DataSetInstanceStore(
                 databaseAdapter,
-                new DataSetReportSQLStatementBuilder(),
-                DataSetReport::create);
+                new DataSetInstanceSQLStatementBuilder(),
+                DataSetInstance::create);
     }
 }

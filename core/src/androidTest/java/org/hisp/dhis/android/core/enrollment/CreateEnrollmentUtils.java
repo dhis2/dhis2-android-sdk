@@ -30,12 +30,13 @@ package org.hisp.dhis.android.core.enrollment;
 
 import android.content.ContentValues;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
-
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.core.period.FeatureType;
 
 public class CreateEnrollmentUtils {
     private static final String UID = "test_enrollment";
@@ -44,8 +45,8 @@ public class CreateEnrollmentUtils {
     private static final Boolean FOLLOW_UP = true;
     private static final EnrollmentStatus ENROLLMENT_STATUS = EnrollmentStatus.ACTIVE;
     private static final String TRACKED_ENTITY_INSTANCE = "test_trackedEntityInstance";
-    private static final String LATITUDE = "10.1337";
-    private static final String LONGITUDE = "59.140";
+    private static final FeatureType GEOMETRY_TYPE = FeatureType.POINT;
+    private static final String GEOMETRY_COORDINATES = "[10.1337, 59.140]";
     private static final State STATE = State.TO_UPDATE;
 
     // used for timestamps
@@ -60,8 +61,8 @@ public class CreateEnrollmentUtils {
         enrollment.put(EnrollmentFields.PROGRAM, programUid);
         enrollment.put(EnrollmentFields.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid);
         enrollment.put(EnrollmentFields.FOLLOW_UP, FOLLOW_UP);
-        enrollment.put(EnrollmentTableInfo.Columns.LATITUDE, LATITUDE);
-        enrollment.put(EnrollmentTableInfo.Columns.LONGITUDE, LONGITUDE);
+        enrollment.put(EnrollmentTableInfo.Columns.GEOMETRY_TYPE, GEOMETRY_TYPE.getFeatureType());
+        enrollment.put(EnrollmentTableInfo.Columns.GEOMETRY_COORDINATES, GEOMETRY_COORDINATES);
         enrollment.put(BaseDataModel.Columns.STATE, STATE.name());
         enrollment.put(EnrollmentFields.CREATED, DATE);
         enrollment.put(EnrollmentFields.LAST_UPDATED, DATE);

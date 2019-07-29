@@ -468,7 +468,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 .uid(enrollmentUid).created(refDate).lastUpdated(refDate).organisationUnit(orgUnitUid)
                 .program(programUid).incidentDate(refDate).enrollmentDate(refDate).followUp(Boolean.FALSE)
                 .status(EnrollmentStatus.ACTIVE).trackedEntityInstance(trackedEntityInstanceUid)
-                .coordinate(Coordinates.create(10.33, 12.231)).state(State.TO_POST).build();
+                .geometry(Geometry.builder().type(FeatureType.POINT).coordinates("[10.33, 12.231]").build())
+                .state(State.TO_POST).build();
 
         enrollmentStore.insert(enrollment);
 

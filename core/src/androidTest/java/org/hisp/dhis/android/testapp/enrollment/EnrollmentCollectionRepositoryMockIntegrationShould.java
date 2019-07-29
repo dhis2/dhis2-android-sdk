@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
@@ -190,27 +191,29 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     }
 
     @Test
-    public void filter_by_coordinate_latitude() {
-        List<Enrollment> enrollments = d2.enrollmentModule().enrollments
-                .byCoordinateLatitude().eq(2.6)
-                .get();
-        assertThat(enrollments.size(), is(1));
-    }
-
-    @Test
-    public void filter_by_coordinate_longitude() {
-        List<Enrollment> enrollments = d2.enrollmentModule().enrollments
-                .byCoordinateLongitude().eq(4.1)
-                .get();
-        assertThat(enrollments.size(), is(1));
-    }
-
-    @Test
     public void filter_by_state() {
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments
                 .byState().eq(State.SYNCED)
                 .get();
         assertThat(enrollments.size(), is(2));
+    }
+
+    @Test
+    public void filter_by_geometry_type() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments
+                        .byGeometryType().eq(FeatureType.POLYGON)
+                        .get();
+
+        assertThat(enrollments.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_geometry_coordinates() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments
+                        .byGeometryCoordinates().eq("[4.1, 2.6]")
+                        .get();
+
+        assertThat(enrollments.size(), is(1));
     }
 
     @Test

@@ -32,7 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -130,10 +129,18 @@ public abstract class RelationshipType extends BaseIdentifiableObject implements
         abstract Access access();
 
         public RelationshipType build() {
-            if (bIsToA() != null) fromToName(bIsToA());                                                 // Since 2.30
-            if (aIsToB() != null) toFromName(aIsToB());                                                 // Since 2.30
-            if (bidirectional() == null) bidirectional(false);                                          // Since 2.32
-            if (access() == null || access().data() == null) access(Access.createForDataWrite(true));   // Since 2.30
+            if (bIsToA() != null) {
+                fromToName(bIsToA());                                   // Since 2.30
+            }
+            if (aIsToB() != null) {
+                toFromName(aIsToB());                                   // Since 2.30
+            }
+            if (bidirectional() == null) {
+                bidirectional(false);                                   // Since 2.32
+            }
+            if (access() == null || access().data() == null) {
+                access(Access.createForDataWrite(true));                // Since 2.30
+            }
             return autoBuild();
         }
     }

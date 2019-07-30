@@ -211,10 +211,12 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
         abstract Coordinates coordinate();
         abstract Geometry geometry();
         public Event build() {
-            if (geometry() != null) {
+            if (geometry() == null) {
+                if (coordinate() != null) {
+                    geometry(CoordinateHelper.getGeometryFromCoordinates(coordinate()));
+                }
+            } else {
                 coordinate(CoordinateHelper.getCoordinatesFromGeometry(geometry()));
-            } else if (coordinate() != null) {
-                geometry(CoordinateHelper.getGeometryFromCoordinates(coordinate()));
             }
             return autoBuild();
         }

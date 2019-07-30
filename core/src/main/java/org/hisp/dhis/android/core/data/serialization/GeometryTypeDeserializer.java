@@ -40,7 +40,8 @@ import java.io.IOException;
 
 public class GeometryTypeDeserializer extends JsonDeserializer<FeatureType> {
     @Override
-    public FeatureType deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public FeatureType deserialize(JsonParser p, DeserializationContext ctxt)
+            throws IOException, JsonProcessingException {
         JsonToken jsonToken = p.getCurrentToken();
         if (jsonToken == JsonToken.VALUE_STRING) {
             return FeatureType.valueOfFeatureType(p.getValueAsString());

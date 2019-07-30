@@ -331,10 +331,12 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
         abstract Boolean captureCoordinates();
         abstract FeatureType featureType();
         public Program build() {
-            if (featureType() != null) {
+            if (featureType() == null) {
+                if (captureCoordinates() != null) {
+                    featureType(captureCoordinates() ? FeatureType.POINT : FeatureType.NONE);
+                }
+            } else {
                 captureCoordinates(featureType() != FeatureType.NONE);
-            } else if (captureCoordinates() != null) {
-                featureType(captureCoordinates() ? FeatureType.POINT : FeatureType.NONE);
             }
 
             return autoBuild();

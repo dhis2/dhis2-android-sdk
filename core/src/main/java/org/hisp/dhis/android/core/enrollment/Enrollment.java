@@ -209,10 +209,12 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithDele
         abstract Coordinates coordinate();
         abstract Geometry geometry();
         public Enrollment build() {
-            if (geometry() != null) {
+            if (geometry() == null) {
+                if (coordinate() != null) {
+                    geometry(CoordinateHelper.getGeometryFromCoordinates(coordinate()));
+                }
+            } else {
                 coordinate(CoordinateHelper.getCoordinatesFromGeometry(geometry()));
-            } else if (coordinate() != null) {
-                geometry(CoordinateHelper.getGeometryFromCoordinates(coordinate()));
             }
             return autoBuild();
         }

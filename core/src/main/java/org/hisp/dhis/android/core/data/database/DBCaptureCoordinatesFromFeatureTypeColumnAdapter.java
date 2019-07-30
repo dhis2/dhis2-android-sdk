@@ -59,5 +59,7 @@ public class DBCaptureCoordinatesFromFeatureTypeColumnAdapter implements ColumnT
 
     @Override
     public void toContentValues(ContentValues values, String columnName, Boolean value) {
+        /* Method has empty action as default action.
+         */
     }
 }

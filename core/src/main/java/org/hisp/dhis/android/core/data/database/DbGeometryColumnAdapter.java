@@ -45,8 +45,6 @@ public class DbGeometryColumnAdapter implements ColumnTypeAdapter<Geometry> {
     public Geometry fromCursor(Cursor cursor, String columnName) {
         int geometryTypeColumnIndex = cursor.getColumnIndex(GEOMETRY_TYPE);
         String geometryTypeStr = cursor.getString(geometryTypeColumnIndex);
-        int geometryCoordinatesColumnIndex = cursor.getColumnIndex(GEOMETRY_COORDINATES);
-        String geometryCoordinates = cursor.getString(geometryCoordinatesColumnIndex);
 
         FeatureType geometryType = null;
         if (geometryTypeStr != null) {
@@ -56,6 +54,9 @@ public class DbGeometryColumnAdapter implements ColumnTypeAdapter<Geometry> {
                 throw new RuntimeException("Unknown FeatureType type", exception);
             }
         }
+
+        int geometryCoordinatesColumnIndex = cursor.getColumnIndex(GEOMETRY_COORDINATES);
+        String geometryCoordinates = cursor.getString(geometryCoordinatesColumnIndex);
 
         return geometryType == null && geometryCoordinates == null ? null :
                 Geometry.builder().type(geometryType).coordinates(geometryCoordinates).build();

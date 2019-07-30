@@ -60,7 +60,7 @@ public class TrackedEntityInstanceCallRealIntegrationShould extends BaseRealInte
     public void download_tei_enrollments_and_events() throws Exception {
         d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
 
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
 
         List<TrackedEntityInstance> teiResponse = d2.trackedEntityModule()
                 .downloadTrackedEntityInstancesByUid(Lists.newArrayList("IaxoagO9899")).blockingGet();

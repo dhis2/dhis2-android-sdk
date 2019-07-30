@@ -57,7 +57,7 @@ public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmpt
     }
 
     private void givenAMetadataInDatabase() {
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
     }
 
     private void givenAEventInDatabase() {

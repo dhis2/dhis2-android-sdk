@@ -26,47 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields;
-import org.hisp.dhis.android.core.utils.Utils;
-
-public final class RelationshipTypeTableInfo {
-
-    private RelationshipTypeTableInfo() {
-    }
-
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "RelationshipType";
-        }
-
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
-
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
-
-        public static final String FROM_TO_NAME = RelationshipTypeFields.FROM_TO_NAME;
-        public static final String TO_FROM_NAME = RelationshipTypeFields.TO_FROM_NAME;
-        public static final String BIDIRECTIONAL = RelationshipTypeFields.BIDIRECTIONAL;
-        public static final String ACCESS_DATA_WRITE = "accessDataWrite";
-
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    FROM_TO_NAME,
-                    TO_FROM_NAME,
-                    BIDIRECTIONAL,
-                    ACCESS_DATA_WRITE
-            );
-        }
-    }
+public final class IgnoreStringColumnAdapter extends IgnoreColumnAdapter<String> {
 }

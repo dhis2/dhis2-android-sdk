@@ -38,10 +38,10 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class RelationshipType29Should extends BaseObjectShould implements ObjectShould {
+public class RelationshipType32Should extends BaseObjectShould implements ObjectShould {
 
-    public RelationshipType29Should() {
-        super("relationship/relationship_type_29.json");
+    public RelationshipType32Should() {
+        super("relationship/relationship_type_32.json");
     }
 
     @Override
@@ -49,19 +49,25 @@ public class RelationshipType29Should extends BaseObjectShould implements Object
     public void map_from_json_string() throws IOException, ParseException {
         RelationshipType relationshipType = objectMapper.readValue(jsonStream, RelationshipType.class);
 
-        assertThat(relationshipType.uid()).isEqualTo("V2kkHafqs8G");
-        assertThat(relationshipType.name()).isEqualTo("Mother-Child");
-        assertThat(relationshipType.displayName()).isEqualTo("Mother-Child");
+        assertThat(relationshipType.uid()).isEqualTo("WiH6923nMtb");
+        assertThat(relationshipType.name()).isEqualTo("Sibling_b-to-a_(Person-Person)");
+        assertThat(relationshipType.displayName()).isEqualTo("Sibling_b-to-a_(Person-Person)");
         assertThat(relationshipType.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2013-09-19T15:17:41.000"));
+                BaseIdentifiableObject.DATE_FORMAT.parse("2014-04-14T13:53:38.659"));
         assertThat(relationshipType.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2014-04-14T13:53:20.166"));
-        assertThat(relationshipType.aIsToB()).isEqualTo("Mother");
-        assertThat(relationshipType.bIsToA()).isEqualTo("Child");
-        assertThat(relationshipType.toFromName()).isEqualTo("Mother");
-        assertThat(relationshipType.fromToName()).isEqualTo("Child");
-        assertThat(relationshipType.bidirectional()).isFalse();
+                BaseIdentifiableObject.DATE_FORMAT.parse("2014-04-14T13:53:41.066"));
+        assertThat(relationshipType.aIsToB()).isNull();
+        assertThat(relationshipType.bIsToA()).isNull();
+        assertThat(relationshipType.toFromName()).isEqualTo("Sibling_a-to-b_(Person-Person)");
+        assertThat(relationshipType.fromToName()).isEqualTo("Sibling_b-to-a_(Person-Person)");
+        assertThat(relationshipType.fromConstraint()).isNotNull();
+        assertThat(relationshipType.fromConstraint().relationshipEntity()).isEqualTo(RelationshipEntityType.TRACKED_ENTITY_INSTANCE);
+        assertThat(relationshipType.fromConstraint().trackedEntityType().uid()).isEqualTo("nEenWmSyUEp");
+        assertThat(relationshipType.toConstraint()).isNotNull();
+        assertThat(relationshipType.toConstraint().relationshipEntity()).isEqualTo(RelationshipEntityType.PROGRAM_INSTANCE);
+        assertThat(relationshipType.toConstraint().program().uid()).isEqualTo("WSGAb5XwJ3Y");
+        assertThat(relationshipType.bidirectional()).isTrue();
         assertThat(relationshipType.access().data().read()).isTrue();
-        assertThat(relationshipType.access().data().write()).isTrue();
+        assertThat(relationshipType.access().data().write()).isFalse();
     }
 }

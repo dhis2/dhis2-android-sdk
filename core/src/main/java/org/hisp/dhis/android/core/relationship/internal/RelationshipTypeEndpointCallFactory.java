@@ -37,8 +37,10 @@ import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.resource.internal.Resource;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import javax.inject.Inject;
 
@@ -51,15 +53,18 @@ final class RelationshipTypeEndpointCallFactory extends ListCallFactoryImpl<Rela
 
     private final RelationshipTypeService service;
     private final Handler<RelationshipType> handler;
+    private final DHISVersionManager versionManager;
 
     @Inject
     RelationshipTypeEndpointCallFactory(GenericCallData data,
                                         APICallExecutor apiCallExecutor,
                                         RelationshipTypeService service,
-                                        Handler<RelationshipType> handler) {
+                                        Handler<RelationshipType> handler,
+                                        DHISVersionManager versionManager) {
         super(data, apiCallExecutor);
         this.service = service;
         this.handler = handler;
+        this.versionManager = versionManager;
     }
 
     @Override
@@ -69,8 +74,13 @@ final class RelationshipTypeEndpointCallFactory extends ListCallFactoryImpl<Rela
                 apiCallExecutor) {
             @Override
             protected retrofit2.Call<Payload<RelationshipType>> getCall(String lastUpdated) {
+                String accessDataFilter = null;
+                if (!versionManager.is2_29()) {
+                    accessDataFilter = "access.data." + DataAccess.read.eq(true).generateString();
+                }
+
                 return service.getRelationshipTypes(RelationshipTypeFields.allFields,
-                        RelationshipTypeFields.lastUpdated.gt(lastUpdated), Boolean.FALSE);
+                        RelationshipTypeFields.lastUpdated.gt(lastUpdated), accessDataFilter, Boolean.FALSE);
             }
         };
     }

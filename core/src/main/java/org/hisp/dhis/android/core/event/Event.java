@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.event;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -37,22 +39,23 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.data.database.CoordinatesColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DataDeleteColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbEventStatusColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DbGeometryColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreCoordinatesColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityDataValueListColumnAdapter;
 import org.hisp.dhis.android.core.event.internal.EventFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
 import java.util.Date;
 import java.util.List;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Event.Builder.class)
@@ -107,10 +110,19 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
     @ColumnAdapter(DbEventStatusColumnAdapter.class)
     public abstract EventStatus status();
 
+    /**
+     * @deprecated since 2.30, replaced by {@link #geometry()}
+     */
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(CoordinatesColumnAdapter.class)
-    public abstract Coordinates coordinate();
+    @Deprecated
+    @ColumnAdapter(IgnoreCoordinatesColumnAdapter.class)
+    abstract Coordinates coordinate();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(DbGeometryColumnAdapter.class)
+    public abstract Geometry geometry();
 
     @Nullable
     @JsonProperty()
@@ -175,7 +187,12 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
 
         public abstract Builder status(EventStatus status);
 
-        public abstract Builder coordinate(Coordinates coordinate);
+        /**
+         * @deprecated since 2.29, replaced by {@link #geometry(Geometry geometry)}
+         */
+        abstract Builder coordinate(Coordinates coordinate);
+
+        public abstract Builder geometry(Geometry geometry);
 
         public abstract Builder completedDate(Date completedDate);
 
@@ -188,6 +205,18 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
         @JsonProperty(EventFields.TRACKED_ENTITY_DATA_VALUES)
         public abstract Builder trackedEntityDataValues(List<TrackedEntityDataValue> trackedEntityDataValues);
 
-        public abstract Event build();
+        abstract Event autoBuild();
+
+        // Auxiliary fields to access values
+        abstract Coordinates coordinate();
+        abstract Geometry geometry();
+        public Event build() {
+            if (geometry() != null) {
+                coordinate(CoordinateHelper.getCoordinatesFromGeometry(geometry()));
+            } else if (coordinate() != null) {
+                geometry(CoordinateHelper.getGeometryFromCoordinates(coordinate()));
+            }
+            return autoBuild();
+        }
     }
 }

@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.event;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -55,6 +56,8 @@ public class EventShould extends BaseObjectShould implements ObjectShould {
         assertThat(event.program()).isEqualTo("eBAyeGv0exc");
         assertThat(event.programStage()).isEqualTo("Zj7UnCAulEk");
         assertThat(event.enrollment()).isEqualTo("RiLEKhWHlxZ");
+        assertThat(event.geometry().type()).isEqualTo(FeatureType.POINT);
+        assertThat(event.geometry().coordinates()).isEqualTo("[0.0, 0.0]");
 
         assertThat(event.created()).isEqualTo(
                 BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-08T21:40:22.000"));

@@ -29,10 +29,11 @@
 package org.hisp.dhis.android.core.data.trackedentity;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.period.FeatureType;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -53,7 +54,7 @@ public class EventSamples {
                 .organisationUnit("organisation_unit")
                 .eventDate(getDate("2014-08-20T12:28:56.409"))
                 .status(EventStatus.ACTIVE)
-                .coordinate(Coordinates.create(21.21, 23.23))
+                .geometry(Geometry.builder().type(FeatureType.POINT).coordinates("[23.23, 21.21]").build())
                 .completedDate(getDate("2014-08-20T12:28:56.409"))
                 .dueDate(getDate("2014-08-20T12:28:56.409"))
                 .attributeOptionCombo("attribute_option_combo")

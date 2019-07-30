@@ -261,7 +261,7 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
     private void givenAMetadataInDatabase() {
         try {
             dhis2MockServer.setRequestDispatcher();
-            d2.syncMetaData().blockingSubscribe();
+            d2.metadataModule().blockingDownload();
         } catch (Exception ignore) {
         }
     }

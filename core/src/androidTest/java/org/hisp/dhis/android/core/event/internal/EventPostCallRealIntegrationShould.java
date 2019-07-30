@@ -205,7 +205,7 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
 
     private void downloadMetadata() throws Exception {
         d2.userModule().logIn(user, password).blockingGet();
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
     }
 
     private boolean verifyPushedEventIsInPullList(Event event, List<Event> eventList) {

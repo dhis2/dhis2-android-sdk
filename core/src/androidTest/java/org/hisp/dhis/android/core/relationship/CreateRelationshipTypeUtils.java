@@ -32,7 +32,6 @@ import android.content.ContentValues;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields;
 
 public class CreateRelationshipTypeUtils {
     private static final String CODE = "test_code";
@@ -43,8 +42,8 @@ public class CreateRelationshipTypeUtils {
     private static final String DATE = "2014-03-20T13:37:00.007";
 
     //RelationshipTypeModel attributes:
-    private static final String A_IS_TO_B = "cat of";
-    private static final String B_IS_TO_A = "owner of";
+    private static final String TO_FROM_NAME = "cat of";
+    private static final String FROM_TO_NAME = "owner of";
 
     /**
      * A method to createTrackedEntityAttribute ContentValues from a RelationshipType.
@@ -65,8 +64,10 @@ public class CreateRelationshipTypeUtils {
         relationshipType.put(BaseIdentifiableObjectModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
         relationshipType.put(BaseIdentifiableObjectModel.Columns.CREATED, DATE);
         relationshipType.put(BaseIdentifiableObjectModel.Columns.LAST_UPDATED, DATE);
-        relationshipType.put(RelationshipTypeFields.A_IS_TO_B, A_IS_TO_B);
-        relationshipType.put(RelationshipTypeFields.B_IS_TO_A, B_IS_TO_A);
+        relationshipType.put(RelationshipTypeTableInfo.Columns.TO_FROM_NAME, TO_FROM_NAME);
+        relationshipType.put(RelationshipTypeTableInfo.Columns.FROM_TO_NAME, FROM_TO_NAME);
+        relationshipType.put(RelationshipTypeTableInfo.Columns.BIDIRECTIONAL, 0);
+        relationshipType.put(RelationshipTypeTableInfo.Columns.ACCESS_DATA_WRITE, 1);
 
         return relationshipType;
     }

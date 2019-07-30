@@ -31,18 +31,19 @@ package org.hisp.dhis.android.core.relationship;
 import android.content.ContentValues;
 import android.database.MatrixCursor;
 
+import androidx.test.runner.AndroidJUnit4;
+
+import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo.Columns;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields;
 import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Date;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.AndroidTestUtils.toBoolean;
 
 @RunWith(AndroidJUnit4.class)
 public class RelationshipTypeModelShould {
@@ -53,8 +54,10 @@ public class RelationshipTypeModelShould {
     private static final String NAME = "test_name";
     private static final String DISPLAY_NAME = "test_display_name";
     //RelationshipTypeModel attributes:
-    private static final String A_IS_TO_B = "cat of";
-    private static final String B_IS_TO_A = "owner of";
+    private static final String TO_FROM_NAME = "cat of";
+    private static final String FROM_TO_NAME = "owner of";
+    private static final Integer BIDIRECTIONAL = 1;
+    private static final Integer ACCESS_DATA_WRITE = 1;
     private final Date date = new Date();
     private final String dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
 
@@ -66,8 +69,10 @@ public class RelationshipTypeModelShould {
             .displayName(DISPLAY_NAME)
             .created(date)
             .lastUpdated(date)
-            .aIsToB(A_IS_TO_B)
-            .bIsToA(B_IS_TO_A)
+            .toFromName(TO_FROM_NAME)
+            .fromToName(FROM_TO_NAME)
+            .bidirectional(toBoolean(BIDIRECTIONAL))
+            .access(Access.createForDataWrite(toBoolean(ACCESS_DATA_WRITE)))
             .build();
 
     @Test
@@ -75,7 +80,8 @@ public class RelationshipTypeModelShould {
         String[] columnsWithId = Utils.appendInNewArray(new RelationshipTypeTableInfo.Columns().all(),
                 RelationshipTypeTableInfo.Columns.ID);
         MatrixCursor cursor = new MatrixCursor(columnsWithId);
-        cursor.addRow(new Object[]{UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, B_IS_TO_A, A_IS_TO_B, ID});
+        cursor.addRow(new Object[]{UID, CODE, NAME, DISPLAY_NAME, dateString, dateString,
+                FROM_TO_NAME, TO_FROM_NAME, BIDIRECTIONAL, ACCESS_DATA_WRITE, ID});
 
         cursor.moveToFirst();
         RelationshipType typeFromDb = RelationshipType.create(cursor);
@@ -94,8 +100,10 @@ public class RelationshipTypeModelShould {
         assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
         assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.A_IS_TO_B_WITH_UPPER_CASE_A)).isEqualTo(A_IS_TO_B);
-        assertThat(contentValues.getAsString(RelationshipTypeFields.B_IS_TO_A)).isEqualTo(B_IS_TO_A);
+        assertThat(contentValues.getAsString(Columns.FROM_TO_NAME)).isEqualTo(FROM_TO_NAME);
+        assertThat(contentValues.getAsString(Columns.TO_FROM_NAME)).isEqualTo(TO_FROM_NAME);
+        assertThat(contentValues.getAsBoolean(Columns.BIDIRECTIONAL)).isEqualTo(toBoolean(BIDIRECTIONAL));
+        assertThat(contentValues.getAsBoolean(Columns.ACCESS_DATA_WRITE)).isEqualTo(toBoolean(ACCESS_DATA_WRITE));
     }
 }
 

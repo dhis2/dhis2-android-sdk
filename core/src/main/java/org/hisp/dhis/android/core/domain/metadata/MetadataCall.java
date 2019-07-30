@@ -141,4 +141,8 @@ public class MetadataCall {
 
                 })), true);
     }
+
+    public void blockingDownload() {
+        download().blockingSubscribe();
+    }
 }

@@ -66,7 +66,7 @@ public class EventEndpointCallRealIntegrationShould extends BaseRealIntegrationT
     public void download_number_of_events_according_to_default_limit() throws Exception {
         d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
 
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
 
         Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
 
@@ -83,7 +83,7 @@ public class EventEndpointCallRealIntegrationShould extends BaseRealIntegrationT
     public void download_event_with_category_combo_option() throws Exception {
         d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
 
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
 
         Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
 

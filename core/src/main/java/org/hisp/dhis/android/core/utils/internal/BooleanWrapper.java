@@ -26,51 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.utils.internal;
 
-import android.util.Log;
+public class BooleanWrapper {
+    private boolean value;
 
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
-import org.junit.Before;
-
-import java.io.IOException;
-
-import io.reactivex.observers.TestObserver;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class TeisCallRealIntegrationShould extends BaseRealIntegrationTest {
-
-    private D2 d2;
-
-    @Before
-    @Override
-    public void setUp() throws IOException {
-        super.setUp();
-
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+    public BooleanWrapper(boolean value) {
+        this.value = value;
     }
 
-    //@Test
-    public void download_tracked_entity_instances() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+    public boolean get() {
+        return value;
+    }
 
-        d2.metadataModule().blockingDownload();
-
-        TestObserver<D2Progress> testObserver = d2.trackedEntityModule().downloadTrackedEntityInstances(5, false, false)
-                .doOnEach(e -> Log.w("EVENT", e.toString()))
-                .test();
-
-        testObserver.awaitTerminalEvent();
-
-        int count = TrackedEntityInstanceStoreImpl.create(databaseAdapter()).count();
-
-        assertThat(count >= 5).isTrue();
-
-        testObserver.dispose();
+    public void set(boolean value) {
+        this.value = value;
     }
 }

@@ -54,7 +54,7 @@ public class EventWithLimitCallRealIntegrationShould extends BaseRealIntegration
     public void download_tracked_entity_instances() {
         d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
 
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
 
         d2.eventModule().downloadSingleEvents(20,  false, false).blockingSubscribe();
 

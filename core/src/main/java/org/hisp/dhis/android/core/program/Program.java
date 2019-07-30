@@ -138,11 +138,19 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     @ColumnAdapter(DbProgramTypeColumnAdapter.class)
     public abstract ProgramType programType();
 
+    /**
+     * @deprecated since 2.30
+     */
+    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(RelationshipTypeWithUidColumnAdapter.class)
     public abstract RelationshipType relationshipType();
 
+    /**
+     * @deprecated since 2.30
+     */
+    @Deprecated
     @Nullable
     @JsonProperty()
     public abstract String relationshipText();

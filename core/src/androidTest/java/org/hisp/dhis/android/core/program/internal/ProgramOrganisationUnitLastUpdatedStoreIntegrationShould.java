@@ -28,16 +28,15 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.program.ProgramOrganisationUnitLastUpdatedSamples;
 import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
 import java.util.Date;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(D2JunitRunner.class)
 public class ProgramOrganisationUnitLastUpdatedStoreIntegrationShould
         extends ObjectWithoutUidStoreAbstractIntegrationShould<ProgramOrganisationUnitLastUpdated> {
 

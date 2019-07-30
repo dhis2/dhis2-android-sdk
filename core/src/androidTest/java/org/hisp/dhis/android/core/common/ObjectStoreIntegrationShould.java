@@ -33,20 +33,19 @@ import android.database.sqlite.SQLiteConstraintException;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.internal.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionSetTableInfo;
+import org.hisp.dhis.android.core.option.internal.OptionSetStore;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import static org.hisp.dhis.android.core.common.StoreMocks.optionSetCursorAssert;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(D2JunitRunner.class)
 public class ObjectStoreIntegrationShould extends BaseRealIntegrationTest {
 
     private IdentifiableObjectStore<OptionSet> store;

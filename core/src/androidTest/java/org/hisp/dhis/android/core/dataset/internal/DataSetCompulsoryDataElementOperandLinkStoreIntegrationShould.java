@@ -33,11 +33,10 @@ import org.hisp.dhis.android.core.data.dataset.DataSetCompulsoryDataElementOpera
 import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLink;
 import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLinkTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
-import androidx.test.runner.AndroidJUnit4;
-
-@RunWith(AndroidJUnit4.class)
+@RunWith(D2JunitRunner.class)
 public class DataSetCompulsoryDataElementOperandLinkStoreIntegrationShould
         extends LinkModelStoreAbstractIntegrationShould<DataSetCompulsoryDataElementOperandLink> {
 

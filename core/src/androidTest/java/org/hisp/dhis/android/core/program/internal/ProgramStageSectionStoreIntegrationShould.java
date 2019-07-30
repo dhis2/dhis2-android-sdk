@@ -33,11 +33,10 @@ import org.hisp.dhis.android.core.data.program.ProgramStageSectionSamples;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
 import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
-import androidx.test.runner.AndroidJUnit4;
-
-@RunWith(AndroidJUnit4.class)
+@RunWith(D2JunitRunner.class)
 public class ProgramStageSectionStoreIntegrationShould
         extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramStageSection> {
 

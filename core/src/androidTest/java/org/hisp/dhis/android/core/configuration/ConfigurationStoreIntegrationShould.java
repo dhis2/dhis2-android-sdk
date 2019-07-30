@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.data.configuration.ConfigurationSamples;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,12 +41,11 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.List;
 
-import androidx.test.runner.AndroidJUnit4;
 import okhttp3.HttpUrl;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(D2JunitRunner.class)
 public class ConfigurationStoreIntegrationShould {
 
     private final Configuration configuration;

@@ -33,11 +33,10 @@ import org.hisp.dhis.android.core.data.settings.SystemSettingSamples;
 import org.hisp.dhis.android.core.settings.SystemSetting;
 import org.hisp.dhis.android.core.settings.SystemSettingTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
-import androidx.test.runner.AndroidJUnit4;
-
-@RunWith(AndroidJUnit4.class)
+@RunWith(D2JunitRunner.class)
 public class SystemSettingStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<SystemSetting> {
 
     public SystemSettingStoreIntegrationShould() {

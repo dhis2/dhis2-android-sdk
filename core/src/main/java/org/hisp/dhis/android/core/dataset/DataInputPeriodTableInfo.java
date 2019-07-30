@@ -63,14 +63,6 @@ public class DataInputPeriodTableInfo {
                     DataInputPeriodFields.OPENING_DATE,
                     DataInputPeriodFields.CLOSING_DATE);
         }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{
-                    DATA_SET,
-                    DataInputPeriodFields.PERIOD
-            };
-        }
     }
 
 }

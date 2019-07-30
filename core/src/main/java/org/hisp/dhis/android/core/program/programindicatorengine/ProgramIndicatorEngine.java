@@ -168,10 +168,13 @@ public class ProgramIndicatorEngine {
     }
 
     String parseIndicatorExpression(String enrollment, String event, String indicatorUid) {
-        StringBuffer buffer = new StringBuffer();
 
         ProgramIndicator programIndicator = this.programIndicatorStore.selectByUid(indicatorUid);
         String expression = programIndicator.expression();
+
+        if (expression == null) {
+            return null;
+        }
 
         Matcher matcher = EXPRESSION_PATTERN.matcher(expression);
 
@@ -182,6 +185,7 @@ public class ProgramIndicatorEngine {
         Enrollment cachedEnrollment = null;
         Map<String, TrackedEntityAttributeValue> attributeToAttributeValues = new HashMap<>();
 
+        StringBuffer buffer = new StringBuffer();
         Date currentDate = new Date();
 
         while (matcher.find()) {

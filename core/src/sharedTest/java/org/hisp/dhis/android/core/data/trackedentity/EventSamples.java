@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.core.data.trackedentity;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
-import org.hisp.dhis.android.core.period.FeatureType;
 
 import java.text.ParseException;
 import java.util.Date;

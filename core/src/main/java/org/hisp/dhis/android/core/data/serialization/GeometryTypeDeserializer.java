@@ -34,7 +34,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
-import org.hisp.dhis.android.core.period.FeatureType;
+import org.hisp.dhis.android.core.common.FeatureType;
 
 import java.io.IOException;
 

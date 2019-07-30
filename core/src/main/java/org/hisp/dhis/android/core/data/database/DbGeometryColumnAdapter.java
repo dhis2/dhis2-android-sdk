@@ -33,8 +33,8 @@ import android.database.Cursor;
 
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
-import org.hisp.dhis.android.core.period.FeatureType;
 
 public class DbGeometryColumnAdapter implements ColumnTypeAdapter<Geometry> {
 

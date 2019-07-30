@@ -39,11 +39,11 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityTypeAttributeListColumnAdapter;
-import org.hisp.dhis.android.core.period.FeatureType;
 
 import java.util.List;
 

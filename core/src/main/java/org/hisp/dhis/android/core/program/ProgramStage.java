@@ -40,6 +40,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
@@ -52,7 +53,6 @@ import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreProgramStageDataElementListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreProgramStageSectionListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.List;

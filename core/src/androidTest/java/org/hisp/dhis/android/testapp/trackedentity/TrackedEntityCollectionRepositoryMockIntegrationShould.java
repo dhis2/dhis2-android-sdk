@@ -31,8 +31,8 @@ package org.hisp.dhis.android.testapp.trackedentity;
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;

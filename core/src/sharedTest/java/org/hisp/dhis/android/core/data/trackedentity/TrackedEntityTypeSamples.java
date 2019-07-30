@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.data.trackedentity;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.period.FeatureType;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
 import java.text.ParseException;

@@ -32,6 +32,7 @@ import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
@@ -48,7 +49,6 @@ import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;

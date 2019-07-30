@@ -40,6 +40,7 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
@@ -51,7 +52,6 @@ import org.hisp.dhis.android.core.data.database.IgnoreRelationship229CompatibleL
 import org.hisp.dhis.android.core.data.database.IgnoreStringColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityAttributeValueListColumnAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 
 import java.util.Date;

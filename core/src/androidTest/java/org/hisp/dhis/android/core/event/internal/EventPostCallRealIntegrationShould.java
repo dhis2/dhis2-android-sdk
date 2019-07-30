@@ -29,13 +29,13 @@
 package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;

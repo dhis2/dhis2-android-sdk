@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.period.FeatureType;
+import org.hisp.dhis.android.core.common.FeatureType;
 
 public class DbFeatureTypeColumnAdapter extends EnumColumnAdapter<FeatureType> {
     @Override

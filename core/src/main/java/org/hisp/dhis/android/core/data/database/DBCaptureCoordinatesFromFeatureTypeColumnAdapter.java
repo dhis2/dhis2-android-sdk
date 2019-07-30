@@ -33,7 +33,7 @@ import android.database.Cursor;
 
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-import org.hisp.dhis.android.core.period.FeatureType;
+import org.hisp.dhis.android.core.common.FeatureType;
 
 public class DBCaptureCoordinatesFromFeatureTypeColumnAdapter implements ColumnTypeAdapter<Boolean> {
 

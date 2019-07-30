@@ -34,9 +34,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.internal.EventFields;
-import org.hisp.dhis.android.core.period.FeatureType;
 
 public class CreateEventUtils {
 

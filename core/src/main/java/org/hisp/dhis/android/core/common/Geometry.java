@@ -45,7 +45,6 @@ import org.hisp.dhis.android.core.data.serialization.GeometryTypeDeserializer;
 import org.hisp.dhis.android.core.data.serialization.GeometryTypeSerializer;
 import org.hisp.dhis.android.core.data.serialization.JsonElementStringConverter;
 import org.hisp.dhis.android.core.data.serialization.StringJsonElementSerializer;
-import org.hisp.dhis.android.core.period.FeatureType;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Geometry.Builder.class)

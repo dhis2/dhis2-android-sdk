@@ -43,6 +43,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.data.database.AccessColumnAdapter;
@@ -60,7 +61,6 @@ import org.hisp.dhis.android.core.data.database.IgnoreProgramTrackedEntityAttrib
 import org.hisp.dhis.android.core.data.database.ProgramWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.RelationshipTypeWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.TrackedEntityTypeWithUidColumnAdapter;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;

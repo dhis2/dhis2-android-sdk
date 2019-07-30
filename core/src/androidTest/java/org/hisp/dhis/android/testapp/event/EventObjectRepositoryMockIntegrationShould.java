@@ -28,13 +28,14 @@
 
 package org.hisp.dhis.android.testapp.event;
 
-import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.event.EventCreateProjection;
 import org.hisp.dhis.android.core.event.EventObjectRepository;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
@@ -86,6 +87,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
 
         repository.delete();
     }
+
     @Test
     public void update_event_status() throws D2Error {
         EventStatus eventStatus = EventStatus.COMPLETED;
@@ -94,18 +96,6 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
 
         repository.setStatus(eventStatus);
         assertThat(repository.get().status(), is(eventStatus));
-
-        repository.delete();
-    }
-
-    @Test
-    public void update_coordinate() throws D2Error {
-        Coordinates coordinate = Coordinates.create(10.00, 11.00);
-
-        EventObjectRepository repository = objectRepository();
-
-        repository.setCoordinate(coordinate);
-        assertThat(repository.get().coordinate(), is(coordinate));
 
         repository.delete();
     }
@@ -130,6 +120,21 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
 
         repository.setDueDate(dueDate);
         assertThat(repository.get().dueDate(), is(dueDate));
+
+        repository.delete();
+    }
+
+    @Test
+    public void update_geometry() throws D2Error {
+        Geometry geometry = Geometry.builder()
+                .type(FeatureType.POINT)
+                .coordinates("[10.00, 11.00]")
+                .build();
+
+        EventObjectRepository repository = objectRepository();
+
+        repository.setGeometry(geometry);
+        assertThat(repository.get().geometry(), is(geometry));
 
         repository.delete();
     }

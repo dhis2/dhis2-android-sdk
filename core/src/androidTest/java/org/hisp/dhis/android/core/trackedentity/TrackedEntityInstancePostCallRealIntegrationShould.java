@@ -32,7 +32,6 @@ import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
@@ -475,7 +474,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         Event event = Event.builder()
                 .uid(eventUid).enrollment(enrollmentUid).created(refDate).lastUpdated(refDate)
-                .status(EventStatus.ACTIVE).coordinate(Coordinates.create(13.21, 12.21)).program(programUid)
+                .status(EventStatus.ACTIVE).program(programUid)
+                .geometry(Geometry.builder().type(FeatureType.POINT).coordinates("[12.21, 13.21]").build())
                 .programStage(programStageUid).organisationUnit(orgUnitUid).eventDate(refDate).dueDate(refDate)
                 .completedDate(refDate).state(State.TO_POST).attributeOptionCombo(categoryComboOptionUid)
                 .build();

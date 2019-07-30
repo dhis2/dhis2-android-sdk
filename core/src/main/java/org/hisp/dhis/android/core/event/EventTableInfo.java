@@ -56,9 +56,9 @@ public final class EventTableInfo {
         public static final String UID = "uid";
         public static final String CREATED_AT_CLIENT = "createdAtClient";
         public static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
-        public static final String LATITUDE = "latitude";
-        public static final String LONGITUDE = "longitude";
         public static final String ORGANISATION_UNIT = "organisationUnit";
+        static final String GEOMETRY_TYPE = "geometryType";
+        static final String GEOMETRY_COORDINATES = "geometryCoordinates";
 
         @Override
         public String[] all() {
@@ -70,8 +70,8 @@ public final class EventTableInfo {
                     CREATED_AT_CLIENT,
                     LAST_UPDATED_AT_CLIENT,
                     EventFields.STATUS,
-                    LATITUDE,
-                    LONGITUDE,
+                    GEOMETRY_TYPE,
+                    GEOMETRY_COORDINATES,
                     EventFields.PROGRAM,
                     EventFields.PROGRAM_STAGE,
                     ORGANISATION_UNIT,

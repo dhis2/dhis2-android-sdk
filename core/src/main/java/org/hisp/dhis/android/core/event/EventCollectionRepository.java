@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.event.internal.EventFields;
 import org.hisp.dhis.android.core.event.internal.EventPostCall;
 import org.hisp.dhis.android.core.event.internal.EventStore;
+import org.hisp.dhis.android.core.period.FeatureType;
 
 import java.util.List;
 import java.util.Map;
@@ -123,12 +124,12 @@ public final class EventCollectionRepository
         return cf.enumC(EventFields.STATUS);
     }
 
-    public StringFilterConnector<EventCollectionRepository> byLatitude() {
-        return cf.string(EventTableInfo.Columns.LATITUDE);
+    public EnumFilterConnector<EventCollectionRepository, FeatureType> byGeometryType() {
+        return cf.enumC(EventTableInfo.Columns.GEOMETRY_TYPE);
     }
 
-    public StringFilterConnector<EventCollectionRepository> byLongitude() {
-        return cf.string(EventTableInfo.Columns.LONGITUDE);
+    public StringFilterConnector<EventCollectionRepository> byGeometryCoordinates() {
+        return cf.string(EventTableInfo.Columns.GEOMETRY_COORDINATES);
     }
 
     public StringFilterConnector<EventCollectionRepository> byProgramUid() {

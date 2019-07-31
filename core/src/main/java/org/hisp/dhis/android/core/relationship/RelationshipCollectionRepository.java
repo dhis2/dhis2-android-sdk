@@ -57,6 +57,7 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import dagger.Reusable;
+import io.reactivex.Single;
 
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
@@ -85,6 +86,11 @@ public final class RelationshipCollectionRepository
         this.relationshipHandler = relationshipHandler;
         this.relationshipItemStore = relationshipItemStore;
         this.storeSelector = storeSelector;
+    }
+
+    @Override
+    public Single<String> add(Relationship relationship) {
+        return Single.fromCallable(() -> blockingAdd(relationship));
     }
 
     @Override

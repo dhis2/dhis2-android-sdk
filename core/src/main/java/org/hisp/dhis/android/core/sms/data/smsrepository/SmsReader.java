@@ -110,7 +110,7 @@ class SmsReader {
         if (bundle == null) {
             return false;
         }
-        // blockingGet sms objects
+        // get sms objects
         Object[] pdus = (Object[]) bundle.get("pdus");
         if (pdus == null || pdus.length == 0) {
             return false;

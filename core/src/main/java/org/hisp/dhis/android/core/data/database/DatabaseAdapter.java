@@ -97,7 +97,7 @@ public interface DatabaseAdapter {
      *                    will be replaced by the values from whereArgs. The values
      *                    will be bound as Strings.
      * @return the number of rows affected if a whereClause is passed in, 0
-     * otherwise. To remove all rows and blockingGet a count pass "1" as the
+     * otherwise. To remove all rows and get a count pass "1" as the
      * whereClause.
      */
     int delete(String table, String whereClause, String[] whereArgs);

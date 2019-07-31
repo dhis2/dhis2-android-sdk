@@ -41,14 +41,14 @@ public class DeviceStateRepositoryImpl implements DeviceStateRepository {
             }
         }
 
-        // When failed to blockingGet current status or too low sdk version
+        // When failed to get current status or too low sdk version
         // Have to register listener
         AtomicReference<PhoneStateListener> listener = new AtomicReference<>();
         return Single.create((SingleOnSubscribe<Boolean>) emitter -> {
             if (emitter.isDisposed()) {
                 return;
             }
-            // Set a listener on a telephony manager to blockingGet
+            // Set a listener on a telephony manager to get
             listener.set(new PhoneStateListener() {
                 @Override
                 public void onServiceStateChanged(ServiceState serviceState) {

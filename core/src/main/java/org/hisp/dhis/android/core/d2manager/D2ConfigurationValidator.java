@@ -56,7 +56,7 @@ final class D2ConfigurationValidator {
                 throw D2Error.builder()
                         .errorComponent(D2ErrorComponent.SDK)
                         .errorCode(D2ErrorCode.APP_NAME_NOT_SET)
-                        .errorDescription("The app name was not passed and the SDK was not able to blockingGet it from the " +
+                        .errorDescription("The app name was not passed and the SDK was not able to get it from the " +
                                 "Android system")
                         .build();
             } else {
@@ -74,7 +74,7 @@ final class D2ConfigurationValidator {
                 throw D2Error.builder()
                         .errorComponent(D2ErrorComponent.SDK)
                         .errorCode(D2ErrorCode.APP_VERSION_NOT_SET)
-                        .errorDescription("The version number was not passed and the SDK was not able to blockingGet it " +
+                        .errorDescription("The version number was not passed and the SDK was not able to get it " +
                                 "from the Android System")
                         .build();
             } else {

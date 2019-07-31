@@ -37,5 +37,5 @@ public interface ReadWriteWithUidCollectionRepository<M extends Model & ObjectWi
 
     ReadWriteObjectRepository<M> uid(String uid);
 
-    String add(C c) throws D2Error;
+    String blockingAdd(C c) throws D2Error;
 }

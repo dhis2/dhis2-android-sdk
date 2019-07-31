@@ -88,7 +88,7 @@ public final class RelationshipCollectionRepository
     }
 
     @Override
-    public String add(Relationship relationship) throws D2Error {
+    public String blockingAdd(Relationship relationship) throws D2Error {
         if (relationshipHandler.doesRelationshipExist(relationship)) {
             throw D2Error
                     .builder()

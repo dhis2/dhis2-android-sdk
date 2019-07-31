@@ -311,7 +311,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events1 = d2.eventModule().events.blockingGet();
         assertThat(events1.size(), is(4));
 
-        String eventUid = d2.eventModule().events.add(
+        String eventUid = d2.eventModule().events.blockingAdd(
                 EventCreateProjection.create("enroll1", "lxAQ7Zs9VYR", "dBwrot7S420",
                         "DiszpKrYNg8", "bRowv6yZOF2"));
 

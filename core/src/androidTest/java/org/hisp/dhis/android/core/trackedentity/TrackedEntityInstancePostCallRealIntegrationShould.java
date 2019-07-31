@@ -323,7 +323,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         Relationship newRelationship = RelationshipHelper.teiToTeiRelationship(teiA.uid(),
                 teiBUid, relationshipType.uid());
-        d2.relationshipModule().relationships.add(newRelationship);
+        d2.relationshipModule().relationships.blockingAdd(newRelationship);
 
         d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
@@ -367,7 +367,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         RelationshipType relationshipType = d2.relationshipModule().relationshipTypes.blockingGet().iterator().next();
 
-        d2.relationshipModule().relationships.add(RelationshipHelper.teiToTeiRelationship(t0.uid(), t1.uid(),
+        d2.relationshipModule().relationships.blockingAdd(RelationshipHelper.teiToTeiRelationship(t0.uid(), t1.uid(),
                 relationshipType.uid()));
 
         d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
@@ -393,7 +393,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         Relationship newRelationship = RelationshipHelper.teiToTeiRelationship(t0.uid(), t1.uid(),
                 relationshipType.uid());
-        relationshipsRepository.add(newRelationship);
+        relationshipsRepository.blockingAdd(newRelationship);
 
         d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 

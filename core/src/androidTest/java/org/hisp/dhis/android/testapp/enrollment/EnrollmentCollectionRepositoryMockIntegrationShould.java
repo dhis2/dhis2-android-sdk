@@ -221,7 +221,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         List<Enrollment> enrollments1 = d2.enrollmentModule().enrollments.blockingGet();
         assertThat(enrollments1.size(), is(2));
 
-        String enrolmentUid = d2.enrollmentModule().enrollments.add(EnrollmentCreateProjection.create(
+        String enrolmentUid = d2.enrollmentModule().enrollments.blockingAdd(EnrollmentCreateProjection.create(
                 "DiszpKrYNg8", "lxAQ7Zs9VYR", "nWrB0TfWlvh"));
 
         List<Enrollment> enrollments2 = d2.enrollmentModule().enrollments.blockingGet();

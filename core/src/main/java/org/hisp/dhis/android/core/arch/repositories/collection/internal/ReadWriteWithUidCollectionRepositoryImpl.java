@@ -67,7 +67,7 @@ public abstract class ReadWriteWithUidCollectionRepositoryImpl
 
     @SuppressWarnings({"PMD.PreserveStackTrace"})
     @Override
-    public String add(P projection) throws D2Error {
+    public String blockingAdd(P projection) throws D2Error {
         M object = transformer.transform(projection);
         try {
             store.insert(object);

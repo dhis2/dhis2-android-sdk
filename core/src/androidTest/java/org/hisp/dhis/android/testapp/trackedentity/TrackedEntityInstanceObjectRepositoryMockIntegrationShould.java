@@ -89,7 +89,7 @@ public class TrackedEntityInstanceObjectRepositoryMockIntegrationShould extends 
     }
 
     private TrackedEntityInstanceObjectRepository objectRepository() throws D2Error {
-        String teiUid = d2.trackedEntityModule().trackedEntityInstances.add(
+        String teiUid = d2.trackedEntityModule().trackedEntityInstances.blockingAdd(
                 TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp"));
         return d2.trackedEntityModule().trackedEntityInstances.uid(teiUid);
     }

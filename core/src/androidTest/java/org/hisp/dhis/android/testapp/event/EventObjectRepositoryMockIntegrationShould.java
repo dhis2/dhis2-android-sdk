@@ -140,7 +140,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
     }
 
     private EventObjectRepository objectRepository() throws D2Error {
-        String eventUid = d2.eventModule().events.add(
+        String eventUid = d2.eventModule().events.blockingAdd(
                 EventCreateProjection.create("enroll1", "lxAQ7Zs9VYR", "dBwrot7S420",
                         "DiszpKrYNg8", "bRowv6yZOF2"));
         return d2.eventModule().events.uid(eventUid);

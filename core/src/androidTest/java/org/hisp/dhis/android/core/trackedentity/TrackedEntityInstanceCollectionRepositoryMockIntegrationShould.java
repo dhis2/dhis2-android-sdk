@@ -101,7 +101,7 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
         List<TrackedEntityInstance> trackedEntityInstances1 = d2.trackedEntityModule().trackedEntityInstances.blockingGet();
         assertThat(trackedEntityInstances1.size(), is(2));
 
-        String teiUid = d2.trackedEntityModule().trackedEntityInstances.add(
+        String teiUid = d2.trackedEntityModule().trackedEntityInstances.blockingAdd(
                 TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp"));
 
         List<TrackedEntityInstance> trackedEntityInstances2 = d2.trackedEntityModule().trackedEntityInstances.blockingGet();

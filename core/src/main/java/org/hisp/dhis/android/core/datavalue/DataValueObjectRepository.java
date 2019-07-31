@@ -70,17 +70,17 @@ public final class DataValueObjectRepository
         this.attributeOptionCombo = attributeOptionCombo;
     }
 
-    public Unit set(String value) throws D2Error {
+    public void blockingSet(String value) throws D2Error {
         objectWithValue = setBuilder().value(value).build();
-        return setObject(objectWithValue);
+        setObject(objectWithValue);
     }
 
-    public Unit setFollowUp(Boolean followUp) throws D2Error {
-        return setObject(setBuilder().followUp(followUp).build());
+    public void setFollowUp(Boolean followUp) throws D2Error {
+        setObject(setBuilder().followUp(followUp).build());
     }
 
-    public Unit setComment(String comment) throws D2Error {
-        return setObject(setBuilder().comment(comment).build());
+    public void setComment(String comment) throws D2Error {
+        setObject(setBuilder().comment(comment).build());
     }
 
     @Override

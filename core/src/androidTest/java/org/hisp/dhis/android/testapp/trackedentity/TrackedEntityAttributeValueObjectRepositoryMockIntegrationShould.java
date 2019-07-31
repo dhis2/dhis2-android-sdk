@@ -48,7 +48,7 @@ public class TrackedEntityAttributeValueObjectRepositoryMockIntegrationShould
 
         TrackedEntityAttributeValueObjectRepository repository = objectRepository();
 
-        repository.set(value);
+        repository.blockingSet(value);
         assertThat(repository.blockingGet().value(), is(value));
 
         repository.blockingDelete();
@@ -58,7 +58,7 @@ public class TrackedEntityAttributeValueObjectRepositoryMockIntegrationShould
     public void delete_value() throws D2Error {
         TrackedEntityAttributeValueObjectRepository repository = objectRepository();
 
-        repository.set("value");
+        repository.blockingSet("value");
         assertThat(repository.blockingExists(), is(Boolean.TRUE));
         repository.blockingDelete();
         assertThat(repository.blockingExists(), is(Boolean.FALSE));

@@ -49,7 +49,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
 
         DataValueObjectRepository repository = objectRepository();
 
-        repository.set(value);
+        repository.blockingSet(value);
         assertThat(repository.blockingGet().value(), is(value));
 
         repository.blockingDelete();
@@ -83,7 +83,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
     public void delete_value_if_state_to_post() throws D2Error {
         DataValueObjectRepository repository = objectRepository();
 
-        repository.set("value");
+        repository.blockingSet("value");
         assertThat(repository.blockingExists(), is(Boolean.TRUE));
         assertThat(repository.blockingGet().state(), is(State.TO_POST));
         repository.blockingDelete();
@@ -94,7 +94,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
     public void set_state_to_delete_if_state_is_not_to_post() throws D2Error {
         DataValueObjectRepository repository = objectRepository();
 
-        repository.set("value");
+        repository.blockingSet("value");
         DataValueStore.create(databaseAdapter).setState(repository.blockingGet(), State.ERROR);
         assertThat(repository.blockingExists(), is(Boolean.TRUE));
         assertThat(repository.blockingGet().state(), is(State.ERROR));

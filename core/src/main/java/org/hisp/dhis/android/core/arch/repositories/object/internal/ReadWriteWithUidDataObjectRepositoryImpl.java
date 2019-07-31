@@ -42,6 +42,8 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.util.Map;
 
+import io.reactivex.Completable;
+
 public class ReadWriteWithUidDataObjectRepositoryImpl
         <M extends Model & ObjectWithUidInterface & DataModel, R extends ReadOnlyObjectRepository<M>>
         extends ReadWriteWithUidObjectRepositoryImpl<M, R> {
@@ -54,6 +56,10 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
                                                     ObjectRepositoryFactory<R> repositoryFactory) {
         super(store, childrenAppenders, scope, repositoryFactory);
         this.store = store;
+    }
+
+    public Completable delete() {
+        return Completable.fromAction(this::blockingDelete);
     }
 
     public void blockingDelete() throws D2Error {

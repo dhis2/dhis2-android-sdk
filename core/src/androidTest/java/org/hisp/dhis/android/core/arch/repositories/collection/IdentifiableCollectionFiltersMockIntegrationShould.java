@@ -64,7 +64,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
     public void find_objects_with_equal_name() {
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byName().eq("Births");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
     }
@@ -82,7 +82,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
     public void find_objects_with_children_with_equal_name() {
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byName().eq("Births");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.withAllChildren().get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.withAllChildren().blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
         assertThat(combos.get(0).categories().isEmpty(), is(false));
@@ -92,7 +92,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
     public void find_objects_with_equal_code() {
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byCode().eq("BIRTHS");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
     }
@@ -101,7 +101,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
     public void find_objects_with_equal_uid() {
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byUid().eq("m2jTvAj5kkm");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
     }
@@ -110,7 +110,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
     public void find_objects_with_equal_display_name() {
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byDisplayName().eq("Births Display");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
     }
@@ -119,7 +119,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
     public void do_not_find_objects_with_wrong_equal_name() {
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byName().eq("Deaths");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.isEmpty(), is(true));
     }
 
@@ -127,7 +127,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
     public void do_not_find_objects_with_wrong_equal_code() {
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byCode().eq("DEATHS");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.isEmpty(), is(true));
     }
 
@@ -135,7 +135,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
     public void find_objects_with_like_name() {
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byName().like("%bi%");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
     }
@@ -144,7 +144,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
     public void find_objects_with_like_code() {
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byCode().like("%bi%");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
     }
@@ -154,7 +154,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.203");
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byCreated().eq(created);
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(2));
     }
 
@@ -163,7 +163,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse("2016-04-18T16:04:34.745");
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byLastUpdated().eq(created);
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
     }
@@ -173,7 +173,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse(BEFORE_DATE);
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byLastUpdated().before(created);
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(0));
     }
 
@@ -182,7 +182,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse(IN_BETWEEN_DATE);
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byLastUpdated().before(created);
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(DEFAULT_UID));
     }
@@ -192,7 +192,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse(AFTER_DATE);
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byLastUpdated().before(created);
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(2));
     }
 
@@ -201,7 +201,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse(BEFORE_DATE);
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byLastUpdated().after(created);
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(2));
     }
 
@@ -210,7 +210,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse(IN_BETWEEN_DATE);
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byLastUpdated().after(created);
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
     }
@@ -220,7 +220,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse(AFTER_DATE);
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byLastUpdated().after(created);
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(0));
     }
 
@@ -230,7 +230,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byLastUpdated().after(created)
                 .byName().like("%t%");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(2));
     }
 
@@ -242,18 +242,18 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
 
         List<DatePeriod> beforeDatePeriods = Lists.newArrayList(DatePeriod.create(before, inBetween));
         List<Category> beforeCategories = d2.categoryModule().categories
-                .byLastUpdated().inDatePeriods(beforeDatePeriods).get();
+                .byLastUpdated().inDatePeriods(beforeDatePeriods).blockingGet();
         assertThat(beforeCategories.size(), is(2));
 
         List<DatePeriod> afterDatePeriods = Lists.newArrayList(DatePeriod.create(inBetween, after));
         List<Category> afterCategories = d2.categoryModule().categories
-                .byLastUpdated().inDatePeriods(afterDatePeriods).get();
+                .byLastUpdated().inDatePeriods(afterDatePeriods).blockingGet();
         assertThat(afterCategories.size(), is(2));
 
         List<DatePeriod> datePeriods = Lists.newArrayList(DatePeriod.create(before, inBetween),
                 DatePeriod.create(inBetween, after));
         List<Category> categories = d2.categoryModule().categories
-                .byLastUpdated().inDatePeriods(datePeriods).get();
+                .byLastUpdated().inDatePeriods(datePeriods).blockingGet();
         assertThat(categories.size(), is(4));
     }
 
@@ -266,7 +266,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
                 .build();
 
         List<Category> beforeCategories = d2.categoryModule().categories
-                .byLastUpdated().inPeriods(Lists.newArrayList(period)).get();
+                .byLastUpdated().inPeriods(Lists.newArrayList(period)).blockingGet();
         assertThat(beforeCategories.size(), is(1));
     }
 }

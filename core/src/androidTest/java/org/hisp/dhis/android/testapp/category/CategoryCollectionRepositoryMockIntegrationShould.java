@@ -44,7 +44,7 @@ public class CategoryCollectionRepositoryMockIntegrationShould extends BaseMockI
 
     @Test
     public void find_all() {
-        List<Category> categories = d2.categoryModule().categories.get();
+        List<Category> categories = d2.categoryModule().categories.blockingGet();
         assertThat(categories.size(), is(4));
     }
 
@@ -52,7 +52,7 @@ public class CategoryCollectionRepositoryMockIntegrationShould extends BaseMockI
     public void filter_by_name() {
         List<Category> categories = d2.categoryModule().categories
                 .byName().like("%e%")
-                .get();
+                .blockingGet();
         assertThat(categories.size(), is(3));
     }
 
@@ -60,7 +60,7 @@ public class CategoryCollectionRepositoryMockIntegrationShould extends BaseMockI
     public void filter_by_data_dimension_type() {
         List<Category> categories = d2.categoryModule().categories
                 .byDataDimensionType().eq("DISAGGREGATION")
-                .get();
+                .blockingGet();
         assertThat(categories.size(), is(4));
     }
 

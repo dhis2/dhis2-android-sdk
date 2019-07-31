@@ -46,7 +46,7 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
     public void find_all() {
         List<ProgramStageSection> stageSections =
                 d2.programModule().programStageSections
-                        .get();
+                        .blockingGet();
 
         assertThat(stageSections.size(), is(2));
     }
@@ -78,7 +78,7 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
                 d2.programModule().programStageSections
                         .bySortOrder()
                         .eq(1)
-                        .get();
+                        .blockingGet();
 
         assertThat(stageSections.size(), is(1));
     }
@@ -89,7 +89,7 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
                 d2.programModule().programStageSections
                         .byProgramStageUid()
                         .eq("dBwrot7S421")
-                        .get();
+                        .blockingGet();
 
         assertThat(stageSections.size(), is(1));
     }
@@ -100,7 +100,7 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
                 d2.programModule().programStageSections
                         .byDesktopRenderType()
                         .eq("LISTING")
-                        .get();
+                        .blockingGet();
 
         assertThat(stageSections.size(), is(1));
     }
@@ -111,7 +111,7 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
                 d2.programModule().programStageSections
                         .byMobileRenderType()
                         .eq("LISTING")
-                        .get();
+                        .blockingGet();
 
         assertThat(stageSections.size(), is(1));
     }

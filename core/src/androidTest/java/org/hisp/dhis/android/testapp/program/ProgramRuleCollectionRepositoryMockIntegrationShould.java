@@ -46,7 +46,7 @@ public class ProgramRuleCollectionRepositoryMockIntegrationShould extends BaseMo
     public void find_all() {
         List<ProgramRule> rules =
                 d2.programModule().programRules
-                        .get();
+                        .blockingGet();
         
         assertThat(rules.size(), is(3));
     }
@@ -57,7 +57,7 @@ public class ProgramRuleCollectionRepositoryMockIntegrationShould extends BaseMo
                 d2.programModule().programRules
                         .byPriority()
                         .eq(2)
-                        .get();
+                        .blockingGet();
 
         assertThat(rules.size(), is(2));
     }
@@ -68,7 +68,7 @@ public class ProgramRuleCollectionRepositoryMockIntegrationShould extends BaseMo
                 d2.programModule().programRules
                         .byCondition()
                         .eq("#{hemoglobin} < 9")
-                        .get();
+                        .blockingGet();
 
         assertThat(rules.size(), is(1));
     }
@@ -79,7 +79,7 @@ public class ProgramRuleCollectionRepositoryMockIntegrationShould extends BaseMo
                 d2.programModule().programRules
                         .byProgramUid()
                         .eq("lxAQ7Zs9VYR")
-                        .get();
+                        .blockingGet();
 
         assertThat(rules.size(), is(3));
     }
@@ -90,7 +90,7 @@ public class ProgramRuleCollectionRepositoryMockIntegrationShould extends BaseMo
                 d2.programModule().programRules
                         .byProgramStageUid()
                         .eq("dBwrot7S420")
-                        .get();
+                        .blockingGet();
 
         assertThat(rules.size(), is(1));
     }

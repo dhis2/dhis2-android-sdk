@@ -46,7 +46,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
     public void find_all() {
         List<ProgramIndicator> indicators =
                 d2.programModule().programIndicators
-                        .get();
+                        .blockingGet();
 
         assertThat(indicators.size(), is(4));
     }
@@ -57,7 +57,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
                 d2.programModule().programIndicators
                         .byDisplayInForm()
                         .isTrue()
-                        .get();
+                        .blockingGet();
         
         assertThat(indicators.size(), is(1));
     }
@@ -68,7 +68,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
                 d2.programModule().programIndicators
                         .byExpression()
                         .eq("d2:yearsBetween(A{iESIqZ0R0R0},V{event_date})")
-                        .get();
+                        .blockingGet();
 
         assertThat(indicators.size(), is(1));
     }
@@ -79,7 +79,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
                 d2.programModule().programIndicators
                         .byDimensionItem()
                         .eq("rXoaHGAXWy9")
-                        .get();
+                        .blockingGet();
 
         assertThat(indicators.size(), is(1));
     }
@@ -90,7 +90,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
                 d2.programModule().programIndicators
                         .byFilter()
                         .eq("#{edqlbukwRfQ.vANAXwtLwcT} < 11")
-                        .get();
+                        .blockingGet();
 
         assertThat(indicators.size(), is(1));
     }
@@ -101,7 +101,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
                 d2.programModule().programIndicators
                         .byDecimals()
                         .eq(2)
-                        .get();
+                        .blockingGet();
 
         assertThat(indicators.size(), is(1));
     }
@@ -112,7 +112,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
                 d2.programModule().programIndicators
                         .byAggregationType()
                         .eq("AVERAGE")
-                        .get();
+                        .blockingGet();
 
         assertThat(indicators.size(), is(2));
     }
@@ -123,7 +123,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
                 d2.programModule().programIndicators
                         .byProgramUid()
                         .eq("lxAQ7Zs9VYR")
-                        .get();
+                        .blockingGet();
 
         assertThat(indicators.size(), is(4));
     }

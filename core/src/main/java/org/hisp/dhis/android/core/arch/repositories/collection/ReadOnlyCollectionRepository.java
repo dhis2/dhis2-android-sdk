@@ -44,15 +44,15 @@ public interface ReadOnlyCollectionRepository<M extends Model> {
      *
      * @return A Single object emitting a list of elements.
      */
-    Single<List<M>> getAsync();
+    Single<List<M>> get();
 
     /**
      * Get the list of elements. Important: this is blocking method and it should be executed in a
-     * separated thread.
+     * separated thread. Use get when possible.
      *
      * @return List of elements
      */
-    List<M> get();
+    List<M> blockingGet();
 
     /**
      * Handy method to use in conjunction with PagedListAdapter to build

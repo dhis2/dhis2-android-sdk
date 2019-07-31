@@ -46,49 +46,49 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
 
     @Test
     public void find_all() {
-        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits.get();
+        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits.blockingGet();
         assertThat(organisationUnits.size(), is(1));
     }
 
     @Test
     public void filter_by_parent_uid() {
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits
-                .byParentUid().eq("YuQRtpLP10I").get();
+                .byParentUid().eq("YuQRtpLP10I").blockingGet();
         assertThat(organisationUnits.size(), is(1));
     }
 
     @Test
     public void filter_by_path() {
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits
-                .byPath().eq("/ImspTQPwCqd/O6uvpzGd5pu/YuQRtpLP10I/DiszpKrYNg8").get();
+                .byPath().eq("/ImspTQPwCqd/O6uvpzGd5pu/YuQRtpLP10I/DiszpKrYNg8").blockingGet();
         assertThat(organisationUnits.size(), is(1));
     }
 
     @Test
     public void filter_by_opening_date() throws ParseException {
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits
-                .byOpeningDate().eq(BaseIdentifiableObject.parseDate("1970-01-01T00:00:00.000")).get();
+                .byOpeningDate().eq(BaseIdentifiableObject.parseDate("1970-01-01T00:00:00.000")).blockingGet();
         assertThat(organisationUnits.size(), is(1));
     }
 
     @Test
     public void filter_by_closed_date() throws ParseException {
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits
-                .byClosedDate().eq(BaseIdentifiableObject.parseDate("2018-05-22T15:21:48.516")).get();
+                .byClosedDate().eq(BaseIdentifiableObject.parseDate("2018-05-22T15:21:48.516")).blockingGet();
         assertThat(organisationUnits.size(), is(1));
     }
 
     @Test
     public void filter_by_level() {
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits
-                .byLevel().eq(4).get();
+                .byLevel().eq(4).blockingGet();
         assertThat(organisationUnits.size(), is(1));
     }
 
     @Test
     public void filter_by_display_name_path() {
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits
-                .byDisplayNamePath().eq("/Ngelehun CHC").get();
+                .byDisplayNamePath().eq("/Ngelehun CHC").blockingGet();
         assertThat(organisationUnits.size(), is(1));
     }
 
@@ -96,12 +96,12 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     public void filter_by_organisation_unit_scope() {
         List<OrganisationUnit> captureOrganisationUnits = d2.organisationUnitModule().organisationUnits
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-                .get();
+                .blockingGet();
         assertThat(captureOrganisationUnits.size(), is(1));
 
         List<OrganisationUnit> searchOrganisationUnits = d2.organisationUnitModule().organisationUnits
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
-                .get();
+                .blockingGet();
         assertThat(searchOrganisationUnits.size(), is(0));
     }
 
@@ -109,12 +109,12 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     public void filter_by_root_organisation_unit() {
         List<OrganisationUnit> rootOrganisationUnits = d2.organisationUnitModule().organisationUnits
                 .byRootOrganisationUnit(Boolean.TRUE)
-                .get();
+                .blockingGet();
         assertThat(rootOrganisationUnits.size(), is(1));
 
         List<OrganisationUnit> notRootOrganisationUnits = d2.organisationUnitModule().organisationUnits
                 .byRootOrganisationUnit(Boolean.FALSE)
-                .get();
+                .blockingGet();
         assertThat(notRootOrganisationUnits.size(), is(0));
     }
 
@@ -123,7 +123,7 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
         List<OrganisationUnit> rootOrganisationUnits = d2.organisationUnitModule().organisationUnits
                 .byRootOrganisationUnit(Boolean.TRUE)
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-                .get();
+                .blockingGet();
         assertThat(rootOrganisationUnits.size(), is(1));
     }
 
@@ -151,21 +151,21 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void include_programs_as_children_in_collection_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .withAllChildren().get().get(0);
+                .withAllChildren().blockingGet().get(0);
         assertThat(organisationUnit.programs().get(0).name(), is("Antenatal care visit"));
     }
 
     @Test
     public void include_data_sets_as_children_in_collection_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .withAllChildren().get().get(0);
+                .withAllChildren().blockingGet().get(0);
         assertThat(organisationUnit.dataSets().get(0).name(), is("ART monthly summary"));
     }
 
     @Test
     public void include_organisation_unit_groups_as_children_in_collection_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .withAllChildren().get().get(0);
+                .withAllChildren().blockingGet().get(0);
         assertThat(organisationUnit.organisationUnitGroups().get(0).name(), is("CHC"));
     }
 

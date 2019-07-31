@@ -45,7 +45,7 @@ public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void find_all() {
         List<Indicator> indicators = d2.indicatorModule().indicators
-                .get();
+                .blockingGet();
         assertThat(indicators.size(), is(1));
     }
 
@@ -53,7 +53,7 @@ public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseMock
     public void filter_by_annualized() {
         List<Indicator> indicators = d2.indicatorModule().indicators
                 .byAnnualized().isFalse()
-                .get();
+                .blockingGet();
         assertThat(indicators.size(), is(1));
     }
 
@@ -61,7 +61,7 @@ public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseMock
     public void filter_by_indicator_type_url() {
         List<Indicator> indicators = d2.indicatorModule().indicators
                 .byIndicatorTypeUid().eq("bWuNrMHEoZ0")
-                .get();
+                .blockingGet();
         assertThat(indicators.size(), is(1));
     }
 
@@ -69,7 +69,7 @@ public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseMock
     public void filter_by_numerator() {
         List<Indicator> indicators = d2.indicatorModule().indicators
                 .byNumerator().eq("#{fbfJHSPpUQD.pq2XI5kz2BY}+#{fbfJHSPpUQD.PT59n8BQbqM}-#{Jtf34kNZhzP.pq2XI5kz2BY}-#{Jtf34kNZhzP.PT59n8BQbqM}")
-                .get();
+                .blockingGet();
         assertThat(indicators.size(), is(1));
     }
 
@@ -77,7 +77,7 @@ public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseMock
     public void filter_by_numerator_description() {
         List<Indicator> indicators = d2.indicatorModule().indicators
                 .byNumeratorDescription().eq("ANC1-ANC3")
-                .get();
+                .blockingGet();
         assertThat(indicators.size(), is(1));
     }
 
@@ -85,7 +85,7 @@ public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseMock
     public void filter_by_denominator() {
         List<Indicator> indicators = d2.indicatorModule().indicators
                 .byDenominator().eq("#{fbfJHSPpUQD.pq2XI5kz2BY}+#{fbfJHSPpUQD.PT59n8BQbqM}")
-                .get();
+                .blockingGet();
         assertThat(indicators.size(), is(1));
     }
 
@@ -93,7 +93,7 @@ public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseMock
     public void filter_by_denominator_description() {
         List<Indicator> indicators = d2.indicatorModule().indicators
                 .byDenominatorDescription().eq("Total 1st ANC visits")
-                .get();
+                .blockingGet();
         assertThat(indicators.size(), is(1));
     }
 
@@ -101,7 +101,7 @@ public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseMock
     public void filter_by_url() {
         List<Indicator> indicators = d2.indicatorModule().indicators
                 .byUrl().eq("url")
-                .get();
+                .blockingGet();
         assertThat(indicators.size(), is(1));
     }
 }

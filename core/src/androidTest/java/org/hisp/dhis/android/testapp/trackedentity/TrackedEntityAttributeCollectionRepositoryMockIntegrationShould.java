@@ -47,7 +47,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
     public void find_all() {
         List<TrackedEntityAttribute> trackedEntityAttributes =
                 d2.trackedEntityModule().trackedEntityAttributes
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(2));
     }
@@ -57,7 +57,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
         List<TrackedEntityAttribute> trackedEntityAttributes =
                 d2.trackedEntityModule().trackedEntityAttributes
                         .byPattern().eq("RANDOM(XXX######)")
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -67,7 +67,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
         List<TrackedEntityAttribute> trackedEntityAttributes =
                 d2.trackedEntityModule().trackedEntityAttributes
                         .bySortOrderInListNoProgram().eq(0)
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -77,7 +77,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
         List<TrackedEntityAttribute> dataElements =
                 d2.trackedEntityModule().trackedEntityAttributes
                         .byOptionSetUid().eq("VQ2lai3OfVG")
-                        .get();
+                        .blockingGet();
         assertThat(dataElements.size(), is(1));
     }
 
@@ -86,7 +86,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
         List<TrackedEntityAttribute> trackedEntityAttributes =
                 d2.trackedEntityModule().trackedEntityAttributes
                         .byValueType().eq(ValueType.NUMBER)
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -96,7 +96,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
         List<TrackedEntityAttribute> trackedEntityAttributes =
                 d2.trackedEntityModule().trackedEntityAttributes
                         .byExpression().eq("expression")
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -106,7 +106,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
         List<TrackedEntityAttribute> trackedEntityAttributes =
                 d2.trackedEntityModule().trackedEntityAttributes
                         .byProgramScope().isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -116,7 +116,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
         List<TrackedEntityAttribute> trackedEntityAttributes =
                 d2.trackedEntityModule().trackedEntityAttributes
                         .byDisplayInListNoProgram().isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -126,7 +126,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
         List<TrackedEntityAttribute> trackedEntityAttributes =
                 d2.trackedEntityModule().trackedEntityAttributes
                         .byGenerated().isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -136,7 +136,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
         List<TrackedEntityAttribute> trackedEntityAttributes =
                 d2.trackedEntityModule().trackedEntityAttributes
                         .byDisplayOnVisitSchedule().isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -146,7 +146,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
         List<TrackedEntityAttribute> trackedEntityAttributes =
                 d2.trackedEntityModule().trackedEntityAttributes
                         .byOrgUnitScope().isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -156,7 +156,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
         List<TrackedEntityAttribute> trackedEntityAttributes =
                 d2.trackedEntityModule().trackedEntityAttributes
                         .byUnique().isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -166,7 +166,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
         List<TrackedEntityAttribute> trackedEntityAttributes =
                 d2.trackedEntityModule().trackedEntityAttributes
                         .byInherit().isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -176,7 +176,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
         List<TrackedEntityAttribute> trackedEntityAttributes =
                 d2.trackedEntityModule().trackedEntityAttributes
                         .byFormName().eq("formname")
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }

@@ -47,7 +47,7 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
     public void find_all() {
         List<ProgramRuleVariable> ruleVariables =
                 d2.programModule().programRuleVariables
-                        .get();
+                        .blockingGet();
 
         assertThat(ruleVariables.size(), is(2));
     }
@@ -58,7 +58,7 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
                 d2.programModule().programRuleVariables
                         .byUseCodeForOptionSet()
                         .isFalse()
-                        .get();
+                        .blockingGet();
 
         assertThat(ruleVariables.size(), is(1));
     }
@@ -69,7 +69,7 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
                 d2.programModule().programRuleVariables
                         .byProgramUid()
                         .eq("lxAQ7Zs9VYR")
-                        .get();
+                        .blockingGet();
 
         assertThat(ruleVariables.size(), is(2));
     }
@@ -80,7 +80,7 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
                 d2.programModule().programRuleVariables
                         .byProgramStageUid()
                         .eq("dBwrot7S420")
-                        .get();
+                        .blockingGet();
 
         assertThat(ruleVariables.size(), is(1));
     }
@@ -91,7 +91,7 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
                 d2.programModule().programRuleVariables
                         .byDataElementUid()
                         .eq("sWoqcoByYmD")
-                        .get();
+                        .blockingGet();
 
         assertThat(ruleVariables.size(), is(1));
     }
@@ -102,7 +102,7 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
                 d2.programModule().programRuleVariables
                         .byTrackedEntityAttributeUid()
                         .eq("cejWyOfXge6")
-                        .get();
+                        .blockingGet();
 
         assertThat(ruleVariables.size(), is(1));
     }
@@ -113,7 +113,7 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
                 d2.programModule().programRuleVariables
                         .byProgramRuleVariableSourceType()
                         .eq(ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM)
-                        .get();
+                        .blockingGet();
 
         assertThat(ruleVariables.size(), is(2));
     }

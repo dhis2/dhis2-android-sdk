@@ -142,7 +142,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
 
         List<Event> events = eventPostCall.queryDataToSync(
                 d2.eventModule().events.byProgramUid().eq(program.uid())
-                .byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).get());
+                .byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).blockingGet());
 
         assertThat(events.size()).isEqualTo(3);
         assertThat(UidsHelper.getUidsList(events).containsAll(Lists.newArrayList(event1, event2, event3)))

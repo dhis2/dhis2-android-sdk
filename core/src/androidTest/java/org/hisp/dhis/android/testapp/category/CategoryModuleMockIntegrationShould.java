@@ -49,7 +49,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
 
     @Test
     public void allow_access_to_combos_without_children() {
-        List<CategoryCombo> combos = d2.categoryModule().categoryCombos.get();
+        List<CategoryCombo> combos = d2.categoryModule().categoryCombos.blockingGet();
         assertThat(combos.size(), is(2));
         for (CategoryCombo combo : combos) {
             assertThat(combo.categories() == null, is(true));
@@ -59,7 +59,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
 
     @Test
     public void allow_access_to_combos_with_category_option_combos() {
-        List<CategoryCombo> combos = d2.categoryModule().categoryCombos.withAllChildren().get();
+        List<CategoryCombo> combos = d2.categoryModule().categoryCombos.withAllChildren().blockingGet();
         assertThat(combos.size(), is(2));
         for (CategoryCombo combo : combos) {
             assertThat(combo.categoryOptionCombos() == null, is(false));
@@ -68,7 +68,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
 
     @Test
     public void allow_access_to_combos_with_categories() {
-        List<CategoryCombo> combos = d2.categoryModule().categoryCombos.withAllChildren().get();
+        List<CategoryCombo> combos = d2.categoryModule().categoryCombos.withAllChildren().blockingGet();
         assertThat(combos.size(), is(2));
         for (CategoryCombo combo : combos) {
             assertThat(combo.categories() == null, is(false));
@@ -131,7 +131,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
 
     @Test
     public void allow_access_to_categories_without_children() {
-        List<Category> categories = d2.categoryModule().categories.get();
+        List<Category> categories = d2.categoryModule().categories.blockingGet();
         assertThat(categories.size(), is(4));
     }
 
@@ -145,7 +145,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
 
     @Test
     public void allow_access_to_categories_with_category_options() {
-        List<Category> categories = d2.categoryModule().categories.withAllChildren().get();
+        List<Category> categories = d2.categoryModule().categories.withAllChildren().blockingGet();
         assertThat(categories.size(), is(4));
         for (Category category : categories) {
             assertThat(category.categoryOptions() == null, is(false));
@@ -178,13 +178,13 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
 
     @Test
     public void allow_access_to_category_option_combos_without_children() {
-        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos.get();
+        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos.blockingGet();
         assertThat(categoryOptionCombos.size(), is(4));
     }
 
     @Test
     public void allow_access_to_category_option_combos_with_category_options() {
-        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos.withAllChildren().get();
+        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos.withAllChildren().blockingGet();
         assertThat(categoryOptionCombos.size(), is(4));
         for (CategoryOptionCombo categoryOptionCombo : categoryOptionCombos) {
             assertThat(categoryOptionCombo.categoryOptions() == null, is(false));
@@ -220,7 +220,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
 
     @Test
     public void allow_access_to_category_combos_without_children() {
-        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions.get();
+        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions.blockingGet();
         assertThat(categoryOptions.size(), is(8));
     }
 

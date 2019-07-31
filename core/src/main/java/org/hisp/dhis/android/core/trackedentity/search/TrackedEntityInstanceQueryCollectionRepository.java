@@ -141,7 +141,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     @Override
-    public List<TrackedEntityInstance> get() {
+    public List<TrackedEntityInstance> blockingGet() {
         if (scope.mode().equals(RepositoryMode.OFFLINE_ONLY) || scope.mode().equals(RepositoryMode.OFFLINE_FIRST)) {
             String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope.query(), Collections.emptyList(),
                     -1);
@@ -162,13 +162,13 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     @Override
-    public Single<List<TrackedEntityInstance>> getAsync() {
-        return Single.fromCallable(this::get);
+    public Single<List<TrackedEntityInstance>> get() {
+        return Single.fromCallable(this::blockingGet);
     }
 
     @Override
     public int count() {
-        return get().size();
+        return blockingGet().size();
     }
 
     @Override
@@ -181,7 +181,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         return new ReadOnlyObjectRepository<TrackedEntityInstance>() {
             @Override
             public TrackedEntityInstance get() {
-                List<TrackedEntityInstance> list = TrackedEntityInstanceQueryCollectionRepository.this.get();
+                List<TrackedEntityInstance> list = TrackedEntityInstanceQueryCollectionRepository.this.blockingGet();
                 return list.isEmpty() ? null : list.get(0);
             }
 

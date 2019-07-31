@@ -79,14 +79,14 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     @Override
-    public List<M> get() {
+    public List<M> blockingGet() {
         return ChildrenAppenderExecutor.appendInObjectCollection(getWithoutChildren(),
                 childrenAppenders, scope.children());
     }
 
     @Override
-    public Single<List<M>> getAsync() {
-        return Single.fromCallable(this::get);
+    public Single<List<M>> get() {
+        return Single.fromCallable(this::blockingGet);
     }
 
     @Override

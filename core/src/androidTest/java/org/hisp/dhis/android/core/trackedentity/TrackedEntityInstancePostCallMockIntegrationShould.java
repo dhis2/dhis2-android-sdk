@@ -214,7 +214,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         List<TrackedEntityInstance> instances = trackedEntityInstancePostCall.queryDataToSync(
                 d2.trackedEntityModule().trackedEntityInstances.byUid().eq(tei1)
-                .byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).get());
+                .byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).blockingGet());
 
         assertThat(instances.size()).isEqualTo(3);
         assertThat(UidsHelper.getUidsList(instances).containsAll(Lists.newArrayList(tei1, tei2, tei3))).isEqualTo(true);

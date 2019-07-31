@@ -44,14 +44,14 @@ public class OptionCollectionRepositoryMockIntegrationShould extends BaseMockInt
 
     @Test
     public void find_all() {
-        List<Option> options = d2.optionModule().options.get();
+        List<Option> options = d2.optionModule().options.blockingGet();
         assertThat(options.size(), is(3));
     }
 
     @Test
     public void filter_by_sort_order() {
         List<Option> options = d2.optionModule().options
-                .bySortOrder().eq(2).get();
+                .bySortOrder().eq(2).blockingGet();
         assertThat(options.size(), is(1));
         assertThat(options.get(0).uid(), is("egT1YqFWsVk"));
     }
@@ -59,7 +59,7 @@ public class OptionCollectionRepositoryMockIntegrationShould extends BaseMockInt
     @Test
     public void filter_by_optionset_uid() {
         List<Option> options = d2.optionModule().options
-                .byOptionSetUid().eq("VQ2lai3OfVG").get();
+                .byOptionSetUid().eq("VQ2lai3OfVG").blockingGet();
         assertThat(options.size(), is(2));
     }
 

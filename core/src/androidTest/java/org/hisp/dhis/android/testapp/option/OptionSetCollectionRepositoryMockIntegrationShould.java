@@ -45,21 +45,21 @@ public class OptionSetCollectionRepositoryMockIntegrationShould extends BaseMock
 
     @Test
     public void find_all() {
-        List<OptionSet> optionSets = d2.optionModule().optionSets.get();
+        List<OptionSet> optionSets = d2.optionModule().optionSets.blockingGet();
         assertThat(optionSets.size(), is(2));
     }
 
     @Test
     public void filter_by_version() {
         List<OptionSet> optionSets = d2.optionModule().optionSets
-                .byVersion().eq(1).get();
+                .byVersion().eq(1).blockingGet();
         assertThat(optionSets.size(), is(1));
     }
 
     @Test
     public void filter_by_value_type() {
         List<OptionSet> optionSets = d2.optionModule().optionSets
-                .byValueType().eq(ValueType.TEXT).get();
+                .byValueType().eq(ValueType.TEXT).blockingGet();
         assertThat(optionSets.size(), is(1));
     }
 

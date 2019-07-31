@@ -43,7 +43,7 @@ public class ProgramModuleMockIntegrationShould extends BaseMockIntegrationTestF
 
     @Test
     public void allow_access_to_all_programs_without_children() {
-        List<Program> programs = d2.programModule().programs.get();
+        List<Program> programs = d2.programModule().programs.blockingGet();
         assertThat(programs.size(), is(1));
         for (Program program : programs) {
             assertThat(program.programIndicators() == null, is(true));

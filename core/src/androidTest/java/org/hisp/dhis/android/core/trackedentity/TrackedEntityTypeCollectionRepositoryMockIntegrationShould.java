@@ -45,7 +45,7 @@ public class TrackedEntityTypeCollectionRepositoryMockIntegrationShould extends 
     @Test
     public void allow_access_to_all_tracked_entity_types_without_children() {
         List<TrackedEntityType> trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes
-                        .get();
+                        .blockingGet();
         assertThat(trackedEntityTypes.size(), is(1));
     }
 
@@ -68,7 +68,7 @@ public class TrackedEntityTypeCollectionRepositoryMockIntegrationShould extends 
     public void filter_by_feature_type() {
         List<TrackedEntityType> trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes
                 .byFeatureType().eq(FeatureType.NONE)
-                .get();
+                .blockingGet();
         assertThat(trackedEntityTypes.size(), is(1));
     }
 }

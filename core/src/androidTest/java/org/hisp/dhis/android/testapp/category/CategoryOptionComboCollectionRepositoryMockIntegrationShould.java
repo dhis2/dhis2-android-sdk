@@ -47,7 +47,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
     @Test
     public void find_all() {
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
-                .withCategoryOptions().get();
+                .withCategoryOptions().blockingGet();
         assertThat(categoryOptionCombos.size(), is(4));
     }
 
@@ -55,7 +55,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
     public void filter_by_category_combo_A() {
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
                 .byCategoryComboUid().eq("m2jTvAj5kkm")
-                .get();
+                .blockingGet();
         assertThat(categoryOptionCombos.size(), is(2));
     }
 
@@ -63,7 +63,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
     public void filter_by_category_combo_B() {
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
                 .byCategoryComboUid().eq("p0KPaWEg3cf")
-                .get();
+                .blockingGet();
         assertThat(categoryOptionCombos.size(), is(2));
     }
 
@@ -71,7 +71,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
     public void filter_by_category_option() {
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
                 .byCategoryOptions(Lists.newArrayList("as6ygGvUGNg"))
-                .get();
+                .blockingGet();
         assertThat(categoryOptionCombos.size(), is(1));
     }
 
@@ -79,7 +79,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
     public void filter_by_category_option_list() {
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
                 .byCategoryOptions(Lists.newArrayList("Fp4gVHbRvEV", "uZUnebiT5DI"))
-                .get();
+                .blockingGet();
         assertThat(categoryOptionCombos.size(), is(1));
     }
 
@@ -87,7 +87,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
     public void not_find_combos_when_filter_by_less_options_than_they_have() {
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
                 .byCategoryOptions(Lists.newArrayList("Fp4gVHbRvEV"))
-                .get();
+                .blockingGet();
         assertThat(categoryOptionCombos.size(), is(0));
     }
 
@@ -95,7 +95,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
     public void not_find_combos_when_filter_by_more_options_than_they_have() {
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
                 .byCategoryOptions(Lists.newArrayList("as6ygGvUGNg", "Fp4gVHbRvEV", "uZUnebiT5DI"))
-                .get();
+                .blockingGet();
         assertThat(categoryOptionCombos.size(), is(0));
     }
 
@@ -103,7 +103,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
     public void not_find_combos_when_no_matching_options() {
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
                 .byCategoryOptions(Lists.newArrayList("as6ygGvUGNg", "Fp4gVHbRvEV"))
-                .get();
+                .blockingGet();
         assertThat(categoryOptionCombos.size(), is(0));
     }
 
@@ -117,7 +117,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
     @Test
     public void include_category_options_as_children_in_collection_repository_when_all_selected() {
         CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos
-                .withAllChildren().get().get(0);
+                .withAllChildren().blockingGet().get(0);
         assertThat(categoryOptionCombo.categoryOptions().get(0).name(), is("At PHU"));
     }
 

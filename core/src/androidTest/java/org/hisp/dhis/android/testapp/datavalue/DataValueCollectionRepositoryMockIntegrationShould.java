@@ -50,7 +50,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     public void find_all() {
         List<DataValue> dataValues =
                 d2.dataValueModule().dataValues
-                        .get();
+                        .blockingGet();
 
         assertThat(dataValues.size(), is(4));
     }
@@ -61,7 +61,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                 d2.dataValueModule().dataValues
                         .byDataElementUid()
                         .eq("g9eOBujte1U")
-                        .get();
+                        .blockingGet();
 
         assertThat(dataValues.size(), is(4));
     }
@@ -72,7 +72,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                 d2.dataValueModule().dataValues
                         .byPeriod()
                         .eq("2018")
-                        .get();
+                        .blockingGet();
 
         assertThat(dataValues.size(), is(1));
     }
@@ -83,7 +83,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                 d2.dataValueModule().dataValues
                         .byOrganisationUnitUid()
                         .eq("DiszpKrYNg8")
-                        .get();
+                        .blockingGet();
 
         assertThat(dataValues.size(), is(4));
     }
@@ -94,7 +94,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                 d2.dataValueModule().dataValues
                         .byCategoryOptionComboUid()
                         .eq("Gmbgme7z9BF")
-                        .get();
+                        .blockingGet();
 
         assertThat(dataValues.size(), is(4));
     }
@@ -105,7 +105,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                 d2.dataValueModule().dataValues
                         .byAttributeOptionComboUid()
                         .eq("bRowv6yZOF2")
-                        .get();
+                        .blockingGet();
 
         assertThat(dataValues.size(), is(4));
     }
@@ -116,7 +116,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                 d2.dataValueModule().dataValues
                         .byValue()
                         .eq("11")
-                        .get();
+                        .blockingGet();
 
         assertThat(dataValues.size(), is(1));
     }
@@ -127,7 +127,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                 d2.dataValueModule().dataValues
                         .byStoredBy()
                         .eq("android")
-                        .get();
+                        .blockingGet();
 
         assertThat(dataValues.size(), is(2));
     }
@@ -138,7 +138,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                 d2.dataValueModule().dataValues
                         .byCreated()
                         .eq(BaseIdentifiableObject.DATE_FORMAT.parse("2010-01-11T00:00:00.000+0000"))
-                        .get();
+                        .blockingGet();
 
         assertThat(dataValues.size(), is(1));
     }
@@ -149,7 +149,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                 d2.dataValueModule().dataValues
                         .byLastUpdated()
                         .eq(BaseIdentifiableObject.DATE_FORMAT.parse("2011-01-11T00:00:00.000+0000"))
-                        .get();
+                        .blockingGet();
 
         assertThat(dataValues.size(), is(1));
     }
@@ -160,7 +160,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                 d2.dataValueModule().dataValues
                         .byComment()
                         .eq("Relevant comment")
-                        .get();
+                        .blockingGet();
 
         assertThat(dataValues.size(), is(1));
     }
@@ -171,7 +171,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                 d2.dataValueModule().dataValues
                         .byFollowUp()
                         .isFalse()
-                        .get();
+                        .blockingGet();
 
         assertThat(dataValues.size(), is(3));
     }
@@ -181,7 +181,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
         List<DataValue> dataValues =
                 d2.dataValueModule().dataValues
                         .byState().eq(State.SYNCED)
-                        .get();
+                        .blockingGet();
 
         assertThat(dataValues.size(), is(4));
     }

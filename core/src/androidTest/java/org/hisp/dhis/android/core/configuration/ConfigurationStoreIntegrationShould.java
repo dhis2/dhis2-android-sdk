@@ -67,7 +67,7 @@ public class ConfigurationStoreIntegrationShould {
 
     @After
     public void tearDown() {
-        // DatabaseAdapterFactory.get().database().close();
+        // DatabaseAdapterFactory.blockingGet().database().close();
     }
 
     @Test

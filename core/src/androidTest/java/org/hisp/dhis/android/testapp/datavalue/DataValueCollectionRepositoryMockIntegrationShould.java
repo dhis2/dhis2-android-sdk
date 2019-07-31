@@ -191,7 +191,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
         DataValueObjectRepository objectRepository = d2.dataValueModule().dataValues
                 .value("2018", "DiszpKrYNg8", "g9eOBujte1U",
                         "Gmbgme7z9BF", "bRowv6yZOF2");
-        assertThat(objectRepository.exists(), is(Boolean.TRUE));
+        assertThat(objectRepository.blockingExists(), is(Boolean.TRUE));
         assertThat(objectRepository.blockingGet().value(), is("10"));
     }
 }

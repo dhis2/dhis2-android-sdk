@@ -34,5 +34,5 @@ import io.reactivex.Single;
 public interface ReadOnlyObjectRepository<M extends Model> {
     M blockingGet();
     Single<M> get();
-    boolean exists();
+    boolean blockingExists();
 }

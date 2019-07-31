@@ -93,7 +93,7 @@ public final class DataValueObjectRepository
 
     private DataValue.Builder setBuilder() {
         Date date = new Date();
-        if (exists()) {
+        if (blockingExists()) {
             DataValue dataValue = getWithoutChildren();
             State state = dataValue.state() == State.TO_POST ? State.TO_POST : State.TO_UPDATE;
             return dataValue.toBuilder()

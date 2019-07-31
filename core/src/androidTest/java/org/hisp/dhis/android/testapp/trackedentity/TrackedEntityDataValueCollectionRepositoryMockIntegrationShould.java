@@ -114,7 +114,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
     public void return_tracked_entity_data_value_object_repository() {
         TrackedEntityDataValueObjectRepository objectRepository = d2.trackedEntityModule().trackedEntityDataValues
                 .value("single1", "ebaJjqltK5N");
-        assertThat(objectRepository.exists(), is(Boolean.TRUE));
+        assertThat(objectRepository.blockingExists(), is(Boolean.TRUE));
         assertThat(objectRepository.blockingGet().value(), is("1"));
     }
 }

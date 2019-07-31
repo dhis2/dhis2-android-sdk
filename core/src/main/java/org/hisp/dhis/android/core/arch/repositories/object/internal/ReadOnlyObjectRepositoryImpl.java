@@ -66,7 +66,7 @@ public abstract class ReadOnlyObjectRepositoryImpl<M extends Model, R extends Re
     }
 
     @Override
-    public boolean exists() {
+    public boolean blockingExists() {
         return getWithoutChildren() != null;
     }
 

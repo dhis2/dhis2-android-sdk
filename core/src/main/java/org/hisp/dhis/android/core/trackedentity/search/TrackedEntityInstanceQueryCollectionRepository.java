@@ -201,7 +201,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
             }
 
             @Override
-            public boolean exists() {
+            public boolean blockingExists() {
                 return blockingGet() != null;
             }
         };

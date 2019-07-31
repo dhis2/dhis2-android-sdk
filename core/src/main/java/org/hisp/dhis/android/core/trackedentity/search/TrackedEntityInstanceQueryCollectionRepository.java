@@ -172,7 +172,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     @Override
-    public boolean isEmpty() {
+    public boolean blockingIsEmpty() {
         return blockingCount() == 0;
     }
 

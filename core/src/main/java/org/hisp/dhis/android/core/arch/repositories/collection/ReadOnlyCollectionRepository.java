@@ -74,10 +74,11 @@ public interface ReadOnlyCollectionRepository<M extends Model> {
     /**
      * Check if selection of objects with applied filters is empty.
      * Important: this is a blocking method and it should be executed in a separated thread.
+     * Use isEmpty when possible.
      *
      * @return If selection is empty
      */
-    boolean isEmpty();
+    boolean blockingIsEmpty();
 
     /**
      * Get a {@link ReadOnlyObjectRepository} pointing to the first element in the list.

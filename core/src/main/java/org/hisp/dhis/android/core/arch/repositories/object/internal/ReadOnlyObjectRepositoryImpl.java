@@ -61,7 +61,7 @@ public abstract class ReadOnlyObjectRepositoryImpl<M extends Model, R extends Re
     }
 
     @Override
-    public final Single<M> getAsync() {
+    public final Single<M> get() {
         return Single.fromCallable(this::blockingGet);
     }
 

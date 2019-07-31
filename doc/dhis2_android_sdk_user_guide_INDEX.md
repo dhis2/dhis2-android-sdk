@@ -91,7 +91,7 @@ For example, the same query using RxJava and AsyncTask:
 d2.programModule().programs
     .subscribeOn(Schedulers.io())
     .observeOn(AndroidSchedulers.mainThread())
-    .getAsync()
+    .get()
     .subscribe(programs -> {}); //List<Program>
 ```
 

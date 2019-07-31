@@ -33,6 +33,6 @@ import io.reactivex.Single;
 
 public interface ReadOnlyObjectRepository<M extends Model> {
     M blockingGet();
-    Single<M> getAsync();
+    Single<M> get();
     boolean exists();
 }

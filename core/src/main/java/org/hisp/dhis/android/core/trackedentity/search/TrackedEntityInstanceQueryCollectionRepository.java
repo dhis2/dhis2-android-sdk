@@ -196,7 +196,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
             }
 
             @Override
-            public Single<TrackedEntityInstance> getAsync() {
+            public Single<TrackedEntityInstance> get() {
                 return Single.fromCallable(this::blockingGet);
             }
 

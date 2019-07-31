@@ -70,6 +70,15 @@ public interface ReadOnlyCollectionRepository<M extends Model> {
      * @return Element count
      */
 
+    Single<Integer> count();
+
+    /**
+     * Get the count of elements. Important: this is a blocking method and it should be executed in
+     * a separated thread.
+     *
+     * @return Element count
+     */
+
     int blockingCount();
     /**
      * Check if selection of objects with applied filters is empty.

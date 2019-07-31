@@ -106,6 +106,11 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     @Override
+    public Single<Integer> count() {
+        return Single.fromCallable(this::blockingCount);
+    }
+
+    @Override
     public int blockingCount() {
         return store.countWhere(getWhereClause());
     }

@@ -167,6 +167,11 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     @Override
+    public Single<Integer> count() {
+        return Single.fromCallable(this::blockingCount);
+    }
+
+    @Override
     public int blockingCount() {
         return blockingGet().size();
     }

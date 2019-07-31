@@ -69,7 +69,7 @@ public class CategoryCollectionRepositoryMockIntegrationShould extends BaseMockI
         Category category = d2.categoryModule().categories
                 .withCategoryOptions()
                 .uid("vGs6omsRekv")
-                .get();
+                .blockingGet();
         assertThat(category.categoryOptions().size(), is(1));
     }
 }

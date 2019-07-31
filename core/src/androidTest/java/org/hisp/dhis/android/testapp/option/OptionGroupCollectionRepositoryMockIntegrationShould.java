@@ -67,7 +67,7 @@ public class OptionGroupCollectionRepositoryMockIntegrationShould extends BaseMo
         OptionGroup optionGroup =
                 d2.optionModule().optionGroups
                         .withOptions()
-                        .one().get();
+                        .one().blockingGet();
 
         assertThat(optionGroup.options().size(), is(2));
         assertThat(optionGroup.options().get(0).uid(), is("Y1ILwhy5VDY"));

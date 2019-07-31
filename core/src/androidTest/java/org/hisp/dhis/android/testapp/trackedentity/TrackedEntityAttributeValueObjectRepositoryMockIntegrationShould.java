@@ -49,7 +49,7 @@ public class TrackedEntityAttributeValueObjectRepositoryMockIntegrationShould
         TrackedEntityAttributeValueObjectRepository repository = objectRepository();
 
         repository.set(value);
-        assertThat(repository.get().value(), is(value));
+        assertThat(repository.blockingGet().value(), is(value));
 
         repository.delete();
     }

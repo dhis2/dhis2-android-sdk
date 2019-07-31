@@ -53,7 +53,7 @@ public class ProgramModuleMockIntegrationShould extends BaseMockIntegrationTestF
 
     @Test
     public void allow_access_to_one_program_set_without_children() {
-        Program program = d2.programModule().programs.uid("lxAQ7Zs9VYR").get();
+        Program program = d2.programModule().programs.uid("lxAQ7Zs9VYR").blockingGet();
         assertThat(program.uid(), is("lxAQ7Zs9VYR"));
         assertThat(program.name(), is("Antenatal care visit"));
         assertThat(program.programIndicators() == null, is(true));

@@ -54,7 +54,7 @@ public class TrackedEntityInstanceObjectRepositoryMockIntegrationShould extends 
         TrackedEntityInstanceObjectRepository repository = objectRepository();
 
         repository.setOrganisationUnitUid(orgUnitUid);
-        assertThat(repository.get().organisationUnit(), is(orgUnitUid));
+        assertThat(repository.blockingGet().organisationUnit(), is(orgUnitUid));
 
         repository.delete();
         OrganisationUnitStore.create(databaseAdapter).delete(orgUnitUid);
@@ -83,7 +83,7 @@ public class TrackedEntityInstanceObjectRepositoryMockIntegrationShould extends 
         TrackedEntityInstanceObjectRepository repository = objectRepository();
 
         repository.setGeometry(geometry);
-        assertThat(repository.get().geometry(), is(geometry));
+        assertThat(repository.blockingGet().geometry(), is(geometry));
 
         repository.delete();
     }

@@ -100,7 +100,7 @@ d2.programModule().programs
 ```java
 new AsyncTask<Void, Void, List<Program>>() {
     protected List<Program> doInBackground() {
-        return d2.programModule().programs.getAsync().blockingGet();
+        return d2.programModule().programs.blockingGet();
     }
     
     protected void onPostExecute(List<Program> programs) {
@@ -591,7 +591,7 @@ For example, read the list of constants using repositories and interacting direc
 
 ```java
 // Using repositories
-d2.constantModule().constants.get() // List<Constant>
+d2.constantModule().constants.get() // Single<List<Constant>>
 
 // Direct database interaction
 String query = "SELECT * FROM " + ConstantTableInfo.TABLE_INFO.name();

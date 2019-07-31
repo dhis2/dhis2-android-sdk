@@ -231,7 +231,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         OrganisationUnit orgUnit = OrganisationUnitStore.create(databaseAdapter).selectFirst();
         TrackedEntityType teiType = TrackedEntityTypeStore.create(databaseAdapter).selectFirst();
-        Program program = d2.programModule().programs.one().get();
+        Program program = d2.programModule().programs.one().blockingGet();
         ProgramStage programStage = ProgramStageStore.create(databaseAdapter).selectFirst();
 
         TrackedEntityDataValue dataValue1 = TrackedEntityDataValueSamples.get().toBuilder().event(event1Id).build();

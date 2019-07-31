@@ -62,7 +62,7 @@ public class LegendSetCollectionRepositoryMockIntegrationShould extends BaseMock
         LegendSet legendSet = d2.legendSetModule().legendSets
                 .withLegends()
                 .one()
-                .get();
+                .blockingGet();
         assertThat(legendSet.legends().size(), is(2));
     }
 }

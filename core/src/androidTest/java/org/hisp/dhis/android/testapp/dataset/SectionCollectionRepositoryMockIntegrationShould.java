@@ -92,7 +92,7 @@ public class SectionCollectionRepositoryMockIntegrationShould extends BaseMockIn
     @Test
     public void return_greyed_fields_as_children() {
         Section section = d2.dataSetModule().sections
-                .withGreyedFields().one().get();
+                .withGreyedFields().one().blockingGet();
         assertThat(section.greyedFields().size(), is(1));
         assertThat(section.greyedFields().get(0).uid(), is("ca8lfO062zg.Prlt0C1RF0s"));
     }
@@ -100,7 +100,7 @@ public class SectionCollectionRepositoryMockIntegrationShould extends BaseMockIn
     @Test
     public void return_data_element_as_children() {
         Section section = d2.dataSetModule().sections
-                .withDataElements().one().get();
+                .withDataElements().one().blockingGet();
         assertThat(section.dataElements().size(), is(1));
         assertThat(section.dataElements().get(0).uid(), is("g9eOBujte1U"));
         assertThat(section.dataElements().get(0).code(), is("DE_2005735"));

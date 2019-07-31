@@ -56,7 +56,7 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
 
     @Test
     public void allow_access_to_one_tei_without_children() {
-        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances.uid("nWrB0TfWlvh").get();
+        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances.uid("nWrB0TfWlvh").blockingGet();
         assertThat(tei.uid(), is("nWrB0TfWlvh"));
         assertThat(tei.organisationUnit(), is("DiszpKrYNg8"));
         assertThat(tei.trackedEntityAttributeValues() == null, is(true));
@@ -65,7 +65,7 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
     @Test
     public void include_enrollments_as_children() {
         TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances
-                .withEnrollments().uid("nWrB0TfWlvh").get();
+                .withEnrollments().uid("nWrB0TfWlvh").blockingGet();
         assertThat(tei.enrollments().size(), is(1));
         assertThat(tei.enrollments().get(0).uid(), is("enroll1"));
     }
@@ -73,7 +73,7 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
     @Test
     public void include_tracked_entity_attribute_values_as_children() {
         TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances
-                .withTrackedEntityAttributeValues().uid("nWrB0TfWlvh").get();
+                .withTrackedEntityAttributeValues().uid("nWrB0TfWlvh").blockingGet();
         assertThat(tei.trackedEntityAttributeValues().size(), is(1));
         assertThat(tei.trackedEntityAttributeValues().get(0).trackedEntityAttribute(), is("lZGmxYbs97q"));
         assertThat(tei.trackedEntityAttributeValues().get(0).value(), is("4081507"));
@@ -82,7 +82,7 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
     @Test
     public void include_relationships_as_children() {
         TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances
-                .withRelationships().uid("nWrB0TfWlvh").get();
+                .withRelationships().uid("nWrB0TfWlvh").blockingGet();
         assertThat(tei.relationships().size(), is(2));
         assertThat(tei.relationships().get(0).uid(), is("AJOytZW7OaI"));
     }
@@ -90,7 +90,7 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
     @Test
     public void include_relationship_items_in_relationships_as_children() {
         TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances
-                .withRelationships().uid("nWrB0TfWlvh").get();
+                .withRelationships().uid("nWrB0TfWlvh").blockingGet();
         assertThat(tei.relationships().size(), is(2));
         assertThat(tei.relationships().get(0).from().elementUid(), is("nWrB0TfWlvh"));
         assertThat(tei.relationships().get(0).to().elementUid(), is("nWrB0TfWlvh"));
@@ -107,7 +107,7 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
         List<TrackedEntityInstance> trackedEntityInstances2 = d2.trackedEntityModule().trackedEntityInstances.blockingGet();
         assertThat(trackedEntityInstances2.size(), is(3));
 
-        TrackedEntityInstance trackedEntityInstance = d2.trackedEntityModule().trackedEntityInstances.uid(teiUid).get();
+        TrackedEntityInstance trackedEntityInstance = d2.trackedEntityModule().trackedEntityInstances.uid(teiUid).blockingGet();
         assertThat(trackedEntityInstance.uid(), is(teiUid));
 
         d2.trackedEntityModule().trackedEntityInstances.uid(teiUid).delete();

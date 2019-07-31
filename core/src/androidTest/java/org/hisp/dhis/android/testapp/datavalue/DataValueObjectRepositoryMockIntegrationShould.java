@@ -50,7 +50,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         DataValueObjectRepository repository = objectRepository();
 
         repository.set(value);
-        assertThat(repository.get().value(), is(value));
+        assertThat(repository.blockingGet().value(), is(value));
 
         repository.delete();
     }
@@ -62,7 +62,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         DataValueObjectRepository repository = objectRepository();
 
         repository.setFollowUp(followUp);
-        assertThat(repository.get().followUp(), is(followUp));
+        assertThat(repository.blockingGet().followUp(), is(followUp));
 
         repository.delete();
     }
@@ -74,7 +74,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         DataValueObjectRepository repository = objectRepository();
 
         repository.setComment(comment);
-        assertThat(repository.get().comment(), is(comment));
+        assertThat(repository.blockingGet().comment(), is(comment));
 
         repository.delete();
     }
@@ -85,7 +85,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
 
         repository.set("value");
         assertThat(repository.exists(), is(Boolean.TRUE));
-        assertThat(repository.get().state(), is(State.TO_POST));
+        assertThat(repository.blockingGet().state(), is(State.TO_POST));
         repository.delete();
         assertThat(repository.exists(), is(Boolean.FALSE));
     }
@@ -95,12 +95,12 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         DataValueObjectRepository repository = objectRepository();
 
         repository.set("value");
-        DataValueStore.create(databaseAdapter).setState(repository.get(), State.ERROR);
+        DataValueStore.create(databaseAdapter).setState(repository.blockingGet(), State.ERROR);
         assertThat(repository.exists(), is(Boolean.TRUE));
-        assertThat(repository.get().state(), is(State.ERROR));
+        assertThat(repository.blockingGet().state(), is(State.ERROR));
         repository.delete();
         assertThat(repository.exists(), is(Boolean.TRUE));
-        assertThat(repository.get().state(), is(State.TO_DELETE));
+        assertThat(repository.blockingGet().state(), is(State.TO_DELETE));
     }
 
     @Test

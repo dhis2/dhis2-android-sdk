@@ -130,21 +130,21 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void include_programs_as_children() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .withPrograms().one().get();
+                .withPrograms().one().blockingGet();
         assertThat(organisationUnit.programs().get(0).name(), is("Antenatal care visit"));
     }
 
     @Test
     public void include_data_sets_as_children() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .withDataSets().one().get();
+                .withDataSets().one().blockingGet();
         assertThat(organisationUnit.dataSets().get(0).name(), is("ART monthly summary"));
     }
 
     @Test
     public void include_organisation_unit_groups_as_children() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .withOrganisationUnitGroups().one().get();
+                .withOrganisationUnitGroups().one().blockingGet();
         assertThat(organisationUnit.organisationUnitGroups().get(0).name(), is("CHC"));
     }
 
@@ -172,21 +172,21 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void include_programs_as_children_in_object_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .one().withAllChildren().get();
+                .one().withAllChildren().blockingGet();
         assertThat(organisationUnit.programs().get(0).name(), is("Antenatal care visit"));
     }
 
     @Test
     public void include_data_sets_as_children_in_object_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .one().withAllChildren().get();
+                .one().withAllChildren().blockingGet();
         assertThat(organisationUnit.dataSets().get(0).name(), is("ART monthly summary"));
     }
 
     @Test
     public void include_organisation_unit_groups_as_children_in_object_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .one().withAllChildren().get();
+                .one().withAllChildren().blockingGet();
         assertThat(organisationUnit.organisationUnitGroups().get(0).name(), is("CHC"));
     }
 }

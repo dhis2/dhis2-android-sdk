@@ -66,7 +66,7 @@ public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould exten
     public void get_relationship_1_from_object_repository_without_children() {
         ReadOnlyOneObjectRepositoryFinalImpl<RelationshipType> type1Repository
                 = relationshipTypeCollectionRepository.uid(RELATIONSHIP_TYPE_UID_1);
-        RelationshipType typeFromRepository = type1Repository.get();
+        RelationshipType typeFromRepository = type1Repository.blockingGet();
         assertTypesWithoutConstraints(typeFromRepository, RELATIONSHIP_TYPE_1);
     }
 
@@ -74,7 +74,7 @@ public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould exten
     public void get_relationship_2_from_object_repository_without_children() {
         ReadOnlyOneObjectRepositoryFinalImpl<RelationshipType> type1Repository
                 = relationshipTypeCollectionRepository.uid(RELATIONSHIP_TYPE_UID_2);
-        RelationshipType typeFromRepository = type1Repository.get();
+        RelationshipType typeFromRepository = type1Repository.blockingGet();
         assertTypesWithoutConstraints(typeFromRepository, RELATIONSHIP_TYPE_2);
     }
 
@@ -82,7 +82,7 @@ public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould exten
     public void get_relationship_1_from_object_repository_with_children() {
         ReadOnlyOneObjectRepositoryFinalImpl<RelationshipType> type1Repository
                 = relationshipTypeCollectionRepository.uid(RELATIONSHIP_TYPE_UID_1);
-        RelationshipType typeFromRepository = type1Repository.withAllChildren().get();
+        RelationshipType typeFromRepository = type1Repository.withAllChildren().blockingGet();
         assertThat(typeFromRepository).isEqualTo(RELATIONSHIP_TYPE_1);
     }
 
@@ -90,7 +90,7 @@ public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould exten
     public void get_relationship_2_from_object_repository_with_children() {
         ReadOnlyOneObjectRepositoryFinalImpl<RelationshipType> type1Repository
                 = relationshipTypeCollectionRepository.uid(RELATIONSHIP_TYPE_UID_2);
-        RelationshipType typeFromRepository = type1Repository.withAllChildren().get();
+        RelationshipType typeFromRepository = type1Repository.withAllChildren().blockingGet();
         assertThat(typeFromRepository).isEqualTo(RELATIONSHIP_TYPE_2);
     }
 }

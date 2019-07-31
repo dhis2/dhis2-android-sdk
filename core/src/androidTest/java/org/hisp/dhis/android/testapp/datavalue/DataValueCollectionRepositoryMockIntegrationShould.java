@@ -192,6 +192,6 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                 .value("2018", "DiszpKrYNg8", "g9eOBujte1U",
                         "Gmbgme7z9BF", "bRowv6yZOF2");
         assertThat(objectRepository.exists(), is(Boolean.TRUE));
-        assertThat(objectRepository.get().value(), is("10"));
+        assertThat(objectRepository.blockingGet().value(), is("10"));
     }
 }

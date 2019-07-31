@@ -201,7 +201,7 @@ public final class ExpressionFunctions {
     /*
     public static Integer count(String variableName) {
         ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap()
-                .get(variableName);
+                .blockingGet(variableName);
         Integer count = 0;
         if(programRuleVariable != null) {
             if(programRuleVariable.isHasValue()) {
@@ -220,7 +220,7 @@ public final class ExpressionFunctions {
 
     public static Integer countIfZeroPos(String variableName) {
         ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap()
-            .get(variableName);
+            .blockingGet(variableName);
 
         Integer count = 0;
 
@@ -228,7 +228,7 @@ public final class ExpressionFunctions {
             if( programRuleVariable.isHasValue() ) {
                 if(programRuleVariable.getAllValues() != null && programRuleVariable.getAllValues().size() > 0) {
                     for(int i = 0; i < programRuleVariable.getAllValues().size(); i++) {
-                        Double value = getVariableValue(programRuleVariable, programRuleVariable.getAllValues().get(i));
+                        Double value = getVariableValue(programRuleVariable, programRuleVariable.getAllValues().blockingGet(i));
                         if(value != null && value >= 0.0) {
                             count++;
                         }
@@ -249,7 +249,7 @@ public final class ExpressionFunctions {
 
     public static Integer countIfValue(String variableName, String textToCompare) {
         ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap()
-            .get(variableName);
+            .blockingGet(variableName);
 
         Integer count = 0;
         if(programRuleVariable != null) {
@@ -257,7 +257,7 @@ public final class ExpressionFunctions {
             if( programRuleVariable.isHasValue() ) {
                 if( programRuleVariable.getAllValues() != null ) {
                     for(int i = 0; i < programRuleVariable.getAllValues().size(); i++) {
-                        if(textToCompare.equals(programRuleVariable.getAllValues().get(i))) {
+                        if(textToCompare.equals(programRuleVariable.getAllValues().blockingGet(i))) {
                             count++;
                         }
                     }
@@ -286,7 +286,7 @@ public final class ExpressionFunctions {
     /*
     public static Boolean hasValue(String variableName) {
         ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap()
-            .get(variableName);
+            .blockingGet(variableName);
         boolean valueFound = false;
         if(programRuleVariable != null) {
             if(programRuleVariable.isHasValue()){
@@ -298,7 +298,7 @@ public final class ExpressionFunctions {
 
     public static String lastEventDate(String variableName) {
         ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap()
-            .get(variableName);
+            .blockingGet(variableName);
         String valueFound = "";
         if(programRuleVariable != null) {
             if(programRuleVariable.getVariableEventDate() != null) {
@@ -361,11 +361,11 @@ public final class ExpressionFunctions {
     }
 
     /**
-     * Split a string given a separator and get the nth item.
+     * Split a string given a separator and blockingGet the nth item.
      *
      * @param inputString input value.
      * @param splitString separator value.
-     * @param fieldIndex item index to get from the split.
+     * @param fieldIndex item index to blockingGet from the split.
      * @return the field after split.
      */
     public static String split(String inputString, String splitString, int fieldIndex) {

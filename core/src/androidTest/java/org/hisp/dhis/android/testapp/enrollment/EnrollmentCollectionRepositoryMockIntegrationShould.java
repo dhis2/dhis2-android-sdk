@@ -63,7 +63,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
 
     @Test
     public void allow_access_to_one_enrollment_without_children() {
-        Enrollment enrollment = d2.enrollmentModule().enrollments.uid("enroll1").get();
+        Enrollment enrollment = d2.enrollmentModule().enrollments.uid("enroll1").blockingGet();
         assertThat(enrollment.uid(), is("enroll1"));
         assertThat(enrollment.program(), is("lxAQ7Zs9VYR"));
         assertThat(enrollment.events() == null, is(true));
@@ -72,9 +72,9 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     @Test
     public void include_events_as_children() {
         Enrollment enrollment1 = d2.enrollmentModule().enrollments
-                .withEvents().uid("enroll1").get();
+                .withEvents().uid("enroll1").blockingGet();
         Enrollment enrollment2 = d2.enrollmentModule().enrollments
-                .withEvents().uid("enroll2").get();
+                .withEvents().uid("enroll2").blockingGet();
         assertThat(enrollment1.events().size(), is(1));
         assertThat(enrollment2.events().size(), is(1));
     }
@@ -82,9 +82,9 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     @Test
     public void include_notes_as_children() {
         Enrollment enrollment1 = d2.enrollmentModule().enrollments
-                .withNotes().uid("enroll1").get();
+                .withNotes().uid("enroll1").blockingGet();
         Enrollment enrollment2 = d2.enrollmentModule().enrollments
-                .withNotes().uid("enroll2").get();
+                .withNotes().uid("enroll2").blockingGet();
         assertThat(enrollment1.notes().size(), is(2));
         assertThat(enrollment2.notes().size(), is(2));
     }
@@ -93,7 +93,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     public void filter_by_uid() {
         Enrollment enrollment = d2.enrollmentModule().enrollments
                 .byUid().eq("enroll1")
-                .one().get();
+                .one().blockingGet();
         assertThat(enrollment.uid(), is("enroll1"));
         assertThat(enrollment.program(), is("lxAQ7Zs9VYR"));
     }
@@ -227,7 +227,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         List<Enrollment> enrollments2 = d2.enrollmentModule().enrollments.blockingGet();
         assertThat(enrollments2.size(), is(3));
 
-        Enrollment enrollment = d2.enrollmentModule().enrollments.uid(enrolmentUid).get();
+        Enrollment enrollment = d2.enrollmentModule().enrollments.uid(enrolmentUid).blockingGet();
         assertThat(enrollment.uid(), is(enrolmentUid));
 
         d2.enrollmentModule().enrollments.uid(enrolmentUid).delete();

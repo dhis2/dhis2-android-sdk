@@ -68,7 +68,7 @@ public class OptionCollectionRepositoryMockIntegrationShould extends BaseMockInt
         Option option = d2.optionModule().options
                 .withStyle()
                 .uid("Z1ILwhy5VDY")
-                .get();
+                .blockingGet();
         assertThat(option.style().icon(), is("woman_negative"));
         assertThat(option.style().color(), is("#13f2dd"));
     }

@@ -119,7 +119,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
         DataElement dataElement = d2.dataElementModule().dataElements
                 .withStyle()
                 .uid("g9eOBujte1U")
-                .get();
+                .blockingGet();
         assertThat(dataElement.style().icon(), is("data-element-icon"));
     }
 }

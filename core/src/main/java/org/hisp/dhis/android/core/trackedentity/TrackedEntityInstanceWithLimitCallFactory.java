@@ -157,7 +157,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
                             // TODO .subscribeOn(teiDownloadScheduler);
                         });
 
-        Date serverDate = systemInfoRepository.get().serverDate();
+        Date serverDate = systemInfoRepository.blockingGet().serverDate();
 
         return teiDownloadObservable.map(
                 teiList -> {

@@ -56,7 +56,7 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
         ProgramStageSection stageSections =
                 d2.programModule().programStageSections
                         .withProgramIndicators()
-                        .one().get();
+                        .one().blockingGet();
 
         assertThat(stageSections.programIndicators().size(), is(1));
     }
@@ -66,7 +66,7 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
         ProgramStageSection stageSections =
                 d2.programModule().programStageSections
                         .withDataElements()
-                        .one().get();
+                        .one().blockingGet();
 
         assertThat(stageSections.dataElements().size(), is(1));
         assertThat(stageSections.dataElements().get(0).name(), is("MCH ANC Visit"));

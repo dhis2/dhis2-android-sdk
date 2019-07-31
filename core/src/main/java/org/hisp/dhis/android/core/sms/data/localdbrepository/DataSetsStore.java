@@ -63,7 +63,7 @@ public class DataSetsStore {
                     .byAttributeOptionComboUid().eq(attributeOptionComboUid)
                     .byPeriod().eq(period)
                     .byOrganisationUnitUid().eq(orgUnit)
-                    .one().get();
+                    .one().blockingGet();
             if (dataSet != null) {
                 dataSetStore.setState(dataSet, state);
                 return;

@@ -188,7 +188,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                 d2.trackedEntityModule().trackedEntityAttributes
                         .byUid().eq("aejWyOfXge6")
                         .withObjectStyle()
-                        .one().get();
+                        .one().blockingGet();
 
         assertThat(trackedEntityAttribute.style().icon(), is("attribute-icon"));
         assertThat(trackedEntityAttribute.style().color(), is("#556"));

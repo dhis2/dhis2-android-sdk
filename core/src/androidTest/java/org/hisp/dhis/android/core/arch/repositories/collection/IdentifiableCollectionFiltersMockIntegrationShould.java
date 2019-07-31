@@ -74,7 +74,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
         ReadOnlyOneObjectRepositoryFinalImpl<CategoryCombo> objectRepository = d2.categoryModule().categoryCombos
                 .byName().eq("Births")
                 .one();
-        CategoryCombo combo = objectRepository.get();
+        CategoryCombo combo = objectRepository.blockingGet();
         assertThat(combo.uid(), is(BIRTH_UID));
     }
 

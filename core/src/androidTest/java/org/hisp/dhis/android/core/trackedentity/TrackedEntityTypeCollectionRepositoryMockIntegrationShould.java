@@ -52,7 +52,7 @@ public class TrackedEntityTypeCollectionRepositoryMockIntegrationShould extends 
     @Test
     public void include_object_style_as_children() {
         TrackedEntityType trackedEntityType = d2.trackedEntityModule().trackedEntityTypes
-                .withStyle().one().get();
+                .withStyle().one().blockingGet();
         assertThat(trackedEntityType.style().icon(), is("my-tracked-entity-attribute-icon-name"));
         assertThat(trackedEntityType.style().color(), is("#000"));
     }
@@ -60,7 +60,7 @@ public class TrackedEntityTypeCollectionRepositoryMockIntegrationShould extends 
     @Test
     public void include_attributes_as_children() {
         TrackedEntityType trackedEntityType = d2.trackedEntityModule().trackedEntityTypes
-                .withTrackedEntityTypeAttributes().one().get();
+                .withTrackedEntityTypeAttributes().one().blockingGet();
         assertThat(trackedEntityType.trackedEntityTypeAttributes().size(), is(1));
     }
 

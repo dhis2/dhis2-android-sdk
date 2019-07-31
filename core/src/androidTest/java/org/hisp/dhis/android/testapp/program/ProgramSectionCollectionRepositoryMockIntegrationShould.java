@@ -56,7 +56,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
         ProgramSection programSection =
                 d2.programModule().programSections
                         .withStyle()
-                        .one().get();
+                        .one().blockingGet();
 
         assertThat(programSection.style().icon(), is("section-icon"));
         assertThat(programSection.style().color(), is("#555"));
@@ -67,7 +67,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
         ProgramSection programSection =
                 d2.programModule().programSections
                         .withAttributes()
-                        .one().get();
+                        .one().blockingGet();
 
         assertThat(programSection.attributes().size(), is(1));
     }

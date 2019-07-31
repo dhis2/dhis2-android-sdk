@@ -57,7 +57,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         EventObjectRepository repository = objectRepository();
 
         repository.setOrganisationUnitUid(orgUnitUid);
-        assertThat(repository.get().organisationUnit(), is(orgUnitUid));
+        assertThat(repository.blockingGet().organisationUnit(), is(orgUnitUid));
 
         repository.delete();
         OrganisationUnitStore.create(databaseAdapter).delete(orgUnitUid);
@@ -83,7 +83,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         EventObjectRepository repository = objectRepository();
 
         repository.setEventDate(eventDate);
-        assertThat(repository.get().eventDate(), is(eventDate));
+        assertThat(repository.blockingGet().eventDate(), is(eventDate));
 
         repository.delete();
     }
@@ -95,7 +95,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         EventObjectRepository repository = objectRepository();
 
         repository.setStatus(eventStatus);
-        assertThat(repository.get().status(), is(eventStatus));
+        assertThat(repository.blockingGet().status(), is(eventStatus));
 
         repository.delete();
     }
@@ -107,7 +107,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         EventObjectRepository repository = objectRepository();
 
         repository.setCompletedDate(completedDate);
-        assertThat(repository.get().completedDate(), is(completedDate));
+        assertThat(repository.blockingGet().completedDate(), is(completedDate));
 
         repository.delete();
     }
@@ -119,7 +119,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         EventObjectRepository repository = objectRepository();
 
         repository.setDueDate(dueDate);
-        assertThat(repository.get().dueDate(), is(dueDate));
+        assertThat(repository.blockingGet().dueDate(), is(dueDate));
 
         repository.delete();
     }
@@ -134,7 +134,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         EventObjectRepository repository = objectRepository();
 
         repository.setGeometry(geometry);
-        assertThat(repository.get().geometry(), is(geometry));
+        assertThat(repository.blockingGet().geometry(), is(geometry));
 
         repository.delete();
     }

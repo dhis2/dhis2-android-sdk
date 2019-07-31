@@ -56,13 +56,13 @@ public abstract class ReadOnlyObjectRepositoryImpl<M extends Model, R extends Re
     abstract M getWithoutChildren();
 
     @Override
-    public final M get() {
+    public final M blockingGet() {
         return ChildrenAppenderExecutor.appendInObject(getWithoutChildren(), childrenAppenders, scope.children());
     }
 
     @Override
     public final Single<M> getAsync() {
-        return Single.fromCallable(this::get);
+        return Single.fromCallable(this::blockingGet);
     }
 
     @Override

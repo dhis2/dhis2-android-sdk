@@ -190,19 +190,19 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     public ReadOnlyObjectRepository<TrackedEntityInstance> one() {
         return new ReadOnlyObjectRepository<TrackedEntityInstance>() {
             @Override
-            public TrackedEntityInstance get() {
+            public TrackedEntityInstance blockingGet() {
                 List<TrackedEntityInstance> list = TrackedEntityInstanceQueryCollectionRepository.this.blockingGet();
                 return list.isEmpty() ? null : list.get(0);
             }
 
             @Override
             public Single<TrackedEntityInstance> getAsync() {
-                return Single.fromCallable(this::get);
+                return Single.fromCallable(this::blockingGet);
             }
 
             @Override
             public boolean exists() {
-                return get() != null;
+                return blockingGet() != null;
             }
         };
     }

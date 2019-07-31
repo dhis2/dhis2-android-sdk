@@ -214,7 +214,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void include_style_as_children() {
         DataSet dataSet = d2.dataSetModule().dataSets
                 .withStyle()
-                .one().get();
+                .one().blockingGet();
         assertThat(dataSet.style().icon(), is("my-icon-name"));
     }
 
@@ -222,7 +222,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void include_sections_as_children() {
         DataSet dataSet = d2.dataSetModule().dataSets
                 .withSections()
-                .one().get();
+                .one().blockingGet();
         assertThat(dataSet.sections().size(), is(1));
     }
 
@@ -230,7 +230,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void include_compulsory_data_element_operands_as_children() {
         DataSet dataSet = d2.dataSetModule().dataSets
                 .withCompulsoryDataElementOperands()
-                .one().get();
+                .one().blockingGet();
         assertThat(dataSet.compulsoryDataElementOperands().size(), is(1));
     }
 
@@ -238,7 +238,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void include_data_input_periods_as_children() {
         DataSet dataSet = d2.dataSetModule().dataSets
                 .withDataInputPeriods()
-                .one().get();
+                .one().blockingGet();
         assertThat(dataSet.dataInputPeriods().size(), is(1));
     }
 
@@ -246,7 +246,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void include_data_set_elements_as_children() {
         DataSet dataSet = d2.dataSetModule().dataSets
                 .withDataSetElements()
-                .one().get();
+                .one().blockingGet();
         assertThat(dataSet.dataSetElements().size(), is(1));
     }
 
@@ -254,7 +254,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void include_indicators_as_children() {
         DataSet dataSet = d2.dataSetModule().dataSets
                 .withIndicators()
-                .one().get();
+                .one().blockingGet();
         assertThat(dataSet.indicators().size(), is(1));
     }
 }

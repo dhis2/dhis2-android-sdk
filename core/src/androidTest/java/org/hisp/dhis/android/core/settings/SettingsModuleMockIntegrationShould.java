@@ -73,14 +73,14 @@ public class SettingsModuleMockIntegrationShould extends BaseMockIntegrationTest
 
     @Test
     public void allow_access_to_flag_settings() {
-        SystemSetting systemSetting = d2.systemSettingModule().systemSetting.flag().get();
+        SystemSetting systemSetting = d2.systemSettingModule().systemSetting.flag().blockingGet();
         assertThat(systemSetting.key(), is(SystemSetting.SystemSettingKey.FLAG));
         assertThat(systemSetting.value(), is("sierra_leone"));
     }
 
     @Test
     public void allow_access_to_style_settings() {
-        SystemSetting systemSetting = d2.systemSettingModule().systemSetting.style().get();
+        SystemSetting systemSetting = d2.systemSettingModule().systemSetting.style().blockingGet();
         assertThat(systemSetting.key(), is(SystemSetting.SystemSettingKey.STYLE));
         assertThat(systemSetting.value(), is("light_blue/light_blue.css"));
     }

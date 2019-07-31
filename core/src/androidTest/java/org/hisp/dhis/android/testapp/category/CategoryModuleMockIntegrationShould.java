@@ -77,7 +77,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
 
     @Test
     public void allow_access_to_combo_by_uid_without_children() {
-        CategoryCombo combo = d2.categoryModule().categoryCombos.uid("m2jTvAj5kkm").get();
+        CategoryCombo combo = d2.categoryModule().categoryCombos.uid("m2jTvAj5kkm").blockingGet();
         assertThat(combo.uid(), is("m2jTvAj5kkm"));
         assertThat(combo.code(), is("BIRTHS"));
         assertThat(combo.name(), is("Births"));
@@ -87,7 +87,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
 
     @Test
     public void allow_access_to_combo_by_uid_with_category_option_combos() {
-        CategoryCombo combo = d2.categoryModule().categoryCombos.uid("m2jTvAj5kkm").withAllChildren().get();
+        CategoryCombo combo = d2.categoryModule().categoryCombos.uid("m2jTvAj5kkm").withAllChildren().blockingGet();
         assertThat(combo.uid(), is("m2jTvAj5kkm"));
         assertThat(combo.code(), is("BIRTHS"));
         assertThat(combo.name(), is("Births"));
@@ -99,19 +99,19 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
 
     @Test
     public void dont_fail_when_asking_for_combos_without_children_when_not_in_database() {
-        CategoryCombo combo = d2.categoryModule().categoryCombos.uid("nonExistentId").get();
+        CategoryCombo combo = d2.categoryModule().categoryCombos.uid("nonExistentId").blockingGet();
         assertThat(combo == null, is(true));
     }
 
     @Test
     public void dont_fail_when_asking_for_combos_with_children_when_not_in_database() {
-        CategoryCombo combo = d2.categoryModule().categoryCombos.uid("nonExistentId").withAllChildren().get();
+        CategoryCombo combo = d2.categoryModule().categoryCombos.uid("nonExistentId").withAllChildren().blockingGet();
         assertThat(combo == null, is(true));
     }
 
     @Test
     public void allow_access_to_combo_by_uid_with_sorted_categories() {
-        CategoryCombo combo = d2.categoryModule().categoryCombos.uid("m2jTvAj5kkm").withAllChildren().get();
+        CategoryCombo combo = d2.categoryModule().categoryCombos.uid("m2jTvAj5kkm").withAllChildren().blockingGet();
         assertThat(combo.uid(), is("m2jTvAj5kkm"));
         assertThat(combo.code(), is("BIRTHS"));
         assertThat(combo.name(), is("Births"));
@@ -137,7 +137,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
 
     @Test
     public void allow_access_to_category_by_uid_without_children() {
-        Category category = d2.categoryModule().categories.uid("vGs6omsRekv").get();
+        Category category = d2.categoryModule().categories.uid("vGs6omsRekv").blockingGet();
         assertThat(category.uid(), is("vGs6omsRekv"));
         assertThat(category.name(), is("default"));
         assertThat(category.dataDimensionType(), is("DISAGGREGATION"));
@@ -154,7 +154,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
 
     @Test
     public void allow_access_to_category_by_uid_with_sorted_category_options() {
-        Category category = d2.categoryModule().categories.uid("KfdsGBcoiCa").withAllChildren().get();
+        Category category = d2.categoryModule().categories.uid("KfdsGBcoiCa").withAllChildren().blockingGet();
         assertThat(category.uid(), is("KfdsGBcoiCa"));
         assertThat(category.name(), is("Births attended by"));
         assertThat(category.dataDimensionType(), is("DISAGGREGATION"));
@@ -193,14 +193,14 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
 
     @Test
     public void allow_access_to_category_option_combo_by_uid_without_children() {
-        CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos.uid("Gmbgme7z9BF").get();
+        CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos.uid("Gmbgme7z9BF").blockingGet();
         assertThat(categoryOptionCombo.uid(), is("Gmbgme7z9BF"));
         assertThat(categoryOptionCombo.name(), is("Trained TBA, At PHU"));
     }
 
     @Test
     public void allow_access_to_category_option_combo_by_uid_with_category_options() {
-        CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos.uid("Gmbgme7z9BF").withAllChildren().get();
+        CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos.uid("Gmbgme7z9BF").withAllChildren().blockingGet();
         assertThat(categoryOptionCombo.uid(), is("Gmbgme7z9BF"));
         assertThat(categoryOptionCombo.name(), is("Trained TBA, At PHU"));
 
@@ -226,7 +226,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
 
     @Test
     public void allow_access_to_category_combo_by_uid_without_children() {
-        CategoryOption categoryOption = d2.categoryModule().categoryOptions.uid("apsOixVZlf1").get();
+        CategoryOption categoryOption = d2.categoryModule().categoryOptions.uid("apsOixVZlf1").blockingGet();
         assertThat(categoryOption.uid(), is("apsOixVZlf1"));
         assertThat(categoryOption.name(), is("Female"));
         assertThat(categoryOption.code(), is("FMLE"));

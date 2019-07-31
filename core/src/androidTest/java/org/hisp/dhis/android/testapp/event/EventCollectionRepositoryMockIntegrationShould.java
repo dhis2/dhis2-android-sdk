@@ -257,7 +257,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void include_tracked_entity_data_values_as_children() {
         Event event = d2.eventModule().events
-                .withTrackedEntityDataValues().uid("single1").get();
+                .withTrackedEntityDataValues().uid("single1").blockingGet();
         assertThat(event.trackedEntityDataValues().size(), is(6));
     }
 
@@ -318,7 +318,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events2 = d2.eventModule().events.blockingGet();
         assertThat(events2.size(), is(5));
 
-        Event event = d2.eventModule().events.uid(eventUid).get();
+        Event event = d2.eventModule().events.uid(eventUid).blockingGet();
         assertThat(event.uid(), is(eventUid));
 
         d2.eventModule().events.uid(eventUid).delete();

@@ -59,7 +59,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
         ProgramStage programStage =
                 d2.programModule().programStages
                         .withStyle()
-                        .one().get();
+                        .one().blockingGet();
 
         assertThat(programStage.style().icon(), is("program-stage-icon"));
         assertThat(programStage.style().color(), is("#444"));
@@ -70,7 +70,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
         ProgramStage programStage =
                 d2.programModule().programStages
                         .withProgramStageDataElements()
-                        .one().get();
+                        .one().blockingGet();
 
         assertThat(programStage.programStageDataElements().size(), is(3));
     }
@@ -81,7 +81,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .withProgramStageSections()
                         .one()
-                        .get();
+                        .blockingGet();
 
         assertThat(programStage.programStageSections().size(), is(1));
     }

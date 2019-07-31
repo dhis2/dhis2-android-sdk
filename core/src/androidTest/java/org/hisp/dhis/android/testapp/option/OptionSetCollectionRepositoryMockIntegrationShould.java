@@ -68,7 +68,7 @@ public class OptionSetCollectionRepositoryMockIntegrationShould extends BaseMock
         OptionSet optionSet = d2.optionModule().optionSets
                 .withOptions()
                 .uid("VQ2lai3OfVG")
-                .get();
+                .blockingGet();
         assertThat(optionSet.options().get(0).name(), is("0-14 years"));
     }
 
@@ -77,7 +77,7 @@ public class OptionSetCollectionRepositoryMockIntegrationShould extends BaseMock
         OptionSet optionSet = d2.optionModule().optionSets
                 .withAllChildren()
                 .uid("VQ2lai3OfVG")
-                .get();
+                .blockingGet();
         assertThat(optionSet.options().get(0).name(), is("0-14 years"));
     }
 
@@ -86,7 +86,7 @@ public class OptionSetCollectionRepositoryMockIntegrationShould extends BaseMock
         OptionSet optionSet = d2.optionModule().optionSets
                 .withAllChildren()
                 .uid("VQ2lai3OfVG")
-                .get();
+                .blockingGet();
         assertThat(optionSet.options().get(0).name(), is("0-14 years"));
     }
 }

@@ -106,6 +106,6 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
         TrackedEntityAttributeValueObjectRepository objectRepository = d2.trackedEntityModule().trackedEntityAttributeValues
                 .value("lZGmxYbs97q", "nWrB0TfWlvh");
         assertThat(objectRepository.exists(), is(Boolean.TRUE));
-        assertThat(objectRepository.get().value(), is("4081507"));
+        assertThat(objectRepository.blockingGet().value(), is("4081507"));
     }
 }

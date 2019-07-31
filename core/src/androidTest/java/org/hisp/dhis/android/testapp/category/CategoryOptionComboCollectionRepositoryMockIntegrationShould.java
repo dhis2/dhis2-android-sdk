@@ -110,7 +110,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
     @Test
     public void include_category_options_as_children() {
         CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos
-                .withCategoryOptions().one().get();
+                .withCategoryOptions().one().blockingGet();
         assertThat(categoryOptionCombo.categoryOptions().get(0).name(), is("At PHU"));
     }
 
@@ -124,7 +124,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
     @Test
     public void include_category_options_as_children_in_object_repository_when_all_selected() {
         CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos
-                .one().withAllChildren().get();
+                .one().withAllChildren().blockingGet();
         assertThat(categoryOptionCombo.categoryOptions().get(0).name(), is("At PHU"));
     }
 }

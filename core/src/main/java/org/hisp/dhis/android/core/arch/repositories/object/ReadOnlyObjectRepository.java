@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.common.Model;
 import io.reactivex.Single;
 
 public interface ReadOnlyObjectRepository<M extends Model> {
-    M get();
+    M blockingGet();
     Single<M> getAsync();
     boolean exists();
 }

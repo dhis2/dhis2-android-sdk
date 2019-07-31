@@ -241,7 +241,7 @@ public class CategoryComboCollectionRepositoryMockIntegrationShould extends Base
         CategoryCombo categoryCombo = d2.categoryModule().categoryCombos
                 .withCategories()
                 .uid("m2jTvAj5kkm")
-                .get();
+                .blockingGet();
         assertThat(categoryCombo.categories().size(), is(2));
     }
 
@@ -250,7 +250,7 @@ public class CategoryComboCollectionRepositoryMockIntegrationShould extends Base
         CategoryCombo categoryCombo = d2.categoryModule().categoryCombos
                 .withCategoryOptionCombos()
                 .uid("m2jTvAj5kkm")
-                .get();
+                .blockingGet();
         assertThat(categoryCombo.categoryOptionCombos().size(), is(2));
     }
 }

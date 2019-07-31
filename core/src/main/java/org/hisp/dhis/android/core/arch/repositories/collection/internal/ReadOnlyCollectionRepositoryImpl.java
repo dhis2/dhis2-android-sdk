@@ -116,6 +116,11 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     @Override
+    public Single<Boolean> isEmpty() {
+        return Single.fromCallable(this::blockingIsEmpty);
+    }
+
+    @Override
     public boolean blockingIsEmpty() {
         return blockingCount() == 0;
     }

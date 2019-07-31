@@ -177,6 +177,11 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     @Override
+    public Single<Boolean> isEmpty() {
+        return Single.fromCallable(this::blockingIsEmpty);
+    }
+
+    @Override
     public boolean blockingIsEmpty() {
         return blockingCount() == 0;
     }

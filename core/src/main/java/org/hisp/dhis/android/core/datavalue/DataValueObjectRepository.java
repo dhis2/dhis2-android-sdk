@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteValueObjectR
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithValueObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
@@ -68,6 +67,11 @@ public final class DataValueObjectRepository
         this.dataElement = dataElement;
         this.categoryOptionCombo = categoryOptionCombo;
         this.attributeOptionCombo = attributeOptionCombo;
+    }
+
+    @Override
+    public Completable set(String value) {
+        return Completable.fromAction(() -> blockingSet(value));
     }
 
     public void blockingSet(String value) throws D2Error {

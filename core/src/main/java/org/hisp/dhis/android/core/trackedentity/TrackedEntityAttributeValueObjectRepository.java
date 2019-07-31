@@ -38,6 +38,8 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import java.util.Date;
 import java.util.Map;
 
+import io.reactivex.Completable;
+
 public final class TrackedEntityAttributeValueObjectRepository extends ReadWriteWithValueObjectRepositoryImpl
         <TrackedEntityAttributeValue, TrackedEntityAttributeValueObjectRepository>
         implements ReadWriteValueObjectRepository<TrackedEntityAttributeValue> {
@@ -58,6 +60,11 @@ public final class TrackedEntityAttributeValueObjectRepository extends ReadWrite
         this.dataStatePropagator = dataStatePropagator;
         this.trackedEntityAttribute = trackedEntityAttribute;
         this.trackedEntityInstance = trackedEntityInstance;
+    }
+
+    @Override
+    public Completable set(String value) {
+        return Completable.fromAction(() -> blockingSet(value));
     }
 
     public void blockingSet(String value) throws D2Error {

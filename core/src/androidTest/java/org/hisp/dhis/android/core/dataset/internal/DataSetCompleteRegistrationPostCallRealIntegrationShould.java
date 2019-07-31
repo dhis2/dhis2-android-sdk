@@ -72,7 +72,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
 
         DataSetCompleteRegistrationCollectionRepository repository
                 = d2.dataSetModule().dataSetCompleteRegistrations;
-        repository.add(dataSetCompleteRegistration);
+        repository.blockingAdd(dataSetCompleteRegistration);
 
         repository.upload().blockingSubscribe();
 
@@ -117,8 +117,8 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
                 = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2018");
 
         DataSetCompleteRegistrationCollectionRepository repository = d2.dataSetModule().dataSetCompleteRegistrations;
-        repository.add(toDeleteDataSetCompleteRegistration);
-        repository.add(dataSetCompleteRegistration);
+        repository.blockingAdd(toDeleteDataSetCompleteRegistration);
+        repository.blockingAdd(dataSetCompleteRegistration);
         dataSetCompleteRegistrationStore.setState(toDeleteDataSetCompleteRegistration, State.TO_DELETE);
 
         repository.upload().blockingSubscribe();
@@ -141,7 +141,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
 
         DataSetCompleteRegistrationCollectionRepository repository
                 = d2.dataSetModule().dataSetCompleteRegistrations;
-        repository.add(dataSetCompleteRegistration);
+        repository.blockingAdd(dataSetCompleteRegistration);
         dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, State.TO_DELETE);
 
         repository.upload().blockingSubscribe();

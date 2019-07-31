@@ -75,7 +75,7 @@ public final class DataSetCompleteRegistrationCollectionRepository
     }
 
     @Override
-    public void add(DataSetCompleteRegistration dataSetCompleteRegistration) {
+    public void blockingAdd(DataSetCompleteRegistration dataSetCompleteRegistration) {
         handler.handle(dataSetCompleteRegistration.toBuilder().state(State.TO_POST).build());
     }
 

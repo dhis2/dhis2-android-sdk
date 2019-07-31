@@ -69,7 +69,7 @@ public class OptionSetCallShould extends BaseMockIntegrationTestEmptyEnqueable {
         executeOptionSetCall();
 
         OptionSetCollectionRepository optionSets = d2.optionModule().optionSets;
-        assertThat(optionSets.count()).isEqualTo(2);
+        assertThat(optionSets.blockingCount()).isEqualTo(2);
         assertThat(optionSets.uid("VQ2lai3OfVG").exists()).isTrue();
         assertThat(optionSets.uid("TQ2lai3OfVG").exists()).isTrue();
 

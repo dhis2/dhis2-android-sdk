@@ -92,7 +92,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
 
         d2.eventModule().events.upload().blockingSubscribe();
 
-        assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(3);
+        assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(3);
     }
 
     @Test
@@ -101,7 +101,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts.json");
         d2.eventModule().events.upload().blockingSubscribe();
-        assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(3);
+        assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(3);
 
         eventStore.setState("event1Id", State.TO_POST);
         eventStore.setState("event2Id", State.TO_POST);
@@ -109,13 +109,13 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts2.json");
         d2.eventModule().events.upload().blockingSubscribe();
-        assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(2);
+        assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(2);
     }
 
     @Test
     public void handle_event_deletions() {
         storeEvents();
-        assertThat(d2.eventModule().events.count()).isEqualTo(4);
+        assertThat(d2.eventModule().events.blockingCount()).isEqualTo(4);
 
         eventStore.setState("event1Id", State.TO_DELETE);
 
@@ -123,7 +123,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
 
         d2.eventModule().events.upload().blockingSubscribe();
 
-        assertThat(d2.eventModule().events.count()).isEqualTo(3);
+        assertThat(d2.eventModule().events.blockingCount()).isEqualTo(3);
     }
 
     @Test
@@ -214,7 +214,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
         tedvStore.insert(dataValue3);
         tedvStore.insert(dataValue4);
 
-        assertThat(d2.eventModule().events.count()).isEqualTo(4);
+        assertThat(d2.eventModule().events.blockingCount()).isEqualTo(4);
     }
 
     private void storeSingleEvent(String eventUid, Program program, State state) {

@@ -62,7 +62,7 @@ public class EventEndpointCallMockIntegrationShould extends BaseMockIntegrationT
 
         d2.eventModule().eventPersistenceCallFactory.getCall(events).call();
 
-        assertThat(d2.eventModule().events.count(), is(1));
+        assertThat(d2.eventModule().events.blockingCount(), is(1));
     }
 
     @Test
@@ -77,7 +77,7 @@ public class EventEndpointCallMockIntegrationShould extends BaseMockIntegrationT
 
         d2.eventModule().eventPersistenceCallFactory.getCall(events).call();
 
-        assertThat(d2.eventModule().events.count(), is(pageSize));
+        assertThat(d2.eventModule().events.blockingCount(), is(pageSize));
     }
 
     @Test
@@ -89,8 +89,8 @@ public class EventEndpointCallMockIntegrationShould extends BaseMockIntegrationT
 
         eventEndpointCall.call();
 
-        assertThat(d2.eventModule().events.count(), is(0));
-        assertThat(d2.trackedEntityModule().trackedEntityDataValues.count(), is(0));
+        assertThat(d2.eventModule().events.blockingCount(), is(0));
+        assertThat(d2.trackedEntityModule().trackedEntityDataValues.blockingCount(), is(0));
     }
 
     @Test
@@ -105,7 +105,7 @@ public class EventEndpointCallMockIntegrationShould extends BaseMockIntegrationT
 
         Event event = events.get(0);
         assertThat(event.uid(), is("V1CerIi3sdL"));
-        assertThat(d2.eventModule().events.count(), is(pageSize));
+        assertThat(d2.eventModule().events.blockingCount(), is(pageSize));
 
         EventStoreImpl.create(d2.databaseAdapter()).update(event.toBuilder()
                 .state(State.SYNCED).status(EventStatus.SKIPPED).build());

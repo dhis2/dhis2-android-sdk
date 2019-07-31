@@ -106,13 +106,13 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     @Override
-    public int count() {
+    public int blockingCount() {
         return store.countWhere(getWhereClause());
     }
 
     @Override
     public boolean isEmpty() {
-        return count() == 0;
+        return blockingCount() == 0;
     }
 
     protected String getWhereClause() {

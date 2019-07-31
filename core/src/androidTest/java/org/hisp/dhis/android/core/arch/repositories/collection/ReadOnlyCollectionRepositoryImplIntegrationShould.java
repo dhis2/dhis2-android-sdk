@@ -102,14 +102,14 @@ public class ReadOnlyCollectionRepositoryImplIntegrationShould extends BaseMockI
 
     @Test
     public void get_count_with_unrestricted_scope() {
-        int count = relationshipTypeCollectionRepository.count();
+        int count = relationshipTypeCollectionRepository.blockingCount();
 
         assertThat(count).isEqualTo(2);
     }
 
     @Test
     public void get_count_with_restricted_scope() {
-        int count = relationshipTypeCollectionRepository.byUid().eq(RELATIONSHIP_TYPE_UID_1).count();
+        int count = relationshipTypeCollectionRepository.byUid().eq(RELATIONSHIP_TYPE_UID_1).blockingCount();
 
         assertThat(count).isEqualTo(1);
     }

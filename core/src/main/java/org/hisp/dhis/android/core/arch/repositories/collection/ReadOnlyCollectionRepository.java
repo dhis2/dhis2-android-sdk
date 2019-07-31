@@ -64,13 +64,13 @@ public interface ReadOnlyCollectionRepository<M extends Model> {
     LiveData<PagedList<M>> getPaged(int pageSize);
 
     /**
-     * Get a count of elements. Important: this is a blocking method and it should be executed in
-     * a separated thread.
+     * Get the count of elements. Important: this is a blocking method and it should be executed in
+     * a separated thread. Use count when possible.
      *
      * @return Element count
      */
 
-    int count();
+    int blockingCount();
     /**
      * Check if selection of objects with applied filters is empty.
      * Important: this is a blocking method and it should be executed in a separated thread.

@@ -59,7 +59,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         repository.setOrganisationUnitUid(orgUnitUid);
         assertThat(repository.blockingGet().organisationUnit(), is(orgUnitUid));
 
-        repository.delete();
+        repository.blockingDelete();
         OrganisationUnitStore.create(databaseAdapter).delete(orgUnitUid);
     }
 
@@ -72,7 +72,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         try {
             repository.setOrganisationUnitUid(orgUnitUid);
         } finally {
-            repository.delete();
+            repository.blockingDelete();
         }
     }
 
@@ -85,7 +85,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         repository.setEventDate(eventDate);
         assertThat(repository.blockingGet().eventDate(), is(eventDate));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -97,7 +97,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         repository.setStatus(eventStatus);
         assertThat(repository.blockingGet().status(), is(eventStatus));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -109,7 +109,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         repository.setCompletedDate(completedDate);
         assertThat(repository.blockingGet().completedDate(), is(completedDate));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -121,7 +121,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         repository.setDueDate(dueDate);
         assertThat(repository.blockingGet().dueDate(), is(dueDate));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -136,7 +136,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         repository.setGeometry(geometry);
         assertThat(repository.blockingGet().geometry(), is(geometry));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     private EventObjectRepository objectRepository() throws D2Error {

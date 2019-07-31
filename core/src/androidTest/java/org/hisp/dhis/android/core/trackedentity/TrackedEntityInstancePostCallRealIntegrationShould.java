@@ -397,7 +397,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
-        relationshipsRepository.uid(newRelationship.uid()).delete();
+        relationshipsRepository.uid(newRelationship.uid()).blockingDelete();
 
         d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
     }

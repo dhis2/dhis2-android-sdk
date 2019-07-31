@@ -230,6 +230,6 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         Enrollment enrollment = d2.enrollmentModule().enrollments.uid(enrolmentUid).blockingGet();
         assertThat(enrollment.uid(), is(enrolmentUid));
 
-        d2.enrollmentModule().enrollments.uid(enrolmentUid).delete();
+        d2.enrollmentModule().enrollments.uid(enrolmentUid).blockingDelete();
     }
 }

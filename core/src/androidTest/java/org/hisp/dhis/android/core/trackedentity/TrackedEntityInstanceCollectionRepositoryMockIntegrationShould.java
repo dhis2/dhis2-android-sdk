@@ -110,6 +110,6 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
         TrackedEntityInstance trackedEntityInstance = d2.trackedEntityModule().trackedEntityInstances.uid(teiUid).blockingGet();
         assertThat(trackedEntityInstance.uid(), is(teiUid));
 
-        d2.trackedEntityModule().trackedEntityInstances.uid(teiUid).delete();
+        d2.trackedEntityModule().trackedEntityInstances.uid(teiUid).blockingDelete();
     }
 }

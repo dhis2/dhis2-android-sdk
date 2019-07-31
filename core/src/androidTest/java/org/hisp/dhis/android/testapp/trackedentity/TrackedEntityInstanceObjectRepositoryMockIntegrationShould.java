@@ -56,7 +56,7 @@ public class TrackedEntityInstanceObjectRepositoryMockIntegrationShould extends 
         repository.setOrganisationUnitUid(orgUnitUid);
         assertThat(repository.blockingGet().organisationUnit(), is(orgUnitUid));
 
-        repository.delete();
+        repository.blockingDelete();
         OrganisationUnitStore.create(databaseAdapter).delete(orgUnitUid);
     }
 
@@ -69,7 +69,7 @@ public class TrackedEntityInstanceObjectRepositoryMockIntegrationShould extends 
         try {
             repository.setOrganisationUnitUid(orgUnitUid);
         } finally {
-            repository.delete();
+            repository.blockingDelete();
         }
     }
 
@@ -85,7 +85,7 @@ public class TrackedEntityInstanceObjectRepositoryMockIntegrationShould extends 
         repository.setGeometry(geometry);
         assertThat(repository.blockingGet().geometry(), is(geometry));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     private TrackedEntityInstanceObjectRepository objectRepository() throws D2Error {

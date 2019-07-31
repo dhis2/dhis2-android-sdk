@@ -56,7 +56,7 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
         this.store = store;
     }
 
-    public void delete() throws D2Error {
+    public void blockingDelete() throws D2Error {
         M object = withAllChildren().blockingGet();
         if (object == null) {
             throw D2Error

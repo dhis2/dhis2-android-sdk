@@ -62,7 +62,7 @@ final class RelationshipObjectRepository
     }
 
     @Override
-    public void delete() throws D2Error {
+    public void blockingDelete() throws D2Error {
         Relationship relationship = withAllChildren().blockingGet();
         if (relationship == null) {
             throw D2Error

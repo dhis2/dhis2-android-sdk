@@ -50,7 +50,7 @@ public class TrackedEntityDataValueObjectRepositoryMockIntegrationShould extends
         repository.set(value);
         assertThat(repository.blockingGet().value(), is(value));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -59,7 +59,7 @@ public class TrackedEntityDataValueObjectRepositoryMockIntegrationShould extends
 
         repository.set("value");
         assertThat(repository.blockingExists(), is(Boolean.TRUE));
-        repository.delete();
+        repository.blockingDelete();
         assertThat(repository.blockingExists(), is(Boolean.FALSE));
     }
 

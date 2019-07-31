@@ -82,7 +82,7 @@ public final class DataValueObjectRepository
     }
 
     @Override
-    public void delete() throws D2Error {
+    public void blockingDelete() throws D2Error {
         DataValue dataValue = getWithoutChildren();
         if (dataValue.state() == State.TO_POST) {
             super.delete(dataValue);

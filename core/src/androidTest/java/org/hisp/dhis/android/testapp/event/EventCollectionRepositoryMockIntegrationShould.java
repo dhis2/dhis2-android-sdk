@@ -321,6 +321,6 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         Event event = d2.eventModule().events.uid(eventUid).blockingGet();
         assertThat(event.uid(), is(eventUid));
 
-        d2.eventModule().events.uid(eventUid).delete();
+        d2.eventModule().events.uid(eventUid).blockingDelete();
     }
 }

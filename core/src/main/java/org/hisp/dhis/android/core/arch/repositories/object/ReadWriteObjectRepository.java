@@ -31,5 +31,5 @@ import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 public interface ReadWriteObjectRepository<M extends Model> extends ReadOnlyObjectRepository<M> {
-    void delete() throws D2Error;
+    void blockingDelete() throws D2Error;
 }

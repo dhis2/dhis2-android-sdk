@@ -52,7 +52,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         repository.set(value);
         assertThat(repository.blockingGet().value(), is(value));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -64,7 +64,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         repository.setFollowUp(followUp);
         assertThat(repository.blockingGet().followUp(), is(followUp));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -76,7 +76,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         repository.setComment(comment);
         assertThat(repository.blockingGet().comment(), is(comment));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -86,7 +86,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         repository.set("value");
         assertThat(repository.blockingExists(), is(Boolean.TRUE));
         assertThat(repository.blockingGet().state(), is(State.TO_POST));
-        repository.delete();
+        repository.blockingDelete();
         assertThat(repository.blockingExists(), is(Boolean.FALSE));
     }
 
@@ -98,7 +98,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         DataValueStore.create(databaseAdapter).setState(repository.blockingGet(), State.ERROR);
         assertThat(repository.blockingExists(), is(Boolean.TRUE));
         assertThat(repository.blockingGet().state(), is(State.ERROR));
-        repository.delete();
+        repository.blockingDelete();
         assertThat(repository.blockingExists(), is(Boolean.TRUE));
         assertThat(repository.blockingGet().state(), is(State.TO_DELETE));
     }

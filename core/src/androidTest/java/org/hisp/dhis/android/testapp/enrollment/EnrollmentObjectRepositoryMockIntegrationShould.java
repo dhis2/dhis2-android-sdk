@@ -59,7 +59,7 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         repository.setOrganisationUnitUid(orgUnitUid);
         assertThat(repository.blockingGet().organisationUnit(), is(orgUnitUid));
 
-        repository.delete();
+        repository.blockingDelete();
         OrganisationUnitStore.create(databaseAdapter).delete(orgUnitUid);
     }
 
@@ -72,7 +72,7 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         try {
             repository.setOrganisationUnitUid(orgUnitUid);
         } finally {
-            repository.delete();
+            repository.blockingDelete();
         }
     }
 
@@ -85,7 +85,7 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         repository.setEnrollmentDate(enrollmentDate);
         assertThat(repository.blockingGet().enrollmentDate(), is(enrollmentDate));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -97,7 +97,7 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         repository.setIncidentDate(incidentDate);
         assertThat(repository.blockingGet().incidentDate(), is(incidentDate));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -107,7 +107,7 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         repository.setFollowUp(true);
         assertThat(repository.blockingGet().followUp(), is(true));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -119,7 +119,7 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         repository.setStatus(enrollmentStatus);
         assertThat(repository.blockingGet().status(), is(enrollmentStatus));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -134,7 +134,7 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         repository.setGeometry(geometry);
         assertThat(repository.blockingGet().geometry(), is(geometry));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     private EnrollmentObjectRepository objectRepository() throws D2Error {

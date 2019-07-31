@@ -56,13 +56,18 @@ public abstract class ReadOnlyObjectRepositoryImpl<M extends Model, R extends Re
     abstract M getWithoutChildren();
 
     @Override
+    public final Single<M> get() {
+        return Single.fromCallable(this::blockingGet);
+    }
+
+    @Override
     public final M blockingGet() {
         return ChildrenAppenderExecutor.appendInObject(getWithoutChildren(), childrenAppenders, scope.children());
     }
 
     @Override
-    public final Single<M> get() {
-        return Single.fromCallable(this::blockingGet);
+    public final Single<Boolean> exists() {
+        return Single.fromCallable(this::blockingExists);
     }
 
     @Override

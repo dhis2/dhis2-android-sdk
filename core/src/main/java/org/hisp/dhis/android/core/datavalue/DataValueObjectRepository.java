@@ -40,6 +40,8 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import java.util.Date;
 import java.util.Map;
 
+import io.reactivex.Completable;
+
 public final class DataValueObjectRepository
         extends ReadWriteWithValueObjectRepositoryImpl<DataValue, DataValueObjectRepository>
         implements ReadWriteValueObjectRepository<DataValue> {
@@ -79,6 +81,11 @@ public final class DataValueObjectRepository
 
     public Unit setComment(String comment) throws D2Error {
         return setObject(setBuilder().comment(comment).build());
+    }
+
+    @Override
+    public Completable delete() {
+        return Completable.fromAction(this::blockingDelete);
     }
 
     @Override

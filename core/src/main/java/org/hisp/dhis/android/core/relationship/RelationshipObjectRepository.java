@@ -41,6 +41,8 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
 
 import java.util.Map;
 
+import io.reactivex.Completable;
+
 final class RelationshipObjectRepository
         extends ReadOnlyOneObjectRepositoryImpl<Relationship, RelationshipObjectRepository>
         implements ReadWriteObjectRepository<Relationship> {
@@ -59,6 +61,11 @@ final class RelationshipObjectRepository
         this.relationshipStore = store;
         this.storeSelector = storeSelector;
         this.uid = uid;
+    }
+
+    @Override
+    public Completable delete() {
+        return Completable.fromAction(this::blockingDelete);
     }
 
     @Override

@@ -63,6 +63,7 @@ import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
 
 @Reusable
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class RelationshipCollectionRepository
         extends ReadOnlyCollectionRepositoryImpl<Relationship, RelationshipCollectionRepository>
         implements ReadWriteWithUidCollectionRepository<Relationship, Relationship> {

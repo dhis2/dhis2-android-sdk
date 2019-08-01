@@ -84,6 +84,10 @@ public final class EventObjectRepository
         return updateObject(updateBuilder().dueDate(dueDate).build());
     }
 
+    public Unit setAttributeOptionComboUid(String attributeOptionComboUid) throws D2Error {
+        return updateObject(updateBuilder().attributeOptionCombo(attributeOptionComboUid).build());
+    }
+
     private Event.Builder updateBuilder() {
         event = getWithoutChildren();
         Date updateDate = new Date();

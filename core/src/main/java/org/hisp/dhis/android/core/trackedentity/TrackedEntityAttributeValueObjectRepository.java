@@ -62,7 +62,7 @@ public final class TrackedEntityAttributeValueObjectRepository extends ReadWrite
     }
 
     public Unit set(String value) throws D2Error {
-        objectWithValue = setBuilder().value(value).build();
+        TrackedEntityAttributeValue objectWithValue = setBuilder().value(value).build();
         return setObject(objectWithValue);
     }
 
@@ -81,7 +81,7 @@ public final class TrackedEntityAttributeValueObjectRepository extends ReadWrite
     }
 
     @Override
-    protected void propagateState() {
-        dataStatePropagator.propagateTrackedEntityAttributeUpdate(objectWithValue);
+    protected void propagateState(TrackedEntityAttributeValue trackedEntityAttributeValue) {
+        dataStatePropagator.propagateTrackedEntityAttributeUpdate(trackedEntityAttributeValue);
     }
 }

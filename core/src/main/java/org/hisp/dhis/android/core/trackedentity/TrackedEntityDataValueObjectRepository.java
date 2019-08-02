@@ -68,7 +68,7 @@ public final class TrackedEntityDataValueObjectRepository
     }
 
     public void blockingSet(String value) throws D2Error {
-        objectWithValue = setBuilder().value(value).build();
+        TrackedEntityDataValue objectWithValue = setBuilder().value(value).build();
         setObject(objectWithValue);
     }
 
@@ -88,7 +88,7 @@ public final class TrackedEntityDataValueObjectRepository
     }
 
     @Override
-    protected void propagateState() {
-        dataStatePropagator.propagateTrackedEntityDataValueUpdate(objectWithValue);
+    protected void propagateState(TrackedEntityDataValue trackedEntityDataValue) {
+        dataStatePropagator.propagateTrackedEntityDataValueUpdate(trackedEntityDataValue);
     }
 }

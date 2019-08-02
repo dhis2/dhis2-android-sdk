@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.testapp.event;
 
+import org.hisp.dhis.android.core.category.CategoryOptionCombo;
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.event.EventCreateProjection;
@@ -137,6 +139,34 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         assertThat(repository.blockingGet().geometry(), is(geometry));
 
         repository.blockingDelete();
+    }
+
+    @Test
+    public void update_attribute_option_combo() throws D2Error {
+        String attributeOptionCombo = "new_att_opt_comb";
+        CategoryOptionComboStoreImpl.create(databaseAdapter)
+                .insert(CategoryOptionCombo.builder().uid(attributeOptionCombo).build());
+
+        EventObjectRepository repository = objectRepository();
+
+        repository.setAttributeOptionComboUid(attributeOptionCombo);
+        assertThat(repository.get().attributeOptionCombo(), is(attributeOptionCombo));
+
+        repository.delete();
+        CategoryOptionComboStoreImpl.create(databaseAdapter).delete(attributeOptionCombo);
+    }
+
+    @Test(expected = D2Error.class)
+    public void not_update_attribute_option_combo_if_not_exists() throws D2Error {
+        String attributeOptionCombo = "new_att_opt_comb";
+
+        EventObjectRepository repository = objectRepository();
+
+        try {
+            repository.setAttributeOptionComboUid(attributeOptionCombo);
+        } finally {
+            repository.delete();
+        }
     }
 
     private EventObjectRepository objectRepository() throws D2Error {

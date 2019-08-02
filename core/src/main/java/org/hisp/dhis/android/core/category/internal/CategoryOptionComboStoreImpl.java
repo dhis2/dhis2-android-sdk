@@ -74,7 +74,7 @@ public final class CategoryOptionComboStoreImpl extends IdentifiableObjectStoreI
         }
     };
 
-    static CategoryOptionComboStore create(DatabaseAdapter databaseAdapter) {
+    public static CategoryOptionComboStore create(DatabaseAdapter databaseAdapter) {
         SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(CategoryOptionComboTableInfo.TABLE_INFO);
         SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);
         return new CategoryOptionComboStoreImpl(databaseAdapter, statementWrapper, statementBuilder);

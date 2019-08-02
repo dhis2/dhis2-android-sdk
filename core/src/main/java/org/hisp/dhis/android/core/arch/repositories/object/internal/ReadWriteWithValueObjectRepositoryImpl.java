@@ -45,7 +45,6 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends Model, R extends R
         extends ReadOnlyOneObjectRepositoryImpl<M, R> {
 
     private final ObjectWithoutUidStore<M> store;
-    protected M objectWithValue;
 
     public ReadWriteWithValueObjectRepositoryImpl(ObjectWithoutUidStore<M> store,
                                                   Map<String, ChildrenAppender<M>> childrenAppenders,
@@ -63,7 +62,7 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends Model, R extends R
     protected void delete(M m) throws D2Error {
         try {
             store.deleteWhere(m);
-            propagateState();
+            propagateState(m);
         } catch (Exception e) {
             throw D2Error
                     .builder()
@@ -79,7 +78,7 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends Model, R extends R
     protected Unit setObject(M m) throws D2Error {
         try {
             store.updateOrInsertWhere(m);
-            propagateState();
+            propagateState(m);
             return new Unit();
         } catch (SQLiteConstraintException e) {
             throw D2Error
@@ -100,7 +99,7 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends Model, R extends R
         }
     }
 
-    protected void propagateState() {
+    protected void propagateState(M m) {
         // Method is empty because is the default action.
     }
 }

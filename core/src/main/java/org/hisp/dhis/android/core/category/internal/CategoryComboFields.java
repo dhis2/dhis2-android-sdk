@@ -34,9 +34,10 @@ import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 
+import static org.hisp.dhis.android.core.category.CategoryComboTableInfo.Columns;
+
 public final class CategoryComboFields {
 
-    public static final String IS_DEFAULT = "isDefault";
     public static final String CATEGORIES = "categories";
     public static final String CATEGORY_OPTION_COMBOS = "categoryOptionCombos";
 
@@ -47,7 +48,7 @@ public final class CategoryComboFields {
     public static final Fields<CategoryCombo> allFields = Fields.<CategoryCombo>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<Boolean>field(IS_DEFAULT),
+                    fh.<Boolean>field(Columns.IS_DEFAULT),
                     fh.nestedFieldWithUid(CATEGORIES),
                     fh.<CategoryOptionCombo>nestedField(CATEGORY_OPTION_COMBOS)
                             .with(CategoryOptionComboFields.allFields)

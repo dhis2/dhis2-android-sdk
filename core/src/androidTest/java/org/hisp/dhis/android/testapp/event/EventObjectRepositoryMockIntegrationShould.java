@@ -150,7 +150,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         EventObjectRepository repository = objectRepository();
 
         repository.setAttributeOptionComboUid(attributeOptionCombo);
-        assertThat(repository.get().attributeOptionCombo(), is(attributeOptionCombo));
+        assertThat(repository.blockingGet().attributeOptionCombo(), is(attributeOptionCombo));
 
         repository.delete();
         CategoryOptionComboStoreImpl.create(databaseAdapter).delete(attributeOptionCombo);

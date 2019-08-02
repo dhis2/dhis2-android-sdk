@@ -26,8 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.data.database;
 
-public enum FeatureType {
-    POINT, POLYGON, MULTI_POLYGON, NONE
+import org.hisp.dhis.android.core.common.Coordinates;
+
+public final class IgnoreCoordinatesColumnAdapter extends IgnoreColumnAdapter<Coordinates> {
 }

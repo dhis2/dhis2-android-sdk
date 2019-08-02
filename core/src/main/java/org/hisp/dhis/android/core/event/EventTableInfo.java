@@ -59,8 +59,6 @@ public final class EventTableInfo {
         public static final String CREATED_AT_CLIENT = "createdAtClient";
         public static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
         public static final String STATUS = "status";
-        public static final String LATITUDE = "latitude";
-        public static final String LONGITUDE = "longitude";
         public static final String PROGRAM = "program";
         public static final String PROGRAM_STAGE = "programStage";
         public static final String ORGANISATION_UNIT = "organisationUnit";
@@ -69,6 +67,8 @@ public final class EventTableInfo {
         public static final String DUE_DATE = "dueDate";
         public static final String STATE = BaseDataModel.Columns.STATE;
         public static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
+        public static final String GEOMETRY_TYPE = "geometryType";
+        public static final String GEOMETRY_COORDINATES = "geometryCoordinates";
 
         @Override
         public String[] all() {
@@ -80,8 +80,8 @@ public final class EventTableInfo {
                     CREATED_AT_CLIENT,
                     LAST_UPDATED_AT_CLIENT,
                     STATUS,
-                    LATITUDE,
-                    LONGITUDE,
+                    GEOMETRY_TYPE,
+                    GEOMETRY_COORDINATES,
                     PROGRAM,
                     PROGRAM_STAGE,
                     ORGANISATION_UNIT,

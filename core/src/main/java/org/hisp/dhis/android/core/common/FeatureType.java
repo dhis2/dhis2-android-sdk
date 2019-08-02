@@ -26,44 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.trackedentity;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.Geometry;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+public enum FeatureType {
 
-import java.text.ParseException;
-import java.util.Date;
+    POINT("POINT", "Point"),
+    POLYGON("POLYGON", "Polygon"),
+    MULTI_POLYGON("MULTI_POLYGON", "MultiPolygon"),
+    NONE("NONE", "None");
 
-public class TrackedEntityInstanceSamples {
+    private final String featureType;
+    private final String geometryType;
 
-    public static TrackedEntityInstance get() {
-        return TrackedEntityInstance.builder()
-                .id(1L)
-                .uid("tei_uid")
-                .created(getDate("2014-08-20T12:28:56.409"))
-                .lastUpdated(getDate("2015-10-14T13:36:53.063"))
-                .createdAtClient("created_at_client")
-                .lastUpdatedAtClient("last_updated_at_client")
-                .organisationUnit("organisation_unit")
-                .trackedEntityType("tracked_entity_type")
-                .geometry(Geometry.builder()
-                        .type(FeatureType.POLYGON)
-                        .coordinates("[11.0, 11.0]")
-                        .build())
-                .state(State.TO_POST)
-                .deleted(false)
-                .build();
+    FeatureType(String featureType, String geometryType) {
+        this.featureType = featureType;
+        this.geometryType = geometryType;
     }
 
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
+    public String getFeatureType() {
+        return featureType;
+    }
+
+    public String getGeometryType() {
+        return geometryType;
+    }
+
+    public static FeatureType valueOfFeatureType(String featureType) {
+        for (FeatureType value : values()) {
+            if (value.featureType.equals(featureType) || value.geometryType.equals(featureType)) {
+                return value;
+            }
         }
+        return null;
     }
 }

@@ -47,7 +47,6 @@ public class CreateProgramStageUtils {
     private static final Integer OPEN_AFTER_ENROLLMENT = 0;
 
     private static final Integer REPEATABLE = 0;
-    private static final Integer CAPTURE_COORDINATES = 1;
     private static final FormType FORM_TYPE = FormType.DEFAULT;
     private static final Integer DISPLAY_GENERATE_EVENT_BOX = 1;
     private static final Integer GENERATED_BY_ENROLMENT_DATE = 1;
@@ -76,7 +75,6 @@ public class CreateProgramStageUtils {
         programStage.put(ProgramStageFields.REPORT_DATE_TO_USE, REPORT_DATE_TO_USE);
         programStage.put(ProgramStageFields.OPEN_AFTER_ENROLLMENT, OPEN_AFTER_ENROLLMENT);
         programStage.put(ProgramStageFields.REPEATABLE, REPEATABLE);
-        programStage.put(ProgramStageFields.CAPTURE_COORDINATES, CAPTURE_COORDINATES);
         programStage.put(ProgramStageFields.FORM_TYPE, FORM_TYPE.name());
         programStage.put(ProgramStageFields.DISPLAY_GENERATE_EVENT_BOX, DISPLAY_GENERATE_EVENT_BOX);
         programStage.put(ProgramStageFields.GENERATED_BY_ENROLMENT_DATE, GENERATED_BY_ENROLMENT_DATE);

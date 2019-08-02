@@ -30,8 +30,10 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.FeatureType;
 
 import java.util.Map;
 
@@ -49,6 +51,10 @@ public final class TrackedEntityTypeCollectionRepository
                                           final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new TrackedEntityTypeCollectionRepository(store, childrenAppenders, s)));
+    }
+
+    public EnumFilterConnector<TrackedEntityTypeCollectionRepository, FeatureType> byFeatureType() {
+        return cf.enumC(TrackedEntityTypeFields.FEATURE_TYPE);
     }
 
     public TrackedEntityTypeCollectionRepository withStyle() {

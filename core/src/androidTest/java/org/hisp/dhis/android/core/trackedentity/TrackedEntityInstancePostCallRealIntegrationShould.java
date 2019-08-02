@@ -32,7 +32,8 @@ import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
@@ -48,7 +49,6 @@ import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
@@ -90,7 +90,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     private String trackedEntityUid;
     private String trackedEntityAttributeUid;
     private String coordinates;
-    private FeatureType featureType;
+    private Geometry geometry;
     private String eventUid;
     private String enrollmentUid;
     private String trackedEntityInstanceUid;
@@ -124,7 +124,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         trackedEntityAttributeUid = "w75KJ2mc4zz";
 
         coordinates = "[9,9]";
-        featureType = FeatureType.POINT;
+        geometry = Geometry.builder().type(FeatureType.POINT).coordinates("[-11.96, 9.49]").build();
 
         categoryComboOptionUid = "HllvX50cXC0";
         eventUid = codeGenerator.generate();
@@ -148,11 +148,11 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
 
         createDummyDataToPost(
-                orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, featureType, eventUid,
+                orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, geometry, eventUid,
                 enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid, dataElementUid);
 
         createDummyDataToPost(
-                orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, featureType,
+                orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, geometry,
                 event1Uid, enrollment1Uid, trackedEntityInstance1Uid, trackedEntityAttributeUid, dataElementUid);
 
         d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
@@ -170,7 +170,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
 
         createDummyDataToPost(
-                orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, featureType,
+                orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, geometry,
                 eventUid, enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid, dataElementUid);
 
         postTrackedEntityInstances();
@@ -203,12 +203,11 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
-        FeatureType featureType =
-                tei.featureType() == FeatureType.POLYGON ? FeatureType.POINT : FeatureType.POLYGON;
+        Geometry geometry = Geometry.builder().type(FeatureType.POINT).coordinates("[98.54, 4.65]").build();
 
         String newUid = codeGenerator.generate();
 
-        insertATei(newUid, tei, featureType);
+        insertATei(newUid, tei, geometry);
 
         d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
@@ -219,7 +218,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         TrackedEntityInstance updatedTei = response.get(0);
 
-        assertThat(updatedTei.featureType()).isEqualTo(featureType);
+        assertThat(updatedTei.geometry()).isEqualTo(geometry);
     }
 
     //@Test
@@ -232,8 +231,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         String newUid1 = codeGenerator.generate();
         String newUid2 = codeGenerator.generate();
 
-        insertATei(newUid1, tei, tei.featureType());
-        insertATei(newUid2, tei, tei.featureType());
+        insertATei(newUid1, tei, tei.geometry());
+        insertATei(newUid2, tei, tei.geometry());
 
         d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
@@ -255,8 +254,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         String newUid1 = codeGenerator.generate();
         String newUid2 = codeGenerator.generate();
 
-        insertATei(newUid1, tei, tei.featureType());
-        insertATei(newUid2, tei, tei.featureType());
+        insertATei(newUid1, tei, tei.geometry());
+        insertATei(newUid2, tei, tei.geometry());
 
         d2.trackedEntityModule().trackedEntityInstances.byUid().eq(newUid1).upload().blockingSubscribe();
 
@@ -283,12 +282,11 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
-        FeatureType featureType =
-                tei.featureType() == FeatureType.POLYGON ? FeatureType.POINT : FeatureType.POLYGON;
+        Geometry geometry = Geometry.builder().type(FeatureType.POINT).coordinates("[98.54, 4.65]").build();
 
         String newUid = codeGenerator.generate();
 
-        insertATei(newUid, tei, featureType);
+        insertATei(newUid, tei, geometry);
 
         d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
         List<TrackedEntityInstance> response =
@@ -315,10 +313,11 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         TrackedEntityInstance teiA = trackedEntityInstanceStore.selectFirst();
         RelationshipType relationshipType = d2.relationshipModule().relationshipTypes.get().iterator().next();
+        Geometry geometry = Geometry.builder().type(FeatureType.MULTI_POLYGON).coordinates("[98.54, 4.65]").build();
 
         // Create a TEI by copying an existing one
         String teiBUid = codeGenerator.generate();
-        insertATei(teiBUid, teiA, FeatureType.MULTI_POLYGON);
+        insertATei(teiBUid, teiA, geometry);
 
         trackedEntityInstanceStore.setState(teiA.uid(), State.TO_POST);
 
@@ -435,10 +434,10 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         assertThat(deleted).isEqualTo(true);
     }
 
-    private void insertATei(String uid, TrackedEntityInstance tei, FeatureType featureType) {
+    private void insertATei(String uid, TrackedEntityInstance tei, Geometry geometry) {
         TrackedEntityInstance trackedEntityInstance = tei.toBuilder()
                 .uid(uid)
-                .featureType(featureType)
+                .geometry(geometry)
                 .state(State.TO_POST)
                 .build();
 
@@ -446,7 +445,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     }
 
     private void createDummyDataToPost(String orgUnitUid, String programUid, String programStageUid,
-                                       String trackedEntityUid, String coordinates, FeatureType featureType,
+                                       String trackedEntityUid, String coordinates, Geometry geometry,
                                        String eventUid, String enrollmentUid, String trackedEntityInstanceUid,
                                        String trackedEntityAttributeUid, String dataElementUid) {
         
@@ -458,8 +457,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 .lastUpdated(refDate)
                 .organisationUnit(orgUnitUid)
                 .trackedEntityType(trackedEntityUid)
-                .coordinates(coordinates)
-                .featureType(featureType)
+                .geometry(geometry)
                 .state(State.TO_POST)
                 .build();
 
@@ -469,13 +467,15 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 .uid(enrollmentUid).created(refDate).lastUpdated(refDate).organisationUnit(orgUnitUid)
                 .program(programUid).incidentDate(refDate).enrollmentDate(refDate).followUp(Boolean.FALSE)
                 .status(EnrollmentStatus.ACTIVE).trackedEntityInstance(trackedEntityInstanceUid)
-                .coordinate(Coordinates.create(10.33, 12.231)).state(State.TO_POST).build();
+                .geometry(Geometry.builder().type(FeatureType.POINT).coordinates("[10.33, 12.231]").build())
+                .state(State.TO_POST).build();
 
         enrollmentStore.insert(enrollment);
 
         Event event = Event.builder()
                 .uid(eventUid).enrollment(enrollmentUid).created(refDate).lastUpdated(refDate)
-                .status(EventStatus.ACTIVE).coordinate(Coordinates.create(13.21, 12.21)).program(programUid)
+                .status(EventStatus.ACTIVE).program(programUid)
+                .geometry(Geometry.builder().type(FeatureType.POINT).coordinates("[12.21, 13.21]").build())
                 .programStage(programStageUid).organisationUnit(orgUnitUid).eventDate(refDate).dueDate(refDate)
                 .completedDate(refDate).state(State.TO_POST).attributeOptionCombo(categoryComboOptionUid)
                 .build();

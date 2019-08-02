@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.IdentifiableDataObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceSamples;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
@@ -53,7 +54,7 @@ public class TrackedEntityInstanceStoreIntegrationShould extends
     @Override
     protected TrackedEntityInstance buildObjectToUpdate() {
         return TrackedEntityInstanceSamples.get().toBuilder()
-                .featureType(FeatureType.POINT)
+                .trackedEntityType("new_tracked_entity_type")
                 .build();
     }
 

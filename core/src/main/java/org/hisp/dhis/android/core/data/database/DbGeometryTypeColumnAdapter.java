@@ -26,44 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.trackedentity;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import android.content.ContentValues;
+import android.database.Cursor;
+
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+
 import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.Geometry;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
-import java.text.ParseException;
-import java.util.Date;
+public class DbGeometryTypeColumnAdapter implements ColumnTypeAdapter<FeatureType> {
 
-public class TrackedEntityInstanceSamples {
+    @Override
+    public FeatureType fromCursor(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex("geometryType");
+        String sourceValue = cursor.getString(columnIndex);
 
-    public static TrackedEntityInstance get() {
-        return TrackedEntityInstance.builder()
-                .id(1L)
-                .uid("tei_uid")
-                .created(getDate("2014-08-20T12:28:56.409"))
-                .lastUpdated(getDate("2015-10-14T13:36:53.063"))
-                .createdAtClient("created_at_client")
-                .lastUpdatedAtClient("last_updated_at_client")
-                .organisationUnit("organisation_unit")
-                .trackedEntityType("tracked_entity_type")
-                .geometry(Geometry.builder()
-                        .type(FeatureType.POLYGON)
-                        .coordinates("[11.0, 11.0]")
-                        .build())
-                .state(State.TO_POST)
-                .deleted(false)
-                .build();
+        FeatureType featureType = null;
+        if (sourceValue != null) {
+            try {
+                featureType = Enum.valueOf(FeatureType.class, sourceValue);
+            } catch (Exception exception) {
+                throw new RuntimeException("Unknown FeatureType type", exception);
+            }
+        }
+        return featureType;
     }
 
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
+    @Override
+    public void toContentValues(ContentValues contentValues, String columnName, FeatureType value) {
+        if (value != null) {
+            contentValues.put("geometryType", value.getGeometryType());
         }
     }
 }

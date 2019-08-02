@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -41,10 +43,12 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.data.database.AccessColumnAdapter;
 import org.hisp.dhis.android.core.data.database.CategoryComboWithUidColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DBCaptureCoordinatesFromFeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbProgramTypeColumnAdapter;
@@ -57,14 +61,11 @@ import org.hisp.dhis.android.core.data.database.IgnoreProgramTrackedEntityAttrib
 import org.hisp.dhis.android.core.data.database.ProgramWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.RelationshipTypeWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.TrackedEntityTypeWithUidColumnAdapter;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
 import java.util.List;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Program.Builder.class)
@@ -121,7 +122,8 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     @Deprecated
     @Nullable
     @JsonProperty()
-    public abstract Boolean captureCoordinates();
+    @ColumnAdapter(DBCaptureCoordinatesFromFeatureTypeColumnAdapter.class)
+    abstract Boolean captureCoordinates();
 
     @Nullable
     @JsonProperty()
@@ -274,7 +276,11 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
 
         public abstract Builder selectIncidentDatesInFuture(Boolean selectIncidentDatesInFuture);
 
-        public abstract Builder captureCoordinates(Boolean captureCoordinates);
+        /**
+         * @deprecated since 2.29, replaced by {@link #featureType()}
+         */
+        @Deprecated
+        abstract Builder captureCoordinates(Boolean captureCoordinates);
 
         public abstract Builder useFirstStageDuringRegistration(Boolean useFirstStageDuringRegistration);
 
@@ -319,6 +325,21 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
 
         public abstract Builder featureType(FeatureType featureType);
 
-        public abstract Program build();
+        abstract Program autoBuild();
+
+        // Auxiliary fields to access values
+        abstract Boolean captureCoordinates();
+        abstract FeatureType featureType();
+        public Program build() {
+            if (featureType() == null) {
+                if (captureCoordinates() != null) {
+                    featureType(captureCoordinates() ? FeatureType.POINT : FeatureType.NONE);
+                }
+            } else {
+                captureCoordinates(featureType() != FeatureType.NONE);
+            }
+
+            return autoBuild();
+        }
     }
 }

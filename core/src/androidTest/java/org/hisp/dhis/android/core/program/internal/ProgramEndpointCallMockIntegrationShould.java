@@ -88,7 +88,6 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
             ProgramFields.IGNORE_OVERDUE_EVENTS,
             ProgramFields.RELATIONSHIP_FROM_A,
             ProgramFields.SELECT_INCIDENT_DATES_IN_FUTURE,
-            ProgramFields.CAPTURE_COORDINATES,
             ProgramFields.USE_FIRST_STAGE_DURING_REGISTRATION,
             ProgramFields.DISPLAY_FRONT_PAGE_LIST,
             ProgramFields.PROGRAM_TYPE,
@@ -155,7 +154,6 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
                 0, // false
                 0, // false
                 0, // false
-                1, // true
                 1, // true
                 0, // false
                 "WITH_REGISTRATION",

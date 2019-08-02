@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.testapp.program;
 
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.FormType;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
@@ -169,17 +169,6 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byRepeatable()
                         .isFalse()
-                        .get();
-
-        assertThat(programStages.size(), is(1));
-    }
-
-    @Test
-    public void filter_by_capture_coordinates() {
-        List<ProgramStage> programStages =
-                d2.programModule().programStages
-                        .byCaptureCoordinates()
-                        .isTrue()
                         .get();
 
         assertThat(programStages.size(), is(1));

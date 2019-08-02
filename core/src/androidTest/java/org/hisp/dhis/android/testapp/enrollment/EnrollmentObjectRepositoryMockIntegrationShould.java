@@ -28,7 +28,8 @@
 
 package org.hisp.dhis.android.testapp.enrollment;
 
-import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
 import org.hisp.dhis.android.core.enrollment.EnrollmentObjectRepository;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
@@ -122,13 +123,16 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
     }
 
     @Test
-    public void update_coordinate() throws D2Error {
-        Coordinates coordinate = Coordinates.create(10.00, 11.00);
+    public void update_geometry() throws D2Error {
+        Geometry geometry = Geometry.builder()
+                .type(FeatureType.POINT)
+                .coordinates("[10.00, 11.00]")
+                .build();
 
         EnrollmentObjectRepository repository = objectRepository();
 
-        repository.setCoordinate(coordinate);
-        assertThat(repository.get().coordinate(), is(coordinate));
+        repository.setGeometry(geometry);
+        assertThat(repository.get().geometry(), is(geometry));
 
         repository.delete();
     }

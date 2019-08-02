@@ -33,11 +33,11 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
@@ -58,7 +58,7 @@ public final class ProgramStageFields {
      * @deprecated since 2.29, replaced by {@link #FEATURE_TYPE}
      */
     @Deprecated
-    public static final String CAPTURE_COORDINATES = "captureCoordinates";
+    private static final String CAPTURE_COORDINATES = "captureCoordinates";
     public static final String FEATURE_TYPE = "featureType";
     public static final String FORM_TYPE = "formType";
     public static final String DISPLAY_GENERATE_EVENT_BOX = "displayGenerateEventBox";

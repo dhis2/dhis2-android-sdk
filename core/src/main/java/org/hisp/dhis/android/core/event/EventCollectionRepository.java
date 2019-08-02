@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
@@ -124,12 +125,12 @@ public final class EventCollectionRepository
         return cf.enumC(Columns.STATUS);
     }
 
-    public StringFilterConnector<EventCollectionRepository> byLatitude() {
-        return cf.string(Columns.LATITUDE);
+    public EnumFilterConnector<EventCollectionRepository, FeatureType> byGeometryType() {
+        return cf.enumC(Columns.GEOMETRY_TYPE);
     }
 
-    public StringFilterConnector<EventCollectionRepository> byLongitude() {
-        return cf.string(Columns.LONGITUDE);
+    public StringFilterConnector<EventCollectionRepository> byGeometryCoordinates() {
+        return cf.string(Columns.GEOMETRY_COORDINATES);
     }
 
     public StringFilterConnector<EventCollectionRepository> byProgramUid() {

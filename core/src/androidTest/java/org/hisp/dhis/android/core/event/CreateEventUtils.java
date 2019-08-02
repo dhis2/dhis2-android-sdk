@@ -30,19 +30,20 @@ package org.hisp.dhis.android.core.event;
 
 import android.content.ContentValues;
 
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.event.internal.EventFields;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.event.internal.EventFields;
 
 public class CreateEventUtils {
 
     private static final String ENROLLMENT_UID = "test_enrollment";
     private static final EventStatus STATUS = EventStatus.ACTIVE;
-    private static final String LATITUDE = "10.832152";
-    private static final String LONGITUDE = "59.345231";
+    private static final FeatureType GEOMETRY_TYPE = FeatureType.POINT;
+    private static final String GEOMETRY_COORDINATES = "[59.345231, 10.832152]";
 
     // timestamp
     private static final String DATE = "2017-01-12T11:31:00.000";
@@ -63,8 +64,8 @@ public class CreateEventUtils {
         event.put(EventFields.CREATED, DATE);
         event.put(EventFields.LAST_UPDATED, DATE);
         event.put(EventFields.STATUS, STATUS.name());
-        event.put(EventTableInfo.Columns.LATITUDE, LATITUDE);
-        event.put(EventTableInfo.Columns.LONGITUDE, LONGITUDE);
+        event.put(EventTableInfo.Columns.GEOMETRY_TYPE, GEOMETRY_TYPE.getFeatureType());
+        event.put(EventTableInfo.Columns.GEOMETRY_COORDINATES, GEOMETRY_COORDINATES);
         event.put(EventFields.PROGRAM, program);
         event.put(EventFields.PROGRAM_STAGE, programStage);
         event.put(EventTableInfo.Columns.ORGANISATION_UNIT, orgUnit);

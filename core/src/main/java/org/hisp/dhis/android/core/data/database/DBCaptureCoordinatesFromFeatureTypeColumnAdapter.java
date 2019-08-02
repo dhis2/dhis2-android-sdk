@@ -26,44 +26,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.trackedentity;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import android.content.ContentValues;
+import android.database.Cursor;
+
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+
 import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.Geometry;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
-import java.text.ParseException;
-import java.util.Date;
+public class DBCaptureCoordinatesFromFeatureTypeColumnAdapter implements ColumnTypeAdapter<Boolean> {
 
-public class TrackedEntityInstanceSamples {
+    private static final String FEATURE_TYPE = "featureType";
 
-    public static TrackedEntityInstance get() {
-        return TrackedEntityInstance.builder()
-                .id(1L)
-                .uid("tei_uid")
-                .created(getDate("2014-08-20T12:28:56.409"))
-                .lastUpdated(getDate("2015-10-14T13:36:53.063"))
-                .createdAtClient("created_at_client")
-                .lastUpdatedAtClient("last_updated_at_client")
-                .organisationUnit("organisation_unit")
-                .trackedEntityType("tracked_entity_type")
-                .geometry(Geometry.builder()
-                        .type(FeatureType.POLYGON)
-                        .coordinates("[11.0, 11.0]")
-                        .build())
-                .state(State.TO_POST)
-                .deleted(false)
-                .build();
+    @Override
+    public Boolean fromCursor(Cursor cursor, String columnName) {
+        int featureTypeColumnIndex = cursor.getColumnIndex(FEATURE_TYPE);
+        String featureTypeStr = cursor.getString(featureTypeColumnIndex);
+
+        FeatureType featureType
+                = null;
+        if (featureTypeStr != null) {
+            try {
+                featureType = FeatureType.valueOfFeatureType(featureTypeStr);
+            } catch (Exception exception) {
+                throw new RuntimeException("Unknown FeatureType type", exception);
+            }
+        }
+
+        return featureType == null ? null : featureType != FeatureType.NONE;
     }
 
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+    @Override
+    public void toContentValues(ContentValues values, String columnName, Boolean value) {
+        /* Method has empty action as default action.
+         */
     }
 }

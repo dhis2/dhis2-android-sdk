@@ -26,44 +26,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.trackedentity;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import android.content.ContentValues;
+import android.database.Cursor;
+
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
-import java.text.ParseException;
-import java.util.Date;
+public class DbGeometryColumnAdapter implements ColumnTypeAdapter<Geometry> {
 
-public class TrackedEntityInstanceSamples {
+    private static final String GEOMETRY_TYPE = "geometryType";
+    private static final String GEOMETRY_COORDINATES = "geometryCoordinates";
 
-    public static TrackedEntityInstance get() {
-        return TrackedEntityInstance.builder()
-                .id(1L)
-                .uid("tei_uid")
-                .created(getDate("2014-08-20T12:28:56.409"))
-                .lastUpdated(getDate("2015-10-14T13:36:53.063"))
-                .createdAtClient("created_at_client")
-                .lastUpdatedAtClient("last_updated_at_client")
-                .organisationUnit("organisation_unit")
-                .trackedEntityType("tracked_entity_type")
-                .geometry(Geometry.builder()
-                        .type(FeatureType.POLYGON)
-                        .coordinates("[11.0, 11.0]")
-                        .build())
-                .state(State.TO_POST)
-                .deleted(false)
-                .build();
+    @Override
+    public Geometry fromCursor(Cursor cursor, String columnName) {
+        int geometryTypeColumnIndex = cursor.getColumnIndex(GEOMETRY_TYPE);
+        String geometryTypeStr = cursor.getString(geometryTypeColumnIndex);
+
+        FeatureType geometryType = null;
+        if (geometryTypeStr != null) {
+            try {
+                geometryType = FeatureType.valueOfFeatureType(geometryTypeStr);
+            } catch (Exception exception) {
+                throw new RuntimeException("Unknown FeatureType type", exception);
+            }
+        }
+
+        int geometryCoordinatesColumnIndex = cursor.getColumnIndex(GEOMETRY_COORDINATES);
+        String geometryCoordinates = cursor.getString(geometryCoordinatesColumnIndex);
+
+        return geometryType == null && geometryCoordinates == null ? null :
+                Geometry.builder().type(geometryType).coordinates(geometryCoordinates).build();
     }
 
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
+    @Override
+    public void toContentValues(ContentValues values, String columnName, Geometry value) {
+        if (value != null) {
+            values.put(GEOMETRY_COORDINATES, value.coordinates());
+            if (value.type() != null) {
+                values.put(GEOMETRY_TYPE, value.type().getGeometryType());
+            }
         }
     }
 }

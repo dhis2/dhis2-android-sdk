@@ -28,16 +28,27 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.database.sqlite.SQLiteStatement;
+
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
+
 public final class TrackedEntityTypeStore {
 
-    // Only nameable columns
-    private static StatementBinder<TrackedEntityType> BINDER = new NameableStatementBinder<TrackedEntityType>() {};
+    private static StatementBinder<TrackedEntityType> BINDER = new NameableStatementBinder<TrackedEntityType>() {
+        @Override
+        public void bindToStatement(@NonNull TrackedEntityType o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 11, o.featureType());
+        }
+    };
 
     private TrackedEntityTypeStore() {}
 

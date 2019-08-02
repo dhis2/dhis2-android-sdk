@@ -26,63 +26,62 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.common;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseNameableObject;
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithStyle;
-import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityTypeAttributeListColumnAdapter;
-
-import java.util.List;
+import org.hisp.dhis.android.core.data.database.DbGeometryTypeColumnAdapter;
+import org.hisp.dhis.android.core.data.serialization.GeometryTypeDeserializer;
+import org.hisp.dhis.android.core.data.serialization.GeometryTypeSerializer;
+import org.hisp.dhis.android.core.data.serialization.JsonElementStringConverter;
+import org.hisp.dhis.android.core.data.serialization.StringJsonElementSerializer;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_TrackedEntityType.Builder.class)
-public abstract class TrackedEntityType extends BaseNameableObject implements Model,
-        ObjectWithStyle<TrackedEntityType, TrackedEntityType.Builder> {
+@JsonDeserialize(builder = AutoValue_Geometry.Builder.class)
+public abstract class Geometry extends BaseModel {
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreTrackedEntityTypeAttributeListColumnAdapter.class)
-    public abstract List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes();
+    @JsonSerialize(using = GeometryTypeSerializer.class)
+    @ColumnAdapter(DbGeometryTypeColumnAdapter.class)
+    public abstract FeatureType type();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DbFeatureTypeColumnAdapter.class)
-    public abstract FeatureType featureType();
+    @JsonSerialize(using = StringJsonElementSerializer.class)
+    public abstract String coordinates();
 
-    public static Builder builder() {
-        return new $$AutoValue_TrackedEntityType.Builder();
-    }
-
-    public static TrackedEntityType create(Cursor cursor) {
-        return $AutoValue_TrackedEntityType.createFromCursor(cursor);
+    @NonNull
+    public static Geometry create(Cursor cursor) {
+        return AutoValue_Geometry.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();
 
+    public static Builder builder() {
+        return new AutoValue_Geometry.Builder();
+    }
+
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder>
-            implements ObjectWithStyle.Builder<TrackedEntityType, Builder> {
+    public abstract static class Builder extends BaseModel.Builder<Builder> {
 
-        public abstract Builder id(Long id);
+        @JsonDeserialize(using = GeometryTypeDeserializer.class)
+        public abstract Builder type(FeatureType type);
 
-        public abstract Builder trackedEntityTypeAttributes(List<TrackedEntityTypeAttribute> trackedEntityAttributes);
+        @JsonDeserialize(converter = JsonElementStringConverter.class)
+        public abstract Builder coordinates(String coordinates);
 
-        public abstract Builder featureType(FeatureType featureType);
-
-        public abstract TrackedEntityType build();
+        public abstract Geometry build();
     }
 }

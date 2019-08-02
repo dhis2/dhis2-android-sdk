@@ -26,44 +26,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.trackedentity;
+package org.hisp.dhis.android.core.arch.helpers;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.assertj.core.util.Lists;
+import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.junit.Test;
 
-import java.text.ParseException;
-import java.util.Date;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class TrackedEntityInstanceSamples {
+public class CoordinateHelperShould {
 
-    public static TrackedEntityInstance get() {
-        return TrackedEntityInstance.builder()
-                .id(1L)
-                .uid("tei_uid")
-                .created(getDate("2014-08-20T12:28:56.409"))
-                .lastUpdated(getDate("2015-10-14T13:36:53.063"))
-                .createdAtClient("created_at_client")
-                .lastUpdatedAtClient("last_updated_at_client")
-                .organisationUnit("organisation_unit")
-                .trackedEntityType("tracked_entity_type")
-                .geometry(Geometry.builder()
-                        .type(FeatureType.POLYGON)
-                        .coordinates("[11.0, 11.0]")
-                        .build())
-                .state(State.TO_POST)
-                .deleted(false)
+    private final static Double longitude = 43.34532;
+    private final static Double latitude = -23.98234;
+
+    @Test
+    public void get_coordinates_from_geometry() {
+        Geometry geometry = Geometry.builder()
+                .type(FeatureType.POINT)
+                .coordinates(Lists.newArrayList(longitude, latitude).toString())
                 .build();
+
+        Coordinates coordinates = CoordinateHelper.getCoordinatesFromGeometry(geometry);
+
+        assertThat(coordinates.longitude()).isEqualTo(longitude);
+        assertThat(coordinates.latitude()).isEqualTo(latitude);
     }
 
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+    @Test
+    public void get_geometry_from_coordinates() {
+        Coordinates coordinates = Coordinates.create(latitude, longitude);
+
+        Geometry geometry = CoordinateHelper.getGeometryFromCoordinates(coordinates);
+
+        assertThat(geometry.type()).isEqualTo(FeatureType.POINT);
+        assertThat(geometry.coordinates()).isEqualTo("[43.34532, -23.98234]");
     }
 }

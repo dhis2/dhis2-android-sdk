@@ -6,8 +6,14 @@
       "trackedEntityType": "nEenWmSyUEp",
       "orgUnit": "DiszpKrYNg8",
       "trackedEntityInstance": "PgmUFEQYZdt",
-      "featureType": "POINT",
       "coordinates": "[9,9]",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.0,
+          9.0
+        ]
+      },
       "deleted": false,
       "relationships": [],
       "attributes": [

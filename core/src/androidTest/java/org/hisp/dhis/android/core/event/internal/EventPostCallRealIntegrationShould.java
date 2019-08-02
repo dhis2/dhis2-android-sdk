@@ -29,7 +29,8 @@
 package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
@@ -151,7 +152,8 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
             String dataElementUid, String attributeOptionCombo) {
 
         eventStore.insert(Event.builder().uid(eventUid).created(new Date()).lastUpdated(new Date())
-                .status(EventStatus.ACTIVE).coordinate(Coordinates.create(13.21, 12.21)).program(programUid)
+                .geometry(Geometry.builder().type(FeatureType.POINT).coordinates("[12.21, 13.21]").build())
+                .status(EventStatus.ACTIVE).program(programUid)
                 .programStage(programStageUid).organisationUnit(orgUnitUid).eventDate(new Date())
                 .completedDate(new Date()).dueDate(new Date()).state(State.TO_POST)
                 .attributeOptionCombo(attributeOptionCombo).build());

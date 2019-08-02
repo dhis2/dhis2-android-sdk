@@ -31,16 +31,16 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.content.ContentValues;
 import android.database.MatrixCursor;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Date;
-
-import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 

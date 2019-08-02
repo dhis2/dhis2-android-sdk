@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.FormType;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.internal.ProgramStageFields;
 
@@ -90,13 +90,6 @@ public final class ProgramStageCollectionRepository
 
     public BooleanFilterConnector<ProgramStageCollectionRepository> byRepeatable() {
         return cf.bool(ProgramStageFields.REPEATABLE);
-    }
-
-    /**
-     * @deprecated since 2.29, replaced by {@link #byFeatureType()}
-     */
-    public BooleanFilterConnector<ProgramStageCollectionRepository> byCaptureCoordinates() {
-        return cf.bool(ProgramStageFields.CAPTURE_COORDINATES);
     }
 
     public EnumFilterConnector<ProgramStageCollectionRepository, FeatureType> byFeatureType() {

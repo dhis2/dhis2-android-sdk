@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.data.trackedentity;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
 import java.text.ParseException;
@@ -46,6 +47,7 @@ public class TrackedEntityTypeSamples {
                 .lastUpdated(getDate("2015-10-14T13:36:53.063"))
                 .description("Person")
                 .displayDescription("Person")
+                .featureType(FeatureType.NONE)
                 .build();
     }
 

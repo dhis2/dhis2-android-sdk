@@ -33,6 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
@@ -65,7 +66,7 @@ public class ProgramShould extends BaseObjectShould implements ObjectShould {
         assertThat(program.displayShortName()).isEqualTo("WHO RMNCH Tracker");
         assertThat(program.ignoreOverdueEvents()).isFalse();
         assertThat(program.dataEntryMethod()).isFalse();
-        assertThat(program.captureCoordinates()).isFalse();
+        assertThat(program.captureCoordinates()).isTrue();
         assertThat(program.enrollmentDateLabel()).isEqualTo("Date of first visit");
         assertThat(program.onlyEnrollOnce()).isFalse();
         assertThat(program.version()).isEqualTo(11);
@@ -76,6 +77,7 @@ public class ProgramShould extends BaseObjectShould implements ObjectShould {
         assertThat(program.useFirstStageDuringRegistration()).isFalse();
         assertThat(program.minAttributesRequiredToSearch()).isEqualTo(3);
         assertThat(program.maxTeiCountToReturn()).isEqualTo(2);
+        assertThat(program.featureType()).isEqualTo(FeatureType.MULTI_POLYGON);
 
         assertThat(program.displayFrontPageList()).isFalse();
         assertThat(program.programType()).isEqualTo(ProgramType.WITH_REGISTRATION);

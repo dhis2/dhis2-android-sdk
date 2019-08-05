@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.datavalue.DataValueTableInfo;
 import java.util.Collection;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns;
 
 @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
@@ -93,7 +94,7 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
 
     Collection<DataValue> getDataValuesWithState(State state) {
         String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(DataValue.Columns.STATE, state.name()).build();
+                .appendKeyStringValue(Columns.STATE, state.name()).build();
         return selectWhere(whereClause);
     }
 
@@ -110,11 +111,11 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
 
     public boolean exists(DataValue dataValue) {
         String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(DataValueFields.DATA_ELEMENT, dataValue.dataElement())
-                .appendKeyStringValue(DataValueFields.PERIOD, dataValue.period())
-                .appendKeyStringValue(DataValueTableInfo.ORGANISATION_UNIT, dataValue.organisationUnit())
-                .appendKeyStringValue(DataValueFields.CATEGORY_OPTION_COMBO, dataValue.categoryOptionCombo())
-                .appendKeyStringValue(DataValueFields.ATTRIBUTE_OPTION_COMBO, dataValue.attributeOptionCombo())
+                .appendKeyStringValue(Columns.DATA_ELEMENT, dataValue.dataElement())
+                .appendKeyStringValue(Columns.PERIOD, dataValue.period())
+                .appendKeyStringValue(Columns.ORGANISATION_UNIT, dataValue.organisationUnit())
+                .appendKeyStringValue(Columns.CATEGORY_OPTION_COMBO, dataValue.categoryOptionCombo())
+                .appendKeyStringValue(Columns.ATTRIBUTE_OPTION_COMBO, dataValue.attributeOptionCombo())
                 .build();
         return selectWhere(whereClause).size() > 0;
     }

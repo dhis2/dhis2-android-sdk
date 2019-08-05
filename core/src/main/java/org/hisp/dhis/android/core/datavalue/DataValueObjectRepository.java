@@ -69,7 +69,7 @@ public final class DataValueObjectRepository
     }
 
     public Unit set(String value) throws D2Error {
-        objectWithValue = setBuilder().value(value).build();
+        DataValue objectWithValue = setBuilder().value(value).build();
         return setObject(objectWithValue);
     }
 

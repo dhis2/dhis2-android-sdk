@@ -29,7 +29,8 @@
 package org.hisp.dhis.android.core.data.enrollment;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
@@ -54,7 +55,9 @@ public class EnrollmentSamples {
                 .followUp(Boolean.FALSE)
                 .status(EnrollmentStatus.ACTIVE)
                 .trackedEntityInstance("tracked_entity_instance")
-                .coordinate(Coordinates.create(21.21, 23.23))
+                .geometry(Geometry.builder()
+                        .type(FeatureType.POINT)
+                        .coordinates("[21.21, 23.23]").build())
                 .state(State.TO_POST)
                 .deleted(false)
                 .build();

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
@@ -61,5 +62,13 @@ public class TrackedEntityTypeCollectionRepositoryMockIntegrationShould extends 
         TrackedEntityType trackedEntityType = d2.trackedEntityModule().trackedEntityTypes
                 .withTrackedEntityTypeAttributes().one().get();
         assertThat(trackedEntityType.trackedEntityTypeAttributes().size(), is(1));
+    }
+
+    @Test
+    public void filter_by_feature_type() {
+        List<TrackedEntityType> trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes
+                .byFeatureType().eq(FeatureType.NONE)
+                .get();
+        assertThat(trackedEntityTypes.size(), is(1));
     }
 }

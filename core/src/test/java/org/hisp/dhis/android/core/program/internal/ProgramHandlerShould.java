@@ -132,9 +132,6 @@ public class ProgramHandlerShould {
     @Mock
     private List<ProgramSection> programSections;
 
-    @Mock
-    private ProgramDHISVersionManager versionManager;
-
     // object to test
     private ProgramHandler programHandler;
 
@@ -145,7 +142,7 @@ public class ProgramHandlerShould {
         programHandler = new ProgramHandler(
                 programStore, programRuleVariableHandler, programIndicatorHandler, programRuleHandler,
                 programTrackedEntityAttributeHandler, programSectionHandler, styleHandler, orphanCleaner,
-                collectionCleaner, versionManager);
+                collectionCleaner);
 
         when(program.uid()).thenReturn("test_program_uid");
         when(program.code()).thenReturn("test_program_code");
@@ -168,7 +165,6 @@ public class ProgramHandlerShould {
         when(program.ignoreOverdueEvents()).thenReturn(false);
         when(program.relationshipFromA()).thenReturn(true);
         when(program.selectIncidentDatesInFuture()).thenReturn(true);
-        when(program.captureCoordinates()).thenReturn(true);
         when(program.useFirstStageDuringRegistration()).thenReturn(true);
         when(program.displayFrontPageList()).thenReturn(true);
         when(program.programType()).thenReturn(ProgramType.WITH_REGISTRATION);
@@ -189,8 +185,6 @@ public class ProgramHandlerShould {
         when(access.data()).thenReturn(dataAccess);
         when(dataAccess.read()).thenReturn(true);
         when(dataAccess.write()).thenReturn(true);
-
-        when(versionManager.addCaptureCoordinatesOrFeatureType(program)).thenReturn(program);
     }
 
     @Test

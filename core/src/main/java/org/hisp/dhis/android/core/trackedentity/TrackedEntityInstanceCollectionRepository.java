@@ -41,10 +41,10 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
-import org.hisp.dhis.android.core.period.FeatureType;
 
 import java.util.List;
 import java.util.Map;
@@ -118,12 +118,12 @@ public final class TrackedEntityInstanceCollectionRepository
         return cf.string(TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE);
     }
 
-    public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byCoordinates() {
-        return cf.string(TrackedEntityInstanceFields.COORDINATES);
+    public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, FeatureType> byGeometryType() {
+        return cf.enumC(TrackedEntityInstanceTableInfo.Columns.GEOMETRY_TYPE);
     }
 
-    public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, FeatureType> byFeatureType() {
-        return cf.enumC(TrackedEntityInstanceFields.FEATURE_TYPE);
+    public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byGeometryCoordinates() {
+        return cf.string(TrackedEntityInstanceTableInfo.Columns.GEOMETRY_COORDINATES);
     }
 
     public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> byState() {

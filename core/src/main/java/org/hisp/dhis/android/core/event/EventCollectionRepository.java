@@ -38,8 +38,8 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
-import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
@@ -55,6 +55,8 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 import io.reactivex.Observable;
+
+import static org.hisp.dhis.android.core.event.EventTableInfo.Columns;
 
 @Reusable
 public final class EventCollectionRepository
@@ -96,75 +98,75 @@ public final class EventCollectionRepository
     }
 
     public StringFilterConnector<EventCollectionRepository> byUid() {
-        return cf.string(EventTableInfo.Columns.UID);
+        return cf.string(Columns.UID);
     }
 
     public StringFilterConnector<EventCollectionRepository> byEnrollmentUid() {
-        return cf.string(EventFields.ENROLLMENT);
+        return cf.string(Columns.ENROLLMENT);
     }
 
     public DateFilterConnector<EventCollectionRepository> byCreated() {
-        return cf.date(EventFields.CREATED);
+        return cf.date(Columns.CREATED);
     }
 
     public DateFilterConnector<EventCollectionRepository> byLastUpdated() {
-        return cf.date(EventFields.LAST_UPDATED);
+        return cf.date(Columns.LAST_UPDATED);
     }
 
     public StringFilterConnector<EventCollectionRepository> byCreatedAtClient() {
-        return cf.string(EventTableInfo.Columns.CREATED_AT_CLIENT);
+        return cf.string(Columns.CREATED_AT_CLIENT);
     }
 
     public StringFilterConnector<EventCollectionRepository> byLastUpdatedAtClient() {
-        return cf.string(EventTableInfo.Columns.LAST_UPDATED_AT_CLIENT);
+        return cf.string(Columns.LAST_UPDATED_AT_CLIENT);
     }
 
     public EnumFilterConnector<EventCollectionRepository, EventStatus> byStatus() {
-        return cf.enumC(EventFields.STATUS);
+        return cf.enumC(Columns.STATUS);
     }
 
-    public StringFilterConnector<EventCollectionRepository> byLatitude() {
-        return cf.string(EventTableInfo.Columns.LATITUDE);
+    public EnumFilterConnector<EventCollectionRepository, FeatureType> byGeometryType() {
+        return cf.enumC(Columns.GEOMETRY_TYPE);
     }
 
-    public StringFilterConnector<EventCollectionRepository> byLongitude() {
-        return cf.string(EventTableInfo.Columns.LONGITUDE);
+    public StringFilterConnector<EventCollectionRepository> byGeometryCoordinates() {
+        return cf.string(Columns.GEOMETRY_COORDINATES);
     }
 
     public StringFilterConnector<EventCollectionRepository> byProgramUid() {
-        return cf.string(EventFields.PROGRAM);
+        return cf.string(Columns.PROGRAM);
     }
 
     public StringFilterConnector<EventCollectionRepository> byProgramStageUid() {
-        return cf.string(EventFields.PROGRAM_STAGE);
+        return cf.string(Columns.PROGRAM_STAGE);
     }
 
     public StringFilterConnector<EventCollectionRepository> byOrganisationUnitUid() {
-        return cf.string(EventTableInfo.Columns.ORGANISATION_UNIT);
+        return cf.string(Columns.ORGANISATION_UNIT);
     }
 
     public DateFilterConnector<EventCollectionRepository> byEventDate() {
-        return cf.date(EventFields.EVENT_DATE);
+        return cf.date(Columns.EVENT_DATE);
     }
 
     public DateFilterConnector<EventCollectionRepository> byCompleteDate() {
-        return cf.date(EventFields.COMPLETE_DATE);
+        return cf.date(Columns.COMPLETE_DATE);
     }
 
     public DateFilterConnector<EventCollectionRepository> byDueDate() {
-        return cf.date(EventFields.DUE_DATE);
+        return cf.date(Columns.DUE_DATE);
     }
 
     public EnumFilterConnector<EventCollectionRepository, State> byState() {
-        return cf.enumC(BaseDataModel.Columns.STATE);
+        return cf.enumC(Columns.STATE);
     }
 
     public StringFilterConnector<EventCollectionRepository> byAttributeOptionComboUid() {
-        return cf.string(EventFields.ATTRIBUTE_OPTION_COMBO);
+        return cf.string(Columns.ATTRIBUTE_OPTION_COMBO);
     }
 
     public EventCollectionRepository byTrackedEntityInstanceUids(List<String> uids) {
-        return cf.subQuery(EventFields.ENROLLMENT).inLinkTable(
+        return cf.subQuery(Columns.ENROLLMENT).inLinkTable(
                 EnrollmentTableInfo.TABLE_INFO.name(),
                 BaseIdentifiableObjectModel.Columns.UID,
                 EnrollmentFields.TRACKED_ENTITY_INSTANCE,
@@ -177,19 +179,19 @@ public final class EventCollectionRepository
     }
 
     public EventCollectionRepository orderByEventDate(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(EventFields.EVENT_DATE, direction);
+        return cf.withOrderBy(Columns.EVENT_DATE, direction);
     }
 
     public EventCollectionRepository orderByDueDate(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(EventFields.DUE_DATE, direction);
+        return cf.withOrderBy(Columns.DUE_DATE, direction);
     }
 
     public EventCollectionRepository orderByCompleteDate(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(EventFields.COMPLETE_DATE, direction);
+        return cf.withOrderBy(Columns.COMPLETE_DATE, direction);
     }
 
     public EventCollectionRepository orderByLastUpdated(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(EventFields.LAST_UPDATED, direction);
+        return cf.withOrderBy(Columns.LAST_UPDATED, direction);
     }
 
     public int countTrackedEntityInstances() {

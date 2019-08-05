@@ -8,7 +8,7 @@
   "ignoreOverdueEvents": false,
   "skipOffline": false,
   "dataEntryMethod": false,
-  "captureCoordinates": false,
+  "captureCoordinates": true,
   "enrollmentDateLabel": "Date of first visit",
   "onlyEnrollOnce": false,
   "version": 11,
@@ -30,6 +30,7 @@
   "expiryDays": 0,
   "minAttributesRequiredToSearch": 3,
   "maxTeiCountToReturn": 2,
+  "featureType": "MULTI_POLYGON",
   "categoryCombo": {
     "id": "p0KPaWEg3cf"
   },

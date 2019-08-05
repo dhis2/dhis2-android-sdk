@@ -27,17 +27,48 @@
  */
 package org.hisp.dhis.android.core.arch.helpers;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.Geometry;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public final class CoordinateHelper {
 
     private CoordinateHelper() {}
 
-    public static Double getLatitude(Coordinates coordinates) {
-        return coordinates == null ? null : coordinates.latitude();
+    public static Coordinates getCoordinatesFromGeometry(Geometry geometry) {
+        if (geometry.type() == FeatureType.POINT && geometry.coordinates() != null) {
+            ObjectMapper mapper = new ObjectMapper();
+            List<Double> coordinateTokens;
+            try {
+                coordinateTokens = mapper.readValue(geometry.coordinates(),
+                        new TypeReference<List<Double>>(){});
+            } catch (IOException e) {
+                return null;
+            }
+
+            return Coordinates.create(coordinateTokens.get(1), coordinateTokens.get(0));
+        } else {
+            return null;
+        }
     }
 
-    public static Double getLongitude(Coordinates coordinates) {
-        return coordinates == null ? null : coordinates.longitude();
+    public static Geometry getGeometryFromCoordinates(Coordinates coordinates) {
+        if (coordinates == null || coordinates.longitude() == null || coordinates.latitude() == null) {
+            return null;
+        } else {
+            List<Double> coordinatesList = Arrays.asList(coordinates.longitude(), coordinates.latitude());
+
+            return Geometry.builder()
+                    .type(FeatureType.POINT)
+                    .coordinates(coordinatesList.toString())
+                    .build();
+        }
     }
 }

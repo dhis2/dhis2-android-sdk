@@ -31,9 +31,9 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Property;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipFields;
 
@@ -51,10 +51,10 @@ public final class TrackedEntityInstanceFields {
     public final static String TRACKED_ENTITY_ATTRIBUTE_VALUES = "attributes";
     final static String RELATIONSHIPS = "relationships";
     public final static String TRACKED_ENTITY_TYPE = "trackedEntityType";
-    final static String COORDINATES = "coordinates";
-    final static String FEATURE_TYPE = "featureType";
+    private final static String COORDINATES = "coordinates";
     private final static String DELETED = "deleted";
     final static String ENROLLMENTS = "enrollments";
+    private final static String GEOMETRY = "geometry";
 
     private static final FieldsHelper<TrackedEntityInstance> fh = new FieldsHelper<>();
 
@@ -78,7 +78,7 @@ public final class TrackedEntityInstanceFields {
                 fh.<String>field(ORGANISATION_UNIT),
                 fh.<String>field(TRACKED_ENTITY_TYPE),
                 fh.<String>field(COORDINATES),
-                fh.<FeatureType>field(FEATURE_TYPE),
+                fh.<Geometry>field(GEOMETRY),
                 fh.<Boolean>field(DELETED),
                 fh.<TrackedEntityAttributeValue>nestedField(TRACKED_ENTITY_ATTRIBUTE_VALUES)
                         .with(TrackedEntityAttributeValueFields.allFields)

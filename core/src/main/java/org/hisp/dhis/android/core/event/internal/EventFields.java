@@ -31,28 +31,32 @@ package org.hisp.dhis.android.core.event.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueFields;
 
+import static org.hisp.dhis.android.core.event.EventTableInfo.Columns;
+
 public final class EventFields {
 
     public static final String UID = "event";
-    public static final String ENROLLMENT = "enrollment";
-    public static final String CREATED = "created";
-    public static final String LAST_UPDATED = "lastUpdated";
-    public static final String STATUS = "status";
+    public static final String ENROLLMENT = Columns.ENROLLMENT;
+    public static final String CREATED = Columns.CREATED;
+    public static final String LAST_UPDATED = Columns.LAST_UPDATED;
+    public static final String STATUS = Columns.STATUS;
     private static final String COORDINATE = "coordinate";
-    public static final String PROGRAM = "program";
-    public static final String PROGRAM_STAGE = "programStage";
+    public static final String PROGRAM = Columns.PROGRAM;
+    public static final String PROGRAM_STAGE = Columns.PROGRAM_STAGE;
     public static final String ORGANISATION_UNIT = "orgUnit";
-    public static final String EVENT_DATE = "eventDate";
-    public static final String COMPLETE_DATE = "completedDate";
-    public static final String DUE_DATE = "dueDate";
+    public static final String EVENT_DATE = Columns.EVENT_DATE;
+    public static final String COMPLETE_DATE = Columns.COMPLETE_DATE;
+    public static final String DUE_DATE = Columns.DUE_DATE;
     public static final String DELETED = "deleted";
     public static final String TRACKED_ENTITY_DATA_VALUES = "dataValues";
-    public static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
+    public static final String ATTRIBUTE_OPTION_COMBO = Columns.ATTRIBUTE_OPTION_COMBO;;
+    private final static String GEOMETRY = "geometry";
 
     private static FieldsHelper<Event> fh = new FieldsHelper<>();
 
@@ -63,6 +67,7 @@ public final class EventFields {
                     fh.<String>field(LAST_UPDATED),
                     fh.<EventStatus>field(STATUS),
                     fh.<Coordinates>field(COORDINATE),
+                    fh.<Geometry>field(GEOMETRY),
                     fh.<String>field(PROGRAM),
                     fh.<String>field(PROGRAM_STAGE),
                     fh.<String>field(ORGANISATION_UNIT),

@@ -56,6 +56,8 @@ public final class TrackedEntityInstanceTableInfo {
         static final String CREATED_AT_CLIENT = "createdAtClient";
         static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
         static final String ORGANISATION_UNIT = "organisationUnit";
+        static final String GEOMETRY_TYPE = "geometryType";
+        static final String GEOMETRY_COORDINATES = "geometryCoordinates";
 
         @Override
         public String[] all() {
@@ -67,8 +69,8 @@ public final class TrackedEntityInstanceTableInfo {
                     LAST_UPDATED_AT_CLIENT,
                     ORGANISATION_UNIT,
                     TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE,
-                    TrackedEntityInstanceFields.COORDINATES,
-                    TrackedEntityInstanceFields.FEATURE_TYPE,
+                    GEOMETRY_TYPE,
+                    GEOMETRY_COORDINATES,
                     BaseDataModel.Columns.STATE
             );
         }

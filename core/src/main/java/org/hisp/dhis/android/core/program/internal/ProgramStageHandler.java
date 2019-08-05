@@ -36,12 +36,10 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
 import org.hisp.dhis.android.core.program.ProgramStageTableInfo;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.Collection;
 
@@ -57,7 +55,6 @@ final class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage> {
     private final OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner;
     private final OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner;
     private final CollectionCleaner<ProgramStage> collectionCleaner;
-    private final DHISVersionManager versionManager;
 
     @Inject
     ProgramStageHandler(IdentifiableObjectStore<ProgramStage> programStageStore,
@@ -66,8 +63,7 @@ final class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage> {
                         ObjectStyleHandler styleHandler,
                         OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner,
                         OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner,
-                        CollectionCleaner<ProgramStage> collectionCleaner,
-                        DHISVersionManager versionManager) {
+                        CollectionCleaner<ProgramStage> collectionCleaner) {
         super(programStageStore);
         this.programStageSectionHandler = programStageSectionHandler;
         this.programStageDataElementHandler = programStageDataElementHandler;
@@ -75,25 +71,6 @@ final class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage> {
         this.programStageDataElementCleaner = programStageDataElementCleaner;
         this.programStageSectionCleaner = programStageSectionCleaner;
         this.collectionCleaner = collectionCleaner;
-        this.versionManager = versionManager;
-    }
-
-    @Override
-    protected ProgramStage beforeObjectHandled(ProgramStage programStage) {
-        ProgramStage adaptedProgramStage;
-        ProgramStage.Builder builder = programStage.toBuilder();
-        if (versionManager.is2_29()) {
-            adaptedProgramStage = programStage.captureCoordinates() ? builder.featureType(FeatureType.POINT).build() :
-                    builder.featureType(FeatureType.NONE).build();
-        } else {
-            if (programStage.featureType() == null) {
-                adaptedProgramStage = builder.captureCoordinates(false).featureType(FeatureType.NONE).build();
-            } else {
-                adaptedProgramStage = builder.captureCoordinates(
-                        programStage.featureType() != FeatureType.NONE).build();
-            }
-        }
-        return adaptedProgramStage;
     }
 
     @Override

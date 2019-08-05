@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Test;
 
@@ -66,7 +66,7 @@ public class ProgramStageShould  extends BaseObjectShould implements ObjectShoul
         assertThat(programStage.allowGenerateNextVisit()).isFalse();
         assertThat(programStage.autoGenerateEvent()).isTrue();
         assertThat(programStage.blockEntryForm()).isFalse();
-        assertThat(programStage.captureCoordinates()).isFalse();
+        assertThat(programStage.captureCoordinates()).isTrue();
         assertThat(programStage.displayGenerateEventBox()).isFalse();
         assertThat(programStage.executionDateLabel()).isNull();
         assertThat(programStage.formType()).isEqualTo(FormType.DEFAULT);

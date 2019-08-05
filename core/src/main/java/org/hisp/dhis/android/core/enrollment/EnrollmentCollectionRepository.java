@@ -33,13 +33,13 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.DoubleFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
@@ -125,12 +125,12 @@ public final class EnrollmentCollectionRepository extends ReadWriteWithUidCollec
         return cf.string(EnrollmentFields.TRACKED_ENTITY_INSTANCE);
     }
 
-    public DoubleFilterConnector<EnrollmentCollectionRepository> byCoordinateLatitude() {
-        return cf.doubleC(EnrollmentTableInfo.Columns.LATITUDE);
+    public EnumFilterConnector<EnrollmentCollectionRepository, FeatureType> byGeometryType() {
+        return cf.enumC(EnrollmentTableInfo.Columns.GEOMETRY_TYPE);
     }
 
-    public DoubleFilterConnector<EnrollmentCollectionRepository> byCoordinateLongitude() {
-        return cf.doubleC(EnrollmentTableInfo.Columns.LONGITUDE);
+    public StringFilterConnector<EnrollmentCollectionRepository> byGeometryCoordinates() {
+        return cf.string(EnrollmentTableInfo.Columns.GEOMETRY_COORDINATES);
     }
 
     public EnumFilterConnector<EnrollmentCollectionRepository, State> byState() {

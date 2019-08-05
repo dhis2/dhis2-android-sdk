@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 
+import androidx.annotation.Nullable;
+
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.program.internal.ProgramFields;
-
-import androidx.annotation.Nullable;
 
 public class CreateProgramUtils {
     /**
@@ -68,7 +68,6 @@ public class CreateProgramUtils {
     private static final Boolean IGNORE_OVERDUE_EVENTS = false;
     private static final Boolean RELATIONSHIP_FROM_A = true;
     private static final Boolean SELECT_INCIDENT_DATES_IN_FUTURE = true;
-    private static final Boolean CAPTURE_COORDINATES = true;
     private static final Boolean USE_FIRST_STAGE_DURING_REGISTRATION = true;
     private static final Boolean DISPLAY_FRONT_PAGE_LIST = true;
     private static final ProgramType PROGRAM_TYPE = ProgramType.WITH_REGISTRATION;
@@ -111,7 +110,6 @@ public class CreateProgramUtils {
         program.put(ProgramFields.IGNORE_OVERDUE_EVENTS, IGNORE_OVERDUE_EVENTS);
         program.put(ProgramFields.RELATIONSHIP_FROM_A, RELATIONSHIP_FROM_A);
         program.put(ProgramFields.SELECT_INCIDENT_DATES_IN_FUTURE, SELECT_INCIDENT_DATES_IN_FUTURE);
-        program.put(ProgramFields.CAPTURE_COORDINATES, CAPTURE_COORDINATES);
         program.put(ProgramFields.USE_FIRST_STAGE_DURING_REGISTRATION, USE_FIRST_STAGE_DURING_REGISTRATION);
         program.put(ProgramFields.DISPLAY_FRONT_PAGE_LIST, DISPLAY_FRONT_PAGE_LIST);
         program.put(ProgramFields.PROGRAM_TYPE, PROGRAM_TYPE.name());

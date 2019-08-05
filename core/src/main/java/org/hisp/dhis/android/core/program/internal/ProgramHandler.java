@@ -62,7 +62,6 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
     private final ObjectStyleHandler styleHandler;
     private final ParentOrphanCleaner<Program> orphanCleaner;
     private final CollectionCleaner<Program> collectionCleaner;
-    private final ProgramDHISVersionManager programVersionManager;
 
     @Inject
     ProgramHandler(ProgramStoreInterface programStore,
@@ -73,8 +72,7 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
                    Handler<ProgramSection> programSectionHandler,
                    ObjectStyleHandler styleHandler,
                    ParentOrphanCleaner<Program> orphanCleaner,
-                   CollectionCleaner<Program> collectionCleaner,
-                   ProgramDHISVersionManager programVersionManager) {
+                   CollectionCleaner<Program> collectionCleaner) {
         super(programStore);
         this.programRuleVariableHandler = programRuleVariableHandler;
         this.programIndicatorHandler = programIndicatorHandler;
@@ -84,12 +82,6 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
         this.styleHandler = styleHandler;
         this.orphanCleaner = orphanCleaner;
         this.collectionCleaner = collectionCleaner;
-        this.programVersionManager = programVersionManager;
-    }
-
-    @Override
-    protected Program beforeObjectHandled(Program program) {
-        return programVersionManager.addCaptureCoordinatesOrFeatureType(program);
     }
 
     @Override

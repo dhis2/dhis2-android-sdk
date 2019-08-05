@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
@@ -57,6 +58,8 @@ public class TrackedEntityInstanceShould extends BaseObjectShould implements Obj
         assertThat(trackedEntityInstance.uid()).isEqualTo("PgmUFEQYZdt");
         assertThat(trackedEntityInstance.organisationUnit()).isEqualTo("DiszpKrYNg8");
         assertThat(trackedEntityInstance.trackedEntityType()).isEqualTo("nEenWmSyUEp");
+        assertThat(trackedEntityInstance.geometry().type()).isEqualTo(FeatureType.POINT);
+        assertThat(trackedEntityInstance.geometry().coordinates()).isEqualTo("[9.0, 9.0]");
 
         assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(0).trackedEntityAttribute()).isEqualTo("gHGyrwKPzej");
         assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(1).trackedEntityAttribute()).isEqualTo("lZGmxYbs97q");

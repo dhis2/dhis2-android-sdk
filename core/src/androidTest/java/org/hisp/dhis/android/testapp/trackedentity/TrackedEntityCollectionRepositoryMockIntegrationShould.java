@@ -31,8 +31,8 @@ package org.hisp.dhis.android.testapp.trackedentity;
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -128,20 +128,20 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     }
 
     @Test
-    public void filter_by_coordinates() {
+    public void filter_by_geometry_type() {
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances
-                        .byCoordinates().eq("[9,9]")
+                        .byGeometryType().eq(FeatureType.POINT)
                         .get();
 
         assertThat(trackedEntityInstances.size(), is(1));
     }
 
     @Test
-    public void filter_by_feature_type() {
+    public void filter_by_geometry_coordinates() {
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances
-                        .byFeatureType().eq(FeatureType.POINT)
+                        .byGeometryCoordinates().eq("[9.0, 9.0]")
                         .get();
 
         assertThat(trackedEntityInstances.size(), is(1));

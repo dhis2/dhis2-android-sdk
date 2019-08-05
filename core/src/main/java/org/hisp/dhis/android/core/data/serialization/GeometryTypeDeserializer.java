@@ -26,41 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.data.serialization;
 
-import org.hisp.dhis.android.core.period.FeatureType;
-import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.common.FeatureType;
 
-import dagger.Reusable;
+import java.io.IOException;
 
-@Reusable
-class ProgramDHISVersionManager {
-
-    private final DHISVersionManager versionManager;
-
-    @Inject
-    ProgramDHISVersionManager(DHISVersionManager versionManager) {
-        this.versionManager = versionManager;
-    }
-
-    Program addCaptureCoordinatesOrFeatureType(Program program) {
-        if (versionManager.is2_29() || versionManager.is2_30()) {
-            return addFeatureType(program);
-        } else {
-            return addCaptureCoordinates(program);
+public class GeometryTypeDeserializer extends JsonDeserializer<FeatureType> {
+    @Override
+    public FeatureType deserialize(JsonParser p, DeserializationContext ctxt)
+            throws IOException, JsonProcessingException {
+        JsonToken jsonToken = p.getCurrentToken();
+        if (jsonToken == JsonToken.VALUE_STRING) {
+            return FeatureType.valueOfFeatureType(p.getValueAsString());
         }
-    }
-
-    private Program addFeatureType(Program program) {
-        FeatureType featureType = program.captureCoordinates() ? FeatureType.POINT : FeatureType.NONE;
-        return program.toBuilder().featureType(featureType).build();
-    }
-
-    private Program addCaptureCoordinates(Program program) {
-        boolean captureCoordinates = program.featureType() != FeatureType.NONE;
-        return program.toBuilder().captureCoordinates(captureCoordinates).build();
+        return null;
     }
 }

@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatement
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectWithStateStoreImpl;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
-import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.State;
@@ -67,8 +66,8 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
         sqLiteBind(sqLiteStatement, 5, o.createdAtClient());
         sqLiteBind(sqLiteStatement, 6, o.lastUpdatedAtClient());
         sqLiteBind(sqLiteStatement, 7, o.status());
-        sqLiteBind(sqLiteStatement, 8, CoordinateHelper.getLatitude(o.coordinate()));
-        sqLiteBind(sqLiteStatement, 9, CoordinateHelper.getLongitude(o.coordinate()));
+        sqLiteBind(sqLiteStatement, 8, o.geometry() == null ? null : o.geometry().type());
+        sqLiteBind(sqLiteStatement, 9, o.geometry() == null ? null : o.geometry().coordinates());
         sqLiteBind(sqLiteStatement, 10, o.program());
         sqLiteBind(sqLiteStatement, 11, o.programStage());
         sqLiteBind(sqLiteStatement, 12, o.organisationUnit());

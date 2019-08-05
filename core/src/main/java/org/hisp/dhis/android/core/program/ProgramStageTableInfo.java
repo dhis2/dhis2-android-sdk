@@ -66,7 +66,6 @@ public final class ProgramStageTableInfo {
                     ProgramStageFields.REPORT_DATE_TO_USE,
                     ProgramStageFields.OPEN_AFTER_ENROLLMENT,
                     ProgramStageFields.REPEATABLE,
-                    ProgramStageFields.CAPTURE_COORDINATES,
                     ProgramStageFields.FORM_TYPE,
                     ProgramStageFields.DISPLAY_GENERATE_EVENT_BOX,
                     ProgramStageFields.GENERATED_BY_ENROLMENT_DATE,

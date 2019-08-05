@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.testapp.program;
 
-import org.hisp.dhis.android.core.period.FeatureType;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramType;
@@ -137,14 +137,6 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_select_incident_dates_in_future() {
         List<Program> programs = d2.programModule().programs
                 .bySelectIncidentDatesInFuture().isFalse()
-                .get();
-        assertThat(programs.size(), is(1));
-    }
-
-    @Test
-    public void filter_by_capture_coordinates() {
-        List<Program> programs = d2.programModule().programs
-                .byCaptureCoordinates().isFalse()
                 .get();
         assertThat(programs.size(), is(1));
     }

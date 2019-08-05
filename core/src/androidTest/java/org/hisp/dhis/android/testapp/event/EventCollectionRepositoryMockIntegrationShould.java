@@ -30,6 +30,7 @@ package org.hisp.dhis.android.testapp.event;
 
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventCreateProjection;
@@ -130,21 +131,21 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     }
 
     @Test
-    public void filter_by_latitude() {
+    public void filter_by_geometry_type() {
         List<Event> events =
                 d2.eventModule().events
-                        .byLatitude().eq("43.0")
-                        .get();
+                .byGeometryType().eq(FeatureType.POINT)
+                .get();
 
-        assertThat(events.size(), is(1));
+        assertThat(events.size(), is(4));
     }
 
     @Test
-    public void filter_by_longitude() {
+    public void filter_by_geometry_coordinates() {
         List<Event> events =
                 d2.eventModule().events
-                        .byLongitude().eq("21.0")
-                        .get();
+                .byGeometryCoordinates().eq("[21.0, 43.0]")
+                .get();
 
         assertThat(events.size(), is(1));
     }

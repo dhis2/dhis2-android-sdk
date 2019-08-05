@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectReposi
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithUidDataObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
@@ -72,16 +72,20 @@ public final class EventObjectRepository
         return updateObject(updateBuilder().status(eventStatus).build());
     }
 
-    public Unit setCoordinate(Coordinates coordinate) throws D2Error {
-        return updateObject(updateBuilder().coordinate(coordinate).build());
-    }
-
     public Unit setCompletedDate(Date completedDate) throws D2Error {
         return updateObject(updateBuilder().completedDate(completedDate).build());
     }
 
     public Unit setDueDate(Date dueDate) throws D2Error {
         return updateObject(updateBuilder().dueDate(dueDate).build());
+    }
+
+    public Unit setGeometry(Geometry geometry) throws D2Error {
+        return updateObject(updateBuilder().geometry(geometry).build());
+    }
+
+    public Unit setAttributeOptionComboUid(String attributeOptionComboUid) throws D2Error {
+        return updateObject(updateBuilder().attributeOptionCombo(attributeOptionComboUid).build());
     }
 
     private Event.Builder updateBuilder() {

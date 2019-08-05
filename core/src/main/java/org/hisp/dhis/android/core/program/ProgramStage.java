@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -38,23 +40,22 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.AccessColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DBCaptureCoordinatesFromFeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbFormTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreProgramStageDataElementListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreProgramStageSectionListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.List;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramStage.Builder.class)
@@ -100,7 +101,8 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     @Deprecated
     @Nullable
     @JsonProperty()
-    public abstract Boolean captureCoordinates();
+    @ColumnAdapter(DBCaptureCoordinatesFromFeatureTypeColumnAdapter.class)
+    abstract Boolean captureCoordinates();
 
     @Nullable
     @JsonProperty()
@@ -206,7 +208,10 @@ public abstract class ProgramStage extends BaseIdentifiableObject
 
         public abstract Builder repeatable(Boolean repeatable);
 
-        public abstract Builder captureCoordinates(Boolean captureCoordinates);
+        /**
+         * @deprecated since 2.29, replaced by {@link #featureType(FeatureType featureType)}
+         */
+        abstract Builder captureCoordinates(Boolean captureCoordinates);
 
         public abstract Builder featureType(FeatureType featureType);
 
@@ -240,6 +245,21 @@ public abstract class ProgramStage extends BaseIdentifiableObject
 
         public abstract Builder remindCompleted(Boolean remindCompleted);
 
-        public abstract ProgramStage build();
+        abstract ProgramStage autoBuild();
+
+        // Auxiliary fields to access values
+        abstract Boolean captureCoordinates();
+        abstract FeatureType featureType();
+        public ProgramStage build() {
+            if (featureType() == null) {
+                if (captureCoordinates() != null) {
+                    featureType(captureCoordinates() ? FeatureType.POINT : FeatureType.NONE);
+                }
+            } else {
+                captureCoordinates(featureType() != FeatureType.NONE);
+            }
+
+            return autoBuild();
+        }
     }
 }

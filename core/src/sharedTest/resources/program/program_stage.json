@@ -14,7 +14,7 @@
   "openAfterEnrollment": false,
   "repeatable": false,
   "featureType": "POINT",
-  "captureCoordinates": false,
+  "captureCoordinates": true,
   "formType": "DEFAULT",
   "remindCompleted": false,
   "displayGenerateEventBox": false,

@@ -162,7 +162,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         whenAPICall().thenReturn(user);
 
         when(userStore.selectFirst()).thenReturn(loggedUser);
-        when(systemInfoRepository.get()).thenReturn(systemInfoFromDb);
+        when(systemInfoRepository.blockingGet()).thenReturn(systemInfoFromDb);
 
         when(databaseAdapter.beginNewTransaction()).then((Answer<Transaction>) invocation -> {
             transaction.begin();

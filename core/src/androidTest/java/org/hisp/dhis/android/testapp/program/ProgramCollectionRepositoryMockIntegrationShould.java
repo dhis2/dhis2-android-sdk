@@ -50,7 +50,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     @Test
     public void find_all() {
         List<Program> programs = d2.programModule().programs
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -58,7 +58,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_version() {
         List<Program> programs = d2.programModule().programs
                 .byVersion().eq(3)
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -66,7 +66,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_only_enroll_once() {
         List<Program> programs = d2.programModule().programs
                 .byOnlyEnrollOnce().isFalse()
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -74,7 +74,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_enrollment_date_label() {
         List<Program> programs = d2.programModule().programs
                 .byEnrollmentDateLabel().eq("Enrollment Date")
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -82,7 +82,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_display_incident_date() {
         List<Program> programs = d2.programModule().programs
                 .byDisplayIncidentDate().isFalse()
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -90,7 +90,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_incident_date_label() {
         List<Program> programs = d2.programModule().programs
                 .byIncidentDateLabel().eq("Incident Date")
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -98,7 +98,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_registration() {
         List<Program> programs = d2.programModule().programs
                 .byRegistration().isFalse()
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -106,7 +106,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_select_enrollment_dates_in_future() {
         List<Program> programs = d2.programModule().programs
                 .bySelectEnrollmentDatesInFuture().isFalse()
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -114,7 +114,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_data_entry_method() {
         List<Program> programs = d2.programModule().programs
                 .byDataEntryMethod().isTrue()
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -122,7 +122,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_ignore_overdue_events() {
         List<Program> programs = d2.programModule().programs
                 .byIgnoreOverdueEvents().isTrue()
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -130,7 +130,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_select_incident_dates_in_future() {
         List<Program> programs = d2.programModule().programs
                 .bySelectIncidentDatesInFuture().isFalse()
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -138,7 +138,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_feature_type() {
         List<Program> programs = d2.programModule().programs
                 .byFeatureType().eq(FeatureType.NONE)
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -146,7 +146,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_access_level() {
         List<Program> programs = d2.programModule().programs
                 .byAccessLevel().eq(AccessLevel.PROTECTED)
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -154,7 +154,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_use_first_stage_during_registration() {
         List<Program> programs = d2.programModule().programs
                 .byUseFirstStageDuringRegistration().isTrue()
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -162,7 +162,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_display_front_page_list() {
         List<Program> programs = d2.programModule().programs
                 .byDisplayFrontPageList().isFalse()
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -170,7 +170,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_program_type() {
         List<Program> programs = d2.programModule().programs
                 .byProgramType().eq(ProgramType.WITHOUT_REGISTRATION)
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -178,7 +178,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_related_program_uid() {
         List<Program> programs = d2.programModule().programs
                 .byRelatedProgramUid().eq("lxAQ7Zs9VYR")
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -186,7 +186,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_tracked_entity_type_uid() {
         List<Program> programs = d2.programModule().programs
                 .byTrackedEntityTypeUid().eq("nEenWmSyUEp")
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -194,7 +194,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_category_combo_uid() {
         List<Program> programs = d2.programModule().programs
                 .byCategoryComboUid().eq("m2jTvAj5kkm")
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -202,7 +202,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_access_data_write() {
         List<Program> programs = d2.programModule().programs
                 .byAccessDataWrite().isTrue()
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -210,7 +210,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_expiry_days() {
         List<Program> programs = d2.programModule().programs
                 .byExpiryDays().eq(2)
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -218,7 +218,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_complete_events_expiry_days() {
         List<Program> programs = d2.programModule().programs
                 .byCompleteEventsExpiryDays().eq(4)
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -226,7 +226,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_expiry_period_type() {
         List<Program> programs = d2.programModule().programs
                 .byExpiryPeriodType().eq(PeriodType.BiMonthly)
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -234,7 +234,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_min_attributes_required_to_search() {
         List<Program> programs = d2.programModule().programs
                 .byMinAttributesRequiredToSearch().eq(7)
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -242,7 +242,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_max_tei_count_to_return() {
         List<Program> programs = d2.programModule().programs
                 .byMaxTeiCountToReturn().eq(20)
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -251,7 +251,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_orgunit_uid() {
         List<Program> programs = d2.programModule().programs
                 .byOrganisationUnitUid("DiszpKrYNg8")
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
@@ -259,14 +259,14 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_orgunit_list() {
         List<Program> programs = d2.programModule().programs
                 .byOrganisationUnitList(Collections.singletonList("DiszpKrYNg8"))
-                .get();
+                .blockingGet();
         assertThat(programs.size(), is(1));
     }
 
     @Test
     public void include_object_style_as_children_in_object_repository_when_all_selected() {
         Program program = d2.programModule().programs
-                .one().withAllChildren().get();
+                .one().withAllChildren().blockingGet();
         assertThat(program.style().icon(), is("program-icon"));
         assertThat(program.style().color(), is("#333"));
     }
@@ -275,7 +275,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void include_object_style_as_children_in_object_repository_when_explicitly_selected() {
         Program program = d2.programModule().programs
                 .withStyle()
-                .one().get();
+                .one().blockingGet();
         assertThat(program.style().icon(), is("program-icon"));
         assertThat(program.style().color(), is("#333"));
     }
@@ -283,7 +283,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     @Test
     public void include_object_style_as_children_in_collection_repository_when_all_selected() {
         Program program = d2.programModule().programs
-                .withAllChildren().get().get(0);
+                .withAllChildren().blockingGet().get(0);
         assertThat(program.style().icon(), is("program-icon"));
         assertThat(program.style().color(), is("#333"));
     }
@@ -292,7 +292,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void include_object_style_as_children_in_collection_repository_when_explicitly_selected() {
         Program program = d2.programModule().programs
                 .withStyle()
-                .get().get(0);
+                .blockingGet().get(0);
         assertThat(program.style().icon(), is("program-icon"));
         assertThat(program.style().color(), is("#333"));
     }
@@ -300,7 +300,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     @Test
     public void include_program_stages_as_children_when_all_selected() {
         Program program = d2.programModule().programs
-                .one().withAllChildren().get();
+                .one().withAllChildren().blockingGet();
         assertThat(program.programStages().size(), is(2));
         assertThat(program.programStages().get(0).name(), is("Antenatal care visit - Program rules demo"));
     }
@@ -308,7 +308,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     @Test
     public void include_program_stages_as_children_when_explicitly_selected() {
         Program program = d2.programModule().programs
-                .withProgramStages().one().get();
+                .withProgramStages().one().blockingGet();
         assertThat(program.programStages().size(), is(2));
         assertThat(program.programStages().get(0).name(), is("Antenatal care visit - Program rules demo"));
     }
@@ -316,14 +316,14 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     @Test
     public void not_include_style_as_children_when_only_program_stages_selected() {
         Program program = d2.programModule().programs
-                .withProgramStages().one().get();
+                .withProgramStages().one().blockingGet();
         assertThat(program.style() == null, is(true));
     }
 
     @Test
     public void include_program_rule_variables_as_children() {
         Program program = d2.programModule().programs
-                .withProgramRuleVariables().one().get();
+                .withProgramRuleVariables().one().blockingGet();
         assertThat(program.programRuleVariables().size(), is(2));
         assertThat(program.programRuleVariables().get(0).name(), is("hemoglobin"));
     }
@@ -331,7 +331,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     @Test
     public void include_program_indicators_as_children() {
         Program program = d2.programModule().programs
-                .withProgramIndicators().one().get();
+                .withProgramIndicators().one().blockingGet();
         assertThat(program.programIndicators().size(), is(4));
         assertThat(program.programIndicators().get(0).name(), is("Age at visit"));
     }
@@ -339,7 +339,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     @Test
     public void include_program_rules_as_children() {
         Program program = d2.programModule().programs
-                .withProgramRules().one().get();
+                .withProgramRules().one().blockingGet();
         assertThat(program.programRules().size(), is(3));
         assertThat(program.programRules().get(0).name(), is("Show error for high hemoglobin value"));
     }
@@ -347,7 +347,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     @Test
     public void include_program_tracked_entity_attributes_as_children() {
         Program program = d2.programModule().programs
-                .withProgramTrackedEntityAttributes().one().get();
+                .withProgramTrackedEntityAttributes().one().blockingGet();
         assertThat(program.programTrackedEntityAttributes().size(), is(2));
         assertThat(program.programTrackedEntityAttributes().get(0).name(), is("Child Programme Gender"));
     }
@@ -355,7 +355,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     @Test
     public void include_program_sections_as_children() {
         Program program = d2.programModule().programs
-                .withProgramSections().one().get();
+                .withProgramSections().one().blockingGet();
         assertThat(program.programSections().size(), is(2));
         assertThat(program.programSections().get(0).name(), is("My Program Section"));
     }
@@ -363,21 +363,21 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     @Test
     public void include_category_combo_as_children() {
         Program program = d2.programModule().programs
-                .withCategoryCombo().one().get();
+                .withCategoryCombo().one().blockingGet();
         assertThat(program.categoryCombo().name(), is("Births"));
     }
 
     @Test
     public void include_related_program_as_children() {
         Program program = d2.programModule().programs
-                .withRelatedProgram().one().get();
+                .withRelatedProgram().one().blockingGet();
         assertThat(program.relatedProgram().name(), is("Antenatal care visit"));
     }
 
     @Test
     public void include_tracked_entity_type_as_children() {
         Program program = d2.programModule().programs
-                .withTrackedEntityType().one().get();
+                .withTrackedEntityType().one().blockingGet();
         assertThat(program.trackedEntityType().name(), is("Person"));
     }
 }

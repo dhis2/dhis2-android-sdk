@@ -58,7 +58,7 @@ public class EventWithLimitCallRealIntegrationShould extends BaseRealIntegration
 
         d2.eventModule().downloadSingleEvents(20,  false, false).blockingSubscribe();
 
-        int count = d2.eventModule().events.count();
+        int count = d2.eventModule().events.blockingCount();
 
         assertThat(count).isEqualTo(20);
     }

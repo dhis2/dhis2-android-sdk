@@ -48,7 +48,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
 
     @Test
     public void allow_access_to_all_tracked_entity_data_values() {
-        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues.get();
+        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues.blockingGet();
         assertThat(trackedEntityDataValues.size(), is(12));
     }
 
@@ -56,7 +56,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
     public void filter_by_event() {
         List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues
                 .byEvent().eq("single1")
-                .get();
+                .blockingGet();
         assertThat(trackedEntityDataValues.size(), is(6));
     }
 
@@ -65,7 +65,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse("2015-02-28T12:05:00.333");
         List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues
                 .byCreated().eq(date)
-                .get();
+                .blockingGet();
         assertThat(trackedEntityDataValues.size(), is(1));
     }
 
@@ -74,7 +74,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse("2015-02-28T12:05:00.222");
         List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues
                 .byLastUpdated().eq(date)
-                .get();
+                .blockingGet();
         assertThat(trackedEntityDataValues.size(), is(1));
     }
 
@@ -82,7 +82,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
     public void filter_by_data_element() {
         List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues
                 .byDataElement().eq("ebaJjqltK5N")
-                .get();
+                .blockingGet();
         assertThat(trackedEntityDataValues.size(), is(2));
     }
 
@@ -90,7 +90,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
     public void filter_by_stored_by() {
         List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues
                 .byStoredBy().eq("storer")
-                .get();
+                .blockingGet();
         assertThat(trackedEntityDataValues.size(), is(1));
     }
 
@@ -98,7 +98,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
     public void filter_by_value() {
         List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues
                 .byValue().eq("11")
-                .get();
+                .blockingGet();
         assertThat(trackedEntityDataValues.size(), is(2));
     }
 
@@ -106,7 +106,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
     public void filter_by_provided_elsewhere() {
         List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues
                 .byProvidedElsewhere().eq(true)
-                .get();
+                .blockingGet();
         assertThat(trackedEntityDataValues.size(), is(1));
     }
 
@@ -114,7 +114,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
     public void return_tracked_entity_data_value_object_repository() {
         TrackedEntityDataValueObjectRepository objectRepository = d2.trackedEntityModule().trackedEntityDataValues
                 .value("single1", "ebaJjqltK5N");
-        assertThat(objectRepository.exists(), is(Boolean.TRUE));
-        assertThat(objectRepository.get().value(), is("1"));
+        assertThat(objectRepository.blockingExists(), is(Boolean.TRUE));
+        assertThat(objectRepository.blockingGet().value(), is("1"));
     }
 }

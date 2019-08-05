@@ -92,7 +92,7 @@ public class D2ManagerRealIntegrationShould {
         configureD2();
         persistCredentialsInDb();
 
-        UserCredentials userCredentials = D2Manager.getD2().userModule().userCredentials.get();
+        UserCredentials userCredentials = D2Manager.getD2().userModule().userCredentials.blockingGet();
         assertThat(userCredentials.user().uid().equals("user")).isTrue();
     }
 
@@ -106,7 +106,7 @@ public class D2ManagerRealIntegrationShould {
 
         D2Manager.getD2().userModule().logIn("android", "Android123").blockingGet();
 
-        assertThat(D2Manager.getD2().userModule().authenticatedUser.get().user() != null).isTrue();
+        assertThat(D2Manager.getD2().userModule().authenticatedUser.blockingGet().user() != null).isTrue();
     }
 
     private void configureD2() {

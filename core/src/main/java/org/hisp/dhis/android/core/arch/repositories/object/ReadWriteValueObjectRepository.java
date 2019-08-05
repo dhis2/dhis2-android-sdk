@@ -29,9 +29,11 @@
 package org.hisp.dhis.android.core.arch.repositories.object;
 
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
+import io.reactivex.Completable;
+
 public interface ReadWriteValueObjectRepository<M extends Model> extends ReadWriteObjectRepository<M> {
-    Unit set(String value) throws D2Error;
+    Completable set(String value);
+    void blockingSet(String value) throws D2Error;
 }

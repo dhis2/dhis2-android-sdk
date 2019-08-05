@@ -79,14 +79,14 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     @Override
-    public List<M> get() {
+    public List<M> blockingGet() {
         return ChildrenAppenderExecutor.appendInObjectCollection(getWithoutChildren(),
                 childrenAppenders, scope.children());
     }
 
     @Override
-    public Single<List<M>> getAsync() {
-        return Single.fromCallable(this::get);
+    public Single<List<M>> get() {
+        return Single.fromCallable(this::blockingGet);
     }
 
     @Override
@@ -106,13 +106,23 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     @Override
-    public int count() {
+    public Single<Integer> count() {
+        return Single.fromCallable(this::blockingCount);
+    }
+
+    @Override
+    public int blockingCount() {
         return store.countWhere(getWhereClause());
     }
 
     @Override
-    public boolean isEmpty() {
-        return count() == 0;
+    public Single<Boolean> isEmpty() {
+        return Single.fromCallable(this::blockingIsEmpty);
+    }
+
+    @Override
+    public boolean blockingIsEmpty() {
+        return blockingCount() == 0;
     }
 
     protected String getWhereClause() {

@@ -46,7 +46,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
     @Test
     public void find_all() {
         List<DataElement> dataElements = d2.dataElementModule().dataElements
-                .get();
+                .blockingGet();
         assertThat(dataElements.size(), is(5));
     }
 
@@ -54,7 +54,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
     public void filter_by_value_type() {
         List<DataElement> dataElements = d2.dataElementModule().dataElements
                 .byValueType().eq(ValueType.TEXT)
-                .get();
+                .blockingGet();
         assertThat(dataElements.size(), is(1));
     }
 
@@ -62,7 +62,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
     public void filter_by_zero_is_significant() {
         List<DataElement> dataElements = d2.dataElementModule().dataElements
                 .byZeroIsSignificant().isFalse()
-                .get();
+                .blockingGet();
         assertThat(dataElements.size(), is(3));
     }
 
@@ -70,7 +70,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
     public void filter_by_aggregation_type() {
         List<DataElement> dataElements = d2.dataElementModule().dataElements
                 .byAggregationType().eq("AVERAGE")
-                .get();
+                .blockingGet();
         assertThat(dataElements.size(), is(1));
     }
 
@@ -78,7 +78,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
     public void filter_by_form_name() {
         List<DataElement> dataElements = d2.dataElementModule().dataElements
                 .byFormName().eq("ANC Visit")
-                .get();
+                .blockingGet();
         assertThat(dataElements.size(), is(1));
     }
 
@@ -86,7 +86,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
     public void filter_by_domain_type() {
         List<DataElement> dataElements = d2.dataElementModule().dataElements
                 .byDomainType().eq("TRACKER")
-                .get();
+                .blockingGet();
         assertThat(dataElements.size(), is(5));
     }
 
@@ -94,7 +94,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
     public void filter_by_display_form_name() {
         List<DataElement> dataElements = d2.dataElementModule().dataElements
                 .byDisplayFormName().eq("ANC Visit")
-                .get();
+                .blockingGet();
         assertThat(dataElements.size(), is(1));
     }
 
@@ -102,7 +102,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
     public void filter_by_option_set() {
         List<DataElement> dataElements = d2.dataElementModule().dataElements
                 .byOptionSetUid().eq("VQ2lai3OfVG")
-                .get();
+                .blockingGet();
         assertThat(dataElements.size(), is(1));
     }
 
@@ -110,7 +110,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
     public void filter_by_category_combo() {
         List<DataElement> dataElements = d2.dataElementModule().dataElements
                 .byCategoryComboUid().eq("m2jTvAj5kkm")
-                .get();
+                .blockingGet();
         assertThat(dataElements.size(), is(1));
     }
 
@@ -119,7 +119,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
         DataElement dataElement = d2.dataElementModule().dataElements
                 .withStyle()
                 .uid("g9eOBujte1U")
-                .get();
+                .blockingGet();
         assertThat(dataElement.style().icon(), is("data-element-icon"));
     }
 }

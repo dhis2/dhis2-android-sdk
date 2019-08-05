@@ -49,7 +49,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
     public void find_all() {
         List<ProgramStage> programStages =
                 d2.programModule().programStages
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(2));
     }
@@ -59,7 +59,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
         ProgramStage programStage =
                 d2.programModule().programStages
                         .withStyle()
-                        .one().get();
+                        .one().blockingGet();
 
         assertThat(programStage.style().icon(), is("program-stage-icon"));
         assertThat(programStage.style().color(), is("#444"));
@@ -70,7 +70,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
         ProgramStage programStage =
                 d2.programModule().programStages
                         .withProgramStageDataElements()
-                        .one().get();
+                        .one().blockingGet();
 
         assertThat(programStage.programStageDataElements().size(), is(3));
     }
@@ -81,7 +81,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .withProgramStageSections()
                         .one()
-                        .get();
+                        .blockingGet();
 
         assertThat(programStage.programStageSections().size(), is(1));
     }
@@ -92,7 +92,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byDescription()
                         .eq("Description")
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(1));
     }
@@ -103,7 +103,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byDisplayDescription()
                         .eq("Display Description")
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(1));
     }
@@ -114,7 +114,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byExecutionDateLabel()
                         .eq("Visit date")
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(1));
     }
@@ -125,7 +125,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byAllowGenerateNextVisit()
                         .isFalse()
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(1));
     }
@@ -136,7 +136,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byValidCompleteOnly()
                         .isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(1));
     }
@@ -147,7 +147,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byReportDateToUse()
                         .eq("report_date_to_use")
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(1));
     }
@@ -158,7 +158,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byOpenAfterEnrollment()
                         .isFalse()
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(1));
     }
@@ -169,7 +169,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byRepeatable()
                         .isFalse()
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(1));
     }
@@ -180,7 +180,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byFeatureType()
                         .eq(FeatureType.POINT)
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(1));
     }
@@ -191,7 +191,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byFormType()
                         .eq(FormType.DEFAULT)
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(1));
     }
@@ -202,7 +202,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byDisplayGenerateEventBox()
                         .isFalse()
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(1));
     }
@@ -213,7 +213,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byGeneratedByEnrollmentDate()
                         .isFalse()
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(1));
     }
@@ -224,7 +224,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byAutoGenerateEvent()
                         .isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(1));
     }
@@ -235,7 +235,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .bySortOrder()
                         .eq(1)
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(1));
     }
@@ -246,7 +246,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byHideDueDate()
                         .isFalse()
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(1));
     }
@@ -257,7 +257,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byBlockEntryForm()
                         .isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(1));
     }
@@ -268,7 +268,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byMinDaysFromStart()
                         .eq(0)
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(1));
     }
@@ -279,7 +279,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byStandardInterval()
                         .eq(0)
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(1));
     }
@@ -290,7 +290,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byPeriodType()
                         .eq(PeriodType.Monthly)
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(1));
     }
@@ -301,7 +301,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byProgramUid()
                         .eq("lxAQ7Zs9VYR")
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(2));
     }
@@ -312,7 +312,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byAccessDataWrite()
                         .isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(1));
     }
@@ -323,7 +323,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages
                         .byRemindCompleted()
                         .isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(programStages.size(), is(1));
     }

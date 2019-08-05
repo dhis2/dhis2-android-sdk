@@ -49,10 +49,10 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
 
         DataValueObjectRepository repository = objectRepository();
 
-        repository.set(value);
-        assertThat(repository.get().value(), is(value));
+        repository.blockingSet(value);
+        assertThat(repository.blockingGet().value(), is(value));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -62,9 +62,9 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         DataValueObjectRepository repository = objectRepository();
 
         repository.setFollowUp(followUp);
-        assertThat(repository.get().followUp(), is(followUp));
+        assertThat(repository.blockingGet().followUp(), is(followUp));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -74,43 +74,43 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         DataValueObjectRepository repository = objectRepository();
 
         repository.setComment(comment);
-        assertThat(repository.get().comment(), is(comment));
+        assertThat(repository.blockingGet().comment(), is(comment));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
     public void delete_value_if_state_to_post() throws D2Error {
         DataValueObjectRepository repository = objectRepository();
 
-        repository.set("value");
-        assertThat(repository.exists(), is(Boolean.TRUE));
-        assertThat(repository.get().state(), is(State.TO_POST));
-        repository.delete();
-        assertThat(repository.exists(), is(Boolean.FALSE));
+        repository.blockingSet("value");
+        assertThat(repository.blockingExists(), is(Boolean.TRUE));
+        assertThat(repository.blockingGet().state(), is(State.TO_POST));
+        repository.blockingDelete();
+        assertThat(repository.blockingExists(), is(Boolean.FALSE));
     }
 
     @Test
     public void set_state_to_delete_if_state_is_not_to_post() throws D2Error {
         DataValueObjectRepository repository = objectRepository();
 
-        repository.set("value");
-        DataValueStore.create(databaseAdapter).setState(repository.get(), State.ERROR);
-        assertThat(repository.exists(), is(Boolean.TRUE));
-        assertThat(repository.get().state(), is(State.ERROR));
-        repository.delete();
-        assertThat(repository.exists(), is(Boolean.TRUE));
-        assertThat(repository.get().state(), is(State.TO_DELETE));
+        repository.blockingSet("value");
+        DataValueStore.create(databaseAdapter).setState(repository.blockingGet(), State.ERROR);
+        assertThat(repository.blockingExists(), is(Boolean.TRUE));
+        assertThat(repository.blockingGet().state(), is(State.ERROR));
+        repository.blockingDelete();
+        assertThat(repository.blockingExists(), is(Boolean.TRUE));
+        assertThat(repository.blockingGet().state(), is(State.TO_DELETE));
     }
 
     @Test
     public void return_that_a_value_exists_only_if_it_has_been_created() {
         assertThat(d2.dataValueModule().dataValues
                 .value("no_period", "no_org_unit", "no_data_element",
-                        "no_category", "no_attribute").exists(), is(Boolean.FALSE));
+                        "no_category", "no_attribute").blockingExists(), is(Boolean.FALSE));
         assertThat(d2.dataValueModule().dataValues
                 .value("2018", "DiszpKrYNg8", "g9eOBujte1U",
-                        "Gmbgme7z9BF", "bRowv6yZOF2").exists(), is(Boolean.TRUE));
+                        "Gmbgme7z9BF", "bRowv6yZOF2").blockingExists(), is(Boolean.TRUE));
     }
 
     private DataValueObjectRepository objectRepository() {

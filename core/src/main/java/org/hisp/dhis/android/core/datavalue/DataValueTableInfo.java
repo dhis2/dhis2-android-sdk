@@ -31,14 +31,9 @@ package org.hisp.dhis.android.core.datavalue;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.datavalue.internal.DataValueFields;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public class DataValueTableInfo {
-
-    // Different BD column names than API fields.
-    public static final String ORGANISATION_UNIT =  "organisationUnit";
-    private static final String FOLLOW_UP = "followUp";
 
     private DataValueTableInfo() {}
 
@@ -55,32 +50,45 @@ public class DataValueTableInfo {
         }
     };
 
-    static class Columns extends BaseDataModel.Columns {
+    public static class Columns extends BaseDataModel.Columns {
+
+        public static final String DATA_ELEMENT = "dataElement";
+        public static final String PERIOD = "period";
+        public static final String ORGANISATION_UNIT =  "organisationUnit";
+        public static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
+        public static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
+        public static final String VALUE = "value";
+        public static final String STORED_BY = "storedBy";
+        public static final String CREATED = "created";
+        public static final String LAST_UPDATED = "lastUpdated";
+        public static final String COMMENT = "comment";
+        public static final String FOLLOW_UP = "followUp";
+
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
-                    DataValueFields.DATA_ELEMENT,
-                    DataValueFields.PERIOD,
-                    DataValueTableInfo.ORGANISATION_UNIT,
-                    DataValueFields.CATEGORY_OPTION_COMBO,
-                    DataValueFields.ATTRIBUTE_OPTION_COMBO,
-                    DataValueFields.VALUE,
-                    DataValueFields.STORED_BY,
-                    DataValueFields.CREATED,
-                    DataValueFields.LAST_UPDATED,
-                    DataValueFields.COMMENT,
-                    DataValueTableInfo.FOLLOW_UP,
+                    DATA_ELEMENT,
+                    PERIOD,
+                    ORGANISATION_UNIT,
+                    CATEGORY_OPTION_COMBO,
+                    ATTRIBUTE_OPTION_COMBO,
+                    VALUE,
+                    STORED_BY,
+                    CREATED,
+                    LAST_UPDATED,
+                    COMMENT,
+                    FOLLOW_UP,
                     STATE);
         }
 
         @Override
         public String[] whereUpdate() {
             return new String[]{
-                    DataValueFields.DATA_ELEMENT,
-                    DataValueFields.PERIOD,
-                    DataValueTableInfo.ORGANISATION_UNIT,
-                    DataValueFields.CATEGORY_OPTION_COMBO,
-                    DataValueFields.ATTRIBUTE_OPTION_COMBO
+                    DATA_ELEMENT,
+                    PERIOD,
+                    ORGANISATION_UNIT,
+                    CATEGORY_OPTION_COMBO,
+                    ATTRIBUTE_OPTION_COMBO
             };
         }
     }

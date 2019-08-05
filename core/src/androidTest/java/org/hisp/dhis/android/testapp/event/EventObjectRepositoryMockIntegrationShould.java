@@ -59,9 +59,9 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         EventObjectRepository repository = objectRepository();
 
         repository.setOrganisationUnitUid(orgUnitUid);
-        assertThat(repository.get().organisationUnit(), is(orgUnitUid));
+        assertThat(repository.blockingGet().organisationUnit(), is(orgUnitUid));
 
-        repository.delete();
+        repository.blockingDelete();
         OrganisationUnitStore.create(databaseAdapter).delete(orgUnitUid);
     }
 
@@ -74,7 +74,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         try {
             repository.setOrganisationUnitUid(orgUnitUid);
         } finally {
-            repository.delete();
+            repository.blockingDelete();
         }
     }
 
@@ -85,9 +85,9 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         EventObjectRepository repository = objectRepository();
 
         repository.setEventDate(eventDate);
-        assertThat(repository.get().eventDate(), is(eventDate));
+        assertThat(repository.blockingGet().eventDate(), is(eventDate));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -97,9 +97,9 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         EventObjectRepository repository = objectRepository();
 
         repository.setStatus(eventStatus);
-        assertThat(repository.get().status(), is(eventStatus));
+        assertThat(repository.blockingGet().status(), is(eventStatus));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -109,9 +109,9 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         EventObjectRepository repository = objectRepository();
 
         repository.setCompletedDate(completedDate);
-        assertThat(repository.get().completedDate(), is(completedDate));
+        assertThat(repository.blockingGet().completedDate(), is(completedDate));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -121,9 +121,9 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         EventObjectRepository repository = objectRepository();
 
         repository.setDueDate(dueDate);
-        assertThat(repository.get().dueDate(), is(dueDate));
+        assertThat(repository.blockingGet().dueDate(), is(dueDate));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -136,9 +136,9 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         EventObjectRepository repository = objectRepository();
 
         repository.setGeometry(geometry);
-        assertThat(repository.get().geometry(), is(geometry));
+        assertThat(repository.blockingGet().geometry(), is(geometry));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -150,7 +150,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         EventObjectRepository repository = objectRepository();
 
         repository.setAttributeOptionComboUid(attributeOptionCombo);
-        assertThat(repository.get().attributeOptionCombo(), is(attributeOptionCombo));
+        assertThat(repository.blockingGet().attributeOptionCombo(), is(attributeOptionCombo));
 
         repository.delete();
         CategoryOptionComboStoreImpl.create(databaseAdapter).delete(attributeOptionCombo);
@@ -170,7 +170,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
     }
 
     private EventObjectRepository objectRepository() throws D2Error {
-        String eventUid = d2.eventModule().events.add(
+        String eventUid = d2.eventModule().events.blockingAdd(
                 EventCreateProjection.create("enroll1", "lxAQ7Zs9VYR", "dBwrot7S420",
                         "DiszpKrYNg8", "bRowv6yZOF2"));
         return d2.eventModule().events.uid(eventUid);

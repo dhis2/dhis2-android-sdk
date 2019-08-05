@@ -57,11 +57,13 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import dagger.Reusable;
+import io.reactivex.Single;
 
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
 
 @Reusable
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class RelationshipCollectionRepository
         extends ReadOnlyCollectionRepositoryImpl<Relationship, RelationshipCollectionRepository>
         implements ReadWriteWithUidCollectionRepository<Relationship, Relationship> {
@@ -88,7 +90,12 @@ public final class RelationshipCollectionRepository
     }
 
     @Override
-    public String add(Relationship relationship) throws D2Error {
+    public Single<String> add(Relationship relationship) {
+        return Single.fromCallable(() -> blockingAdd(relationship));
+    }
+
+    @Override
+    public String blockingAdd(Relationship relationship) throws D2Error {
         if (relationshipHandler.doesRelationshipExist(relationship)) {
             throw D2Error
                     .builder()

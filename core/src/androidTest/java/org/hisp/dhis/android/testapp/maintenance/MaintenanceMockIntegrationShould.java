@@ -52,7 +52,7 @@ public class MaintenanceMockIntegrationShould extends BaseMockIntegrationTestFul
 
     @Test
     public void allow_access_to_foreign_key_violations() {
-        List<ForeignKeyViolation> violations = d2.maintenanceModule().foreignKeyViolations.get();
+        List<ForeignKeyViolation> violations = d2.maintenanceModule().foreignKeyViolations.blockingGet();
         assertThat(violations.size(), is(2));
 
         ForeignKeyViolation categoryOptionComboViolation = ForeignKeyViolation.builder()
@@ -83,7 +83,7 @@ public class MaintenanceMockIntegrationShould extends BaseMockIntegrationTestFul
 
     @Test
     public void allow_access_to_foreign_key_violations_with_children() {
-        List<ForeignKeyViolation> violations = d2.maintenanceModule().foreignKeyViolations.withAllChildren().get();
+        List<ForeignKeyViolation> violations = d2.maintenanceModule().foreignKeyViolations.withAllChildren().blockingGet();
         assertThat(violations.size(), is(2));
     }
 
@@ -101,7 +101,7 @@ public class MaintenanceMockIntegrationShould extends BaseMockIntegrationTestFul
 
     @Test
     public void allow_access_to_d2_errors() {
-        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors.get();
+        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors.blockingGet();
         assertThat(d2Errors.size(), is(2));
     }
 }

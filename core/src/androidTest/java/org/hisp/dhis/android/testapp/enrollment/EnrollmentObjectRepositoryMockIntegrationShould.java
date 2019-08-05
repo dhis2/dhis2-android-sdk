@@ -57,9 +57,9 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         EnrollmentObjectRepository repository = objectRepository();
 
         repository.setOrganisationUnitUid(orgUnitUid);
-        assertThat(repository.get().organisationUnit(), is(orgUnitUid));
+        assertThat(repository.blockingGet().organisationUnit(), is(orgUnitUid));
 
-        repository.delete();
+        repository.blockingDelete();
         OrganisationUnitStore.create(databaseAdapter).delete(orgUnitUid);
     }
 
@@ -72,7 +72,7 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         try {
             repository.setOrganisationUnitUid(orgUnitUid);
         } finally {
-            repository.delete();
+            repository.blockingDelete();
         }
     }
 
@@ -83,9 +83,9 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         EnrollmentObjectRepository repository = objectRepository();
 
         repository.setEnrollmentDate(enrollmentDate);
-        assertThat(repository.get().enrollmentDate(), is(enrollmentDate));
+        assertThat(repository.blockingGet().enrollmentDate(), is(enrollmentDate));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -95,9 +95,9 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         EnrollmentObjectRepository repository = objectRepository();
 
         repository.setIncidentDate(incidentDate);
-        assertThat(repository.get().incidentDate(), is(incidentDate));
+        assertThat(repository.blockingGet().incidentDate(), is(incidentDate));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -105,9 +105,9 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         EnrollmentObjectRepository repository = objectRepository();
 
         repository.setFollowUp(true);
-        assertThat(repository.get().followUp(), is(true));
+        assertThat(repository.blockingGet().followUp(), is(true));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -117,9 +117,9 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         EnrollmentObjectRepository repository = objectRepository();
 
         repository.setStatus(enrollmentStatus);
-        assertThat(repository.get().status(), is(enrollmentStatus));
+        assertThat(repository.blockingGet().status(), is(enrollmentStatus));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -132,13 +132,13 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         EnrollmentObjectRepository repository = objectRepository();
 
         repository.setGeometry(geometry);
-        assertThat(repository.get().geometry(), is(geometry));
+        assertThat(repository.blockingGet().geometry(), is(geometry));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     private EnrollmentObjectRepository objectRepository() throws D2Error {
-        String enrollmentUid = d2.enrollmentModule().enrollments.add(
+        String enrollmentUid = d2.enrollmentModule().enrollments.blockingAdd(
                 EnrollmentCreateProjection.create(
                         "DiszpKrYNg8", "lxAQ7Zs9VYR", "nWrB0TfWlvh"));
         return d2.enrollmentModule().enrollments.uid(enrollmentUid);

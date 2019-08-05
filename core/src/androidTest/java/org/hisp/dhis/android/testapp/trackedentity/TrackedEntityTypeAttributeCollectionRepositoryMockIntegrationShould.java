@@ -47,7 +47,7 @@ public class TrackedEntityTypeAttributeCollectionRepositoryMockIntegrationShould
     public void find_all() {
         List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes =
                 d2.trackedEntityModule().trackedEntityTypeAttributes
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityTypeAttributes.size(), is(1));
     }
@@ -57,7 +57,7 @@ public class TrackedEntityTypeAttributeCollectionRepositoryMockIntegrationShould
         List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes =
                 d2.trackedEntityModule().trackedEntityTypeAttributes
                         .byTrackedEntityTypeUid().eq("nEenWmSyUEp")
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityTypeAttributes.size(), is(1));
     }
@@ -67,7 +67,7 @@ public class TrackedEntityTypeAttributeCollectionRepositoryMockIntegrationShould
         List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes =
                 d2.trackedEntityModule().trackedEntityTypeAttributes
                         .byTrackedEntityAttributeUid().eq("cejWyOfXge6")
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityTypeAttributes.size(), is(1));
     }
@@ -77,7 +77,7 @@ public class TrackedEntityTypeAttributeCollectionRepositoryMockIntegrationShould
         List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes =
                 d2.trackedEntityModule().trackedEntityTypeAttributes
                         .byDisplayInList().isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityTypeAttributes.size(), is(1));
     }
@@ -87,7 +87,7 @@ public class TrackedEntityTypeAttributeCollectionRepositoryMockIntegrationShould
         List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes =
                 d2.trackedEntityModule().trackedEntityTypeAttributes
                         .byMandatory().isFalse()
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityTypeAttributes.size(), is(1));
     }
@@ -97,7 +97,7 @@ public class TrackedEntityTypeAttributeCollectionRepositoryMockIntegrationShould
         List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes =
                 d2.trackedEntityModule().trackedEntityTypeAttributes
                         .bySearchable().isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityTypeAttributes.size(), is(1));
     }
@@ -107,7 +107,7 @@ public class TrackedEntityTypeAttributeCollectionRepositoryMockIntegrationShould
         List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes =
                 d2.trackedEntityModule().trackedEntityTypeAttributes
                         .bySortOrder().smallerThan(2)
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityTypeAttributes.size(), is(1));
     }

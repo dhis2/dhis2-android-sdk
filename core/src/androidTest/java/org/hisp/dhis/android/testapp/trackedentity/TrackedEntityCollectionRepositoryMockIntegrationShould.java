@@ -52,7 +52,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     public void find_all() {
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(2));
     }
@@ -62,7 +62,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances
                         .byUid().eq("nWrB0TfWlvD")
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(1));
     }
@@ -72,7 +72,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances
                         .byCreated().eq(BaseNameableObject.DATE_FORMAT.parse("2019-01-10T13:40:27.987"))
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(1));
     }
@@ -82,7 +82,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances
                         .byLastUpdated().eq(BaseNameableObject.DATE_FORMAT.parse("2018-01-10T13:40:28.592"))
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(1));
     }
@@ -92,7 +92,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances
                         .byCreatedAtClient().eq("2019-01-22T18:38:15.845")
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(1));
     }
@@ -102,7 +102,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances
                         .byLastUpdatedAtClient().eq("2019-01-22T18:38:15.845")
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(1));
     }
@@ -112,7 +112,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances
                         .byOrganisationUnitUid().eq("DiszpKrYNg8")
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(2));
     }
@@ -122,7 +122,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances
                         .byTrackedEntityType().eq("nEenWmSyUEp")
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(2));
     }
@@ -132,7 +132,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances
                         .byGeometryType().eq(FeatureType.POINT)
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(1));
     }
@@ -142,7 +142,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances
                         .byGeometryCoordinates().eq("[9.0, 9.0]")
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(1));
     }
@@ -152,7 +152,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances
                         .byState().eq(State.SYNCED)
-                        .get();
+                        .blockingGet();
 
         // TODO set to assertThat(trackedEntityInstances.size(), is(2)); after moving write tests to another db
         assertThat(trackedEntityInstances.size(), is(1));
@@ -163,7 +163,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances
                         .byProgramUids(Lists.newArrayList("lxAQ7Zs9VYR"))
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(2));
     }

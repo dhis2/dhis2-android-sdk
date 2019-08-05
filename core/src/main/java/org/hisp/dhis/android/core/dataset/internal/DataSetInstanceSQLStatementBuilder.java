@@ -188,7 +188,7 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
 
     private static String getJoinOrganisationUnit() {
         return INNER_JOIN + OrganisationUnitTableInfo.TABLE_INFO.name() + AS + ORGUNIT_TABLE_ALIAS +
-                ON + DATAVALUE_TABLE_ALIAS + "." + DataValueTableInfo.ORGANISATION_UNIT + EQ +
+                ON + DATAVALUE_TABLE_ALIAS + "." + DataValueTableInfo.Columns.ORGANISATION_UNIT + EQ +
                 ORGUNIT_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
     }
 

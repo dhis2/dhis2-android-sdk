@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
@@ -59,7 +61,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
 
@@ -231,7 +232,14 @@ public final class TrackedEntityInstancePostCall {
                 if (eventsForEnrollment != null) {
                     for (Event event : eventsForEnrollment) {
                         List<TrackedEntityDataValue> dataValuesForEvent = dataValueMap.get(event.uid());
-                        eventRecreated.add(event.toBuilder().trackedEntityDataValues(dataValuesForEvent).build());
+                        if (versionManager.is2_30()) {
+                            eventRecreated.add(event.toBuilder()
+                                    .trackedEntityDataValues(dataValuesForEvent)
+                                    .geometry(null)
+                                    .build());
+                        } else {
+                            eventRecreated.add(event.toBuilder().trackedEntityDataValues(dataValuesForEvent).build());
+                        }
                     }
                 }
 

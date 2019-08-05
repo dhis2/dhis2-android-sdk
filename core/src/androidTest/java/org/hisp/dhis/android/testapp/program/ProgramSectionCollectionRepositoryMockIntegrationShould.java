@@ -46,7 +46,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
     public void find_all() {
         List<ProgramSection> programSections =
                 d2.programModule().programSections
-                        .get();
+                        .blockingGet();
 
         assertThat(programSections.size(), is(2));
     }
@@ -56,7 +56,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
         ProgramSection programSection =
                 d2.programModule().programSections
                         .withStyle()
-                        .one().get();
+                        .one().blockingGet();
 
         assertThat(programSection.style().icon(), is("section-icon"));
         assertThat(programSection.style().color(), is("#555"));
@@ -67,7 +67,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
         ProgramSection programSection =
                 d2.programModule().programSections
                         .withAttributes()
-                        .one().get();
+                        .one().blockingGet();
 
         assertThat(programSection.attributes().size(), is(1));
     }
@@ -78,7 +78,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
                 d2.programModule().programSections
                         .byDescription()
                         .eq("Description")
-                        .get();
+                        .blockingGet();
 
         assertThat(programSections.size(), is(1));
     }
@@ -89,7 +89,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
                 d2.programModule().programSections
                         .byProgramUid()
                         .eq("lxAQ7Zs9VYR")
-                        .get();
+                        .blockingGet();
 
         assertThat(programSections.size(), is(2));
     }
@@ -100,7 +100,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
                 d2.programModule().programSections
                         .bySortOrder()
                         .eq(1)
-                        .get();
+                        .blockingGet();
 
         assertThat(programSections.size(), is(1));
     }
@@ -111,7 +111,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
                 d2.programModule().programSections
                         .byFormName()
                         .eq("formName")
-                        .get();
+                        .blockingGet();
 
         assertThat(programSections.size(), is(1));
     }

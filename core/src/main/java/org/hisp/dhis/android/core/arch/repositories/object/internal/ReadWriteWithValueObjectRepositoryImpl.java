@@ -34,12 +34,13 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.util.Map;
+
+import io.reactivex.Completable;
 
 public class ReadWriteWithValueObjectRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
         extends ReadOnlyOneObjectRepositoryImpl<M, R> {
@@ -54,7 +55,11 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends Model, R extends R
         this.store = store;
     }
 
-    public void delete() throws D2Error {
+    public Completable delete() {
+        return Completable.fromAction(this::blockingDelete);
+    }
+
+    public void blockingDelete() throws D2Error {
         delete(getWithoutChildren());
     }
 
@@ -75,11 +80,10 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends Model, R extends R
     }
 
     @SuppressWarnings({"PMD.PreserveStackTrace"})
-    protected Unit setObject(M m) throws D2Error {
+    protected void setObject(M m) throws D2Error {
         try {
             store.updateOrInsertWhere(m);
             propagateState(m);
-            return new Unit();
         } catch (SQLiteConstraintException e) {
             throw D2Error
                     .builder()

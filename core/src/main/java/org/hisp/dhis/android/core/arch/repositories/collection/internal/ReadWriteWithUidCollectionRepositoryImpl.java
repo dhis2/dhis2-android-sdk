@@ -45,6 +45,8 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.util.Map;
 
+import io.reactivex.Single;
+
 public abstract class ReadWriteWithUidCollectionRepositoryImpl
         <M extends Model & ObjectWithUidInterface, P, R extends ReadOnlyCollectionRepository<M>>
         extends ReadOnlyCollectionRepositoryImpl<M, R>
@@ -65,9 +67,14 @@ public abstract class ReadWriteWithUidCollectionRepositoryImpl
 
     public abstract ReadWriteObjectRepository<M> uid(String uid);
 
+    @Override
+    public Single<String> add(P projection) {
+        return Single.fromCallable(() -> blockingAdd(projection));
+    }
+
     @SuppressWarnings({"PMD.PreserveStackTrace"})
     @Override
-    public String add(P projection) throws D2Error {
+    public String blockingAdd(P projection) throws D2Error {
         M object = transformer.transform(projection);
         try {
             store.insert(object);

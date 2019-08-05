@@ -48,28 +48,28 @@ public class TrackedEntityAttributeValueObjectRepositoryMockIntegrationShould
 
         TrackedEntityAttributeValueObjectRepository repository = objectRepository();
 
-        repository.set(value);
-        assertThat(repository.get().value(), is(value));
+        repository.blockingSet(value);
+        assertThat(repository.blockingGet().value(), is(value));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
     public void delete_value() throws D2Error {
         TrackedEntityAttributeValueObjectRepository repository = objectRepository();
 
-        repository.set("value");
-        assertThat(repository.exists(), is(Boolean.TRUE));
-        repository.delete();
-        assertThat(repository.exists(), is(Boolean.FALSE));
+        repository.blockingSet("value");
+        assertThat(repository.blockingExists(), is(Boolean.TRUE));
+        repository.blockingDelete();
+        assertThat(repository.blockingExists(), is(Boolean.FALSE));
     }
 
     @Test
     public void return_that_a_value_exists_only_if_it_has_been_created() {
         assertThat(d2.trackedEntityModule().trackedEntityAttributeValues
-                .value("no_attribute", "no_instance").exists(), is(Boolean.FALSE));
+                .value("no_attribute", "no_instance").blockingExists(), is(Boolean.FALSE));
         assertThat(d2.trackedEntityModule().trackedEntityAttributeValues
-                .value("lZGmxYbs97q", "nWrB0TfWlvh").exists(), is(Boolean.TRUE));
+                .value("lZGmxYbs97q", "nWrB0TfWlvh").blockingExists(), is(Boolean.TRUE));
     }
 
     private TrackedEntityAttributeValueObjectRepository objectRepository() {

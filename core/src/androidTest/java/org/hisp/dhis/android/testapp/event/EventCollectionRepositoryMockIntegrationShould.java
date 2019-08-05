@@ -55,7 +55,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     public void find_all() {
         List<Event> events =
                 d2.eventModule().events
-                        .get();
+                        .blockingGet();
 
         assertThat(events.size(), is(4));
     }
@@ -65,7 +65,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events =
                 d2.eventModule().events
                         .byUid().eq("single1")
-                        .get();
+                        .blockingGet();
 
         assertThat(events.size(), is(1));
     }
@@ -75,7 +75,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events =
                 d2.eventModule().events
                         .byEnrollmentUid().eq("enroll1")
-                        .get();
+                        .blockingGet();
 
         assertThat(events.size(), is(1));
     }
@@ -85,7 +85,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events =
                 d2.eventModule().events
                         .byCreated().eq(BaseNameableObject.DATE_FORMAT.parse("2017-08-07T15:47:25.959"))
-                        .get();
+                        .blockingGet();
 
         assertThat(events.size(), is(1));
     }
@@ -95,7 +95,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events =
                 d2.eventModule().events
                         .byLastUpdated().eq(BaseNameableObject.DATE_FORMAT.parse("2019-01-01T22:26:39.094"))
-                        .get();
+                        .blockingGet();
 
         assertThat(events.size(), is(1));
     }
@@ -105,7 +105,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events =
                 d2.eventModule().events
                         .byCreatedAtClient().eq("2018-02-28T00:00:00.000")
-                        .get();
+                        .blockingGet();
 
         assertThat(events.size(), is(0));
     }
@@ -115,7 +115,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events =
                 d2.eventModule().events
                         .byLastUpdatedAtClient().eq("2018-02-28T00:00:00.000")
-                        .get();
+                        .blockingGet();
 
         assertThat(events.size(), is(0));
     }
@@ -125,7 +125,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events =
                 d2.eventModule().events
                         .byStatus().eq(EventStatus.ACTIVE)
-                        .get();
+                        .blockingGet();
 
         assertThat(events.size(), is(1));
     }
@@ -135,7 +135,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events =
                 d2.eventModule().events
                 .byGeometryType().eq(FeatureType.POINT)
-                .get();
+                .blockingGet();
 
         assertThat(events.size(), is(4));
     }
@@ -145,7 +145,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events =
                 d2.eventModule().events
                 .byGeometryCoordinates().eq("[21.0, 43.0]")
-                .get();
+                .blockingGet();
 
         assertThat(events.size(), is(1));
     }
@@ -155,7 +155,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events =
                 d2.eventModule().events
                         .byProgramUid().eq("lxAQ7Zs9VYR")
-                        .get();
+                        .blockingGet();
 
         assertThat(events.size(), is(4));
     }
@@ -165,7 +165,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events =
                 d2.eventModule().events
                         .byProgramStageUid().eq("dBwrot7S420")
-                        .get();
+                        .blockingGet();
 
         assertThat(events.size(), is(4));
     }
@@ -175,7 +175,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events =
                 d2.eventModule().events
                         .byOrganisationUnitUid().eq("DiszpKrYNg8")
-                        .get();
+                        .blockingGet();
 
         assertThat(events.size(), is(4));
     }
@@ -185,7 +185,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events =
                 d2.eventModule().events
                         .byEventDate().eq(BaseNameableObject.DATE_FORMAT.parse("2017-02-27T00:00:00.000"))
-                        .get();
+                        .blockingGet();
 
         assertThat(events.size(), is(2));
     }
@@ -195,7 +195,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events =
                 d2.eventModule().events
                         .byCompleteDate().eq(BaseNameableObject.DATE_FORMAT.parse("2016-02-27T00:00:00.000"))
-                        .get();
+                        .blockingGet();
 
         assertThat(events.size(), is(1));
     }
@@ -205,7 +205,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events =
                 d2.eventModule().events
                         .byDueDate().eq(BaseNameableObject.DATE_FORMAT.parse("2017-01-28T00:00:00.000"))
-                        .get();
+                        .blockingGet();
 
         assertThat(events.size(), is(1));
     }
@@ -215,7 +215,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events =
                 d2.eventModule().events
                         .byState().eq(State.SYNCED)
-                        .get();
+                        .blockingGet();
 
         assertThat(events.size(), is(4));
     }
@@ -225,7 +225,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events =
                 d2.eventModule().events
                         .byAttributeOptionComboUid().eq("bRowv6yZOF2")
-                        .get();
+                        .blockingGet();
 
         assertThat(events.size(), is(2));
     }
@@ -235,7 +235,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events =
                 d2.eventModule().events
                         .byTrackedEntityInstanceUids(Collections.singletonList("nWrB0TfWlvh"))
-                        .get();
+                        .blockingGet();
 
         assertThat(events.size(), is(1));
     }
@@ -257,7 +257,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void include_tracked_entity_data_values_as_children() {
         Event event = d2.eventModule().events
-                .withTrackedEntityDataValues().uid("single1").get();
+                .withTrackedEntityDataValues().uid("single1").blockingGet();
         assertThat(event.trackedEntityDataValues().size(), is(6));
     }
 
@@ -265,7 +265,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     public void order_by_due_date() {
         List<Event> events = d2.eventModule().events
                 .orderByDueDate(RepositoryScope.OrderByDirection.ASC)
-                .get();
+                .blockingGet();
         assertThat(events.get(0).uid(), is("event1"));
         assertThat(events.get(1).uid(), is("event2"));
         assertThat(events.get(2).uid(), is("single1"));
@@ -276,7 +276,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     public void order_by_last_updated() {
         List<Event> events = d2.eventModule().events
                 .orderByLastUpdated(RepositoryScope.OrderByDirection.ASC)
-                .get();
+                .blockingGet();
         assertThat(events.get(0).uid(), is("event1"));
         assertThat(events.get(1).uid(), is("event2"));
         assertThat(events.get(2).uid(), is("single2"));
@@ -288,7 +288,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events = d2.eventModule().events
                 .orderByEventDate(RepositoryScope.OrderByDirection.ASC)
                 .orderByLastUpdated(RepositoryScope.OrderByDirection.ASC)
-                .get();
+                .blockingGet();
         assertThat(events.get(0).uid(), is("event1"));
         assertThat(events.get(1).uid(), is("event2"));
         assertThat(events.get(2).uid(), is("single2"));
@@ -299,7 +299,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     public void order_by_complete_date() {
         List<Event> events = d2.eventModule().events
                 .orderByCompleteDate(RepositoryScope.OrderByDirection.ASC)
-                .get();
+                .blockingGet();
         assertThat(events.get(0).uid(), is("event2"));
         assertThat(events.get(1).uid(), is("single1"));
         assertThat(events.get(2).uid(), is("single2"));
@@ -308,19 +308,19 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
 
     @Test
     public void add_events_to_the_repository() throws D2Error {
-        List<Event> events1 = d2.eventModule().events.get();
+        List<Event> events1 = d2.eventModule().events.blockingGet();
         assertThat(events1.size(), is(4));
 
-        String eventUid = d2.eventModule().events.add(
+        String eventUid = d2.eventModule().events.blockingAdd(
                 EventCreateProjection.create("enroll1", "lxAQ7Zs9VYR", "dBwrot7S420",
                         "DiszpKrYNg8", "bRowv6yZOF2"));
 
-        List<Event> events2 = d2.eventModule().events.get();
+        List<Event> events2 = d2.eventModule().events.blockingGet();
         assertThat(events2.size(), is(5));
 
-        Event event = d2.eventModule().events.uid(eventUid).get();
+        Event event = d2.eventModule().events.uid(eventUid).blockingGet();
         assertThat(event.uid(), is(eventUid));
 
-        d2.eventModule().events.uid(eventUid).delete();
+        d2.eventModule().events.uid(eventUid).blockingDelete();
     }
 }

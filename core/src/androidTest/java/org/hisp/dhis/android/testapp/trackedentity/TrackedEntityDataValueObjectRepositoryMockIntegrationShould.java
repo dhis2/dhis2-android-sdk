@@ -47,28 +47,28 @@ public class TrackedEntityDataValueObjectRepositoryMockIntegrationShould extends
 
         TrackedEntityDataValueObjectRepository repository = objectRepository();
 
-        repository.set(value);
-        assertThat(repository.get().value(), is(value));
+        repository.blockingSet(value);
+        assertThat(repository.blockingGet().value(), is(value));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
     public void delete_value() throws D2Error {
         TrackedEntityDataValueObjectRepository repository = objectRepository();
 
-        repository.set("value");
-        assertThat(repository.exists(), is(Boolean.TRUE));
-        repository.delete();
-        assertThat(repository.exists(), is(Boolean.FALSE));
+        repository.blockingSet("value");
+        assertThat(repository.blockingExists(), is(Boolean.TRUE));
+        repository.blockingDelete();
+        assertThat(repository.blockingExists(), is(Boolean.FALSE));
     }
 
     @Test
     public void return_that_a_value_exists_only_if_it_has_been_created() {
         assertThat(d2.trackedEntityModule().trackedEntityDataValues
-                .value("no_event", "no_data_element").exists(), is(Boolean.FALSE));
+                .value("no_event", "no_data_element").blockingExists(), is(Boolean.FALSE));
         assertThat(d2.trackedEntityModule().trackedEntityDataValues
-                .value("single1", "ebaJjqltK5N").exists(), is(Boolean.TRUE));
+                .value("single1", "ebaJjqltK5N").blockingExists(), is(Boolean.TRUE));
     }
 
     private TrackedEntityDataValueObjectRepository objectRepository() {

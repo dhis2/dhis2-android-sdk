@@ -52,7 +52,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
 
     @Test
     public void allow_access_to_all_enrollments_without_children() {
-        List<Enrollment> enrollments = d2.enrollmentModule().enrollments.get();
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments.blockingGet();
         assertThat(enrollments.size(), is(2));
 
         Enrollment enrollment = enrollments.get(0);
@@ -63,7 +63,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
 
     @Test
     public void allow_access_to_one_enrollment_without_children() {
-        Enrollment enrollment = d2.enrollmentModule().enrollments.uid("enroll1").get();
+        Enrollment enrollment = d2.enrollmentModule().enrollments.uid("enroll1").blockingGet();
         assertThat(enrollment.uid(), is("enroll1"));
         assertThat(enrollment.program(), is("lxAQ7Zs9VYR"));
         assertThat(enrollment.events() == null, is(true));
@@ -72,9 +72,9 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     @Test
     public void include_events_as_children() {
         Enrollment enrollment1 = d2.enrollmentModule().enrollments
-                .withEvents().uid("enroll1").get();
+                .withEvents().uid("enroll1").blockingGet();
         Enrollment enrollment2 = d2.enrollmentModule().enrollments
-                .withEvents().uid("enroll2").get();
+                .withEvents().uid("enroll2").blockingGet();
         assertThat(enrollment1.events().size(), is(1));
         assertThat(enrollment2.events().size(), is(1));
     }
@@ -82,9 +82,9 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     @Test
     public void include_notes_as_children() {
         Enrollment enrollment1 = d2.enrollmentModule().enrollments
-                .withNotes().uid("enroll1").get();
+                .withNotes().uid("enroll1").blockingGet();
         Enrollment enrollment2 = d2.enrollmentModule().enrollments
-                .withNotes().uid("enroll2").get();
+                .withNotes().uid("enroll2").blockingGet();
         assertThat(enrollment1.notes().size(), is(2));
         assertThat(enrollment2.notes().size(), is(2));
     }
@@ -93,7 +93,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     public void filter_by_uid() {
         Enrollment enrollment = d2.enrollmentModule().enrollments
                 .byUid().eq("enroll1")
-                .one().get();
+                .one().blockingGet();
         assertThat(enrollment.uid(), is("enroll1"));
         assertThat(enrollment.program(), is("lxAQ7Zs9VYR"));
     }
@@ -103,7 +103,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse("2019-01-10T13:40:28.322");
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments
                 .byCreated().eq(created)
-                .get();
+                .blockingGet();
         assertThat(enrollments.size(), is(1));
     }
 
@@ -112,7 +112,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         Date lastUpdated = BaseIdentifiableObject.DATE_FORMAT.parse("2019-01-10T13:40:28.718");
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments
                 .byLastUpdated().eq(lastUpdated)
-                .get();
+                .blockingGet();
         assertThat(enrollments.size(), is(1));
     }
 
@@ -120,7 +120,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     public void filter_by_created_as_client() {
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments
                 .byCreatedAtClient().eq("2019-01-08T13:40:28.718")
-                .get();
+                .blockingGet();
         assertThat(enrollments.size(), is(1));
     }
 
@@ -128,7 +128,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     public void filter_by_last_updated_as_client() {
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments
                 .byLastUpdatedAtClient().eq("2018-01-11T13:40:28.718")
-                .get();
+                .blockingGet();
         assertThat(enrollments.size(), is(1));
     }
 
@@ -136,7 +136,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     public void filter_by_organisation_unit() {
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments
                 .byOrganisationUnit().eq("DiszpKrYNg8")
-                .get();
+                .blockingGet();
         assertThat(enrollments.size(), is(2));
     }
 
@@ -144,7 +144,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     public void filter_by_program() {
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments
                 .byProgram().eq("lxAQ7Zs9VYR")
-                .get();
+                .blockingGet();
         assertThat(enrollments.size(), is(2));
     }
 
@@ -153,7 +153,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse("2018-01-10T00:00:00.000");
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments
                 .byEnrollmentDate().eq(created)
-                .get();
+                .blockingGet();
         assertThat(enrollments.size(), is(1));
     }
 
@@ -162,7 +162,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         Date lastUpdated = BaseIdentifiableObject.DATE_FORMAT.parse("2019-01-10T00:00:00.000");
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments
                 .byIncidentDate().eq(lastUpdated)
-                .get();
+                .blockingGet();
         assertThat(enrollments.size(), is(1));
     }
 
@@ -170,7 +170,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     public void filter_by_follow_up() {
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments
                 .byFollowUp().isTrue()
-                .get();
+                .blockingGet();
         assertThat(enrollments.size(), is(1));
     }
 
@@ -178,7 +178,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     public void filter_by_status() {
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments
                 .byStatus().eq(EnrollmentStatus.ACTIVE)
-                .get();
+                .blockingGet();
         assertThat(enrollments.size(), is(2));
     }
 
@@ -186,7 +186,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     public void filter_by_tracked_entity_instance() {
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments
                 .byTrackedEntityInstance().eq("nWrB0TfWlvD")
-                .get();
+                .blockingGet();
         assertThat(enrollments.size(), is(1));
     }
 
@@ -194,7 +194,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     public void filter_by_state() {
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments
                 .byState().eq(State.SYNCED)
-                .get();
+                .blockingGet();
         assertThat(enrollments.size(), is(2));
     }
 
@@ -202,7 +202,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     public void filter_by_geometry_type() {
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments
                         .byGeometryType().eq(FeatureType.POLYGON)
-                        .get();
+                        .blockingGet();
 
         assertThat(enrollments.size(), is(1));
     }
@@ -211,25 +211,25 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     public void filter_by_geometry_coordinates() {
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments
                         .byGeometryCoordinates().eq("[4.1, 2.6]")
-                        .get();
+                        .blockingGet();
 
         assertThat(enrollments.size(), is(1));
     }
 
     @Test
     public void add_enrollments_to_the_repository() throws D2Error {
-        List<Enrollment> enrollments1 = d2.enrollmentModule().enrollments.get();
+        List<Enrollment> enrollments1 = d2.enrollmentModule().enrollments.blockingGet();
         assertThat(enrollments1.size(), is(2));
 
-        String enrolmentUid = d2.enrollmentModule().enrollments.add(EnrollmentCreateProjection.create(
+        String enrolmentUid = d2.enrollmentModule().enrollments.blockingAdd(EnrollmentCreateProjection.create(
                 "DiszpKrYNg8", "lxAQ7Zs9VYR", "nWrB0TfWlvh"));
 
-        List<Enrollment> enrollments2 = d2.enrollmentModule().enrollments.get();
+        List<Enrollment> enrollments2 = d2.enrollmentModule().enrollments.blockingGet();
         assertThat(enrollments2.size(), is(3));
 
-        Enrollment enrollment = d2.enrollmentModule().enrollments.uid(enrolmentUid).get();
+        Enrollment enrollment = d2.enrollmentModule().enrollments.uid(enrolmentUid).blockingGet();
         assertThat(enrollment.uid(), is(enrolmentUid));
 
-        d2.enrollmentModule().enrollments.uid(enrolmentUid).delete();
+        d2.enrollmentModule().enrollments.uid(enrolmentUid).blockingDelete();
     }
 }

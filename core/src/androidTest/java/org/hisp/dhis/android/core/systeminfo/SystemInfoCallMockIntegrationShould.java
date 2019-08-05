@@ -78,7 +78,7 @@ public class SystemInfoCallMockIntegrationShould extends BaseMockIntegrationTest
     }
 
     private void isSystemInfoInDb(SystemInfo si) {
-        SystemInfo siDb = systemInfoRepository.get();
+        SystemInfo siDb = systemInfoRepository.blockingGet();
         assertThat(si.toBuilder().id(null).build()).isEqualTo(
                 siDb.toBuilder().id(null).build()
         );

@@ -236,7 +236,7 @@ public final class UserAuthenticateCallFactory {
     }
 
     private boolean wasLoggedAndServerIsNew() {
-        SystemInfo lastSystemInfo = systemInfoRepository.get();
+        SystemInfo lastSystemInfo = systemInfoRepository.blockingGet();
         return lastSystemInfo != null && !(lastSystemInfo.contextPath() + "/api/").equals(apiUrlProvider.getAPIUrl());
     }
 

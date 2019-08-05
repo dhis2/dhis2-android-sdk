@@ -50,7 +50,7 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
     @Test
     public void allow_access_to_all_tracked_entity_data_values() {
         List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
-                d2.trackedEntityModule().trackedEntityAttributeValues.get();
+                d2.trackedEntityModule().trackedEntityAttributeValues.blockingGet();
         assertThat(trackedEntityAttributeValues.size(), is(2));
     }
 
@@ -59,7 +59,7 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
         List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
                 d2.trackedEntityModule().trackedEntityAttributeValues
                 .byTrackedEntityAttribute().eq("lZGmxYbs97q")
-                .get();
+                .blockingGet();
         assertThat(trackedEntityAttributeValues.size(), is(2));
     }
 
@@ -68,7 +68,7 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
         List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
                 d2.trackedEntityModule().trackedEntityAttributeValues
                 .byValue().eq("4081507")
-                .get();
+                .blockingGet();
         assertThat(trackedEntityAttributeValues.size(), is(2));
     }
 
@@ -78,7 +78,7 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
         List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
                 d2.trackedEntityModule().trackedEntityAttributeValues
                 .byCreated().eq(date)
-                .get();
+                .blockingGet();
         assertThat(trackedEntityAttributeValues.size(), is(1));
     }
 
@@ -88,7 +88,7 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
         List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
                 d2.trackedEntityModule().trackedEntityAttributeValues
                 .byLastUpdated().eq(date)
-                .get();
+                .blockingGet();
         assertThat(trackedEntityAttributeValues.size(), is(1));
     }
 
@@ -97,7 +97,7 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
         List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
                 d2.trackedEntityModule().trackedEntityAttributeValues
                         .byTrackedEntityInstance().eq("nWrB0TfWlvh")
-                        .get();
+                        .blockingGet();
         assertThat(trackedEntityAttributeValues.size(), is(1));
     }
 
@@ -105,7 +105,7 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
     public void return_tracked_entity_attribute_value_object_repository() {
         TrackedEntityAttributeValueObjectRepository objectRepository = d2.trackedEntityModule().trackedEntityAttributeValues
                 .value("lZGmxYbs97q", "nWrB0TfWlvh");
-        assertThat(objectRepository.exists(), is(Boolean.TRUE));
-        assertThat(objectRepository.get().value(), is("4081507"));
+        assertThat(objectRepository.blockingExists(), is(Boolean.TRUE));
+        assertThat(objectRepository.blockingGet().value(), is("4081507"));
     }
 }

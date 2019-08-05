@@ -32,10 +32,12 @@ import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
+import io.reactivex.Single;
+
 public interface ReadWriteWithUidCollectionRepository<M extends Model & ObjectWithUidInterface, C>
         extends ReadOnlyCollectionRepository<M> {
 
     ReadWriteObjectRepository<M> uid(String uid);
-
-    String add(C c) throws D2Error;
+    Single<String> add(C c);
+    String blockingAdd(C c) throws D2Error;
 }

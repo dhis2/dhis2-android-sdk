@@ -92,7 +92,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
 
         d2.eventModule().events.upload().blockingSubscribe();
 
-        assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(3);
+        assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(3);
     }
 
     @Test
@@ -101,7 +101,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts.json");
         d2.eventModule().events.upload().blockingSubscribe();
-        assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(3);
+        assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(3);
 
         eventStore.setState("event1Id", State.TO_POST);
         eventStore.setState("event2Id", State.TO_POST);
@@ -109,13 +109,13 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts2.json");
         d2.eventModule().events.upload().blockingSubscribe();
-        assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(2);
+        assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(2);
     }
 
     @Test
     public void handle_event_deletions() {
         storeEvents();
-        assertThat(d2.eventModule().events.count()).isEqualTo(4);
+        assertThat(d2.eventModule().events.blockingCount()).isEqualTo(4);
 
         eventStore.setState("event1Id", State.TO_DELETE);
 
@@ -123,7 +123,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
 
         d2.eventModule().events.upload().blockingSubscribe();
 
-        assertThat(d2.eventModule().events.count()).isEqualTo(3);
+        assertThat(d2.eventModule().events.blockingCount()).isEqualTo(3);
     }
 
     @Test
@@ -133,7 +133,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
         String event3 = "event3";
         String event4 = "event4";
 
-        Program program = d2.programModule().programs.one().get();
+        Program program = d2.programModule().programs.one().blockingGet();
 
         storeSingleEvent(event1, program, State.TO_POST);
         storeSingleEvent(event2, program, State.TO_UPDATE);
@@ -142,7 +142,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
 
         List<Event> events = eventPostCall.queryDataToSync(
                 d2.eventModule().events.byProgramUid().eq(program.uid())
-                .byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).get());
+                .byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).blockingGet());
 
         assertThat(events.size()).isEqualTo(3);
         assertThat(UidsHelper.getUidsList(events).containsAll(Lists.newArrayList(event1, event2, event3)))
@@ -155,9 +155,9 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
         String event3Id = "event3Id";
         String event4Id = "event4Id";
 
-        OrganisationUnit orgUnit = d2.organisationUnitModule().organisationUnits.one().get();
-        Program program = d2.programModule().programs.one().get();
-        ProgramStage programStage = d2.programModule().programStages.one().get();
+        OrganisationUnit orgUnit = d2.organisationUnitModule().organisationUnits.one().blockingGet();
+        Program program = d2.programModule().programs.one().blockingGet();
+        ProgramStage programStage = d2.programModule().programStages.one().blockingGet();
 
         TrackedEntityDataValue dataValue1 = TrackedEntityDataValueSamples.get().toBuilder().event(event1Id).build();
 
@@ -214,12 +214,12 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
         tedvStore.insert(dataValue3);
         tedvStore.insert(dataValue4);
 
-        assertThat(d2.eventModule().events.count()).isEqualTo(4);
+        assertThat(d2.eventModule().events.blockingCount()).isEqualTo(4);
     }
 
     private void storeSingleEvent(String eventUid, Program program, State state) {
-        OrganisationUnit orgUnit = d2.organisationUnitModule().organisationUnits.one().get();
-        ProgramStage programStage = d2.programModule().programStages.one().get();
+        OrganisationUnit orgUnit = d2.organisationUnitModule().organisationUnits.one().blockingGet();
+        ProgramStage programStage = d2.programModule().programStages.one().blockingGet();
 
         eventStore.insert(
                 Event.builder()

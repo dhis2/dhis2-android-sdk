@@ -78,7 +78,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     @Override
     public Single<String> getUserName() {
-        return Single.fromCallable(() -> userModule.authenticatedUser.get().user());
+        return Single.fromCallable(() -> userModule.authenticatedUser.blockingGet().user());
     }
 
     @Override
@@ -158,16 +158,16 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     public Single<Event> getSimpleEventToSubmit(String eventUid) {
         return Single.fromCallable(() ->
                 eventModule.events.withTrackedEntityDataValues()
-                        .byUid().eq(eventUid).one().get()
+                        .byUid().eq(eventUid).one().blockingGet()
         );
     }
 
     @Override
     public Single<TrackedEntityInstance> getTeiEnrollmentToSubmit(String enrollmentUid) {
         return Single.fromCallable(() -> {
-            Enrollment enrollment = enrollmentModule.enrollments.byUid().eq(enrollmentUid).one().get();
+            Enrollment enrollment = enrollmentModule.enrollments.byUid().eq(enrollmentUid).one().blockingGet();
             return trackedEntityModule.trackedEntityInstances.withTrackedEntityAttributeValues()
-                    .byUid().eq(enrollment.trackedEntityInstance()).one().get().toBuilder()
+                    .byUid().eq(enrollment.trackedEntityInstance()).one().blockingGet().toBuilder()
                     .enrollments(Collections.singletonList(enrollment))
                     .build();
         });

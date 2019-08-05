@@ -39,7 +39,7 @@ public class DataSetsStore {
                 .byPeriod().eq(period)
                 .byAttributeOptionComboUid().eq(attributeOptionComboUid)
                 .byState().in(Arrays.asList(State.TO_POST, State.TO_UPDATE))
-                .get());
+                .blockingGet());
     }
 
     Completable updateDataSetValuesState(String orgUnit,
@@ -63,7 +63,7 @@ public class DataSetsStore {
                     .byAttributeOptionComboUid().eq(attributeOptionComboUid)
                     .byPeriod().eq(period)
                     .byOrganisationUnitUid().eq(orgUnit)
-                    .one().get();
+                    .one().blockingGet();
             if (dataSet != null) {
                 dataSetStore.setState(dataSet, state);
                 return;

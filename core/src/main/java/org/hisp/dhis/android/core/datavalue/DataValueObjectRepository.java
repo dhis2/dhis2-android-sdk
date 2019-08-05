@@ -33,12 +33,13 @@ import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteValueObjectR
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithValueObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.Date;
 import java.util.Map;
+
+import io.reactivex.Completable;
 
 public final class DataValueObjectRepository
         extends ReadWriteWithValueObjectRepositoryImpl<DataValue, DataValueObjectRepository>
@@ -68,21 +69,31 @@ public final class DataValueObjectRepository
         this.attributeOptionCombo = attributeOptionCombo;
     }
 
-    public Unit set(String value) throws D2Error {
+    @Override
+    public Completable set(String value) {
+        return Completable.fromAction(() -> blockingSet(value));
+    }
+
+    public void blockingSet(String value) throws D2Error {
         DataValue objectWithValue = setBuilder().value(value).build();
-        return setObject(objectWithValue);
+        setObject(objectWithValue);
     }
 
-    public Unit setFollowUp(Boolean followUp) throws D2Error {
-        return setObject(setBuilder().followUp(followUp).build());
+    public void setFollowUp(Boolean followUp) throws D2Error {
+        setObject(setBuilder().followUp(followUp).build());
     }
 
-    public Unit setComment(String comment) throws D2Error {
-        return setObject(setBuilder().comment(comment).build());
+    public void setComment(String comment) throws D2Error {
+        setObject(setBuilder().comment(comment).build());
     }
 
     @Override
-    public void delete() throws D2Error {
+    public Completable delete() {
+        return Completable.fromAction(this::blockingDelete);
+    }
+
+    @Override
+    public void blockingDelete() throws D2Error {
         DataValue dataValue = getWithoutChildren();
         if (dataValue.state() == State.TO_POST) {
             super.delete(dataValue);
@@ -93,7 +104,7 @@ public final class DataValueObjectRepository
 
     private DataValue.Builder setBuilder() {
         Date date = new Date();
-        if (exists()) {
+        if (blockingExists()) {
             DataValue dataValue = getWithoutChildren();
             State state = dataValue.state() == State.TO_POST ? State.TO_POST : State.TO_UPDATE;
             return dataValue.toBuilder()

@@ -47,7 +47,7 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
     public void find_all() {
         List<Relationship> relationships =
                 d2.relationshipModule().relationships
-                        .get();
+                        .blockingGet();
 
         assertThat(relationships.size(), is(2));
     }
@@ -57,7 +57,7 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
         List<Relationship> relationships =
                 d2.relationshipModule().relationships
                         .byUid().eq("AJOytZW7OaI")
-                        .get();
+                        .blockingGet();
 
         assertThat(relationships.size(), is(1));
     }
@@ -67,7 +67,7 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
         List<Relationship> relationships =
                 d2.relationshipModule().relationships
                         .byName().eq("Lab Sample to Person")
-                        .get();
+                        .blockingGet();
 
         assertThat(relationships.size(), is(1));
     }
@@ -77,7 +77,7 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
         List<Relationship> relationships =
                 d2.relationshipModule().relationships
                         .byCreated().eq(BaseNameableObject.DATE_FORMAT.parse("2019-02-07T08:06:28.369"))
-                        .get();
+                        .blockingGet();
 
         assertThat(relationships.size(), is(1));
     }
@@ -87,7 +87,7 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
         List<Relationship> relationships =
                 d2.relationshipModule().relationships
                         .byLastUpdated().eq(BaseNameableObject.DATE_FORMAT.parse("2018-02-07T08:06:28.369"))
-                        .get();
+                        .blockingGet();
 
         assertThat(relationships.size(), is(1));
     }
@@ -97,7 +97,7 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
         List<Relationship> relationships =
                 d2.relationshipModule().relationships
                         .byRelationshipType().eq("V2kkHafqs8G")
-                        .get();
+                        .blockingGet();
 
         assertThat(relationships.size(), is(1));
     }

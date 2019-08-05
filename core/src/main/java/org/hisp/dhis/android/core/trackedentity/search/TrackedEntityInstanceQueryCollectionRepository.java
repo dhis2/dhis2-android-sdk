@@ -141,7 +141,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     @Override
-    public List<TrackedEntityInstance> get() {
+    public List<TrackedEntityInstance> blockingGet() {
         if (scope.mode().equals(RepositoryMode.OFFLINE_ONLY) || scope.mode().equals(RepositoryMode.OFFLINE_FIRST)) {
             String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope.query(), Collections.emptyList(),
                     -1);
@@ -162,37 +162,53 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     @Override
-    public Single<List<TrackedEntityInstance>> getAsync() {
-        return Single.fromCallable(this::get);
+    public Single<List<TrackedEntityInstance>> get() {
+        return Single.fromCallable(this::blockingGet);
     }
 
     @Override
-    public int count() {
-        return get().size();
+    public Single<Integer> count() {
+        return Single.fromCallable(this::blockingCount);
     }
 
     @Override
-    public boolean isEmpty() {
-        return count() == 0;
+    public int blockingCount() {
+        return blockingGet().size();
+    }
+
+    @Override
+    public Single<Boolean> isEmpty() {
+        return Single.fromCallable(this::blockingIsEmpty);
+    }
+
+    @Override
+    public boolean blockingIsEmpty() {
+        return blockingCount() == 0;
     }
 
     @Override
     public ReadOnlyObjectRepository<TrackedEntityInstance> one() {
         return new ReadOnlyObjectRepository<TrackedEntityInstance>() {
+
             @Override
-            public TrackedEntityInstance get() {
-                List<TrackedEntityInstance> list = TrackedEntityInstanceQueryCollectionRepository.this.get();
+            public Single<TrackedEntityInstance> get() {
+                return Single.fromCallable(this::blockingGet);
+            }
+
+            @Override
+            public TrackedEntityInstance blockingGet() {
+                List<TrackedEntityInstance> list = TrackedEntityInstanceQueryCollectionRepository.this.blockingGet();
                 return list.isEmpty() ? null : list.get(0);
             }
 
             @Override
-            public Single<TrackedEntityInstance> getAsync() {
-                return Single.fromCallable(this::get);
+            public Single<Boolean> exists() {
+                return Single.fromCallable(this::blockingExists);
             }
 
             @Override
-            public boolean exists() {
-                return get() != null;
+            public boolean blockingExists() {
+                return blockingGet() != null;
             }
         };
     }

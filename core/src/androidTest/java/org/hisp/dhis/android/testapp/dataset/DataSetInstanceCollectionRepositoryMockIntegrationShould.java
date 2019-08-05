@@ -50,7 +50,7 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
     @Test
     public void find_all() {
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances
-                .get();
+                .blockingGet();
         assertThat(dataSetInstances.size(), is(4));
     }
 
@@ -58,7 +58,7 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
     public void filter_by_dataset() {
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances
                 .byDataSetUid().eq("lyLU2wR22tC")
-                .get();
+                .blockingGet();
         assertThat(dataSetInstances.size(), is(4));
     }
 
@@ -66,7 +66,7 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
     public void filter_by_period() {
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances
                 .byPeriod().eq("2019")
-                .get();
+                .blockingGet();
         assertThat(dataSetInstances.size(), is(1));
     }
 
@@ -74,7 +74,7 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
     public void filter_by_period_type() {
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances
                 .byPeriodType().eq(PeriodType.Yearly)
-                .get();
+                .blockingGet();
         assertThat(dataSetInstances.size(), is(3));
     }
 
@@ -82,7 +82,7 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
     public void filter_by_period_start_date() throws ParseException {
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances
                 .byPeriodStartDate().after(BaseIdentifiableObject.parseDate("2018-07-15T00:00:00.000"))
-                .get();
+                .blockingGet();
         assertThat(dataSetInstances.size(), is(2));
     }
 
@@ -90,7 +90,7 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
     public void filter_by_period_end_date() throws ParseException {
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances
                 .byPeriodEndDate().after(BaseIdentifiableObject.parseDate("2018-07-15T00:00:00.000"))
-                .get();
+                .blockingGet();
         assertThat(dataSetInstances.size(), is(3));
     }
 
@@ -98,7 +98,7 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
     public void filter_by_organisation_unit() {
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances
                 .byOrganisationUnitUid().eq("DiszpKrYNg8")
-                .get();
+                .blockingGet();
         assertThat(dataSetInstances.size(), is(4));
     }
 
@@ -106,13 +106,13 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
     public void fill_completion_information() {
         List<DataSetInstance> dataSetInstanceCompleted = d2.dataSetModule().dataSetInstances
                 .byPeriod().eq("2019")
-                .get();
+                .blockingGet();
         assertThat(dataSetInstanceCompleted.get(0).completed(), is(true));
         assertThat(dataSetInstanceCompleted.get(0).completionDate(), is(notNullValue()));
 
         List<DataSetInstance> dataSetInstanceUncompleted = d2.dataSetModule().dataSetInstances
                 .byPeriod().eq("201907")
-                .get();
+                .blockingGet();
         assertThat(dataSetInstanceUncompleted.get(0).completed(), is(false));
         assertThat(dataSetInstanceUncompleted.get(0).completionDate(), is(nullValue()));
     }

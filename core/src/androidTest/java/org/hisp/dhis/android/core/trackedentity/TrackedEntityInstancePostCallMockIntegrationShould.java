@@ -154,7 +154,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
-        assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(3);
+        assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(3);
     }
 
     @Test
@@ -163,7 +163,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
         d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
-        assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(3);
+        assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(3);
 
 
         TrackedEntityInstanceStoreImpl.create(databaseAdapter).setState("teiId", State.TO_POST);
@@ -174,7 +174,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_3.json");
         d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
-        assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(1);
+        assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(1);
     }
 
     @Test
@@ -187,10 +187,10 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
-        assertThat(d2.trackedEntityModule().trackedEntityInstances.count()).isEqualTo(0);
-        assertThat(d2.enrollmentModule().enrollments.count()).isEqualTo(0);
-        assertThat(d2.eventModule().events.count()).isEqualTo(0);
-        assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(0);
+        assertThat(d2.trackedEntityModule().trackedEntityInstances.blockingCount()).isEqualTo(0);
+        assertThat(d2.enrollmentModule().enrollments.blockingCount()).isEqualTo(0);
+        assertThat(d2.eventModule().events.blockingCount()).isEqualTo(0);
+        assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(0);
     }
 
     @Test
@@ -214,7 +214,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         List<TrackedEntityInstance> instances = trackedEntityInstancePostCall.queryDataToSync(
                 d2.trackedEntityModule().trackedEntityInstances.byUid().eq(tei1)
-                .byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).get());
+                .byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).blockingGet());
 
         assertThat(instances.size()).isEqualTo(3);
         assertThat(UidsHelper.getUidsList(instances).containsAll(Lists.newArrayList(tei1, tei2, tei3))).isEqualTo(true);
@@ -231,7 +231,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         OrganisationUnit orgUnit = OrganisationUnitStore.create(databaseAdapter).selectFirst();
         TrackedEntityType teiType = TrackedEntityTypeStore.create(databaseAdapter).selectFirst();
-        Program program = d2.programModule().programs.one().get();
+        Program program = d2.programModule().programs.one().blockingGet();
         ProgramStage programStage = ProgramStageStore.create(databaseAdapter).selectFirst();
 
         TrackedEntityDataValue dataValue1 = TrackedEntityDataValueSamples.get().toBuilder().event(event1Id).build();

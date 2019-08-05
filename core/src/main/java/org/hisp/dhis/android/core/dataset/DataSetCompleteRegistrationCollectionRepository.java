@@ -48,6 +48,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 @Reusable
@@ -75,7 +76,12 @@ public final class DataSetCompleteRegistrationCollectionRepository
     }
 
     @Override
-    public void add(DataSetCompleteRegistration dataSetCompleteRegistration) {
+    public Completable add(DataSetCompleteRegistration dataSetCompleteRegistration) {
+        return Completable.fromAction(() -> blockingAdd(dataSetCompleteRegistration));
+    }
+
+    @Override
+    public void blockingAdd(DataSetCompleteRegistration dataSetCompleteRegistration) {
         handler.handle(dataSetCompleteRegistration.toBuilder().state(State.TO_POST).build());
     }
 

@@ -50,7 +50,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
     public void find_all() {
         List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
                 d2.dataSetModule().dataSetCompleteRegistrations
-                        .get();
+                        .blockingGet();
 
         assertThat(dataSetCompleteRegistrations.size(), is(3));
     }
@@ -61,7 +61,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                 d2.dataSetModule().dataSetCompleteRegistrations
                         .byPeriod()
                         .eq("2019")
-                        .get();
+                        .blockingGet();
 
         assertThat(dataSetCompleteRegistrations.size(), is(1));
     }
@@ -72,7 +72,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                 d2.dataSetModule().dataSetCompleteRegistrations
                         .byDataSetUid()
                         .eq("lyLU2wR22tC")
-                        .get();
+                        .blockingGet();
 
         assertThat(dataSetCompleteRegistrations.size(), is(3));
     }
@@ -83,7 +83,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                 d2.dataSetModule().dataSetCompleteRegistrations
                         .byOrganisationUnitUid()
                         .eq("DiszpKrYNg8")
-                        .get();
+                        .blockingGet();
 
         assertThat(dataSetCompleteRegistrations.size(), is(3));
     }
@@ -93,7 +93,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
         List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
                 d2.dataSetModule().dataSetCompleteRegistrations
                         .byAttributeOptionComboUid()
-                        .eq("bRowv6yZOF2").get();
+                        .eq("bRowv6yZOF2").blockingGet();
 
         assertThat(dataSetCompleteRegistrations.size(), is(3));
     }
@@ -104,7 +104,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                 d2.dataSetModule().dataSetCompleteRegistrations
                         .byDate()
                         .after(simpleDateFormat.parse("2010-08-03"))
-                        .get();
+                        .blockingGet();
 
         assertThat(dataSetCompleteRegistrations.size(), is(1));
     }
@@ -115,7 +115,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                 d2.dataSetModule().dataSetCompleteRegistrations
                         .byDate()
                         .before(simpleDateFormat.parse("2010-08-03"))
-                        .get();
+                        .blockingGet();
 
         assertThat(dataSetCompleteRegistrations.size(), is(2));
     }
@@ -126,7 +126,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                 d2.dataSetModule().dataSetCompleteRegistrations
                         .byStoredBy()
                         .eq("imported")
-                        .get();
+                        .blockingGet();
 
         assertThat(dataSetCompleteRegistrations.size(), is(2));
     }

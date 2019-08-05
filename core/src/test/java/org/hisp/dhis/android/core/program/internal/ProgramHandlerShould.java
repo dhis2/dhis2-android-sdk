@@ -163,12 +163,10 @@ public class ProgramHandlerShould {
         when(program.selectEnrollmentDatesInFuture()).thenReturn(true);
         when(program.dataEntryMethod()).thenReturn(true);
         when(program.ignoreOverdueEvents()).thenReturn(false);
-        when(program.relationshipFromA()).thenReturn(true);
         when(program.selectIncidentDatesInFuture()).thenReturn(true);
         when(program.useFirstStageDuringRegistration()).thenReturn(true);
         when(program.displayFrontPageList()).thenReturn(true);
         when(program.programType()).thenReturn(ProgramType.WITH_REGISTRATION);
-        when(program.relationshipText()).thenReturn("test relationship");
         when(program.relatedProgram()).thenReturn(relatedProgram);
         when(program.trackedEntityType()).thenReturn(trackedEntityType);
 

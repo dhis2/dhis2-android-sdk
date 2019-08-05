@@ -81,13 +81,10 @@ public class ProgramShould extends BaseObjectShould implements ObjectShould {
 
         assertThat(program.displayFrontPageList()).isFalse();
         assertThat(program.programType()).isEqualTo(ProgramType.WITH_REGISTRATION);
-        assertThat(program.relationshipFromA()).isTrue();
-        assertThat(program.relationshipText()).isEqualTo("Add child");
         assertThat(program.displayIncidentDate()).isFalse();
         assertThat(program.categoryCombo().uid()).isEqualTo("p0KPaWEg3cf");
         assertThat(program.trackedEntityType().uid()).isEqualTo("nEenWmSyUEp");
         assertThat(program.relatedProgram().uid()).isEqualTo("IpHINAT79UW");
-        assertThat(program.relationshipType().uid()).isEqualTo("V2kkHafqs8G");
         assertThat(program.programIndicators()).isEmpty();
 
         assertThat(program.programStages().get(0).uid()).isEqualTo("WZbXY0S00lP");

@@ -54,14 +54,11 @@ public final class ProgramFields {
     public static final String SELECT_ENROLLMENT_DATES_IN_FUTURE = "selectEnrollmentDatesInFuture";
     public static final String DATA_ENTRY_METHOD = "dataEntryMethod";
     public static final String IGNORE_OVERDUE_EVENTS = "ignoreOverdueEvents";
-    public static final String RELATIONSHIP_FROM_A = "relationshipFromA";
     public static final String SELECT_INCIDENT_DATES_IN_FUTURE = "selectIncidentDatesInFuture";
     private static final String CAPTURE_COORDINATES = "captureCoordinates";
     public static final String USE_FIRST_STAGE_DURING_REGISTRATION = "useFirstStageDuringRegistration";
     public static final String DISPLAY_FRONT_PAGE_LIST = "displayFrontPageList";
     public static final String PROGRAM_TYPE = "programType";
-    public static final String RELATIONSHIP_TYPE = "relationshipType";
-    public static final String RELATIONSHIP_TEXT = "relationshipText";
     public static final String PROGRAM_TRACKED_ENTITY_ATTRIBUTES = "programTrackedEntityAttributes";
     public static final String RELATED_PROGRAM = "relatedProgram";
     public static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
@@ -94,14 +91,11 @@ public final class ProgramFields {
                     fh.<Boolean>field(SELECT_ENROLLMENT_DATES_IN_FUTURE),
                     fh.<Boolean>field(DATA_ENTRY_METHOD),
                     fh.<Boolean>field(IGNORE_OVERDUE_EVENTS),
-                    fh.<Boolean>field(RELATIONSHIP_FROM_A),
                     fh.<Boolean>field(SELECT_INCIDENT_DATES_IN_FUTURE),
                     fh.<Boolean>field(CAPTURE_COORDINATES),
                     fh.<Boolean>field(USE_FIRST_STAGE_DURING_REGISTRATION),
                     fh.<Boolean>field(DISPLAY_FRONT_PAGE_LIST),
                     fh.<ProgramType>field(PROGRAM_TYPE),
-                    fh.nestedFieldWithUid(RELATIONSHIP_TYPE),
-                    fh.<String>field(RELATIONSHIP_TEXT),
                     fh.<ProgramTrackedEntityAttribute>nestedField(PROGRAM_TRACKED_ENTITY_ATTRIBUTES).with(
                             ProgramTrackedEntityAttributeFields.allFields),
                     fh.nestedFieldWithUid(RELATED_PROGRAM),

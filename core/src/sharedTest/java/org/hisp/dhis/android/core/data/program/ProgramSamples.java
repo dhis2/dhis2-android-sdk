@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramType;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
@@ -56,13 +55,10 @@ public class ProgramSamples {
                 .selectEnrollmentDatesInFuture(true)
                 .dataEntryMethod(false)
                 .ignoreOverdueEvents(false)
-                .relationshipFromA(true)
                 .selectIncidentDatesInFuture(true)
                 .useFirstStageDuringRegistration(true)
                 .displayFrontPageList(false)
                 .programType(ProgramType.WITH_REGISTRATION)
-                .relationshipType(RelationshipType.builder().uid("relationship_type_uid").build())
-                .relationshipText("relationship_text")
                 .relatedProgram(Program.builder().uid("program_uid").build())
                 .trackedEntityType(TrackedEntityType.builder().uid("tracked_entity_type").build())
                 .categoryCombo(CategoryCombo.builder().uid("category_combo_uid").build())

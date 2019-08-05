@@ -126,14 +126,6 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     }
 
     @Test
-    public void filter_by_relationship_from_A() {
-        List<Program> programs = d2.programModule().programs
-                .byRelationshipFromA().isTrue()
-                .get();
-        assertThat(programs.size(), is(1));
-    }
-
-    @Test
     public void filter_by_select_incident_dates_in_future() {
         List<Program> programs = d2.programModule().programs
                 .bySelectIncidentDatesInFuture().isFalse()
@@ -169,22 +161,6 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_program_type() {
         List<Program> programs = d2.programModule().programs
                 .byProgramType().eq(ProgramType.WITHOUT_REGISTRATION)
-                .get();
-        assertThat(programs.size(), is(1));
-    }
-
-    @Test
-    public void filter_by_relationship_type_uid() {
-        List<Program> programs = d2.programModule().programs
-                .byRelationshipTypeUid().eq("V2kkHafqs8G")
-                .get();
-        assertThat(programs.size(), is(1));
-    }
-
-    @Test
-    public void filter_by_relationship_text() {
-        List<Program> programs = d2.programModule().programs
-                .byRelationshipText().eq("Relationship text")
                 .get();
         assertThat(programs.size(), is(1));
     }

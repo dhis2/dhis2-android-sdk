@@ -59,16 +59,14 @@ import org.hisp.dhis.android.core.data.database.IgnoreProgramSectionListColumnAd
 import org.hisp.dhis.android.core.data.database.IgnoreProgramStageListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreProgramTrackedEntityAttributeListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ProgramWithUidColumnAdapter;
-import org.hisp.dhis.android.core.data.database.RelationshipTypeWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.TrackedEntityTypeWithUidColumnAdapter;
 import org.hisp.dhis.android.core.period.PeriodType;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_Program.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_Program.Builder.class)
 @SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.ExcessiveImports", "PMD.CouplingBetweenObjects", "PMD.GodClass"})
 public abstract class Program extends BaseNameableObject implements Model, ObjectWithStyle<Program, Program.Builder> {
 
@@ -110,10 +108,6 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
 
     @Nullable
     @JsonProperty()
-    public abstract Boolean relationshipFromA();
-
-    @Nullable
-    @JsonProperty()
     public abstract Boolean selectIncidentDatesInFuture();
 
     /**
@@ -137,23 +131,6 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     @JsonProperty()
     @ColumnAdapter(DbProgramTypeColumnAdapter.class)
     public abstract ProgramType programType();
-
-    /**
-     * @deprecated since 2.30
-     */
-    @Deprecated
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(RelationshipTypeWithUidColumnAdapter.class)
-    public abstract RelationshipType relationshipType();
-
-    /**
-     * @deprecated since 2.30
-     */
-    @Deprecated
-    @Nullable
-    @JsonProperty()
-    public abstract String relationshipText();
 
     @Nullable
     @JsonProperty()
@@ -272,8 +249,6 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
 
         public abstract Builder ignoreOverdueEvents(Boolean ignoreOverdueEvents);
 
-        public abstract Builder relationshipFromA(Boolean relationshipFromA);
-
         public abstract Builder selectIncidentDatesInFuture(Boolean selectIncidentDatesInFuture);
 
         /**
@@ -287,10 +262,6 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
         public abstract Builder displayFrontPageList(Boolean displayFrontPageList);
 
         public abstract Builder programType(ProgramType programType);
-
-        public abstract Builder relationshipType(RelationshipType relationshipType);
-
-        public abstract Builder relationshipText(String relationshipText);
 
         public abstract Builder programTrackedEntityAttributes(List<ProgramTrackedEntityAttribute>
                                                                        programTrackedEntityAttributes);

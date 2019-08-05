@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
 import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.program.AccessLevel;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
@@ -76,6 +77,7 @@ public final class ProgramFields {
     public static final String MAX_TEI_COUNT_TO_RETURN = "maxTeiCountToReturn";
     public static final String PROGRAM_SECTIONS = "programSections";
     public static final String FEATURE_TYPE = "featureType";
+    public static final String ACCESS_LEVEL = "accessLevel";
 
     private static FieldsHelper<Program> fh = new FieldsHelper<>();
 
@@ -113,6 +115,7 @@ public final class ProgramFields {
                     fh.<Integer>field(MIN_ATTRIBUTES_REQUIRED_TO_SEARCH),
                     fh.<Integer>field(MAX_TEI_COUNT_TO_RETURN),
                     fh.<FeatureType>field(FEATURE_TYPE),
+                    fh.<AccessLevel>field(ACCESS_LEVEL),
                     fh.<ProgramSection>nestedField(PROGRAM_SECTIONS).with(ProgramSectionFields.allFields)
             ).build();
 

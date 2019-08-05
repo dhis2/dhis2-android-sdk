@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.program.AccessLevel;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -69,6 +70,7 @@ public class ProgramSamples {
                 .minAttributesRequiredToSearch(1)
                 .maxTeiCountToReturn(2)
                 .featureType(FeatureType.POINT)
+                .accessLevel(AccessLevel.PROTECTED)
                 .build();
         return builder.build();
     }

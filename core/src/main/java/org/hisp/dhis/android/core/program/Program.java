@@ -49,6 +49,7 @@ import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.data.database.AccessColumnAdapter;
 import org.hisp.dhis.android.core.data.database.CategoryComboWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DBCaptureCoordinatesFromFeatureTypeColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DbAccessLevelColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbProgramTypeColumnAdapter;
@@ -214,6 +215,11 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     @ColumnAdapter(DbFeatureTypeColumnAdapter.class)
     public abstract FeatureType featureType();
 
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(DbAccessLevelColumnAdapter.class)
+    public abstract AccessLevel accessLevel();
+
     public static Builder builder() {
         return new $$AutoValue_Program.Builder();
     }
@@ -296,11 +302,15 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
 
         public abstract Builder featureType(FeatureType featureType);
 
+        public abstract Builder accessLevel(AccessLevel accessLevel);
+
         abstract Program autoBuild();
 
         // Auxiliary fields to access values
         abstract Boolean captureCoordinates();
         abstract FeatureType featureType();
+        abstract AccessLevel accessLevel();
+
         public Program build() {
             if (featureType() == null) {
                 if (captureCoordinates() != null) {
@@ -308,6 +318,10 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
                 }
             } else {
                 captureCoordinates(featureType() != FeatureType.NONE);
+            }
+
+            if (accessLevel() == null) {
+                accessLevel(AccessLevel.OPEN);      // Since 2.30
             }
 
             return autoBuild();

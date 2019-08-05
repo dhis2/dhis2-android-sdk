@@ -78,6 +78,7 @@ public class ProgramShould extends BaseObjectShould implements ObjectShould {
         assertThat(program.minAttributesRequiredToSearch()).isEqualTo(3);
         assertThat(program.maxTeiCountToReturn()).isEqualTo(2);
         assertThat(program.featureType()).isEqualTo(FeatureType.MULTI_POLYGON);
+        assertThat(program.accessLevel()).isEqualTo(AccessLevel.PROTECTED);
 
         assertThat(program.displayFrontPageList()).isFalse();
         assertThat(program.programType()).isEqualTo(ProgramType.WITH_REGISTRATION);

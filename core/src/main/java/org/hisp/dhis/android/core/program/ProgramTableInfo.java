@@ -79,7 +79,8 @@ public final class ProgramTableInfo {
                     ProgramFields.EXPIRY_PERIOD_TYPE,
                     ProgramFields.MIN_ATTRIBUTES_REQUIRED_TO_SEARCH,
                     ProgramFields.MAX_TEI_COUNT_TO_RETURN,
-                    ProgramFields.FEATURE_TYPE
+                    ProgramFields.FEATURE_TYPE,
+                    ProgramFields.ACCESS_LEVEL
             );
         }
     }

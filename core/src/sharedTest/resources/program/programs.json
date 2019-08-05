@@ -14,6 +14,7 @@
       "enrollmentDateLabel": "Enrollment Date",
       "onlyEnrollOnce": false,
       "programType": "WITHOUT_REGISTRATION",
+      "accessLevel": "PROTECTED",
       "relationshipFromA": true,
       "dataEntryMethod": true,
       "version": 3,

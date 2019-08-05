@@ -30,6 +30,7 @@ package org.hisp.dhis.android.testapp.program;
 
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.program.AccessLevel;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramType;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
@@ -137,6 +138,14 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_feature_type() {
         List<Program> programs = d2.programModule().programs
                 .byFeatureType().eq(FeatureType.NONE)
+                .get();
+        assertThat(programs.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_access_level() {
+        List<Program> programs = d2.programModule().programs
+                .byAccessLevel().eq(AccessLevel.PROTECTED)
                 .get();
         assertThat(programs.size(), is(1));
     }

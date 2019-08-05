@@ -24,6 +24,7 @@
   "withoutRegistration": false,
   "displayFrontPageList": false,
   "programType": "WITH_REGISTRATION",
+  "accessLevel": "PROTECTED",
   "relationshipFromA": true,
   "relationshipText": "Add child",
   "displayIncidentDate": false,

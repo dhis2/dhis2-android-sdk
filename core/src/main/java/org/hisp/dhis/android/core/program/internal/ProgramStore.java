@@ -86,6 +86,7 @@ public final class ProgramStore extends IdentifiableObjectStoreImpl<Program> imp
             sqLiteBind(sqLiteStatement, 31, o.minAttributesRequiredToSearch());
             sqLiteBind(sqLiteStatement, 32, o.maxTeiCountToReturn());
             sqLiteBind(sqLiteStatement, 33, o.featureType());
+            sqLiteBind(sqLiteStatement, 34, o.accessLevel());
         }
     };
 

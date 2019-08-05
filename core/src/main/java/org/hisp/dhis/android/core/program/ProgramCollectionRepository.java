@@ -154,6 +154,10 @@ public final class ProgramCollectionRepository
         return cf.enumC(ProgramFields.FEATURE_TYPE);
     }
 
+    public EnumFilterConnector<ProgramCollectionRepository, AccessLevel> byAccessLevel() {
+        return cf.enumC(ProgramFields.ACCESS_LEVEL);
+    }
+
     public ProgramCollectionRepository byOrganisationUnitUid(String uid) {
         return byOrganisationUnitList(Collections.singletonList(uid));
     }

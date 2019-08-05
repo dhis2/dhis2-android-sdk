@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQu
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo;
-import org.hisp.dhis.android.core.dataset.internal.DataSetFields;
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 
@@ -64,7 +63,8 @@ class CategoryComboUidsSeeker {
                 DataElementTableInfo.TABLE_INFO.name(),
                 DataSetElementLinkTableInfo.TABLE_INFO.name());
 
-        String query = new MultipleTableQueryBuilder().generateQuery(DataSetFields.CATEGORY_COMBO, tableNames).build();
+        String query = new MultipleTableQueryBuilder()
+                .generateQuery(DataSetTableInfo.Columns.CATEGORY_COMBO, tableNames).build();
 
         Cursor cursor = databaseAdapter.query(query);
         Set<String> categoryCombos = new HashSet<>();

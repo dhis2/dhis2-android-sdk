@@ -33,18 +33,20 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 
+import static org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns;
+
 public final class DataValueFields {
 
-    public static final String DATA_ELEMENT = "dataElement";
-    public static final String PERIOD = "period";
+    public static final String DATA_ELEMENT = Columns.DATA_ELEMENT;
+    public static final String PERIOD = Columns.PERIOD;
     public static final String ORGANISATION_UNIT = "orgUnit";
-    public static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
-    public static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
-    public static final String VALUE = "value";
-    public static final String STORED_BY = "storedBy";
-    public static final String CREATED = "created";
-    public static final String LAST_UPDATED = "lastUpdated";
-    public static final String COMMENT = "comment";
+    public static final String CATEGORY_OPTION_COMBO = Columns.CATEGORY_OPTION_COMBO;
+    public static final String ATTRIBUTE_OPTION_COMBO = Columns.ATTRIBUTE_OPTION_COMBO;
+    public static final String VALUE = Columns.VALUE;
+    public static final String STORED_BY = Columns.STORED_BY;
+    public static final String CREATED = Columns.CREATED;
+    public static final String LAST_UPDATED = Columns.LAST_UPDATED;
+    public static final String COMMENT = Columns.COMMENT;
     public static final String FOLLOW_UP = "followup";
     public static final String DELETED = "deleted";
 

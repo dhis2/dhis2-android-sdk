@@ -41,8 +41,8 @@ import org.hisp.dhis.android.core.dataapproval.DataApproval;
 import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalQuery;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
+import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationQuery;
-import org.hisp.dhis.android.core.dataset.internal.DataSetFields;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueQuery;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -137,7 +137,7 @@ final class AggregatedDataCall {
 
 
         List<DataSet> dataSetsWithWorkflow =
-                dataSetStore.selectWhere(DataSetFields.WORKFLOW + " IS NOT NULL");
+                dataSetStore.selectWhere(DataSetTableInfo.Columns.WORKFLOW + " IS NOT NULL");
 
         Set<String> workflowUids = getWorkflowsUidsFrom(dataSetsWithWorkflow);
         Set<String> attributeOptionComboUids = getAttributeOptionCombosUidsFrom(dataSetsWithWorkflow);

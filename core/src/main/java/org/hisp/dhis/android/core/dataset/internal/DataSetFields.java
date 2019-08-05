@@ -44,24 +44,27 @@ import org.hisp.dhis.android.core.dataset.Section;
 import org.hisp.dhis.android.core.dataset.SectionFields;
 import org.hisp.dhis.android.core.period.PeriodType;
 
+import static org.hisp.dhis.android.core.dataset.DataSetTableInfo.Columns;
+
 public final class DataSetFields {
 
-    public static final String PERIOD_TYPE = "periodType";
-    public static final String CATEGORY_COMBO = "categoryCombo";
-    public static final String MOBILE = "mobile";
-    public static final String VERSION = "version";
-    public static final String EXPIRY_DAYS = "expiryDays";
-    public static final String TIMELY_DAYS = "timelyDays";
-    public static final String NOTIFY_COMPLETING_USER = "notifyCompletingUser";
-    public static final String OPEN_FUTURE_PERIODS = "openFuturePeriods";
-    public static final String FIELD_COMBINATION_REQUIRED = "fieldCombinationRequired";
-    public static final String VALID_COMPLETE_ONLY = "validCompleteOnly";
-    public static final String NO_VALUE_REQUIRES_COMMENT = "noValueRequiresComment";
-    public static final String SKIP_OFFLINE = "skipOffline";
-    public static final String DATA_ELEMENT_DECORATION = "dataElementDecoration";
-    public static final String RENDER_AS_TABS = "renderAsTabs";
-    public static final String RENDER_HORIZONTALLY = "renderHorizontally";
-    public static final String WORKFLOW = "workflow";
+    private static final String PERIOD_TYPE = Columns.PERIOD_TYPE;
+    private static final String CATEGORY_COMBO = Columns.CATEGORY_COMBO;
+    private static final String MOBILE = Columns.MOBILE;
+    private static final String VERSION = Columns.VERSION;
+    private static final String EXPIRY_DAYS = Columns.EXPIRY_DAYS;
+    private static final String TIMELY_DAYS = Columns.TIMELY_DAYS;
+    private static final String NOTIFY_COMPLETING_USER = Columns.NOTIFY_COMPLETING_USER;
+    private static final String OPEN_FUTURE_PERIODS = Columns.OPEN_FUTURE_PERIODS;
+    private static final String FIELD_COMBINATION_REQUIRED = Columns.FIELD_COMBINATION_REQUIRED;
+    private static final String VALID_COMPLETE_ONLY = Columns.VALID_COMPLETE_ONLY;
+    private static final String NO_VALUE_REQUIRES_COMMENT = Columns.NO_VALUE_REQUIRES_COMMENT;
+    private static final String SKIP_OFFLINE = Columns.SKIP_OFFLINE;
+    private static final String DATA_ELEMENT_DECORATION = Columns.DATA_ELEMENT_DECORATION;
+    private static final String RENDER_AS_TABS = Columns.RENDER_AS_TABS;
+    private static final String RENDER_HORIZONTALLY = Columns.RENDER_HORIZONTALLY;
+    private static final String WORKFLOW = Columns.WORKFLOW;
+
     public static final String DATA_SET_ELEMENTS = "dataSetElements";
     public static final String INDICATORS = "indicators";
     public static final String SECTIONS = "sections";
@@ -69,8 +72,6 @@ public final class DataSetFields {
     public static final String DATA_INPUT_PERIODS = "dataInputPeriods";
     public static final String ACCESS = "access";
     public static final String STYLE = "style";
-
-    public static final String ACCESS_DATA_WRITE = "accessDataWrite";
 
     private static FieldsHelper<DataSet> fh = new FieldsHelper<>();
 

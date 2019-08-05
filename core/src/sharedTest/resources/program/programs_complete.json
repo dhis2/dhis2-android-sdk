@@ -21,6 +21,7 @@
           "enrollmentDateLabel": "Date of enrollment",
           "onlyEnrollOnce": true,
           "programType": "WITH_REGISTRATION",
+          "accessLevel": "PROTECTED",
           "relationshipFromA": false,
           "version": 5,
           "selectIncidentDatesInFuture": false,

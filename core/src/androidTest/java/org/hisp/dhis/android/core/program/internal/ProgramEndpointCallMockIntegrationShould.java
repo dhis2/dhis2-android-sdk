@@ -93,7 +93,8 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
             ProgramFields.RELATED_PROGRAM,
             ProgramFields.TRACKED_ENTITY_TYPE,
             ProgramFields.CATEGORY_COMBO,
-            ACCESS_DATA_WRITE
+            ACCESS_DATA_WRITE,
+            ProgramFields.ACCESS_LEVEL
     };
 
     private static Callable<List<Program>> programEndpointCall;
@@ -156,7 +157,8 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
                 null,
                 "nEenWmSyUEp",
                 "nM3u9s5a52V",
-                0
+                0,
+                "PROTECTED"
         ).isExhausted();
     }
 

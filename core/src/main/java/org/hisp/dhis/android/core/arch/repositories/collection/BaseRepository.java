@@ -25,31 +25,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+public interface BaseRepository {
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-
-public final class IntegerFilterConnector<R extends BaseRepository>
-        extends BaseFilterConnector<R, Integer> {
-
-    IntegerFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                           RepositoryScope scope,
-                           String key) {
-        super(repositoryFactory, scope, key);
-    }
-
-    public R smallerThan(int value) {
-        return newWithWrappedScope("<", value);
-    }
-
-    public R biggerThan(int value) {
-        return newWithWrappedScope(">", value);
-    }
-
-    String wrapValue(Integer value) {
-        return value.toString();
-    }
 }

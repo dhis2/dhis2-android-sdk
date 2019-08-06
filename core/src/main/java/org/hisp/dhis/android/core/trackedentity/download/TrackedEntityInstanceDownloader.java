@@ -25,31 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.download;
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
-
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
+import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-public final class IntegerFilterConnector<R extends BaseRepository>
-        extends BaseFilterConnector<R, Integer> {
+import javax.inject.Inject;
 
-    IntegerFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                           RepositoryScope scope,
-                           String key) {
-        super(repositoryFactory, scope, key);
+import dagger.Reusable;
+import io.reactivex.Observable;
+
+@Reusable
+public final class TrackedEntityInstanceDownloader extends BaseRepositoryImpl<TrackedEntityInstanceDownloader> {
+
+    private RepositoryScope scope;
+
+    @Inject
+    TrackedEntityInstanceDownloader(final RepositoryScope scope) {
+        super(scope, new FilterConnectorFactory<>(scope, s -> new TrackedEntityInstanceDownloader(s)));
+        this.scope = scope;
     }
 
-    public R smallerThan(int value) {
-        return newWithWrappedScope("<", value);
+    public Observable<D2Progress> download() {
+        return Observable.never();
     }
 
-    public R biggerThan(int value) {
-        return newWithWrappedScope(">", value);
+    public TrackedEntityInstanceDownloader byProgramUid(String programUid) {
+        return cf.string("program").eq(programUid);
     }
 
-    String wrapValue(Integer value) {
-        return value.toString();
-    }
 }

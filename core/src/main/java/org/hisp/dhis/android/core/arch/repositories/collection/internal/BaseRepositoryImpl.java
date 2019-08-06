@@ -25,52 +25,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
-
-import androidx.annotation.NonNull;
+package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.period.DatePeriod;
-import org.hisp.dhis.android.core.period.Period;
-import org.hisp.dhis.android.core.period.internal.InPeriodQueryHelper;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+public class BaseRepositoryImpl<R extends BaseRepository>
+        implements BaseRepository {
 
-public final class DateFilterConnector<R extends BaseRepository> extends BaseFilterConnector<R, Date> {
+    protected final RepositoryScope scope;
+    protected final FilterConnectorFactory<R> cf;
 
-    DateFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                        RepositoryScope scope,
-                        String key) {
-        super(repositoryFactory, scope, key);
-    }
-
-    public R before(Date value) {
-        return newWithWrappedScope("<", value);
-    }
-
-    public R after(Date value) {
-        return newWithWrappedScope(">", value);
-    }
-
-    public R inDatePeriods(@NonNull List<DatePeriod> datePeriods) {
-        return newWithWrappedScope(InPeriodQueryHelper.buildInPeriodsQuery(key, datePeriods));
-    }
-
-    public R inPeriods(@NonNull List<Period> periods) {
-        List<DatePeriod> datePeriods = new ArrayList<>();
-        for (Period period : periods) {
-            datePeriods.add(DatePeriod.builder().startDate(period.startDate()).endDate(period.endDate()).build());
-        }
-        return inDatePeriods(datePeriods);
-    }
-
-    protected String wrapValue(Date value) {
-        return "'" + BaseIdentifiableObject.DATE_FORMAT.format(value) + "'";
+    public BaseRepositoryImpl(RepositoryScope scope,
+                              FilterConnectorFactory<R> cf) {
+        this.scope = scope;
+        this.cf = cf;
     }
 }

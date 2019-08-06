@@ -29,16 +29,16 @@
 package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
 import java.util.List;
 
-public final class SubQueryFilterConnector<R extends ReadOnlyCollectionRepository<?>>
+public final class SubQueryFilterConnector<R extends BaseRepository>
         extends BaseFilterConnector<R, String> {
 
-    SubQueryFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
+    SubQueryFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
                             RepositoryScope scope,
                             String key) {
         super(repositoryFactory, scope, key);

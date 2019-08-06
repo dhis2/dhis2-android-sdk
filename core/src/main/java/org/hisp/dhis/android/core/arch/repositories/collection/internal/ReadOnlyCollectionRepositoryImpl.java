@@ -27,6 +27,11 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
+import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
+
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore;
@@ -44,28 +49,22 @@ import org.hisp.dhis.android.core.common.Model;
 import java.util.List;
 import java.util.Map;
 
-import androidx.lifecycle.LiveData;
-import androidx.paging.DataSource;
-import androidx.paging.LivePagedListBuilder;
-import androidx.paging.PagedList;
 import io.reactivex.Single;
 
 public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnlyCollectionRepository<M>>
+        extends BaseRepositoryImpl<R>
         implements ReadOnlyCollectionRepository<M> {
 
     private final ReadableStore<M> store;
     protected final Map<String, ChildrenAppender<M>> childrenAppenders;
-    protected final RepositoryScope scope;
-    protected final FilterConnectorFactory<R> cf;
 
     public ReadOnlyCollectionRepositoryImpl(ReadableStore<M> store,
                                             Map<String, ChildrenAppender<M>> childrenAppenders,
                                             RepositoryScope scope,
                                             FilterConnectorFactory<R> cf) {
+        super(scope, cf);
         this.store = store;
         this.childrenAppenders = childrenAppenders;
-        this.scope = scope;
-        this.cf = cf;
     }
 
     protected List<M> getWithoutChildren() {

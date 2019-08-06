@@ -72,23 +72,21 @@ public final class ProgramStore extends IdentifiableObjectStoreImpl<Program> imp
             sqLiteBind(sqLiteStatement, 17, o.selectEnrollmentDatesInFuture());
             sqLiteBind(sqLiteStatement, 18, o.dataEntryMethod());
             sqLiteBind(sqLiteStatement, 19, o.ignoreOverdueEvents());
-            sqLiteBind(sqLiteStatement, 20, o.relationshipFromA());
-            sqLiteBind(sqLiteStatement, 21, o.selectIncidentDatesInFuture());
-            sqLiteBind(sqLiteStatement, 22, o.useFirstStageDuringRegistration());
-            sqLiteBind(sqLiteStatement, 23, o.displayFrontPageList());
-            sqLiteBind(sqLiteStatement, 24, o.programType());
-            sqLiteBind(sqLiteStatement, 25, UidsHelper.getUidOrNull(o.relationshipType()));
-            sqLiteBind(sqLiteStatement, 26, o.relationshipText());
-            sqLiteBind(sqLiteStatement, 27, UidsHelper.getUidOrNull(o.relatedProgram()));
-            sqLiteBind(sqLiteStatement, 28, UidsHelper.getUidOrNull(o.trackedEntityType()));
-            sqLiteBind(sqLiteStatement, 29, o.categoryComboUid());
-            sqLiteBind(sqLiteStatement, 30, AccessHelper.getAccessDataWrite(o.access()));
-            sqLiteBind(sqLiteStatement, 31, o.expiryDays());
-            sqLiteBind(sqLiteStatement, 32, o.completeEventsExpiryDays());
-            sqLiteBind(sqLiteStatement, 33, o.expiryPeriodType());
-            sqLiteBind(sqLiteStatement, 34, o.minAttributesRequiredToSearch());
-            sqLiteBind(sqLiteStatement, 35, o.maxTeiCountToReturn());
-            sqLiteBind(sqLiteStatement, 36, o.featureType());
+            sqLiteBind(sqLiteStatement, 20, o.selectIncidentDatesInFuture());
+            sqLiteBind(sqLiteStatement, 21, o.useFirstStageDuringRegistration());
+            sqLiteBind(sqLiteStatement, 22, o.displayFrontPageList());
+            sqLiteBind(sqLiteStatement, 23, o.programType());
+            sqLiteBind(sqLiteStatement, 24, UidsHelper.getUidOrNull(o.relatedProgram()));
+            sqLiteBind(sqLiteStatement, 25, UidsHelper.getUidOrNull(o.trackedEntityType()));
+            sqLiteBind(sqLiteStatement, 26, o.categoryComboUid());
+            sqLiteBind(sqLiteStatement, 27, AccessHelper.getAccessDataWrite(o.access()));
+            sqLiteBind(sqLiteStatement, 28, o.expiryDays());
+            sqLiteBind(sqLiteStatement, 29, o.completeEventsExpiryDays());
+            sqLiteBind(sqLiteStatement, 30, o.expiryPeriodType());
+            sqLiteBind(sqLiteStatement, 31, o.minAttributesRequiredToSearch());
+            sqLiteBind(sqLiteStatement, 32, o.maxTeiCountToReturn());
+            sqLiteBind(sqLiteStatement, 33, o.featureType());
+            sqLiteBind(sqLiteStatement, 34, o.accessLevel());
         }
     };
 

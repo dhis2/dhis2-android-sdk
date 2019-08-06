@@ -79,12 +79,10 @@ public class CreateProgramUtils {
      * To be used by other tests.
      *  @param id
      * @param uid
-     * @param relationshipTypeUid
      * @param relatedProgram
      * @param trackedEntityUid @return
      */
     public static ContentValues create(long id, String uid,
-                                       @Nullable String relationshipTypeUid,
                                        String relatedProgram, @Nullable String trackedEntityUid) {
 
         ContentValues program = new ContentValues();
@@ -108,17 +106,10 @@ public class CreateProgramUtils {
         program.put(ProgramFields.SELECT_ENROLLMENT_DATES_IN_FUTURE, SELECT_ENROLLMENT_DATES_IN_FUTURE);
         program.put(ProgramFields.DATA_ENTRY_METHOD, DATA_ENTRY_METHOD);
         program.put(ProgramFields.IGNORE_OVERDUE_EVENTS, IGNORE_OVERDUE_EVENTS);
-        program.put(ProgramFields.RELATIONSHIP_FROM_A, RELATIONSHIP_FROM_A);
         program.put(ProgramFields.SELECT_INCIDENT_DATES_IN_FUTURE, SELECT_INCIDENT_DATES_IN_FUTURE);
         program.put(ProgramFields.USE_FIRST_STAGE_DURING_REGISTRATION, USE_FIRST_STAGE_DURING_REGISTRATION);
         program.put(ProgramFields.DISPLAY_FRONT_PAGE_LIST, DISPLAY_FRONT_PAGE_LIST);
         program.put(ProgramFields.PROGRAM_TYPE, PROGRAM_TYPE.name());
-        if(relationshipTypeUid == null) {
-            program.putNull(ProgramFields.RELATIONSHIP_TYPE);
-        } else {
-            program.put(ProgramFields.RELATIONSHIP_TYPE, relationshipTypeUid);
-        }
-        program.put(ProgramFields.RELATIONSHIP_TEXT, RELATIONSHIP_TEXT);
         if (relatedProgram == null) {
             program.putNull(ProgramFields.RELATED_PROGRAM);
         } else {

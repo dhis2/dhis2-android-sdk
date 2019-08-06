@@ -58,11 +58,11 @@ public class UserCallMockIntegrationShould extends BaseMockIntegrationTestEmptyE
 
         userCall = objects.d2DIComponent.internalModules().user.userCall;
 
-        ContentValues program1 = CreateProgramUtils.create(1L, "eBAyeGv0exc", null, null, null);
-        ContentValues program2 = CreateProgramUtils.create(2L, "ur1Edk5Oe2n", null, null, null);
-        ContentValues program3 = CreateProgramUtils.create(3L, "fDd25txQckK", null, null, null);
-        ContentValues program4 = CreateProgramUtils.create(4L, "WSGAb5XwJ3Y", null, null, null);
-        ContentValues program5 = CreateProgramUtils.create(5L, "IpHINAT79UW", null, null, null);
+        ContentValues program1 = CreateProgramUtils.create(1L, "eBAyeGv0exc", null, null);
+        ContentValues program2 = CreateProgramUtils.create(2L, "ur1Edk5Oe2n", null, null);
+        ContentValues program3 = CreateProgramUtils.create(3L, "fDd25txQckK", null, null);
+        ContentValues program4 = CreateProgramUtils.create(4L, "WSGAb5XwJ3Y", null, null);
+        ContentValues program5 = CreateProgramUtils.create(5L, "IpHINAT79UW", null, null);
 
         database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program1);
         database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program2);

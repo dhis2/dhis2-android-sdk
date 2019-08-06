@@ -86,17 +86,15 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
             ProgramFields.SELECT_ENROLLMENT_DATES_IN_FUTURE,
             ProgramFields.DATA_ENTRY_METHOD,
             ProgramFields.IGNORE_OVERDUE_EVENTS,
-            ProgramFields.RELATIONSHIP_FROM_A,
             ProgramFields.SELECT_INCIDENT_DATES_IN_FUTURE,
             ProgramFields.USE_FIRST_STAGE_DURING_REGISTRATION,
             ProgramFields.DISPLAY_FRONT_PAGE_LIST,
             ProgramFields.PROGRAM_TYPE,
-            ProgramFields.RELATIONSHIP_TYPE,
-            ProgramFields.RELATIONSHIP_TEXT,
             ProgramFields.RELATED_PROGRAM,
             ProgramFields.TRACKED_ENTITY_TYPE,
             ProgramFields.CATEGORY_COMBO,
-            ACCESS_DATA_WRITE
+            ACCESS_DATA_WRITE,
+            ProgramFields.ACCESS_LEVEL
     };
 
     private static Callable<List<Program>> programEndpointCall;
@@ -153,16 +151,14 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
                 0, // false
                 0, // false
                 0, // false
-                0, // false
                 1, // true
                 0, // false
                 "WITH_REGISTRATION",
                 null,
-                null,
-                null,
                 "nEenWmSyUEp",
                 "nM3u9s5a52V",
-                0
+                0,
+                "PROTECTED"
         ).isExhausted();
     }
 

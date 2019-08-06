@@ -28,12 +28,11 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.program.AccessLevel;
 
-public class RelationshipTypeWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<RelationshipType> {
-
+public class DbAccessLevelColumnAdapter extends EnumColumnAdapter<AccessLevel> {
     @Override
-    protected RelationshipType build(String uid) {
-        return RelationshipType.builder().uid(uid).build();
+    protected Class<AccessLevel> getEnumClass() {
+        return AccessLevel.class;
     }
 }

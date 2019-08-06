@@ -30,6 +30,7 @@ package org.hisp.dhis.android.testapp.program;
 
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.program.AccessLevel;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramType;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
@@ -126,14 +127,6 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     }
 
     @Test
-    public void filter_by_relationship_from_A() {
-        List<Program> programs = d2.programModule().programs
-                .byRelationshipFromA().isTrue()
-                .blockingGet();
-        assertThat(programs.size(), is(1));
-    }
-
-    @Test
     public void filter_by_select_incident_dates_in_future() {
         List<Program> programs = d2.programModule().programs
                 .bySelectIncidentDatesInFuture().isFalse()
@@ -145,6 +138,14 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_feature_type() {
         List<Program> programs = d2.programModule().programs
                 .byFeatureType().eq(FeatureType.NONE)
+                .blockingGet();
+        assertThat(programs.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_access_level() {
+        List<Program> programs = d2.programModule().programs
+                .byAccessLevel().eq(AccessLevel.PROTECTED)
                 .blockingGet();
         assertThat(programs.size(), is(1));
     }
@@ -169,22 +170,6 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_program_type() {
         List<Program> programs = d2.programModule().programs
                 .byProgramType().eq(ProgramType.WITHOUT_REGISTRATION)
-                .blockingGet();
-        assertThat(programs.size(), is(1));
-    }
-
-    @Test
-    public void filter_by_relationship_type_uid() {
-        List<Program> programs = d2.programModule().programs
-                .byRelationshipTypeUid().eq("V2kkHafqs8G")
-                .blockingGet();
-        assertThat(programs.size(), is(1));
-    }
-
-    @Test
-    public void filter_by_relationship_text() {
-        List<Program> programs = d2.programModule().programs
-                .byRelationshipText().eq("Relationship text")
                 .blockingGet();
         assertThat(programs.size(), is(1));
     }

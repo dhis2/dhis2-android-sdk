@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
 import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.program.AccessLevel;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
@@ -54,14 +55,11 @@ public final class ProgramFields {
     public static final String SELECT_ENROLLMENT_DATES_IN_FUTURE = "selectEnrollmentDatesInFuture";
     public static final String DATA_ENTRY_METHOD = "dataEntryMethod";
     public static final String IGNORE_OVERDUE_EVENTS = "ignoreOverdueEvents";
-    public static final String RELATIONSHIP_FROM_A = "relationshipFromA";
     public static final String SELECT_INCIDENT_DATES_IN_FUTURE = "selectIncidentDatesInFuture";
     private static final String CAPTURE_COORDINATES = "captureCoordinates";
     public static final String USE_FIRST_STAGE_DURING_REGISTRATION = "useFirstStageDuringRegistration";
     public static final String DISPLAY_FRONT_PAGE_LIST = "displayFrontPageList";
     public static final String PROGRAM_TYPE = "programType";
-    public static final String RELATIONSHIP_TYPE = "relationshipType";
-    public static final String RELATIONSHIP_TEXT = "relationshipText";
     public static final String PROGRAM_TRACKED_ENTITY_ATTRIBUTES = "programTrackedEntityAttributes";
     public static final String RELATED_PROGRAM = "relatedProgram";
     public static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
@@ -79,6 +77,7 @@ public final class ProgramFields {
     public static final String MAX_TEI_COUNT_TO_RETURN = "maxTeiCountToReturn";
     public static final String PROGRAM_SECTIONS = "programSections";
     public static final String FEATURE_TYPE = "featureType";
+    public static final String ACCESS_LEVEL = "accessLevel";
 
     private static FieldsHelper<Program> fh = new FieldsHelper<>();
 
@@ -94,14 +93,11 @@ public final class ProgramFields {
                     fh.<Boolean>field(SELECT_ENROLLMENT_DATES_IN_FUTURE),
                     fh.<Boolean>field(DATA_ENTRY_METHOD),
                     fh.<Boolean>field(IGNORE_OVERDUE_EVENTS),
-                    fh.<Boolean>field(RELATIONSHIP_FROM_A),
                     fh.<Boolean>field(SELECT_INCIDENT_DATES_IN_FUTURE),
                     fh.<Boolean>field(CAPTURE_COORDINATES),
                     fh.<Boolean>field(USE_FIRST_STAGE_DURING_REGISTRATION),
                     fh.<Boolean>field(DISPLAY_FRONT_PAGE_LIST),
                     fh.<ProgramType>field(PROGRAM_TYPE),
-                    fh.nestedFieldWithUid(RELATIONSHIP_TYPE),
-                    fh.<String>field(RELATIONSHIP_TEXT),
                     fh.<ProgramTrackedEntityAttribute>nestedField(PROGRAM_TRACKED_ENTITY_ATTRIBUTES).with(
                             ProgramTrackedEntityAttributeFields.allFields),
                     fh.nestedFieldWithUid(RELATED_PROGRAM),
@@ -119,6 +115,7 @@ public final class ProgramFields {
                     fh.<Integer>field(MIN_ATTRIBUTES_REQUIRED_TO_SEARCH),
                     fh.<Integer>field(MAX_TEI_COUNT_TO_RETURN),
                     fh.<FeatureType>field(FEATURE_TYPE),
+                    fh.<AccessLevel>field(ACCESS_LEVEL),
                     fh.<ProgramSection>nestedField(PROGRAM_SECTIONS).with(ProgramSectionFields.allFields)
             ).build();
 

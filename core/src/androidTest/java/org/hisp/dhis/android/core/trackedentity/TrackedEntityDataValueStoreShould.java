@@ -123,7 +123,7 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
                 TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE_UID);
-        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null,
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, null,
                 TRACKED_ENTITY_UID);
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
         OrganisationUnit organisationUnit = OrganisationUnitSamples.getOrganisationUnit(ORGANISATION_UNIT);

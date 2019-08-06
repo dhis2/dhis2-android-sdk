@@ -98,10 +98,6 @@ public final class ProgramCollectionRepository
         return cf.bool(ProgramFields.IGNORE_OVERDUE_EVENTS);
     }
 
-    public BooleanFilterConnector<ProgramCollectionRepository> byRelationshipFromA() {
-        return cf.bool(ProgramFields.RELATIONSHIP_FROM_A);
-    }
-
     public BooleanFilterConnector<ProgramCollectionRepository> bySelectIncidentDatesInFuture() {
         return cf.bool(ProgramFields.SELECT_INCIDENT_DATES_IN_FUTURE);
     }
@@ -116,14 +112,6 @@ public final class ProgramCollectionRepository
 
     public EnumFilterConnector<ProgramCollectionRepository, ProgramType> byProgramType() {
         return cf.enumC(ProgramFields.PROGRAM_TYPE);
-    }
-
-    public StringFilterConnector<ProgramCollectionRepository> byRelationshipTypeUid() {
-        return cf.string(ProgramFields.RELATIONSHIP_TYPE);
-    }
-
-    public StringFilterConnector<ProgramCollectionRepository> byRelationshipText() {
-        return cf.string(ProgramFields.RELATIONSHIP_TEXT);
     }
 
     public StringFilterConnector<ProgramCollectionRepository> byRelatedProgramUid() {
@@ -164,6 +152,10 @@ public final class ProgramCollectionRepository
 
     public EnumFilterConnector<ProgramCollectionRepository, FeatureType> byFeatureType() {
         return cf.enumC(ProgramFields.FEATURE_TYPE);
+    }
+
+    public EnumFilterConnector<ProgramCollectionRepository, AccessLevel> byAccessLevel() {
+        return cf.enumC(ProgramFields.ACCESS_LEVEL);
     }
 
     public ProgramCollectionRepository byOrganisationUnitUid(String uid) {

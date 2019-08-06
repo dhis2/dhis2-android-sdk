@@ -66,13 +66,10 @@ public final class ProgramTableInfo {
                     ProgramFields.SELECT_ENROLLMENT_DATES_IN_FUTURE,
                     ProgramFields.DATA_ENTRY_METHOD,
                     ProgramFields.IGNORE_OVERDUE_EVENTS,
-                    ProgramFields.RELATIONSHIP_FROM_A,
                     ProgramFields.SELECT_INCIDENT_DATES_IN_FUTURE,
                     ProgramFields.USE_FIRST_STAGE_DURING_REGISTRATION,
                     ProgramFields.DISPLAY_FRONT_PAGE_LIST,
                     ProgramFields.PROGRAM_TYPE,
-                    ProgramFields.RELATIONSHIP_TYPE,
-                    ProgramFields.RELATIONSHIP_TEXT,
                     ProgramFields.RELATED_PROGRAM,
                     ProgramFields.TRACKED_ENTITY_TYPE,
                     ProgramFields.CATEGORY_COMBO,
@@ -82,7 +79,8 @@ public final class ProgramTableInfo {
                     ProgramFields.EXPIRY_PERIOD_TYPE,
                     ProgramFields.MIN_ATTRIBUTES_REQUIRED_TO_SEARCH,
                     ProgramFields.MAX_TEI_COUNT_TO_RETURN,
-                    ProgramFields.FEATURE_TYPE
+                    ProgramFields.FEATURE_TYPE,
+                    ProgramFields.ACCESS_LEVEL
             );
         }
     }

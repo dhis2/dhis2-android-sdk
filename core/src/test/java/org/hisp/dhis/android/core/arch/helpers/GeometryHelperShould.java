@@ -47,7 +47,7 @@ public class GeometryHelperShould {
     private final static Double latitude2 = 3.74597;
 
     @Test
-    public void get_point_from_geometry() throws D2Error {
+    public void get_point_from_geometry_from_list() throws D2Error {
         List<Double> coordinates = Lists.newArrayList(longitude1, latitude1);
 
         Geometry geometry = GeometryHelper.createPointGeometry(coordinates);
@@ -55,6 +55,16 @@ public class GeometryHelperShould {
         List<Double> point = GeometryHelper.getPoint(geometry);
 
         assertThat(point).isEqualTo(coordinates);
+    }
+
+    @Test
+    public void get_point_from_geometry_from_longitude_and_latitude() throws D2Error {
+        Geometry geometry = GeometryHelper.createPointGeometry(longitude1, latitude1);
+
+        List<Double> point = GeometryHelper.getPoint(geometry);
+
+        assertThat(point.get(0)).isEqualTo(longitude1);
+        assertThat(point.get(1)).isEqualTo(latitude1);
     }
 
     @Test

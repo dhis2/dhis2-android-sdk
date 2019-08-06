@@ -31,29 +31,37 @@ import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceWithLimitCallFactory;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 import io.reactivex.Observable;
 
+import static org.hisp.dhis.android.core.trackedentity.download.TrackedEntityInstanceDownloadParams.QueryParams;
+
 @Reusable
 public final class TrackedEntityInstanceDownloader extends BaseRepositoryImpl<TrackedEntityInstanceDownloader> {
 
     private RepositoryScope scope;
 
+    private TrackedEntityInstanceWithLimitCallFactory callFactory;
+
     @Inject
-    TrackedEntityInstanceDownloader(final RepositoryScope scope) {
-        super(scope, new FilterConnectorFactory<>(scope, s -> new TrackedEntityInstanceDownloader(s)));
+    TrackedEntityInstanceDownloader(final RepositoryScope scope,
+                                    final TrackedEntityInstanceWithLimitCallFactory callFactory) {
+        super(scope, new FilterConnectorFactory<>(scope, s -> new TrackedEntityInstanceDownloader(s, callFactory)));
         this.scope = scope;
+        this.callFactory = callFactory;
     }
 
     public Observable<D2Progress> download() {
-        return Observable.never();
+        TrackedEntityInstanceDownloadParams params = TrackedEntityInstanceDownloadParams.fromRepositoryScope(scope);
+        return this.callFactory.download(params);
     }
 
     public TrackedEntityInstanceDownloader byProgramUid(String programUid) {
-        return cf.string("program").eq(programUid);
+        return cf.string(QueryParams.PROGRAM).eq(programUid);
     }
 
 }

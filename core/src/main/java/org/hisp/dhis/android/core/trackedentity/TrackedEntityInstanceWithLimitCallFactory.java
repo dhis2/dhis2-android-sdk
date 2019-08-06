@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.trackedentity.download.TrackedEntityInstanceDownloadParams;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.utils.internal.BooleanWrapper;
 
@@ -110,7 +111,11 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
         this.endpointCallFactory = endpointCallFactory;
     }
 
-    public Observable<D2Progress> download(final int teiLimit, final boolean limitByOrgUnit, boolean limitByProgram) {
+    public Observable<D2Progress> download(final TrackedEntityInstanceDownloadParams params) {
+        int teiLimit = params.limit();
+        boolean limitByOrgUnit = params.limitByOrgunit();
+        boolean limitByProgram = params.limitByProgram();
+
         Observable<D2Progress> observable = Observable.defer(() -> {
             D2ProgressManager progressManager = new D2ProgressManager(null);
             Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet = new HashSet<>();

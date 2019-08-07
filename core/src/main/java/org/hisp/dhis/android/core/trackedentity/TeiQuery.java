@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
@@ -36,28 +39,25 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import java.util.Collection;
 import java.util.Collections;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 @AutoValue
-public abstract class TeiQuery extends BaseQuery {
+abstract class TeiQuery extends BaseQuery {
 
     @Nullable
-    public abstract Collection<String> orgUnits();
+    abstract Collection<String> orgUnits();
 
     @Nullable
-    public abstract String program();
+    abstract String program();
 
     @NonNull
-    public abstract OrganisationUnitMode ouMode();
+    abstract OrganisationUnitMode ouMode();
 
     @Nullable
-    public abstract String lastUpdatedStartDate();
+    abstract String lastUpdatedStartDate();
 
     @Nullable
-    public abstract Collection<String> uIds();
+    abstract Collection<String> uIds();
 
-    public static Builder builder() {
+    static Builder builder() {
         return new AutoValue_TeiQuery.Builder()
                 .page(1)
                 .pageSize(DEFAULT_PAGE_SIZE)
@@ -67,17 +67,17 @@ public abstract class TeiQuery extends BaseQuery {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseQuery.Builder<Builder> {
-        public abstract Builder orgUnits(Collection<String> orgUnits);
+    abstract static class Builder extends BaseQuery.Builder<Builder> {
+        abstract Builder orgUnits(Collection<String> orgUnits);
 
-        public abstract Builder program(String program);
+        abstract Builder program(String program);
 
-        public abstract Builder ouMode(OrganisationUnitMode ouMode);
+        abstract Builder ouMode(OrganisationUnitMode ouMode);
 
-        public abstract Builder lastUpdatedStartDate(String lastUpdatedStartDate);
+        abstract Builder lastUpdatedStartDate(String lastUpdatedStartDate);
 
-        public abstract Builder uIds(Collection<String> uIds);
+        abstract Builder uIds(Collection<String> uIds);
 
-        public abstract TeiQuery build();
+        abstract TeiQuery build();
     }
 }

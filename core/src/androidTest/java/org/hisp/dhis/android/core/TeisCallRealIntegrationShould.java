@@ -61,7 +61,7 @@ public class TeisCallRealIntegrationShould extends BaseRealIntegrationTest {
 
         d2.metadataModule().blockingDownload();
 
-        TestObserver<D2Progress> testObserver = d2.trackedEntityModule().downloadTrackedEntityInstances(5, false, false)
+        TestObserver<D2Progress> testObserver = d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(5).download()
                 .doOnEach(e -> Log.w("EVENT", e.toString()))
                 .test();
 

@@ -36,6 +36,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 import java.util.Collections;
@@ -47,8 +48,12 @@ public abstract class TrackedEntityInstanceDownloadParams {
 
     static class QueryParams {
         static final String PROGRAM = "program";
+        static final String PROGRAM_STATUS = "programStatus";
+        static final String PROGRAM_START_DATE = "programStartDate";
+        static final String PROGRAM_END_DATE = "programEndDate";
         static final String ORG_UNITS = "ou";
         static final String ORG_UNIT_MODE = "ouMode";
+        static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
         static final String LIMIT_BY_ORGUNIT = "limitByOrgunit";
         static final String LIMIT_BY_PROGRAM = "limitByProgram";
         static final String LIMIT = "limit";
@@ -64,6 +69,9 @@ public abstract class TrackedEntityInstanceDownloadParams {
 
     @Nullable
     public abstract String program();
+
+    @Nullable
+    public abstract EnrollmentStatus programStatus();
 
     @Nullable
     public abstract Date programStartDate();
@@ -94,8 +102,20 @@ public abstract class TrackedEntityInstanceDownloadParams {
     static TrackedEntityInstanceDownloadParams fromRepositoryScope(RepositoryScope scope) {
         Builder builder = builder();
         for (RepositoryScopeFilterItem item : scope.filters()) {
-            if (item.key().equals(QueryParams.PROGRAM)) {
-                builder.program(item.value());
+            switch (item.key()) {
+                case QueryParams.PROGRAM:
+                    builder.program(item.value());
+                    break;
+                case QueryParams.LIMIT_BY_ORGUNIT:
+                    builder.limitByOrgunit(item.value().equals("1"));
+                    break;
+                case QueryParams.LIMIT_BY_PROGRAM:
+                    builder.limitByProgram(item.value().equals("1"));
+                    break;
+                case QueryParams.LIMIT:
+                    builder.limit(Integer.parseInt(item.value()));
+                    break;
+                default:
             }
         }
         return builder.build();
@@ -116,6 +136,8 @@ public abstract class TrackedEntityInstanceDownloadParams {
         public abstract Builder orgUnitMode(OrganisationUnitMode orgUnitMode);
 
         public abstract Builder program(String program);
+
+        public abstract Builder programStatus(EnrollmentStatus enrollmentStatus);
 
         public abstract Builder programStartDate(Date programStartDate);
 

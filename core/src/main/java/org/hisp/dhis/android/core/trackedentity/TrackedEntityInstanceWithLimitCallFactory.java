@@ -112,10 +112,6 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     }
 
     public Observable<D2Progress> download(final TrackedEntityInstanceDownloadParams params) {
-        int teiLimit = params.limit();
-        boolean limitByOrgUnit = params.limitByOrgunit();
-        boolean limitByProgram = params.limitByProgram();
-
         Observable<D2Progress> observable = Observable.defer(() -> {
             D2ProgressManager progressManager = new D2ProgressManager(null);
             Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet = new HashSet<>();
@@ -127,8 +123,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
 
                 return Observable.concat(
                         downloadSystemInfo(progressManager),
-                        downloadTeis(progressManager, teiLimit, limitByOrgUnit, limitByProgram, allOkay,
-                                programOrganisationUnitSet),
+                        downloadTeis(progressManager, params, allOkay, programOrganisationUnitSet),
                         downloadRelationshipTeis(progressManager),
                         updateResource(progressManager, allOkay, programOrganisationUnitSet)
                 );
@@ -146,17 +141,15 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     }
 
     private Observable<D2Progress> downloadTeis(D2ProgressManager progressManager,
-                                                int teiLimit,
-                                                boolean limitByOrgUnit,
-                                                boolean limitByProgram,
+                                                TrackedEntityInstanceDownloadParams params,
                                                 BooleanWrapper allOkay,
                                                 Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet) {
 
         int pageSize = TeiQuery.builder().build().pageSize();
-        List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, teiLimit);
+        List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, params.limit());
 
         Observable<List<TrackedEntityInstance>> teiDownloadObservable =
-                Observable.fromIterable(getTeiQueryBuilders(limitByOrgUnit, limitByProgram))
+                Observable.fromIterable(getTeiQueryBuilders(params))
                         .flatMap(teiQueryBuilder -> {
                             return getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList, allOkay);
                             // TODO .subscribeOn(teiDownloadScheduler);
@@ -182,14 +175,14 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
                 trackedEntityInstances -> progressManager.increaseProgress(TrackedEntityInstance.class, true));
     }
 
-    private List<TeiQuery.Builder> getTeiQueryBuilders(boolean limitByOrgUnit, boolean limitByProgram) {
+    private List<TeiQuery.Builder> getTeiQueryBuilders(TrackedEntityInstanceDownloadParams params) {
 
         String lastUpdated = resourceHandler.getLastUpdated(resourceType);
 
         List<TeiQuery.Builder> builders = new ArrayList<>();
-        if (limitByOrgUnit) {
+        if (params.limitByOrgunit()) {
             List<String> captureOrgUnitUids = getCaptureOrgUnitUids();
-            if (limitByProgram) {
+            if (params.limitByProgram()) {
                 for (OrganisationUnitProgramLink link :
                         getOrganisationUnitProgramLinksByOrgunitUids(captureOrgUnitUids)) {
                     builders.add(getTeiBuilderForOrgUnit(lastUpdated, link.organisationUnit()).program(link.program()));
@@ -201,7 +194,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
             }
         } else {
             List<String> rootCaptureOrgUnitUids = getRootCaptureOrgUnitUids();
-            if (limitByProgram) {
+            if (params.limitByProgram()) {
                 Set<String> programs = new HashSet<>();
                 for (OrganisationUnitProgramLink link : organisationUnitProgramLinkStore.selectAll()) {
                     programs.add(link.program());

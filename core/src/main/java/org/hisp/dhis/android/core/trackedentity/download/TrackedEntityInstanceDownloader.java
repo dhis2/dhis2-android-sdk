@@ -55,13 +55,38 @@ public final class TrackedEntityInstanceDownloader extends BaseRepositoryImpl<Tr
         this.callFactory = callFactory;
     }
 
+    /**
+     * Downloads and persists TrackedEntityInstances from the server. Only instances in capture scope are downloaded.
+     * This method keeps track of the latest successful download in order to void downloading unmodified data.
+     *
+     * It makes use of paging with a best effort strategy: in case a page fails to be downloaded or persisted, it is
+     * skipped and the rest of pages are persisted.
+     *
+     * @return An Observable that notifies about the progress.
+     */
     public Observable<D2Progress> download() {
         TrackedEntityInstanceDownloadParams params = TrackedEntityInstanceDownloadParams.fromRepositoryScope(scope);
         return this.callFactory.download(params);
     }
 
-    public TrackedEntityInstanceDownloader byProgramUid(String programUid) {
+    /*public TrackedEntityInstanceDownloader byProgramUid(String programUid) {
         return cf.string(QueryParams.PROGRAM).eq(programUid);
+    }
+
+    public TrackedEntityInstanceDownloader byOrgunitUids(String... uids) {
+        return cf.string(QueryParams.ORG_UNITS).in(uids);
+    }*/
+
+    public TrackedEntityInstanceDownloader limitByOrgunit(Boolean limitByOrgunit) {
+        return cf.bool(QueryParams.LIMIT_BY_ORGUNIT).eq(limitByOrgunit);
+    }
+
+    public TrackedEntityInstanceDownloader limitByProgram(Boolean limitByProgram) {
+        return cf.bool(QueryParams.LIMIT_BY_PROGRAM).eq(limitByProgram);
+    }
+
+    public TrackedEntityInstanceDownloader limit(Integer limit) {
+        return cf.integer(QueryParams.LIMIT).eq(limit);
     }
 
 }

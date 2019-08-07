@@ -199,7 +199,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     //@Test
     public void post_a_tei() throws Exception {
         downloadMetadata();
-        d2.trackedEntityModule().downloadTrackedEntityInstances(4, true, false).subscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(4).limitByOrgunit(true).download().blockingSubscribe();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
@@ -224,7 +224,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     //@Test
     public void post_more_than_one_tei() throws Exception {
         downloadMetadata();
-        d2.trackedEntityModule().downloadTrackedEntityInstances(4, true, false).subscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(4).limitByOrgunit(true).download().blockingSubscribe();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
@@ -247,7 +247,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     //@Test
     public void post_teis_filtering_what_to_post() throws Exception {
         downloadMetadata();
-        d2.trackedEntityModule().downloadTrackedEntityInstances(4, true, false).subscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(4).limitByOrgunit(true).download().blockingSubscribe();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
@@ -278,7 +278,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     //@Test
     public void post_one_tei_and_delete_it() throws Exception {
         downloadMetadata();
-        d2.trackedEntityModule().downloadTrackedEntityInstances(1, true, false).subscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(1).limitByOrgunit(true).download().blockingSubscribe();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
@@ -309,7 +309,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     //@Test
     public void post_new_relationship_to_client_created_tei() throws Exception {
         downloadMetadata();
-        d2.trackedEntityModule().downloadTrackedEntityInstances(5, true, false).subscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(5).limitByOrgunit(true).download().blockingSubscribe();
 
         TrackedEntityInstance teiA = trackedEntityInstanceStore.selectFirst();
         RelationshipType relationshipType = d2.relationshipModule().relationshipTypes.blockingGet().iterator().next();
@@ -358,7 +358,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     public void create_tei_to_tei_relationship() throws Exception {
         downloadMetadata();
 
-        d2.trackedEntityModule().downloadTrackedEntityInstances(5,  false, false).subscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(5).download().blockingSubscribe();
         List<TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.selectAll();
         assertThat(trackedEntityInstances.size() >= 5).isTrue();
 
@@ -377,7 +377,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     public void create_and_delete_tei_to_tei_relationship() throws Exception {
         downloadMetadata();
 
-        d2.trackedEntityModule().downloadTrackedEntityInstances(10,  false, false).subscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(10).download().blockingSubscribe();
         List<TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.selectAll();
 
         assertThat(trackedEntityInstances.size() == 10).isTrue();

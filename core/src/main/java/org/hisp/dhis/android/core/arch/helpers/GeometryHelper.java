@@ -46,7 +46,7 @@ public final class GeometryHelper {
     private GeometryHelper() {
     }
 
-    public static boolean conatainsAPoint(Geometry geometry) {
+    public static boolean containsAPoint(Geometry geometry) {
         return geometry != null && geometry.type() == FeatureType.POINT;
     }
 

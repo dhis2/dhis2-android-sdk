@@ -41,13 +41,14 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_FileResource.Builder.class)
-public abstract class FileResource extends BaseDataModel {
+public abstract class FileResource extends BaseDataModel implements ObjectWithUidInterface {
 
     @Nullable
     @JsonProperty(BaseIdentifiableObject.UID)

@@ -59,7 +59,7 @@ public abstract class TrackedEntityInstanceDownloadParams {
         static final String LIMIT = "limit";
     }
 
-    private static final SafeDateFormat QUERY_FORMAT = new SafeDateFormat("yyyy-MM-dd");
+    private static Integer DEFAULT_LIMIT = 500;
 
     @NonNull
     public abstract List<String> orgUnits();
@@ -91,14 +91,6 @@ public abstract class TrackedEntityInstanceDownloadParams {
     @NonNull
     public abstract Integer limit();
 
-    public String formattedProgramStartDate() {
-        return programStartDate() == null ? null : QUERY_FORMAT.format(programStartDate());
-    }
-
-    public String formattedProgramEndDate() {
-        return programEndDate() == null ? null : QUERY_FORMAT.format(programEndDate());
-    }
-
     static TrackedEntityInstanceDownloadParams fromRepositoryScope(RepositoryScope scope) {
         Builder builder = builder();
         for (RepositoryScopeFilterItem item : scope.filters()) {
@@ -123,7 +115,7 @@ public abstract class TrackedEntityInstanceDownloadParams {
 
     public static Builder builder() {
         return new AutoValue_TrackedEntityInstanceDownloadParams.Builder()
-                .limitByOrgunit(false).limitByProgram(false).limit(100)
+                .limitByOrgunit(false).limitByProgram(false).limit(DEFAULT_LIMIT)
                 .orgUnits(Collections.emptyList());
     }
 

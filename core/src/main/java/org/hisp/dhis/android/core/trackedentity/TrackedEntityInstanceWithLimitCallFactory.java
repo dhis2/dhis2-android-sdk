@@ -125,7 +125,7 @@ public class TrackedEntityInstanceWithLimitCallFactory {
                         downloadSystemInfo(progressManager),
                         downloadTeis(progressManager, params, allOkay, programOrganisationUnitSet),
                         downloadRelationshipTeis(progressManager),
-                        updateResource(progressManager, allOkay, programOrganisationUnitSet)
+                        updateResource(progressManager, params, allOkay, programOrganisationUnitSet)
                 );
             }
         });
@@ -251,8 +251,9 @@ public class TrackedEntityInstanceWithLimitCallFactory {
         return pagingObservable
                 .flatMapSingle(paging -> {
                     teiQueryBuilder.page(paging.page()).pageSize(paging.pageSize());
-                    return endpointCallFactory.getCall(teiQueryBuilder.build()).map(payload ->
-                            new TeiListWithPaging(true, limitTeisForPage(payload.items(), paging), paging))
+                    return endpointCallFactory.getCall(teiQueryBuilder.build())
+                            .map(payload ->
+                                new TeiListWithPaging(true, limitTeisForPage(payload.items(), paging), paging))
                             .onErrorResumeNext((err) -> {
                                 allOkay.set(false);
                                 return Single.just(new TeiListWithPaging(false, Collections.emptyList(), paging));
@@ -295,10 +296,11 @@ public class TrackedEntityInstanceWithLimitCallFactory {
                 ).build());
     }
 
-    private Observable<D2Progress> updateResource(D2ProgressManager progressManager, BooleanWrapper allOkay,
+    private Observable<D2Progress> updateResource(D2ProgressManager progressManager,
+                                                  TrackedEntityInstanceDownloadParams params, BooleanWrapper allOkay,
                                                   Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet) {
         return Single.fromCallable(() -> {
-            if (allOkay.get()) {
+            if (allOkay.get() && params.program() == null && params.orgUnits().isEmpty()) {
                 resourceHandler.handleResource(resourceType);
             }
             programOrganisationUnitLastUpdatedHandler.handleMany(programOrganisationUnitSet);

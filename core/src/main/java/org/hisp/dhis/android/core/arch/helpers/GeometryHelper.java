@@ -37,6 +37,8 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public final class GeometryHelper {
@@ -44,7 +46,7 @@ public final class GeometryHelper {
     private GeometryHelper() {
     }
 
-    public static boolean conatainsAPoint(Geometry geometry) {
+    public static boolean containsAPoint(Geometry geometry) {
         return geometry != null && geometry.type() == FeatureType.POINT;
     }
 
@@ -67,6 +69,12 @@ public final class GeometryHelper {
     public static List<List<List<List<Double>>>> getMultiPolygon(Geometry geometry) throws D2Error {
         return getGeometryObject(geometry, FeatureType.MULTI_POLYGON,
                 new TypeReference<List<List<List<List<Double>>>>>(){});
+    }
+
+    public static Geometry createPointGeometry(Double longitude, Double latitude) {
+        ArrayList<Double> point = new ArrayList<>();
+        Collections.addAll(point, longitude, latitude);
+        return createPointGeometry(point);
     }
 
     public static Geometry createPointGeometry(List<Double> point) {

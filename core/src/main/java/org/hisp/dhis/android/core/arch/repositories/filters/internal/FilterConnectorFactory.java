@@ -49,6 +49,10 @@ public class FilterConnectorFactory<R extends BaseRepository> {
         return new StringFilterConnector<>(repositoryFactory, scope, key);
     }
 
+    public BaseStringFilterConnector<R> baseString(String key) {
+        return new BaseStringFilterConnector<>(repositoryFactory, scope, key);
+    }
+
     public DateFilterConnector<R> date(String key) {
         return new DateFilterConnector<>(repositoryFactory, scope, key);
     }

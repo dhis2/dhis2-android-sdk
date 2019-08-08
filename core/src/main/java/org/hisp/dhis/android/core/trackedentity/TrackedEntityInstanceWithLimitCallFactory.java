@@ -180,46 +180,69 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
         String lastUpdated = resourceHandler.getLastUpdated(resourceType);
 
         List<TeiQuery.Builder> builders = new ArrayList<>();
+
+        OrganisationUnitMode ouMode;
+        List<String> orgUnits;
+
+        if (!params.orgUnits().isEmpty()) {
+            ouMode = OrganisationUnitMode.SELECTED;
+            orgUnits = params.orgUnits();
+        } else if (params.limitByOrgunit()) {
+            ouMode = OrganisationUnitMode.SELECTED;
+            orgUnits = getCaptureOrgUnitUids();
+        } else {
+            ouMode = OrganisationUnitMode.DESCENDANTS;
+            orgUnits = getRootCaptureOrgUnitUids();
+        }
+
         if (params.limitByOrgunit()) {
-            List<String> captureOrgUnitUids = getCaptureOrgUnitUids();
-            if (params.limitByProgram()) {
-                for (OrganisationUnitProgramLink link :
-                        getOrganisationUnitProgramLinksByOrgunitUids(captureOrgUnitUids)) {
-                    builders.add(getTeiBuilderForOrgUnit(lastUpdated, link.organisationUnit()).program(link.program()));
-                }
-            } else {
-                for (String orgUnitUid : captureOrgUnitUids) {
-                    builders.add(getTeiBuilderForOrgUnit(lastUpdated, orgUnitUid));
-                }
+            for (String orgunitUid : orgUnits) {
+                builders.addAll(getTeiQueryBuildersForOrgUnits(lastUpdated, Collections.singletonList(orgunitUid),
+                        params, ouMode));
             }
         } else {
-            List<String> rootCaptureOrgUnitUids = getRootCaptureOrgUnitUids();
-            if (params.limitByProgram()) {
+            builders.addAll(getTeiQueryBuildersForOrgUnits(lastUpdated, orgUnits, params, ouMode));
+        }
+
+        return builders;
+    }
+
+    private List<TeiQuery.Builder> getTeiQueryBuildersForOrgUnits(String lastUpdated,
+                                                                  List<String> orgUnits,
+                                                                  TrackedEntityInstanceDownloadParams params,
+                                                                  OrganisationUnitMode ouMode) {
+        List<TeiQuery.Builder> builders = new ArrayList<>();
+
+        if (params.program() != null) {
+            builders.add(getBuilderFor(lastUpdated, orgUnits, ouMode).program(params.program()));
+        } else if (params.limitByProgram()) {
+            if (ouMode.equals(OrganisationUnitMode.SELECTED)) {
+                for (OrganisationUnitProgramLink link : getOrganisationUnitProgramLinksByOrgunitUids(orgUnits)) {
+                    builders.add(getBuilderFor(lastUpdated, Collections.singletonList(link.organisationUnit()), ouMode)
+                            .program(link.program()));
+                }
+            } else {
                 Set<String> programs = new HashSet<>();
                 for (OrganisationUnitProgramLink link : organisationUnitProgramLinkStore.selectAll()) {
                     programs.add(link.program());
                 }
                 for (String program : programs) {
-                    builders.add(getTeiBuilderForRootOrgunits(lastUpdated, rootCaptureOrgUnitUids).program(program));
+                    builders.add(getBuilderFor(lastUpdated, orgUnits, ouMode).program(program));
                 }
-            } else {
-                builders.add(getTeiBuilderForRootOrgunits(lastUpdated, rootCaptureOrgUnitUids));
             }
+        } else {
+            builders.add(getBuilderFor(lastUpdated, orgUnits, ouMode));
         }
+
         return builders;
     }
 
-    private TeiQuery.Builder getTeiBuilderForRootOrgunits(String lastUpdated, List<String> rootOrgunitUids) {
+    private TeiQuery.Builder getBuilderFor(String lastUpdated, List<String> organisationUnits,
+                                           OrganisationUnitMode organisationUnitMode) {
         return TeiQuery.builder()
                 .lastUpdatedStartDate(lastUpdated)
-                .orgUnits(rootOrgunitUids)
-                .ouMode(OrganisationUnitMode.DESCENDANTS);
-    }
-
-    private TeiQuery.Builder getTeiBuilderForOrgUnit(String lastUpdated, String orgUnitUid) {
-        return TeiQuery.builder()
-                .lastUpdatedStartDate(lastUpdated)
-                .orgUnits(Collections.singleton(orgUnitUid));
+                .orgUnits(organisationUnits)
+                .ouMode(organisationUnitMode);
     }
 
     private Observable<List<TrackedEntityInstance>> getTrackedEntityInstancesWithPaging(

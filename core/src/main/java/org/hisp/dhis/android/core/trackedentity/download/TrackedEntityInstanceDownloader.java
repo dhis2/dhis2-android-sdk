@@ -69,11 +69,11 @@ public final class TrackedEntityInstanceDownloader extends BaseRepositoryImpl<Tr
         return this.callFactory.download(params);
     }
 
-    /*public TrackedEntityInstanceDownloader byProgramUid(String programUid) {
-        return cf.string(QueryParams.PROGRAM).eq(programUid);
+    public TrackedEntityInstanceDownloader byProgramUid(String programUid) {
+        return cf.baseString(QueryParams.PROGRAM).eq(programUid);
     }
 
-    public TrackedEntityInstanceDownloader byOrgunitUids(String... uids) {
+    /*public TrackedEntityInstanceDownloader byOrgunitUids(String... uids) {
         return cf.string(QueryParams.ORG_UNITS).in(uids);
     }*/
 

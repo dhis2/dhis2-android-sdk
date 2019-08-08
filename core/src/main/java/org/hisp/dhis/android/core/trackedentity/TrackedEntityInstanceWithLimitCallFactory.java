@@ -66,7 +66,7 @@ import io.reactivex.Single;
 
 @Reusable
 @SuppressWarnings({"PMD.ExcessiveImports"})
-public final class TrackedEntityInstanceWithLimitCallFactory {
+public class TrackedEntityInstanceWithLimitCallFactory {
 
     private final Resource.Type resourceType = Resource.Type.TRACKED_ENTITY_INSTANCE;
 

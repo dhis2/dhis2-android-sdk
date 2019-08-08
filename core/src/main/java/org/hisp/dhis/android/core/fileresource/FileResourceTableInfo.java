@@ -54,7 +54,6 @@ public class FileResourceTableInfo {
 
         public static final String UID = "uid";
         public static final String NAME = "name";
-        public static final String DISPLAY_NAME = "displayName";
         public static final String CREATED = "created";
         public static final String LAST_UPDATED = "lastUpdated";
         public static final String CONTENT_TYPE = "contentType";
@@ -65,7 +64,6 @@ public class FileResourceTableInfo {
             return Utils.appendInNewArray(super.all(),
                     UID,
                     NAME,
-                    DISPLAY_NAME,
                     CREATED,
                     LAST_UPDATED,
                     CONTENT_TYPE,

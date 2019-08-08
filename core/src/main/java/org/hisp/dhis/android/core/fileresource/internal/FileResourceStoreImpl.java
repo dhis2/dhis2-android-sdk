@@ -49,7 +49,8 @@ public final class FileResourceStoreImpl extends IdentifiableObjectWithStateStor
         sqLiteBind(sqLiteStatement, 4, o.lastUpdated());
         sqLiteBind(sqLiteStatement, 5, o.contentType());
         sqLiteBind(sqLiteStatement, 6, o.contentLength());
-        sqLiteBind(sqLiteStatement, 7, o.state());
+        sqLiteBind(sqLiteStatement, 7, o.path());
+        sqLiteBind(sqLiteStatement, 8, o.state());
     };
 
     private FileResourceStoreImpl(DatabaseAdapter databaseAdapter,

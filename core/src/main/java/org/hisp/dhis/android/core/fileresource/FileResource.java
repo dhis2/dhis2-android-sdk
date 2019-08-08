@@ -78,7 +78,11 @@ public abstract class FileResource extends BaseDataModel implements ObjectWithUi
 
     @Nullable
     @JsonProperty
-    public abstract Integer contentLength();
+    public abstract Long contentLength();
+
+    @Nullable
+    @JsonProperty
+    public abstract String path();
 
     @NonNull
     public static FileResource create(Cursor cursor) {
@@ -100,15 +104,15 @@ public abstract class FileResource extends BaseDataModel implements ObjectWithUi
 
         public abstract Builder name(@NonNull String name);
 
-        public abstract Builder displayName(@NonNull String displayName);
-
         public abstract Builder created(@NonNull Date created);
 
         public abstract Builder lastUpdated(@NonNull Date lastUpdated);
 
         public abstract Builder contentType(@NonNull String contentType);
 
-        public abstract Builder contentLength(@NonNull Integer contentLength);
+        public abstract Builder contentLength(@NonNull Long contentLength);
+
+        public abstract Builder path(@NonNull String path);
 
         public abstract FileResource build();
     }

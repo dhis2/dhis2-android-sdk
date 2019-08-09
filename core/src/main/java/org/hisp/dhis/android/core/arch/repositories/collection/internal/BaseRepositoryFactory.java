@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-public interface CollectionRepositoryFactory<R extends ReadOnlyCollectionRepository<?>> {
+public interface BaseRepositoryFactory<R extends BaseRepository> {
     R updated(RepositoryScope updatedScope);
 }

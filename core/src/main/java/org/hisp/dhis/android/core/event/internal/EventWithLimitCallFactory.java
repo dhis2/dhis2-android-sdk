@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine;
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
@@ -42,20 +44,23 @@ import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
 
+@SuppressWarnings({
+        "PMD.NPathComplexity",
+        "PMD.CyclomaticComplexity",
+        "PMD.ModifiedCyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity"
+})
 @Reusable
 public final class EventWithLimitCallFactory {
 
@@ -89,22 +94,16 @@ public final class EventWithLimitCallFactory {
         this.persistenceCallFactory = persistenceCallFactory;
     }
 
-    public Observable<D2Progress> downloadSingleEvents(final int eventLimit,
-                                                       final boolean limitByOrgUnit,
-                                                       final boolean limitByProgram) {
+    public Observable<D2Progress> downloadSingleEvents(ProgramDataDownloadParams params) {
         D2ProgressManager progressManager = new D2ProgressManager(2);
         return Observable.merge(
                 downloadSystemInfo(progressManager),
-                downloadEventsInternal(eventLimit, limitByOrgUnit, limitByProgram, progressManager)
-        );
+                downloadEventsInternal(params, progressManager));
     }
 
-    private Observable<D2Progress> downloadEventsInternal(int eventLimit,
-                                                          boolean limitByOrgUnit,
-                                                          boolean limitByProgram,
+    private Observable<D2Progress> downloadEventsInternal(ProgramDataDownloadParams params,
                                                           D2ProgressManager progressManager) {
         return Observable.create(emitter -> {
-            Collection<String> organisationUnitUids;
             boolean successfulSync = true;
 
             EventQuery.Builder eventQueryBuilder = EventQuery.builder();
@@ -113,41 +112,58 @@ public final class EventWithLimitCallFactory {
             String lastUpdatedStartDate = resourceHandler.getLastUpdated(resourceType);
             eventQueryBuilder.lastUpdatedStartDate(lastUpdatedStartDate);
 
-            if (limitByOrgUnit) {
-                organisationUnitUids = getOrgUnitUids();
+            OrganisationUnitMode ouMode;
+            List<String> orgUnits;
+
+            if (params.orgUnits().size() > 0) {
+                ouMode = OrganisationUnitMode.SELECTED;
+                orgUnits = params.orgUnits();
+            } else if (params.limitByOrgunit()) {
+                ouMode = OrganisationUnitMode.SELECTED;
+                orgUnits = userOrganisationUnitLinkStore
+                        .queryOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
             } else {
-                organisationUnitUids = userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids();
-                eventQueryBuilder.ouMode(OrganisationUnitMode.DESCENDANTS);
+                ouMode = OrganisationUnitMode.DESCENDANTS;
+                orgUnits = userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids();
             }
 
+            eventQueryBuilder.ouMode(ouMode);
+
             int eventsCount = 0;
-            for (String orgUnitUid : organisationUnitUids) {
-                if (limitByOrgUnit) {
+            for (String orgUnitUid : orgUnits) {
+                if (params.limitByOrgunit()) {
                     eventsCount = 0;
                 }
-                if (eventsCount >= eventLimit) {
+                if (eventsCount >= params.limit()) {
                     break;
                 }
                 eventQueryBuilder.orgUnit(orgUnitUid);
 
-                for (String programUid : programStore.queryWithoutRegistrationProgramUids()) {
-                    if (limitByProgram) {
+                List<String> programs;
+                if (params.program() == null) {
+                    programs = programStore.queryWithoutRegistrationProgramUids();
+                } else {
+                    programs = Collections.singletonList(params.program());
+                }
+
+                for (String programUid : programs) {
+                    if (params.limitByProgram()) {
                         eventsCount = 0;
                     }
-                    if (eventsCount >= eventLimit) {
+                    if (eventsCount >= params.limit()) {
                         break;
                     }
 
                     eventQueryBuilder.program(programUid);
 
                     EventsWithPagingResult result = getEventsForOrgUnitProgramCombination(eventQueryBuilder,
-                            pageSize, eventLimit - eventsCount);
+                            pageSize, params.limit() - eventsCount);
                     eventsCount = eventsCount + result.eventCount;
                     successfulSync = successfulSync && result.successfulSync;
                 }
             }
 
-            if (successfulSync) {
+            if (successfulSync && params.program() == null && params.orgUnits().isEmpty()) {
                 resourceHandler.handleResource(resourceType);
             }
 
@@ -213,21 +229,6 @@ public final class EventWithLimitCallFactory {
         } else {
             return pageEvents;
         }
-    }
-
-    private Set<String> getOrgUnitUids() {
-        List<UserOrganisationUnitLink> userOrganisationUnitLinks = userOrganisationUnitLinkStore.selectAll();
-
-        Set<String> organisationUnitUids = new HashSet<>();
-
-        for (UserOrganisationUnitLink link: userOrganisationUnitLinks) {
-            if (link.organisationUnitScope().equals(
-                    OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name())) {
-                organisationUnitUids.add(link.organisationUnit());
-            }
-        }
-
-        return organisationUnitUids;
     }
 
     private static class EventsWithPagingResult {

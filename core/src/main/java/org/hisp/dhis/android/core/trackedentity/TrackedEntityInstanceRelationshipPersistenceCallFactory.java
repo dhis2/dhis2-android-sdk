@@ -69,7 +69,7 @@ final class TrackedEntityInstanceRelationshipPersistenceCallFactory {
         this.foreignKeyCleaner = foreignKeyCleaner;
     }
 
-    public Callable<Void> getCall(final Collection<TrackedEntityInstance> trackedEntityInstances) {
+    Callable<Void> getCall(final Collection<TrackedEntityInstance> trackedEntityInstances) {
 
         return () -> {
             trackedEntityInstanceHandler.handleMany(trackedEntityInstances, true);

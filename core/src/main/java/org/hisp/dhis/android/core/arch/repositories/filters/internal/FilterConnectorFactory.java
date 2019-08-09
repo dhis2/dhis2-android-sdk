@@ -28,25 +28,29 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem;
 
-public class FilterConnectorFactory<R extends ReadOnlyCollectionRepository<?>> {
+public class FilterConnectorFactory<R extends BaseRepository> {
 
     private final RepositoryScope scope;
-    public final CollectionRepositoryFactory<R> repositoryFactory;
+    public final BaseRepositoryFactory<R> repositoryFactory;
 
     public FilterConnectorFactory(RepositoryScope scope,
-                                  CollectionRepositoryFactory<R> repositoryFactory) {
+                                  BaseRepositoryFactory<R> repositoryFactory) {
         this.scope = scope;
         this.repositoryFactory = repositoryFactory;
     }
 
     public StringFilterConnector<R> string(String key) {
         return new StringFilterConnector<>(repositoryFactory, scope, key);
+    }
+
+    public BaseStringFilterConnector<R> baseString(String key) {
+        return new BaseStringFilterConnector<>(repositoryFactory, scope, key);
     }
 
     public DateFilterConnector<R> date(String key) {

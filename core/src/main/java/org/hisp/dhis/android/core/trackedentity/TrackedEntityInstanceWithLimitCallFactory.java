@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLastUpdated;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
@@ -65,7 +66,7 @@ import io.reactivex.Single;
 
 @Reusable
 @SuppressWarnings({"PMD.ExcessiveImports"})
-public final class TrackedEntityInstanceWithLimitCallFactory {
+class TrackedEntityInstanceWithLimitCallFactory {
 
     private final Resource.Type resourceType = Resource.Type.TRACKED_ENTITY_INSTANCE;
 
@@ -110,7 +111,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
         this.endpointCallFactory = endpointCallFactory;
     }
 
-    public Observable<D2Progress> download(final int teiLimit, final boolean limitByOrgUnit, boolean limitByProgram) {
+    Observable<D2Progress> download(final ProgramDataDownloadParams params) {
         Observable<D2Progress> observable = Observable.defer(() -> {
             D2ProgressManager progressManager = new D2ProgressManager(null);
             Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet = new HashSet<>();
@@ -122,10 +123,9 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
 
                 return Observable.concat(
                         downloadSystemInfo(progressManager),
-                        downloadTeis(progressManager, teiLimit, limitByOrgUnit, limitByProgram, allOkay,
-                                programOrganisationUnitSet),
+                        downloadTeis(progressManager, params, allOkay, programOrganisationUnitSet),
                         downloadRelationshipTeis(progressManager),
-                        updateResource(progressManager, allOkay, programOrganisationUnitSet)
+                        updateResource(progressManager, params, allOkay, programOrganisationUnitSet)
                 );
             }
         });
@@ -141,17 +141,15 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     }
 
     private Observable<D2Progress> downloadTeis(D2ProgressManager progressManager,
-                                                int teiLimit,
-                                                boolean limitByOrgUnit,
-                                                boolean limitByProgram,
+                                                ProgramDataDownloadParams params,
                                                 BooleanWrapper allOkay,
                                                 Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet) {
 
         int pageSize = TeiQuery.builder().build().pageSize();
-        List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, teiLimit);
+        List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, params.limit());
 
         Observable<List<TrackedEntityInstance>> teiDownloadObservable =
-                Observable.fromIterable(getTeiQueryBuilders(limitByOrgUnit, limitByProgram))
+                Observable.fromIterable(getTeiQueryBuilders(params))
                         .flatMap(teiQueryBuilder -> {
                             return getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList, allOkay);
                             // TODO .subscribeOn(teiDownloadScheduler);
@@ -177,51 +175,75 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
                 trackedEntityInstances -> progressManager.increaseProgress(TrackedEntityInstance.class, true));
     }
 
-    private List<TeiQuery.Builder> getTeiQueryBuilders(boolean limitByOrgUnit, boolean limitByProgram) {
+    private List<TeiQuery.Builder> getTeiQueryBuilders(ProgramDataDownloadParams params) {
 
         String lastUpdated = resourceHandler.getLastUpdated(resourceType);
 
         List<TeiQuery.Builder> builders = new ArrayList<>();
-        if (limitByOrgUnit) {
-            List<String> captureOrgUnitUids = getCaptureOrgUnitUids();
-            if (limitByProgram) {
-                for (OrganisationUnitProgramLink link :
-                        getOrganisationUnitProgramLinksByOrgunitUids(captureOrgUnitUids)) {
-                    builders.add(getTeiBuilderForOrgUnit(lastUpdated, link.organisationUnit()).program(link.program()));
-                }
-            } else {
-                for (String orgUnitUid : captureOrgUnitUids) {
-                    builders.add(getTeiBuilderForOrgUnit(lastUpdated, orgUnitUid));
-                }
+
+        OrganisationUnitMode ouMode;
+        List<String> orgUnits;
+
+        if (params.orgUnits().size() > 0) {
+            ouMode = OrganisationUnitMode.SELECTED;
+            orgUnits = params.orgUnits();
+        } else if (params.limitByOrgunit()) {
+            ouMode = OrganisationUnitMode.SELECTED;
+            orgUnits = getCaptureOrgUnitUids();
+        } else {
+            ouMode = OrganisationUnitMode.DESCENDANTS;
+            orgUnits = getRootCaptureOrgUnitUids();
+        }
+
+        if (params.limitByOrgunit()) {
+            for (String orgunitUid : orgUnits) {
+                builders.addAll(getTeiQueryBuildersForOrgUnits(lastUpdated, Collections.singletonList(orgunitUid),
+                        params, ouMode));
             }
         } else {
-            List<String> rootCaptureOrgUnitUids = getRootCaptureOrgUnitUids();
-            if (limitByProgram) {
+            builders.addAll(getTeiQueryBuildersForOrgUnits(lastUpdated, orgUnits, params, ouMode));
+        }
+
+        return builders;
+    }
+
+    @SuppressWarnings("PMD.ConfusingTernary")
+    private List<TeiQuery.Builder> getTeiQueryBuildersForOrgUnits(String lastUpdated,
+                                                                  List<String> orgUnits,
+                                                                  ProgramDataDownloadParams params,
+                                                                  OrganisationUnitMode ouMode) {
+        List<TeiQuery.Builder> builders = new ArrayList<>();
+
+        if (params.program() != null) {
+            builders.add(getBuilderFor(lastUpdated, orgUnits, ouMode).program(params.program()));
+        } else if (params.limitByProgram()) {
+            if (ouMode.equals(OrganisationUnitMode.SELECTED)) {
+                for (OrganisationUnitProgramLink link : getOrganisationUnitProgramLinksByOrgunitUids(orgUnits)) {
+                    builders.add(getBuilderFor(lastUpdated, Collections.singletonList(link.organisationUnit()), ouMode)
+                            .program(link.program()));
+                }
+            } else {
                 Set<String> programs = new HashSet<>();
                 for (OrganisationUnitProgramLink link : organisationUnitProgramLinkStore.selectAll()) {
                     programs.add(link.program());
                 }
                 for (String program : programs) {
-                    builders.add(getTeiBuilderForRootOrgunits(lastUpdated, rootCaptureOrgUnitUids).program(program));
+                    builders.add(getBuilderFor(lastUpdated, orgUnits, ouMode).program(program));
                 }
-            } else {
-                builders.add(getTeiBuilderForRootOrgunits(lastUpdated, rootCaptureOrgUnitUids));
             }
+        } else {
+            builders.add(getBuilderFor(lastUpdated, orgUnits, ouMode));
         }
+
         return builders;
     }
 
-    private TeiQuery.Builder getTeiBuilderForRootOrgunits(String lastUpdated, List<String> rootOrgunitUids) {
+    private TeiQuery.Builder getBuilderFor(String lastUpdated, List<String> organisationUnits,
+                                           OrganisationUnitMode organisationUnitMode) {
         return TeiQuery.builder()
                 .lastUpdatedStartDate(lastUpdated)
-                .orgUnits(rootOrgunitUids)
-                .ouMode(OrganisationUnitMode.DESCENDANTS);
-    }
-
-    private TeiQuery.Builder getTeiBuilderForOrgUnit(String lastUpdated, String orgUnitUid) {
-        return TeiQuery.builder()
-                .lastUpdatedStartDate(lastUpdated)
-                .orgUnits(Collections.singleton(orgUnitUid));
+                .orgUnits(organisationUnits)
+                .ouMode(organisationUnitMode);
     }
 
     private Observable<List<TrackedEntityInstance>> getTrackedEntityInstancesWithPaging(
@@ -230,8 +252,9 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
         return pagingObservable
                 .flatMapSingle(paging -> {
                     teiQueryBuilder.page(paging.page()).pageSize(paging.pageSize());
-                    return endpointCallFactory.getCall(teiQueryBuilder.build()).map(payload ->
-                            new TeiListWithPaging(true, limitTeisForPage(payload.items(), paging), paging))
+                    return endpointCallFactory.getCall(teiQueryBuilder.build())
+                            .map(payload ->
+                                new TeiListWithPaging(true, limitTeisForPage(payload.items(), paging), paging))
                             .onErrorResumeNext((err) -> {
                                 allOkay.set(false);
                                 return Single.just(new TeiListWithPaging(false, Collections.emptyList(), paging));
@@ -274,10 +297,11 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
                 ).build());
     }
 
-    private Observable<D2Progress> updateResource(D2ProgressManager progressManager, BooleanWrapper allOkay,
+    private Observable<D2Progress> updateResource(D2ProgressManager progressManager,
+                                                  ProgramDataDownloadParams params, BooleanWrapper allOkay,
                                                   Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet) {
         return Single.fromCallable(() -> {
-            if (allOkay.get()) {
+            if (allOkay.get() && params.program() == null && params.orgUnits().isEmpty()) {
                 resourceHandler.handleResource(resourceType);
             }
             programOrganisationUnitLastUpdatedHandler.handleMany(programOrganisationUnitSet);

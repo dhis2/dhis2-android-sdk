@@ -25,31 +25,55 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity;
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
-
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-public final class IntegerFilterConnector<R extends BaseRepository>
-        extends BaseFilterConnector<R, Integer> {
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 
-    IntegerFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                           RepositoryScope scope,
-                           String key) {
-        super(repositoryFactory, scope, key);
+@RunWith(JUnit4.class)
+public class TrackedEntityInstanceDownloaderShould {
+
+    @Mock
+    private TrackedEntityInstanceWithLimitCallFactory callFactory;
+
+    private ArgumentCaptor<ProgramDataDownloadParams> paramsCapture =
+            ArgumentCaptor.forClass(ProgramDataDownloadParams.class);
+
+    private TrackedEntityInstanceDownloader downloader;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        downloader = new TrackedEntityInstanceDownloader(RepositoryScope.empty(), callFactory);
     }
 
-    public R smallerThan(int value) {
-        return newWithWrappedScope("<", value);
+    @Test
+    public void should_create_call_with_parsed_params() {
+        downloader
+                .byProgramUid("program-uid")
+                .limitByOrgunit(true)
+                .limitByProgram(true)
+                .limit(500)
+                .download();
+
+        verify(callFactory).download(paramsCapture.capture());
+        ProgramDataDownloadParams params = paramsCapture.getValue();
+
+        assertThat(params.program()).isEqualTo("program-uid");
+        assertThat(params.limitByOrgunit()).isEqualTo(true);
+        assertThat(params.limitByProgram()).isEqualTo(true);
+        assertThat(params.limit()).isEqualTo(500);
     }
 
-    public R biggerThan(int value) {
-        return newWithWrappedScope(">", value);
-    }
 
-    String wrapValue(Integer value) {
-        return value.toString();
-    }
 }

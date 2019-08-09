@@ -38,7 +38,7 @@ import dagger.Reusable;
 import io.reactivex.Single;
 
 @Reusable
-public final class TrackedEntityInstancesEndpointCallFactory {
+final class TrackedEntityInstancesEndpointCallFactory {
 
     private final TrackedEntityInstanceService trackedEntityInstanceService;
 
@@ -48,7 +48,7 @@ public final class TrackedEntityInstancesEndpointCallFactory {
         this.trackedEntityInstanceService = trackedEntityInstanceService;
     }
 
-    public Single<Payload<TrackedEntityInstance>> getCall(final TeiQuery query) {
+    Single<Payload<TrackedEntityInstance>> getCall(final TeiQuery query) {
         return trackedEntityInstanceService.getTrackedEntityInstances(
                 Utils.joinCollectionWithSeparator(query.orgUnits(), ";"),
                 query.ouMode().name(), query.program(), TrackedEntityInstanceFields.allFields, Boolean.TRUE,

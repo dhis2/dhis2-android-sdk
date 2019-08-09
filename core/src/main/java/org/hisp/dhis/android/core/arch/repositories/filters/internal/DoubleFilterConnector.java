@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-public final class DoubleFilterConnector<R extends ReadOnlyCollectionRepository<?>>
+public final class DoubleFilterConnector<R extends BaseRepository>
         extends BaseFilterConnector<R, Double> {
 
-    DoubleFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
+    DoubleFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
                           RepositoryScope scope,
                           String key) {
         super(repositoryFactory, scope, key);

@@ -105,7 +105,7 @@ public class WipeDBCallRealIntegrationShould extends BaseRealIntegrationTest {
 
         d2.metadataModule().blockingDownload();
 
-        d2.trackedEntityModule().downloadTrackedEntityInstances(5, false, false).subscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(5).download().blockingSubscribe();
 
         TrackedEntityInstanceStore trackedEntityInstanceStore =
                 TrackedEntityInstanceStoreImpl.create(databaseAdapter());

@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeComplexFilterItem;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
@@ -41,13 +41,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V> {
+abstract class BaseFilterConnector<R extends BaseRepository, V> {
 
-    private final CollectionRepositoryFactory<R> repositoryFactory;
+    private final BaseRepositoryFactory<R> repositoryFactory;
     private final RepositoryScope scope;
     final String key;
 
-    BaseFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
+    BaseFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
                         RepositoryScope scope,
                         String key) {
         this.repositoryFactory = repositoryFactory;

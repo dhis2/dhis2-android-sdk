@@ -46,17 +46,17 @@ import java.util.List;
 @AutoValue
 public abstract class TrackedEntityInstanceDownloadParams {
 
-    static class QueryParams {
-        static final String PROGRAM = "program";
-        static final String PROGRAM_STATUS = "programStatus";
-        static final String PROGRAM_START_DATE = "programStartDate";
-        static final String PROGRAM_END_DATE = "programEndDate";
-        static final String ORG_UNITS = "ou";
-        static final String ORG_UNIT_MODE = "ouMode";
-        static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
-        static final String LIMIT_BY_ORGUNIT = "limitByOrgunit";
-        static final String LIMIT_BY_PROGRAM = "limitByProgram";
-        static final String LIMIT = "limit";
+    public static class QueryParams {
+        public static final String PROGRAM = "program";
+        public static final String PROGRAM_STATUS = "programStatus";
+        public static final String PROGRAM_START_DATE = "programStartDate";
+        public static final String PROGRAM_END_DATE = "programEndDate";
+        public static final String ORG_UNITS = "ou";
+        public static final String ORG_UNIT_MODE = "ouMode";
+        public static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
+        public static final String LIMIT_BY_ORGUNIT = "limitByOrgunit";
+        public static final String LIMIT_BY_PROGRAM = "limitByProgram";
+        public static final String LIMIT = "limit";
     }
 
     private static Integer DEFAULT_LIMIT = 500;
@@ -91,7 +91,7 @@ public abstract class TrackedEntityInstanceDownloadParams {
     @NonNull
     public abstract Integer limit();
 
-    static TrackedEntityInstanceDownloadParams fromRepositoryScope(RepositoryScope scope) {
+    public static TrackedEntityInstanceDownloadParams fromRepositoryScope(RepositoryScope scope) {
         Builder builder = builder();
         for (RepositoryScopeFilterItem item : scope.filters()) {
             switch (item.key()) {

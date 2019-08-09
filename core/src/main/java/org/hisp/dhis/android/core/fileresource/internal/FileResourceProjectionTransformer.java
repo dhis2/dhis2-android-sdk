@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.fileresource.internal;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.fileresource.FileResource;
-import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 
 import java.io.File;
 import java.net.URLConnection;
@@ -41,11 +40,9 @@ final class FileResourceProjectionTransformer implements Transformer<File, FileR
 
     @Override
     public FileResource transform(File file) {
-        String generatedUid = new CodeGeneratorImpl().generate();
         Date creationDate = new Date();
 
         return FileResource.builder()
-                .uid(generatedUid)
                 .state(State.TO_POST)
                 .created(creationDate)
                 .lastUpdated(creationDate)

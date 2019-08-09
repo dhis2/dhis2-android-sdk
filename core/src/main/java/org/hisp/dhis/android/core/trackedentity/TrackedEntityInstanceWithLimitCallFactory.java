@@ -42,12 +42,12 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLastUpdated;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.utils.internal.BooleanWrapper;
 
@@ -184,7 +184,7 @@ class TrackedEntityInstanceWithLimitCallFactory {
         OrganisationUnitMode ouMode;
         List<String> orgUnits;
 
-        if (!params.orgUnits().isEmpty()) {
+        if (params.orgUnits().size() > 0) {
             ouMode = OrganisationUnitMode.SELECTED;
             orgUnits = params.orgUnits();
         } else if (params.limitByOrgunit()) {
@@ -207,6 +207,7 @@ class TrackedEntityInstanceWithLimitCallFactory {
         return builders;
     }
 
+    @SuppressWarnings("PMD.ConfusingTernary")
     private List<TeiQuery.Builder> getTeiQueryBuildersForOrgUnits(String lastUpdated,
                                                                   List<String> orgUnits,
                                                                   ProgramDataDownloadParams params,

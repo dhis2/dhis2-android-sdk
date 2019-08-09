@@ -44,9 +44,9 @@ import static org.hisp.dhis.android.core.program.internal.ProgramDataDownloadPar
 @Reusable
 public final class EventDownloader extends BaseRepositoryImpl<EventDownloader> {
 
-    private RepositoryScope scope;
+    private final RepositoryScope scope;
 
-    private EventWithLimitCallFactory callFactory;
+    private final EventWithLimitCallFactory callFactory;
 
     @Inject
     EventDownloader(final RepositoryScope scope,

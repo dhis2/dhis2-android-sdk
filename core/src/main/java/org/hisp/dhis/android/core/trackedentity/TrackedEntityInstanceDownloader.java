@@ -43,9 +43,9 @@ import static org.hisp.dhis.android.core.program.internal.ProgramDataDownloadPar
 @Reusable
 public final class TrackedEntityInstanceDownloader extends BaseRepositoryImpl<TrackedEntityInstanceDownloader> {
 
-    private RepositoryScope scope;
+    private final RepositoryScope scope;
 
-    private TrackedEntityInstanceWithLimitCallFactory callFactory;
+    private final TrackedEntityInstanceWithLimitCallFactory callFactory;
 
     @Inject
     TrackedEntityInstanceDownloader(final RepositoryScope scope,

@@ -45,19 +45,6 @@ import java.util.List;
 @AutoValue
 public abstract class ProgramDataDownloadParams {
 
-    public static class QueryParams {
-        public static final String PROGRAM = "program";
-        public static final String PROGRAM_STATUS = "programStatus";
-        public static final String PROGRAM_START_DATE = "programStartDate";
-        public static final String PROGRAM_END_DATE = "programEndDate";
-        public static final String ORG_UNITS = "ou";
-        public static final String ORG_UNIT_MODE = "ouMode";
-        public static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
-        public static final String LIMIT_BY_ORGUNIT = "limitByOrgunit";
-        public static final String LIMIT_BY_PROGRAM = "limitByProgram";
-        public static final String LIMIT = "limit";
-    }
-
     private static Integer DEFAULT_LIMIT = 500;
 
     @NonNull
@@ -143,5 +130,18 @@ public abstract class ProgramDataDownloadParams {
         public abstract Builder limit(Integer limit);
 
         public abstract ProgramDataDownloadParams build();
+    }
+
+    public static class QueryParams {
+        public static final String PROGRAM = "program";
+        public static final String PROGRAM_STATUS = "programStatus";
+        public static final String PROGRAM_START_DATE = "programStartDate";
+        public static final String PROGRAM_END_DATE = "programEndDate";
+        public static final String ORG_UNITS = "ou";
+        public static final String ORG_UNIT_MODE = "ouMode";
+        public static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
+        public static final String LIMIT_BY_ORGUNIT = "limitByOrgunit";
+        public static final String LIMIT_BY_PROGRAM = "limitByProgram";
+        public static final String LIMIT = "limit";
     }
 }

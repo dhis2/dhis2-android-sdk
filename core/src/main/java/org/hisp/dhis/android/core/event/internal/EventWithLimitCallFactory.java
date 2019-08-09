@@ -55,6 +55,12 @@ import javax.inject.Inject;
 import dagger.Reusable;
 import io.reactivex.Observable;
 
+@SuppressWarnings({
+        "PMD.NPathComplexity",
+        "PMD.CyclomaticComplexity",
+        "PMD.ModifiedCyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity"
+})
 @Reusable
 public final class EventWithLimitCallFactory {
 
@@ -109,7 +115,7 @@ public final class EventWithLimitCallFactory {
             OrganisationUnitMode ouMode;
             List<String> orgUnits;
 
-            if (!params.orgUnits().isEmpty()) {
+            if (params.orgUnits().size() > 0) {
                 ouMode = OrganisationUnitMode.SELECTED;
                 orgUnits = params.orgUnits();
             } else if (params.limitByOrgunit()) {
@@ -134,10 +140,10 @@ public final class EventWithLimitCallFactory {
                 eventQueryBuilder.orgUnit(orgUnitUid);
 
                 List<String> programs;
-                if (params.program() != null) {
-                    programs = Collections.singletonList(params.program());
-                } else {
+                if (params.program() == null) {
                     programs = programStore.queryWithoutRegistrationProgramUids();
+                } else {
+                    programs = Collections.singletonList(params.program());
                 }
 
                 for (String programUid : programs) {

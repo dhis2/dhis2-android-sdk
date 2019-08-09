@@ -25,20 +25,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.download;
+package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceWithLimitCallFactory;
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 import io.reactivex.Observable;
 
-import static org.hisp.dhis.android.core.trackedentity.download.TrackedEntityInstanceDownloadParams.QueryParams;
+import static org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams.QueryParams;
 
 @Reusable
 public final class TrackedEntityInstanceDownloader extends BaseRepositoryImpl<TrackedEntityInstanceDownloader> {
@@ -65,7 +65,7 @@ public final class TrackedEntityInstanceDownloader extends BaseRepositoryImpl<Tr
      * @return An Observable that notifies about the progress.
      */
     public Observable<D2Progress> download() {
-        TrackedEntityInstanceDownloadParams params = TrackedEntityInstanceDownloadParams.fromRepositoryScope(scope);
+        ProgramDataDownloadParams params = ProgramDataDownloadParams.fromRepositoryScope(scope);
         return this.callFactory.download(params);
     }
 

@@ -44,7 +44,7 @@ import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.trackedentity.download.TrackedEntityInstanceDownloadParams;
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 
 import java.util.Collections;
@@ -88,14 +88,14 @@ public final class EventWithLimitCallFactory {
         this.persistenceCallFactory = persistenceCallFactory;
     }
 
-    public Observable<D2Progress> downloadSingleEvents(TrackedEntityInstanceDownloadParams params) {
+    public Observable<D2Progress> downloadSingleEvents(ProgramDataDownloadParams params) {
         D2ProgressManager progressManager = new D2ProgressManager(2);
         return Observable.merge(
                 downloadSystemInfo(progressManager),
                 downloadEventsInternal(params, progressManager));
     }
 
-    private Observable<D2Progress> downloadEventsInternal(TrackedEntityInstanceDownloadParams params,
+    private Observable<D2Progress> downloadEventsInternal(ProgramDataDownloadParams params,
                                                           D2ProgressManager progressManager) {
         return Observable.create(emitter -> {
             boolean successfulSync = true;

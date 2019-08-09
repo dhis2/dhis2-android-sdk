@@ -26,14 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.download;
+package org.hisp.dhis.android.core.program.internal;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
@@ -44,7 +43,7 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
-public abstract class TrackedEntityInstanceDownloadParams {
+public abstract class ProgramDataDownloadParams {
 
     public static class QueryParams {
         public static final String PROGRAM = "program";
@@ -91,7 +90,7 @@ public abstract class TrackedEntityInstanceDownloadParams {
     @NonNull
     public abstract Integer limit();
 
-    public static TrackedEntityInstanceDownloadParams fromRepositoryScope(RepositoryScope scope) {
+    public static ProgramDataDownloadParams fromRepositoryScope(RepositoryScope scope) {
         Builder builder = builder();
         for (RepositoryScopeFilterItem item : scope.filters()) {
             switch (item.key()) {
@@ -114,7 +113,7 @@ public abstract class TrackedEntityInstanceDownloadParams {
     }
 
     public static Builder builder() {
-        return new AutoValue_TrackedEntityInstanceDownloadParams.Builder()
+        return new AutoValue_ProgramDataDownloadParams.Builder()
                 .limitByOrgunit(false).limitByProgram(false).limit(DEFAULT_LIMIT)
                 .orgUnits(Collections.emptyList());
     }
@@ -143,6 +142,6 @@ public abstract class TrackedEntityInstanceDownloadParams {
 
         public abstract Builder limit(Integer limit);
 
-        public abstract TrackedEntityInstanceDownloadParams build();
+        public abstract ProgramDataDownloadParams build();
     }
 }

@@ -25,10 +25,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.download;
+package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceWithLimitCallFactory;
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,8 +46,8 @@ public class TrackedEntityInstanceDownloaderShould {
     @Mock
     private TrackedEntityInstanceWithLimitCallFactory callFactory;
 
-    private ArgumentCaptor<TrackedEntityInstanceDownloadParams> paramsCapture =
-            ArgumentCaptor.forClass(TrackedEntityInstanceDownloadParams.class);
+    private ArgumentCaptor<ProgramDataDownloadParams> paramsCapture =
+            ArgumentCaptor.forClass(ProgramDataDownloadParams.class);
 
     private TrackedEntityInstanceDownloader downloader;
 
@@ -67,7 +67,7 @@ public class TrackedEntityInstanceDownloaderShould {
                 .download();
 
         verify(callFactory).download(paramsCapture.capture());
-        TrackedEntityInstanceDownloadParams params = paramsCapture.getValue();
+        ProgramDataDownloadParams params = paramsCapture.getValue();
 
         assertThat(params.program()).isEqualTo("program-uid");
         assertThat(params.limitByOrgunit()).isEqualTo(true);

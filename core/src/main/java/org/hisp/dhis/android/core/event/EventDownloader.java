@@ -32,14 +32,14 @@ import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepo
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.event.internal.EventWithLimitCallFactory;
-import org.hisp.dhis.android.core.trackedentity.download.TrackedEntityInstanceDownloadParams;
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 import io.reactivex.Observable;
 
-import static org.hisp.dhis.android.core.trackedentity.download.TrackedEntityInstanceDownloadParams.QueryParams;
+import static org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams.QueryParams;
 
 @Reusable
 public final class EventDownloader extends BaseRepositoryImpl<EventDownloader> {
@@ -66,7 +66,7 @@ public final class EventDownloader extends BaseRepositoryImpl<EventDownloader> {
      * @return -
      */
     public Observable<D2Progress> download() {
-        TrackedEntityInstanceDownloadParams params = TrackedEntityInstanceDownloadParams.fromRepositoryScope(scope);
+        ProgramDataDownloadParams params = ProgramDataDownloadParams.fromRepositoryScope(scope);
         return this.callFactory.downloadSingleEvents(params);
     }
 

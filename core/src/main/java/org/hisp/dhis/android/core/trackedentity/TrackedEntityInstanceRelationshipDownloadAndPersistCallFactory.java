@@ -42,7 +42,7 @@ import dagger.Reusable;
 import io.reactivex.Single;
 
 @Reusable
-public final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory {
+final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory {
 
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final TrackedEntityInstanceService service;

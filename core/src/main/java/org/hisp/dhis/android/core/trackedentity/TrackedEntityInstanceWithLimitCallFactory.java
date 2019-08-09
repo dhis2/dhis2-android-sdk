@@ -47,7 +47,7 @@ import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.trackedentity.download.TrackedEntityInstanceDownloadParams;
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.utils.internal.BooleanWrapper;
 
@@ -66,7 +66,7 @@ import io.reactivex.Single;
 
 @Reusable
 @SuppressWarnings({"PMD.ExcessiveImports"})
-public class TrackedEntityInstanceWithLimitCallFactory {
+class TrackedEntityInstanceWithLimitCallFactory {
 
     private final Resource.Type resourceType = Resource.Type.TRACKED_ENTITY_INSTANCE;
 
@@ -111,7 +111,7 @@ public class TrackedEntityInstanceWithLimitCallFactory {
         this.endpointCallFactory = endpointCallFactory;
     }
 
-    public Observable<D2Progress> download(final TrackedEntityInstanceDownloadParams params) {
+    Observable<D2Progress> download(final ProgramDataDownloadParams params) {
         Observable<D2Progress> observable = Observable.defer(() -> {
             D2ProgressManager progressManager = new D2ProgressManager(null);
             Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet = new HashSet<>();
@@ -141,7 +141,7 @@ public class TrackedEntityInstanceWithLimitCallFactory {
     }
 
     private Observable<D2Progress> downloadTeis(D2ProgressManager progressManager,
-                                                TrackedEntityInstanceDownloadParams params,
+                                                ProgramDataDownloadParams params,
                                                 BooleanWrapper allOkay,
                                                 Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet) {
 
@@ -175,7 +175,7 @@ public class TrackedEntityInstanceWithLimitCallFactory {
                 trackedEntityInstances -> progressManager.increaseProgress(TrackedEntityInstance.class, true));
     }
 
-    private List<TeiQuery.Builder> getTeiQueryBuilders(TrackedEntityInstanceDownloadParams params) {
+    private List<TeiQuery.Builder> getTeiQueryBuilders(ProgramDataDownloadParams params) {
 
         String lastUpdated = resourceHandler.getLastUpdated(resourceType);
 
@@ -209,7 +209,7 @@ public class TrackedEntityInstanceWithLimitCallFactory {
 
     private List<TeiQuery.Builder> getTeiQueryBuildersForOrgUnits(String lastUpdated,
                                                                   List<String> orgUnits,
-                                                                  TrackedEntityInstanceDownloadParams params,
+                                                                  ProgramDataDownloadParams params,
                                                                   OrganisationUnitMode ouMode) {
         List<TeiQuery.Builder> builders = new ArrayList<>();
 
@@ -297,7 +297,7 @@ public class TrackedEntityInstanceWithLimitCallFactory {
     }
 
     private Observable<D2Progress> updateResource(D2ProgressManager progressManager,
-                                                  TrackedEntityInstanceDownloadParams params, BooleanWrapper allOkay,
+                                                  ProgramDataDownloadParams params, BooleanWrapper allOkay,
                                                   Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet) {
         return Single.fromCallable(() -> {
             if (allOkay.get() && params.program() == null && params.orgUnits().isEmpty()) {

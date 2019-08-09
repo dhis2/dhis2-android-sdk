@@ -58,6 +58,7 @@ public class FileResourceTableInfo {
         public static final String LAST_UPDATED = "lastUpdated";
         public static final String CONTENT_TYPE = "contentType";
         public static final String CONTENT_LENGTH = "contentLength";
+        public static final String PATH = "path";
 
         @Override
         public String[] all() {
@@ -68,6 +69,7 @@ public class FileResourceTableInfo {
                     LAST_UPDATED,
                     CONTENT_TYPE,
                     CONTENT_LENGTH,
+                    PATH,
                     STATE);
         }
 

@@ -59,10 +59,6 @@ public abstract class FileResource extends BaseDataModel implements ObjectWithUi
     public abstract String name();
 
     @Nullable
-    @JsonProperty
-    public abstract String displayName();
-
-    @Nullable
     @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();

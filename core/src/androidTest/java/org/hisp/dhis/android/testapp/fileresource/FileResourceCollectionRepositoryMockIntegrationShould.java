@@ -1,0 +1,96 @@
+/*
+ * Copyright (c) 2004-2019, University of Oslo
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.hisp.dhis.android.testapp.fileresource;
+
+import android.content.Context;
+
+import androidx.test.InstrumentationRegistry;
+
+import org.hisp.dhis.android.core.fileresource.FileResource;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.io.File;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+
+@RunWith(D2JunitRunner.class)
+public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
+
+    @Test
+    public void find_all() {
+        List<FileResource> fileResources =
+                d2.fileResourceModule().fileResources
+                        .blockingGet();
+
+        assertThat(fileResources.size(), is(0));
+    }
+
+    @Test
+    public void filter_by_uid() {
+        List<FileResource> fileResources =
+                d2.fileResourceModule().fileResources
+                        .byUid().eq("file1")
+                        .blockingGet();
+
+        assertThat(fileResources.size(), is(0));
+    }
+
+    @Test
+    public void add_fileResources_to_the_repository() throws D2Error {
+        List<FileResource> fileResources1 = d2.fileResourceModule().fileResources.blockingGet();
+        assertThat(fileResources1.size(), is(0));
+
+        File file = getFile();
+
+        String fileResourceUid = d2.fileResourceModule().fileResources.blockingAdd(file);
+
+        List<FileResource> fileResources2 = d2.fileResourceModule().fileResources.blockingGet();
+        assertThat(fileResources2.size(), is(1));
+
+        FileResource fileResource = d2.fileResourceModule().fileResources.uid(fileResourceUid).blockingGet();
+        assertThat(fileResource.uid(), is(fileResourceUid));
+
+        // file:///storage/emulated/0/Download/Tio1.jpg
+    }
+    private static File getFile() {
+        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        File fileDirectory = new File(context.getFilesDir(), "sdk_resources");
+        if (!fileDirectory.exists()) {
+            fileDirectory.mkdirs();
+        }
+
+        return new File(fileDirectory, "new_file.png");
+    }
+}

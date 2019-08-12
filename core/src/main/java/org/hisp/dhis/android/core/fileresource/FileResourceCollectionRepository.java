@@ -96,11 +96,12 @@ public final class FileResourceCollectionRepository
 
     @Override
     public Single<String> add(File file) {
-        return Single.fromCallable(() -> addFile(file));
+        return Single.fromCallable(() -> blockingAdd(file));
     }
 
     @SuppressWarnings({"PMD.PreserveStackTrace"})
-    private String addFile(File file) throws D2Error {
+    @Override
+    public String blockingAdd(File file) throws D2Error {
         try {
             String generatedUid = new CodeGeneratorImpl().generate();
             File dstFile = FileResourceUtil.saveFile(file, generatedUid, context);

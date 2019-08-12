@@ -55,6 +55,7 @@ import org.hisp.dhis.android.core.domain.metadata.MetadataModule;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentPackageDIModule;
 import org.hisp.dhis.android.core.event.internal.EventPackageDIModule;
 import org.hisp.dhis.android.core.event.internal.EventPostCall;
+import org.hisp.dhis.android.core.fileresource.internal.FileResourcePackageDIModule;
 import org.hisp.dhis.android.core.imports.internal.ImportPackageDIModule;
 import org.hisp.dhis.android.core.indicator.internal.IndicatorPackageDIModule;
 import org.hisp.dhis.android.core.legendset.internal.LegendPackageDIModule;
@@ -100,6 +101,7 @@ import retrofit2.Retrofit;
         DataValuePackageDIModule.class,
         EnrollmentPackageDIModule.class,
         EventPackageDIModule.class,
+        FileResourcePackageDIModule.class,
         ImportPackageDIModule.class,
         IndicatorPackageDIModule.class,
         LegendPackageDIModule.class,
@@ -159,6 +161,7 @@ public interface D2DIComponent {
         Builder dataValuePackageDIModule(DataValuePackageDIModule dataValuePackageDIModule);
         Builder enrollmentPackageDIModule(EnrollmentPackageDIModule enrollmentPackageDIModule);
         Builder eventPackageDIModule(EventPackageDIModule eventPackageDIModule);
+        Builder fileResourcePackageDIModule(FileResourcePackageDIModule fileResourcePackageDIModule);
         Builder importPackageDIModule(ImportPackageDIModule importPackageDIModule);
         Builder indicatorPackageDIModule(IndicatorPackageDIModule indicatorPackageDIModule);
         Builder legendPackageDIModule(LegendPackageDIModule legendPackageDIModule);

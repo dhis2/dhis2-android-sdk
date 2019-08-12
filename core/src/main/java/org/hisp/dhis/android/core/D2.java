@@ -31,6 +31,9 @@ package org.hisp.dhis.android.core;
 import android.content.Context;
 import android.os.StrictMode;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
+
 import org.hisp.dhis.android.BuildConfig;
 import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory;
 import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory;
@@ -46,6 +49,7 @@ import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
 import org.hisp.dhis.android.core.domain.metadata.MetadataModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
+import org.hisp.dhis.android.core.fileresource.FileResourceModule;
 import org.hisp.dhis.android.core.imports.internal.ImportModule;
 import org.hisp.dhis.android.core.indicator.IndicatorModule;
 import org.hisp.dhis.android.core.legendset.LegendSetModule;
@@ -62,8 +66,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.android.core.wipe.WipeModule;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.VisibleForTesting;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -163,6 +165,10 @@ public final class D2 {
 
     public EventModule eventModule() {
         return this.modules.event;
+    }
+
+    public FileResourceModule fileResourceModule() {
+        return this.modules.fileResource;
     }
 
     public ImportModule importModule() {

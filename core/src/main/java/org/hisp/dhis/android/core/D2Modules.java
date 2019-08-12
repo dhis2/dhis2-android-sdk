@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.dataset.DataSetModule;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
+import org.hisp.dhis.android.core.fileresource.FileResourceModule;
 import org.hisp.dhis.android.core.imports.internal.ImportModule;
 import org.hisp.dhis.android.core.indicator.IndicatorModule;
 import org.hisp.dhis.android.core.legendset.LegendSetModule;
@@ -66,6 +67,7 @@ final class D2Modules {
     final DataValueModule dataValue;
     final EnrollmentModule enrollment;
     final EventModule event;
+    final FileResourceModule fileResource;
     final ImportModule importModule;
     final IndicatorModule indicator;
     final LegendSetModule legendSet;
@@ -89,6 +91,7 @@ final class D2Modules {
               DataValueModule dataValue,
               EnrollmentModule enrollment,
               EventModule event,
+              FileResourceModule fileResource,
               ImportModule importModule,
               IndicatorModule indicator,
               LegendSetModule legendSet,
@@ -110,6 +113,7 @@ final class D2Modules {
         this.dataValue = dataValue;
         this.enrollment = enrollment;
         this.event = event;
+        this.fileResource = fileResource;
         this.importModule = importModule;
         this.indicator = indicator;
         this.legendSet = legendSet;

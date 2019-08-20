@@ -47,7 +47,7 @@ public class EnrollmentSamples {
                 .created(getDate("2014-08-20T12:28:56.409"))
                 .lastUpdated(getDate("2015-10-14T13:36:53.063"))
                 .createdAtClient(getDate("2014-10-14T13:36:53.063"))
-                .lastUpdatedAtClient("last_updated_at_client")
+                .lastUpdatedAtClient(getDate("2014-11-11T10:10:50.123"))
                 .organisationUnit("organisation_unit")
                 .program("program")
                 .enrollmentDate(getDate("2014-08-20T12:28:56.409"))

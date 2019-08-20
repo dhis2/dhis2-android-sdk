@@ -104,7 +104,7 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
                 .created(date)
                 .lastUpdated(date)
                 .createdAtClient(date)
-                .lastUpdatedAtClient(LAST_UPDATED_AT_CLIENT)
+                .lastUpdatedAtClient(date)
                 .organisationUnit(ORGANISATION_UNIT)
                 .trackedEntityType(TRACKED_ENTITY)
                 .geometry(Geometry.builder().type(GEOMETRY_TYPE).coordinates(GEOMETRY_COORDINATES).build())

@@ -50,7 +50,7 @@ final class EnrollmentProjectionTransformer implements Transformer<EnrollmentCre
                 .state(State.TO_POST)
                 .created(creationDate)
                 .lastUpdated(creationDate)
-                .createdAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
+                .createdAtClient(creationDate)
                 .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
                 .organisationUnit(projection.organisationUnit())
                 .program(projection.program())

@@ -48,7 +48,7 @@ final class TrackedEntityInstanceProjectionTransformer
                 .state(State.TO_POST)
                 .created(creationDate)
                 .lastUpdated(creationDate)
-                .createdAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
+                .createdAtClient(creationDate)
                 .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
                 .organisationUnit(projection.organisationUnit())
                 .trackedEntityType(projection.trackedEntityType())

@@ -50,7 +50,7 @@ final class EventProjectionTransformer implements Transformer<EventCreateProject
                 .state(State.TO_POST)
                 .created(creationDate)
                 .lastUpdated(creationDate)
-                .createdAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
+                .createdAtClient(creationDate)
                 .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
                 .enrollment(projection.enrollment())
                 .program(projection.program())

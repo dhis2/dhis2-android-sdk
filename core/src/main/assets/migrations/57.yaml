@@ -1,0 +1,7 @@
+up:
+  - BEGIN TRANSACTION;
+  - ALTER TABLE TrackedEntityAttributeValue RENAME TO TrackedEntityAttributeValue_Old;
+  - CREATE TABLE TrackedEntityAttributeValue (_id INTEGER PRIMARY KEY AUTOINCREMENT, created TEXT, lastUpdated TEXT, value TEXT, trackedEntityAttribute TEXT, trackedEntityInstance TEXT, FOREIGN KEY (trackedEntityAttribute) REFERENCES trackedEntityAttribute (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED ,FOREIGN KEY (trackedEntityInstance) REFERENCES TrackedEntityInstance (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+  - INSERT INTO TrackedEntityAttributeValue (_id, created, lastUpdated, value, trackedEntityAttribute, trackedEntityInstance) SELECT _id, created, lastUpdated, value, trackedEntityAttribute, trackedEntityInstanc FROM TrackedEntityAttributeValue_Old;
+  - DROP TABLE IF EXISTS TrackedEntityAttributeValue_Old;
+  - COMMIT;

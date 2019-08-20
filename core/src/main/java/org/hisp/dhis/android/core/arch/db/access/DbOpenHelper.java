@@ -44,7 +44,7 @@ import androidx.annotation.Nullable;
 
 public class DbOpenHelper extends SQLBriteOpenHelper {
 
-    public static final int VERSION = 56;
+    public static final int VERSION = 57;
 
     public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
         super(context, databaseName, null, VERSION);

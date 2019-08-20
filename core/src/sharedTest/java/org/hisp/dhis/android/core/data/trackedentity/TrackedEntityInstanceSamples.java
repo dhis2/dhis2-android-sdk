@@ -45,7 +45,7 @@ public class TrackedEntityInstanceSamples {
                 .uid("tei_uid")
                 .created(getDate("2014-08-20T12:28:56.409"))
                 .lastUpdated(getDate("2015-10-14T13:36:53.063"))
-                .createdAtClient("created_at_client")
+                .createdAtClient(getDate("2014-10-14T13:36:53.063"))
                 .lastUpdatedAtClient("last_updated_at_client")
                 .organisationUnit("organisation_unit")
                 .trackedEntityType("tracked_entity_type")

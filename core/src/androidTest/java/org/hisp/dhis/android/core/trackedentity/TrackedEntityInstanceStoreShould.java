@@ -103,7 +103,7 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
                 .uid(UID)
                 .created(date)
                 .lastUpdated(date)
-                .createdAtClient(CREATED_AT_CLIENT)
+                .createdAtClient(date)
                 .lastUpdatedAtClient(LAST_UPDATED_AT_CLIENT)
                 .organisationUnit(ORGANISATION_UNIT)
                 .trackedEntityType(TRACKED_ENTITY)

@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.enrollment.internal;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
@@ -51,7 +50,7 @@ final class EnrollmentProjectionTransformer implements Transformer<EnrollmentCre
                 .created(creationDate)
                 .lastUpdated(creationDate)
                 .createdAtClient(creationDate)
-                .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
+                .lastUpdatedAtClient(creationDate)
                 .organisationUnit(projection.organisationUnit())
                 .program(projection.program())
                 .trackedEntityInstance(projection.trackedEntityInstance())

@@ -86,7 +86,8 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithDele
 
     @Nullable
     @JsonIgnore()
-    public abstract String lastUpdatedAtClient();
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date lastUpdatedAtClient();
 
     @Nullable
     @JsonProperty(EnrollmentFields.ORGANISATION_UNIT)
@@ -173,7 +174,7 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithDele
 
         public abstract Builder createdAtClient(Date createdAtClient);
 
-        public abstract Builder lastUpdatedAtClient(String lastUpdatedAtClient);
+        public abstract Builder lastUpdatedAtClient(Date lastUpdatedAtClient);
 
         @JsonProperty(EnrollmentFields.ORGANISATION_UNIT)
         public abstract Builder organisationUnit(String organisationUnit);

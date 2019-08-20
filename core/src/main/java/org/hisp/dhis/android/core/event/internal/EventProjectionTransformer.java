@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventCreateProjection;
@@ -51,7 +50,7 @@ final class EventProjectionTransformer implements Transformer<EventCreateProject
                 .created(creationDate)
                 .lastUpdated(creationDate)
                 .createdAtClient(creationDate)
-                .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
+                .lastUpdatedAtClient(creationDate)
                 .enrollment(projection.enrollment())
                 .program(projection.program())
                 .programStage(projection.programStage())

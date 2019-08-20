@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 
@@ -49,7 +48,7 @@ final class TrackedEntityInstanceProjectionTransformer
                 .created(creationDate)
                 .lastUpdated(creationDate)
                 .createdAtClient(creationDate)
-                .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
+                .lastUpdatedAtClient(creationDate)
                 .organisationUnit(projection.organisationUnit())
                 .trackedEntityType(projection.trackedEntityType())
                 .build();

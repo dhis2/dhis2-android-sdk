@@ -84,7 +84,8 @@ public abstract class TrackedEntityInstance extends BaseDataModel
 
     @Nullable
     @JsonIgnore()
-    public abstract String lastUpdatedAtClient();
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date lastUpdatedAtClient();
 
     @Nullable
     @JsonProperty(TrackedEntityInstanceFields.ORGANISATION_UNIT)
@@ -152,7 +153,7 @@ public abstract class TrackedEntityInstance extends BaseDataModel
 
         public abstract Builder createdAtClient(Date createdAtClient);
 
-        public abstract Builder lastUpdatedAtClient(String lastUpdatedAtClient);
+        public abstract Builder lastUpdatedAtClient(Date lastUpdatedAtClient);
 
         @JsonProperty(TrackedEntityInstanceFields.ORGANISATION_UNIT)
         public abstract Builder organisationUnit(String organisationUnit);

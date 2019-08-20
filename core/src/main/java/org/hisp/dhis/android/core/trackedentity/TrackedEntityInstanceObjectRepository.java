@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithUidDataObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.Unit;
@@ -80,6 +79,6 @@ public final class TrackedEntityInstanceObjectRepository
         return trackedEntityInstance.toBuilder()
                 .state(state)
                 .lastUpdated(updateDate)
-                .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(updateDate));
+                .lastUpdatedAtClient(updateDate);
     }
 }

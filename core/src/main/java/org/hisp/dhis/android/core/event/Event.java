@@ -82,11 +82,13 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
 
     @Nullable
     @JsonIgnore()
-    public abstract String createdAtClient();
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date createdAtClient();
 
     @Nullable
     @JsonIgnore()
-    public abstract String lastUpdatedAtClient();
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date lastUpdatedAtClient();
 
     @Nullable
     @JsonProperty()
@@ -172,9 +174,9 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
 
         public abstract Builder lastUpdated(Date lastUpdated);
 
-        public abstract Builder createdAtClient(String createdAtClient);
+        public abstract Builder createdAtClient(Date createdAtClient);
 
-        public abstract Builder lastUpdatedAtClient(String lastUpdatedAtClient);
+        public abstract Builder lastUpdatedAtClient(Date lastUpdatedAtClient);
 
         public abstract Builder program(String program);
 

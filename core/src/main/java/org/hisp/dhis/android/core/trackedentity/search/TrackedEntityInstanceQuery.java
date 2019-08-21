@@ -32,6 +32,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 import java.util.Collections;
@@ -73,6 +74,9 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
     @Nullable
     public abstract String trackedEntityType();
 
+    @Nullable
+    public abstract List<State> states();
+
     public String formattedProgramStartDate() {
         return programStartDate() == null ? null : QUERY_FORMAT.format(programStartDate());
     }
@@ -113,6 +117,8 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
         public abstract Builder programEndDate(Date programEndDate);
 
         public abstract Builder trackedEntityType(String trackedEntityType);
+
+        public abstract Builder states(List<State> states);
 
         public abstract TrackedEntityInstanceQuery build();
     }

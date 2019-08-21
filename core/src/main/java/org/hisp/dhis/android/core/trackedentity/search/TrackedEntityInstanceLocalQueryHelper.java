@@ -99,6 +99,10 @@ final class TrackedEntityInstanceLocalQueryHelper {
                     query.trackedEntityType());
         }
 
+        if (query.states() != null) {
+            where.appendInKeyEnumValues(dot(TEI_ALIAS, BaseDataModel.Columns.STATE), query.states());
+        }
+
         appendQueryWhere(where, query);
         appendFiltersWhere(where, query);
         appendExcludeList(where, excludeList);

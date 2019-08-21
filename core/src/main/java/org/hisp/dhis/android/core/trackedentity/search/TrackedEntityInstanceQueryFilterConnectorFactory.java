@@ -26,30 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+package org.hisp.dhis.android.core.trackedentity.search;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 
-public final class IntegerFilterConnector<R extends BaseRepository>
-        extends BaseSqlFilterConnector<R, Integer> {
+public class TrackedEntityInstanceQueryFilterConnectorFactory {
 
-    IntegerFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                           RepositoryScope scope,
-                           String key) {
-        super(repositoryFactory, scope, key);
+    private final TrackedEntityInstanceQueryRepositoryScope scope;
+    public final TrackedEntityInstanceQueryCollectionRepository repositoryFactory;
+
+    public TrackedEntityInstanceQueryFilterConnectorFactory(TrackedEntityInstanceQueryRepositoryScope scope,
+                                                            TrackedEntityInstanceQueryCollectionRepository
+                                                                    repositoryFactory) {
+        this.scope = scope;
+        this.repositoryFactory = repositoryFactory;
     }
 
-    public R smallerThan(int value) {
-        return newWithWrappedScope("<", value);
+    public <E extends Enum<E>> StringFilterConnector<TrackedEntityInstanceQueryCollectionRepository> string(String key) {
+        return new StringFilterConnector<>(repositoryFactory, scope, key);
     }
 
-    public R biggerThan(int value) {
-        return newWithWrappedScope(">", value);
-    }
-
-    String wrapValue(Integer value) {
-        return value.toString();
-    }
 }

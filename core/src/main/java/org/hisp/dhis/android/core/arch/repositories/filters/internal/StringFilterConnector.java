@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepo
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
 public final class StringFilterConnector<R extends BaseRepository>
-        extends BaseFilterConnector<R, String> {
+        extends BaseSqlFilterConnector<R, String> {
 
     StringFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
                           RepositoryScope scope,

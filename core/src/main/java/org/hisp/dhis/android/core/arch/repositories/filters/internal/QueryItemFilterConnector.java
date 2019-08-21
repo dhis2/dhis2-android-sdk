@@ -31,25 +31,25 @@ package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.trackedentity.search.QueryOperator;
 
-public final class IntegerFilterConnector<R extends BaseRepository>
-        extends BaseSqlFilterConnector<R, Integer> {
+public final class QueryItemFilterConnector<R extends BaseRepository>
+        extends BaseFilterConnector<R, String> {
 
-    IntegerFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                           RepositoryScope scope,
-                           String key) {
-        super(repositoryFactory, scope, key);
+    QueryItemFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
+                             RepositoryScope scope) {
+        super(repositoryFactory, scope, "");
     }
 
-    public R smallerThan(int value) {
-        return newWithWrappedScope("<", value);
+    String wrapValue(String value) {
+        return value;
     }
 
-    public R biggerThan(int value) {
-        return newWithWrappedScope(">", value);
+    public R eq(String value) {
+        return newWithWrappedScope(QueryOperator.EQ.name(), value);
     }
 
-    String wrapValue(Integer value) {
-        return value.toString();
+    public R like(String value) {
+        return newWithWrappedScope(QueryOperator.LIKE.name(), value);
     }
 }

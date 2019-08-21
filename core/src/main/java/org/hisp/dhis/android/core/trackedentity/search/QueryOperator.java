@@ -29,16 +29,23 @@
 package org.hisp.dhis.android.core.trackedentity.search;
 
 public enum QueryOperator {
-    LIKE("LIKE"),
-    EQ("LIKE");     // Intentionally LIKE to perform case insensitive matching
+    LIKE("LIKE", "LIKE"),
+    EQ("LIKE", "EQ");     // Intentionally LIKE to perform case insensitive matching
 
     private String sqlOperator;
 
-    QueryOperator(String sqlOperator) {
+    private String apiOperator;
+
+    QueryOperator(String sqlOperator, String apiOperator) {
         this.sqlOperator = sqlOperator;
+        this.apiOperator = apiOperator;
     }
 
     public String getSqlOperator() {
         return this.sqlOperator;
+    }
+
+    public String getApiOperator() {
+        return this.apiOperator;
     }
 }

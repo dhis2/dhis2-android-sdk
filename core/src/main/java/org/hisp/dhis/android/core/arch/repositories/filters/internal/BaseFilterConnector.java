@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -84,7 +83,7 @@ abstract class BaseFilterConnector<R extends BaseRepository, V> {
         return repositoryFactory.updated(updatedUnwrappedScope(whereClause));
     }
 
-    private String getCommaSeparatedValues(Collection<V> values) {
+    String getCommaSeparatedValues(Collection<V> values) {
         List<String> wrappedValues = new ArrayList<>();
         for (V v: values) {
             wrappedValues.add(wrapValue(v));
@@ -92,43 +91,8 @@ abstract class BaseFilterConnector<R extends BaseRepository, V> {
         return Utils.commaAndSpaceSeparatedCollectionValues(wrappedValues);
     }
 
-    private R newWithUnwrappedScope(String operator, String value) {
+    R newWithUnwrappedScope(String operator, String value) {
         return repositoryFactory.updated(updatedUnwrappedScope(operator, value));
 
     }
-
-    public R eq(V value) {
-        return newWithWrappedScope("=", value);
-    }
-
-    public R neq(V value) {
-        return newWithWrappedScope("!=", value);
-    }
-
-    public R in(Collection<V> values) {
-        return newWithUnwrappedScope("IN", "(" + getCommaSeparatedValues(values) + ")");
-    }
-
-    @SafeVarargs
-    public final R in(V... values) {
-        return in(Arrays.asList(values));
-    }
-
-    public R notIn(Collection<V> values) {
-        return newWithUnwrappedScope("NOT IN", "(" + getCommaSeparatedValues(values) + ")");
-    }
-
-    @SafeVarargs
-    public final R notIn(V... values) {
-        return notIn(Arrays.asList(values));
-    }
-
-    public final R isNull() {
-        return newWithUnwrappedScope("", "IS NULL");
-    }
-
-    public final R isNotNull() {
-        return newWithUnwrappedScope("", "IS NOT NULL");
-    }
-
 }

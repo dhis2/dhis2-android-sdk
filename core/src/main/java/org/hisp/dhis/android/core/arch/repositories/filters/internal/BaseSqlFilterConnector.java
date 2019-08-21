@@ -32,24 +32,49 @@ import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-public final class IntegerFilterConnector<R extends BaseRepository>
-        extends BaseSqlFilterConnector<R, Integer> {
+import java.util.Arrays;
+import java.util.Collection;
 
-    IntegerFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
+abstract class BaseSqlFilterConnector<R extends BaseRepository, V> extends BaseFilterConnector<R, V> {
+
+    BaseSqlFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
                            RepositoryScope scope,
                            String key) {
         super(repositoryFactory, scope, key);
     }
 
-    public R smallerThan(int value) {
-        return newWithWrappedScope("<", value);
+    public R eq(V value) {
+        return newWithWrappedScope("=", value);
     }
 
-    public R biggerThan(int value) {
-        return newWithWrappedScope(">", value);
+    public R neq(V value) {
+        return newWithWrappedScope("!=", value);
     }
 
-    String wrapValue(Integer value) {
-        return value.toString();
+    public R in(Collection<V> values) {
+        return newWithUnwrappedScope("IN", "(" + getCommaSeparatedValues(values) + ")");
     }
+
+    @SafeVarargs
+    public final R in(V... values) {
+        return in(Arrays.asList(values));
+    }
+
+    public R notIn(Collection<V> values) {
+        return newWithUnwrappedScope("NOT IN", "(" + getCommaSeparatedValues(values) + ")");
+    }
+
+    @SafeVarargs
+    public final R notIn(V... values) {
+        return notIn(Arrays.asList(values));
+    }
+
+    public final R isNull() {
+        return newWithUnwrappedScope("", "IS NULL");
+    }
+
+    public final R isNotNull() {
+        return newWithUnwrappedScope("", "IS NOT NULL");
+    }
+
 }

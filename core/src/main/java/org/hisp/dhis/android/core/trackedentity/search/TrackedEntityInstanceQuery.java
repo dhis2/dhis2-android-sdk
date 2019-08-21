@@ -116,4 +116,17 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
 
         public abstract TrackedEntityInstanceQuery build();
     }
+
+    public static class QueryParams {
+        public static final String QUERY_SCOPE = "queryScope";
+        public static final String FILTER = "filter";
+        public static final String ATTRIBUTE = "attribute";
+        public static final String PROGRAM = "program";
+        public static final String PROGRAM_STATUS = "programStatus";
+        public static final String PROGRAM_START_DATE = "programStartDate";
+        public static final String PROGRAM_END_DATE = "programEndDate";
+        public static final String ORG_UNITS = "ou";
+        public static final String ORG_UNIT_MODE = "ouMode";
+        public static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
+    }
 }

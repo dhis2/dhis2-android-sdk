@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-public final class BooleanFilterConnector<R extends BaseRepository> extends BaseFilterConnector<R, Boolean> {
+public final class BooleanFilterConnector<R extends BaseRepository> extends BaseSqlFilterConnector<R, Boolean> {
 
     BooleanFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
                            RepositoryScope scope,

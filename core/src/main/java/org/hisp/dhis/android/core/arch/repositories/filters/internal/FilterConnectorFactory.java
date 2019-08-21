@@ -77,6 +77,10 @@ public class FilterConnectorFactory<R extends BaseRepository> {
         return new SubQueryFilterConnector<>(repositoryFactory, scope, key);
     }
 
+    public QueryItemFilterConnector<R> query() {
+        return new QueryItemFilterConnector<>(repositoryFactory, scope);
+    }
+
     public R withChild(String child) {
         return repositoryFactory.updated(RepositoryScopeHelper.withChild(scope, child));
     }

@@ -62,6 +62,17 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope {
 
         public abstract Builder query(TrackedEntityInstanceQuery query);
 
-        public abstract TrackedEntityInstanceQueryRepositoryScope build();
+        abstract TrackedEntityInstanceQueryRepositoryScope autoBuild();
+
+        // Auxiliary fields to access values
+        abstract TrackedEntityInstanceQuery query();
+
+        public TrackedEntityInstanceQueryRepositoryScope build() {
+            if (query() != null && query().states() != null) {
+                mode(RepositoryMode.OFFLINE_ONLY);
+            }
+
+            return autoBuild();
+        }
     }
 }

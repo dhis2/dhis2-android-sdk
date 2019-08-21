@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +36,7 @@ import org.junit.runners.JUnit4;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -79,6 +81,18 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
         String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(query, Collections.emptyList(), 50);
         assertThat(sqlQuery).contains("enrollmentDate >= '2019-04-15'");
         assertThat(sqlQuery).contains("enrollmentDate <= '2019-05-19'");
+    }
+
+    @Test
+    public void build_sql_query_with_states() {
+        TrackedEntityInstanceQuery query  = queryBuilder
+                .states(Arrays.asList(State.SYNCED, State.TO_POST, State.TO_UPDATE))
+                .program("IpHINAT79UW")
+                .query(QueryFilter.create(QueryOperator.LIKE,"female"))
+                .build();
+
+        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(query, Collections.emptyList(), 50);
+        assertThat(sqlQuery).contains("state IN ('SYNCED', 'TO_POST', 'TO_UPDATE')");
     }
 
 }

@@ -146,7 +146,8 @@ class TrackedEntityInstanceWithLimitCallFactory {
                                                 Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet) {
 
         int pageSize = TeiQuery.builder().build().pageSize();
-        List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, params.limit());
+        int limit = params.uids() != null ? params.uids().size() : params.limit();
+        List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, limit);
 
         Observable<List<TrackedEntityInstance>> teiDownloadObservable =
                 Observable.fromIterable(getTeiQueryBuilders(params))
@@ -183,6 +184,8 @@ class TrackedEntityInstanceWithLimitCallFactory {
 
         OrganisationUnitMode ouMode;
         List<String> orgUnits;
+
+        // TODO If param.uids() is not null, should we set a default orgunit? Maybe it filters teis out
 
         if (params.orgUnits().size() > 0) {
             ouMode = OrganisationUnitMode.SELECTED;

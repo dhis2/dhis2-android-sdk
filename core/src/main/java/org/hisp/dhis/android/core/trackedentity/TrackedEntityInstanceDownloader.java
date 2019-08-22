@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.UnwrappedEqInFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 
@@ -67,6 +68,10 @@ public final class TrackedEntityInstanceDownloader extends BaseRepositoryImpl<Tr
     public Observable<D2Progress> download() {
         ProgramDataDownloadParams params = ProgramDataDownloadParams.fromRepositoryScope(scope);
         return this.callFactory.download(params);
+    }
+
+    public UnwrappedEqInFilterConnector<TrackedEntityInstanceDownloader> byUid() {
+        return cf.unwrappedEqIn(QueryParams.UID);
     }
 
     public TrackedEntityInstanceDownloader byProgramUid(String programUid) {

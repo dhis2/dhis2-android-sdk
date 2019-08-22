@@ -73,6 +73,10 @@ public class FilterConnectorFactory<R extends BaseRepository> {
         return new EnumFilterConnector<>(repositoryFactory, scope, key);
     }
 
+    public UnwrappedEqInFilterConnector<R> unwrappedEqIn(String key) {
+        return new UnwrappedEqInFilterConnector<>(repositoryFactory, scope, key);
+    }
+
     public SubQueryFilterConnector<R> subQuery(String key) {
         return new SubQueryFilterConnector<>(repositoryFactory, scope, key);
     }

@@ -75,5 +75,27 @@ public class TrackedEntityInstanceDownloaderShould {
         assertThat(params.limit()).isEqualTo(500);
     }
 
+    @Test
+    public void should_parse_uid_eq_params() {
+        downloader.byUid().eq("uid").download();
 
+        verify(callFactory).download(paramsCapture.capture());
+        ProgramDataDownloadParams params = paramsCapture.getValue();
+
+        assertThat(params.uids().size()).isEqualTo(1);
+        assertThat(params.uids().get(0)).isEqualTo("uid");
+    }
+
+    @Test
+    public void should_parse_uid_in_params() {
+        downloader.byUid().in("uid0", "uid1", "uid2").download();
+
+        verify(callFactory).download(paramsCapture.capture());
+        ProgramDataDownloadParams params = paramsCapture.getValue();
+
+        assertThat(params.uids().size()).isEqualTo(3);
+        assertThat(params.uids().get(0)).isEqualTo("uid0");
+        assertThat(params.uids().get(1)).isEqualTo("uid1");
+        assertThat(params.uids().get(2)).isEqualTo("uid2");
+    }
 }

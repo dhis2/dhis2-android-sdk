@@ -32,49 +32,52 @@ import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
-abstract class BaseFilterConnector<R extends BaseRepository, V> extends AbstractFilterConnector<R, V> {
+public final class UnwrappedEqInFilterConnector<R extends BaseRepository>
+        extends AbstractFilterConnector<R, String> {
 
-    BaseFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                        RepositoryScope scope,
-                        String key) {
+    UnwrappedEqInFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
+                                 RepositoryScope scope,
+                                 String key) {
         super(repositoryFactory, scope, key);
     }
 
-    public R eq(V value) {
+    String wrapValue(String value) {
+        return value;
+    }
+
+    public R eq(String value) {
         return newWithWrappedScope("=", value);
     }
 
-    public R neq(V value) {
-        return newWithWrappedScope("!=", value);
-    }
-
-    public R in(Collection<V> values) {
+    public R in(Collection<String> values) {
         return newWithUnwrappedScope("IN", "(" + getCommaSeparatedValues(values) + ")");
     }
 
-    @SafeVarargs
-    public final R in(V... values) {
+    public final R in(String... values) {
         return in(Arrays.asList(values));
     }
 
-    public R notIn(Collection<V> values) {
-        return newWithUnwrappedScope("NOT IN", "(" + getCommaSeparatedValues(values) + ")");
+    public static List<String> getValueList(String value) {
+        if (value.startsWith("(")) {
+            String[] values = value
+                    .substring(1, value.length() - 1)
+                    .split(",");
+            List<String> list = new ArrayList<>(value.length());
+            for (String v : values) {
+                String trimmed = v.trim();
+                if (!trimmed.isEmpty()) {
+                    list.add(trimmed);
+                }
+            }
+            return list;
+        } else {
+            return Collections.singletonList(value);
+        }
     }
-
-    @SafeVarargs
-    public final R notIn(V... values) {
-        return notIn(Arrays.asList(values));
-    }
-
-    public final R isNull() {
-        return newWithUnwrappedScope("", "IS NULL");
-    }
-
-    public final R isNotNull() {
-        return newWithUnwrappedScope("", "IS NOT NULL");
-    }
-
 }

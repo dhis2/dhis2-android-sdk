@@ -50,6 +50,7 @@ final class TrackedEntityInstancesEndpointCallFactory {
 
     Single<Payload<TrackedEntityInstance>> getCall(final TeiQuery query) {
         return trackedEntityInstanceService.getTrackedEntityInstances(
+                Utils.joinCollectionWithSeparator(query.uids(), ";"),
                 Utils.joinCollectionWithSeparator(query.orgUnits(), ";"),
                 query.ouMode().name(), query.program(), TrackedEntityInstanceFields.allFields, Boolean.TRUE,
                 query.page(), query.pageSize(), query.lastUpdatedStartDate(), true,

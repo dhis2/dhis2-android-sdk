@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import com.google.common.collect.Lists;
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
@@ -57,13 +56,16 @@ public class TrackedEntityInstanceCallRealIntegrationShould extends BaseRealInte
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
 
     //@Test
-    public void download_tei_enrollments_and_events() throws Exception {
+    public void download_tei_enrollments_and_events() {
         d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
 
         d2.metadataModule().blockingDownload();
 
-        List<TrackedEntityInstance> teiResponse = d2.trackedEntityModule()
-                .downloadTrackedEntityInstancesByUid(Lists.newArrayList("IaxoagO9899")).blockingGet();
+        d2.trackedEntityModule()
+                .trackedEntityInstanceDownloader.byUid().eq("IaxoagO9899").download().blockingSubscribe();
+
+        List<TrackedEntityInstance> teiResponse = d2.trackedEntityModule().trackedEntityInstances.byUid().eq("IaxoagO9899")
+                .blockingGet();
 
         Truth.assertThat(teiResponse.isEmpty()).isFalse();
     }

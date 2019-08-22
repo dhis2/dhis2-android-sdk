@@ -55,7 +55,7 @@ abstract class TeiQuery extends BaseQuery {
     abstract String lastUpdatedStartDate();
 
     @Nullable
-    abstract Collection<String> uIds();
+    abstract Collection<String> uids();
 
     static Builder builder() {
         return new AutoValue_TeiQuery.Builder()
@@ -63,7 +63,7 @@ abstract class TeiQuery extends BaseQuery {
                 .pageSize(DEFAULT_PAGE_SIZE)
                 .paging(true)
                 .ouMode(OrganisationUnitMode.SELECTED)
-                .uIds(Collections.emptyList());
+                .uids(Collections.emptyList());
     }
 
     @AutoValue.Builder
@@ -76,7 +76,7 @@ abstract class TeiQuery extends BaseQuery {
 
         abstract Builder lastUpdatedStartDate(String lastUpdatedStartDate);
 
-        abstract Builder uIds(Collection<String> uIds);
+        abstract Builder uids(Collection<String> uIds);
 
         abstract TeiQuery build();
     }

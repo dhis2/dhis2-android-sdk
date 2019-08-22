@@ -65,9 +65,10 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
     public void download_tracked_entity_instance_enrollments_and_events() throws Exception {
         String teiUid = "PgmUFEQYZdt";
 
+        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_payload.json");
 
-        d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid)).blockingGet();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(teiUid).download().blockingSubscribe();
 
         verifyDownloadedTrackedEntityInstancePayload("trackedentity/tracked_entity_instance_payload.json", teiUid);
     }
@@ -77,15 +78,17 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
             throws Exception {
         String teiUid = "PgmUFEQYZdt";
 
+        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_payload.json");
 
-        d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid)).blockingGet();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(teiUid).download().blockingSubscribe();
 
         EnrollmentStoreImpl.create(databaseAdapter).setState("p6xHz0sbDlx", State.TO_DELETE);
 
+        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_with_removed_data_payload.json");
 
-        d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid)).blockingGet();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(teiUid).download().blockingSubscribe();
 
         verifyDownloadedTrackedEntityInstancePayload("trackedentity/tracked_entity_instance_with_removed_data_payload.json",
                 teiUid);

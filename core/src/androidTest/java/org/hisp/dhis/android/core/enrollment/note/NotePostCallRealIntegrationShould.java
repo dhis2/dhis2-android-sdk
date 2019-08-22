@@ -79,7 +79,7 @@ public class NotePostCallRealIntegrationShould extends BaseRealIntegrationTest {
 
         d2.metadataModule().blockingDownload();
 
-        d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList("AlvUHPP2Mes")).blockingGet();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq("AlvUHPP2Mes").download().blockingSubscribe();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 

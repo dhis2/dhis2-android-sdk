@@ -42,7 +42,7 @@ import java.util.Collections;
 @AutoValue
 abstract class TeiQuery extends BaseQuery {
 
-    @Nullable
+    @NonNull
     abstract Collection<String> orgUnits();
 
     @Nullable
@@ -54,7 +54,7 @@ abstract class TeiQuery extends BaseQuery {
     @Nullable
     abstract String lastUpdatedStartDate();
 
-    @Nullable
+    @NonNull
     abstract Collection<String> uids();
 
     static Builder builder() {
@@ -63,6 +63,7 @@ abstract class TeiQuery extends BaseQuery {
                 .pageSize(DEFAULT_PAGE_SIZE)
                 .paging(true)
                 .ouMode(OrganisationUnitMode.SELECTED)
+                .orgUnits(Collections.emptyList())
                 .uids(Collections.emptyList());
     }
 

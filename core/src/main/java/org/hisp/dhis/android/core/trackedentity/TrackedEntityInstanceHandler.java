@@ -90,8 +90,6 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
 
             handleRelationships(trackedEntityInstance);
         }
-
-        enrollmentOrphanCleaner.deleteOrphan(trackedEntityInstance, trackedEntityInstance.enrollments());
     }
 
     private void handleRelationships(TrackedEntityInstance trackedEntityInstance) {
@@ -117,15 +115,29 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
         relationshipHandler.handle(relationship);
     }
 
-    public void handleMany(final Collection<TrackedEntityInstance> trackedEntityInstances, boolean asRelationship) {
-        if (asRelationship) {
-            handleMany(trackedEntityInstances, relationshipTransformer());
-        } else {
-            handleMany(trackedEntityInstances,
-                    trackedEntityInstance -> trackedEntityInstance.toBuilder()
-                            .state(State.SYNCED)
-                            .build());
+    public void handleMany(final Collection<TrackedEntityInstance> trackedEntityInstances, boolean asRelationship,
+                           boolean isFullUpdate) {
+        if (trackedEntityInstances == null) {
+            return;
         }
+
+        Transformer<TrackedEntityInstance, TrackedEntityInstance> transformer;
+        if (asRelationship) {
+            transformer = relationshipTransformer();
+        } else {
+            transformer = trackedEntityInstance -> trackedEntityInstance.toBuilder()
+                    .state(State.SYNCED)
+                    .build();
+        }
+
+        for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
+            handle(trackedEntityInstance, transformer);
+
+            if (isFullUpdate) {
+                enrollmentOrphanCleaner.deleteOrphan(trackedEntityInstance, trackedEntityInstance.enrollments());
+            }
+        }
+
     }
 
     private Transformer<TrackedEntityInstance, TrackedEntityInstance> relationshipTransformer() {

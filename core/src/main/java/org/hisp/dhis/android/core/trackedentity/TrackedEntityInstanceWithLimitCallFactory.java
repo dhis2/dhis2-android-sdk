@@ -146,7 +146,8 @@ class TrackedEntityInstanceWithLimitCallFactory {
                                                 Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet) {
 
         int pageSize = TeiQuery.builder().build().pageSize();
-        int limit = params.uids() != null ? params.uids().size() : params.limit();
+        int limit = params.uids().isEmpty() ? params.limit() : params.uids().size();
+
         List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, limit);
 
         Observable<List<TrackedEntityInstance>> teiDownloadObservable =
@@ -160,7 +161,8 @@ class TrackedEntityInstanceWithLimitCallFactory {
 
         return teiDownloadObservable.map(
                 teiList -> {
-                    persistenceCallFactory.getCall(teiList).call();
+                    boolean isFullUpdate = params.program() == null;
+                    persistenceCallFactory.getCall(teiList, isFullUpdate).call();
                     programOrganisationUnitSet.addAll(
                             TrackedEntityInstanceHelper.getProgramOrganisationUnitTuple(teiList, serverDate));
                     return progressManager.increaseProgress(TrackedEntityInstance.class, false);
@@ -178,7 +180,7 @@ class TrackedEntityInstanceWithLimitCallFactory {
 
     private List<TeiQuery.Builder> getTeiQueryBuilders(ProgramDataDownloadParams params) {
 
-        String lastUpdated = params.uids() == null ? null : resourceHandler.getLastUpdated(resourceType);
+        String lastUpdated = params.uids().isEmpty() ? resourceHandler.getLastUpdated(resourceType) : null;
 
         List<TeiQuery.Builder> builders = new ArrayList<>();
 
@@ -305,7 +307,7 @@ class TrackedEntityInstanceWithLimitCallFactory {
                                                   ProgramDataDownloadParams params, BooleanWrapper allOkay,
                                                   Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet) {
         return Single.fromCallable(() -> {
-            if (allOkay.get() && params.program() == null && params.orgUnits().isEmpty() && params.uids() == null) {
+            if (allOkay.get() && params.program() == null && params.orgUnits().isEmpty() && params.uids().isEmpty()) {
                 resourceHandler.handleResource(resourceType);
             }
             programOrganisationUnitLastUpdatedHandler.handleMany(programOrganisationUnitSet);

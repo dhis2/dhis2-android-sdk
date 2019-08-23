@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -49,7 +50,7 @@ public abstract class ProgramDataDownloadParams {
 
     private static Integer DEFAULT_LIMIT = 500;
 
-    @Nullable
+    @NonNull
     public abstract List<String> uids();
 
     @NonNull
@@ -110,7 +111,8 @@ public abstract class ProgramDataDownloadParams {
     public static Builder builder() {
         return new AutoValue_ProgramDataDownloadParams.Builder()
                 .limitByOrgunit(false).limitByProgram(false).limit(DEFAULT_LIMIT)
-                .orgUnits(Collections.emptyList());
+                .orgUnits(Collections.emptyList())
+                .uids(Collections.emptyList());
     }
 
     public abstract Builder toBuilder();

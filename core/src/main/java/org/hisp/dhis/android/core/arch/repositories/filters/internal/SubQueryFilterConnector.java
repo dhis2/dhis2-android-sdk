@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import java.util.List;
 
 public final class SubQueryFilterConnector<R extends BaseRepository>
-        extends BaseFilterConnector<R, String> {
+        extends BaseAbstractFilterConnector<R, String> {
 
     SubQueryFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
                             RepositoryScope scope,

@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepo
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
 public final class EnumFilterConnector<R extends BaseRepository, E extends Enum<E>>
-        extends BaseFilterConnector<R, E> {
+        extends BaseAbstractFilterConnector<R, E> {
 
     EnumFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
                         RepositoryScope scope,

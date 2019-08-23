@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public final class DateFilterConnector<R extends BaseRepository> extends BaseFilterConnector<R, Date> {
+public final class DateFilterConnector<R extends BaseRepository> extends BaseAbstractFilterConnector<R, Date> {
 
     DateFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
                         RepositoryScope scope,

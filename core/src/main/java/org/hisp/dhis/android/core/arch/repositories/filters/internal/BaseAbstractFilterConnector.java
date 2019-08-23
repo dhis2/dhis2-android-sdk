@@ -35,11 +35,11 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import java.util.Arrays;
 import java.util.Collection;
 
-abstract class BaseFilterConnector<R extends BaseRepository, V> extends AbstractFilterConnector<R, V> {
+abstract class BaseAbstractFilterConnector<R extends BaseRepository, V> extends AbstractFilterConnector<R, V> {
 
-    BaseFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                        RepositoryScope scope,
-                        String key) {
+    BaseAbstractFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
+                                RepositoryScope scope,
+                                String key) {
         super(repositoryFactory, scope, key);
     }
 

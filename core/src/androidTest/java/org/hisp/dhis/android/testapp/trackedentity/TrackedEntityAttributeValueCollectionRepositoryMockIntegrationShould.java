@@ -60,7 +60,7 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
                 d2.trackedEntityModule().trackedEntityAttributeValues
                 .byTrackedEntityAttribute().eq("lZGmxYbs97q")
                 .blockingGet();
-        assertThat(trackedEntityAttributeValues.size(), is(2));
+        assertThat(trackedEntityAttributeValues.size(), is(1));
     }
 
     @Test

@@ -28,7 +28,13 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipItem;
+import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +43,6 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Single;
 
@@ -45,15 +50,18 @@ import io.reactivex.Single;
 final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory {
 
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
+    private final RelationshipStore relationshipStore;
     private final TrackedEntityInstanceService service;
     private final TrackedEntityInstanceRelationshipPersistenceCallFactory persistenceCallFactory;
 
     @Inject
     TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory(
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
+            @NonNull RelationshipStore relationshipStore,
             @NonNull TrackedEntityInstanceService service,
             @NonNull TrackedEntityInstanceRelationshipPersistenceCallFactory persistenceCallFactory) {
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
+        this.relationshipStore = relationshipStore;
         this.service = service;
         this.persistenceCallFactory = persistenceCallFactory;
     }
@@ -67,17 +75,41 @@ final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory {
                 return Single.just(Collections.emptyList());
             } else {
                 List<Single<Payload<TrackedEntityInstance>>> singles = new ArrayList<>();
+                List<String> failedTeis = new ArrayList<>();
                 for (String uid : relationships) {
-                    singles.add(service.getTrackedEntityInstance(uid, TrackedEntityInstanceFields.asRelationshipFields,
-                            true, true));
+                    Single<Payload<TrackedEntityInstance>> single =
+                            service.getTrackedEntityInstance(uid, TrackedEntityInstanceFields.asRelationshipFields,
+                            true, true)
+                            .onErrorResumeNext((err) -> {
+                                failedTeis.add(uid);
+                                return Single.just(Payload.emptyPayload());
+                            });
+
+                    singles.add(single);
                 }
 
                 return Single.merge(singles)
                         .collect((Callable<List<TrackedEntityInstance>>) ArrayList::new,
                                 (teis, payload) -> teis.addAll(payload.items()))
-                        .doAfterSuccess(teis -> persistenceCallFactory.getCall(teis).call());
+                        .doAfterSuccess(teis -> persistenceCallFactory.getCall(teis).call())
+                        .doAfterSuccess(teis -> cleanFailedRelationships(failedTeis));
             }
         });
 
+    }
+
+    private void cleanFailedRelationships(List<String> failedTeis) {
+        List<Relationship> corruptedRelationships = new ArrayList<>();
+        for (String uid : failedTeis) {
+            RelationshipItem item = RelationshipItem.builder()
+                    .trackedEntityInstance(RelationshipItemTrackedEntityInstance.builder()
+                            .trackedEntityInstance(uid).build())
+                    .build();
+            corruptedRelationships.addAll(relationshipStore.getRelationshipsByItem(item));
+        }
+
+        for (Relationship r : corruptedRelationships) {
+            relationshipStore.deleteById(r);
+        }
     }
 }

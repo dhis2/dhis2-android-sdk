@@ -66,6 +66,10 @@ public class DHISVersionManager {
         return version == DHISVersion.V2_32;
     }
 
+    public boolean is2_33() {
+        return version == DHISVersion.V2_33;
+    }
+
     void setVersion(String versionStr) {
         this.version = DHISVersion.getValue(versionStr);
     }

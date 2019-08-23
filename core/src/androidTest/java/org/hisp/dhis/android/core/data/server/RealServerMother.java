@@ -31,10 +31,13 @@ package org.hisp.dhis.android.core.data.server;
 public class RealServerMother {
     public static String url2_29 = "https://play.dhis2.org/2.29/";
     public static String url2_30 = "https://play.dhis2.org/2.30/";
-    public static String url2_31 = "https://play.dhis2.org/2.31.3/";
-    public static String url2_32 = "https://play.dhis2.org/2.32.0/";
+    public static String url2_31 = "https://play.dhis2.org/2.31.5/";
+    public static String url2_32 = "https://play.dhis2.org/2.32.1/";
     public static String url_dev = "https://play.dhis2.org/dev/";
     public static String android_current = "https://play.dhis2.org/android-current/";
+    public static String android_previous1 = "https://play.dhis2.org/android-previous1/";
+    public static String android_previous2 = "https://play.dhis2.org/android-previous2/";
+    public static String android_dev = "https://play.dhis2.org/android-dev/";
     public static String url = android_current;
     public static String user = "android";
     public static String password = "Android123";

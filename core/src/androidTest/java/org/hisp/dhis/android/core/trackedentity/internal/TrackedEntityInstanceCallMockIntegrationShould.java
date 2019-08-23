@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
-import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
@@ -66,10 +65,6 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
 
     @Test
     public void download_tracked_entity_instance_enrollments_and_events() throws Exception {
-
-        List<TrackedEntityAttribute> a = d2.trackedEntityModule().trackedEntityAttributes.blockingGet();
-
-        List<DataElement> d = d2.dataElementModule().dataElements.blockingGet();
 
         String teiUid = "PgmUFEQYZdt";
 

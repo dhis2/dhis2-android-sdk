@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.dataelement;
 
 import android.content.ContentValues;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class CreateDataElementUtils {
     private static final long ID = 2L;
@@ -51,9 +51,7 @@ public class CreateDataElementUtils {
     private static final Integer ZERO_IS_SIGNIFICANT = 0;
     private static final String AGGREGATION_OPERATOR = "test_aggregationOperator";
     private static final String FORM_NAME = "test_formName";
-    private static final String NUMBER_TYPE = "test_numberType";
     private static final String DOMAIN_TYPE = "test_domainType";
-    private static final String DIMENSION = "test_dimension";
     private static final String DISPLAY_FORM_NAME = "test_displayFormName";
 
     // timestamp
@@ -76,9 +74,7 @@ public class CreateDataElementUtils {
         dataElement.put(DataElementFields.ZERO_IS_SIGNIFICANT, ZERO_IS_SIGNIFICANT);
         dataElement.put(DataElementFields.AGGREGATION_TYPE, AGGREGATION_OPERATOR);
         dataElement.put(DataElementFields.FORM_NAME, FORM_NAME);
-        dataElement.put(DataElementFields.NUMBER_TYPE, NUMBER_TYPE);
         dataElement.put(DataElementFields.DOMAIN_TYPE, DOMAIN_TYPE);
-        dataElement.put(DataElementFields.DIMENSION, DIMENSION);
         dataElement.put(DataElementFields.DISPLAY_FORM_NAME, DISPLAY_FORM_NAME);
         dataElement.put(DataElementFields.CATEGORY_COMBO, CategoryCombo.DEFAULT_UID);
         if (optionSetId == null) {

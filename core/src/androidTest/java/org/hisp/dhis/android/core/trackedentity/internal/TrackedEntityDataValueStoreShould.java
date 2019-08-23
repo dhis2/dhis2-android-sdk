@@ -32,6 +32,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
@@ -67,8 +69,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -143,6 +143,7 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
                 ORGANISATION_UNIT, ENROLLMENT);
         ContentValues event2 = CreateEventUtils.create(EVENT_2, PROGRAM, PROGRAM_STAGE,
                 ORGANISATION_UNIT, ENROLLMENT);
+
         ContentValues dataElement1 = CreateDataElementUtils.create(1L, DATA_ELEMENT_1, null);
         ContentValues dataElement2 = CreateDataElementUtils.create(2L, DATA_ELEMENT_2, null);
 

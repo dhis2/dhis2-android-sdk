@@ -59,12 +59,12 @@ public final class UnwrappedEqInFilterConnector<R extends BaseRepository>
         return newWithUnwrappedScope("IN", "(" + getCommaSeparatedValues(values) + ")");
     }
 
-    public final R in(String... values) {
+    public R in(String... values) {
         return in(Arrays.asList(values));
     }
 
     public static List<String> getValueList(String value) {
-        if (value.startsWith("(")) {
+        if (value.charAt(0) == '(') {
             String[] values = value
                     .substring(1, value.length() - 1)
                     .split(",");

@@ -39,8 +39,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;

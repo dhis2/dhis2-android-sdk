@@ -119,7 +119,7 @@ public class EventEndpointCallShould {
         }
 
         EventQuery eventQuery = EventQuery.builder()
-                .uIds(uIds)
+                .uids(uIds)
                 .build();
 
         return new EventEndpointCallFactory(retrofit.create(EventService.class), APICallExecutorImpl.create(databaseAdapter)).getCall(eventQuery);

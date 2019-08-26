@@ -81,15 +81,7 @@ public final class TrackedEntityModule {
         this.trackedEntityInstanceQuery = trackedEntityInstanceQuery;
     }
 
-    /**
-     * Downloads and persists a list of TrackedEntityInstances. This method could be used to download
-     * TrackedEntityInstances located in search scope once their uids have been obtained by a search query.
-     *
-     * It downloads the TEIs with all their visible programs.
-     *
-     * @param uids List of TrackedEntityInstance uids
-     * @return -
-     */
+    @Deprecated
     public Single<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {
         return downloadAndPersistCallFactory.getCall(uids);
     }
@@ -102,7 +94,7 @@ public final class TrackedEntityModule {
      * @param program Program uid
      * @return -
      */
-    public Single<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids,
+    Single<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids,
                                                                                      String program) {
         return downloadAndPersistCallFactory.getCall(uids, program);
     }

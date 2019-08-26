@@ -31,70 +31,16 @@ package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeComplexFilterItem;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
-import org.hisp.dhis.android.core.utils.Utils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
-abstract class BaseFilterConnector<R extends BaseRepository, V> {
+abstract class BaseAbstractFilterConnector<R extends BaseRepository, V> extends AbstractFilterConnector<R, V> {
 
-    private final BaseRepositoryFactory<R> repositoryFactory;
-    private final RepositoryScope scope;
-    final String key;
-
-    BaseFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                        RepositoryScope scope,
-                        String key) {
-        this.repositoryFactory = repositoryFactory;
-        this.scope = scope;
-        this.key = key;
-    }
-
-    abstract String wrapValue(V value);
-
-    RepositoryScope updatedUnwrappedScope(String operator, String valueStr) {
-        return RepositoryScopeHelper.withFilterItem(scope,
-                RepositoryScopeFilterItem.builder().key(key).operator(operator).value(valueStr).build());
-    }
-
-    R newWithWrappedScope(String operator, V value) {
-        return repositoryFactory.updated(updatedUnwrappedScope(operator, wrapValue(value)));
-    }
-
-    RepositoryScope updatePassedScope(String operator, String valueStr, RepositoryScope scope) {
-        return RepositoryScopeHelper.withFilterItem(scope,
-                RepositoryScopeFilterItem.builder().key(key).operator(operator).value(valueStr).build());
-    }
-
-    R newWithPassedScope(String operator, V value, RepositoryScope scope) {
-        return repositoryFactory.updated(updatePassedScope(operator, wrapValue(value), scope));
-    }
-
-    private RepositoryScope updatedUnwrappedScope(String whereClause) {
-        return RepositoryScopeHelper.withComplexFilterItem(scope,
-                RepositoryScopeComplexFilterItem.builder().whereQuery(whereClause).build());
-    }
-
-    R newWithWrappedScope(String whereClause) {
-        return repositoryFactory.updated(updatedUnwrappedScope(whereClause));
-    }
-
-    private String getCommaSeparatedValues(Collection<V> values) {
-        List<String> wrappedValues = new ArrayList<>();
-        for (V v: values) {
-            wrappedValues.add(wrapValue(v));
-        }
-        return Utils.commaAndSpaceSeparatedCollectionValues(wrappedValues);
-    }
-
-    private R newWithUnwrappedScope(String operator, String value) {
-        return repositoryFactory.updated(updatedUnwrappedScope(operator, value));
-
+    BaseAbstractFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
+                                RepositoryScope scope,
+                                String key) {
+        super(repositoryFactory, scope, key);
     }
 
     public R eq(V value) {

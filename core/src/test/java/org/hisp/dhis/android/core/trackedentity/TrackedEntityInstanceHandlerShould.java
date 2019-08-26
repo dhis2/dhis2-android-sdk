@@ -36,9 +36,9 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
+import org.hisp.dhis.android.core.relationship.RelationshipHelper;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
-import org.hisp.dhis.android.core.relationship.RelationshipHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,11 +46,10 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
 import java.util.Collections;
 
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -124,20 +123,20 @@ public class TrackedEntityInstanceHandlerShould {
     }
 
     @Test
-    public void do_nothing_when_passing_null_argument() throws Exception {
+    public void do_nothing_when_passing_null_argument() {
         trackedEntityInstanceHandler.handle(null);
 
         // verify that tracked entity instance store is never called
         verify(trackedEntityInstanceStore, never()).deleteIfExists(anyString());
         verify(trackedEntityInstanceStore, never()).updateOrInsert(any(TrackedEntityInstance.class));
         verify(trackedEntityAttributeValueHandler, never()).handleMany(
-                anyCollectionOf(TrackedEntityAttributeValue.class), any(Transformer.class));
-        verify(enrollmentHandler, never()).handleMany(anyCollectionOf(Enrollment.class));
-        verify(enrollmentCleaner, never()).deleteOrphan(any(TrackedEntityInstance.class), any(ArrayList.class));
+                anyCollection(), any(Transformer.class));
+        verify(enrollmentHandler, never()).handleMany(anyCollection());
+        verify(enrollmentCleaner, never()).deleteOrphan(any(TrackedEntityInstance.class), anyCollection());
     }
 
     @Test
-    public void invoke_delete_when_handle_program_tracked_entity_instance_set_as_deleted() throws Exception {
+    public void invoke_delete_when_handle_program_tracked_entity_instance_set_as_deleted() {
         when(trackedEntityInstance.deleted()).thenReturn(Boolean.TRUE);
 
         trackedEntityInstanceHandler.handle(trackedEntityInstance);
@@ -147,17 +146,14 @@ public class TrackedEntityInstanceHandlerShould {
 
         verify(trackedEntityInstanceStore, never()).updateOrInsert(any(TrackedEntityInstance.class));
         verify(trackedEntityAttributeValueHandler, never()).handleMany(
-                anyCollectionOf(TrackedEntityAttributeValue.class), any(Transformer.class));
+                anyCollection(), any(Transformer.class));
 
         // verify that enrollment handler is never called
-        verify(enrollmentHandler, never()).handleMany(anyCollectionOf(Enrollment.class));
-
-        verify(enrollmentCleaner, times(1))
-                .deleteOrphan(any(TrackedEntityInstance.class), anyCollectionOf(Enrollment.class));
+        verify(enrollmentHandler, never()).handleMany(anyCollection());
     }
 
     @Test
-    public void invoke_only_update_or_insert_when_handle_tracked_entity_instance_inserted() throws Exception {
+    public void invoke_only_update_or_insert_when_handle_tracked_entity_instance_inserted() {
         when(trackedEntityInstance.deleted()).thenReturn(Boolean.FALSE);
         when(trackedEntityInstanceStore.updateOrInsert(any(TrackedEntityInstance.class))).thenReturn(HandleAction.Update);
 
@@ -169,13 +165,30 @@ public class TrackedEntityInstanceHandlerShould {
         verify(trackedEntityInstanceStore, never()).deleteIfExists(anyString());
 
         verify(trackedEntityAttributeValueHandler, times(1)).handleMany(
-                anyCollectionOf(TrackedEntityAttributeValue.class), any(Transformer.class));
+                anyCollection(), any(Transformer.class));
 
         // verify that enrollment handler is called once
-        verify(enrollmentHandler, times(1)).handleMany(anyCollectionOf(Enrollment.class), any(Transformer.class));
+        verify(enrollmentHandler, times(1)).handleMany(anyCollection(), any(Transformer.class));
+    }
 
-        verify(enrollmentCleaner, times(1))
-                .deleteOrphan(any(TrackedEntityInstance.class), anyCollectionOf(Enrollment.class));
+    @Test
+    public void invoke_enrollment_cleaner_if_full_update() {
+        when(trackedEntityInstance.toBuilder()).thenReturn(TrackedEntityInstance.builder());
+        when(trackedEntityInstanceStore.updateOrInsert(any(TrackedEntityInstance.class))).thenReturn(HandleAction.Update);
+
+        trackedEntityInstanceHandler.handleMany(Collections.singletonList(trackedEntityInstance), false, true);
+
+        verify(enrollmentCleaner, times(1)).deleteOrphan(any(TrackedEntityInstance.class), anyCollection());
+    }
+
+    @Test
+    public void do_not_invoke_enrollment_cleaner_if_not_full_update() {
+        when(trackedEntityInstance.toBuilder()).thenReturn(TrackedEntityInstance.builder());
+        when(trackedEntityInstanceStore.updateOrInsert(any(TrackedEntityInstance.class))).thenReturn(HandleAction.Update);
+
+        trackedEntityInstanceHandler.handleMany(Collections.singletonList(trackedEntityInstance), false, false);
+
+        verify(enrollmentCleaner, never()).deleteOrphan(any(TrackedEntityInstance.class), anyCollection());
     }
 
     @Test

@@ -63,10 +63,10 @@ final class TrackedEntityInstancePersistenceCallFactory {
         this.organisationUnitDownloader = organisationUnitDownloader;
     }
 
-    public Callable<Void> getCall(final List<TrackedEntityInstance> trackedEntityInstances) {
+    public Callable<Void> getCall(final List<TrackedEntityInstance> trackedEntityInstances, boolean isFullUpdate) {
 
         return () -> {
-            trackedEntityInstanceHandler.handleMany(trackedEntityInstances, false);
+            trackedEntityInstanceHandler.handleMany(trackedEntityInstances, false, isFullUpdate);
 
             Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);
 

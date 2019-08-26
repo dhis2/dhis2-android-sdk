@@ -65,7 +65,7 @@ public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends 
     }
 
     //@Test
-    public void query_and_download_tracked_entity_instances() throws Exception {
+    public void query_and_download_tracked_entity_instances() {
         login();
 
         d2.metadataModule().blockingDownload();
@@ -81,7 +81,9 @@ public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends 
             uids.add(tei.uid());
         }
 
-        List<TrackedEntityInstance> downloadedTeis = d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(uids).blockingGet();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().in(uids).download().blockingSubscribe();
+        List<TrackedEntityInstance> downloadedTeis = d2.trackedEntityModule().trackedEntityInstances.byUid().in(uids).blockingGet();
+
         assertThat(queriedTeis.size()).isEqualTo(downloadedTeis.size());
     }
 

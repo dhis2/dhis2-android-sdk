@@ -33,6 +33,7 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.UnwrappedEqInFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
@@ -46,6 +47,9 @@ import java.util.List;
 public abstract class ProgramDataDownloadParams {
 
     private static Integer DEFAULT_LIMIT = 500;
+
+    @NonNull
+    public abstract List<String> uids();
 
     @NonNull
     public abstract List<String> orgUnits();
@@ -81,6 +85,9 @@ public abstract class ProgramDataDownloadParams {
         Builder builder = builder();
         for (RepositoryScopeFilterItem item : scope.filters()) {
             switch (item.key()) {
+                case QueryParams.UID:
+                    builder.uids(UnwrappedEqInFilterConnector.getValueList(item.value()));
+                    break;
                 case QueryParams.PROGRAM:
                     builder.program(item.value());
                     break;
@@ -102,13 +109,16 @@ public abstract class ProgramDataDownloadParams {
     public static Builder builder() {
         return new AutoValue_ProgramDataDownloadParams.Builder()
                 .limitByOrgunit(false).limitByProgram(false).limit(DEFAULT_LIMIT)
-                .orgUnits(Collections.emptyList());
+                .orgUnits(Collections.emptyList())
+                .uids(Collections.emptyList());
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder {
+        public abstract Builder uids(List<String> uids);
+
         public abstract Builder orgUnits(List<String> orgUnits);
 
         public abstract Builder orgUnitMode(OrganisationUnitMode orgUnitMode);
@@ -133,6 +143,7 @@ public abstract class ProgramDataDownloadParams {
     }
 
     public static class QueryParams {
+        public static final String UID = "uid";
         public static final String PROGRAM = "program";
         public static final String PROGRAM_STATUS = "programStatus";
         public static final String PROGRAM_START_DATE = "programStartDate";

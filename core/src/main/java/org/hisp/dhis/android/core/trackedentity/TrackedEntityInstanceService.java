@@ -97,6 +97,7 @@ public interface TrackedEntityInstanceService {
 
     @GET(TRACKED_ENTITY_INSTANCES)
     Single<Payload<TrackedEntityInstance>> getTrackedEntityInstances(
+            @Query(TRACKED_ENTITY_INSTACE) String trackedEntityInstances,
             @Query(OU) String orgUnits,
             @Query(OU_MODE) String orgUnitMode,
             @Query(PROGRAM) String program,

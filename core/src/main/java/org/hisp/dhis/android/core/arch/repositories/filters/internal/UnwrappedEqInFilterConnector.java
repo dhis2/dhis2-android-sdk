@@ -32,24 +32,52 @@ import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-public final class IntegerFilterConnector<R extends BaseRepository>
-        extends BaseAbstractFilterConnector<R, Integer> {
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
-    IntegerFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                           RepositoryScope scope,
-                           String key) {
+public final class UnwrappedEqInFilterConnector<R extends BaseRepository>
+        extends AbstractFilterConnector<R, String> {
+
+    UnwrappedEqInFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
+                                 RepositoryScope scope,
+                                 String key) {
         super(repositoryFactory, scope, key);
     }
 
-    public R smallerThan(int value) {
-        return newWithWrappedScope("<", value);
+    String wrapValue(String value) {
+        return value;
     }
 
-    public R biggerThan(int value) {
-        return newWithWrappedScope(">", value);
+    public R eq(String value) {
+        return newWithWrappedScope("=", value);
     }
 
-    String wrapValue(Integer value) {
-        return value.toString();
+    public R in(Collection<String> values) {
+        return newWithUnwrappedScope("IN", "(" + getCommaSeparatedValues(values) + ")");
+    }
+
+    public R in(String... values) {
+        return in(Arrays.asList(values));
+    }
+
+    public static List<String> getValueList(String value) {
+        if (value.charAt(0) == '(') {
+            String[] values = value
+                    .substring(1, value.length() - 1)
+                    .split(",");
+            List<String> list = new ArrayList<>(value.length());
+            for (String v : values) {
+                String trimmed = v.trim();
+                if (!trimmed.isEmpty()) {
+                    list.add(trimmed);
+                }
+            }
+            return list;
+        } else {
+            return Collections.singletonList(value);
+        }
     }
 }

@@ -146,7 +146,9 @@ class TrackedEntityInstanceWithLimitCallFactory {
                                                 Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet) {
 
         int pageSize = TeiQuery.builder().build().pageSize();
-        List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, params.limit());
+        int limit = params.uids().isEmpty() ? params.limit() : params.uids().size();
+
+        List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, limit);
 
         Observable<List<TrackedEntityInstance>> teiDownloadObservable =
                 Observable.fromIterable(getTeiQueryBuilders(params))
@@ -159,7 +161,8 @@ class TrackedEntityInstanceWithLimitCallFactory {
 
         return teiDownloadObservable.map(
                 teiList -> {
-                    persistenceCallFactory.getCall(teiList).call();
+                    boolean isFullUpdate = params.program() == null;
+                    persistenceCallFactory.getCall(teiList, isFullUpdate).call();
                     programOrganisationUnitSet.addAll(
                             TrackedEntityInstanceHelper.getProgramOrganisationUnitTuple(teiList, serverDate));
                     return progressManager.increaseProgress(TrackedEntityInstance.class, false);
@@ -177,12 +180,14 @@ class TrackedEntityInstanceWithLimitCallFactory {
 
     private List<TeiQuery.Builder> getTeiQueryBuilders(ProgramDataDownloadParams params) {
 
-        String lastUpdated = resourceHandler.getLastUpdated(resourceType);
+        String lastUpdated = params.uids().isEmpty() ? resourceHandler.getLastUpdated(resourceType) : null;
 
         List<TeiQuery.Builder> builders = new ArrayList<>();
 
         OrganisationUnitMode ouMode;
         List<String> orgUnits;
+
+        // TODO If param.uids() is not null, should we set a default orgunit? Maybe it filters teis out
 
         if (params.orgUnits().size() > 0) {
             ouMode = OrganisationUnitMode.SELECTED;
@@ -215,12 +220,12 @@ class TrackedEntityInstanceWithLimitCallFactory {
         List<TeiQuery.Builder> builders = new ArrayList<>();
 
         if (params.program() != null) {
-            builders.add(getBuilderFor(lastUpdated, orgUnits, ouMode).program(params.program()));
+            builders.add(getBuilderFor(lastUpdated, orgUnits, ouMode, params.uids()).program(params.program()));
         } else if (params.limitByProgram()) {
             if (ouMode.equals(OrganisationUnitMode.SELECTED)) {
                 for (OrganisationUnitProgramLink link : getOrganisationUnitProgramLinksByOrgunitUids(orgUnits)) {
-                    builders.add(getBuilderFor(lastUpdated, Collections.singletonList(link.organisationUnit()), ouMode)
-                            .program(link.program()));
+                    builders.add(getBuilderFor(lastUpdated, Collections.singletonList(link.organisationUnit()),
+                            ouMode, params.uids()).program(link.program()));
                 }
             } else {
                 Set<String> programs = new HashSet<>();
@@ -228,22 +233,23 @@ class TrackedEntityInstanceWithLimitCallFactory {
                     programs.add(link.program());
                 }
                 for (String program : programs) {
-                    builders.add(getBuilderFor(lastUpdated, orgUnits, ouMode).program(program));
+                    builders.add(getBuilderFor(lastUpdated, orgUnits, ouMode, params.uids()).program(program));
                 }
             }
         } else {
-            builders.add(getBuilderFor(lastUpdated, orgUnits, ouMode));
+            builders.add(getBuilderFor(lastUpdated, orgUnits, ouMode, params.uids()));
         }
 
         return builders;
     }
 
     private TeiQuery.Builder getBuilderFor(String lastUpdated, List<String> organisationUnits,
-                                           OrganisationUnitMode organisationUnitMode) {
+                                           OrganisationUnitMode organisationUnitMode, List<String> teiUids) {
         return TeiQuery.builder()
                 .lastUpdatedStartDate(lastUpdated)
                 .orgUnits(organisationUnits)
-                .ouMode(organisationUnitMode);
+                .ouMode(organisationUnitMode)
+                .uids(teiUids);
     }
 
     private Observable<List<TrackedEntityInstance>> getTrackedEntityInstancesWithPaging(
@@ -301,7 +307,7 @@ class TrackedEntityInstanceWithLimitCallFactory {
                                                   ProgramDataDownloadParams params, BooleanWrapper allOkay,
                                                   Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet) {
         return Single.fromCallable(() -> {
-            if (allOkay.get() && params.program() == null && params.orgUnits().isEmpty()) {
+            if (allOkay.get() && params.program() == null && params.orgUnits().isEmpty() && params.uids().isEmpty()) {
                 resourceHandler.handleResource(resourceType);
             }
             programOrganisationUnitLastUpdatedHandler.handleMany(programOrganisationUnitSet);

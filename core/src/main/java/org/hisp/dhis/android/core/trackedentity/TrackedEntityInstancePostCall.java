@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
@@ -46,19 +48,20 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.ExcessiveImports"})
@@ -84,6 +87,8 @@ public final class TrackedEntityInstancePostCall {
     private final TEIWebResponseHandler teiWebResponseHandler;
 
     private final APICallExecutor apiCallExecutor;
+
+    private static final int DEFAULT_PAGE_SIZE = 10;
 
     @Inject
     TrackedEntityInstancePostCall(@NonNull DHISVersionManager versionManager,
@@ -115,15 +120,13 @@ public final class TrackedEntityInstancePostCall {
     }
 
     public TEIWebResponse call(List<TrackedEntityInstance> filteredTrackedEntityInstances) throws D2Error {
-        List<TrackedEntityInstance> trackedEntityInstancesToPost = queryDataToSync(filteredTrackedEntityInstances);
+        List<List<TrackedEntityInstance>> trackedEntityInstancesToPost =
+                getPartitionsToSync(filteredTrackedEntityInstances);
 
         // if size is 0, then no need to do network request
         if (trackedEntityInstancesToPost.isEmpty()) {
             return TEIWebResponse.empty();
         }
-
-        TrackedEntityInstancePayload trackedEntityInstancePayload = new TrackedEntityInstancePayload();
-        trackedEntityInstancePayload.trackedEntityInstances = trackedEntityInstancesToPost;
 
         String strategy;
         if (versionManager.is2_29()) {
@@ -132,15 +135,23 @@ public final class TrackedEntityInstancePostCall {
             strategy = "SYNC";
         }
 
-        TEIWebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                trackedEntityInstanceService.postTrackedEntityInstances(trackedEntityInstancePayload, strategy),
-                Collections.singletonList(409), TEIWebResponse.class);
-        teiWebResponseHandler.handleWebResponse(webResponse);
-        return webResponse;
+        TEIWebResponse resultResponse = TEIWebResponse.empty();
+        for (List<TrackedEntityInstance> partition : trackedEntityInstancesToPost) {
+            TrackedEntityInstancePayload trackedEntityInstancePayload = new TrackedEntityInstancePayload();
+            trackedEntityInstancePayload.trackedEntityInstances = partition;
+
+            TEIWebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
+                    trackedEntityInstanceService.postTrackedEntityInstances(trackedEntityInstancePayload, strategy),
+                    Collections.singletonList(409), TEIWebResponse.class);
+            teiWebResponseHandler.handleWebResponse(webResponse);
+            resultResponse = webResponse;
+        }
+
+        return resultResponse;
     }
 
     @NonNull
-    List<TrackedEntityInstance> queryDataToSync(List<TrackedEntityInstance> filteredTrackedEntityInstances) {
+    List<List<TrackedEntityInstance>> getPartitionsToSync(List<TrackedEntityInstance> filteredTrackedEntityInstances) {
         Map<String, List<TrackedEntityDataValue>> dataValueMap =
                 trackedEntityDataValueStore.queryTrackerTrackedEntityDataValues();
         Map<String, List<Event>> eventMap = eventStore.queryEventsAttachedToEnrollmentToPost();
@@ -151,54 +162,84 @@ public final class TrackedEntityInstancePostCall {
                 .appendKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST).build();
         List<Note> notes = noteStore.selectWhere(whereNotesClause);
 
-        List<TrackedEntityInstance> trackedEntityInstancesToSync
-                = getTrackedEntityInstancesToSync(filteredTrackedEntityInstances);
+        List<TrackedEntityInstance> targetTrackedEntityInstances;
+        if (filteredTrackedEntityInstances == null) {
+            targetTrackedEntityInstances = trackedEntityInstanceStore.queryTrackedEntityInstancesToSync();
+        } else {
+            targetTrackedEntityInstances = filteredTrackedEntityInstances;
+        }
 
-        List<TrackedEntityInstance> trackedEntityInstancesRecreated = new ArrayList<>();
+        List<List<TrackedEntityInstance>> trackedEntityInstancesToSync
+                = getPagedTrackedEntityInstances(targetTrackedEntityInstances);
 
-        for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstancesToSync) {
-            TrackedEntityInstance recreatedTrackedEntityInstance = recreateTrackedEntityInstance(
-                    trackedEntityInstance, dataValueMap, eventMap, enrollmentMap, attributeValueMap, notes);
+        List<List<TrackedEntityInstance>> trackedEntityInstancesRecreated = new ArrayList<>();
 
-            trackedEntityInstancesRecreated.add(recreatedTrackedEntityInstance);
+        for (List<TrackedEntityInstance> partition : trackedEntityInstancesToSync) {
+            List<TrackedEntityInstance> partitionRecreated = new ArrayList<>();
+            for (TrackedEntityInstance trackedEntityInstance : partition) {
+                TrackedEntityInstance recreatedTrackedEntityInstance = recreateTrackedEntityInstance(
+                        trackedEntityInstance, dataValueMap, eventMap, enrollmentMap, attributeValueMap, notes);
+
+                partitionRecreated.add(recreatedTrackedEntityInstance);
+            }
+            trackedEntityInstancesRecreated.add(partitionRecreated);
         }
 
         return trackedEntityInstancesRecreated;
     }
 
-    private List<TrackedEntityInstance> getTrackedEntityInstancesToSync(
+    private List<List<TrackedEntityInstance>> getPagedTrackedEntityInstances(
             List<TrackedEntityInstance> filteredTrackedEntityInstances) {
+        List<String> includedUids = new ArrayList<>();
+
+        List<Set<TrackedEntityInstance>> partitions =
+                Utils.setPartition(filteredTrackedEntityInstances, DEFAULT_PAGE_SIZE);
+
+        List<List<TrackedEntityInstance>> partitionsWithRelationships = new ArrayList<>();
+
+        for (Set<TrackedEntityInstance> partition : partitions) {
+            List<TrackedEntityInstance> partitionWithoutDuplicates = UidsHelper.excludeUids(partition, includedUids);
+            List<TrackedEntityInstance> partitionWithRelationships =
+                    getTrackedEntityInstancesWithRelationships(partitionWithoutDuplicates, includedUids);
+
+            partitionsWithRelationships.add(partitionWithRelationships);
+            includedUids.addAll(UidsHelper.getUidsList(partitionWithRelationships));
+        }
+
+        return partitionsWithRelationships;
+    }
+
+    private List<TrackedEntityInstance> getTrackedEntityInstancesWithRelationships(
+            List<TrackedEntityInstance> filteredTrackedEntityInstances, List<String> excludedUids) {
         List<TrackedEntityInstance> trackedEntityInstancesInDBToSync =
                 trackedEntityInstanceStore.queryTrackedEntityInstancesToSync();
-        if (filteredTrackedEntityInstances == null) {
-            return trackedEntityInstancesInDBToSync;
-        } else {
-            List<String> filteredUids = UidsHelper.getUidsList(filteredTrackedEntityInstances);
-            List<String> teiUidsToPost =
-                    UidsHelper.getUidsList(trackedEntityInstanceStore.queryTrackedEntityInstancesToPost());
-            List<String> relatedTeisToPost = new ArrayList<>();
-            List<String> internalRelatedTeis = filteredUids;
 
-            do {
-                List<String> relatedTeiUids = relationshipItemStore.getRelatedTeiUids(internalRelatedTeis);
+        List<String> filteredUids = UidsHelper.getUidsList(filteredTrackedEntityInstances);
+        List<String> teiUidsToPost =
+                UidsHelper.getUidsList(trackedEntityInstanceStore.queryTrackedEntityInstancesToPost());
+        List<String> relatedTeisToPost = new ArrayList<>();
+        List<String> internalRelatedTeis = filteredUids;
 
-                relatedTeiUids.retainAll(teiUidsToPost);
+        do {
+            List<String> relatedTeiUids = relationshipItemStore.getRelatedTeiUids(internalRelatedTeis);
 
-                relatedTeiUids.removeAll(filteredUids);
-                relatedTeiUids.removeAll(relatedTeisToPost);
+            relatedTeiUids.retainAll(teiUidsToPost);
 
-                relatedTeisToPost.addAll(relatedTeiUids);
-                internalRelatedTeis = relatedTeiUids;
-            }
-            while (!internalRelatedTeis.isEmpty());
+            relatedTeiUids.removeAll(filteredUids);
+            relatedTeiUids.removeAll(relatedTeisToPost);
+            relatedTeiUids.removeAll(excludedUids);
 
-            for (TrackedEntityInstance trackedEntityInstanceInDB : trackedEntityInstancesInDBToSync) {
-                if (relatedTeisToPost.contains(trackedEntityInstanceInDB.uid())) {
-                    filteredTrackedEntityInstances.add(trackedEntityInstanceInDB);
-                }
-            }
-            return filteredTrackedEntityInstances;
+            relatedTeisToPost.addAll(relatedTeiUids);
+            internalRelatedTeis = relatedTeiUids;
         }
+        while (!internalRelatedTeis.isEmpty());
+
+        for (TrackedEntityInstance trackedEntityInstanceInDB : trackedEntityInstancesInDBToSync) {
+            if (relatedTeisToPost.contains(trackedEntityInstanceInDB.uid())) {
+                filteredTrackedEntityInstances.add(trackedEntityInstanceInDB);
+            }
+        }
+        return filteredTrackedEntityInstances;
     }
 
     @NonNull

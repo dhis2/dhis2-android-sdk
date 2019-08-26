@@ -162,11 +162,15 @@ public final class TrackedEntityInstancePostCall {
                 .appendKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST).build();
         List<Note> notes = noteStore.selectWhere(whereNotesClause);
 
+        List<TrackedEntityInstance> targetTrackedEntityInstances;
         if (filteredTrackedEntityInstances == null) {
-            filteredTrackedEntityInstances = trackedEntityInstanceStore.queryTrackedEntityInstancesToSync();
+            targetTrackedEntityInstances = trackedEntityInstanceStore.queryTrackedEntityInstancesToSync();
+        } else {
+            targetTrackedEntityInstances = filteredTrackedEntityInstances;
         }
+
         List<List<TrackedEntityInstance>> trackedEntityInstancesToSync
-                = getPagedTrackedEntityInstances(filteredTrackedEntityInstances);
+                = getPagedTrackedEntityInstances(targetTrackedEntityInstances);
 
         List<List<TrackedEntityInstance>> trackedEntityInstancesRecreated = new ArrayList<>();
 
@@ -193,7 +197,7 @@ public final class TrackedEntityInstancePostCall {
 
         List<List<TrackedEntityInstance>> partitionsWithRelationships = new ArrayList<>();
 
-        for (Set<TrackedEntityInstance> partition : partitions ) {
+        for (Set<TrackedEntityInstance> partition : partitions) {
             List<TrackedEntityInstance> partitionWithoutDuplicates = UidsHelper.excludeUids(partition, includedUids);
             List<TrackedEntityInstance> partitionWithRelationships =
                     getTrackedEntityInstancesWithRelationships(partitionWithoutDuplicates, includedUids);

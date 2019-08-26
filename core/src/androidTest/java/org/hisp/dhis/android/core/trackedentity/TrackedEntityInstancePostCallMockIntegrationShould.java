@@ -88,10 +88,12 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
     public void build_payload_with_different_enrollments() {
         storeTrackedEntityInstance();
 
-        List<TrackedEntityInstance> instances = trackedEntityInstancePostCall.queryDataToSync(null);
+        List<List<TrackedEntityInstance>> partitions =
+                trackedEntityInstancePostCall.getPartitionsToSync(null);
 
-        assertThat(instances.size()).isEqualTo(1);
-        for (TrackedEntityInstance instance : instances) {
+        assertThat(partitions.size()).isEqualTo(1);
+        assertThat(partitions.get(0).size()).isEqualTo(1);
+        for (TrackedEntityInstance instance : partitions.get(0)) {
             assertThat(instance.enrollments().size()).isEqualTo(2);
             for (Enrollment enrollment : instance.enrollments()) {
                 assertThat(enrollment.events().size()).isEqualTo(1);
@@ -106,9 +108,12 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
     public void build_payload_with_the_enrollments_events_and_values_set_for_upload_update_or_delete() {
         storeTrackedEntityInstance();
 
-        List<TrackedEntityInstance> instances = trackedEntityInstancePostCall.queryDataToSync(null);
-        assertThat(instances.size()).isEqualTo(1);
-        for (TrackedEntityInstance instance : instances) {
+        List<List<TrackedEntityInstance>> partitions =
+                trackedEntityInstancePostCall.getPartitionsToSync(null);
+
+        assertThat(partitions.size()).isEqualTo(1);
+        assertThat(partitions.get(0).size()).isEqualTo(1);
+        for (TrackedEntityInstance instance : partitions.get(0)) {
             assertThat(instance.enrollments().size()).isEqualTo(2);
             for (Enrollment enrollment : instance.enrollments()) {
                 assertThat(enrollment.events().size()).isEqualTo(1);
@@ -119,9 +124,11 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         }
 
         EnrollmentStoreImpl.create(databaseAdapter).setState("enrollment3Id", State.TO_POST);
-        instances = trackedEntityInstancePostCall.queryDataToSync(null);
-        assertThat(instances.size()).isEqualTo(1);
-        for (TrackedEntityInstance instance : instances) {
+        partitions = trackedEntityInstancePostCall.getPartitionsToSync(null);
+
+        assertThat(partitions.size()).isEqualTo(1);
+        assertThat(partitions.get(0).size()).isEqualTo(1);
+        for (TrackedEntityInstance instance : partitions.get(0)) {
             assertThat(instance.enrollments().size()).isEqualTo(3);
             for (Enrollment enrollment : instance.enrollments()) {
                 if (enrollment.uid().equals("enrollment3Id")) {
@@ -133,9 +140,11 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         }
 
         EventStoreImpl.create(databaseAdapter).setState("event3Id", State.TO_POST);
-        instances = trackedEntityInstancePostCall.queryDataToSync(null);
-        assertThat(instances.size()).isEqualTo(1);
-        for (TrackedEntityInstance instance : instances) {
+        partitions = trackedEntityInstancePostCall.getPartitionsToSync(null);
+
+        assertThat(partitions.size()).isEqualTo(1);
+        assertThat(partitions.get(0).size()).isEqualTo(1);
+        for (TrackedEntityInstance instance : partitions.get(0)) {
             assertThat(instance.enrollments().size()).isEqualTo(3);
             for (Enrollment enrollment : instance.enrollments()) {
                 assertThat(enrollment.events().size()).isEqualTo(1);
@@ -212,12 +221,13 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         storeRelationship("relationship3", tei1, tei5);
         storeRelationship("relationship4", tei5, tei4);
 
-        List<TrackedEntityInstance> instances = trackedEntityInstancePostCall.queryDataToSync(
+        List<List<TrackedEntityInstance>> partitions = trackedEntityInstancePostCall.getPartitionsToSync(
                 d2.trackedEntityModule().trackedEntityInstances.byUid().eq(tei1)
                 .byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).get());
 
-        assertThat(instances.size()).isEqualTo(3);
-        assertThat(UidsHelper.getUidsList(instances).containsAll(Lists.newArrayList(tei1, tei2, tei3))).isEqualTo(true);
+        assertThat(partitions.size()).isEqualTo(1);
+        assertThat(partitions.get(0).size()).isEqualTo(3);
+        assertThat(UidsHelper.getUidsList(partitions.get(0)).containsAll(Lists.newArrayList(tei1, tei2, tei3))).isEqualTo(true);
     }
 
     private void storeTrackedEntityInstance() {

@@ -28,10 +28,6 @@
 
 package org.hisp.dhis.android.testapp.fileresource;
 
-import android.content.Context;
-
-import androidx.test.InstrumentationRegistry;
-
 import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
@@ -82,15 +78,9 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
         FileResource fileResource = d2.fileResourceModule().fileResources.uid(fileResourceUid).blockingGet();
         assertThat(fileResource.uid(), is(fileResourceUid));
 
-        // file:///storage/emulated/0/Download/Tio1.jpg
     }
-    private static File getFile() {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        File fileDirectory = new File(context.getFilesDir(), "sdk_resources");
-        if (!fileDirectory.exists()) {
-            fileDirectory.mkdirs();
-        }
 
-        return new File(fileDirectory, "new_file.png");
+    private File getFile() {
+        return new File(getClass().getClassLoader().getResource("fileresource/logo.png").getFile());
     }
 }

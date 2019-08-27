@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTa
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeFields;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.utils.internal.BooleanWrapper;
 
 import java.util.ArrayList;
@@ -70,7 +71,8 @@ public final class TrackedEntityAttributeReservedValueManager {
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
     private final IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
     private final IdentifiableObjectStore<ProgramTrackedEntityAttribute> programTrackedEntityAttributeStore;
-    private final LinkModelStore<OrganisationUnitProgramLink> organisationUnitProgramLinkLinkModelStore;
+    private final LinkModelStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
+    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final D2CallExecutor executor;
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final QueryCallFactory<TrackedEntityAttributeReservedValue,
@@ -87,6 +89,7 @@ public final class TrackedEntityAttributeReservedValueManager {
             IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore,
             IdentifiableObjectStore<ProgramTrackedEntityAttribute> programTrackedEntityAttributeStore,
             LinkModelStore<OrganisationUnitProgramLink> organisationUnitProgramLinkLinkModelStore,
+            UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             QueryCallFactory<TrackedEntityAttributeReservedValue,
                     TrackedEntityAttributeReservedValueQuery> reservedValueQueryCallFactory) {
         this.executor = executor;
@@ -95,7 +98,8 @@ public final class TrackedEntityAttributeReservedValueManager {
         this.organisationUnitStore = organisationUnitStore;
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
         this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
-        this.organisationUnitProgramLinkLinkModelStore = organisationUnitProgramLinkLinkModelStore;
+        this.organisationUnitProgramLinkStore = organisationUnitProgramLinkLinkModelStore;
+        this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.reservedValueQueryCallFactory = reservedValueQueryCallFactory;
     }
 
@@ -281,12 +285,17 @@ public final class TrackedEntityAttributeReservedValueManager {
                         attribute
                 ).build());
 
-        List<String> linkedOrgunitUids = organisationUnitProgramLinkLinkModelStore.selectStringColumnsWhereClause(
+        List<String> linkedOrgunitUids = organisationUnitProgramLinkStore.selectStringColumnsWhereClause(
                 OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
                 new WhereClauseBuilder().appendInKeyStringValues(
                         OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
                         linkedProgramUids
                 ).build());
+
+        List<String> captureOrgunits = userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(
+                OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
+
+        linkedOrgunitUids.retainAll(captureOrgunits);
 
         return organisationUnitStore.selectWhere(new WhereClauseBuilder().appendInKeyStringValues(
                 BaseIdentifiableObjectModel.Columns.UID,

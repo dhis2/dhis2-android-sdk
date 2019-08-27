@@ -145,7 +145,8 @@ public final class TrackedEntityInstancePostCall {
                     trackedEntityInstancePayload.trackedEntityInstances = partition;
 
                     TEIWebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                            trackedEntityInstanceService.postTrackedEntityInstances(trackedEntityInstancePayload, strategy),
+                            trackedEntityInstanceService.postTrackedEntityInstances(
+                                    trackedEntityInstancePayload, strategy),
                             Collections.singletonList(409), TEIWebResponse.class);
                     teiWebResponseHandler.handleWebResponse(webResponse);
                 }

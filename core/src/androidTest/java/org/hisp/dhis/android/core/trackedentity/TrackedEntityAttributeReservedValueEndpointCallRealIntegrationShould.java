@@ -46,7 +46,7 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
      */
     private D2 d2;
     private Integer numberToReserve = 5;
-    private String orgunitUid = "orgunit-uid";
+    private String orgunitUid = "DiszpKrYNg8";
 
     @Before
     @Override
@@ -56,7 +56,7 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
     }
 
     private void reserveValues() {
-        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues("xs8A6tQJY0s", orgunitUid, numberToReserve);
+        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues("xs8A6tQJY0s", numberToReserve);
     }
 
     private String getValue() {
@@ -64,15 +64,17 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
     }
 
     // @Test
-    public void reserve_and_download() throws Exception {
+    public void reserve_and_download() {
         login();
+        syncMetadata();
         reserveValues();
         String value = getValue();
     }
 
     // @Test
-    public void download_and_persist_reserved_values() throws Exception {
+    public void download_and_persist_reserved_values() {
         login();
+        syncMetadata();
         reserveValues();
 
         List<TrackedEntityAttributeReservedValue> reservedValues = TrackedEntityAttributeReservedValueStore.create(
@@ -81,9 +83,25 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
         assertThat(reservedValues.size()).isEqualTo(numberToReserve);
     }
 
-    private void login() throws Exception {
+    // @Test
+    public void download_and_persist_all_reserved_values() {
+        login();
+        syncMetadata();
+        d2.trackedEntityModule().reservedValueManager.blockingDownloadAllReservedValues(20);
+
+        List<TrackedEntityAttributeReservedValue> reservedValues = TrackedEntityAttributeReservedValueStore.create(
+                databaseAdapter()).selectAll();
+
+        String value = d2.trackedEntityModule().reservedValueManager.blockingGetValue("xs8A6tQJY0s", orgunitUid);
+    }
+
+    private void login() {
         if (!d2.userModule().isLogged().blockingGet()) {
             d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
         }
+    }
+
+    private void syncMetadata() {
+        d2.metadataModule().blockingDownload();
     }
 }

@@ -66,6 +66,16 @@ public final class UidsHelper {
         return uids;
     }
 
+    public static <O extends ObjectWithUidInterface> List<O> excludeUids(Collection<O> objects, List<String> uids) {
+        List<O> list = new ArrayList<>();
+        for (O o: objects) {
+            if (!uids.contains(o.uid())) {
+                list.add(o);
+            }
+        }
+        return list;
+    }
+
     private static <O extends ObjectWithUidInterface> String[] uidsArray(Collection<O> objects) {
         String[] uids = new String[objects.size()];
         int i = 0;

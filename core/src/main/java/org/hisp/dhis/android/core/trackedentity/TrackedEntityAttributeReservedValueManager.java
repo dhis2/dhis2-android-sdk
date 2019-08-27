@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
@@ -104,12 +106,10 @@ public final class TrackedEntityAttributeReservedValueManager {
      * (default {@link #MIN_TO_TRY_FILL}) it tries to download before returning a value.
      *
      * @param attribute           Attribute uid
-     * @param organisationUnitUid Optional organisation uid
+     * @param organisationUnitUid Organisation unit uid
      * @return Value of tracked entity attribute
-     * @throws D2Error If there are no more reserved values available in database
      */
-    @SuppressFBWarnings("DE_MIGHT_IGNORE")
-    public String blockingGetValue(String attribute, String organisationUnitUid) {
+    public String blockingGetValue(@NonNull String attribute, @NonNull String organisationUnitUid) {
         return getValue(attribute, organisationUnitUid).blockingGet();
     }
 
@@ -118,17 +118,19 @@ public final class TrackedEntityAttributeReservedValueManager {
      * (default {@link #MIN_TO_TRY_FILL}) it tries to download before returning a value.
      *
      * @param attribute           Attribute uid
-     * @param organisationUnitUid Optional organisation uid
+     * @param organisationUnitUid Organisation unit uid
      * @return Single with value of tracked entity attribute
-     * @throws D2Error If there are no more reserved values available in database (inside Single)
      */
-    public Single<String> getValue(String attribute, String organisationUnitUid) {
+    public Single<String> getValue(@NonNull String attribute, @NonNull String organisationUnitUid) {
         Completable optionalDownload = downloadValuesIfBelowThreshold(
                 attribute, getOrganisationUnit(organisationUnitUid), null, new BooleanWrapper(false)
         ).onErrorComplete();
 
         return optionalDownload.andThen(Single.create(emitter -> {
-            TrackedEntityAttributeReservedValue reservedValue = store.popOne(attribute, organisationUnitUid);
+            String pattern = trackedEntityAttributeStore.selectByUid(attribute).pattern();
+            String attributeOrgunit = isOrgunitDependent(pattern) ? organisationUnitUid : null;
+
+            TrackedEntityAttributeReservedValue reservedValue = store.popOne(attribute, attributeOrgunit);
 
             if (reservedValue == null) {
                 emitter.onError(D2Error.builder()
@@ -139,10 +141,6 @@ public final class TrackedEntityAttributeReservedValueManager {
                 emitter.onSuccess(reservedValue.value());
             }
         }));
-    }
-
-    private OrganisationUnit getOrganisationUnit(String uid) {
-        return uid == null ? null : organisationUnitStore.selectByUid(uid);
     }
 
     /**
@@ -366,5 +364,13 @@ public final class TrackedEntityAttributeReservedValueManager {
         }
 
         return selectStatement.concat(";");
+    }
+
+    private OrganisationUnit getOrganisationUnit(String uid) {
+        return uid == null ? null : organisationUnitStore.selectByUid(uid);
+    }
+
+    private boolean isOrgunitDependent(String pattern) {
+        return pattern != null && pattern.contains("ORG_UNIT_CODE");
     }
 }

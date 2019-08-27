@@ -46,6 +46,7 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
      */
     private D2 d2;
     private Integer numberToReserve = 5;
+    private String orgunitUid = "orgunit-uid";
 
     @Before
     @Override
@@ -55,11 +56,11 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
     }
 
     private void reserveValues() {
-        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues("xs8A6tQJY0s", null, numberToReserve);
+        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues("xs8A6tQJY0s", orgunitUid, numberToReserve);
     }
 
     private String getValue() {
-        return d2.trackedEntityModule().reservedValueManager.blockingGetValue("xs8A6tQJY0s", null);
+        return d2.trackedEntityModule().reservedValueManager.blockingGetValue("xs8A6tQJY0s", orgunitUid);
     }
 
     // @Test

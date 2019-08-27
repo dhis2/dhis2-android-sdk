@@ -61,7 +61,6 @@ import io.reactivex.Observable;
 import io.reactivex.Single;
 
 @Reusable
-@SuppressWarnings("PMD.ExcessiveImports")
 public final class TrackedEntityAttributeReservedValueManager {
 
     private static final Integer MIN_TO_TRY_FILL = 50;
@@ -101,8 +100,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     /**
-     * Get a reserved value and remove it from database. If the number of available values is below a threshold
-     * (default {@link #MIN_TO_TRY_FILL}) it tries to download before returning a value.
+     * @see #getValue(String, String)
      *
      * @param attribute           Attribute uid
      * @param organisationUnitUid Organisation unit uid
@@ -143,16 +141,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     /**
-     * Download of TrackedEntityInstance reserved values. The number of reserved values is filled up to the
-     * numberOfValuesToFillUp. If not defined, it defaults to {@link #FILL_UP_TO}.
-     * <br><br>
-     * If an attribute uid is defined, the download is only triggered for this attribute. If not defined, the
-     * download is triggered for all the attributes with the property "generated" set to true.
-     * <br><br>
-     * If an organisationunit uid is defined, only TrackedEntityAttributes linked to programs that are linked to this
-     * organisationunit are considered for download. If not defined, the SDK checks if TrackedEntityAttribute pattern
-     * contains ORGUNIT_CODE. If so, it reserves values for each orgunit assigned to the program and applies the limit
-     * per orgunit. If not, the limit is applied per attribute.
+     * @see #downloadReservedValues(String, Integer)
      *
      * @param attribute              An optional attribute uid
      * @param numberOfValuesToFillUp An optional maximum number of values to reserve
@@ -167,13 +156,11 @@ public final class TrackedEntityAttributeReservedValueManager {
      * Download of TrackedEntityInstance reserved values. The number of reserved values is filled up to the
      * numberOfValuesToFillUp. If not defined, it defaults to {@link #FILL_UP_TO}.
      * <br><br>
-     * If an attribute uid is defined, the download is only triggered for this attribute. If not defined, the
-     * download is triggered for all the attributes with the property "generated" set to true.
+     * The download is only triggered for this attribute passed as parameter.
      * <br><br>
-     * If an organisationunit uid is defined, only TrackedEntityAttributes linked to programs that are linked to this
-     * organisationunit are considered for download. If not defined, the SDK checks if TrackedEntityAttribute pattern
-     * contains ORGUNIT_CODE. If so, it reserves values for each orgunit assigned to the program and applies the limit
-     * per orgunit. If not, the limit is applied per attribute.
+     * If the attribute pattern is dependent on OrganisationUnit code (that is, it contains "ORG_UNIT_CODE"), it
+     * reserves values for each orgunit assigned to the programs with this attribute. It applies the limit
+     * per orgunit. Otherwise the limit is applied per attribute.
      *
      * @param attribute              An optional attribute uid
      * @param numberOfValuesToFillUp An optional maximum number of values to reserve
@@ -185,10 +172,21 @@ public final class TrackedEntityAttributeReservedValueManager {
         return downloadValuesForOrgUnits(attribute, numberOfValuesToFillUp, new BooleanWrapper(false));
     }
 
+    /**
+     * @see #downloadAllReservedValues(Integer)
+     *
+     * @param numberOfValuesToFillUp An optional maximum number of values to reserve
+     */
     public void blockingDownloadAllReservedValues(Integer numberOfValuesToFillUp) {
         downloadAllReservedValues(numberOfValuesToFillUp).blockingSubscribe();
     }
 
+    /**
+     * Downloads reserved values for all the trackedEntityAttributeValues of type "generated",that is, it applies
+     * {@link #downloadReservedValues(String, Integer)} for every generated attribute.
+     *
+     * @param numberOfValuesToFillUp An optional maximum number of values to reserve
+     */
     public Observable<D2Progress> downloadAllReservedValues(Integer numberOfValuesToFillUp) {
         List<Observable<D2Progress>> observables = new ArrayList<>();
         BooleanWrapper systemInfoDownloaded = new BooleanWrapper(false);

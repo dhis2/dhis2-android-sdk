@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -79,10 +78,6 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
         this.trackedEntityInstanceService = trackedEntityInstanceService;
     }
 
-    public Single<List<TrackedEntityInstance>> getCall(final Collection<String> trackedEntityInstanceUids) {
-        return Single.fromCallable(() -> downloadAndPersistBlocking(trackedEntityInstanceUids, null));
-    }
-
     public Single<List<TrackedEntityInstance>> getCall(final Collection<String> trackedEntityInstanceUids,
                                                        final String program) {
         return Single.fromCallable(() -> downloadAndPersistBlocking(trackedEntityInstanceUids, program));
@@ -100,15 +95,7 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
 
             for (String uid : trackedEntityInstanceUids) {
                 List<TrackedEntityInstance> teiList;
-                if (program == null) {
-                    Call<Payload<TrackedEntityInstance>> teiCall =
-                            trackedEntityInstanceService.getTrackedEntityInstanceAsCall(uid,
-                                    TrackedEntityInstanceFields.allFields, true, true);
-                    teiList = apiCallExecutor.executePayloadCall(teiCall);
-                } else {
-                    teiList = downloadGlassAware(uid, program);
-                }
-
+                teiList = downloadGlassAware(uid, program);
                 teis.addAll(teiList);
             }
 

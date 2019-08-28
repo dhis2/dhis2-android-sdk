@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -42,13 +44,11 @@ import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreAccessAdapter;
-import org.hisp.dhis.android.core.data.database.OptionSetWithUidColumnAdapter;
-import org.hisp.dhis.android.core.option.OptionSet;
-
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_TrackedEntityAttribute.Builder.class)
@@ -65,8 +65,8 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(OptionSetWithUidColumnAdapter.class)
-    public abstract OptionSet optionSet();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid optionSet();
 
     @Nullable
     @JsonProperty()
@@ -137,7 +137,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
 
         public abstract Builder sortOrderInListNoProgram(Integer sortOrderInListNoProgram);
 
-        public abstract Builder optionSet(OptionSet optionSet);
+        public abstract Builder optionSet(ObjectWithUid optionSet);
 
         public abstract Builder valueType(ValueType valueType);
 

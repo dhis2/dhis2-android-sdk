@@ -44,7 +44,8 @@ final class ProgramParentUidsHelper {
 
     private ProgramParentUidsHelper() {}
 
-    static Set<String> getAssignedOptionSetUids(List<TrackedEntityAttribute> attributes, List<ProgramStage> programStages) {
+    static Set<String> getAssignedOptionSetUids(List<TrackedEntityAttribute> attributes,
+                                                List<ProgramStage> programStages) {
         Set<String> uids = new HashSet<>();
 
         if (attributes != null) {

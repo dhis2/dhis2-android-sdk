@@ -32,8 +32,6 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFields;
 
 public final class ProgramTrackedEntityAttributeFields {
 
@@ -58,7 +56,7 @@ public final class ProgramTrackedEntityAttributeFields {
                     fh.<Boolean>field(DISPLAY_IN_LIST),
                     fh.<Integer>field(SORT_ORDER),
                     fh.<Boolean>field(SEARCHABLE),
-                    fh.<TrackedEntityAttribute>nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTE),
+                    fh.nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTE),
                     fh.<ValueTypeRendering>field(RENDER_TYPE)
                     ).build();
 

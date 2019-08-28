@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
+import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityAttributeUtils;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
@@ -112,6 +113,16 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
         // inserting tracked entity
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
         database.insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType);
+
+        // inserting tracked entity attributes
+        ContentValues trackedEntityAttribute1 = CreateTrackedEntityAttributeUtils.create(1L, "w75KJ2mc4zz", null);
+        database.insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute1);
+
+        ContentValues trackedEntityAttribute2 = CreateTrackedEntityAttributeUtils.create(2L, "zDhUuAYrxNC", null);
+        database.insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute2);
+
+        ContentValues trackedEntityAttribute3 = CreateTrackedEntityAttributeUtils.create(3L, "cejWyOfXge6", null);
+        database.insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute3);
 
         programEndpointCall = objects.d2DIComponent.programCallFactory().create();
     }
@@ -245,63 +256,6 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
                 1, // true
                 "IpHINAT79UW",
                 99
-        ).isExhausted();
-    }
-
-    @Test
-    public void persist_tracked_entity_attribute_when_call() throws Exception {
-        programEndpointCall.call();
-        String[] projection = {
-                UID,
-                BaseIdentifiableObjectModel.Columns.CODE,
-                BaseIdentifiableObjectModel.Columns.NAME,
-                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
-                BaseIdentifiableObjectModel.Columns.CREATED,
-                BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
-                BaseNameableObjectModel.Columns.SHORT_NAME,
-                BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME,
-                BaseNameableObjectModel.Columns.DESCRIPTION,
-                BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION,
-                TrackedEntityAttributeFields.PATTERN,
-                TrackedEntityAttributeFields.SORT_ORDER_IN_LIST_NO_PROGRAM,
-                TrackedEntityAttributeFields.OPTION_SET,
-                TrackedEntityAttributeFields.VALUE_TYPE,
-                TrackedEntityAttributeFields.EXPRESSION,
-                TrackedEntityAttributeFields.PROGRAM_SCOPE,
-                TrackedEntityAttributeFields.DISPLAY_IN_LIST_NO_PROGRAM,
-                TrackedEntityAttributeFields.GENERATED,
-                TrackedEntityAttributeFields.DISPLAY_ON_VISIT_SCHEDULE,
-                TrackedEntityAttributeFields.ORG_UNIT_SCOPE,
-                TrackedEntityAttributeTableInfo.Columns.UNIQUE,
-                TrackedEntityAttributeFields.INHERIT
-        };
-
-        Cursor trackedEntityAttributeCursor = database.query(TrackedEntityAttributeTableInfo.TABLE_INFO.name(),
-                projection, UID + "=?", new String[]{"w75KJ2mc4zz"}, null, null, null);
-
-        assertThatCursor(trackedEntityAttributeCursor).hasRow(
-                "w75KJ2mc4zz",
-                "MMD_PER_NAM",
-                "First name",
-                "First name",
-                "2014-06-06T20:41:25.233",
-                "2015-10-20T13:57:00.939",
-                "First name",
-                "First name",
-                "First name",
-                "First name",
-                "",
-                1,
-                null,
-                "TEXT",
-                null,
-                0, // false
-                1, // true
-                0, // false
-                0, // false
-                0, // false
-                0, // false
-                0 // false
         ).isExhausted();
     }
 

@@ -109,27 +109,7 @@
             "id": "lxAQ7Zs9VYR"
           },
           "trackedEntityAttribute": {
-            "id": "cejWyOfXge6",
-            "lastUpdated": "2016-08-04T11:48:56.928",
-            "created": "2014-01-09T19:12:46.551",
-            "name": "TB number",
-            "shortName": "TB number",
-            "valueType": "NUMBER",
-            "programScope": false,
-            "orgunitScope": false,
-            "displayInListNoProgram": false,
-            "displayName": "TB number",
-            "pattern": "RANDOM(XXX######)",
-            "unique": false,
-            "inherit": false,
-            "access": {
-              "read": true,
-              "updateWithSection": true,
-              "externalize": false,
-              "delete": true,
-              "write": true,
-              "manage": false
-            }
+            "id": "cejWyOfXge6"
           }
         },
         {
@@ -152,38 +132,7 @@
             "id": "lxAQ7Zs9VYR"
           },
           "trackedEntityAttribute": {
-            "id": "aejWyOfXge6",
-            "lastUpdated": "2016-08-04T11:48:56.928",
-            "created": "2014-01-09T19:12:46.551",
-            "name": "Age",
-            "shortName": "Age",
-            "formName": "formname",
-            "valueType": "TEXT",
-            "programScope": true,
-            "orgunitScope": true,
-            "displayInListNoProgram": true,
-            "displayOnVisitSchedule": true,
-            "sortOrderInListNoProgram": 0,
-            "displayName": "Age",
-            "expression": "expression",
-            "generated": true,
-            "unique": true,
-            "inherit": true,
-            "optionSet": {
-              "id": "VQ2lai3OfVG"
-            },
-            "access": {
-              "read": true,
-              "updateWithSection": true,
-              "externalize": false,
-              "delete": true,
-              "write": true,
-              "manage": false
-            },
-            "style": {
-              "color": "#556",
-              "icon": "attribute-icon"
-            }
+            "id": "aejWyOfXge6"
           }
         }
       ],

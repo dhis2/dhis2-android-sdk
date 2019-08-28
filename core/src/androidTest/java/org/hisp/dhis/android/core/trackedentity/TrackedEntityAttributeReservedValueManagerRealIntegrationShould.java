@@ -150,7 +150,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
         ProgramTrackedEntityAttribute programTrackedEntityAttribute =
                 ProgramTrackedEntityAttribute.builder()
                         .uid("ptea_uid")
-                        .trackedEntityAttribute(TrackedEntityAttribute.builder().uid(ownerUid).build())
+                        .trackedEntityAttribute(ObjectWithUid.create(ownerUid))
                         .program(ObjectWithUid.create(programUid))
                         .build();
         ProgramTrackedEntityAttributeStore.create(databaseAdapter()).insert(programTrackedEntityAttribute);

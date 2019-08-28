@@ -56,6 +56,7 @@ public class Dhis2MockServer {
     private static final String PROGRAM_STAGES_JSON = "program/program_stages.json";
     private static final String PROGRAM_RULES_JSON = "program/program_rules.json";
     private static final String TRACKED_ENTITY_TYPES_JSON = "trackedentity/tracked_entity_types.json";
+    private static final String TRACKED_ENTITY_ATTRIBUTES_JSON = "trackedentity/tracked_entity_attributes.json";
     private static final String RELATIONSHIP_TYPES_JSON = "relationship/relationship_types.json";
     private static final String OPTION_SETS_JSON = "option/option_sets.json";
     private static final String OPTION_GROUPS_JSON = "option/option_groups.json";
@@ -136,6 +137,8 @@ public class Dhis2MockServer {
                     return createMockResponse(PROGRAM_RULES_JSON);
                 } else if (path.startsWith("/api/trackedEntityTypes?")) {
                     return createMockResponse(TRACKED_ENTITY_TYPES_JSON);
+                } else if (path.startsWith("/api/trackedEntityAttributes?")) {
+                    return createMockResponse(TRACKED_ENTITY_ATTRIBUTES_JSON);
                 } else if (path.startsWith("/api/relationshipTypes?")) {
                     return createMockResponse(RELATIONSHIP_TYPES_JSON);
                 } else if (path.startsWith("/api/optionSets?")) {
@@ -187,6 +190,7 @@ public class Dhis2MockServer {
         enqueueMockResponse(PROGRAM_STAGES_JSON);
         enqueueMockResponse(PROGRAM_RULES_JSON);
         enqueueMockResponse(TRACKED_ENTITY_TYPES_JSON);
+        enqueueMockResponse(TRACKED_ENTITY_ATTRIBUTES_JSON);
         enqueueMockResponse(RELATIONSHIP_TYPES_JSON);
         enqueueMockResponse(OPTION_SETS_JSON);
         enqueueMockResponse(OPTION_GROUPS_JSON);

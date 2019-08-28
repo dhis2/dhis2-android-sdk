@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.junit.Before;
@@ -62,6 +63,9 @@ public class TrackedEntityAttributeHandlerShould {
     @Mock
     private ObjectStyle objectStyle;
 
+    @Mock
+    private Access access;
+
     // object to test
     private List<TrackedEntityAttribute> trackedEntityAttributes;
     private TrackedEntityAttributeHandler trackedEntityAttributeHandler;
@@ -77,6 +81,8 @@ public class TrackedEntityAttributeHandlerShould {
         when(trackedEntityAttribute.uid()).thenReturn("test_tracked_entity_attribute_uid");
         when(trackedEntityAttribute.style()).thenReturn(objectStyle);
         when(trackedEntityAttribute.formName()).thenReturn("form_name");
+        when(trackedEntityAttribute.access()).thenReturn(access);
+        when(access.read()).thenReturn(true);
     }
 
     @Test
@@ -86,8 +92,15 @@ public class TrackedEntityAttributeHandlerShould {
     }
 
     @Test
-    public void call_object_style_handler() throws Exception {
+    public void call_object_style_handler() {
         trackedEntityAttributeHandler.handleMany(trackedEntityAttributes);
         verify(styleHandler).handle(any(ObjectStyle.class), anyString(), anyString());
+    }
+
+    @Test
+    public void delete_tea_if_no_read_access() {
+        when(access.read()).thenReturn(false);
+        trackedEntityAttributeHandler.handleMany(trackedEntityAttributes);
+        verify(trackedEntityAttributeStore).deleteIfExists(trackedEntityAttribute.uid());
     }
 }

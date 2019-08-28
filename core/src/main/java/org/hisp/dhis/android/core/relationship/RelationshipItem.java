@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -38,14 +40,13 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DbRelationshipConstraintTypeColumnAdapter;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.RelationshipItemEnrollmentColumnAdapter;
 import org.hisp.dhis.android.core.data.database.RelationshipItemEventColumnAdapter;
 import org.hisp.dhis.android.core.data.database.RelationshipItemTrackedEntityInstanceColumnAdapter;
-import org.hisp.dhis.android.core.data.database.RelationshipWithUidColumnAdapter;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemFields;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_RelationshipItem.Builder.class)
@@ -53,8 +54,8 @@ public abstract class RelationshipItem implements Model {
 
     @Nullable
     @JsonIgnore()
-    @ColumnAdapter(RelationshipWithUidColumnAdapter.class)
-    public abstract Relationship relationship();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid relationship();
 
     @Nullable
     @JsonIgnore()
@@ -130,7 +131,7 @@ public abstract class RelationshipItem implements Model {
 
         public abstract Builder event(RelationshipItemEvent event);
 
-        public abstract Builder relationship(Relationship relationship);
+        public abstract Builder relationship(ObjectWithUid relationship);
 
         public abstract Builder relationshipItemType(RelationshipConstraintType relationshipItemType);
 

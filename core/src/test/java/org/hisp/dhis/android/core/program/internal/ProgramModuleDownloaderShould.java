@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,6 +73,9 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private TrackedEntityType trackedEntityType;
 
     @Mock
+    private TrackedEntityAttribute trackedEntityAttribute;
+
+    @Mock
     private Callable<List<Program>> programEndpointCall;
 
     @Mock
@@ -82,6 +86,9 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
 
     @Mock
     private Callable<List<TrackedEntityType>> trackedEntityTypeCall;
+
+    @Mock
+    private Callable<List<TrackedEntityAttribute>> trackedEntityAttributeCall;
 
     @Mock
     private Callable<List<RelationshipType>> relationshipTypeCall;
@@ -103,6 +110,9 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
 
     @Mock
     private UidsCallFactory<TrackedEntityType> trackedEntityCallFactory;
+
+    @Mock
+    private UidsCallFactory<TrackedEntityAttribute> trackedEntityAttributeCallFactory;
 
     @Mock
     private ListCallFactory<RelationshipType> relationshipTypeCallFactory;
@@ -143,6 +153,8 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 .thenReturn(programRuleEndpointCall);
         when(trackedEntityCallFactory.create(any(Set.class)))
                 .thenReturn(trackedEntityTypeCall);
+        when(trackedEntityAttributeCallFactory.create(any(Set.class)))
+                .thenReturn(trackedEntityAttributeCall);
         when(relationshipTypeCallFactory.create())
                 .thenReturn(relationshipTypeCall);
         when(optionSetCallFactory.create(any(Set.class)))
@@ -153,6 +165,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
         // Calls
         when(programEndpointCall.call()).thenReturn(Collections.singletonList(program));
         when(trackedEntityTypeCall.call()).thenReturn(Collections.singletonList(trackedEntityType));
+        when(trackedEntityAttributeCall.call()).thenReturn(Collections.singletonList(trackedEntityAttribute));
         when(relationshipTypeCall.call()).thenReturn(Collections.emptyList());
         when(optionSetCall.call()).thenReturn(Collections.emptyList());
         when(optionGroupCall.call()).thenReturn(Collections.emptyList());
@@ -167,6 +180,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 programStageCallFactory,
                 programRuleCallFactory,
                 trackedEntityCallFactory,
+                trackedEntityAttributeCallFactory,
                 relationshipTypeCallFactory,
                 optionSetCallFactory,
                 optionGroupCallFactory,
@@ -206,6 +220,12 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     @Test(expected = Exception.class)
     public void fail_when_tracked_entity_types_call_fail() throws Exception {
         whenEndpointCallFails(trackedEntityTypeCall);
+        programDownloadCall.call();
+    }
+
+    @Test(expected = Exception.class)
+    public void fail_when_tracked_entity_attributes_call_fail() throws Exception {
+        whenEndpointCallFails(trackedEntityAttributeCall);
         programDownloadCall.call();
     }
 

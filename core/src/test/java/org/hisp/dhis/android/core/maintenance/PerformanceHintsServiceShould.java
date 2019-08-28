@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.maintenance;
 
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramRule;
@@ -82,10 +83,10 @@ public class PerformanceHintsServiceShould {
         program1 = Program.builder().uid("p1").build();
         program2 = Program.builder().uid("p2").build();
 
-        when(programRule1.program()).thenReturn(program1);
-        when(programRule2.program()).thenReturn(program2);
-        when(programRule3.program()).thenReturn(program2);
-        when(programRule4.program()).thenReturn(program2);
+        when(programRule1.program()).thenReturn(ObjectWithUid.create(program1.uid()));
+        when(programRule2.program()).thenReturn(ObjectWithUid.create(program2.uid()));
+        when(programRule3.program()).thenReturn(ObjectWithUid.create(program2.uid()));
+        when(programRule4.program()).thenReturn(ObjectWithUid.create(program2.uid()));
 
         when(organisationUnitStore.count()).thenReturn(0);
         when(programStore.selectAll()).thenReturn(Collections.emptyList());

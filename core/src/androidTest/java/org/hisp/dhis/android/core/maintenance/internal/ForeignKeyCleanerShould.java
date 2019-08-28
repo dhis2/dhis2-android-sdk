@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.maintenance.internal;
 
 import android.database.Cursor;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
@@ -43,7 +45,6 @@ import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
-import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
 import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo;
@@ -65,8 +66,6 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.test.runner.AndroidJUnit4;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -192,7 +191,7 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
         programRuleCursor.close();
         programRuleActionCursor.close();
 
-        final Program program = Program.builder().uid("nonexisent-program").build();
+        final ObjectWithUid program = ObjectWithUid.create("nonexisent-program");
 
         executor.executeD2CallTransactionally(() -> {
             ProgramRuleStore.create(d2.databaseAdapter()).insert(ProgramRule.builder()

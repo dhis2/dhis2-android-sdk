@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -39,19 +41,10 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.DataElementWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.data.database.ProgramIndicatorWithUidColumnAdapter;
-import org.hisp.dhis.android.core.data.database.ProgramStageSectionWithUidColumnAdapter;
-import org.hisp.dhis.android.core.data.database.ProgramStageWithUidColumnAdapter;
-import org.hisp.dhis.android.core.data.database.TrackedEntityAttributeWithUidColumnAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramRuleAction.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_ProgramRuleAction.Builder.class)
 public abstract class ProgramRuleAction extends BaseIdentifiableObject implements Model {
 
     @Nullable
@@ -68,18 +61,18 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject implement
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(TrackedEntityAttributeWithUidColumnAdapter.class)
-    public abstract TrackedEntityAttribute trackedEntityAttribute();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid trackedEntityAttribute();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(ProgramIndicatorWithUidColumnAdapter.class)
-    public abstract ProgramIndicator programIndicator();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid programIndicator();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(ProgramStageSectionWithUidColumnAdapter.class)
-    public abstract ProgramStageSection programStageSection();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid programStageSection();
 
     @Nullable
     @JsonProperty()
@@ -88,13 +81,13 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject implement
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(ProgramStageWithUidColumnAdapter.class)
-    public abstract ProgramStage programStage();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid programStage();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DataElementWithUidColumnAdapter.class)
-    public abstract DataElement dataElement();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid dataElement();
 
     @Nullable
     @JsonProperty()
@@ -132,17 +125,17 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject implement
 
         public abstract Builder location(String location);
 
-        public abstract Builder trackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute);
+        public abstract Builder trackedEntityAttribute(ObjectWithUid trackedEntityAttribute);
 
-        public abstract Builder programIndicator(ProgramIndicator programIndicator);
+        public abstract Builder programIndicator(ObjectWithUid programIndicator);
 
-        public abstract Builder programStageSection(ProgramStageSection programStageSection);
+        public abstract Builder programStageSection(ObjectWithUid programStageSection);
 
         public abstract Builder programRuleActionType(ProgramRuleActionType programRuleActionType);
 
-        public abstract Builder programStage(ProgramStage programStage);
+        public abstract Builder programStage(ObjectWithUid programStage);
 
-        public abstract Builder dataElement(DataElement dataElement);
+        public abstract Builder dataElement(ObjectWithUid dataElement);
 
         public abstract Builder programRule(ObjectWithUid programRule);
 

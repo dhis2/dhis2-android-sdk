@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.relationship.internal;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 
@@ -91,9 +92,9 @@ final class RelationshipHandlerImpl implements RelationshipHandler {
 
         relationshipStore.updateOrInsert(relationship);
         relationshipItemHandler.handle(relationship.from().toBuilder()
-                .relationship(relationship).relationshipItemType(FROM).build());
+                .relationship(ObjectWithUid.create(relationship.uid())).relationshipItemType(FROM).build());
         relationshipItemHandler.handle(relationship.to().toBuilder()
-                .relationship(relationship).relationshipItemType(TO).build());
+                .relationship(ObjectWithUid.create(relationship.uid())).relationshipItemType(TO).build());
     }
 
     public boolean doesRelationshipExist(Relationship relationship) {

@@ -32,6 +32,7 @@ import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityDataValueSamples;
@@ -47,7 +48,6 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStor
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore;
-import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance;
@@ -352,7 +352,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
                             .relationshipType(relationshipType.uid()).build());
             RelationshipItemStoreImpl.create(databaseAdapter).insert(
                     RelationshipItem.builder()
-                            .relationship(Relationship.builder().uid(relationshipUid).build())
+                            .relationship(ObjectWithUid.create(relationshipUid))
                             .relationshipItemType(RelationshipConstraintType.FROM)
                             .trackedEntityInstance(
                                     RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance(fromUid).build())
@@ -360,7 +360,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
             );
             RelationshipItemStoreImpl.create(databaseAdapter).insert(
                     RelationshipItem.builder()
-                            .relationship(Relationship.builder().uid(relationshipUid).build())
+                            .relationship(ObjectWithUid.create(relationshipUid))
                             .relationshipItemType(RelationshipConstraintType.TO)
                             .trackedEntityInstance(
                                     RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance(toUid).build())

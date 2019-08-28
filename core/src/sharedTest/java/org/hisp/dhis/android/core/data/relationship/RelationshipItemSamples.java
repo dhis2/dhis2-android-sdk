@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.data.relationship;
 
-import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.relationship.RelationshipItemEvent;
@@ -39,7 +39,7 @@ public class RelationshipItemSamples {
     public static RelationshipItem getRelationshipItem() {
         return RelationshipItem.builder()
                 .id(1L)
-                .relationship(Relationship.builder().uid("relationship").build())
+                .relationship(ObjectWithUid.create("relationship"))
                 .relationshipItemType(RelationshipConstraintType.FROM)
                 .event(RelationshipItemEvent.builder().event("event").build())
                 .build();

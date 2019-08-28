@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -38,16 +40,14 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.IgnoreProgramRuleActionListAdapter;
-import org.hisp.dhis.android.core.data.database.ProgramStageWithUidColumnAdapter;
-import org.hisp.dhis.android.core.data.database.ProgramWithUidColumnAdapter;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 
 import java.util.List;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramRule.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_ProgramRule.Builder.class)
 public abstract class ProgramRule extends BaseIdentifiableObject implements Model {
 
     @Nullable
@@ -60,13 +60,13 @@ public abstract class ProgramRule extends BaseIdentifiableObject implements Mode
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(ProgramWithUidColumnAdapter.class)
-    public abstract Program program();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid program();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(ProgramStageWithUidColumnAdapter.class)
-    public abstract ProgramStage programStage();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid programStage();
 
     @Nullable
     @JsonProperty()
@@ -78,7 +78,7 @@ public abstract class ProgramRule extends BaseIdentifiableObject implements Mode
     }
 
     public static Builder builder() {
-        return new AutoValue_ProgramRule.Builder();
+        return new $$AutoValue_ProgramRule.Builder();
     }
 
     public abstract Builder toBuilder();
@@ -93,9 +93,9 @@ public abstract class ProgramRule extends BaseIdentifiableObject implements Mode
 
         public abstract Builder condition(String condition);
 
-        public abstract Builder program(Program program);
+        public abstract Builder program(ObjectWithUid program);
 
-        public abstract Builder programStage(ProgramStage programStage);
+        public abstract Builder programStage(ObjectWithUid programStage);
 
         public abstract Builder programRuleActions(List<ProgramRuleAction> programRuleActions);
 

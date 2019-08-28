@@ -43,7 +43,6 @@ import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.IgnoreProgramRuleActionListAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.data.database.ProgramStageWithUidColumnAdapter;
 
 import java.util.List;
 

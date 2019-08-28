@@ -81,11 +81,6 @@ public final class TrackedEntityModule {
         this.trackedEntityInstanceQuery = trackedEntityInstanceQuery;
     }
 
-    @Deprecated
-    public Single<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {
-        return downloadAndPersistCallFactory.getCall(uids);
-    }
-
     /**
      * Download and persists a list of TrackedEntityInstances for a specific program. This method is required to
      * download glass-protected TrackedEntityInstances.

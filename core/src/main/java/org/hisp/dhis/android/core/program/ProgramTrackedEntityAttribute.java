@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -41,10 +43,6 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.database.IgnoreValueTypeRenderingAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.data.database.TrackedEntityAttributeWithUidColumnAdapter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_ProgramTrackedEntityAttribute.Builder.class)
@@ -54,8 +52,8 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject i
     public abstract Boolean mandatory();
 
     @Nullable
-    @ColumnAdapter(TrackedEntityAttributeWithUidColumnAdapter.class)
-    public abstract TrackedEntityAttribute trackedEntityAttribute();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid trackedEntityAttribute();
 
     @Nullable
     public abstract Boolean allowFutureDate();
@@ -95,7 +93,7 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject i
 
         public abstract Builder mandatory(Boolean mandatory);
 
-        public abstract Builder trackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute);
+        public abstract Builder trackedEntityAttribute(ObjectWithUid trackedEntityAttribute);
 
         public abstract Builder allowFutureDate(Boolean allowFutureDate);
 

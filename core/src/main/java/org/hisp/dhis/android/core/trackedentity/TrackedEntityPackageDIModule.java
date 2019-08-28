@@ -63,6 +63,18 @@ public final class TrackedEntityPackageDIModule {
 
     @Provides
     @Reusable
+    UidsCallFactory<TrackedEntityAttribute> trackedEntityAttributeCallFactory(TrackedEntityAttributeCallFactory impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    TrackedEntityAttributeService trackedEntityAttributeService(Retrofit retrofit) {
+        return retrofit.create(TrackedEntityAttributeService.class);
+    }
+
+    @Provides
+    @Reusable
     QueryCallFactory<TrackedEntityAttributeReservedValue,
             TrackedEntityAttributeReservedValueQuery> dataValueCallFactory(
             TrackedEntityAttributeReservedValueEndpointCallFactory impl) {

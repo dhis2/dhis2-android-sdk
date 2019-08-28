@@ -30,12 +30,10 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.DictionaryTableHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 import javax.inject.Inject;
 
@@ -44,16 +42,13 @@ import dagger.Reusable;
 @Reusable
 final class ProgramTrackedEntityAttributeHandler extends IdentifiableHandlerImpl<ProgramTrackedEntityAttribute> {
 
-    private final Handler<TrackedEntityAttribute> trackedEntityAttributeHandler;
     private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     @Inject
     ProgramTrackedEntityAttributeHandler(
             IdentifiableObjectStore<ProgramTrackedEntityAttribute> store,
-            Handler<TrackedEntityAttribute> trackedEntityAttributeHandler,
             DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
         super(store);
-        this.trackedEntityAttributeHandler = trackedEntityAttributeHandler;
         this.renderTypeHandler = renderTypeHandler;
     }
 
@@ -61,14 +56,8 @@ final class ProgramTrackedEntityAttributeHandler extends IdentifiableHandlerImpl
     protected void afterObjectHandled(ProgramTrackedEntityAttribute programTrackedEntityAttribute,
                                       HandleAction action) {
         if (action != HandleAction.Delete) {
-            trackedEntityAttributeHandler.handle(programTrackedEntityAttribute.trackedEntityAttribute());
             renderTypeHandler.handle(programTrackedEntityAttribute.renderType(), programTrackedEntityAttribute.uid(),
                     ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name());
         }
-    }
-
-    @Override
-    protected boolean deleteIfCondition(ProgramTrackedEntityAttribute programTrackedEntityAttribute) {
-        return !programTrackedEntityAttribute.trackedEntityAttribute().access().read();
     }
 }

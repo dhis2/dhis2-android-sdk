@@ -58,8 +58,7 @@ public final class ProgramTrackedEntityAttributeFields {
                     fh.<Boolean>field(DISPLAY_IN_LIST),
                     fh.<Integer>field(SORT_ORDER),
                     fh.<Boolean>field(SEARCHABLE),
-                    fh.<TrackedEntityAttribute>nestedField(TRACKED_ENTITY_ATTRIBUTE)
-                            .with(TrackedEntityAttributeFields.allFields),
+                    fh.<TrackedEntityAttribute>nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTE),
                     fh.<ValueTypeRendering>field(RENDER_TYPE)
                     ).build();
 

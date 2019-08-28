@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.Access;
@@ -54,6 +55,10 @@ public final class TrackedEntityAttributeFields {
     public static final String FORM_NAME = "formName";
 
     private static final FieldsHelper<TrackedEntityAttribute> fh = new FieldsHelper<>();
+
+    static final Field<TrackedEntityAttribute, String> uid = fh.uid();
+
+    static final Field<TrackedEntityAttribute, String> lastUpdated = fh.lastUpdated();
 
     public static final Fields<TrackedEntityAttribute> allFields = Fields.<TrackedEntityAttribute>builder()
             .fields(fh.getNameableFields())

@@ -28,41 +28,26 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 
-import dagger.Reusable;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-@Reusable
-final class TrackedEntityAttributeHandler extends IdentifiableHandlerImpl<TrackedEntityAttribute> {
-    private final ObjectStyleHandler styleHandler;
+public interface TrackedEntityAttributeService {
 
-    @Inject
-    TrackedEntityAttributeHandler(IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore,
-                                  ObjectStyleHandler styleHandler) {
-        super(trackedEntityAttributeStore);
-        this.styleHandler = styleHandler;
-    }
-
-    @Override
-    protected TrackedEntityAttribute beforeObjectHandled(TrackedEntityAttribute o) {
-        return o.formName() == null ? o.toBuilder().formName(o.name()).build() : o;
-    }
-
-    @Override
-    protected void afterObjectHandled(TrackedEntityAttribute trackedEntityAttribute, HandleAction action) {
-        if (action != HandleAction.Delete) {
-            styleHandler.handle(trackedEntityAttribute.style(), trackedEntityAttribute.uid(),
-                    TrackedEntityAttributeTableInfo.TABLE_INFO.name());
-        }
-    }
-
-    @Override
-    protected boolean deleteIfCondition(TrackedEntityAttribute trackedEntityAttribute) {
-        return !trackedEntityAttribute.access().read();
-    }
+    @GET("trackedEntityAttributes")
+    Call<Payload<TrackedEntityAttribute>> getTrackedEntityAttributes(
+            @NonNull @Query("fields") @Which Fields<TrackedEntityAttribute> fields,
+            @NonNull @Query("filter") @Where Filter<TrackedEntityAttribute, String> idFilter,
+            @Nullable @Query("filter") @Where Filter<TrackedEntityAttribute, String> lastUpdated,
+            @NonNull @Query("paging") boolean paging
+    );
 }

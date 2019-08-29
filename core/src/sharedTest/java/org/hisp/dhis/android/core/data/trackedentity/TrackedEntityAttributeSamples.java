@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.data.trackedentity;
 
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
@@ -45,7 +45,7 @@ public class TrackedEntityAttributeSamples {
                 .id(1L)
                 .pattern("pattern")
                 .sortOrderInListNoProgram(1)
-                .optionSet(OptionSet.builder().uid("option_set_uid").build())
+                .optionSet(ObjectWithUid.create("option_set_uid"))
                 .valueType(ValueType.BOOLEAN)
                 .expression("expression")
                 .programScope(Boolean.TRUE)

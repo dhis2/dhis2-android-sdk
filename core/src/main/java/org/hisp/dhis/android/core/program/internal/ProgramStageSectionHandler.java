@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
@@ -45,7 +44,6 @@ import dagger.Reusable;
 
 @Reusable
 final class ProgramStageSectionHandler extends IdentifiableHandlerImpl<ProgramStageSection> {
-    private final Handler<ProgramIndicator> programIndicatorHandler;
     private final LinkHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLink>
             programStageSectionProgramIndicatorLinkHandler;
     private final OrderedLinkHandler<DataElement, ProgramStageSectionDataElementLink>
@@ -53,13 +51,11 @@ final class ProgramStageSectionHandler extends IdentifiableHandlerImpl<ProgramSt
 
     @Inject
     ProgramStageSectionHandler(IdentifiableObjectStore<ProgramStageSection> programStageSectionStore,
-                               Handler<ProgramIndicator> programIndicatorHandler,
                                LinkHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLink>
                                        programStageSectionProgramIndicatorLinkHandler,
                                OrderedLinkHandler<DataElement, ProgramStageSectionDataElementLink>
                                        programStageSectionDataElementLinkHandler) {
         super(programStageSectionStore);
-        this.programIndicatorHandler = programIndicatorHandler;
         this.programStageSectionProgramIndicatorLinkHandler = programStageSectionProgramIndicatorLinkHandler;
         this.programStageSectionDataElementLinkHandler = programStageSectionDataElementLinkHandler;
     }
@@ -74,8 +70,6 @@ final class ProgramStageSectionHandler extends IdentifiableHandlerImpl<ProgramSt
                         .dataElement(dataElement.uid())
                         .sortOrder(sortOrder)
                         .build());
-
-        programIndicatorHandler.handleMany(programStageSection.programIndicators());
 
         programStageSectionProgramIndicatorLinkHandler.handleMany(programStageSection.uid(),
                 programStageSection.programIndicators(),

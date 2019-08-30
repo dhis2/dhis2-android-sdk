@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.fields.internal.NestedField;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Property;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.AggregationType;
@@ -54,7 +53,6 @@ public final class ProgramIndicatorFields {
     private static final FieldsHelper<ProgramIndicator> fh = new FieldsHelper<>();
 
     static final Property<ProgramIndicator, Boolean> uid = fh.field(UID);
-    static final NestedField<ProgramIndicator, ?> programWithUid = fh.nestedFieldWithUid(PROGRAM);
 
     public static final Fields<ProgramIndicator> allFields = Fields.<ProgramIndicator>builder()
             .fields(fh.getNameableFields())

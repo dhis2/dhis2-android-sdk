@@ -30,9 +30,6 @@ package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
-import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
 import org.hisp.dhis.android.core.program.ProgramStageSectionRendering;
 
@@ -49,9 +46,8 @@ public final class ProgramStageSectionFields {
             .fields(fh.getIdentifiableFields())
             .fields(
                     fh.<Integer>field(SORT_ORDER),
-                    fh.<ProgramIndicator>nestedField(PROGRAM_INDICATORS)
-                            .with(ProgramIndicatorFields.uid, ProgramIndicatorFields.programWithUid),
-                    fh.<DataElement>nestedField(DATA_ELEMENTS).with(DataElementFields.uid),
+                    fh.nestedFieldWithUid(PROGRAM_INDICATORS),
+                    fh.nestedFieldWithUid(DATA_ELEMENTS),
                     fh.<ProgramStageSectionRendering>nestedField(RENDER_TYPE)
             ).build();
 

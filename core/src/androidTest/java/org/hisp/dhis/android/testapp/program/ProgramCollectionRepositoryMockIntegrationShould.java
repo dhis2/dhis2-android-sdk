@@ -332,7 +332,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void include_program_indicators_as_children() {
         Program program = d2.programModule().programs
                 .withProgramIndicators().one().blockingGet();
-        assertThat(program.programIndicators().size(), is(4));
+        assertThat(program.programIndicators().size(), is(2));
         assertThat(program.programIndicators().get(0).name(), is("Age at visit"));
     }
 

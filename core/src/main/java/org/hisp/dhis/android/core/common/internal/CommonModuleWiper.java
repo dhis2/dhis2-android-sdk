@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.common.internal;
 
 import org.hisp.dhis.android.core.common.ObjectStyleTableInfo;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingTableInfo;
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.internal.TableWiper;
 
 import javax.inject.Inject;
 

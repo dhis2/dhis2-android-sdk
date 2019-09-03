@@ -26,32 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.wipe;
+package org.hisp.dhis.android.core.wipe.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-public final class TableWiper {
+@Module()
+public final class WipeDIModule {
 
-    private final DatabaseAdapter databaseAdapter;
-
-    @Inject
-    public TableWiper(DatabaseAdapter databaseAdapter) {
-        this.databaseAdapter = databaseAdapter;
-    }
-
-    public void wipeTable(TableInfo tableInfo) {
-        databaseAdapter.delete(tableInfo.name());
-    }
-
-    public void wipeTables(TableInfo... tableInfos) {
-        for (TableInfo tableInfo: tableInfos) {
-            wipeTable(tableInfo);
-        }
+    @Provides
+    @Reusable
+    WipeModule wipeModule(D2CallExecutor d2CallExecutor, D2ModuleWipers moduleWipers) {
+        return new WipeModuleImpl(d2CallExecutor, moduleWipers.wipers);
     }
 }

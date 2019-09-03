@@ -29,8 +29,8 @@ package org.hisp.dhis.android.core.maintenance.internal;
 
 import org.hisp.dhis.android.core.maintenance.D2ErrorTableInfo;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo;
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.internal.TableWiper;
 
 import javax.inject.Inject;
 

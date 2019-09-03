@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core;
 
 import android.content.Context;
 
-import androidx.annotation.VisibleForTesting;
-
 import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule;
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
@@ -74,11 +72,12 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
 import org.hisp.dhis.android.core.user.internal.UserPackageDIModule;
-import org.hisp.dhis.android.core.wipe.WipeDIModule;
-import org.hisp.dhis.android.core.wipe.WipeModule;
+import org.hisp.dhis.android.core.wipe.internal.WipeDIModule;
+import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 
 import javax.inject.Singleton;
 
+import androidx.annotation.VisibleForTesting;
 import dagger.Component;
 import retrofit2.Retrofit;
 

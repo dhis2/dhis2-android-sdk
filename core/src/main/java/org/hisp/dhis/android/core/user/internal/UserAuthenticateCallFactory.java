@@ -44,7 +44,7 @@ import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.wipe.WipeModule;
+import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 
 import javax.inject.Inject;
 

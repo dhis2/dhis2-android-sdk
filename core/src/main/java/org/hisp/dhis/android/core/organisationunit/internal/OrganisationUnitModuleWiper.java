@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInf
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.internal.TableWiper;
 
 import javax.inject.Inject;
 

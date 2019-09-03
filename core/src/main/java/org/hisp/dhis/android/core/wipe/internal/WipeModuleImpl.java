@@ -26,20 +26,62 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.wipe;
+package org.hisp.dhis.android.core.wipe.internal;
 
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
+import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import java.util.List;
 
-@Module()
-public final class WipeDIModule {
+final class WipeModuleImpl implements WipeModule {
 
-    @Provides
-    @Reusable
-    WipeModule wipeModule(D2CallExecutor d2CallExecutor, D2ModuleWipers moduleWipers) {
-        return new WipeModuleImpl(d2CallExecutor, moduleWipers.wipers);
+    private final D2CallExecutor d2CallExecutor;
+    private final List<ModuleWiper> moduleWipers;
+
+    WipeModuleImpl(D2CallExecutor d2CallExecutor,
+                   List<ModuleWiper> moduleWipers) {
+        this.d2CallExecutor = d2CallExecutor;
+        this.moduleWipers = moduleWipers;
+    }
+
+    @Override
+    public Unit wipeEverything() throws D2Error {
+        return d2CallExecutor.executeD2CallTransactionally(() -> {
+            wipeMetadataInternal();
+            wipeDataInternal();
+
+            return new Unit();
+        });
+    }
+
+    @Override
+    public Unit wipeMetadata() throws D2Error {
+        return d2CallExecutor.executeD2CallTransactionally(() -> {
+            wipeMetadataInternal();
+
+            return new Unit();
+        });
+    }
+
+    @Override
+    public Unit wipeData() throws D2Error {
+        return d2CallExecutor.executeD2CallTransactionally(() -> {
+            wipeDataInternal();
+
+            return new Unit();
+        });
+    }
+
+    private void wipeMetadataInternal() {
+        for (ModuleWiper moduleWiper : moduleWipers) {
+            moduleWiper.wipeMetadata();
+        }
+    }
+
+    private void wipeDataInternal() {
+        for (ModuleWiper moduleWiper : moduleWipers) {
+            moduleWiper.wipeData();
+        }
     }
 }

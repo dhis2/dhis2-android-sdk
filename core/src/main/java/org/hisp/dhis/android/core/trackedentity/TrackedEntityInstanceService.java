@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse;
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse;
-import org.hisp.dhis.android.core.trackedentity.search.SearchGrid;
+import org.hisp.dhis.android.core.trackedentity.search.internal.SearchGrid;
 
 import java.util.List;
 

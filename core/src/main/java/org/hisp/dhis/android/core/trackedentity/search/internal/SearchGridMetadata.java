@@ -26,50 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search;
+package org.hisp.dhis.android.core.trackedentity.search.internal;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
+import java.util.Map;
+
 import androidx.annotation.NonNull;
 
 @AutoValue
-public abstract class SearchGridHeader {
-    private final static String NAME = "name";
-    private final static String COLUMN = "column";
-    private final static String TYPE = "type";
-    private final static String HIDDEN = "hidden";
-    private final static String META = "meta";
+abstract class SearchGridMetadata {
+    private final static String NAMES = "names";
 
     @NonNull
-    @JsonProperty(NAME)
-    public abstract String name();
-
-    @NonNull
-    @JsonProperty(COLUMN)
-    public abstract String column();
-
-    @NonNull
-    @JsonProperty(TYPE)
-    public abstract String type();
-
-    @NonNull
-    @JsonProperty(HIDDEN)
-    public abstract Boolean hidden();
-
-    @NonNull
-    @JsonProperty(META)
-    public abstract Boolean meta();
+    @JsonProperty(NAMES)
+    abstract Map<String, String> names();
 
     @JsonCreator
-    static SearchGridHeader create(
-            @JsonProperty(NAME) String name,
-            @JsonProperty(COLUMN) String column,
-            @JsonProperty(TYPE) String type,
-            @JsonProperty(HIDDEN) Boolean hidden,
-            @JsonProperty(META) Boolean meta) {
+    static SearchGridMetadata create(
+            @JsonProperty(NAMES) Map<String, String> names) {
 
-        return new AutoValue_SearchGridHeader(name, column, type, hidden, meta);
+        return new AutoValue_SearchGridMetadata(names);
     }
 }

@@ -26,53 +26,52 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search;
+package org.hisp.dhis.android.core.trackedentity.search.internal;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 
 @AutoValue
-public abstract class TrackedEntityInstanceQueryRepositoryScope {
+public abstract class SearchGrid {
+    private final static String HEADERS = "headers";
+    private final static String META_DATA = "metaData";
+    private final static String WIDTH = "width";
+    private final static String HEIGHT = "height";
+    private final static String ROWS = "rows";
 
     @NonNull
-    public abstract RepositoryMode mode();
+    @JsonProperty(HEADERS)
+    public abstract List<SearchGridHeader> headers();
 
     @NonNull
-    public abstract TrackedEntityInstanceQuery query();
+    @JsonProperty(META_DATA)
+    public abstract SearchGridMetadata metaData();
 
-    public abstract Builder toBuilder();
+    @NonNull
+    @JsonProperty(WIDTH)
+    public abstract Integer width();
 
-    public static Builder builder() {
-        return new AutoValue_TrackedEntityInstanceQueryRepositoryScope.Builder()
-                .mode(RepositoryMode.OFFLINE_ONLY)
-                .query(TrackedEntityInstanceQuery.empty());
-    }
+    @NonNull
+    @JsonProperty(HEIGHT)
+    public abstract Integer height();
 
-    public static TrackedEntityInstanceQueryRepositoryScope empty() {
-        return builder().build();
-    }
+    @NonNull
+    @JsonProperty(ROWS)
+    public abstract List<List<String>> rows();
 
-    @AutoValue.Builder
-    public abstract static class Builder {
+    @JsonCreator
+    static SearchGrid create(
+            @JsonProperty(HEADERS) List<SearchGridHeader> headers,
+            @JsonProperty(META_DATA) SearchGridMetadata metaData,
+            @JsonProperty(WIDTH) Integer width,
+            @JsonProperty(HEIGHT) Integer height,
+            @JsonProperty(ROWS) List<List<String>> rows) {
 
-        public abstract Builder mode(RepositoryMode mode);
-
-        public abstract Builder query(TrackedEntityInstanceQuery query);
-
-        abstract TrackedEntityInstanceQueryRepositoryScope autoBuild();
-
-        // Auxiliary fields to access values
-        abstract TrackedEntityInstanceQuery query();
-
-        public TrackedEntityInstanceQueryRepositoryScope build() {
-            if (query() != null && query().states() != null) {
-                mode(RepositoryMode.OFFLINE_ONLY);
-            }
-
-            return autoBuild();
-        }
+        return new AutoValue_SearchGrid(headers, metaData, width, height, rows);
     }
 }

@@ -26,13 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search;
+package org.hisp.dhis.android.core.trackedentity.search.internal;
 
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.trackedentity.search.QueryFilter;
+import org.hisp.dhis.android.core.trackedentity.search.QueryItem;
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 
 import java.util.ArrayList;
 import java.util.Date;

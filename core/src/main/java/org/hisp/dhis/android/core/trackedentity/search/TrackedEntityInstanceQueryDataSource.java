@@ -34,6 +34,8 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryCallFactory;
+import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryRepositoryScope;
 
 import java.util.ArrayList;
 import java.util.Collections;

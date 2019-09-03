@@ -26,28 +26,54 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search;
+package org.hisp.dhis.android.core.trackedentity.search.internal;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
-import java.util.Map;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 
 import androidx.annotation.NonNull;
 
 @AutoValue
-public abstract class SearchGridMetadata {
-    private final static String NAMES = "names";
+public abstract class TrackedEntityInstanceQueryRepositoryScope {
 
     @NonNull
-    @JsonProperty(NAMES)
-    public abstract Map<String, String> names();
+    public abstract RepositoryMode mode();
 
-    @JsonCreator
-    static SearchGridMetadata create(
-            @JsonProperty(NAMES) Map<String, String> names) {
+    @NonNull
+    public abstract TrackedEntityInstanceQuery query();
 
-        return new AutoValue_SearchGridMetadata(names);
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_TrackedEntityInstanceQueryRepositoryScope.Builder()
+                .mode(RepositoryMode.OFFLINE_ONLY)
+                .query(TrackedEntityInstanceQuery.empty());
+    }
+
+    public static TrackedEntityInstanceQueryRepositoryScope empty() {
+        return builder().build();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+        public abstract Builder mode(RepositoryMode mode);
+
+        public abstract Builder query(TrackedEntityInstanceQuery query);
+
+        abstract TrackedEntityInstanceQueryRepositoryScope autoBuild();
+
+        // Auxiliary fields to access values
+        abstract TrackedEntityInstanceQuery query();
+
+        public TrackedEntityInstanceQueryRepositoryScope build() {
+            if (query() != null && query().states() != null) {
+                mode(RepositoryMode.OFFLINE_ONLY);
+            }
+
+            return autoBuild();
+        }
     }
 }

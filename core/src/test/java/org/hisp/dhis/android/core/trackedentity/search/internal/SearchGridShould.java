@@ -26,10 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search;
+package org.hisp.dhis.android.core.trackedentity.search.internal;
 
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.trackedentity.search.internal.SearchGrid;
+import org.hisp.dhis.android.core.trackedentity.search.internal.SearchGridHeader;
+import org.hisp.dhis.android.core.trackedentity.search.internal.SearchGridMetadata;
 import org.junit.Test;
 
 import java.io.IOException;

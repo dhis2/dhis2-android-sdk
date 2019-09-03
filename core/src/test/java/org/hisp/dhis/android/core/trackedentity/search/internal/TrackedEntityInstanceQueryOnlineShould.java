@@ -25,8 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.search;
+package org.hisp.dhis.android.core.trackedentity.search.internal;
 
+import org.hisp.dhis.android.core.trackedentity.search.QueryFilter;
+import org.hisp.dhis.android.core.trackedentity.search.QueryItem;
+import org.hisp.dhis.android.core.trackedentity.search.QueryOperator;
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.trackedentity.search;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryCallFactory;
+import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryRepositoryScope;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

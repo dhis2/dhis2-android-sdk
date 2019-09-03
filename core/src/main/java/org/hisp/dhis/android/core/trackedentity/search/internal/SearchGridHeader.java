@@ -26,19 +26,50 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search;
+package org.hisp.dhis.android.core.trackedentity.search.internal;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
 
-@Module
-public final class TrackedEntityInstanceQueryEntityDIModule {
+import androidx.annotation.NonNull;
 
-    @Provides
-    @Reusable
-    public TrackedEntityInstanceQueryRepositoryScope empty() {
-        return TrackedEntityInstanceQueryRepositoryScope.empty();
+@AutoValue
+abstract class SearchGridHeader {
+    private final static String NAME = "name";
+    private final static String COLUMN = "column";
+    private final static String TYPE = "type";
+    private final static String HIDDEN = "hidden";
+    private final static String META = "meta";
+
+    @NonNull
+    @JsonProperty(NAME)
+    abstract String name();
+
+    @NonNull
+    @JsonProperty(COLUMN)
+    abstract String column();
+
+    @NonNull
+    @JsonProperty(TYPE)
+    abstract String type();
+
+    @NonNull
+    @JsonProperty(HIDDEN)
+    abstract Boolean hidden();
+
+    @NonNull
+    @JsonProperty(META)
+    abstract Boolean meta();
+
+    @JsonCreator
+    static SearchGridHeader create(
+            @JsonProperty(NAME) String name,
+            @JsonProperty(COLUMN) String column,
+            @JsonProperty(TYPE) String type,
+            @JsonProperty(HIDDEN) Boolean hidden,
+            @JsonProperty(META) Boolean meta) {
+
+        return new AutoValue_SearchGridHeader(name, column, type, hidden, meta);
     }
-
 }

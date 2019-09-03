@@ -26,37 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils;
+package org.hisp.dhis.android.core.arch.helpers.internal;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+public class BooleanWrapper {
+    private boolean value;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-
-@RunWith(JUnit4.class)
-public class UserUtilsShould {
-
-    @Test
-    public void md5_evaluate_same_string() {
-        String md5s1 = UserUtils.md5("user1","password1");
-        String md5s2 = UserUtils.md5("user1","password1");
-
-        assertThat(md5s1.length()).isEqualTo(32);
-        assertThat(md5s2.length()).isEqualTo(32);
-
-        assertThat(md5s1.equals(md5s2)).isTrue();
+    public BooleanWrapper(boolean value) {
+        this.value = value;
     }
 
-    @Test
-    public void md5_evaluate_different_string() {
-        String md5s1 = UserUtils.md5("user2", "password2");
-        String md5s2 = UserUtils.md5("user3", "password3");
-
-        assertThat(md5s1.length()).isEqualTo(32);
-        assertThat(md5s2.length()).isEqualTo(32);
-
-        assertThat(md5s1.equals(md5s2)).isFalse();
+    public boolean get() {
+        return value;
     }
 
+    public void set(boolean value) {
+        this.value = value;
+    }
 }

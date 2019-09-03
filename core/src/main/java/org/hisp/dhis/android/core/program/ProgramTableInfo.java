@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.program.internal.ProgramFields;
-import org.hisp.dhis.android.core.utils.Utils;
 
 public final class ProgramTableInfo {
 
@@ -56,7 +56,7 @@ public final class ProgramTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     ProgramFields.VERSION,
                     ProgramFields.ONLY_ENROLL_ONCE,
                     ProgramFields.ENROLLMENT_DATE_LABEL,

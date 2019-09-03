@@ -62,8 +62,8 @@ import io.reactivex.observers.TestObserver;
 
 import static okhttp3.Credentials.basic;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.hisp.dhis.android.core.utils.UserUtils.base64;
-import static org.hisp.dhis.android.core.utils.UserUtils.md5;
+import static org.hisp.dhis.android.core.arch.helpers.UserHelper.base64;
+import static org.hisp.dhis.android.core.arch.helpers.UserHelper.md5;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;

@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintFields;
-import org.hisp.dhis.android.core.utils.Utils;
 
 public final class RelationshipConstraintTableInfo {
 
@@ -54,7 +54,7 @@ public final class RelationshipConstraintTableInfo {
     static class Columns extends BaseModel.Columns {
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     RelationshipConstraintFields.RELATIONSHIP_TYPE,
                     RelationshipConstraintFields.CONSTRAINT_TYPE,
                     RelationshipConstraintFields.RELATIONSHIP_ENTITY,

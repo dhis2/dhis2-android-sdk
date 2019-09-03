@@ -26,43 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.arch.helpers;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseModel;
 
-public final class ProgramSectionAttributeLinkTableInfo {
+import java.util.Random;
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+import androidx.annotation.NonNull;
 
-        @Override
-        public String name() {
-            return "ProgramSectionAttributeLink";
+public final class CodeGeneratorImpl implements CodeGenerator {
+    private static final String LETTERS = "abcdefghijklmnopqrstuvwxyz"
+            + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    private static final String ALLOWED_CHARS = "0123456789" + LETTERS;
+    private static final int NUMBER_OF_CODEPOINTS = ALLOWED_CHARS.length();
+    private static final int CODESIZE = 11;
+
+    @NonNull
+    @Override
+    public String generate() {
+        Random sr = new Random();
+
+        char[] randomChars = new char[CODESIZE];
+
+        // First char should be a letter
+        randomChars[0] = LETTERS.charAt(sr.nextInt(LETTERS.length()));
+
+        for (int i = 1; i < CODESIZE; ++i) {
+            randomChars[i] = ALLOWED_CHARS.charAt(
+                    sr.nextInt(NUMBER_OF_CODEPOINTS));
         }
 
-        @Override
-        public Columns columns() {
-            return new Columns();
-        }
-    };
-
-    private ProgramSectionAttributeLinkTableInfo() {
-    }
-
-    public static class Columns extends BaseModel.Columns {
-
-        public static final String PROGRAM_SECTION = "programSection";
-        public static final String ATTRIBUTE = "attribute";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(), PROGRAM_SECTION, ATTRIBUTE);
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return all();
-        }
+        return new String(randomChars);
     }
 }

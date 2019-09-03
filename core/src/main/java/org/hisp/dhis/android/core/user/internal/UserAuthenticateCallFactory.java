@@ -54,8 +54,8 @@ import io.reactivex.Single;
 import retrofit2.Call;
 
 import static okhttp3.Credentials.basic;
-import static org.hisp.dhis.android.core.utils.UserUtils.base64;
-import static org.hisp.dhis.android.core.utils.UserUtils.md5;
+import static org.hisp.dhis.android.core.arch.helpers.UserHelper.base64;
+import static org.hisp.dhis.android.core.arch.helpers.UserHelper.md5;
 
 @Reusable
 public final class UserAuthenticateCallFactory {

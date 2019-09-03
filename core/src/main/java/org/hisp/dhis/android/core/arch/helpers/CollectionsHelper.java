@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils;
+package org.hisp.dhis.android.core.arch.helpers;
 
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 
@@ -44,9 +44,9 @@ import androidx.annotation.Nullable;
 /**
  * A collection of utility abstractions
  */
-public final class Utils {
+public final class CollectionsHelper {
 
-    private Utils() {
+    private CollectionsHelper() {
         // no instances
     }
 

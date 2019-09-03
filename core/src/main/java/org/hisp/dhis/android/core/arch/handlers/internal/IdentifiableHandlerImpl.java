@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isDeleted;
 
 public class IdentifiableHandlerImpl<O extends ObjectWithUidInterface & ObjectWithDeleteInterface>
         extends HandlerBaseImpl<O> {

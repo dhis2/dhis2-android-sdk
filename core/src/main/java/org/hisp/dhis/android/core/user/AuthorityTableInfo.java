@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
 
 public final class AuthorityTableInfo {
 
@@ -55,14 +55,14 @@ public final class AuthorityTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     NAME
             );
         }
 
         @Override
         public String[] whereUpdate() {
-            return Utils.appendInNewArray(super.whereUpdate(),
+            return CollectionsHelper.appendInNewArray(super.whereUpdate(),
                     NAME
             );
         }

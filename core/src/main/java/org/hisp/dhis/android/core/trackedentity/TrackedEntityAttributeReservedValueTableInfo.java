@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
 
 public final class TrackedEntityAttributeReservedValueTableInfo {
 
@@ -62,7 +62,7 @@ public final class TrackedEntityAttributeReservedValueTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     OWNER_OBJECT,
                     OWNER_UID,
                     KEY,
@@ -76,7 +76,7 @@ public final class TrackedEntityAttributeReservedValueTableInfo {
 
         @Override
         public String[] whereUpdate() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     OWNER_UID,
                     VALUE,
                     ORGANISATION_UNIT

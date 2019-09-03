@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 
 import javax.inject.Inject;
 
@@ -49,8 +49,8 @@ final class TrackedEntityInstancesEndpointCallFactory {
     }
 
     Single<Payload<TrackedEntityInstance>> getCall(final TeiQuery query) {
-        String uidStr = query.uids().isEmpty() ? null : Utils.joinCollectionWithSeparator(query.uids(), ";");
-        String ouStr = query.orgUnits().isEmpty() ? null : Utils.joinCollectionWithSeparator(query.orgUnits(), ";");
+        String uidStr = query.uids().isEmpty() ? null : CollectionsHelper.joinCollectionWithSeparator(query.uids(), ";");
+        String ouStr = query.orgUnits().isEmpty() ? null : CollectionsHelper.joinCollectionWithSeparator(query.orgUnits(), ";");
 
         return trackedEntityInstanceService.getTrackedEntityInstances(uidStr, ouStr,
                 query.ouMode().name(), query.program(), TrackedEntityInstanceFields.allFields, Boolean.TRUE,

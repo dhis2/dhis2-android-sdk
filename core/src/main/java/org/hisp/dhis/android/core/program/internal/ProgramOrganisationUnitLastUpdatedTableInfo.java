@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
 
 public final class ProgramOrganisationUnitLastUpdatedTableInfo {
 
@@ -57,7 +57,7 @@ public final class ProgramOrganisationUnitLastUpdatedTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     PROGRAM,
                     ORGANISATION_UNIT,
                     LAST_SYNCED
@@ -66,7 +66,7 @@ public final class ProgramOrganisationUnitLastUpdatedTableInfo {
 
         @Override
         public String[] whereUpdate() {
-            return Utils.appendInNewArray(super.whereUpdate(),
+            return CollectionsHelper.appendInNewArray(super.whereUpdate(),
                     PROGRAM,
                     ORGANISATION_UNIT
             );

@@ -29,10 +29,10 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorFields;
-import org.hisp.dhis.android.core.utils.Utils;
 
 public final class ProgramIndicatorTableInfo {
 
@@ -56,7 +56,7 @@ public final class ProgramIndicatorTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     ProgramIndicatorFields.DISPLAY_IN_FORM,
                     ProgramIndicatorFields.EXPRESSION,
                     ProgramIndicatorFields.DIMENSION_ITEM,

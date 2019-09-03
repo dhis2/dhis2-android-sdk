@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.systeminfo;
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -37,7 +38,6 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
-import org.hisp.dhis.android.core.utils.Utils;
 
 import javax.inject.Inject;
 
@@ -80,7 +80,7 @@ class SystemInfoCall implements CompletableProvider {
                                 .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
                                 .errorDescription("Server DHIS version (" + systemInfo.version() + ") not valid. "
                                         + "Allowed versions: "
-                                        + Utils.commaAndSpaceSeparatedArrayValues(DHISVersion.allowedVersionsAsStr()))
+                                        + CollectionsHelper.commaAndSpaceSeparatedArrayValues(DHISVersion.allowedVersionsAsStr()))
                                 .build();
                     }
 

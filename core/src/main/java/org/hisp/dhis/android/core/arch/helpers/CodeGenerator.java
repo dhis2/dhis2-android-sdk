@@ -26,20 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.internal;
+package org.hisp.dhis.android.core.arch.helpers;
 
-public class BooleanWrapper {
-    private boolean value;
+import androidx.annotation.NonNull;
 
-    public BooleanWrapper(boolean value) {
-        this.value = value;
-    }
+public interface CodeGenerator {
 
-    public boolean get() {
-        return value;
-    }
-
-    public void set(boolean value) {
-        this.value = value;
-    }
+    /**
+     * Generates a pseudo random string using the allowed characters. Code is
+     * 11 characters long.
+     */
+    @NonNull
+    String generate();
 }

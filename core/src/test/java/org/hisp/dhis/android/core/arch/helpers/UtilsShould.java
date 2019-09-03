@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils;
+package org.hisp.dhis.android.core.arch.helpers;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +46,7 @@ public class UtilsShould {
     public void set_partition_returns_empty_array() {
         Set<String> list = new HashSet<>();
 
-        List<Set<String>> partition = Utils.setPartition(list, 10);
+        List<Set<String>> partition = CollectionsHelper.setPartition(list, 10);
         assertThat(partition).isEmpty();
     }
 
@@ -56,7 +56,7 @@ public class UtilsShould {
         list.add("first");
         list.add("second");
 
-        List<Set<String>> partition = Utils.setPartition(list, 10);
+        List<Set<String>> partition = CollectionsHelper.setPartition(list, 10);
         assertThat(partition.size()).isEqualTo(1);
         assertThat(partition.get(0).size()).isEqualTo(2);
         assertThat(containsElementsInList(partition, list)).isTrue();
@@ -69,7 +69,7 @@ public class UtilsShould {
             list.add("element" + i);
         }
 
-        List<Set<String>> partition = Utils.setPartition(list, 10);
+        List<Set<String>> partition = CollectionsHelper.setPartition(list, 10);
         assertThat(partition.size()).isEqualTo(2);
         assertThat(partition.get(0).size()).isEqualTo(10);
         assertThat(partition.get(1).size()).isEqualTo(10);

@@ -26,16 +26,45 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils;
+package org.hisp.dhis.android.core.arch.helpers;
 
-import androidx.annotation.NonNull;
+import com.google.android.gms.common.util.Hex;
 
-public interface CodeGenerator {
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
-    /**
-     * Generates a pseudo random string using the allowed characters. Code is
-     * 11 characters long.
-     */
-    @NonNull
-    String generate();
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import okio.ByteString;
+
+public final class UserHelper {
+
+    private UserHelper() {
+        // no instances
+    }
+
+    public static String base64(String username, String password) {
+        String usernameAndPassword = username + ":" + password;
+        byte[] bytes = usernameAndPassword.getBytes(StandardCharsets.ISO_8859_1);
+        return ByteString.of(bytes).base64();
+    }
+
+    @SuppressFBWarnings({"DM_CONVERT_CASE"})
+    @SuppressWarnings({"PMD.UseLocaleWithCaseConversions"})
+    public static String md5(String username, String password) {
+        try {
+            String credentials = usernameAndPassword(username, password);
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.reset();
+            md.update(credentials.getBytes(StandardCharsets.ISO_8859_1));
+            return Hex.bytesToStringUppercase(md.digest()).toLowerCase();
+        } catch (NoSuchAlgorithmException noSuchAlgorithmException) {
+            // noop. Every implementation of Java is required to support MD5
+            throw new AssertionError(noSuchAlgorithmException);
+        }
+    }
+
+    private static String usernameAndPassword(String username, String password) {
+        return username + ":" + password;
+    }
 }

@@ -31,8 +31,6 @@ package org.hisp.dhis.android.core.arch.db.stores.internal;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
@@ -42,7 +40,9 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
+import androidx.annotation.NonNull;
+
+import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isNull;
 
 public class ObjectStoreImpl<M extends Model> extends ReadableStoreImpl<M> implements ObjectStore<M> {
     private final SQLiteStatement insertStatement;

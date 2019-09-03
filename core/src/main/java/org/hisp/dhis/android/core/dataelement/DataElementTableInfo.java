@@ -29,10 +29,10 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
-import org.hisp.dhis.android.core.utils.Utils;
 
 public final class DataElementTableInfo {
 
@@ -56,7 +56,7 @@ public final class DataElementTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     DataElementFields.VALUE_TYPE,
                     DataElementFields.ZERO_IS_SIGNIFICANT,
                     DataElementFields.AGGREGATION_TYPE,

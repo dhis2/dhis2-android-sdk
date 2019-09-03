@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.domain.aggregated.data;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore;
@@ -51,7 +50,6 @@ import org.hisp.dhis.android.core.period.internal.PeriodStore;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
-import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,6 +60,7 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
@@ -196,8 +195,8 @@ final class AggregatedDataCall {
 
         List<CategoryOptionCombo> categoryOptionCombos =
                 categoryOptionComboStore.selectWhere("categoryCombo IN ("
-                        + Utils.commaAndSpaceSeparatedArrayValues(
-                        Utils.withSingleQuotationMarksArray(dataSetsWithWorkflowCategoryCombos))
+                        + CollectionsHelper.commaAndSpaceSeparatedArrayValues(
+                        CollectionsHelper.withSingleQuotationMarksArray(dataSetsWithWorkflowCategoryCombos))
                         + ")");
 
         Set<String> attributeOptionCombosUids = new HashSet<>();

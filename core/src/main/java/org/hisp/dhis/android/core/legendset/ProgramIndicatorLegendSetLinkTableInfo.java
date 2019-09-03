@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.legendset;
 
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
 
 public final class ProgramIndicatorLegendSetLinkTableInfo {
 
@@ -63,7 +63,7 @@ public final class ProgramIndicatorLegendSetLinkTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     PROGRAM_INDICATOR,
                     LEGEND_SET
             );
@@ -71,7 +71,7 @@ public final class ProgramIndicatorLegendSetLinkTableInfo {
 
         @Override
         public String[] whereUpdate() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     PROGRAM_INDICATOR,
                     LEGEND_SET
             );

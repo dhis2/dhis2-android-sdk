@@ -26,36 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils;
+package org.hisp.dhis.android.core.arch.helpers;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import java.util.Random;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-import androidx.annotation.NonNull;
+@RunWith(JUnit4.class)
+public class UserHelperShould {
 
-public final class CodeGeneratorImpl implements CodeGenerator {
-    private static final String LETTERS = "abcdefghijklmnopqrstuvwxyz"
-            + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    @Test
+    public void md5_evaluate_same_string() {
+        String md5s1 = UserHelper.md5("user1","password1");
+        String md5s2 = UserHelper.md5("user1","password1");
 
-    private static final String ALLOWED_CHARS = "0123456789" + LETTERS;
-    private static final int NUMBER_OF_CODEPOINTS = ALLOWED_CHARS.length();
-    private static final int CODESIZE = 11;
+        assertThat(md5s1.length()).isEqualTo(32);
+        assertThat(md5s2.length()).isEqualTo(32);
 
-    @NonNull
-    @Override
-    public String generate() {
-        Random sr = new Random();
-
-        char[] randomChars = new char[CODESIZE];
-
-        // First char should be a letter
-        randomChars[0] = LETTERS.charAt(sr.nextInt(LETTERS.length()));
-
-        for (int i = 1; i < CODESIZE; ++i) {
-            randomChars[i] = ALLOWED_CHARS.charAt(
-                    sr.nextInt(NUMBER_OF_CODEPOINTS));
-        }
-
-        return new String(randomChars);
+        assertThat(md5s1.equals(md5s2)).isTrue();
     }
+
+    @Test
+    public void md5_evaluate_different_string() {
+        String md5s1 = UserHelper.md5("user2", "password2");
+        String md5s2 = UserHelper.md5("user3", "password3");
+
+        assertThat(md5s1.length()).isEqualTo(32);
+        assertThat(md5s2.length()).isEqualTo(32);
+
+        assertThat(md5s1.equals(md5s2)).isFalse();
+    }
+
 }

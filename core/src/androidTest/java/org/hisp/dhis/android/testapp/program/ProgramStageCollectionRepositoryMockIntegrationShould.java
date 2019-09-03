@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.testapp.program;
 
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -326,6 +327,17 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .blockingGet();
 
         assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void order_by_sort_order() {
+        List<ProgramStage> programStages = d2.programModule().programStages
+                .orderBySortOrder(RepositoryScope.OrderByDirection.DESC)
+                .blockingGet();
+        assertThat(programStages.get(0).uid(), is("dBwrot7S421"));
+        assertThat(programStages.get(0).sortOrder(), is(2));
+        assertThat(programStages.get(1).uid(), is("dBwrot7S420"));
+        assertThat(programStages.get(1).sortOrder(), is(1));
     }
 
 }

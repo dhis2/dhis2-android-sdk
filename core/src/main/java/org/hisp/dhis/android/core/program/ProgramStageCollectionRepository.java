@@ -159,4 +159,8 @@ public final class ProgramStageCollectionRepository
     public ProgramStageCollectionRepository withProgramStageSections() {
         return cf.withChild(ProgramStageFields.PROGRAM_STAGE_SECTIONS);
     }
+
+    public ProgramStageCollectionRepository orderBySortOrder(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(ProgramStageFields.SORT_ORDER, direction);
+    }
 }

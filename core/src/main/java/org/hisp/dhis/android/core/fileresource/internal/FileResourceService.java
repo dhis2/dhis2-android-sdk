@@ -28,17 +28,25 @@
 
 package org.hisp.dhis.android.core.fileresource.internal;
 
+import org.hisp.dhis.android.core.fileresource.FileResource;
+
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 
 interface FileResourceService {
     String FILE_RESOURCES = "fileResources";
+    String FILE_RESOURCE = "fileResource";
 
     @Multipart
     @POST(FILE_RESOURCES)
     Call<ResponseBody> uploadFile(@Part MultipartBody.Part filePart);
+
+    @GET(FILE_RESOURCES + "/{" + FILE_RESOURCE + "}")
+    Call<FileResource> getFileResource(@Path(FILE_RESOURCE) String trackedEntityInstanceUid);
 }

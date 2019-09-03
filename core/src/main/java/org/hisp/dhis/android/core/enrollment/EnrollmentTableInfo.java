@@ -54,30 +54,41 @@ public final class EnrollmentTableInfo {
 
     static class Columns extends BaseModel.Columns {
         static final String UID = "uid";
+        static final String CREATED = EnrollmentFields.CREATED;
+        static final String LAST_UPDATED = EnrollmentFields.LAST_UPDATED;
         static final String CREATED_AT_CLIENT = "createdAtClient";
         static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
         static final String ORGANISATION_UNIT = "organisationUnit";
+        static final String PROGRAM = EnrollmentFields.PROGRAM;
+        static final String ENROLLMENT_DATE = EnrollmentFields.ENROLLMENT_DATE;
+        static final String INCIDENT_DATE = EnrollmentFields.INCIDENT_DATE;
+        static final String FOLLOW_UP = EnrollmentFields.FOLLOW_UP;
+        static final String STATUS = EnrollmentFields.STATUS;
+        static final String TRACKED_ENTITY_INSTANCE = EnrollmentFields.TRACKED_ENTITY_INSTANCE;
         static final String GEOMETRY_TYPE = "geometryType";
         static final String GEOMETRY_COORDINATES = "geometryCoordinates";
+        static final String STATE = BaseDataModel.Columns.STATE;
+        static final String DELETED = "deleted";
 
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
                     UID,
-                    EnrollmentFields.CREATED,
-                    EnrollmentFields.LAST_UPDATED,
+                    CREATED,
+                    LAST_UPDATED,
                     CREATED_AT_CLIENT,
                     LAST_UPDATED_AT_CLIENT,
                     ORGANISATION_UNIT,
-                    EnrollmentFields.PROGRAM,
-                    EnrollmentFields.ENROLLMENT_DATE,
-                    EnrollmentFields.INCIDENT_DATE,
-                    EnrollmentFields.FOLLOW_UP,
-                    EnrollmentFields.STATUS,
-                    EnrollmentFields.TRACKED_ENTITY_INSTANCE,
+                    PROGRAM,
+                    ENROLLMENT_DATE,
+                    INCIDENT_DATE,
+                    FOLLOW_UP,
+                    STATUS,
+                    TRACKED_ENTITY_INSTANCE,
                     GEOMETRY_TYPE,
                     GEOMETRY_COORDINATES,
-                    BaseDataModel.Columns.STATE
+                    STATE,
+                    DELETED
             );
         }
 

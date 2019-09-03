@@ -68,6 +68,7 @@ public final class EnrollmentStoreImpl
         sqLiteBind(sqLiteStatement, 13, o.geometry() == null ? null : o.geometry().type());
         sqLiteBind(sqLiteStatement, 14, o.geometry() == null ? null : o.geometry().coordinates());
         sqLiteBind(sqLiteStatement, 15, o.state());
+        sqLiteBind(sqLiteStatement, 16, o.deleted());
     };
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(

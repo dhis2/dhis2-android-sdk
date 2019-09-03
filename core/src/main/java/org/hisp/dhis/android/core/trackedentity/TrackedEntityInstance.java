@@ -44,7 +44,6 @@ import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.data.database.DataDeleteColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreEnrollmentListColumnAdapter;
@@ -111,7 +110,6 @@ public abstract class TrackedEntityInstance extends BaseDataModel
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DataDeleteColumnAdapter.class)
     public abstract Boolean deleted();
 
     @Nullable

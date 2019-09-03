@@ -61,7 +61,8 @@ public class TrackedEntityInstanceStoreIntegrationShould extends
     @Override
     protected TrackedEntityInstance buildObjectWithToDeleteState() {
         return TrackedEntityInstanceSamples.get().toBuilder()
-                .state(State.TO_DELETE)
+                .state(State.TO_UPDATE)
+                .deleted(true)
                 .build();
     }
 

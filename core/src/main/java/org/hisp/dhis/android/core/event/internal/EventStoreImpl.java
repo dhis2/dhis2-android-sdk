@@ -76,6 +76,7 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
         sqLiteBind(sqLiteStatement, 15, o.dueDate());
         sqLiteBind(sqLiteStatement, 16, o.state());
         sqLiteBind(sqLiteStatement, 17, o.attributeOptionCombo());
+        sqLiteBind(sqLiteStatement, 18, o.deleted());
     };
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(

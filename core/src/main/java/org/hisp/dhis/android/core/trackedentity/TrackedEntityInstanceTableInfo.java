@@ -53,25 +53,31 @@ public final class TrackedEntityInstanceTableInfo {
 
     static class Columns extends BaseModel.Columns {
         static final String UID = "uid";
+        static final String CREATED = TrackedEntityInstanceFields.CREATED;
+        static final String LAST_UPDATED = TrackedEntityInstanceFields.LAST_UPDATED;
         static final String CREATED_AT_CLIENT = "createdAtClient";
         static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
         static final String ORGANISATION_UNIT = "organisationUnit";
+        static final String TRACKED_ENTITY_TYPE = TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE;
         static final String GEOMETRY_TYPE = "geometryType";
         static final String GEOMETRY_COORDINATES = "geometryCoordinates";
+        static final String STATE = BaseDataModel.Columns.STATE;
+        static final String DELETED = "deleted";
 
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
                     UID,
-                    TrackedEntityInstanceFields.CREATED,
-                    TrackedEntityInstanceFields.LAST_UPDATED,
+                    CREATED,
+                    LAST_UPDATED,
                     CREATED_AT_CLIENT,
                     LAST_UPDATED_AT_CLIENT,
                     ORGANISATION_UNIT,
-                    TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE,
+                    TRACKED_ENTITY_TYPE,
                     GEOMETRY_TYPE,
                     GEOMETRY_COORDINATES,
-                    BaseDataModel.Columns.STATE
+                    STATE,
+                    DELETED
             );
         }
 

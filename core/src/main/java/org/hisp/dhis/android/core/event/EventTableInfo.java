@@ -69,6 +69,7 @@ public final class EventTableInfo {
         public static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
         public static final String GEOMETRY_TYPE = "geometryType";
         public static final String GEOMETRY_COORDINATES = "geometryCoordinates";
+        public static final String DELETED = "deleted";
 
         @Override
         public String[] all() {
@@ -89,7 +90,8 @@ public final class EventTableInfo {
                     COMPLETE_DATE,
                     DUE_DATE,
                     STATE,
-                    ATTRIBUTE_OPTION_COMBO
+                    ATTRIBUTE_OPTION_COMBO,
+                    DELETED
             );
         }
 

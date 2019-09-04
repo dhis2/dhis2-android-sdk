@@ -28,12 +28,13 @@
 
 package org.hisp.dhis.android.core.common;
 
+import androidx.annotation.Nullable;
+
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
 import org.hisp.dhis.android.core.data.database.DbStateColumnAdapter;
-
-import androidx.annotation.Nullable;
 
 public abstract class BaseDataModel extends BaseModel implements DataModel {
 
@@ -53,8 +54,9 @@ public abstract class BaseDataModel extends BaseModel implements DataModel {
     @ColumnName(Columns.DELETED)
     public abstract Boolean deleted();
 
+    @JsonPOJOBuilder(withPrefix = "")
     protected static abstract class Builder<T extends Builder> extends BaseModel.Builder<T> {
-        public abstract T state(State state);
-        public abstract T deleted(Boolean deleted);
+        public abstract T state(@Nullable State state);
+        public abstract T deleted(@Nullable Boolean deleted);
     }
 }

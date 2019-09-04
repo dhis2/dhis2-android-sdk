@@ -104,6 +104,15 @@ public abstract class DataSetCompleteRegistration extends BaseDataModel {
 
         public abstract Builder storedBy(@Nullable String storedBy);
 
-        public abstract DataSetCompleteRegistration build();
+        abstract DataSetCompleteRegistration autoBuild();
+
+        // Auxiliary fields to access values
+        abstract Boolean deleted();
+        public DataSetCompleteRegistration build() {
+            if (deleted() == null) {
+                deleted(false);
+            }
+            return autoBuild();
+        }
     }
 }

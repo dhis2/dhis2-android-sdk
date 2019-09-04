@@ -60,6 +60,7 @@ public class TrackedEntityInstanceShould extends BaseObjectShould implements Obj
         assertThat(trackedEntityInstance.trackedEntityType()).isEqualTo("nEenWmSyUEp");
         assertThat(trackedEntityInstance.geometry().type()).isEqualTo(FeatureType.POINT);
         assertThat(trackedEntityInstance.geometry().coordinates()).isEqualTo("[9.0, 9.0]");
+        assertThat(trackedEntityInstance.deleted()).isFalse();
 
         assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(0).trackedEntityAttribute()).isEqualTo("gHGyrwKPzej");
         assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(1).trackedEntityAttribute()).isEqualTo("lZGmxYbs97q");

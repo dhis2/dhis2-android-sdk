@@ -42,7 +42,6 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
-import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbGeometryColumnAdapter;
@@ -58,8 +57,7 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_TrackedEntityInstance.Builder.class)
-public abstract class TrackedEntityInstance extends BaseDataModel
-        implements ObjectWithUidInterface, ObjectWithDeleteInterface {
+public abstract class TrackedEntityInstance extends BaseDataModel implements ObjectWithUidInterface {
 
     @Override
     @Nullable

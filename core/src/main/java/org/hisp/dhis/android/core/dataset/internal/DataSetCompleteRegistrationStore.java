@@ -41,4 +41,6 @@ public interface DataSetCompleteRegistrationStore extends ObjectWithoutUidStore<
     Collection<DataSetCompleteRegistration> getNonDeletedRegistrationsPendingToSync();
 
     void setState(DataSetCompleteRegistration dataSetCompleteRegistration, State newState);
+
+    void setDeleted(DataSetCompleteRegistration dataSetCompleteRegistration);
 }

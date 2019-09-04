@@ -187,10 +187,10 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
     }
 
     @Test
-    public void handle_tei_deletions() {
+    public void handle_tei_deletions() throws D2Error {
         storeTrackedEntityInstance();
 
-        TrackedEntityInstanceStoreImpl.create(databaseAdapter).setState("teiId", State.TO_DELETE);
+        d2.trackedEntityModule().trackedEntityInstances.uid("teiId").blockingDelete();
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
 
@@ -223,7 +223,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         List<List<TrackedEntityInstance>> partitions = trackedEntityInstancePostCall.getPartitionsToSync(
                 d2.trackedEntityModule().trackedEntityInstances.byUid().eq(tei1)
-                .byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).blockingGet());
+                .byState().in(State.TO_POST, State.TO_UPDATE).blockingGet());
 
         assertThat(partitions.size()).isEqualTo(1);
         assertThat(partitions.get(0).size()).isEqualTo(3);

@@ -115,9 +115,16 @@ final class DataSetCompleteRegistrationStoreImpl extends
      */
     @Override
     public void setState(DataSetCompleteRegistration dataSetCompleteRegistration, State newState) {
-
         DataSetCompleteRegistration updatedDataSetCompleteRegistration
                 = dataSetCompleteRegistration.toBuilder().state(newState).build();
+
+        updateWhere(updatedDataSetCompleteRegistration);
+    }
+
+    @Override
+    public void setDeleted(DataSetCompleteRegistration dataSetCompleteRegistration) {
+        DataSetCompleteRegistration updatedDataSetCompleteRegistration
+                = dataSetCompleteRegistration.toBuilder().deleted(true).build();
 
         updateWhere(updatedDataSetCompleteRegistration);
     }

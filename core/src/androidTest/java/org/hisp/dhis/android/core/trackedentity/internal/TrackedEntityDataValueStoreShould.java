@@ -34,6 +34,9 @@ import android.database.sqlite.SQLiteConstraintException;
 
 import androidx.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
+import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
@@ -144,8 +147,10 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
         ContentValues event2 = CreateEventUtils.create(EVENT_2, PROGRAM, PROGRAM_STAGE,
                 ORGANISATION_UNIT, ENROLLMENT);
 
-        ContentValues dataElement1 = CreateDataElementUtils.create(1L, DATA_ELEMENT_1, null);
-        ContentValues dataElement2 = CreateDataElementUtils.create(2L, DATA_ELEMENT_2, null);
+        ContentValues defaultCategoryCombo = CreateCategoryComboUtils.create(1L, CategoryCombo.DEFAULT_UID);
+
+        ContentValues dataElement1 = CreateDataElementUtils.create(1L, DATA_ELEMENT_1, CategoryCombo.DEFAULT_UID, null);
+        ContentValues dataElement2 = CreateDataElementUtils.create(2L, DATA_ELEMENT_2, CategoryCombo.DEFAULT_UID, null);
 
         database().insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType);
         database().insert(RelationshipTypeTableInfo.TABLE_INFO.name(), null,
@@ -153,6 +158,7 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
         database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program);
         database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
         database().insert(ProgramStageTableInfo.TABLE_INFO.name(), null, programStage);
+        database().insert(CategoryComboTableInfo.TABLE_INFO.name(), null, defaultCategoryCombo);
         database().insert(DataElementTableInfo.TABLE_INFO.name(), null, dataElement1);
         database().insert(DataElementTableInfo.TABLE_INFO.name(), null, dataElement2);
         database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null,

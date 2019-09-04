@@ -33,7 +33,6 @@ import android.content.ContentValues;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
 
@@ -57,7 +56,7 @@ public class CreateDataElementUtils {
     // timestamp
     private static final String DATE = "2014-03-20T13:37:00.007";
 
-    public static ContentValues create(long id, @NonNull String uid, @Nullable String optionSetId) {
+    public static ContentValues create(long id, @NonNull String uid, @NonNull String categoryComboId, @Nullable String optionSetId) {
         ContentValues dataElement = new ContentValues();
         dataElement.put(DataElementTableInfo.Columns.ID, id);
         dataElement.put(DataElementTableInfo.Columns.UID, uid);
@@ -76,7 +75,7 @@ public class CreateDataElementUtils {
         dataElement.put(DataElementFields.FORM_NAME, FORM_NAME);
         dataElement.put(DataElementFields.DOMAIN_TYPE, DOMAIN_TYPE);
         dataElement.put(DataElementFields.DISPLAY_FORM_NAME, DISPLAY_FORM_NAME);
-        dataElement.put(DataElementFields.CATEGORY_COMBO, CategoryCombo.DEFAULT_UID);
+        dataElement.put(DataElementFields.CATEGORY_COMBO, categoryComboId);
         if (optionSetId == null) {
             dataElement.putNull(DataElementFields.OPTION_SET);
         } else {

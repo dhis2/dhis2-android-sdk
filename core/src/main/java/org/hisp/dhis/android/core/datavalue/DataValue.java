@@ -140,6 +140,16 @@ public abstract class DataValue extends BaseDataModel {
         @JsonProperty(DataValueFields.FOLLOW_UP)
         public abstract DataValue.Builder followUp(@NonNull Boolean followUp);
 
-        public abstract DataValue build();
+        abstract DataValue autoBuild();
+
+        // Auxiliary fields
+        abstract Boolean deleted();
+
+        public DataValue build() {
+            if (deleted() == null) {
+                deleted(false);
+            }
+            return autoBuild();
+        }
     }
 }

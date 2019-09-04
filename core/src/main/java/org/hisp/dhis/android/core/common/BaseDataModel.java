@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.common;
 
 import androidx.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
@@ -51,6 +52,7 @@ public abstract class BaseDataModel extends BaseModel implements DataModel {
 
     @Override
     @Nullable
+    @JsonProperty
     @ColumnName(Columns.DELETED)
     public abstract Boolean deleted();
 

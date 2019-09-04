@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
@@ -54,14 +55,15 @@ final class DataSetCompleteRegistrationStoreImpl extends
                 sqLiteBind(sqLiteStatement, 5, dataSetCompleteRegistration.date());
                 sqLiteBind(sqLiteStatement, 6, dataSetCompleteRegistration.storedBy());
                 sqLiteBind(sqLiteStatement, 7, dataSetCompleteRegistration.state());
+                sqLiteBind(sqLiteStatement, 8, dataSetCompleteRegistration.deleted());
             };
 
     private static final WhereStatementBinder<DataSetCompleteRegistration> WHERE_UPDATE_BINDER =
             (dataSetCompleteRegistration, sqLiteStatement) -> {
-                sqLiteBind(sqLiteStatement, 8, dataSetCompleteRegistration.period());
-                sqLiteBind(sqLiteStatement, 9, dataSetCompleteRegistration.dataSet());
-                sqLiteBind(sqLiteStatement, 10, dataSetCompleteRegistration.organisationUnit());
-                sqLiteBind(sqLiteStatement, 11, dataSetCompleteRegistration.attributeOptionCombo());
+                sqLiteBind(sqLiteStatement, 9, dataSetCompleteRegistration.period());
+                sqLiteBind(sqLiteStatement, 10, dataSetCompleteRegistration.dataSet());
+                sqLiteBind(sqLiteStatement, 11, dataSetCompleteRegistration.organisationUnit());
+                sqLiteBind(sqLiteStatement, 12, dataSetCompleteRegistration.attributeOptionCombo());
             };
 
     private static final WhereStatementBinder<DataSetCompleteRegistration> WHERE_DELETE_BINDER =
@@ -88,9 +90,21 @@ final class DataSetCompleteRegistrationStoreImpl extends
     }
 
     @Override
-    public Collection<DataSetCompleteRegistration> getDataSetCompleteRegistrationsWithState(State state) {
+    public Collection<DataSetCompleteRegistration> getNonDeletedRegistrationsPendingToSync() {
         String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(DataSetCompleteRegistration.Columns.STATE, state.name())
+                .appendInKeyEnumValues(DataSetCompleteRegistration.Columns.STATE,
+                        Arrays.asList(State.TO_UPDATE, State.TO_POST))
+                .appendKeyNumberValue(DataSetCompleteRegistration.Columns.DELETED, 0)
+                .build();
+        return selectWhere(whereClause);
+    }
+
+    @Override
+    public Collection<DataSetCompleteRegistration> getDeletedRegistrationsPendingToSync() {
+        String whereClause = new WhereClauseBuilder()
+                .appendInKeyEnumValues(DataSetCompleteRegistration.Columns.STATE,
+                        Arrays.asList(State.TO_UPDATE, State.TO_POST))
+                .appendKeyNumberValue(DataSetCompleteRegistration.Columns.DELETED, 1)
                 .build();
         return selectWhere(whereClause);
     }

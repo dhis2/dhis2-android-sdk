@@ -20,5 +20,17 @@ up:
 - INSERT INTO Event (_id, uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient, status, geometryType, geometryCoordinates, program, programStage, organisationUnit, eventDate, completedDate, dueDate, state, attributeOptionCombo, deleted) SELECT _id, uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient, status, geometryType, geometryCoordinates, program, programStage, organisationUnit, eventDate, completedDate, dueDate, state, attributeOptionCombo, CASE WHEN state = 'TO_DELETE' THEN 1 ELSE 0 END FROM Event_temp;
 - DROP TABLE Event_temp;
 
+#Related to DataValue
+- ALTER TABLE DataValue RENAME TO DataValue_temp;
+- CREATE TABLE DataValue (_id INTEGER PRIMARY KEY AUTOINCREMENT, dataElement TEXT NOT NULL, period TEXT NOT NULL, organisationUnit TEXT NOT NULL, categoryOptionCombo TEXT NOT NULL, attributeOptionCombo TEXT NOT NULL, value TEXT, storedBy TEXT, created TEXT, lastUpdated TEXT, comment TEXT, followUp INTEGER, state TEXT, deleted INTEGER, FOREIGN KEY (dataElement) REFERENCES DataElement (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (period) REFERENCES Period (periodId), FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (categoryOptionCombo) REFERENCES CategoryOptionCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (attributeOptionCombo) REFERENCES CategoryOptionCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (dataElement, period, organisationUnit, categoryOptionCombo, attributeOptionCombo));
+- INSERT INTO DataValue (_id, dataElement, period, organisationUnit, categoryOptionCombo, attributeOptionCombo, value, storedBy, created, lastUpdated, comment, followUp, state, deleted) SELECT _id, dataElement, period, organisationUnit, categoryOptionCombo, attributeOptionCombo, value, storedBy, created, lastUpdated, comment, followUp, state, CASE WHEN state = 'TO_DELETE' THEN 1 ELSE 0 END FROM DataValue_temp;
+- DROP TABLE DataValue_temp;
+
+#Related to DataSetCompleteRegistration
+- ALTER TABLE DataSetCompleteRegistration RENAME TO DataSetCompleteRegistration_temp;
+- CREATE TABLE DataSetCompleteRegistration (_id INTEGER PRIMARY KEY AUTOINCREMENT, period TEXT NOT NULL, dataSet TEXT NOT NULL, organisationUnit TEXT NOT NULL, attributeOptionCombo TEXT, date TEXT, storedBy TEXT, state TEXT, deleted INTEGER, FOREIGN KEY (dataSet) REFERENCES DataSet (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (period) REFERENCES Period (periodId), FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (attributeOptionCombo) REFERENCES CategoryOptionCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (period, dataSet, organisationUnit, attributeOptionCombo));
+- INSERT INTO DataSetCompleteRegistration (_id, period, dataSet, organisationUnit, attributeOptionCombo, date, storedBy, state, deleted) SELECT _id, period, dataSet, organisationUnit, attributeOptionCombo, date, storedBy, state, CASE WHEN state = 'TO_DELETE' THEN 1 ELSE 0 END FROM DataSetCompleteRegistration_temp;
+- DROP TABLE DataSetCompleteRegistration_temp;
+
 #Commit transaction
 - COMMIT;

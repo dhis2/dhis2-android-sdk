@@ -87,8 +87,7 @@ public final class EnrollmentStoreImpl
         String enrollmentsToPostQuery = new WhereClauseBuilder()
                 .appendInKeyStringValues(BaseDataModel.Columns.STATE, Arrays.asList(
                         State.TO_POST.name(),
-                        State.TO_UPDATE.name(),
-                        State.TO_DELETE.name())).build();
+                        State.TO_UPDATE.name())).build();
 
         List<Enrollment> enrollmentList = selectWhere(enrollmentsToPostQuery);
 

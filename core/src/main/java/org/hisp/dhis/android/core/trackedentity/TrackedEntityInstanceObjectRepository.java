@@ -74,7 +74,7 @@ public final class TrackedEntityInstanceObjectRepository
                     .build();
         }
         Date updateDate = new Date();
-        state = state == State.TO_POST || state == State.TO_DELETE ? state : State.TO_UPDATE;
+        state = state == State.TO_POST ? state : State.TO_UPDATE;
 
         return trackedEntityInstance.toBuilder()
                 .state(state)

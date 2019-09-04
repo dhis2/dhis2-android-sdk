@@ -69,6 +69,7 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
     @JsonProperty()
     public abstract String enrollment();
 
+
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
@@ -137,10 +138,6 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
 
     @Nullable
     @JsonProperty()
-    public abstract Boolean deleted();
-
-    @Nullable
-    @JsonProperty()
     public abstract String attributeOptionCombo();
 
     @Nullable
@@ -197,8 +194,6 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
         public abstract Builder completedDate(Date completedDate);
 
         public abstract Builder dueDate(Date dueDate);
-
-        public abstract Builder deleted(Boolean deleted);
 
         public abstract Builder attributeOptionCombo(String attributeOptionCombo);
 

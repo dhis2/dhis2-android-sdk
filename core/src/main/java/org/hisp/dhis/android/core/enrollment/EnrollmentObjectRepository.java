@@ -87,9 +87,7 @@ public final class EnrollmentObjectRepository
         enrollment = getWithoutChildren();
         Date updateDate = new Date();
         State state = enrollment.state();
-        if (state != State.TO_POST && state != State.TO_DELETE) {
-            state = State.TO_UPDATE;
-        }
+        state = state == State.TO_POST ? state : State.TO_UPDATE;
 
         return enrollment.toBuilder()
                 .state(state)

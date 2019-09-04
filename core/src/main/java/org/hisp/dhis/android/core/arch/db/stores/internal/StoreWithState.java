@@ -39,11 +39,11 @@ public interface StoreWithState {
 
     int setStateForUpdate(@NonNull String uid);
 
-    int setStateForDelete(@NonNull String uid);
-
     HandleAction setStateOrDelete(@NonNull String uid, @NonNull State state);
 
     State getState(@NonNull String uid);
 
     Boolean exists(@NonNull String uid);
+
+    int setDeleted(@NonNull String uid);
 }

@@ -136,10 +136,6 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithDele
 
     @Nullable
     @JsonProperty()
-    public abstract Boolean deleted();
-
-    @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreEventListColumnAdapter.class)
     public abstract List<Event> events();
 
@@ -196,8 +192,6 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithDele
         abstract Builder coordinate(Coordinates coordinate);
 
         public abstract Builder geometry(Geometry geometry);
-
-        public abstract Builder deleted(Boolean deleted);
 
         public abstract Builder events(List<Event> events);
 

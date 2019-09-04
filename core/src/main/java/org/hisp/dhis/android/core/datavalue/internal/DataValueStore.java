@@ -59,15 +59,16 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
         sqLiteBind(sqLiteStatement, 10, dataValue.comment());
         sqLiteBind(sqLiteStatement, 11, dataValue.followUp());
         sqLiteBind(sqLiteStatement, 12, dataValue.state());
+        sqLiteBind(sqLiteStatement, 13, dataValue.deleted());
     };
 
     private static final WhereStatementBinder<DataValue> WHERE_UPDATE_BINDER
             = (dataValue, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 13, dataValue.dataElement());
-        sqLiteBind(sqLiteStatement, 14, dataValue.period());
-        sqLiteBind(sqLiteStatement, 15, dataValue.organisationUnit());
-        sqLiteBind(sqLiteStatement, 16, dataValue.categoryOptionCombo());
-        sqLiteBind(sqLiteStatement, 17, dataValue.attributeOptionCombo());
+        sqLiteBind(sqLiteStatement, 14, dataValue.dataElement());
+        sqLiteBind(sqLiteStatement, 15, dataValue.period());
+        sqLiteBind(sqLiteStatement, 16, dataValue.organisationUnit());
+        sqLiteBind(sqLiteStatement, 17, dataValue.categoryOptionCombo());
+        sqLiteBind(sqLiteStatement, 18, dataValue.attributeOptionCombo());
     };
 
     private static final WhereStatementBinder<DataValue> WHERE_DELETE_BINDER

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public final class EventTableInfo {
@@ -51,7 +50,7 @@ public final class EventTableInfo {
         }
     };
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseDataModel.Columns {
         public static final String UID = "uid";
         public static final String ENROLLMENT = "enrollment";
         public static final String CREATED = "created";
@@ -65,11 +64,9 @@ public final class EventTableInfo {
         public static final String EVENT_DATE = "eventDate";
         public static final String COMPLETE_DATE = "completedDate";
         public static final String DUE_DATE = "dueDate";
-        public static final String STATE = BaseDataModel.Columns.STATE;
         public static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
         public static final String GEOMETRY_TYPE = "geometryType";
         public static final String GEOMETRY_COORDINATES = "geometryCoordinates";
-        public static final String DELETED = "deleted";
 
         @Override
         public String[] all() {

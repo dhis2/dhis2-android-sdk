@@ -39,6 +39,7 @@ public abstract class BaseDataModel extends BaseModel implements DataModel {
 
     public static class Columns extends BaseModel.Columns {
         public static final String STATE = "state";
+        public static final String DELETED = "deleted";
     }
 
     @Override
@@ -47,7 +48,13 @@ public abstract class BaseDataModel extends BaseModel implements DataModel {
     @ColumnAdapter(DbStateColumnAdapter.class)
     public abstract State state();
 
+    @Override
+    @Nullable
+    @ColumnName(Columns.DELETED)
+    public abstract Boolean deleted();
+
     protected static abstract class Builder<T extends Builder> extends BaseModel.Builder<T> {
         public abstract T state(State state);
+        public abstract T deleted(Boolean deleted);
     }
 }

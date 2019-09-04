@@ -75,7 +75,8 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
             if (object.state() == State.TO_POST) {
                 store.delete(object.uid());
             } else {
-                store.setState(object.uid(), State.TO_DELETE);
+                store.setDeleted(object.uid());
+                store.setState(object.uid(), State.TO_UPDATE);
                 propagateState();
             }
         }

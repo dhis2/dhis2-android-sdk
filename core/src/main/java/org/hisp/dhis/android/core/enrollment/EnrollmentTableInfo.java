@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -52,7 +51,7 @@ public final class EnrollmentTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
+    static class Columns extends BaseDataModel.Columns {
         static final String UID = "uid";
         static final String CREATED = EnrollmentFields.CREATED;
         static final String LAST_UPDATED = EnrollmentFields.LAST_UPDATED;
@@ -67,8 +66,6 @@ public final class EnrollmentTableInfo {
         static final String TRACKED_ENTITY_INSTANCE = EnrollmentFields.TRACKED_ENTITY_INSTANCE;
         static final String GEOMETRY_TYPE = "geometryType";
         static final String GEOMETRY_COORDINATES = "geometryCoordinates";
-        static final String STATE = BaseDataModel.Columns.STATE;
-        static final String DELETED = "deleted";
 
         @Override
         public String[] all() {

@@ -91,9 +91,7 @@ public final class EventObjectRepository
         event = getWithoutChildren();
         Date updateDate = new Date();
         State state = event.state();
-        if (state != State.TO_POST && state != State.TO_DELETE) {
-            state = State.TO_UPDATE;
-        }
+        state = state == State.TO_POST ? state : State.TO_UPDATE;
 
         return event.toBuilder()
                 .state(state)

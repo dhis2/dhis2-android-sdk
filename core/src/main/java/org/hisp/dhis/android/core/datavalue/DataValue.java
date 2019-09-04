@@ -96,10 +96,6 @@ public abstract class DataValue extends BaseDataModel {
     @JsonProperty(DataValueFields.FOLLOW_UP)
     public abstract Boolean followUp();
 
-    @Nullable
-    @JsonProperty
-    public abstract Boolean deleted();
-
     @NonNull
     public static DataValue create(Cursor cursor) {
         return AutoValue_DataValue.createFromCursor(cursor);
@@ -143,8 +139,6 @@ public abstract class DataValue extends BaseDataModel {
 
         @JsonProperty(DataValueFields.FOLLOW_UP)
         public abstract DataValue.Builder followUp(@NonNull Boolean followUp);
-
-        public abstract DataValue.Builder deleted(@NonNull Boolean deleted);
 
         public abstract DataValue build();
     }

@@ -96,8 +96,7 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
                 .appendIsNotNullValue(EventFields.ENROLLMENT)
                 .appendInKeyStringValues(BaseDataModel.Columns.STATE, Arrays.asList(
                         State.TO_POST.name(),
-                        State.TO_UPDATE.name(),
-                        State.TO_DELETE.name())).build();
+                        State.TO_UPDATE.name())).build();
 
         List<Event> eventList = selectWhere(eventsAttachedToEnrollmentsQuery);
 
@@ -112,7 +111,7 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
     @Override
     public List<Event> querySingleEventsToPost() {
         String singleEventsToPostQuery = QUERY_SINGLE_EVENTS +
-                " AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE' OR Event.state = 'TO_DELETE')";
+                " AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE')";
         return eventListFromQuery(singleEventsToPostQuery);
     }
 

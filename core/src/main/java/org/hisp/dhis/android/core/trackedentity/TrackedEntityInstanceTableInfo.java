@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public final class TrackedEntityInstanceTableInfo {
@@ -51,7 +50,7 @@ public final class TrackedEntityInstanceTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
+    static class Columns extends BaseDataModel.Columns {
         static final String UID = "uid";
         static final String CREATED = TrackedEntityInstanceFields.CREATED;
         static final String LAST_UPDATED = TrackedEntityInstanceFields.LAST_UPDATED;
@@ -61,8 +60,6 @@ public final class TrackedEntityInstanceTableInfo {
         static final String TRACKED_ENTITY_TYPE = TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE;
         static final String GEOMETRY_TYPE = "geometryType";
         static final String GEOMETRY_COORDINATES = "geometryCoordinates";
-        static final String STATE = BaseDataModel.Columns.STATE;
-        static final String DELETED = "deleted";
 
         @Override
         public String[] all() {

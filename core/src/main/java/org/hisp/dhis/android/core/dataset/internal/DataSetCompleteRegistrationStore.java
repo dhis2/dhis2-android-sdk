@@ -36,7 +36,9 @@ import java.util.Collection;
 
 public interface DataSetCompleteRegistrationStore extends ObjectWithoutUidStore<DataSetCompleteRegistration> {
 
-    Collection<DataSetCompleteRegistration> getDataSetCompleteRegistrationsWithState(State state);
+    Collection<DataSetCompleteRegistration> getDeletedRegistrationsPendingToSync();
+
+    Collection<DataSetCompleteRegistration> getNonDeletedRegistrationsPendingToSync();
 
     void setState(DataSetCompleteRegistration dataSetCompleteRegistration, State newState);
 }

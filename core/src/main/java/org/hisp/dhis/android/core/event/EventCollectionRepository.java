@@ -85,7 +85,7 @@ public final class EventCollectionRepository
 
     @Override
     public Observable<D2Progress> upload() {
-        return Observable.fromCallable(() -> byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE)
+        return Observable.fromCallable(() -> byState().in(State.TO_POST, State.TO_UPDATE)
                 .byEnrollmentUid().isNull()
                 .getWithoutChildren())
                 .flatMap(postCall::uploadEvents);

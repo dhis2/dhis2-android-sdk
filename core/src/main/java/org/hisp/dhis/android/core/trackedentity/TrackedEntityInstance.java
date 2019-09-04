@@ -109,10 +109,6 @@ public abstract class TrackedEntityInstance extends BaseDataModel
     public abstract Geometry geometry();
 
     @Nullable
-    @JsonProperty()
-    public abstract Boolean deleted();
-
-    @Nullable
     @JsonProperty(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)
     @ColumnAdapter(IgnoreTrackedEntityAttributeValueListColumnAdapter.class)
     public abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
@@ -165,8 +161,6 @@ public abstract class TrackedEntityInstance extends BaseDataModel
         abstract Builder coordinates(String coordinates);
 
         public abstract Builder geometry(Geometry geometry);
-
-        public abstract Builder deleted(Boolean deleted);
 
         @JsonProperty(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)
         public abstract Builder trackedEntityAttributeValues(

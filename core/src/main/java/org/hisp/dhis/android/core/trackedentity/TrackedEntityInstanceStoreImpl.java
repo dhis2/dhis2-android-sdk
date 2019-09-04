@@ -70,8 +70,7 @@ public final class TrackedEntityInstanceStoreImpl extends IdentifiableObjectWith
         String whereToSyncClause = new WhereClauseBuilder()
                 .appendInKeyStringValues(BaseDataModel.Columns.STATE, Arrays.asList(
                         State.TO_POST.name(),
-                        State.TO_UPDATE.name(),
-                        State.TO_DELETE.name()))
+                        State.TO_UPDATE.name()))
                 .build();
 
         return selectWhere(whereToSyncClause);

@@ -29,10 +29,10 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.program.internal.ProgramStageFields;
-import org.hisp.dhis.android.core.utils.Utils;
 
 public final class ProgramStageTableInfo {
 
@@ -57,7 +57,7 @@ public final class ProgramStageTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     ProgramStageFields.DESCRIPTION,
                     ProgramStageFields.DISPLAY_DESCRIPTION,
                     ProgramStageFields.EXECUTION_DATE_LABEL,

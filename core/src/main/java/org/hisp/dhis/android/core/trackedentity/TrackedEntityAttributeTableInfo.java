@@ -29,8 +29,9 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields;
 
 public final class TrackedEntityAttributeTableInfo {
 
@@ -55,7 +56,7 @@ public final class TrackedEntityAttributeTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     TrackedEntityAttributeFields.PATTERN,
                     TrackedEntityAttributeFields.SORT_ORDER_IN_LIST_NO_PROGRAM,
                     TrackedEntityAttributeFields.OPTION_SET,

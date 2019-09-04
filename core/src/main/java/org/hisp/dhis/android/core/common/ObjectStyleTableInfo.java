@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
-import org.hisp.dhis.android.core.utils.Utils;
 
 public final class ObjectStyleTableInfo {
 
@@ -57,7 +57,7 @@ public final class ObjectStyleTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     UID,
                     OBJECT_TABLE,
                     ObjectStyleFields.COLOR,

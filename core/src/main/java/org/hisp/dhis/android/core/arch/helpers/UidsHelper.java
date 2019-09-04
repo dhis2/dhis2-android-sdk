@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.arch.helpers;
 
 import org.hisp.dhis.android.core.common.IdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -104,6 +103,6 @@ public final class UidsHelper {
 
     public static <O extends ObjectWithUidInterface> String commaSeparatedUidsWithSingleQuotationMarks(
             Collection<O> objects) {
-        return Utils.commaAndSpaceSeparatedArrayValues(uidsArray(objects));
+        return CollectionsHelper.commaAndSpaceSeparatedArrayValues(uidsArray(objects));
     }
 }

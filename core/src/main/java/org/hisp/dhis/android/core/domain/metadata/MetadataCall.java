@@ -73,16 +73,16 @@ public class MetadataCall {
     private final SmsModule smsModule;
 
     @Inject
-    public MetadataCall(@NonNull RxAPICallExecutor rxCallExecutor,
-                        @NonNull SystemInfoModuleDownloader systemInfoDownloader,
-                        @NonNull SystemSettingModuleDownloader systemSettingDownloader,
-                        @NonNull UserModuleDownloader userModuleDownloader,
-                        @NonNull CategoryModuleDownloader categoryDownloader,
-                        @NonNull ProgramModuleDownloader programDownloader,
-                        @NonNull OrganisationUnitModuleDownloader organisationUnitDownloadModule,
-                        @NonNull DataSetModuleDownloader dataSetDownloader,
-                        @NonNull ConstantModuleDownloader constantModuleDownloader,
-                        @NonNull SmsModule smsModule) {
+    MetadataCall(@NonNull RxAPICallExecutor rxCallExecutor,
+                 @NonNull SystemInfoModuleDownloader systemInfoDownloader,
+                 @NonNull SystemSettingModuleDownloader systemSettingDownloader,
+                 @NonNull UserModuleDownloader userModuleDownloader,
+                 @NonNull CategoryModuleDownloader categoryDownloader,
+                 @NonNull ProgramModuleDownloader programDownloader,
+                 @NonNull OrganisationUnitModuleDownloader organisationUnitDownloadModule,
+                 @NonNull DataSetModuleDownloader dataSetDownloader,
+                 @NonNull ConstantModuleDownloader constantModuleDownloader,
+                 @NonNull SmsModule smsModule) {
         this.rxCallExecutor = rxCallExecutor;
         this.systemInfoDownloader = systemInfoDownloader;
         this.systemSettingDownloader = systemSettingDownloader;

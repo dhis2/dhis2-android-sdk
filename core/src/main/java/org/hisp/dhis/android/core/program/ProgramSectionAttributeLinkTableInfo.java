@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
 
 public final class ProgramSectionAttributeLinkTableInfo {
 
@@ -57,7 +57,7 @@ public final class ProgramSectionAttributeLinkTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(), PROGRAM_SECTION, ATTRIBUTE);
+            return CollectionsHelper.appendInNewArray(super.all(), PROGRAM_SECTION, ATTRIBUTE);
         }
 
         @Override

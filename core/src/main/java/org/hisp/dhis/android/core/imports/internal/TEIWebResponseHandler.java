@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.imports.internal;
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceImportHandler;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceImportHandler;
 
 import javax.inject.Inject;
 

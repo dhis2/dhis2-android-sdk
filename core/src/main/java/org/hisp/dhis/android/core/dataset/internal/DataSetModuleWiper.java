@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.dataset.SectionDataElementLinkTableInfo;
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo;
 import org.hisp.dhis.android.core.dataset.SectionTableInfo;
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.internal.TableWiper;
 
 import javax.inject.Inject;
 

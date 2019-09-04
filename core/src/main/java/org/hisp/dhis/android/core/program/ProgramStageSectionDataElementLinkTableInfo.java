@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
 
 public final class ProgramStageSectionDataElementLinkTableInfo {
 
@@ -58,7 +58,7 @@ public final class ProgramStageSectionDataElementLinkTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(), PROGRAM_STAGE_SECTION, DATA_ELEMENT, SORT_ORDER);
+            return CollectionsHelper.appendInNewArray(super.all(), PROGRAM_STAGE_SECTION, DATA_ELEMENT, SORT_ORDER);
         }
 
         @Override

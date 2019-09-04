@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.sms.data;
+package org.hisp.dhis.android.core.sms.data.internal;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -9,7 +9,7 @@ import android.telephony.PhoneStateListener;
 import android.telephony.ServiceState;
 import android.telephony.TelephonyManager;
 
-import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.DeviceStateRepository;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;

@@ -1,15 +1,15 @@
-package org.hisp.dhis.android.core.sms;
+package org.hisp.dhis.android.core.sms.internal;
 
 import android.content.Context;
 
-import org.hisp.dhis.android.core.sms.data.DeviceStateRepositoryImpl;
-import org.hisp.dhis.android.core.sms.data.localdbrepository.LocalDbRepositoryImpl;
-import org.hisp.dhis.android.core.sms.data.smsrepository.SmsRepositoryImpl;
-import org.hisp.dhis.android.core.sms.data.webapirepository.WebApiRepositoryImpl;
-import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;
-import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
+import org.hisp.dhis.android.core.sms.data.internal.DeviceStateRepositoryImpl;
+import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.LocalDbRepositoryImpl;
+import org.hisp.dhis.android.core.sms.data.smsrepository.internal.SmsRepositoryImpl;
+import org.hisp.dhis.android.core.sms.data.webapirepository.internal.WebApiRepositoryImpl;
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.DeviceStateRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
 
 import dagger.Module;
 import dagger.Provides;

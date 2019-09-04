@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.sms.data.localdbrepository;
+package org.hisp.dhis.android.core.sms.data.localdbrepository.internal;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,9 +14,9 @@ import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
-import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
-import org.hisp.dhis.android.core.sms.domain.repository.SubmissionType;
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;

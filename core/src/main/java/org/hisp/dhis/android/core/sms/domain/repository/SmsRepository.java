@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.core.sms.domain.repository;
 
+import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType;
+
 import java.util.Date;
 import java.util.List;
 

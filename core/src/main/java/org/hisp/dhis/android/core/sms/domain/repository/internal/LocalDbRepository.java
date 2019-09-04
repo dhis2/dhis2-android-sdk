@@ -1,9 +1,10 @@
-package org.hisp.dhis.android.core.sms.domain.repository;
+package org.hisp.dhis.android.core.sms.domain.repository.internal;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.smscompression.models.SMSMetadata;
 

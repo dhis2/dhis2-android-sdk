@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.sms.data.localdbrepository;
+package org.hisp.dhis.android.core.sms.data.localdbrepository.internal;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
@@ -16,7 +16,7 @@ import javax.inject.Inject;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
-public class DataSetsStore {
+class DataSetsStore {
     private final DataValueModule dataValueModule;
     private final DataValueStore dataValueStore;
     private final DataSetCompleteRegistrationStore dataSetStore;

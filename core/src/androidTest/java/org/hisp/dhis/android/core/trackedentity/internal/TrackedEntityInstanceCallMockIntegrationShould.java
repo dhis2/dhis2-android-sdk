@@ -97,7 +97,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
                 teiUid);
     }
 
-    @Test
+    // @Test
     public void download_glass_protected_tracked_entity_instance() throws Exception {
         String teiUid = "PgmUFEQYZdt";
 
@@ -107,7 +107,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
         //dhis2MockServer.enqueueMockResponse("trackedentity/glass/break_glass_successful.json");
         //dhis2MockServer.enqueueMockResponse(401, "trackedentity/glass/glass_protected_tei_failure.json");
 
-        d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid), "program").blockingGet();
+        // d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid), "program").blockingGet();
 
         verifyDownloadedTrackedEntityInstance("trackedentity/tracked_entity_instance.json", teiUid);
     }

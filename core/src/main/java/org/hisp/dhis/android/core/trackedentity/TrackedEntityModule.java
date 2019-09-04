@@ -91,7 +91,7 @@ public final class TrackedEntityModule {
      * @param program Program uid
      * @return -
      */
-    public Single<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids,
+    Single<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids,
                                                                                      String program) {
         return downloadAndPersistCallFactory.getCall(uids, program);
     }

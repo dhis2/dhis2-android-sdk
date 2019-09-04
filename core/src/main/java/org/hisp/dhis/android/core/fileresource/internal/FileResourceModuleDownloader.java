@@ -27,12 +27,18 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal;
 
-import org.hisp.dhis.android.core.arch.helpers.internal.Tuple;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleDownloader;
 import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFields;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -43,28 +49,34 @@ import dagger.Reusable;
 public class FileResourceModuleDownloader implements MetadataModuleDownloader<Unit> {
 
     private final FileResourceCallFactory fileResourceCallFactory;
+    private final IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
+    private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
     @Inject
-    FileResourceModuleDownloader(FileResourceCallFactory fileResourceCallFactory) {
+    FileResourceModuleDownloader(FileResourceCallFactory fileResourceCallFactory,
+                                 IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore,
+                                 TrackedEntityAttributeValueStore trackedEntityAttributeValueStore) {
         this.fileResourceCallFactory = fileResourceCallFactory;
+        this.trackedEntityAttributeStore = trackedEntityAttributeStore;
+        this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
     }
 
     public Callable<Unit> downloadMetadata() {
         return () -> {
-
-            fileResourceCallFactory.create(teiAttributesTuples(), fileResourcesUids()).call();
-
+            fileResourceCallFactory.create(getTrackedEntityAttributeValues()).call();
             return new Unit();
         };
     }
 
-    private Set<String> fileResourcesUids() {
-        // TODO get file resources uids
-        return null;
-    }
+    private List<TrackedEntityAttributeValue> getTrackedEntityAttributeValues() {
+        String attributeUidsWhereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(TrackedEntityAttributeFields.VALUE_TYPE, ValueType.IMAGE).build();
 
-    private List<Tuple<String, String>> teiAttributesTuples() {
-        // TODO get tei-teAttribute tuples
-        return null;
+        List<String> trackedEntityAttributeUids = trackedEntityAttributeStore.selectUidsWhere(attributeUidsWhereClause);
+
+        String attributeValuesWhereClause = new WhereClauseBuilder().appendInKeyStringValues(
+                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE, trackedEntityAttributeUids)
+                .build();
+        return trackedEntityAttributeValueStore.selectWhere(attributeValuesWhereClause);
     }
 }

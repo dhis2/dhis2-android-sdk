@@ -47,7 +47,7 @@ public final class FileResourceUtil {
         return String.format("%s.png", fileName);
     }
 
-    private static File getFileResourceDirectory(Context context) {
+    public static File getFileResourceDirectory(Context context) {
         File file = new File(context.getFilesDir(), "sdk_resources");
         if (!file.exists()) {
             file.mkdirs();

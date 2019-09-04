@@ -80,7 +80,8 @@ class SystemInfoCall implements CompletableProvider {
                                 .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
                                 .errorDescription("Server DHIS version (" + systemInfo.version() + ") not valid. "
                                         + "Allowed versions: "
-                                        + CollectionsHelper.commaAndSpaceSeparatedArrayValues(DHISVersion.allowedVersionsAsStr()))
+                                        + CollectionsHelper.commaAndSpaceSeparatedArrayValues(
+                                                DHISVersion.allowedVersionsAsStr()))
                                 .build();
                     }
 

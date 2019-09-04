@@ -95,12 +95,14 @@ public class WhereClauseBuilder {
     }
 
     public WhereClauseBuilder appendNotInKeyStringValues(String column, List<String> values) {
-        String valuesArray = CollectionsHelper.commaAndSpaceSeparatedArrayValues(CollectionsHelper.withSingleQuotationMarksArray(values));
+        String valuesArray = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
+                CollectionsHelper.withSingleQuotationMarksArray(values));
         return appendKeyValue(column, valuesArray, AND, NOT_IN, PARENTHESES_END);
     }
 
     public WhereClauseBuilder appendInKeyStringValues(String column, List<String> values) {
-        String valuesArray = CollectionsHelper.commaAndSpaceSeparatedArrayValues(CollectionsHelper.withSingleQuotationMarksArray(values));
+        String valuesArray = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
+                CollectionsHelper.withSingleQuotationMarksArray(values));
         return appendKeyValue(column, valuesArray, AND, IN, PARENTHESES_END);
     }
 

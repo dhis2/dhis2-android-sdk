@@ -50,7 +50,8 @@ public abstract class BaseIdentifiableObjectModel extends BaseModel implements I
 
         @Override
         public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(), UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED);
+            return CollectionsHelper.appendInNewArray(super.all(), UID, CODE, NAME, DISPLAY_NAME, CREATED,
+                    LAST_UPDATED);
         }
     }
 

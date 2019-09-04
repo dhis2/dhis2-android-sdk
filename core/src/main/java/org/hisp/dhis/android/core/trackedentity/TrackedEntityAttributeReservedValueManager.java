@@ -64,6 +64,7 @@ import io.reactivex.Observable;
 import io.reactivex.Single;
 
 @Reusable
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class TrackedEntityAttributeReservedValueManager {
 
     private static final Integer MIN_TO_TRY_FILL = 50;

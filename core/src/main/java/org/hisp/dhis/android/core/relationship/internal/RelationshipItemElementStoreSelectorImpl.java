@@ -34,8 +34,8 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl;
 
 import javax.inject.Inject;
 

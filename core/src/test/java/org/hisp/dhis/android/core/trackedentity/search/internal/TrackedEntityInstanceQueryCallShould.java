@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

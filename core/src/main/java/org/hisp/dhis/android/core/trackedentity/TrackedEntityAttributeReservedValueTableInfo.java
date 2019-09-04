@@ -51,14 +51,14 @@ public final class TrackedEntityAttributeReservedValueTableInfo {
     };
 
     public static class Columns extends BaseModel.Columns {
-        private final static String OWNER_OBJECT = "ownerObject";
-        final static String OWNER_UID = "ownerUid";
-        final static String KEY = "key";
-        private final static String VALUE = "value";
-        private final static String CREATED = "created";
-        final static String EXPIRY_DATE = "expiryDate";
-        final static String ORGANISATION_UNIT = "organisationUnit";
-        final static String TEMPORAL_VALIDITY_DATE = "temporalValidityDate";
+        public final static String OWNER_OBJECT = "ownerObject";
+        public final static String OWNER_UID = "ownerUid";
+        public final static String KEY = "key";
+        public final static String VALUE = "value";
+        public final static String CREATED = "created";
+        public final static String EXPIRY_DATE = "expiryDate";
+        public final static String ORGANISATION_UNIT = "organisationUnit";
+        public final static String TEMPORAL_VALIDITY_DATE = "temporalValidityDate";
 
         @Override
         public String[] all() {

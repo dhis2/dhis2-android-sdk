@@ -49,6 +49,10 @@ import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.internal.ProgramStore;
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueQuery;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStoreInterface;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 import org.mockito.ArgumentCaptor;
@@ -82,7 +86,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 
     @Mock
     QueryCallFactory<TrackedEntityAttributeReservedValue,
-                TrackedEntityAttributeReservedValueQuery> trackedEntityAttributeReservedValueQueryCallFactory;
+            TrackedEntityAttributeReservedValueQuery> trackedEntityAttributeReservedValueQueryCallFactory;
     @Mock
     Callable<List<TrackedEntityAttributeReservedValue>> trackedEntityAttributeReservedValueCall;
 

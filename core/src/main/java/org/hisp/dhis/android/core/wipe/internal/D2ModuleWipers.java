@@ -48,7 +48,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipModuleWiper;
 import org.hisp.dhis.android.core.resource.internal.ResourceModuleWiper;
 import org.hisp.dhis.android.core.settings.internal.SystemSettingModuleWiper;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleWiper;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityModuleWiper;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityModuleWiper;
 import org.hisp.dhis.android.core.user.internal.UserModuleWiper;
 
 import java.util.Arrays;

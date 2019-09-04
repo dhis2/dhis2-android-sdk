@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueFields;
 
 public final class TrackedEntityDataValueTableInfo {
 

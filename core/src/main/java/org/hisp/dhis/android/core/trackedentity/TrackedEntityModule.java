@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceListDownloadAndPersistCallFactory;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
 
 import java.util.Collection;
@@ -89,7 +91,7 @@ public final class TrackedEntityModule {
      * @param program Program uid
      * @return -
      */
-    Single<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids,
+    public Single<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids,
                                                                                      String program) {
         return downloadAndPersistCallFactory.getCall(uids, program);
     }

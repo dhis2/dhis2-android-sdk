@@ -38,15 +38,24 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 interface FileResourceService {
     String FILE_RESOURCES = "fileResources";
     String FILE_RESOURCE = "fileResource";
+    String TRACKED_ENTITY_INSTANCES = "trackedEntityInstances";
+    String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+    String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
 
     @Multipart
     @POST(FILE_RESOURCES)
     Call<ResponseBody> uploadFile(@Part MultipartBody.Part filePart);
 
     @GET(FILE_RESOURCES + "/{" + FILE_RESOURCE + "}")
-    Call<FileResource> getFileResource(@Path(FILE_RESOURCE) String trackedEntityInstanceUid);
+    Call<FileResource> getFileResource(@Path(FILE_RESOURCE) String fileResource);
+
+    @GET(TRACKED_ENTITY_INSTANCES + "/{" + TRACKED_ENTITY_INSTANCE + "}/{" + TRACKED_ENTITY_ATTRIBUTE + "}/image")
+    Call<ResponseBody> getFile(@Path(TRACKED_ENTITY_INSTANCE) String trackedEntityInstanceUid,
+                               @Path(TRACKED_ENTITY_ATTRIBUTE) String trackedEntityAttributeUid,
+                               @Query("dimension") String dimension);
 }

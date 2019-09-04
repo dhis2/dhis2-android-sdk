@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
 
 public final class OptionGroupOptionLinkTableInfo {
 
@@ -57,7 +57,7 @@ public final class OptionGroupOptionLinkTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     OPTION_GROUP,
                     OPTION
             );
@@ -65,7 +65,7 @@ public final class OptionGroupOptionLinkTableInfo {
 
         @Override
         public String[] whereUpdate() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     OPTION_GROUP,
                     OPTION
             );

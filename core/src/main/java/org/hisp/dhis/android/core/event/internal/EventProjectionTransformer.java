@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
+import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventCreateProjection;
 import org.hisp.dhis.android.core.event.EventStatus;
-import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 
 import java.util.Date;
 

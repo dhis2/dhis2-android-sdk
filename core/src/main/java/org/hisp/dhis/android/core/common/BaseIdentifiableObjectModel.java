@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.common;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.Date;
 
@@ -50,7 +50,8 @@ public abstract class BaseIdentifiableObjectModel extends BaseModel implements I
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(), UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED);
+            return CollectionsHelper.appendInNewArray(super.all(), UID, CODE, NAME, DISPLAY_NAME, CREATED,
+                    LAST_UPDATED);
         }
     }
 

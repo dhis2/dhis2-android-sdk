@@ -29,9 +29,10 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 
 public final class TrackedEntityInstanceTableInfo {
 
@@ -51,17 +52,17 @@ public final class TrackedEntityInstanceTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
-        static final String UID = "uid";
-        static final String CREATED_AT_CLIENT = "createdAtClient";
-        static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
-        static final String ORGANISATION_UNIT = "organisationUnit";
-        static final String GEOMETRY_TYPE = "geometryType";
-        static final String GEOMETRY_COORDINATES = "geometryCoordinates";
+    public static class Columns extends BaseModel.Columns {
+        public static final String UID = "uid";
+        public static final String CREATED_AT_CLIENT = "createdAtClient";
+        public static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
+        public static final String ORGANISATION_UNIT = "organisationUnit";
+        public static final String GEOMETRY_TYPE = "geometryType";
+        public static final String GEOMETRY_COORDINATES = "geometryCoordinates";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     UID,
                     TrackedEntityInstanceFields.CREATED,
                     TrackedEntityInstanceFields.LAST_UPDATED,

@@ -42,7 +42,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isDeleted;
 
 public class IdentifiableDataHandlerImpl<O extends DataModel & ObjectWithUidInterface & ObjectWithDeleteInterface>
         extends IdentifiableHandlerImpl<O> {

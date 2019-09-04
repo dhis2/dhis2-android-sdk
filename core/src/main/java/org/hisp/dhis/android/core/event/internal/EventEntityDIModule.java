@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventCreateProjection;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueChildrenAppender;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueChildrenAppender;
 
 import java.util.Collections;
 import java.util.Map;

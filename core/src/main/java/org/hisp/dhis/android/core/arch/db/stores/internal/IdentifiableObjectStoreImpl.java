@@ -44,7 +44,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
+import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isNull;
 
 public class IdentifiableObjectStoreImpl<M extends Model & ObjectWithUidInterface>
         extends ObjectStoreImpl<M> implements IdentifiableObjectStore<M> {

@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueFields;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueFields;
 
 import static org.hisp.dhis.android.core.event.EventTableInfo.Columns;
 

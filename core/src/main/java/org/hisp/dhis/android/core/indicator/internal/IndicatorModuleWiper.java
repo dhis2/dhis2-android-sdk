@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.indicator.internal;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo;
 import org.hisp.dhis.android.core.indicator.IndicatorTableInfo;
 import org.hisp.dhis.android.core.indicator.IndicatorTypeTableInfo;
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.internal.TableWiper;
 
 import javax.inject.Inject;
 

@@ -30,7 +30,20 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryEntityDIModule;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeCallFactory;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeEntityDIModule;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueEndpointCallFactory;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueEntityDIModule;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueQuery;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeService;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueEntityDIModule;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueEntityDIModule;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceEntityDIModule;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttributeEntityDIModule;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeCallFactory;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeEntityDIModule;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeService;
+import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryEntityDIModule;
 
 import dagger.Module;
 import dagger.Provides;

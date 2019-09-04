@@ -44,7 +44,7 @@ import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.wipe.WipeModule;
+import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 
 import javax.inject.Inject;
 
@@ -54,8 +54,8 @@ import io.reactivex.Single;
 import retrofit2.Call;
 
 import static okhttp3.Credentials.basic;
-import static org.hisp.dhis.android.core.utils.UserUtils.base64;
-import static org.hisp.dhis.android.core.utils.UserUtils.md5;
+import static org.hisp.dhis.android.core.arch.helpers.UserHelper.base64;
+import static org.hisp.dhis.android.core.arch.helpers.UserHelper.md5;
 
 @Reusable
 public final class UserAuthenticateCallFactory {

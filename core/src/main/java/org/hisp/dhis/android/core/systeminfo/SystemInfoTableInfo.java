@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
 
 public final class SystemInfoTableInfo {
 
@@ -53,7 +53,7 @@ public final class SystemInfoTableInfo {
     public static class Columns extends BaseModel.Columns {
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     SystemInfoFields.SERVER_DATE,
                     SystemInfoFields.DATE_FORMAT,
                     SystemInfoFields.VERSION,

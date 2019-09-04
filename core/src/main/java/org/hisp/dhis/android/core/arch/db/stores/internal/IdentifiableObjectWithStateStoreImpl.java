@@ -86,7 +86,7 @@ public class IdentifiableObjectWithStateStoreImpl<M extends ObjectWithUidInterfa
         this.setStateForUpdateStatement = databaseAdapter.compileStatement(setStateForUpdate);
 
         String setDeleted = "UPDATE " + tableName + " SET " +
-                DELETED + " =?" + whereUid;
+                DELETED + " = 1" + whereUid;
         this.setDeletedStatement = databaseAdapter.compileStatement(setDeleted);
 
         this.selectStateQuery = "SELECT state FROM " + tableName + whereUid;

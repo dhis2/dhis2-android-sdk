@@ -77,7 +77,7 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
             } else {
                 store.setDeleted(object.uid());
                 store.setState(object.uid(), State.TO_UPDATE);
-                propagateState();
+                propagateState(object);
             }
         }
     }
@@ -85,11 +85,11 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
     @Override
     protected Unit updateObject(M m) throws D2Error {
         super.updateObject(m);
-        propagateState();
+        propagateState(m);
         return new Unit();
     }
 
-    protected void propagateState() {
+    protected void propagateState(M m) {
          // Method is empty because is the default action.
     }
 }

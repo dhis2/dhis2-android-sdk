@@ -47,7 +47,6 @@ public final class EventObjectRepository
         implements ReadWriteObjectRepository<Event> {
 
     private final DataStatePropagator dataStatePropagator;
-    private Event event;
 
     EventObjectRepository(final EventStore store,
                           final String uid,
@@ -88,7 +87,7 @@ public final class EventObjectRepository
     }
 
     private Event.Builder updateBuilder() {
-        event = getWithoutChildren();
+        Event event = getWithoutChildren();
         Date updateDate = new Date();
         State state = event.state();
         state = state == State.TO_POST ? state : State.TO_UPDATE;
@@ -100,7 +99,7 @@ public final class EventObjectRepository
     }
 
     @Override
-    protected void propagateState() {
+    protected void propagateState(Event event) {
         dataStatePropagator.propagateEventUpdate(event);
     }
 }

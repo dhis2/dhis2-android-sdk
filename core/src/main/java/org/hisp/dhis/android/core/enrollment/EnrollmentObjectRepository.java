@@ -47,7 +47,6 @@ public final class EnrollmentObjectRepository
         implements ReadWriteObjectRepository<Enrollment> {
 
     private final DataStatePropagator dataStatePropagator;
-    private Enrollment enrollment;
 
     EnrollmentObjectRepository(final EnrollmentStore store,
                                final String uid,
@@ -84,7 +83,7 @@ public final class EnrollmentObjectRepository
     }
 
     private Enrollment.Builder updateBuilder() {
-        enrollment = getWithoutChildren();
+        Enrollment enrollment = getWithoutChildren();
         Date updateDate = new Date();
         State state = enrollment.state();
         state = state == State.TO_POST ? state : State.TO_UPDATE;
@@ -96,7 +95,7 @@ public final class EnrollmentObjectRepository
     }
 
     @Override
-    protected void propagateState() {
+    protected void propagateState(Enrollment enrollment) {
         dataStatePropagator.propagateEnrollmentUpdate(enrollment);
     }
 }

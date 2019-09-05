@@ -26,26 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.json.internal;
 
-import androidx.annotation.NonNull;
+import com.fasterxml.jackson.databind.util.StdConverter;
 
-@SuppressWarnings("PMD.UseVarargs")
-public final class DbUtils {
+public class JsonElementStringConverter extends StdConverter<Object, String> {
 
-    private DbUtils() {
-        // no instances
-    }
-
-    @NonNull
-    public static String projectionToSqlString(String[] projection) {
-        StringBuilder sqlStringBuilder = new StringBuilder();
-        for (int i = 0; i < projection.length; i++) {
-            sqlStringBuilder.append(projection[i]);
-            if (i < projection.length - 1) {
-                sqlStringBuilder.append(", ");
-            }
-        }
-        return sqlStringBuilder.toString();
+    @Override
+    public String convert(Object value) {
+        return value.toString();
     }
 }

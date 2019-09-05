@@ -41,10 +41,10 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.serialization.GeometryTypeDeserializer;
-import org.hisp.dhis.android.core.data.serialization.GeometryTypeSerializer;
-import org.hisp.dhis.android.core.data.serialization.JsonElementStringConverter;
-import org.hisp.dhis.android.core.data.serialization.StringJsonElementSerializer;
+import org.hisp.dhis.android.core.arch.json.internal.GeometryTypeDeserializer;
+import org.hisp.dhis.android.core.arch.json.internal.GeometryTypeSerializer;
+import org.hisp.dhis.android.core.arch.json.internal.JsonElementStringConverter;
+import org.hisp.dhis.android.core.arch.json.internal.StringJsonElementSerializer;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Geometry.Builder.class)

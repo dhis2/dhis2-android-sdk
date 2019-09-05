@@ -26,26 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.serialization;
+package org.hisp.dhis.android.core.arch.json.internal;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-
-import org.hisp.dhis.android.core.common.FeatureType;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 
 import java.io.IOException;
 
-public class GeometryTypeDeserializer extends JsonDeserializer<FeatureType> {
+public class StringJsonElementSerializer extends JsonSerializer<String> {
+
     @Override
-    public FeatureType deserialize(JsonParser p, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
-        JsonToken jsonToken = p.getCurrentToken();
-        if (jsonToken == JsonToken.VALUE_STRING) {
-            return FeatureType.valueOfFeatureType(p.getValueAsString());
-        }
-        return null;
+    public void serialize(String value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        gen.writeRawValue(value);
     }
 }

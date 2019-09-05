@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.sms.data.smsrepository;
+package org.hisp.dhis.android.core.sms.data.smsrepository.internal;
 
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -12,7 +12,7 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
-import org.hisp.dhis.android.core.sms.domain.repository.SubmissionType;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType;
 
 import java.util.Date;
 import java.util.Locale;

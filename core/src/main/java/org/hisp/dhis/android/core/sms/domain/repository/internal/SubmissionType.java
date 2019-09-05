@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.sms.domain.repository;
+package org.hisp.dhis.android.core.sms.domain.repository.internal;
 
 public enum SubmissionType {
     SIMPLE_EVENT("simple"),

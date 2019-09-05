@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.sms.data.localdbrepository;
+package org.hisp.dhis.android.core.sms.data.localdbrepository.internal;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -8,8 +8,8 @@ import android.util.Pair;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
-import org.hisp.dhis.android.core.sms.domain.repository.SubmissionType;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

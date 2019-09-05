@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.sms.data.webapirepository;
+package org.hisp.dhis.android.core.sms.data.webapirepository.internal;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;

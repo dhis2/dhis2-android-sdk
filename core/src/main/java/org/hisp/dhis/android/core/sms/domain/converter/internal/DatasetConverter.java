@@ -1,10 +1,8 @@
-package org.hisp.dhis.android.core.sms.domain.converter;
-
-import androidx.annotation.NonNull;
+package org.hisp.dhis.android.core.sms.domain.converter.internal;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValue;
-import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
 import org.hisp.dhis.smscompression.models.AggregateDatasetSMSSubmission;
 import org.hisp.dhis.smscompression.models.SMSDataValue;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
@@ -12,6 +10,7 @@ import org.hisp.dhis.smscompression.models.SMSSubmission;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 

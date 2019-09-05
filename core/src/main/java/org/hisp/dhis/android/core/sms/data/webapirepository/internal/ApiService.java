@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.sms.data.webapirepository;
+package org.hisp.dhis.android.core.sms.data.webapirepository.internal;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

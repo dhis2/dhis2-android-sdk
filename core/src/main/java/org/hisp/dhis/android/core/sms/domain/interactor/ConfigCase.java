@@ -2,8 +2,8 @@ package org.hisp.dhis.android.core.sms.domain.interactor;
 
 import android.util.Log;
 
-import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
 
 import java.util.concurrent.Callable;
 

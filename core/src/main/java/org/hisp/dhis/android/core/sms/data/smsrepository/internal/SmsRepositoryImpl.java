@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.sms.data.smsrepository;
+package org.hisp.dhis.android.core.sms.data.smsrepository.internal;
 
 import android.app.PendingIntent;
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.telephony.SmsManager;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
-import org.hisp.dhis.android.core.sms.domain.repository.SubmissionType;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType;
 
 import java.util.ArrayList;
 import java.util.Collection;

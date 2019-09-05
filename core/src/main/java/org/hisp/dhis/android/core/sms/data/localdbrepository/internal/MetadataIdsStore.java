@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.sms.data.localdbrepository;
+package org.hisp.dhis.android.core.sms.data.localdbrepository.internal;
 
 import android.content.Context;
 

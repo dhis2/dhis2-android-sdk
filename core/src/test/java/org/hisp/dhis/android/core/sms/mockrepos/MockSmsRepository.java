@@ -1,7 +1,7 @@
 package org.hisp.dhis.android.core.sms.mockrepos;
 
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
-import org.hisp.dhis.android.core.sms.domain.repository.SubmissionType;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType;
 
 import java.util.Collections;
 import java.util.Date;

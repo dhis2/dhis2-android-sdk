@@ -26,13 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
 
-public class D2ErrorComponentColumnAdapter extends EnumColumnAdapter<D2ErrorComponent> {
+public class RelationshipConstraintTypeColumnAdapter extends EnumColumnAdapter<RelationshipConstraintType> {
     @Override
-    protected Class<D2ErrorComponent> getEnumClass() {
-        return D2ErrorComponent.class;
+    protected Class<RelationshipConstraintType> getEnumClass() {
+        return RelationshipConstraintType.class;
     }
 }

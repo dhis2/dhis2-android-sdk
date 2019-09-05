@@ -26,13 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.period.PeriodType;
 
-public class D2ErrorCodeColumnAdapter extends EnumColumnAdapter<D2ErrorCode> {
+public class PeriodTypeColumnAdapter extends EnumColumnAdapter<PeriodType> {
     @Override
-    protected Class<D2ErrorCode> getEnumClass() {
-        return D2ErrorCode.class;
+    protected Class<PeriodType> getEnumClass() {
+        return PeriodType.class;
     }
 }

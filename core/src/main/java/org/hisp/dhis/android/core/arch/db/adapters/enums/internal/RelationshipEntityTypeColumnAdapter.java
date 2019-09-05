@@ -26,13 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.relationship.RelationshipEntityType;
 
-public class DbPeriodTypeColumnAdapter extends EnumColumnAdapter<PeriodType> {
+public class RelationshipEntityTypeColumnAdapter extends EnumColumnAdapter<RelationshipEntityType> {
     @Override
-    protected Class<PeriodType> getEnumClass() {
-        return PeriodType.class;
+    protected Class<RelationshipEntityType> getEnumClass() {
+        return RelationshipEntityType.class;
     }
 }

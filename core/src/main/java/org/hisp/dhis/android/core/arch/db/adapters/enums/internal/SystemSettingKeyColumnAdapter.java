@@ -26,17 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import org.hisp.dhis.android.core.data.database.EnumColumnAdapter;
+import org.hisp.dhis.android.core.settings.SystemSetting;
 
-import androidx.annotation.NonNull;
-
-class ProgramRuleActionTypeColumnAdapter extends EnumColumnAdapter<ProgramRuleActionType> {
-
+public class SystemSettingKeyColumnAdapter extends EnumColumnAdapter<SystemSetting.SystemSettingKey> {
     @Override
-    @NonNull
-    protected Class<ProgramRuleActionType> getEnumClass() {
-        return ProgramRuleActionType.class;
+    protected Class<SystemSetting.SystemSettingKey> getEnumClass() {
+        return SystemSetting.SystemSettingKey.class;
     }
 }

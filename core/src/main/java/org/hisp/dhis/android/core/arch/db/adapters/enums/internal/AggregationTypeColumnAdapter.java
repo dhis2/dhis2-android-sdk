@@ -26,13 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import org.hisp.dhis.android.core.program.AccessLevel;
+import org.hisp.dhis.android.core.common.AggregationType;
 
-public class DbAccessLevelColumnAdapter extends EnumColumnAdapter<AccessLevel> {
+public class AggregationTypeColumnAdapter extends EnumColumnAdapter<AggregationType> {
     @Override
-    protected Class<AccessLevel> getEnumClass() {
-        return AccessLevel.class;
+    protected Class<AggregationType> getEnumClass() {
+        return AggregationType.class;
     }
 }

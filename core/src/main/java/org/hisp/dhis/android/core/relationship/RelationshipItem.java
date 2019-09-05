@@ -39,9 +39,9 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.RelationshipConstraintTypeColumnAdapter;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.DbRelationshipConstraintTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.RelationshipItemEnrollmentColumnAdapter;
 import org.hisp.dhis.android.core.data.database.RelationshipItemEventColumnAdapter;
@@ -59,7 +59,7 @@ public abstract class RelationshipItem implements Model {
 
     @Nullable
     @JsonIgnore()
-    @ColumnAdapter(DbRelationshipConstraintTypeColumnAdapter.class)
+    @ColumnAdapter(RelationshipConstraintTypeColumnAdapter.class)
     public abstract RelationshipConstraintType relationshipItemType();
 
     @Nullable

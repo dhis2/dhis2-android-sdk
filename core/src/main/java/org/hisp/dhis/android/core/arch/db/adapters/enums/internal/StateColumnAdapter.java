@@ -26,14 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import org.hisp.dhis.android.core.imports.ImportStatus;
+import org.hisp.dhis.android.core.common.State;
 
-public class DbImportStatusColumnAdapter extends EnumColumnAdapter<ImportStatus> {
-
+public class StateColumnAdapter extends EnumColumnAdapter<State> {
     @Override
-    protected Class<ImportStatus> getEnumClass() {
-        return ImportStatus.class;
+    protected Class<State> getEnumClass() {
+        return State.class;
     }
 }

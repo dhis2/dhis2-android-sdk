@@ -44,7 +44,7 @@ import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.AccessColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataInputPeriodListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataElementOperandListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreIndicatorListAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
@@ -64,7 +64,7 @@ public abstract class DataSet extends BaseNameableObject implements Model, Objec
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DbPeriodTypeColumnAdapter.class)
+    @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType periodType();
 
     @Nullable

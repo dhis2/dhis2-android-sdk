@@ -26,17 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment;
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import org.hisp.dhis.android.core.data.database.EnumColumnAdapter;
+import android.content.ContentValues;
+import android.database.Cursor;
 
-import androidx.annotation.NonNull;
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-class EnrollmentStatusColumnAdapter extends EnumColumnAdapter<EnrollmentStatus> {
+public abstract class EnumColumnAdapter<T extends Enum<T>> implements ColumnTypeAdapter<T> {
+
+    protected abstract Class<T> getEnumClass();
 
     @Override
-    @NonNull
-    protected Class<EnrollmentStatus> getEnumClass() {
-        return EnrollmentStatus.class;
+    public T fromCursor(Cursor cursor, String columnName) {
+
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String sourceValue = cursor.getString(columnIndex);
+
+        T enumModel = null;
+        if (sourceValue != null) {
+            try {
+                enumModel = Enum.valueOf(getEnumClass(), sourceValue);
+            } catch (Exception exception) {
+                throw new RuntimeException("Unknown " + getEnumClass().getSimpleName() + " type", exception);
+            }
+        }
+        return enumModel;
+    }
+
+    @Override
+    public void toContentValues(ContentValues contentValues, String columnName, T enumValue) {
+        if (enumValue != null) {
+            contentValues.put(columnName, enumValue.name());
+        }
     }
 }

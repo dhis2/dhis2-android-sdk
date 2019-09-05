@@ -26,18 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import org.hisp.dhis.android.core.common.AggregationType;
-import org.hisp.dhis.android.core.data.database.EnumColumnAdapter;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 
-import androidx.annotation.NonNull;
-
-public class AggregationTypeColumnAdapter extends EnumColumnAdapter<AggregationType> {
-
+public class D2ErrorCodeColumnAdapter extends EnumColumnAdapter<D2ErrorCode> {
     @Override
-    @NonNull
-    protected Class<AggregationType> getEnumClass() {
-        return AggregationType.class;
+    protected Class<D2ErrorCode> getEnumClass() {
+        return D2ErrorCode.class;
     }
 }

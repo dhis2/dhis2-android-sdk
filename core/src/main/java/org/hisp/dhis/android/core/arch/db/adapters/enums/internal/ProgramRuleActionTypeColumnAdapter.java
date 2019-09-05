@@ -26,13 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import org.hisp.dhis.android.core.common.AggregationType;
+import org.hisp.dhis.android.core.program.ProgramRuleActionType;
 
-public class DbAggregationTypeColumnAdapter extends EnumColumnAdapter<AggregationType> {
+import androidx.annotation.NonNull;
+
+public class ProgramRuleActionTypeColumnAdapter extends EnumColumnAdapter<ProgramRuleActionType> {
+
     @Override
-    protected Class<AggregationType> getEnumClass() {
-        return AggregationType.class;
+    @NonNull
+    protected Class<ProgramRuleActionType> getEnumClass() {
+        return ProgramRuleActionType.class;
     }
 }

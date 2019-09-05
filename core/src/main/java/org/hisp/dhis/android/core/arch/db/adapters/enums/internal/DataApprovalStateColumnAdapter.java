@@ -26,13 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import org.hisp.dhis.android.core.data.database.EnumColumnAdapter;
+import org.hisp.dhis.android.core.dataapproval.DataApprovalState;
 
-class ProgramStageSectionRenderingTypeColumnAdapter extends EnumColumnAdapter<ProgramStageSectionRenderingType> {
-    @Override
-    protected Class<ProgramStageSectionRenderingType> getEnumClass() {
-        return ProgramStageSectionRenderingType.class;
+public class DataApprovalStateColumnAdapter extends EnumColumnAdapter<DataApprovalState> {
+
+@Override
+protected Class<DataApprovalState> getEnumClass() {
+        return DataApprovalState.class;
     }
+
 }

@@ -26,15 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import org.hisp.dhis.android.core.dataapproval.DataApprovalState;
+import org.hisp.dhis.android.core.event.EventStatus;
 
-public class DbDataApprovalStateColumnAdapter extends EnumColumnAdapter<DataApprovalState> {
-
-@Override
-protected Class<DataApprovalState> getEnumClass() {
-        return DataApprovalState.class;
+public class EventStatusColumnAdapter extends EnumColumnAdapter<EventStatus> {
+    @Override
+    protected Class<EventStatus> getEnumClass() {
+        return EventStatus.class;
     }
-
 }

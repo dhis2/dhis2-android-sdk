@@ -26,14 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
+import org.hisp.dhis.android.core.resource.internal.Resource;
 
-public class DbEnrollmentStatusColumnAdapter extends EnumColumnAdapter<EnrollmentStatus> {
-
+public class ResourceTypeColumnAdapter extends EnumColumnAdapter<Resource.Type> {
     @Override
-    protected Class<EnrollmentStatus> getEnumClass() {
-        return EnrollmentStatus.class;
+    protected Class<Resource.Type> getEnumClass() {
+        return Resource.Type.class;
     }
 }

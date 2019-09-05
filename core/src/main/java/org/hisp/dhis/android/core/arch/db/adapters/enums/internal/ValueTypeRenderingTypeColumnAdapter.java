@@ -26,10 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common.valuetype.renderingtype.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
 import org.hisp.dhis.android.core.common.ValueTypeRenderingType;
-import org.hisp.dhis.android.core.data.database.EnumColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnumColumnAdapter;
 
 public class ValueTypeRenderingTypeColumnAdapter extends EnumColumnAdapter<ValueTypeRenderingType> {
     @Override

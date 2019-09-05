@@ -26,13 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import org.hisp.dhis.android.core.resource.internal.Resource;
+import org.hisp.dhis.android.core.common.FeatureType;
 
-public class ResourceTypeColumnAdapter extends EnumColumnAdapter<Resource.Type> {
+public class FeatureTypeColumnAdapter extends EnumColumnAdapter<FeatureType> {
     @Override
-    protected Class<Resource.Type> getEnumClass() {
-        return Resource.Type.class;
+    protected Class<FeatureType> getEnumClass() {
+        return FeatureType.class;
     }
 }

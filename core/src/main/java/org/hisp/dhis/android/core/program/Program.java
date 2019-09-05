@@ -40,6 +40,8 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.FeatureTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
@@ -49,9 +51,7 @@ import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.data.database.AccessColumnAdapter;
 import org.hisp.dhis.android.core.data.database.CategoryComboWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DBCaptureCoordinatesFromFeatureTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbAccessLevelColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AccessLevelColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbProgramTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramIndicatorListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramRuleListColumnAdapter;
@@ -194,7 +194,7 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DbPeriodTypeColumnAdapter.class)
+    @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType expiryPeriodType();
 
     @Nullable
@@ -212,12 +212,12 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DbFeatureTypeColumnAdapter.class)
+    @ColumnAdapter(FeatureTypeColumnAdapter.class)
     public abstract FeatureType featureType();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DbAccessLevelColumnAdapter.class)
+    @ColumnAdapter(AccessLevelColumnAdapter.class)
     public abstract AccessLevel accessLevel();
 
     public static Builder builder() {

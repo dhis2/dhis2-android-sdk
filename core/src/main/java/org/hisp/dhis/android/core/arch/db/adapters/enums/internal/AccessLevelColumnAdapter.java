@@ -26,13 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import org.hisp.dhis.android.core.settings.SystemSetting;
+import org.hisp.dhis.android.core.program.AccessLevel;
 
-public class DbSystemSettingKeyColumnAdapter extends EnumColumnAdapter<SystemSetting.SystemSettingKey> {
+public class AccessLevelColumnAdapter extends EnumColumnAdapter<AccessLevel> {
     @Override
-    protected Class<SystemSetting.SystemSettingKey> getEnumClass() {
-        return SystemSetting.SystemSettingKey.class;
+    protected Class<AccessLevel> getEnumClass() {
+        return AccessLevel.class;
     }
 }

@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
@@ -131,6 +132,10 @@ public final class TrackedEntityInstanceCollectionRepository
 
     public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> byState() {
         return cf.enumC(BaseDataModel.Columns.STATE);
+    }
+
+    public BooleanFilterConnector<TrackedEntityInstanceCollectionRepository> byDeleted() {
+        return cf.bool(TrackedEntityInstanceTableInfo.Columns.DELETED);
     }
 
     public TrackedEntityInstanceCollectionRepository byProgramUids(List<String> programUids) {

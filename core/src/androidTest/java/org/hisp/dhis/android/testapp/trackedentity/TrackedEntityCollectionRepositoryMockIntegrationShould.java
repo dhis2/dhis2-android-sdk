@@ -159,6 +159,16 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     }
 
     @Test
+    public void filter_by_deleted() {
+        List<TrackedEntityInstance> trackedEntityInstances =
+                d2.trackedEntityModule().trackedEntityInstances
+                        .byDeleted().isFalse()
+                        .blockingGet();
+
+        assertThat(trackedEntityInstances.size(), is(2));
+    }
+
+    @Test
     public void filter_by_program_uids() {
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances

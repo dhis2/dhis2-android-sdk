@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
@@ -163,6 +164,10 @@ public final class EventCollectionRepository
 
     public StringFilterConnector<EventCollectionRepository> byAttributeOptionComboUid() {
         return cf.string(Columns.ATTRIBUTE_OPTION_COMBO);
+    }
+
+    public BooleanFilterConnector<EventCollectionRepository> byDeleted() {
+        return cf.bool(Columns.DELETED);
     }
 
     public EventCollectionRepository byTrackedEntityInstanceUids(List<String> uids) {

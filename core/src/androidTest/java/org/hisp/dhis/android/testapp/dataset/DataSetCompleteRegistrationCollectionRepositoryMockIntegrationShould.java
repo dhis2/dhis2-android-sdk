@@ -131,4 +131,14 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
         assertThat(dataSetCompleteRegistrations.size(), is(2));
     }
 
+    @Test
+    public void filter_by_deleted() {
+        List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
+                d2.dataSetModule().dataSetCompleteRegistrations
+                        .byDeleted().isFalse()
+                        .blockingGet();
+
+        assertThat(dataSetCompleteRegistrations.size(), is(2));
+    }
+
 }

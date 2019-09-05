@@ -26,37 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableSourceType;
 
-public class DbGeometryTypeColumnAdapter implements ColumnTypeAdapter<FeatureType> {
+public class DbProgramRuleVariableSourceTypeColumnAdapter implements ColumnTypeAdapter<ProgramRuleVariableSourceType> {
 
     @Override
-    public FeatureType fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex("geometryType");
+    public ProgramRuleVariableSourceType fromCursor(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
         String sourceValue = cursor.getString(columnIndex);
 
-        FeatureType featureType = null;
+        ProgramRuleVariableSourceType programRuleVariableSourceType = null;
         if (sourceValue != null) {
             try {
-                featureType = Enum.valueOf(FeatureType.class, sourceValue);
+                programRuleVariableSourceType = ProgramRuleVariableSourceType.valueOf(sourceValue);
             } catch (Exception exception) {
-                throw new RuntimeException("Unknown FeatureType type", exception);
+                throw new RuntimeException("Unknown program rule variable source type", exception);
             }
         }
-        return featureType;
+        return programRuleVariableSourceType;
     }
 
     @Override
-    public void toContentValues(ContentValues contentValues, String columnName, FeatureType value) {
-        if (value != null) {
-            contentValues.put("geometryType", value.getGeometryType());
+    public void toContentValues(ContentValues contentValues, String columnName,
+            ProgramRuleVariableSourceType sourceType) {
+        if (sourceType != null) {
+            contentValues.put(columnName, sourceType.name());
         }
     }
 }

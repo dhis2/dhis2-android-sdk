@@ -26,23 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-public class IsColumnNotNullColumnAdapter implements ColumnTypeAdapter<Boolean> {
+import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance;
+
+public class RelationshipItemTrackedEntityInstanceColumnAdapter
+        implements ColumnTypeAdapter<RelationshipItemTrackedEntityInstance> {
 
     @Override
-    public Boolean fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex(columnName);
-        return !cursor.isNull(columnIndex);
+    public RelationshipItemTrackedEntityInstance fromCursor(Cursor cursor, String columnName) {
+        int index = cursor.getColumnIndex(columnName);
+
+        return index == -1 || cursor.isNull(index) ? null :
+                RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance(cursor.getString(index)).build();
     }
 
     @Override
-    public void toContentValues(ContentValues values, String columnName, Boolean value) {
-        // This adapter is only used to read from db
+    public void toContentValues(ContentValues values, String columnName, RelationshipItemTrackedEntityInstance value) {
+        if (value != null) {
+            values.put(columnName, value.trackedEntityInstance());
+        }
     }
 }

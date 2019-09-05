@@ -40,10 +40,10 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IsColumnNotNullColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.IsColumnNotNullColumnAdapter;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Date;

@@ -26,30 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
-
-import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance;
-
-public class RelationshipItemTrackedEntityInstanceColumnAdapter
-        implements ColumnTypeAdapter<RelationshipItemTrackedEntityInstance> {
+public class DataElementWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<DataElement> {
 
     @Override
-    public RelationshipItemTrackedEntityInstance fromCursor(Cursor cursor, String columnName) {
-        int index = cursor.getColumnIndex(columnName);
-
-        return index == -1 || cursor.isNull(index) ? null :
-                RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance(cursor.getString(index)).build();
-    }
-
-    @Override
-    public void toContentValues(ContentValues values, String columnName, RelationshipItemTrackedEntityInstance value) {
-        if (value != null) {
-            values.put(columnName, value.trackedEntityInstance());
-        }
+    protected DataElement build(String uid) {
+        return DataElement.builder().uid(uid).build();
     }
 }

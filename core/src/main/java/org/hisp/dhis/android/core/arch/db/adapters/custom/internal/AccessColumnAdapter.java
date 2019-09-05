@@ -26,14 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
 
-import org.hisp.dhis.android.core.dataelement.DataElement;
+import android.content.ContentValues;
+import android.database.Cursor;
 
-public class DataElementWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<DataElement> {
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
+import org.hisp.dhis.android.core.common.Access;
+
+public class AccessColumnAdapter implements ColumnTypeAdapter<Access> {
 
     @Override
-    protected DataElement build(String uid) {
-        return DataElement.builder().uid(uid).build();
+    public Access fromCursor(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(Access.ACCESS_DATA_WRITE);
+        Integer accessDataWrite = cursor.getInt(columnIndex);
+        return Access.createForDataWrite(accessDataWrite == 1);
+    }
+
+    @Override
+    public void toContentValues(ContentValues values, String columnName, Access value) {
+        Integer accessDataWrite = AccessHelper.getAccessDataWrite(value);
+        values.put(Access.ACCESS_DATA_WRITE, accessDataWrite);
     }
 }

@@ -26,14 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.user.User;
 
-public class OrganisationUnitWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<OrganisationUnit> {
+public class UserWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<User> {
 
     @Override
-    protected OrganisationUnit build(String uid) {
-        return OrganisationUnit.builder().uid(uid).build();
+    protected User build(String uid) {
+        return User.builder().uid(uid).build();
     }
 }

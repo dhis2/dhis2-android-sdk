@@ -26,36 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.program.ProgramType;
 
-import io.reactivex.annotations.NonNull;
-
-public abstract class IdentifiableObjectColumnAdapter<O extends ObjectWithUidInterface>
-        implements ColumnTypeAdapter<O> {
+public class DbProgramTypeColumnAdapter implements ColumnTypeAdapter<ProgramType> {
 
     @Override
-    public final void toContentValues(ContentValues values, String columnName, O value) {
-        values.put(columnName, UidsHelper.getUidOrNull(value));
+    public ProgramType fromCursor(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String source = cursor.getString(columnIndex);
+
+        ProgramType programType = null;
+        if (source != null) {
+            try {
+                programType = ProgramType.valueOf(source);
+            } catch (IllegalArgumentException exception) {
+                throw new RuntimeException("Unknown program type", exception);
+            }
+        }
+        return programType;
     }
 
     @Override
-    public final O fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex(columnName);
-        String uid = cursor.getString(columnIndex);
-        if (uid == null) {
-            return null;
-        } else {
-            return build(uid);
+    public void toContentValues(ContentValues values, String columnName, ProgramType value) {
+        if (value != null) {
+            values.put(columnName, value.name());
         }
     }
-
-    protected abstract O build(@NonNull String uid);
 }

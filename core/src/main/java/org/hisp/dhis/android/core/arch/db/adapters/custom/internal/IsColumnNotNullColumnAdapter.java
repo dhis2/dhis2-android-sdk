@@ -26,40 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-import org.hisp.dhis.android.core.common.FeatureType;
-
-public class DBCaptureCoordinatesFromFeatureTypeColumnAdapter implements ColumnTypeAdapter<Boolean> {
-
-    private static final String FEATURE_TYPE = "featureType";
+public class IsColumnNotNullColumnAdapter implements ColumnTypeAdapter<Boolean> {
 
     @Override
     public Boolean fromCursor(Cursor cursor, String columnName) {
-        int featureTypeColumnIndex = cursor.getColumnIndex(FEATURE_TYPE);
-        String featureTypeStr = cursor.getString(featureTypeColumnIndex);
-
-        FeatureType featureType
-                = null;
-        if (featureTypeStr != null) {
-            try {
-                featureType = FeatureType.valueOfFeatureType(featureTypeStr);
-            } catch (Exception exception) {
-                throw new RuntimeException("Unknown FeatureType type", exception);
-            }
-        }
-
-        return featureType == null ? null : featureType != FeatureType.NONE;
+        int columnIndex = cursor.getColumnIndex(columnName);
+        return !cursor.isNull(columnIndex);
     }
 
     @Override
     public void toContentValues(ContentValues values, String columnName, Boolean value) {
-        /* Method has empty action as default action.
-         */
+        // This adapter is only used to read from db
     }
 }

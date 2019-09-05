@@ -26,49 +26,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.Geometry;
+import org.hisp.dhis.android.core.relationship.RelationshipItemEvent;
 
-public class DbGeometryColumnAdapter implements ColumnTypeAdapter<Geometry> {
-
-    private static final String GEOMETRY_TYPE = "geometryType";
-    private static final String GEOMETRY_COORDINATES = "geometryCoordinates";
+public class RelationshipItemEventColumnAdapter implements ColumnTypeAdapter<RelationshipItemEvent> {
 
     @Override
-    public Geometry fromCursor(Cursor cursor, String columnName) {
-        int geometryTypeColumnIndex = cursor.getColumnIndex(GEOMETRY_TYPE);
-        String geometryTypeStr = cursor.getString(geometryTypeColumnIndex);
+    public RelationshipItemEvent fromCursor(Cursor cursor, String columnName) {
+        int index = cursor.getColumnIndex(columnName);
 
-        FeatureType geometryType = null;
-        if (geometryTypeStr != null) {
-            try {
-                geometryType = FeatureType.valueOfFeatureType(geometryTypeStr);
-            } catch (Exception exception) {
-                throw new RuntimeException("Unknown FeatureType type", exception);
-            }
-        }
-
-        int geometryCoordinatesColumnIndex = cursor.getColumnIndex(GEOMETRY_COORDINATES);
-        String geometryCoordinates = cursor.getString(geometryCoordinatesColumnIndex);
-
-        return geometryType == null && geometryCoordinates == null ? null :
-                Geometry.builder().type(geometryType).coordinates(geometryCoordinates).build();
+        return index == -1 || cursor.isNull(index) ?
+                null : RelationshipItemEvent.builder().event(cursor.getString(index)).build();
     }
 
     @Override
-    public void toContentValues(ContentValues values, String columnName, Geometry value) {
+    public void toContentValues(ContentValues values, String columnName, RelationshipItemEvent value) {
         if (value != null) {
-            values.put(GEOMETRY_COORDINATES, value.coordinates());
-            if (value.type() != null) {
-                values.put(GEOMETRY_TYPE, value.type().getGeometryType());
-            }
+            values.put(columnName, value.event());
         }
     }
 }

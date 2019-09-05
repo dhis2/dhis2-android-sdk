@@ -40,7 +40,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.data.database.DbGeometryTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.serialization.GeometryTypeDeserializer;
 import org.hisp.dhis.android.core.data.serialization.GeometryTypeSerializer;
 import org.hisp.dhis.android.core.data.serialization.JsonElementStringConverter;

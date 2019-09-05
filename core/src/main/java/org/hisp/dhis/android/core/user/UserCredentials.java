@@ -40,7 +40,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserRoleListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.UserWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.UserWithUidColumnAdapter;
 
 import java.util.List;
 

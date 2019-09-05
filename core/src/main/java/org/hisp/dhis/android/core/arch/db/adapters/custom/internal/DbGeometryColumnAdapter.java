@@ -26,43 +26,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.Geometry;
 
-import java.text.ParseException;
-import java.util.Date;
+public class DbGeometryColumnAdapter implements ColumnTypeAdapter<Geometry> {
 
-public final class DbDateColumnAdapter implements ColumnTypeAdapter<Date> {
+    private static final String GEOMETRY_TYPE = "geometryType";
+    private static final String GEOMETRY_COORDINATES = "geometryCoordinates";
 
     @Override
-    public Date fromCursor(Cursor cursor, String columnName) {
-        // infer index from column name
-        int columnIndex = cursor.getColumnIndex(columnName);
-        String sourceDate = cursor.getString(columnIndex);
+    public Geometry fromCursor(Cursor cursor, String columnName) {
+        int geometryTypeColumnIndex = cursor.getColumnIndex(GEOMETRY_TYPE);
+        String geometryTypeStr = cursor.getString(geometryTypeColumnIndex);
 
-        Date date = null;
-        if (sourceDate != null) {
+        FeatureType geometryType = null;
+        if (geometryTypeStr != null) {
             try {
-                date = BaseIdentifiableObject.DATE_FORMAT.parse(sourceDate);
-            } catch (ParseException parseException) {
-                // wrap checked exception into unchecked
-                throw new RuntimeException(parseException);
+                geometryType = FeatureType.valueOfFeatureType(geometryTypeStr);
+            } catch (Exception exception) {
+                throw new RuntimeException("Unknown FeatureType type", exception);
             }
         }
 
-        return date;
+        int geometryCoordinatesColumnIndex = cursor.getColumnIndex(GEOMETRY_COORDINATES);
+        String geometryCoordinates = cursor.getString(geometryCoordinatesColumnIndex);
+
+        return geometryType == null && geometryCoordinates == null ? null :
+                Geometry.builder().type(geometryType).coordinates(geometryCoordinates).build();
     }
 
     @Override
-    public void toContentValues(ContentValues contentValues, String columnName, Date date) {
-        if (date != null) {
-            contentValues.put(columnName, BaseIdentifiableObject.DATE_FORMAT.format(date));
+    public void toContentValues(ContentValues values, String columnName, Geometry value) {
+        if (value != null) {
+            values.put(GEOMETRY_COORDINATES, value.coordinates());
+            if (value.type() != null) {
+                values.put(GEOMETRY_TYPE, value.type().getGeometryType());
+            }
         }
     }
 }

@@ -26,46 +26,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-import org.hisp.dhis.android.core.program.ProgramStageSectionDeviceRendering;
-import org.hisp.dhis.android.core.program.ProgramStageSectionRendering;
-import org.hisp.dhis.android.core.program.ProgramStageSectionRenderingType;
-import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo;
+import org.hisp.dhis.android.core.relationship.RelationshipItemEnrollment;
 
-
-public class ProgramStageSectionRenderingColumnAdapter implements ColumnTypeAdapter<ProgramStageSectionRendering> {
+public class RelationshipItemEnrollmentColumnAdapter implements ColumnTypeAdapter<RelationshipItemEnrollment> {
 
     @Override
-    public ProgramStageSectionRendering fromCursor(Cursor cursor, String columnName) {
-        return ProgramStageSectionRendering.create(
-                getFromCursor(cursor, ProgramStageSectionTableInfo.Columns.DESKTOP_RENDER_TYPE),
-                getFromCursor(cursor, ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE)
-        );
+    public RelationshipItemEnrollment fromCursor(Cursor cursor, String columnName) {
+        int index = cursor.getColumnIndex(columnName);
+
+        return index == -1 || cursor.isNull(index) ?
+                null : RelationshipItemEnrollment.builder().enrollment(cursor.getString(index)).build();
     }
 
     @Override
-    public void toContentValues(ContentValues values, String columnName, ProgramStageSectionRendering value) {
-        addToValues(values, ProgramStageSectionTableInfo.Columns.DESKTOP_RENDER_TYPE, value.desktop());
-        addToValues(values, ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE, value.mobile());
-    }
-
-    private ProgramStageSectionDeviceRendering getFromCursor(Cursor cursor, String column) {
-        int index = cursor.getColumnIndex(column);
-        String renderingType = cursor.getString(index);
-
-        return renderingType == null ? null
-                : ProgramStageSectionDeviceRendering.create(ProgramStageSectionRenderingType.valueOf(renderingType));
-    }
-
-    private void addToValues(ContentValues values, String column, ProgramStageSectionDeviceRendering deviceRendering) {
-        if (deviceRendering != null) {
-            values.put(column, deviceRendering.type().name());
+    public void toContentValues(ContentValues values, String columnName, RelationshipItemEnrollment value) {
+        if (value != null) {
+            values.put(columnName, value.enrollment());
         }
     }
 }

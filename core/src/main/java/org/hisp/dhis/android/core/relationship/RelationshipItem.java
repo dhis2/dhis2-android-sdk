@@ -42,10 +42,10 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.RelationshipConstraintTypeColumnAdapter;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.data.database.RelationshipItemEnrollmentColumnAdapter;
-import org.hisp.dhis.android.core.data.database.RelationshipItemEventColumnAdapter;
-import org.hisp.dhis.android.core.data.database.RelationshipItemTrackedEntityInstanceColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RelationshipItemEnrollmentColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RelationshipItemEventColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RelationshipItemTrackedEntityInstanceColumnAdapter;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemFields;
 
 @AutoValue

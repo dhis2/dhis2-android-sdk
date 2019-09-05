@@ -26,37 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
-
-import org.hisp.dhis.android.core.program.ProgramType;
-
-public class DbProgramTypeColumnAdapter implements ColumnTypeAdapter<ProgramType> {
+public class TrackedEntityInstanceWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<TrackedEntityInstance> {
 
     @Override
-    public ProgramType fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex(columnName);
-        String source = cursor.getString(columnIndex);
-
-        ProgramType programType = null;
-        if (source != null) {
-            try {
-                programType = ProgramType.valueOf(source);
-            } catch (IllegalArgumentException exception) {
-                throw new RuntimeException("Unknown program type", exception);
-            }
-        }
-        return programType;
-    }
-
-    @Override
-    public void toContentValues(ContentValues values, String columnName, ProgramType value) {
-        if (value != null) {
-            values.put(columnName, value.name());
-        }
+    protected TrackedEntityInstance build(String uid) {
+        return TrackedEntityInstance.builder().uid(uid).build();
     }
 }

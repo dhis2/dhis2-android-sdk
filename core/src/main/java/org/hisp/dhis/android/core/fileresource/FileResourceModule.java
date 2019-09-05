@@ -28,19 +28,34 @@
 
 package org.hisp.dhis.android.core.fileresource;
 
+import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceCall;
+
 import javax.inject.Inject;
 
 import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.reactivex.Observable;
 
 @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 @Reusable
 public final class FileResourceModule {
 
     public final FileResourceCollectionRepository fileResources;
+    public final FileResourceCall fileResourceCall;
 
     @Inject
-    FileResourceModule(FileResourceCollectionRepository fileResources) {
+    FileResourceModule(FileResourceCollectionRepository fileResources,
+                       FileResourceCall fileResourceCall) {
         this.fileResources = fileResources;
+        this.fileResourceCall = fileResourceCall;
+    }
+
+    public Observable<D2Progress> download() {
+        return fileResourceCall.download();
+    }
+
+    public void blockingDownload() {
+        fileResourceCall.blockingDownload();
     }
 }

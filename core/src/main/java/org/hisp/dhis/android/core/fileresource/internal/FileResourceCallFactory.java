@@ -29,22 +29,17 @@
 package org.hisp.dhis.android.core.fileresource.internal;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -58,7 +53,7 @@ import okhttp3.ResponseBody;
 class FileResourceCallFactory {
 
     private final FileResourceService fileResourceService;
-    private final Handler<FileResource> handler;
+    private final HandlerWithTransformer<FileResource> handler;
     private final APICallExecutor apiCallExecutor;
     private final Context context;
 
@@ -68,7 +63,7 @@ class FileResourceCallFactory {
 
     @Inject
     FileResourceCallFactory(@NonNull FileResourceService fileResourceService,
-                            @NonNull Handler<FileResource> handler,
+                            @NonNull HandlerWithTransformer<FileResource> handler,
                             @NonNull APICallExecutor apiCallExecutor,
                             @NonNull Context context) {
         this.fileResourceService = fileResourceService;
@@ -96,76 +91,20 @@ class FileResourceCallFactory {
                     fileResourceService.getFileResource(trackedEntityAttributeValue.value())));
         }
 
-        handler.handleMany(fileResources);
+        handler.handleMany(fileResources, fileResource -> fileResource.toBuilder()
+                .path(FileResourceUtil.getFileResourceDirectory(context).getPath())
+                .state(State.SYNCED)
+                .build());
     }
 
     private void downloadFiles(final List<TrackedEntityAttributeValue> trackedEntityAttributeValues) throws D2Error {
-        List<ResponseBody> responseBodies = new ArrayList<>();
-
         for (TrackedEntityAttributeValue trackedEntityAttributeValue : trackedEntityAttributeValues) {
-            responseBodies.add(apiCallExecutor.executeObjectCall(fileResourceService.getFile(
+            ResponseBody responseBody = apiCallExecutor.executeObjectCall(fileResourceService.getFile(
                     trackedEntityAttributeValue.trackedEntityInstance(),
                     trackedEntityAttributeValue.trackedEntityAttribute(),
-                    Dimension.MEDIUM.name())));
-        }
+                    Dimension.MEDIUM.name()));
 
-        writeFiles(responseBodies);
-    }
-
-    private void writeFiles(List<ResponseBody> responseBodies) {
-        // TODO generate file name
-        for (ResponseBody responseBody : responseBodies) {
-            writeFileToDisk(responseBody, "FileName");
-        }
-    }
-
-    private boolean writeFileToDisk(ResponseBody body, String generatedFileName) {
-        try {
-            File futureStudioIconFile = new File(FileResourceUtil.getFileResourceDirectory(context), generatedFileName);
-
-            InputStream inputStream = null;
-            OutputStream outputStream = null;
-
-            try {
-                byte[] fileReader = new byte[4096];
-
-                long fileSize = body.contentLength();
-                long fileSizeDownloaded = 0;
-
-                inputStream = body.byteStream();
-                outputStream = new FileOutputStream(futureStudioIconFile);
-
-                while (true) {
-                    int read = inputStream.read(fileReader);
-
-                    if (read == -1) {
-                        break;
-                    }
-
-                    outputStream.write(fileReader, 0, read);
-
-                    fileSizeDownloaded += read;
-
-                    Log.d(FileResourceCallFactory.class.getCanonicalName(),
-                            "file download: " + fileSizeDownloaded + " of " + fileSize);
-                }
-
-                outputStream.flush();
-
-                return true;
-            } catch (IOException e) {
-                return false;
-            } finally {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-
-                if (outputStream != null) {
-                    outputStream.close();
-                }
-            }
-        } catch (IOException e) {
-            return false;
+            FileResourceUtil.writeFileToDisk(responseBody, trackedEntityAttributeValue.value(), context);
         }
     }
 }

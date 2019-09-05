@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.fileresource.internal;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
@@ -54,7 +54,7 @@ public final class FileResourceEntityDIModule {
 
     @Provides
     @Reusable
-    public Handler<FileResource> handler(FileResourceStore store) {
+    public HandlerWithTransformer<FileResource> handler(FileResourceStore store) {
         return new IdentifiableWithoutDeleteInterfaceHandlerImpl<>(store);
     }
 

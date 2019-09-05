@@ -1,6 +1,6 @@
 package org.hisp.dhis.android.core.sms.mockrepos;
 
-import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.DeviceStateRepository;
 
 import io.reactivex.Single;
 

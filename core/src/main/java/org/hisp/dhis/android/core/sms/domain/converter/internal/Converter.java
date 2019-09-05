@@ -1,16 +1,15 @@
-package org.hisp.dhis.android.core.sms.domain.converter;
+package org.hisp.dhis.android.core.sms.domain.converter.internal;
 
 import android.annotation.SuppressLint;
 import android.util.Base64;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
 import org.hisp.dhis.smscompression.SMSSubmissionWriter;
 import org.hisp.dhis.smscompression.models.SMSMetadata;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 
+import androidx.annotation.NonNull;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 

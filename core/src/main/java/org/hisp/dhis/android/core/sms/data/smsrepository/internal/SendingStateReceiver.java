@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.sms.data.smsrepository;
+package org.hisp.dhis.android.core.sms.data.smsrepository.internal;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;

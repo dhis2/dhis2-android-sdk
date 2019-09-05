@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.sms.data.webapirepository;
+package org.hisp.dhis.android.core.sms.data.webapirepository.internal;
 
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
 import org.hisp.dhis.smscompression.models.SMSMetadata;

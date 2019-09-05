@@ -1,12 +1,11 @@
-package org.hisp.dhis.android.core.sms.domain.converter;
-
-import androidx.annotation.NonNull;
+package org.hisp.dhis.android.core.sms.domain.converter.internal;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
 import org.hisp.dhis.smscompression.models.DeleteSMSSubmission;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 
+import androidx.annotation.NonNull;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 

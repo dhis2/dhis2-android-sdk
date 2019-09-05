@@ -26,36 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal;
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+public class TrackedEntityTypeWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<TrackedEntityType> {
 
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-
-import io.reactivex.annotations.NonNull;
-
-public abstract class IdentifiableObjectColumnAdapter<O extends ObjectWithUidInterface>
-        implements ColumnTypeAdapter<O> {
-
-    @Override
-    public final void toContentValues(ContentValues values, String columnName, O value) {
-        values.put(columnName, UidsHelper.getUidOrNull(value));
+   @Override
+    protected TrackedEntityType build(String uid) {
+        return TrackedEntityType.builder().uid(uid).build();
     }
-
-    @Override
-    public final O fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex(columnName);
-        String uid = cursor.getString(columnIndex);
-        if (uid == null) {
-            return null;
-        } else {
-            return build(uid);
-        }
-    }
-
-    protected abstract O build(@NonNull String uid);
 }

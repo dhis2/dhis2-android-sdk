@@ -26,14 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal;
 
-import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 
-public class ProgramWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<Program> {
+public class ObjectWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<ObjectWithUid> {
 
     @Override
-    protected Program build(String uid) {
-        return Program.builder().uid(uid).build();
+    protected ObjectWithUid build(String uid) {
+        return ObjectWithUid.create(uid);
     }
 }

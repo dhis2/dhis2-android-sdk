@@ -26,14 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal;
 
-import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.user.User;
 
-public class CategoryComboWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<CategoryCombo> {
+public class UserWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<User> {
 
     @Override
-    protected CategoryCombo build(String uid) {
-        return CategoryCombo.builder().uid(uid).build();
+    protected User build(String uid) {
+        return User.builder().uid(uid).build();
     }
 }

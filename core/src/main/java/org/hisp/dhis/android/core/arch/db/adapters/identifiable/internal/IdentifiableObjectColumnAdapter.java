@@ -26,14 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal;
 
-import org.hisp.dhis.android.core.user.User;
+import android.content.ContentValues;
+import android.database.Cursor;
 
-public class UserWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<User> {
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+
+import io.reactivex.annotations.NonNull;
+
+public abstract class IdentifiableObjectColumnAdapter<O extends ObjectWithUidInterface>
+        implements ColumnTypeAdapter<O> {
 
     @Override
-    protected User build(String uid) {
-        return User.builder().uid(uid).build();
+    public final void toContentValues(ContentValues values, String columnName, O value) {
+        values.put(columnName, UidsHelper.getUidOrNull(value));
     }
+
+    @Override
+    public final O fromCursor(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String uid = cursor.getString(columnIndex);
+        if (uid == null) {
+            return null;
+        } else {
+            return build(uid);
+        }
+    }
+
+    protected abstract O build(@NonNull String uid);
 }

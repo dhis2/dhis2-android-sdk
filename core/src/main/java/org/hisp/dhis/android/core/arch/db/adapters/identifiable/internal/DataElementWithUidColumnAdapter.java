@@ -26,14 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal;
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 
-public class TrackedEntityInstanceWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<TrackedEntityInstance> {
+public class DataElementWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<DataElement> {
 
     @Override
-    protected TrackedEntityInstance build(String uid) {
-        return TrackedEntityInstance.builder().uid(uid).build();
+    protected DataElement build(String uid) {
+        return DataElement.builder().uid(uid).build();
     }
 }

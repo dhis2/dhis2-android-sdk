@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
@@ -112,7 +113,8 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
 
         String queryStatement = "SELECT TrackedEntityDataValue.* " +
                 " FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid)" +
-                " WHERE Event.enrollment ISNULL AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE');";
+                " WHERE Event.enrollment ISNULL " +
+                "AND (Event.state = '" + State.TO_POST + "' OR Event.state = '" + State.TO_UPDATE + "');";
 
         return queryTrackedEntityDataValues(queryStatement);
     }
@@ -122,7 +124,8 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
 
         String queryStatement = "SELECT TrackedEntityDataValue.* " +
                 " FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid) " +
-                " WHERE Event.enrollment IS NOT NULL AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE');";
+                " WHERE Event.enrollment IS NOT NULL " +
+                "AND (Event.state = '" + State.TO_POST + "' OR Event.state = '" + State.TO_UPDATE + "');";
 
         return queryTrackedEntityDataValues(queryStatement);
     }

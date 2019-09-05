@@ -51,8 +51,8 @@ import static org.hisp.dhis.android.core.common.BaseDataModel.Columns.DELETED;
 import static org.hisp.dhis.android.core.common.BaseDataModel.Columns.STATE;
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
 
-public class IdentifiableObjectWithStateStoreImpl<M extends ObjectWithUidInterface & DataModel>
-        extends IdentifiableObjectStoreImpl<M> implements IdentifiableObjectWithStateStore<M> {
+public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & DataModel>
+        extends IdentifiableObjectStoreImpl<M> implements IdentifiableDataObjectStore<M> {
 
     private final String selectStateQuery;
     private final String existsQuery;
@@ -61,10 +61,10 @@ public class IdentifiableObjectWithStateStoreImpl<M extends ObjectWithUidInterfa
     private final SQLiteStatement setDeletedStatement;
     protected final String tableName;
 
-    public IdentifiableObjectWithStateStoreImpl(DatabaseAdapter databaseAdapter,
-                                                SQLStatementWrapper statements,
-                                                SQLStatementBuilder builder, StatementBinder<M> binder,
-                                                CursorModelFactory<M> modelFactory) {
+    public IdentifiableDataObjectStoreImpl(DatabaseAdapter databaseAdapter,
+                                           SQLStatementWrapper statements,
+                                           SQLStatementBuilder builder, StatementBinder<M> binder,
+                                           CursorModelFactory<M> modelFactory) {
         super(databaseAdapter, statements, builder, binder, modelFactory);
         this.tableName = builder.getTableName();
         String whereUid =  " WHERE " + UID + " =?;";
@@ -75,11 +75,11 @@ public class IdentifiableObjectWithStateStoreImpl<M extends ObjectWithUidInterfa
 
         String setStateForUpdate = "UPDATE " + tableName + " SET " +
                 STATE + " = (case " +
-                    "when " + STATE + " = 'TO_POST' then 'TO_POST' " +
-                    "when " + STATE + " = 'TO_UPDATE' OR " +
-                        STATE + " = 'SYNCED' OR " +
-                        STATE + " = 'ERROR' OR " +
-                        STATE + " = 'WARNING' then 'TO_UPDATE'" +
+                    "when " + STATE + " = '" + State.TO_POST + "' then '" + State.TO_POST + "' " +
+                    "when " + STATE + " = '" + State.TO_UPDATE + "' OR " +
+                        STATE + " = '" + State.SYNCED + "' OR " +
+                        STATE + " = '" + State.ERROR + "' OR " +
+                        STATE + " = '" + State.WARNING + "' then '" + State.TO_UPDATE + "'" +
                         " END)" +
                     " where "  +
                         UID + " =? ;";
@@ -89,7 +89,7 @@ public class IdentifiableObjectWithStateStoreImpl<M extends ObjectWithUidInterfa
                 DELETED + " = 1" + whereUid;
         this.setDeletedStatement = databaseAdapter.compileStatement(setDeleted);
 
-        this.selectStateQuery = "SELECT state FROM " + tableName + whereUid;
+        this.selectStateQuery = "SELECT " + STATE + " FROM " + tableName + whereUid;
         this.existsQuery = "SELECT 1 FROM " + tableName + whereUid;
 
     }

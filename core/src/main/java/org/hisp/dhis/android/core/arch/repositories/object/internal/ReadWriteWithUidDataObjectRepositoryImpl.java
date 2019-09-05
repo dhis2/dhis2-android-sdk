@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.object.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectWithStateStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
@@ -48,9 +48,9 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
         <M extends Model & ObjectWithUidInterface & DataModel, R extends ReadOnlyObjectRepository<M>>
         extends ReadWriteWithUidObjectRepositoryImpl<M, R> {
 
-    private final IdentifiableObjectWithStateStore<M> store;
+    private final IdentifiableDataObjectStore<M> store;
 
-    public ReadWriteWithUidDataObjectRepositoryImpl(IdentifiableObjectWithStateStore<M> store,
+    public ReadWriteWithUidDataObjectRepositoryImpl(IdentifiableDataObjectStore<M> store,
                                                     Map<String, ChildrenAppender<M>> childrenAppenders,
                                                     RepositoryScope scope,
                                                     ObjectRepositoryFactory<R> repositoryFactory) {

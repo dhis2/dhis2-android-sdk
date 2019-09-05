@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
@@ -90,8 +91,8 @@ public final class TrackedEntityAttributeValueStoreImpl
                 "SELECT TrackedEntityAttributeValue.* " +
                 "FROM (TrackedEntityAttributeValue INNER JOIN TrackedEntityInstance " +
                 "ON TrackedEntityAttributeValue.trackedEntityInstance = TrackedEntityInstance.uid) " +
-                "WHERE TrackedEntityInstance.state = 'TO_POST' " +
-                "OR TrackedEntityInstance.state = 'TO_UPDATE';";
+                "WHERE TrackedEntityInstance.state = '"  + State.TO_POST + "' " +
+                "OR TrackedEntityInstance.state = '" + State.TO_UPDATE + "';";
 
         List<TrackedEntityAttributeValue> valueList = trackedEntityAttributeValueListFromQuery(toPostQuery);
 

@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBui
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectWithStateStoreImpl;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -44,7 +44,7 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
-public final class TrackedEntityInstanceStoreImpl extends IdentifiableObjectWithStateStoreImpl<TrackedEntityInstance>
+public final class TrackedEntityInstanceStoreImpl extends IdentifiableDataObjectStoreImpl<TrackedEntityInstance>
         implements TrackedEntityInstanceStore {
 
     private static final StatementBinder<TrackedEntityInstance> BINDER = (o, sqLiteStatement) -> {

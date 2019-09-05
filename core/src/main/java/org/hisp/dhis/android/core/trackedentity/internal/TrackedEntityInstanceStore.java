@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectWithStateStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import java.util.List;
 
-public interface TrackedEntityInstanceStore extends IdentifiableObjectWithStateStore<TrackedEntityInstance> {
+public interface TrackedEntityInstanceStore extends IdentifiableDataObjectStore<TrackedEntityInstance> {
 
     List<TrackedEntityInstance> queryTrackedEntityInstancesToSync();
 

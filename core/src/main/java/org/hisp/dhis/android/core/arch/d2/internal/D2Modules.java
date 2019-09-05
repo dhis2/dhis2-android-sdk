@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.arch.d2.internal;
 
 import org.hisp.dhis.android.core.category.CategoryModule;
 import org.hisp.dhis.android.core.constant.ConstantModule;
@@ -56,32 +56,32 @@ import dagger.Reusable;
 
 @SuppressWarnings({"PMD.TooManyFields"})
 @Reusable
-final class D2Modules {
+public final class D2Modules {
 
-    final CategoryModule category;
-    final ConstantModule constant;
-    final DataElementModule dataElement;
-    final DataSetModule dataSet;
-    final OptionModule option;
-    final DataValueModule dataValue;
-    final EnrollmentModule enrollment;
-    final EventModule event;
-    final ImportModule importModule;
-    final IndicatorModule indicator;
-    final LegendSetModule legendSet;
-    final MaintenanceModule maintenance;
-    final ProgramModule program;
-    final OrganisationUnitModule organisationUnit;
-    final SystemInfoModule systemInfo;
-    final SystemSettingModule systemSetting;
-    final PeriodModule periodModule;
-    final RelationshipModule relationship;
-    final TrackedEntityModule trackedEntity;
-    final UserModule user;
-    final SmsModule sms;
+    public final CategoryModule category;
+    public final ConstantModule constant;
+    public final DataElementModule dataElement;
+    public final DataSetModule dataSet;
+    public final OptionModule option;
+    public final DataValueModule dataValue;
+    public final EnrollmentModule enrollment;
+    public final EventModule event;
+    public final ImportModule importModule;
+    public final IndicatorModule indicator;
+    public final LegendSetModule legendSet;
+    public final MaintenanceModule maintenance;
+    public final ProgramModule program;
+    public final OrganisationUnitModule organisationUnit;
+    public final SystemInfoModule systemInfo;
+    public final SystemSettingModule systemSetting;
+    public final PeriodModule periodModule;
+    public final RelationshipModule relationship;
+    public final TrackedEntityModule trackedEntity;
+    public final UserModule user;
+    public final SmsModule sms;
 
     @Inject
-    D2Modules(CategoryModule category,
+    public D2Modules(CategoryModule category,
               ConstantModule constant,
               DataElementModule dataElement,
               DataSetModule dataSet,

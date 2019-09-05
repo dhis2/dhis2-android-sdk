@@ -3,7 +3,7 @@ package org.hisp.dhis.android.core.sms.data.localdbrepository.internal;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import org.hisp.dhis.android.core.ObjectMapperFactory;
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.enrollment.Enrollment;

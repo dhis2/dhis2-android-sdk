@@ -26,23 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.arch.d2.internal;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import android.content.Context;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import dagger.Module;
+import dagger.Provides;
 
-public final class ObjectMapperFactory {
+@Module
+class AppContextDIModule {
+    private final Context context;
 
-    private ObjectMapperFactory() {
+    AppContextDIModule(Context context) {
+        this.context = context.getApplicationContext();
     }
 
-    public static ObjectMapper objectMapper() {
-        return new ObjectMapper()
-                .setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw())
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    @Provides
+    Context appContext() {
+        return context;
     }
 }

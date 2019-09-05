@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.api.executors.internal;
 
-import org.hisp.dhis.android.core.ObjectMapperFactory;
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;

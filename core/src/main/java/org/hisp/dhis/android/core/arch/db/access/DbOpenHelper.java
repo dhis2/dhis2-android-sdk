@@ -26,14 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.access;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
 
@@ -41,6 +38,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class DbOpenHelper extends SQLBriteOpenHelper {
 

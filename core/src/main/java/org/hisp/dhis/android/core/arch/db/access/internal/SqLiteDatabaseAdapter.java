@@ -26,74 +26,72 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.access.internal;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
+
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
+import org.hisp.dhis.android.core.arch.db.access.Transaction;
 
 import androidx.annotation.NonNull;
 
-public class SqLiteTransaction implements Transaction {
+public class SqLiteDatabaseAdapter implements DatabaseAdapter {
 
     private final DbOpenHelper dbOpenHelper;
 
-    public SqLiteTransaction(@NonNull DbOpenHelper dbOpenHelper) {
+    public SqLiteDatabaseAdapter(@NonNull DbOpenHelper dbOpenHelper) {
         if (dbOpenHelper == null) {
             throw new IllegalArgumentException("dbOpenHelper == null");
         }
+        dbOpenHelper.getWritableDatabase();
         this.dbOpenHelper = dbOpenHelper;
     }
 
-    /**
-     * Begins a transaction in EXCLUSIVE mode.
-     * <p>
-     * Transactions can be nested.
-     * When the outer transaction is ended all of
-     * the work done in that transaction and all of the nested transactions will be committed or
-     * rolled back. The changes will be rolled back if any transaction is ended without being
-     * marked as clean (by calling setTransactionSuccessful). Otherwise they will be committed.
-     * </p>
-     * <p>Here is the standard idiom for transactions:
-     * <p>
-     * <pre>
-     *   db.beginTransaction();
-     *   try {
-     *     ...
-     *     db.setTransactionSuccessful();
-     *   } finally {
-     *     db.end();
-     *   }
-     * </pre>
-     */
     @Override
-    public void begin() {
-        database().beginTransaction();
+    public Transaction beginNewTransaction() {
+        Transaction transaction = new SqLiteTransaction(dbOpenHelper);
+        transaction.begin();
+        return transaction;
     }
 
-    /**
-     * Marks the current transaction as successful. Do not do any more database work between
-     * calling this and calling end. Do as little non-database work as possible in that
-     * situation too. If any errors are encountered between this and end the transaction
-     * will still be committed.
-     *
-     * @throws IllegalStateException if the current thread is not in a transaction or the
-     *                               transaction is already marked as successful.
-     */
     @Override
-    public void setSuccessful() {
-        database().setTransactionSuccessful();
+    public SQLiteStatement compileStatement(String sql) {
+        return database().compileStatement(sql);
     }
 
-    /**
-     * End a transaction. See beginTransaction for notes about how to use this and when transactions
-     * are committed and rolled back.
-     */
     @Override
-    public void end() {
-        database().endTransaction();
+    public Cursor query(String sql, String... selectionArgs) {
+        return readableDatabase().rawQuery(sql, selectionArgs);
     }
 
-    private SQLiteDatabase database() {
+    @Override
+    public long executeInsert(String table, SQLiteStatement sqLiteStatement) {
+        return sqLiteStatement.executeInsert();
+    }
+
+    @Override
+    public int executeUpdateDelete(String table, SQLiteStatement sqLiteStatement) {
+        return sqLiteStatement.executeUpdateDelete();
+    }
+
+    @Override
+    public int delete(String table, String whereClause, String[] whereArgs) {
+        return database().delete(table, whereClause, whereArgs);
+    }
+
+    @Override
+    public int delete(String table) {
+        return delete(table, "1", null);
+    }
+
+    public SQLiteDatabase database() {
         return dbOpenHelper.getWritableDatabase();
     }
-}
 
+    private SQLiteDatabase readableDatabase() {
+        return dbOpenHelper.getReadableDatabase();
+    }
+}

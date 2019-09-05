@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.wipe.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import javax.inject.Inject;
 

@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.data.database;
 
 import android.database.sqlite.SQLiteDatabase;
 
+import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
+import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteTransaction;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

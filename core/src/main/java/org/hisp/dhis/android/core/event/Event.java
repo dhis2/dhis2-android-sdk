@@ -39,18 +39,18 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EventStatusColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.data.database.DataDeleteColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbEventStatusColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbGeometryColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreCoordinatesColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityDataValueListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DataDeleteColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCoordinatesColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityDataValueListColumnAdapter;
 import org.hisp.dhis.android.core.event.internal.EventFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
@@ -109,7 +109,7 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DbEventStatusColumnAdapter.class)
+    @ColumnAdapter(EventStatusColumnAdapter.class)
     public abstract EventStatus status();
 
     /**

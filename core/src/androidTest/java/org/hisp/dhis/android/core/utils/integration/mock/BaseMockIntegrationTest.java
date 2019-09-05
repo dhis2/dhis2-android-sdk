@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.utils.integration.mock;
 import android.database.sqlite.SQLiteDatabase;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 
 public abstract class BaseMockIntegrationTest {

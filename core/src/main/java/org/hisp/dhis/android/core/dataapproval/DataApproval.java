@@ -37,7 +37,7 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.data.database.DbDataApprovalStateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DataApprovalStateColumnAdapter;
 import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalFields;
 
 import androidx.annotation.NonNull;
@@ -61,7 +61,7 @@ public abstract class DataApproval extends BaseModel {
 
     @Nullable
     @JsonProperty
-    @ColumnAdapter(DbDataApprovalStateColumnAdapter.class)
+    @ColumnAdapter(DataApprovalStateColumnAdapter.class)
     public abstract DataApprovalState state();
 
     @NonNull

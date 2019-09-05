@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.common;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
-import org.hisp.dhis.android.core.data.database.DbStateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
 
 import androidx.annotation.Nullable;
 
@@ -44,7 +44,7 @@ public abstract class BaseDataModel extends BaseModel implements DataModel {
     @Override
     @Nullable
     @ColumnName(Columns.STATE)
-    @ColumnAdapter(DbStateColumnAdapter.class)
+    @ColumnAdapter(StateColumnAdapter.class)
     public abstract State state();
 
     protected static abstract class Builder<T extends Builder> extends BaseModel.Builder<T> {

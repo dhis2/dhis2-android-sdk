@@ -50,8 +50,8 @@ import org.hisp.dhis.android.core.data.database.DBCaptureCoordinatesFromFeatureT
 import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbFormTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreProgramStageDataElementListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreProgramStageSectionListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramStageDataElementListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramStageSectionListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.period.PeriodType;
 

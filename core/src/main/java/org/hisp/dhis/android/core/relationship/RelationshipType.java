@@ -42,8 +42,8 @@ import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.data.database.AccessColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreRelationshipConstraintAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreStringColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipConstraintAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStringColumnAdapter;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_RelationshipType.Builder.class)

@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.data.database.D2ErrorCodeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.D2ErrorComponentColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreExceptionAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreExceptionAdapter;
 
 import java.util.Date;
 

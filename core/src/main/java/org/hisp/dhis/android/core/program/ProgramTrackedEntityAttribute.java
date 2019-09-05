@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
-import org.hisp.dhis.android.core.data.database.IgnoreValueTypeRenderingAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreValueTypeRenderingAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 
 @AutoValue

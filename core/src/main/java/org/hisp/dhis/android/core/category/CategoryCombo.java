@@ -38,8 +38,8 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.data.database.IgnoreCategoryListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreCategoryOptionComboListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCategoryListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCategoryOptionComboListColumnAdapter;
 
 import java.util.List;
 

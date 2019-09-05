@@ -49,8 +49,8 @@ import org.hisp.dhis.android.core.data.database.DataDeleteColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbEventStatusColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbGeometryColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreCoordinatesColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityDataValueListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCoordinatesColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityDataValueListColumnAdapter;
 import org.hisp.dhis.android.core.event.internal.EventFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 

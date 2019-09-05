@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityTypeAttributeListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityTypeAttributeListColumnAdapter;
 
 import java.util.List;
 

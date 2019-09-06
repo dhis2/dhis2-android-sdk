@@ -30,11 +30,30 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
+
 import java.util.List;
 
-@edu.umd.cs.findbugs.annotations.SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-public class TrackedEntityInstancePayload {
+@AutoValue
+public abstract class TrackedEntityInstancePayload {
 
-    public List<TrackedEntityInstance> trackedEntityInstances;
+    @JsonProperty()
+    public abstract List<TrackedEntityInstance> trackedEntityInstances();
+
+    public static Builder builder() {
+        return new AutoValue_TrackedEntityInstancePayload.Builder();
+    }
+
+    public static TrackedEntityInstancePayload create(List<TrackedEntityInstance> trackedEntityInstances) {
+        return builder().trackedEntityInstances(trackedEntityInstances).build();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder trackedEntityInstances(List<TrackedEntityInstance> trackedEntityInstances);
+
+        public abstract TrackedEntityInstancePayload build();
+    }
 
 }

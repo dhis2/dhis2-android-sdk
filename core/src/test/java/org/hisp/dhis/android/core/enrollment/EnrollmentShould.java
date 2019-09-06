@@ -66,5 +66,6 @@ public class EnrollmentShould extends BaseObjectShould implements ObjectShould {
         assertThat(enrollment.trackedEntityInstance()).isEqualTo("D2dUWKQErfQ");
         assertThat(enrollment.geometry().type()).isEqualTo(FeatureType.POINT);
         assertThat(enrollment.geometry().coordinates()).isEqualTo("[11.11, 10.03]");
+        assertThat(enrollment.deleted()).isFalse();
     }
 }

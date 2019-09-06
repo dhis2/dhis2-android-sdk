@@ -100,7 +100,8 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         assertThat(repository.blockingGet().state(), is(State.ERROR));
         repository.blockingDelete();
         assertThat(repository.blockingExists(), is(Boolean.TRUE));
-        assertThat(repository.blockingGet().state(), is(State.TO_DELETE));
+        assertThat(repository.blockingGet().deleted(), is(Boolean.TRUE));
+        assertThat(repository.blockingGet().state(), is(State.TO_UPDATE));
     }
 
     @Test

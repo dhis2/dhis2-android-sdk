@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
-import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -42,7 +43,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
 
@@ -73,7 +73,6 @@ public final class DataSetCompleteRegistrationPostCall {
             DataValueImportSummary dataValueImportSummary = DataValueImportSummary.EMPTY;
 
             appendPostableDataValues(toPostDataSetCompleteRegistrations);
-            appendUpdatableDataValues(toPostDataSetCompleteRegistrations);
             appendToDeleteRegistrations(toDeleteDataSetCompleteRegistrations);
 
             DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload
@@ -114,17 +113,12 @@ public final class DataSetCompleteRegistrationPostCall {
     private void appendToDeleteRegistrations(
             Collection<DataSetCompleteRegistration> toDeleteDataSetCompleteRegistrations) {
         toDeleteDataSetCompleteRegistrations.addAll(
-                dataSetCompleteRegistrationStore.getDataSetCompleteRegistrationsWithState(State.TO_DELETE));
+                dataSetCompleteRegistrationStore.getDeletedRegistrationsPendingToSync());
     }
 
     private void appendPostableDataValues(Collection<DataSetCompleteRegistration> dataSetCompleteRegistrations) {
         dataSetCompleteRegistrations.addAll(
-                dataSetCompleteRegistrationStore.getDataSetCompleteRegistrationsWithState(State.TO_POST));
-    }
-
-    private void appendUpdatableDataValues(Collection<DataSetCompleteRegistration> dataSetCompleteRegistrations) {
-        dataSetCompleteRegistrations.addAll(
-                dataSetCompleteRegistrationStore.getDataSetCompleteRegistrationsWithState(State.TO_UPDATE));
+                dataSetCompleteRegistrationStore.getNonDeletedRegistrationsPendingToSync());
     }
 
     private DataValueImportSummary handleImportSummary(

@@ -69,7 +69,8 @@ public final class DataSetCompleteRegistrationTableInfo {
                     ATTRIBUTE_OPTION_COMBO,
                     DATE,
                     STORED_BY,
-                    STATE);
+                    STATE,
+                    DELETED);
         }
 
         @Override

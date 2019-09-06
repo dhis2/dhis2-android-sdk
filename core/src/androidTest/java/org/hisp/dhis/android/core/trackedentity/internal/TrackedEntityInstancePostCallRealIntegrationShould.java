@@ -304,7 +304,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         assertThat(response.size()).isEqualTo(1);
 
-        trackedEntityInstanceStore.setState(newUid, State.TO_DELETE);
+        d2.trackedEntityModule().trackedEntityInstances.uid(newUid).blockingDelete();
 
         d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 
@@ -431,7 +431,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         trackedEntityInstanceStore.setState(tei.uid(), State.TO_UPDATE);
         enrollmentStore.setState(enrollment.uid(), State.TO_UPDATE);
-        eventStore.setState(eventUid, State.TO_DELETE);
+        d2.eventModule().events.uid(eventUid).blockingDelete();
 
         d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
 

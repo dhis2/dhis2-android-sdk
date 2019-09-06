@@ -115,8 +115,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
 
         queryStr += " ORDER BY CASE " +
                 "WHEN " + TEI_STATE + " IN ('" + State.TO_POST + "','" + State.TO_UPDATE + "') THEN 1 " +
-                "WHEN " + TEI_STATE + " = '" + State.TO_DELETE + "' THEN 2 " +
-                "WHEN " + TEI_STATE + " = '" + State.SYNCED + "' THEN 3 ELSE 4 END ASC, " +
+                "WHEN " + TEI_STATE + " = '" + State.SYNCED + "' THEN 2 ELSE 3 END ASC, " +
                 TEI_LAST_UPDATED + " DESC ";
 
         if (limit > 0) {

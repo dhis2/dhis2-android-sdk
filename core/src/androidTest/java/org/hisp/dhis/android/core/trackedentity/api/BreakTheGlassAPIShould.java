@@ -270,8 +270,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
     }
 
     private TrackedEntityInstancePayload wrapPayload(TrackedEntityInstance ...instances) {
-        TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
-        payload.trackedEntityInstances = Arrays.asList(instances);
+        TrackedEntityInstancePayload payload = TrackedEntityInstancePayload.create(Arrays.asList(instances));
         return payload;
     }
 

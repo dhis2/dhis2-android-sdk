@@ -118,6 +118,7 @@
               "lastUpdated": "2015-11-15T14:55:22.995",
               "completedBy": "system",
               "enrollment": "enroll1",
+              "deleted": false,
               "coordinate": {
                 "latitude": 0.0,
                 "longitude": 0.0
@@ -205,6 +206,7 @@
               "lastUpdated": "2016-11-15T14:55:22.995",
               "completedBy": "system",
               "enrollment": "enroll2",
+              "deleted": false,
               "coordinate": {
                 "latitude": 0.0,
                 "longitude": 0.0

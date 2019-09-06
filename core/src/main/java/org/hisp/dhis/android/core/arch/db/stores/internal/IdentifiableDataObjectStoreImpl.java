@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.arch.db.stores.internal;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
@@ -38,30 +40,33 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.DataModel;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 
-import androidx.annotation.NonNull;
+import java.util.Arrays;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.common.BaseDataModel.Columns.DELETED;
 import static org.hisp.dhis.android.core.common.BaseDataModel.Columns.STATE;
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
 
-public class IdentifiableObjectWithStateStoreImpl<M extends Model & ObjectWithUidInterface>
-        extends IdentifiableObjectStoreImpl<M> implements IdentifiableObjectWithStateStore<M> {
+public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & DataModel>
+        extends IdentifiableObjectStoreImpl<M> implements IdentifiableDataObjectStore<M> {
+
+    private final static String EQ = " = ";
 
     private final String selectStateQuery;
     private final String existsQuery;
     private final SQLiteStatement setStateStatement;
     private final SQLiteStatement setStateForUpdateStatement;
-    private final SQLiteStatement setStateForDeleteStatement;
+    private final SQLiteStatement setDeletedStatement;
     protected final String tableName;
 
-    public IdentifiableObjectWithStateStoreImpl(DatabaseAdapter databaseAdapter,
-                                                SQLStatementWrapper statements,
-                                                SQLStatementBuilder builder, StatementBinder<M> binder,
-                                                CursorModelFactory<M> modelFactory) {
+    public IdentifiableDataObjectStoreImpl(DatabaseAdapter databaseAdapter,
+                                           SQLStatementWrapper statements,
+                                           SQLStatementBuilder builder, StatementBinder<M> binder,
+                                           CursorModelFactory<M> modelFactory) {
         super(databaseAdapter, statements, builder, binder, modelFactory);
         this.tableName = builder.getTableName();
         String whereUid =  " WHERE " + UID + " =?;";
@@ -72,23 +77,21 @@ public class IdentifiableObjectWithStateStoreImpl<M extends Model & ObjectWithUi
 
         String setStateForUpdate = "UPDATE " + tableName + " SET " +
                 STATE + " = (case " +
-                    "when " + STATE + " = 'TO_POST' then 'TO_POST' " +
-                    "when " + STATE + " = 'TO_UPDATE' OR " +
-                        STATE + " = 'SYNCED' OR " +
-                        STATE + " = 'ERROR' OR " +
-                        STATE + " = 'WARNING' then 'TO_UPDATE'" +
+                    "when " + STATE + EQ + "'" + State.TO_POST + "' then '" + State.TO_POST + "' " +
+                    "when " + STATE + EQ + "'" + State.TO_UPDATE + "' OR " +
+                        STATE + EQ + "'" + State.SYNCED + "' OR " +
+                        STATE + EQ + "'" + State.ERROR + "' OR " +
+                        STATE + EQ + "'" + State.WARNING + "' then '" + State.TO_UPDATE + "'" +
                         " END)" +
                     " where "  +
-                        UID + " =?" +
-                        " and " +
-                        STATE + " != 'TO_DELETE';";
+                        UID + " =? ;";
         this.setStateForUpdateStatement = databaseAdapter.compileStatement(setStateForUpdate);
 
-        String setStateForDelete = "UPDATE " + tableName + " SET " +
-                STATE + " = 'TO_DELETE'" + whereUid;
-        this.setStateForDeleteStatement = databaseAdapter.compileStatement(setStateForDelete);
+        String setDeleted = "UPDATE " + tableName + " SET " +
+                DELETED + " = 1" + whereUid;
+        this.setDeletedStatement = databaseAdapter.compileStatement(setDeleted);
 
-        this.selectStateQuery = "SELECT state FROM " + tableName + whereUid;
+        this.selectStateQuery = "SELECT " + STATE + " FROM " + tableName + whereUid;
         this.existsQuery = "SELECT 1 FROM " + tableName + whereUid;
 
     }
@@ -117,22 +120,13 @@ public class IdentifiableObjectWithStateStoreImpl<M extends Model & ObjectWithUi
     }
 
     @Override
-    public int setStateForDelete(@NonNull String uid) {
-        sqLiteBind(setStateForDeleteStatement, 1, uid);
-
-        int updatedRow = databaseAdapter.executeUpdateDelete(tableName, setStateForDeleteStatement);
-        setStateForDeleteStatement.clearBindings();
-
-        return updatedRow;
-    }
-
-    @Override
     public HandleAction setStateOrDelete(@NonNull String uid, @NonNull State state) {
         boolean deleted = false;
         if (state == State.SYNCED) {
             String whereClause = new WhereClauseBuilder()
                     .appendKeyStringValue(UID, uid)
-                    .appendKeyStringValue(STATE, State.TO_DELETE)
+                    .appendKeyNumberValue(DELETED, 1)
+                    .appendInKeyEnumValues(STATE, Arrays.asList(State.TO_POST, State.TO_UPDATE))
                     .build();
 
             deleted = deleteWhere(whereClause);
@@ -165,5 +159,15 @@ public class IdentifiableObjectWithStateStoreImpl<M extends Model & ObjectWithUi
         int count = cursor.getCount();
         cursor.close();
         return count > 0;
+    }
+
+    @Override
+    public int setDeleted(@NonNull String uid) {
+        sqLiteBind(setDeletedStatement, 1, uid);
+
+        int updatedRow = databaseAdapter.executeUpdateDelete(tableName, setDeletedStatement);
+        setDeletedStatement.clearBindings();
+
+        return updatedRow;
     }
 }

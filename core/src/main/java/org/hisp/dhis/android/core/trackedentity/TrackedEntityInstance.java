@@ -40,9 +40,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
-import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DataDeleteColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEnrollmentListColumnAdapter;
@@ -60,8 +58,7 @@ import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_TrackedEntityInstance.Builder.class)
-public abstract class TrackedEntityInstance extends BaseDataModel
-        implements ObjectWithUidInterface, ObjectWithDeleteInterface {
+public abstract class TrackedEntityInstance extends BaseDataModel implements ObjectWithUidInterface {
 
     @Override
     @Nullable
@@ -109,11 +106,6 @@ public abstract class TrackedEntityInstance extends BaseDataModel
     @JsonProperty()
     @ColumnAdapter(DbGeometryColumnAdapter.class)
     public abstract Geometry geometry();
-
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(DataDeleteColumnAdapter.class)
-    public abstract Boolean deleted();
 
     @Nullable
     @JsonProperty(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)
@@ -168,8 +160,6 @@ public abstract class TrackedEntityInstance extends BaseDataModel
         abstract Builder coordinates(String coordinates);
 
         public abstract Builder geometry(Geometry geometry);
-
-        public abstract Builder deleted(Boolean deleted);
 
         @JsonProperty(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)
         public abstract Builder trackedEntityAttributeValues(

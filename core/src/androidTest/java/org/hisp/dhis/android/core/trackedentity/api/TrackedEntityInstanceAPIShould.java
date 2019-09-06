@@ -36,8 +36,12 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImp
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
+import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary;
+import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
 import org.hisp.dhis.android.core.imports.internal.TEIImportSummary;
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -49,8 +53,10 @@ import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest
 import org.junit.Before;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.imports.ImportStatus.ERROR;
@@ -107,8 +113,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
 
         TrackedEntityInstance invalidTEI = createTrackedEntityInstanceWithInvalidAttribute();
 
-        TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
-        payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
+        TrackedEntityInstancePayload payload = TrackedEntityInstancePayload.create(Arrays.asList(validTEI, invalidTEI));
 
         TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                 .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
@@ -148,8 +153,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
 
         TrackedEntityInstance invalidTEI = createTrackedEntityInstanceWithInvalidOrgunit();
 
-        TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
-        payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
+        TrackedEntityInstancePayload payload = TrackedEntityInstancePayload.create(Arrays.asList(validTEI, invalidTEI));
 
         TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                 .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
@@ -189,8 +193,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
 
         TrackedEntityInstance invalidTEI = createValidTrackedEntityInstanceAndEnrollment();
 
-        TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
-        payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
+        TrackedEntityInstancePayload payload = TrackedEntityInstancePayload.create(Arrays.asList(validTEI, invalidTEI));
 
         TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                 .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
@@ -225,8 +228,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
 
         TrackedEntityInstance invalidTEI = createValidTrackedEntityInstanceWithFutureEnrollment();
 
-        TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
-        payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
+        TrackedEntityInstancePayload payload = TrackedEntityInstancePayload.create(Arrays.asList(validTEI, invalidTEI));
 
         TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                 .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
@@ -264,8 +266,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
 
         TrackedEntityInstance invalidTEI = createTrackedEntityInstanceAndTwoActiveEnrollment();
 
-        TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
-        payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
+        TrackedEntityInstancePayload payload = TrackedEntityInstancePayload.create(Arrays.asList(validTEI, invalidTEI));
 
         TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                 .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
@@ -305,8 +306,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
 
         TrackedEntityInstance validTEI2 = createValidTrackedEntityInstanceWithEnrollmentAndEvent();
 
-        TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
-        payload.trackedEntityInstances = Arrays.asList(validTEI1, validTEI2);
+        TrackedEntityInstancePayload payload = TrackedEntityInstancePayload.create(Arrays.asList(validTEI1, validTEI2));
 
         TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                 .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
@@ -349,8 +349,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
 
         TrackedEntityInstance validTEI2 = createValidTrackedEntityInstanceWithEnrollmentAndEvent();
 
-        TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
-        payload.trackedEntityInstances = Arrays.asList(validTEI1, validTEI2);
+        TrackedEntityInstancePayload payload = TrackedEntityInstancePayload.create(Arrays.asList(validTEI1, validTEI2));
 
         TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                 .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
@@ -393,8 +392,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
 
         TrackedEntityInstance invalidTEI = createTrackedEntityInstanceWithEnrollmentAndFutureEvent();
 
-        TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
-        payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
+        TrackedEntityInstancePayload payload = TrackedEntityInstancePayload.create(Arrays.asList(validTEI, invalidTEI));
 
         TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                 .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
@@ -438,8 +436,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
 
         TrackedEntityInstance invalidTEI = createTrackedEntityInstanceWithInvalidDataElement();
 
-        TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
-        payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
+        TrackedEntityInstancePayload payload = TrackedEntityInstancePayload.create(Arrays.asList(validTEI, invalidTEI));
 
         TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                 .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
@@ -486,8 +483,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
 
         TrackedEntityInstance invalidTEI = createTrackedEntityInstanceWithValidAndInvalidDataValue();
 
-        TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
-        payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
+        TrackedEntityInstancePayload payload = TrackedEntityInstancePayload.create(Arrays.asList(validTEI, invalidTEI));
 
         TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                 .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
@@ -533,8 +529,8 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
 
         TrackedEntityInstance completedEnrollment = createTrackedEntityInstanceWithCompletedEnrollmentAndEvent();
 
-        TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
-        payload.trackedEntityInstances = Arrays.asList(completedEnrollment);
+        TrackedEntityInstancePayload payload =
+                TrackedEntityInstancePayload.create(Collections.singletonList(completedEnrollment));
 
         TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                 .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
@@ -563,7 +559,79 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
                 .events().get(0).status()).isEqualTo(EventStatus.COMPLETED);
     }
 
+    // @Test
+    public void tracked_entity_deletion_returns_deleted_equals_1() throws D2Error {
+        login();
+        syncMetadata();
+
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(100).download().blockingSubscribe();
+
+        TrackedEntityInstance instance = getInstanceWithOneEnrollmentAndOneEvent();
+
+        TrackedEntityInstance deletedEvents = setEventsToDelete(instance);
+        TrackedEntityInstancePayload deletedEventsPayload =
+                TrackedEntityInstancePayload.create(Collections.singletonList(deletedEvents));
+
+        TEIWebResponse deletedEventsResponse = executePostCall(deletedEventsPayload, this.strategy);
+
+        assertThat(deletedEventsResponse.response().status()).isEqualTo(SUCCESS);
+
+        for (TEIImportSummary teiImportSummaries : deletedEventsResponse.response().importSummaries()) {
+            assertThat(teiImportSummaries.importCount().updated()).isEqualTo(1);
+            for (EnrollmentImportSummary enrollmentImportSummary : teiImportSummaries.enrollments().importSummaries()) {
+                assertThat(enrollmentImportSummary.importCount().updated()).isEqualTo(1);
+                for (EventImportSummary eventImportSummary : enrollmentImportSummary.events().importSummaries()) {
+
+                    assertThat(eventImportSummary.importCount().deleted()).isEqualTo(1);
+                }
+            }
+        }
+    }
+
     private void login() {
         d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
+    }
+
+    private void syncMetadata() {
+        d2.metadataModule().blockingDownload();
+    }
+
+    private TEIWebResponse executePostCall(TrackedEntityInstancePayload payload, String strategy) throws D2Error {
+        return executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, strategy), Collections.singletonList(409), TEIWebResponse.class);
+    }
+
+    private TrackedEntityInstance getInstanceWithOneEnrollmentAndOneEvent() {
+        List<TrackedEntityInstance> instances =
+                d2.trackedEntityModule().trackedEntityInstances.withEnrollments().blockingGet();
+
+        for (TrackedEntityInstance instance : instances) {
+            if (instance.enrollments() != null && instance.enrollments().size() == 1) {
+                Enrollment enrollment = instance.enrollments().get(0);
+                List<Event> events =
+                        d2.eventModule().events.byEnrollmentUid().eq(enrollment.uid()).blockingGet();
+
+                if (events.size() == 1) {
+                    Enrollment enrollmentWithEvents = enrollment.toBuilder().events(events).build();
+
+                    return instance.toBuilder()
+                            .enrollments(Collections.singletonList(enrollmentWithEvents))
+                            .build();
+                }
+            }
+        }
+        throw new RuntimeException("TEI not found");
+    }
+
+    private TrackedEntityInstance setEventsToDelete(TrackedEntityInstance instance) {
+        List<Enrollment> enrollments = new ArrayList<>();
+        for (Enrollment enrollment : instance.enrollments()) {
+            List<Event> events = new ArrayList<>();
+            for (Event event : enrollment.events()) {
+                events.add(event.toBuilder().deleted(true).build());
+            }
+            enrollments.add(enrollment.toBuilder().events(events).build());
+        }
+        return instance.toBuilder().enrollments(enrollments).build();
     }
 }

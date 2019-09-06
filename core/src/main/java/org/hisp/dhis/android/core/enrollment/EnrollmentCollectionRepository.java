@@ -137,6 +137,10 @@ public final class EnrollmentCollectionRepository extends ReadWriteWithUidCollec
         return cf.enumC(BaseDataModel.Columns.STATE);
     }
 
+    public BooleanFilterConnector<EnrollmentCollectionRepository> byDeleted() {
+        return cf.bool(EnrollmentTableInfo.Columns.DELETED);
+    }
+
     public EnrollmentCollectionRepository withEvents() {
         return cf.withChild(EnrollmentFields.EVENTS);
     }

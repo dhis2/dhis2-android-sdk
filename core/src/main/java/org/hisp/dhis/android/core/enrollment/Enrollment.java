@@ -44,9 +44,7 @@ import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.Geometry;
-import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DataDeleteColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStatusColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
@@ -62,7 +60,7 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Enrollment.Builder.class)
-public abstract class Enrollment extends BaseDataModel implements ObjectWithDeleteInterface, ObjectWithUidInterface {
+public abstract class Enrollment extends BaseDataModel implements ObjectWithUidInterface {
 
     @Override
     @Nullable
@@ -137,11 +135,6 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithDele
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DataDeleteColumnAdapter.class)
-    public abstract Boolean deleted();
-
-    @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreEventListColumnAdapter.class)
     public abstract List<Event> events();
 
@@ -198,8 +191,6 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithDele
         abstract Builder coordinate(Coordinates coordinate);
 
         public abstract Builder geometry(Geometry geometry);
-
-        public abstract Builder deleted(Boolean deleted);
 
         public abstract Builder events(List<Event> events);
 

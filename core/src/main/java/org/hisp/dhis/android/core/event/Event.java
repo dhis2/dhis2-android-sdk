@@ -44,9 +44,7 @@ import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.Geometry;
-import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DataDeleteColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCoordinatesColumnAdapter;
@@ -59,7 +57,7 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Event.Builder.class)
-public abstract class Event extends BaseDataModel implements ObjectWithDeleteInterface, ObjectWithUidInterface {
+public abstract class Event extends BaseDataModel implements ObjectWithUidInterface {
 
     @Override
     @Nullable
@@ -138,11 +136,6 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DataDeleteColumnAdapter.class)
-    public abstract Boolean deleted();
-
-    @Nullable
-    @JsonProperty()
     public abstract String attributeOptionCombo();
 
     @Nullable
@@ -199,8 +192,6 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
         public abstract Builder completedDate(Date completedDate);
 
         public abstract Builder dueDate(Date dueDate);
-
-        public abstract Builder deleted(Boolean deleted);
 
         public abstract Builder attributeOptionCombo(String attributeOptionCombo);
 

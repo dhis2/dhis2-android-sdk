@@ -95,9 +95,8 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
 
     private static final String SELECT_STATE_ORDERING = " MAX(CASE " +
             "WHEN " + STATE + " = '" + State.SYNCED + "' THEN 1 " +
-            "WHEN " + STATE + " = '" + State.TO_DELETE + "' THEN 2 " +
-            "WHEN " + STATE + " IN ('" + State.TO_POST + "','" + State.TO_UPDATE + "') THEN 3 " +
-            "ELSE 4 END)";
+            "WHEN " + STATE + " IN ('" + State.TO_POST + "','" + State.TO_UPDATE + "') THEN 2 " +
+            "ELSE 3 END)";
 
     private static final String FROM_CLAUSE =
             " FROM " + DataValueTableInfo.TABLE_INFO.name() + AS + DATAVALUE_TABLE_ALIAS +

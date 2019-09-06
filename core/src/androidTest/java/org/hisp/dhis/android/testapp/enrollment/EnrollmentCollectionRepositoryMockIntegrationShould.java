@@ -199,6 +199,14 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     }
 
     @Test
+    public void filter_by_deleted() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments
+                .byDeleted().isFalse()
+                .blockingGet();
+        assertThat(enrollments.size(), is(2));
+    }
+
+    @Test
     public void filter_by_geometry_type() {
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments
                         .byGeometryType().eq(FeatureType.POLYGON)

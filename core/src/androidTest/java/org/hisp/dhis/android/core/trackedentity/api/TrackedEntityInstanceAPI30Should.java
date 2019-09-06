@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.data.server.RealServerMother;
 public class TrackedEntityInstanceAPI30Should extends TrackedEntityInstanceAPIShould {
 
     public TrackedEntityInstanceAPI30Should() {
-        super(RealServerMother.android_current, "SYNC");
+        super(RealServerMother.url2_30, "SYNC");
     }
 
     //@Test

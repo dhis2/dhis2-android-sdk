@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.common.internal;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
@@ -48,8 +50,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-
-import androidx.test.runner.AndroidJUnit4;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -106,13 +106,6 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
         assertThatDoNotSetTeiToUpdateWhenEnrollmentPropagation(State.TO_POST);
         assertThatDoNotSetTeiToUpdateWhenEventPropagation(State.TO_POST);
         assertThatDoNotSetTeiToUpdateWhenTrackedEntityDataValuePropagation(State.TO_POST);
-    }
-
-    @Test
-    public void do_not_set_parent_state_to_update_if_has_to_delete_state() throws D2Error {
-        assertThatDoNotSetTeiToUpdateWhenEnrollmentPropagation(State.TO_DELETE);
-        assertThatDoNotSetTeiToUpdateWhenEventPropagation(State.TO_DELETE);
-        assertThatDoNotSetTeiToUpdateWhenTrackedEntityDataValuePropagation(State.TO_DELETE);
     }
 
     @Test

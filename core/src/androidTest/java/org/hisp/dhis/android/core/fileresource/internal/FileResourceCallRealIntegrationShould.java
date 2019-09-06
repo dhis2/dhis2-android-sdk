@@ -31,9 +31,12 @@ package org.hisp.dhis.android.core.fileresource.internal;
 import androidx.test.InstrumentationRegistry;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.fileresource.FileResource;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,6 +74,40 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
                 InstrumentationRegistry.getTargetContext().getApplicationContext()), fileResources.get(0).uid());
 
         assertThat(file.exists(), is(true));
+    }
+
+    @Test
+    public void write_files_and_upload() throws Exception {
+        syncDataAndMetadata();
+
+        d2.fileResourceModule().blockingDownload();
+
+        List<FileResource> fileResources = d2.fileResourceModule().fileResources.blockingGet();
+
+        File file = new File(FileResourceUtil.getFileResourceDirectory(
+                InstrumentationRegistry.getTargetContext().getApplicationContext()), fileResources.get(0).uid());
+        assertThat(file.exists(), is(true));
+
+        String valueUid = d2.fileResourceModule().fileResources.blockingAdd(file);
+
+        TrackedEntityAttribute trackedEntityAttribute =
+                d2.trackedEntityModule().trackedEntityAttributes.byValueType().eq(ValueType.IMAGE).one().blockingGet();
+
+        TrackedEntityInstance trackedEntityInstance =
+                d2.trackedEntityModule().trackedEntityInstances.blockingGet().get(0);
+
+        d2.trackedEntityModule().trackedEntityAttributeValues
+                .value(trackedEntityAttribute.uid(), trackedEntityInstance.uid()).blockingSet(valueUid);
+
+        List<FileResource> fileResources2 = d2.fileResourceModule().fileResources.blockingGet();
+
+        d2.fileResourceModule().fileResources.upload().blockingSubscribe();
+
+        List<FileResource> fileResources3 = d2.fileResourceModule().fileResources.blockingGet();
+
+        File file2 = new File(fileResources3.get(2).path(), fileResources3.get(2).uid());
+
+        assertThat(file2.exists(), is(true));
     }
 
     private void syncDataAndMetadata() throws Exception {

@@ -54,6 +54,8 @@ import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Colu
 public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & DataModel>
         extends IdentifiableObjectStoreImpl<M> implements IdentifiableDataObjectStore<M> {
 
+    private final static String EQ = " = ";
+
     private final String selectStateQuery;
     private final String existsQuery;
     private final SQLiteStatement setStateStatement;
@@ -75,11 +77,11 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
 
         String setStateForUpdate = "UPDATE " + tableName + " SET " +
                 STATE + " = (case " +
-                    "when " + STATE + " = '" + State.TO_POST + "' then '" + State.TO_POST + "' " +
-                    "when " + STATE + " = '" + State.TO_UPDATE + "' OR " +
-                        STATE + " = '" + State.SYNCED + "' OR " +
-                        STATE + " = '" + State.ERROR + "' OR " +
-                        STATE + " = '" + State.WARNING + "' then '" + State.TO_UPDATE + "'" +
+                    "when " + STATE + EQ + "'" + State.TO_POST + "' then '" + State.TO_POST + "' " +
+                    "when " + STATE + EQ + "'" + State.TO_UPDATE + "' OR " +
+                        STATE + EQ + "'" + State.SYNCED + "' OR " +
+                        STATE + EQ + "'" + State.ERROR + "' OR " +
+                        STATE + EQ + "'" + State.WARNING + "' then '" + State.TO_UPDATE + "'" +
                         " END)" +
                     " where "  +
                         UID + " =? ;";

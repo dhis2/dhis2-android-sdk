@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.configuration;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 
 import androidx.annotation.NonNull;
 

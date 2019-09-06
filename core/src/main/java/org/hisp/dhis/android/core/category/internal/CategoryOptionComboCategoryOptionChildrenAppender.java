@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.category.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
@@ -35,7 +36,6 @@ import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo;
 import org.hisp.dhis.android.core.category.CategoryOptionTableInfo;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 final class CategoryOptionComboCategoryOptionChildrenAppender extends ChildrenAppender<CategoryOptionCombo> {
 

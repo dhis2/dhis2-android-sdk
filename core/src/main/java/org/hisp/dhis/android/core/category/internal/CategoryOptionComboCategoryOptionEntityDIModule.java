@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.category.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;

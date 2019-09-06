@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 
-import androidx.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -40,31 +38,33 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AccessColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DBCaptureCoordinatesFromFeatureTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbProgramTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AccessLevelColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.FeatureTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.CategoryComboWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ProgramWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.TrackedEntityTypeWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramIndicatorListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramRuleListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramRuleVariableListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramSectionListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramStageListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramTrackedEntityAttributeListColumnAdapter;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
-import org.hisp.dhis.android.core.data.database.AccessColumnAdapter;
-import org.hisp.dhis.android.core.data.database.CategoryComboWithUidColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DBCaptureCoordinatesFromFeatureTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbAccessLevelColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbProgramTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreProgramIndicatorListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreProgramRuleListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreProgramRuleVariableListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreProgramSectionListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreProgramStageListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreProgramTrackedEntityAttributeListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.ProgramWithUidColumnAdapter;
-import org.hisp.dhis.android.core.data.database.TrackedEntityTypeWithUidColumnAdapter;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_Program.Builder.class)
@@ -194,7 +194,7 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DbPeriodTypeColumnAdapter.class)
+    @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType expiryPeriodType();
 
     @Nullable
@@ -212,12 +212,12 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DbFeatureTypeColumnAdapter.class)
+    @ColumnAdapter(FeatureTypeColumnAdapter.class)
     public abstract FeatureType featureType();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DbAccessLevelColumnAdapter.class)
+    @ColumnAdapter(AccessLevelColumnAdapter.class)
     public abstract AccessLevel accessLevel();
 
     public static Builder builder() {

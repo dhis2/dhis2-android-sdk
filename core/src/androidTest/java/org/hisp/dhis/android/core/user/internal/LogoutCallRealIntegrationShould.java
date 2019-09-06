@@ -44,8 +44,8 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isDatabaseEmpty;
-import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isTableEmpty;
+import static org.hisp.dhis.android.core.arch.db.access.SqliteCheckerUtility.isDatabaseEmpty;
+import static org.hisp.dhis.android.core.arch.db.access.SqliteCheckerUtility.isTableEmpty;
 
 public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
     private D2 d2;

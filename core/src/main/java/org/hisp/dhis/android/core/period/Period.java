@@ -35,8 +35,8 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
 
 import java.util.Date;
 
@@ -49,7 +49,7 @@ public abstract class Period implements Model {
     public abstract String periodId();
 
     @Nullable
-    @ColumnAdapter(DbPeriodTypeColumnAdapter.class)
+    @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType periodType();
 
     @Nullable

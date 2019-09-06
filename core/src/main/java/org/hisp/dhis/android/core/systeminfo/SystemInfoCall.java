@@ -29,10 +29,10 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.Transaction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;

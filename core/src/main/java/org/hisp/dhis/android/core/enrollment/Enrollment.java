@@ -45,12 +45,12 @@ import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbEnrollmentStatusColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbGeometryColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreCoordinatesColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreEventListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreNoteListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStatusColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCoordinatesColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEventListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNoteListColumnAdapter;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.Event;
@@ -112,7 +112,7 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithUidI
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DbEnrollmentStatusColumnAdapter.class)
+    @ColumnAdapter(EnrollmentStatusColumnAdapter.class)
     public abstract EnrollmentStatus status();
 
     @Nullable

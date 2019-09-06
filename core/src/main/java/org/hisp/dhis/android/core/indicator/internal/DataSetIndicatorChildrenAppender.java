@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.indicator.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo;
 import org.hisp.dhis.android.core.indicator.Indicator;

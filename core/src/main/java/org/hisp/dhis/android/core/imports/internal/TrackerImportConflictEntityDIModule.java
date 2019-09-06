@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.imports.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 
 import java.util.Collections;

@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.common.valuetype.devicerendering.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;

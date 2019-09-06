@@ -33,9 +33,9 @@ import android.database.Cursor;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.SystemSettingKeyColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.data.database.DbSystemSettingKeyColumnAdapter;
 
 import androidx.annotation.Nullable;
 
@@ -48,7 +48,7 @@ public abstract class SystemSetting implements Model {
     }
 
     @Nullable
-    @ColumnAdapter(DbSystemSettingKeyColumnAdapter.class)
+    @ColumnAdapter(SystemSettingKeyColumnAdapter.class)
     public abstract SystemSettingKey key();
 
     @Nullable

@@ -38,7 +38,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.data.database.IgnoreLegendListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreLegendListColumnAdapter;
 
 import java.util.List;
 

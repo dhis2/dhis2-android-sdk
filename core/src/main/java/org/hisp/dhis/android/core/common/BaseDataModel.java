@@ -35,7 +35,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
-import org.hisp.dhis.android.core.data.database.DbStateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
 
 public abstract class BaseDataModel extends BaseModel implements DataModel {
 
@@ -47,7 +47,7 @@ public abstract class BaseDataModel extends BaseModel implements DataModel {
     @Override
     @Nullable
     @ColumnName(Columns.STATE)
-    @ColumnAdapter(DbStateColumnAdapter.class)
+    @ColumnAdapter(StateColumnAdapter.class)
     public abstract State state();
 
     @Override

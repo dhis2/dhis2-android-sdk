@@ -36,12 +36,12 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreBooleanColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.data.database.IgnoreBooleanColumnAdapter;
-import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 
 import javax.annotation.Nullable;
 

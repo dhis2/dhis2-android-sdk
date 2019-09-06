@@ -30,8 +30,7 @@ package org.hisp.dhis.android.core.program.internal;
 
 import android.database.sqlite.SQLiteStatement;
 
-import androidx.annotation.NonNull;
-
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
@@ -41,12 +40,13 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.program.ProgramType;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 

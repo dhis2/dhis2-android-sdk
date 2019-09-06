@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.arch.call.executors.internal;
 
 import android.util.Log;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.Transaction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;

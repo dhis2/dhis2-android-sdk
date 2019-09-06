@@ -30,18 +30,18 @@ package org.hisp.dhis.android.core.enrollment.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.DataOrphanCleanerImpl;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
 import org.hisp.dhis.android.core.enrollment.note.internal.NoteChildrenAppender;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.event.internal.EventChildrenAppender;
 import org.hisp.dhis.android.core.event.internal.EventFields;
-import org.hisp.dhis.android.core.event.EventTableInfo;
 
 import java.util.HashMap;
 import java.util.Map;

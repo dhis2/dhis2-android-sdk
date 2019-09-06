@@ -36,19 +36,19 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AccessColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataElementOperandListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataInputPeriodListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataSetElementListAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreIndicatorListAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreSectionListAdapter;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.AccessColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DataInputPeriodListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DataSetElementListAdapter;
-import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreDataElementOperandListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreIndicatorListAdapter;
-import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.data.database.SectionListAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -64,7 +64,7 @@ public abstract class DataSet extends BaseNameableObject implements Model, Objec
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DbPeriodTypeColumnAdapter.class)
+    @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType periodType();
 
     @Nullable
@@ -131,7 +131,7 @@ public abstract class DataSet extends BaseNameableObject implements Model, Objec
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DataSetElementListAdapter.class)
+    @ColumnAdapter(IgnoreDataSetElementListAdapter.class)
     public abstract List<DataSetElement> dataSetElements();
     
     @Nullable
@@ -141,7 +141,7 @@ public abstract class DataSet extends BaseNameableObject implements Model, Objec
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(SectionListAdapter.class)
+    @ColumnAdapter(IgnoreSectionListAdapter.class)
     public abstract List<Section> sections();
 
     @Nullable
@@ -151,7 +151,7 @@ public abstract class DataSet extends BaseNameableObject implements Model, Objec
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DataInputPeriodListColumnAdapter.class)
+    @ColumnAdapter(IgnoreDataInputPeriodListColumnAdapter.class)
     public abstract List<DataInputPeriod> dataInputPeriods();
 
     @Nullable

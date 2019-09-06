@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorExecutorImpl;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
@@ -40,7 +41,6 @@ import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SinglePare
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class StoreFactory {
 

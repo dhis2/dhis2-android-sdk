@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.relationship.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.internal.EventStore;

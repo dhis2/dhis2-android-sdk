@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.arch.cleaners.internal.ParentOrphanCleaner;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo;

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.event.internal;
 
 import android.database.Cursor;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
@@ -40,7 +41,6 @@ import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SinglePare
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.event.Event;

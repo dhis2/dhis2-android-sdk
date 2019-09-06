@@ -34,7 +34,7 @@ import android.util.Log;
 import org.hisp.dhis.android.BuildConfig;
 import org.hisp.dhis.android.core.arch.api.authentication.internal.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 
 import java.security.KeyStore;
 import java.util.ArrayList;

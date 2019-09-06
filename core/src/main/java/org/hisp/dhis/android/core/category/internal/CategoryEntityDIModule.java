@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.category.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collections;
 import java.util.Map;

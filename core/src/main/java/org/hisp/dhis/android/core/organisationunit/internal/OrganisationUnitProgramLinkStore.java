@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
 

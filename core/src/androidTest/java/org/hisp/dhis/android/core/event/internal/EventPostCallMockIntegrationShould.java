@@ -149,6 +149,24 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
                 .isEqualTo(true);
     }
 
+    @Test
+    public void mark_payload_as_uploading() {
+        storeEvents();
+
+        // Ignore result. Just interested in check that target events are marked as UPLOADING
+        List<Event> events = eventPostCall.queryDataToSync(null);
+
+        List<Event> dbEvents = d2.eventModule().events.blockingGet();
+
+        for (Event event : dbEvents) {
+            if ("event1Id".equals(event.uid()) || "event2Id".equals(event.uid()) || "event3Id".equals(event.uid())) {
+                assertThat(event.state()).isEqualTo(State.UPLOADING);
+            } else {
+                assertThat(event.state()).isNotEqualTo(State.UPLOADING);
+            }
+        }
+    }
+
     private void storeEvents() {
         String event1Id = "event1Id";
         String event2Id = "event2Id";

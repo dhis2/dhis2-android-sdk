@@ -19,14 +19,30 @@ import okhttp3.ResponseBody;
 public final class FileResourceUtil {
 
     public static File saveFile(File sourceFile, String fileResourceUid, Context context) throws IOException {
-        InputStream in = new FileInputStream(sourceFile);
-        File destinationFile = new File(getFileResourceDirectory(context), fileResourceUid);
-        OutputStream out = new FileOutputStream(destinationFile);
+        File destinationFile = null;
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            in = new FileInputStream(sourceFile);
+            destinationFile = new File(getFileResourceDirectory(context), fileResourceUid);
+            out = new FileOutputStream(destinationFile);
 
-        byte[] buf = new byte[1024];
-        int len;
-        while ((len = in.read(buf)) > 0) {
-            out.write(buf, 0, len);
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+
+            if (out != null) {
+                out.close();
+            }
         }
 
         return destinationFile;
@@ -54,6 +70,14 @@ public final class FileResourceUtil {
         return file;
     }
 
+    static void renameFile(File file, String newFileName, Context context) {
+        File newFile = new File(context.getFilesDir(), "sdk_resources/" + newFileName);
+
+        if (!file.renameTo(newFile)) {
+            Log.d(FileResourceUtil.class.getCanonicalName(),
+                    "Fail renaming " + file.getName() + " to " + newFileName);
+        }
+    }
 
     static void writeFileToDisk(ResponseBody body, String generatedFileName, Context context) {
         try {

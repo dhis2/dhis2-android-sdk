@@ -33,13 +33,21 @@ import android.webkit.MimeTypeMap;
 
 import androidx.annotation.NonNull;
 
+import org.hisp.dhis.android.core.ObjectMapperFactory;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueFields;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -49,20 +57,30 @@ import io.reactivex.Observable;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 
 @Reusable
 public final class FileResourcePostCall {
 
     private final FileResourceService fileResourceService;
     private final APICallExecutor apiCallExecutor;
+    private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
+    private final FileResourceStore fileResourceStore;
+    private final HandlerWithTransformer<FileResource> fileResourceHandler;
     private final Context context;
 
     @Inject
     FileResourcePostCall(@NonNull FileResourceService fileResourceService,
                          @NonNull APICallExecutor apiCallExecutor,
+                         @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
+                         @NonNull FileResourceStore fileResourceStore,
+                         @NonNull HandlerWithTransformer<FileResource> fileResourceHandler,
                          @NonNull Context context) {
         this.fileResourceService = fileResourceService;
         this.apiCallExecutor = apiCallExecutor;
+        this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
+        this.fileResourceStore = fileResourceStore;
+        this.fileResourceHandler = fileResourceHandler;
         this.context = context;
     }
 
@@ -76,11 +94,14 @@ public final class FileResourcePostCall {
                 D2ProgressManager progressManager = new D2ProgressManager(1);
 
                 for (FileResource fileResource : filteredFileResources) {
+
                     File file = getRelatedFile(fileResource);
 
-                    apiCallExecutor.executeObjectCall(fileResourceService.uploadFile(getFilePart(file)));
+                    ResponseBody responseBody =
+                            apiCallExecutor.executeObjectCall(fileResourceService.uploadFile(getFilePart(file)));
 
-                    // TODO handleWebResponse(webResponse);
+                    handleResponse(responseBody.string(), fileResource, file);
+
                     emitter.onNext(progressManager.increaseProgress(FileResource.class, true));
                 }
 
@@ -96,9 +117,61 @@ public final class FileResourcePostCall {
     private MultipartBody.Part getFilePart(File file) {
         String extension = MimeTypeMap.getFileExtensionFromUrl(file.getPath());
         String type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-        if(type == null)
+        if (type == null) {
             type = "image/*";
+        }
+
         return MultipartBody.Part
                 .createFormData("file", file.getName(), RequestBody.create(MediaType.parse(type), file));
+    }
+
+    private void handleResponse(String responseBody, FileResource fileResource, File file) {
+        try {
+            FileResource downloadedFileResource = getDownloadedFileResource(responseBody);
+
+            updateTrackedEntityAttributeValue(fileResource, downloadedFileResource);
+
+            updateFileResource(fileResource, downloadedFileResource, file);
+
+            updateFile(file, fileResource, context);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private FileResource getDownloadedFileResource(String responseBody)
+            throws IOException {
+
+        FileResourceResponse fileResourceResponse =
+                ObjectMapperFactory.objectMapper().readValue(responseBody, FileResourceResponse.class);
+
+        return  fileResourceResponse.response().fileResource();
+    }
+
+    private void updateTrackedEntityAttributeValue(FileResource fileResource, FileResource downloadedFileResource) {
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(TrackedEntityAttributeValueFields.VALUE, fileResource.uid())
+                .build();
+        TrackedEntityAttributeValue trackedEntityAttributeValue =
+                trackedEntityAttributeValueStore.selectOneWhere(whereClause);
+
+        if (trackedEntityAttributeValue != null) {
+            trackedEntityAttributeValueStore.updateWhere(trackedEntityAttributeValue.toBuilder()
+                    .value(downloadedFileResource.uid())
+                    .build());
+        }
+    }
+
+    private void updateFileResource(FileResource fileResource, FileResource downloadedFileResource, File file) {
+        fileResourceStore.delete(fileResource.uid());
+        fileResourceHandler.handle(downloadedFileResource.toBuilder()
+                .state(State.SYNCED)
+                .path(file.getParent())
+                .build());
+    }
+
+    private void updateFile(File file, FileResource fileResource, Context context) {
+        FileResourceUtil.renameFile(file, fileResource.uid(), context);
     }
 }

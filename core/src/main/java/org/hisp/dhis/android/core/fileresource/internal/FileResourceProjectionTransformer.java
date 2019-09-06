@@ -44,11 +44,12 @@ final class FileResourceProjectionTransformer implements Transformer<File, FileR
 
         return FileResource.builder()
                 .state(State.TO_POST)
+                .name(file.getName())
                 .created(creationDate)
                 .lastUpdated(creationDate)
                 .contentLength(file.length())
                 .contentType(URLConnection.guessContentTypeFromName(file.getName()))
-                .path(file.getPath())
+                .path(file.getParent())
                 .build();
     }
 }

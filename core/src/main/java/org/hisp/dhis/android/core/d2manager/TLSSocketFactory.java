@@ -35,7 +35,7 @@ import java.net.Socket;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
-public class TLSSocketFactory extends SSLSocketFactory {
+class TLSSocketFactory extends SSLSocketFactory {
 
     private static final String[] TLS_V12_ONLY = {"TLSv1.2"};
 

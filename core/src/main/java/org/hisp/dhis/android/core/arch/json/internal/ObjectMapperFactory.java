@@ -26,26 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.arch.json.internal;
 
-import org.hisp.dhis.android.core.category.internal.CategoryInternalModule;
-import org.hisp.dhis.android.core.user.internal.UserInternalModule;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+public final class ObjectMapperFactory {
 
-@Reusable
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-public final class D2InternalModules {
-    public final CategoryInternalModule category;
-    public final UserInternalModule user;
+    private ObjectMapperFactory() {
+    }
 
-    @Inject
-    public D2InternalModules(CategoryInternalModule category,
-                             UserInternalModule user) {
-        this.category = category;
-        this.user = user;
+    public static ObjectMapper objectMapper() {
+        return new ObjectMapper()
+                .setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw())
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 }

@@ -26,23 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.arch.d2.internal;
 
-import android.content.Context;
+import org.hisp.dhis.android.core.category.internal.CategoryInternalModule;
+import org.hisp.dhis.android.core.user.internal.UserInternalModule;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
 
-@Module
-public class AppContextDIModule {
-    private final Context context;
+import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-    public AppContextDIModule(Context context) {
-        this.context = context.getApplicationContext();
-    }
+@Reusable
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+public final class D2InternalModules {
+    public final CategoryInternalModule category;
+    public final UserInternalModule user;
 
-    @Provides
-    Context appContext() {
-        return context;
+    @Inject
+    public D2InternalModules(CategoryInternalModule category,
+                             UserInternalModule user) {
+        this.category = category;
+        this.user = user;
     }
 }

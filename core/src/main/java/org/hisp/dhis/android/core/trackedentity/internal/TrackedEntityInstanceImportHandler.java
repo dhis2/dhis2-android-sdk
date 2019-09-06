@@ -29,10 +29,13 @@
 package org.hisp.dhis.android.core.trackedentity.internal;
 
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentImportHandler;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
@@ -47,7 +50,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getState;
@@ -57,14 +59,17 @@ public final class TrackedEntityInstanceImportHandler {
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final EnrollmentImportHandler enrollmentImportHandler;
     private final ObjectStore<TrackerImportConflict> trackerImportConflictStore;
+    private final DataStatePropagator dataStatePropagator;
 
     @Inject
     TrackedEntityInstanceImportHandler(@NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
                                        @NonNull EnrollmentImportHandler enrollmentImportHandler,
-                                       @NonNull ObjectStore<TrackerImportConflict> trackerImportConflictStore) {
+                                       @NonNull ObjectStore<TrackerImportConflict> trackerImportConflictStore,
+                                       @NonNull DataStatePropagator dataStatePropagator) {
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.enrollmentImportHandler = enrollmentImportHandler;
         this.trackerImportConflictStore = trackerImportConflictStore;
+        this.dataStatePropagator = dataStatePropagator;
     }
 
     public void handleTrackedEntityInstanceImportSummaries(List<TEIImportSummary> teiImportSummaries) {
@@ -97,7 +102,10 @@ public final class TrackedEntityInstanceImportHandler {
                             TrackerImportConflict.builder().trackedEntityInstance(teiImportSummary.reference()),
                             teiImportSummary.reference());
                 }
+            }
 
+            if (state.equals(State.ERROR) || state.equals(State.WARNING)) {
+                dataStatePropagator.resetUploadingEnrollmentAndEventStates(teiImportSummary.reference());
             }
         }
     }

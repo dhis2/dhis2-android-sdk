@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.enrollment.note.NoteTableInfo;
@@ -63,18 +64,21 @@ public class EnrollmentImportHandler {
     private final ObjectWithoutUidStore<Note> noteStore;
     private final EventImportHandler eventImportHandler;
     private final ObjectStore<TrackerImportConflict> trackerImportConflictStore;
+    private final DataStatePropagator dataStatePropagator;
 
     @Inject
     public EnrollmentImportHandler(@NonNull EnrollmentStore enrollmentStore,
                                    @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
                                    @NonNull ObjectWithoutUidStore<Note> noteStore,
                                    @NonNull EventImportHandler eventImportHandler,
-                                   @NonNull ObjectStore<TrackerImportConflict> trackerImportConflictStore) {
+                                   @NonNull ObjectStore<TrackerImportConflict> trackerImportConflictStore,
+                                   @NonNull DataStatePropagator dataStatePropagator) {
         this.enrollmentStore = enrollmentStore;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.noteStore = noteStore;
         this.eventImportHandler = eventImportHandler;
         this.trackerImportConflictStore = trackerImportConflictStore;
+        this.dataStatePropagator = dataStatePropagator;
     }
 
     public void handleEnrollmentImportSummary(List<EnrollmentImportSummary> enrollmentImportSummaries,
@@ -109,6 +113,10 @@ public class EnrollmentImportHandler {
                 storeEnrollmentImportConflicts(enrollmentImportSummary, trackerImportConflictBuilder);
 
                 handleEventImportSummaries(enrollmentImportSummary, trackerImportConflictBuilder, teiUid);
+            }
+
+            if (state.equals(State.ERROR) || state.equals(State.WARNING)) {
+                dataStatePropagator.resetUploadingEventStates(enrollmentImportSummary.reference());
             }
         }
 

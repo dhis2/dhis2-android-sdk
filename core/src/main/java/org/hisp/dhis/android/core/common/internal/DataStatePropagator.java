@@ -28,13 +28,19 @@
 
 package org.hisp.dhis.android.core.common.internal;
 
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -80,5 +86,40 @@ public final class DataStatePropagator {
 
     private void setTeiStateForUpdate(String trackedEntityInstanceUid) {
         trackedEntityInstanceStore.setStateForUpdate(trackedEntityInstanceUid);
+    }
+
+    public void resetUploadingEnrollmentAndEventStates(String trackedEntityInstanceUid) {
+        if (trackedEntityInstanceUid == null) {
+            return;
+        }
+
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid)
+                .build();
+        List<Enrollment> enrollments = enrollmentStore.selectWhere(whereClause);
+
+        for (Enrollment enrollment : enrollments) {
+            if (State.UPLOADING.equals(enrollment.state())) {
+                enrollmentStore.setState(enrollment.uid(), State.TO_UPDATE);
+                resetUploadingEventStates(enrollment.uid());
+            }
+        }
+    }
+
+    public void resetUploadingEventStates(String enrollmentUid) {
+        if (enrollmentUid == null) {
+            return;
+        }
+
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(EventTableInfo.Columns.ENROLLMENT, enrollmentUid)
+                .build();
+        List<Event> events = eventStore.selectWhere(whereClause);
+
+        for (Event event : events) {
+            if (State.UPLOADING.equals(event.state())) {
+                eventStore.setState(event.uid(), State.TO_UPDATE);
+            }
+        }
     }
 }

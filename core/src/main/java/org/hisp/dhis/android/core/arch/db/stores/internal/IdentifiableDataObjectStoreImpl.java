@@ -82,6 +82,7 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
                     "when " + STATE + EQ + "'" + State.TO_POST + "' then '" + State.TO_POST + "' " +
                     "when " + STATE + EQ + "'" + State.TO_UPDATE + "' OR " +
                         STATE + EQ + "'" + State.SYNCED + "' OR " +
+                        STATE + EQ + "'" + State.UPLOADING + "' OR " +
                         STATE + EQ + "'" + State.ERROR + "' OR " +
                         STATE + EQ + "'" + State.WARNING + "' then '" + State.TO_UPDATE + "'" +
                         " END)" +

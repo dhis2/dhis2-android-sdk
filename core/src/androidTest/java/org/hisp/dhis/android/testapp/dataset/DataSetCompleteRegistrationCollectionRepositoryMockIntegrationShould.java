@@ -138,7 +138,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                         .byDeleted().isFalse()
                         .blockingGet();
 
-        assertThat(dataSetCompleteRegistrations.size(), is(2));
+        assertThat(dataSetCompleteRegistrations.size(), is(3));
     }
 
 }

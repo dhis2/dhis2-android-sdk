@@ -34,7 +34,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.facebook.stetho.Stetho;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2DIComponent;
+import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;

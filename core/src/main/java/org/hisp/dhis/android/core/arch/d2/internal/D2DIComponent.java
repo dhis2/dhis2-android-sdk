@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.arch.d2.internal;
 
 import android.content.Context;
 
@@ -118,12 +118,13 @@ import retrofit2.Retrofit;
 
 public interface D2DIComponent {
 
-    D2InternalModules internalModules();
     D2Modules modules();
     MetadataModule metadataModule();
     AggregatedModule aggregatedModule();
     WipeModule wipeModule();
 
+    @VisibleForTesting
+    D2InternalModules internalModules();
     @VisibleForTesting
     ListCallFactory<Program> programCallFactory();
     @VisibleForTesting

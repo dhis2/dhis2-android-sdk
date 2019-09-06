@@ -45,7 +45,6 @@ import org.hisp.dhis.android.core.common.DataModel;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
@@ -61,6 +60,7 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
     private final String selectStateQuery;
     private final String existsQuery;
     private final SQLiteStatement setStateStatement;
+    private final SQLiteStatement setStateIfUploadingStatement;
     private final SQLiteStatement setStateForUpdateStatement;
     private final SQLiteStatement setDeletedStatement;
     protected final String tableName;
@@ -71,11 +71,14 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
                                            CursorModelFactory<M> modelFactory) {
         super(databaseAdapter, statements, builder, binder, modelFactory);
         this.tableName = builder.getTableName();
-        String whereUid =  " WHERE " + UID + " =?;";
+        String whereUid =  " WHERE " + UID + " =?";
 
         String setState = "UPDATE " + tableName + " SET " +
                 STATE + " =?" + whereUid;
         this.setStateStatement = databaseAdapter.compileStatement(setState);
+
+        String setStateIfUploading = setState + " AND " + STATE + EQ + "'" + State.UPLOADING + "'";
+        this.setStateIfUploadingStatement = databaseAdapter.compileStatement(setStateIfUploading);
 
         String setStateForUpdate = "UPDATE " + tableName + " SET " +
                 STATE + " = (case " +
@@ -141,7 +144,7 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
             String whereClause = new WhereClauseBuilder()
                     .appendKeyStringValue(UID, uid)
                     .appendKeyNumberValue(DELETED, 1)
-                    .appendInKeyEnumValues(STATE, Arrays.asList(State.TO_POST, State.TO_UPDATE))
+                    .appendKeyStringValue(STATE, State.UPLOADING)
                     .build();
 
             deleted = deleteWhere(whereClause);
@@ -150,9 +153,19 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
         if (deleted) {
             return HandleAction.Delete;
         } else {
-            setState(uid, state);
+            setStateIfUploading(uid, state);
             return HandleAction.Update;
         }
+    }
+
+    private void setStateIfUploading(@NonNull String uid, @NonNull State state) {
+        sqLiteBind(setStateIfUploadingStatement, 1, state);
+
+        // bind the where argument
+        sqLiteBind(setStateIfUploadingStatement, 2, uid);
+
+        databaseAdapter.executeUpdateDelete(tableName, setStateIfUploadingStatement);
+        setStateIfUploadingStatement.clearBindings();
     }
 
     @Override

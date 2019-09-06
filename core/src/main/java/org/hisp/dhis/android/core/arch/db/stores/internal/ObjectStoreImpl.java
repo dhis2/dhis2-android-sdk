@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
@@ -73,6 +74,11 @@ public class ObjectStoreImpl<M extends Model> extends ReadableStoreImpl<M> imple
     public List<String> selectStringColumnsWhereClause(String column, String clause) {
         Cursor cursor = databaseAdapter.query(builder.selectColumnWhere(column, clause));
         return mapStringColumnSetFromCursor(cursor);
+    }
+
+    @Override
+    public int updateWhere(@NonNull ContentValues values, @NonNull String whereClause) {
+        return databaseAdapter.database().update(builder.getTableName(), values, whereClause, null);
     }
 
     @Override

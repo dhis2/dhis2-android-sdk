@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
@@ -45,6 +46,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.common.BaseDataModel.Columns.DELETED;
@@ -107,6 +109,18 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
         setStateStatement.clearBindings();
 
         return updatedRow;
+    }
+
+    @Override
+    public int setState(@NonNull List<String> uids, @NonNull State state) {
+        ContentValues updates = new ContentValues();
+        updates.put(STATE, state.toString());
+
+        String whereClause = new WhereClauseBuilder()
+                .appendInKeyStringValues(UID, uids)
+                .build();
+
+        return updateWhere(updates, whereClause);
     }
 
     @Override

@@ -233,6 +233,35 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         assertThat(UidsHelper.getUidsList(partitions.get(0)).containsAll(Lists.newArrayList(tei1, tei2, tei3))).isEqualTo(true);
     }
 
+    @Test
+    public void mark_payload_as_uploading() {
+        storeTrackedEntityInstance();
+
+        // Ignore result. Just interested in check that target TEIs are marked as UPLOADING
+        List<List<TrackedEntityInstance>> partitions = trackedEntityInstancePostCall.getPartitionsToSync(null);
+
+        TrackedEntityInstance instance = TrackedEntityInstanceStoreImpl.create(databaseAdapter).selectFirst();
+        assertThat(instance.state()).isEqualTo(State.UPLOADING);
+
+        List<Enrollment> enrollments = EnrollmentStoreImpl.create(databaseAdapter).selectAll();
+        for (Enrollment enrollment : enrollments) {
+            if ("enrollment1Id".equals(enrollment.uid()) || "enrollment2Id".equals(enrollment.uid())) {
+                assertThat(enrollment.state()).isEqualTo(State.UPLOADING);
+            } else {
+                assertThat(enrollment.state()).isNotEqualTo(State.UPLOADING);
+            }
+        }
+
+        List<Event> events = EventStoreImpl.create(databaseAdapter).selectAll();
+        for (Event event : events) {
+            if ("event1Id".equals(event.uid()) || "event2Id".equals(event.uid())) {
+                assertThat(event.state()).isEqualTo(State.UPLOADING);
+            } else {
+                assertThat(event.state()).isNotEqualTo(State.UPLOADING);
+            }
+        }
+    }
+
     private void storeTrackedEntityInstance() {
         String teiId = "teiId";
         String enrollment1Id = "enrollment1Id";

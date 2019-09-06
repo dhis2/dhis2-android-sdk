@@ -38,6 +38,8 @@ import java.util.Set;
 
 final class TrackedEntityInstanceHelper {
 
+    private TrackedEntityInstanceHelper() { }
+
     static Set<ProgramOrganisationUnitLastUpdated> getProgramOrganisationUnitTuple(
             List<TrackedEntityInstance> trackedEntityInstances, Date lastSynced) {
         Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet = new HashSet<>();

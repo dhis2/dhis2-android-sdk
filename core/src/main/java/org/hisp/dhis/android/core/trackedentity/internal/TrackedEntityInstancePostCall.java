@@ -321,7 +321,7 @@ public final class TrackedEntityInstancePostCall {
         List<String> eventUids = new ArrayList<>();
 
         for (List<TrackedEntityInstance> partition : partitions) {
-            for(TrackedEntityInstance instance : partition) {
+            for (TrackedEntityInstance instance : partition) {
                 trackedEntityInstancesUids.add(instance.uid());
                 for (Enrollment enrollment : instance.enrollments()) {
                     enrollmentUids.add(enrollment.uid());

@@ -87,6 +87,9 @@ public final class TrackedEntityInstanceImportHandler {
 
             if (teiImportSummary.reference() != null) {
                 handleAction = trackedEntityInstanceStore.setStateOrDelete(teiImportSummary.reference(), state);
+                if (state.equals(State.ERROR) || state.equals(State.WARNING)) {
+                    dataStatePropagator.resetUploadingEnrollmentAndEventStates(teiImportSummary.reference());
+                }
 
                 deleteTEIConflicts(teiImportSummary.reference());
             }
@@ -102,10 +105,6 @@ public final class TrackedEntityInstanceImportHandler {
                             TrackerImportConflict.builder().trackedEntityInstance(teiImportSummary.reference()),
                             teiImportSummary.reference());
                 }
-            }
-
-            if (state.equals(State.ERROR) || state.equals(State.WARNING)) {
-                dataStatePropagator.resetUploadingEnrollmentAndEventStates(teiImportSummary.reference());
             }
         }
     }

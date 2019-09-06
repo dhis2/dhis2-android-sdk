@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.enrollment.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
@@ -52,7 +54,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getState;
@@ -102,6 +103,7 @@ public class EnrollmentImportHandler {
                 handleAction = enrollmentStore.setStateOrDelete(enrollmentImportSummary.reference(), state);
                 if (state == State.ERROR || state == State.WARNING) {
                     parentState = parentState == State.ERROR ? State.ERROR : state;
+                    dataStatePropagator.resetUploadingEventStates(enrollmentImportSummary.reference());
                 }
 
                 deleteEnrollmentConflicts(enrollmentImportSummary.reference());
@@ -113,10 +115,6 @@ public class EnrollmentImportHandler {
                 storeEnrollmentImportConflicts(enrollmentImportSummary, trackerImportConflictBuilder);
 
                 handleEventImportSummaries(enrollmentImportSummary, trackerImportConflictBuilder, teiUid);
-            }
-
-            if (state.equals(State.ERROR) || state.equals(State.WARNING)) {
-                dataStatePropagator.resetUploadingEventStates(enrollmentImportSummary.reference());
             }
         }
 

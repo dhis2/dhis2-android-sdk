@@ -51,21 +51,21 @@ public final class EnrollmentTableInfo {
         }
     };
 
-    static class Columns extends BaseDataModel.Columns {
-        static final String UID = "uid";
-        static final String CREATED = EnrollmentFields.CREATED;
-        static final String LAST_UPDATED = EnrollmentFields.LAST_UPDATED;
-        static final String CREATED_AT_CLIENT = "createdAtClient";
-        static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
-        static final String ORGANISATION_UNIT = "organisationUnit";
-        static final String PROGRAM = EnrollmentFields.PROGRAM;
-        static final String ENROLLMENT_DATE = EnrollmentFields.ENROLLMENT_DATE;
-        static final String INCIDENT_DATE = EnrollmentFields.INCIDENT_DATE;
-        static final String FOLLOW_UP = EnrollmentFields.FOLLOW_UP;
-        static final String STATUS = EnrollmentFields.STATUS;
-        static final String TRACKED_ENTITY_INSTANCE = EnrollmentFields.TRACKED_ENTITY_INSTANCE;
-        static final String GEOMETRY_TYPE = "geometryType";
-        static final String GEOMETRY_COORDINATES = "geometryCoordinates";
+    public static class Columns extends BaseDataModel.Columns {
+        public static final String UID = "uid";
+        public static final String CREATED = EnrollmentFields.CREATED;
+        public static final String LAST_UPDATED = EnrollmentFields.LAST_UPDATED;
+        public static final String CREATED_AT_CLIENT = "createdAtClient";
+        public static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
+        public static final String ORGANISATION_UNIT = "organisationUnit";
+        public static final String PROGRAM = EnrollmentFields.PROGRAM;
+        public static final String ENROLLMENT_DATE = EnrollmentFields.ENROLLMENT_DATE;
+        public static final String INCIDENT_DATE = EnrollmentFields.INCIDENT_DATE;
+        public static final String FOLLOW_UP = EnrollmentFields.FOLLOW_UP;
+        public static final String STATUS = EnrollmentFields.STATUS;
+        public static final String TRACKED_ENTITY_INSTANCE = EnrollmentFields.TRACKED_ENTITY_INSTANCE;
+        public static final String GEOMETRY_TYPE = "geometryType";
+        public static final String GEOMETRY_COORDINATES = "geometryCoordinates";
 
         @Override
         public String[] all() {

@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.helpers.internal;
+package org.hisp.dhis.android.core.trackedentity.internal;
 
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLastUpdated;
@@ -36,11 +36,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public final class TrackedEntityInstanceHelper {
+final class TrackedEntityInstanceHelper {
 
-    private TrackedEntityInstanceHelper() {}
+    private TrackedEntityInstanceHelper() { }
 
-    public static Set<ProgramOrganisationUnitLastUpdated> getProgramOrganisationUnitTuple(
+    static Set<ProgramOrganisationUnitLastUpdated> getProgramOrganisationUnitTuple(
             List<TrackedEntityInstance> trackedEntityInstances, Date lastSynced) {
         Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet = new HashSet<>();
         for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {

@@ -56,4 +56,10 @@ public class CommonPackageDIModule {
                                     DHISVersionManager versionManager) {
         return GenericCallData.create(databaseAdapter, retrofit, resourceHandler, versionManager);
     }
+
+    @Provides
+    @Reusable
+    public DataStatePropagator dataStatePropagator(DataStatePropagatorImpl impl) {
+        return impl;
+    }
 }

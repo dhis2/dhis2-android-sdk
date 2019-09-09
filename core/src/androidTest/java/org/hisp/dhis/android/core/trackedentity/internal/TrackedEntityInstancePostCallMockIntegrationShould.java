@@ -108,7 +108,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
     }
 
     @Test
-    public void build_payload_with_the_enrollments_events_and_values_set_for_upload_update_or_delete() {
+    public void build_payload_with_the_enrollments_events_and_values_set_for_upload() {
         storeTrackedEntityInstance();
 
         List<List<TrackedEntityInstance>> partitions =
@@ -125,9 +125,15 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
                 }
             }
         }
+    }
+
+    @Test
+    public void build_payload_without_events_marked_as_error() {
+        storeTrackedEntityInstance();
 
         EnrollmentStoreImpl.create(databaseAdapter).setState("enrollment3Id", State.TO_POST);
-        partitions = trackedEntityInstancePostCall.getPartitionsToSync(null);
+        List<List<TrackedEntityInstance>> partitions =
+                trackedEntityInstancePostCall.getPartitionsToSync(null);
 
         assertThat(partitions.size()).isEqualTo(1);
         assertThat(partitions.get(0).size()).isEqualTo(1);
@@ -138,21 +144,6 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
                     assertThat(enrollment.events().size()).isEqualTo(0);
                 } else {
                     assertThat(enrollment.events().size()).isEqualTo(1);
-                }
-            }
-        }
-
-        EventStoreImpl.create(databaseAdapter).setState("event3Id", State.TO_POST);
-        partitions = trackedEntityInstancePostCall.getPartitionsToSync(null);
-
-        assertThat(partitions.size()).isEqualTo(1);
-        assertThat(partitions.get(0).size()).isEqualTo(1);
-        for (TrackedEntityInstance instance : partitions.get(0)) {
-            assertThat(instance.enrollments().size()).isEqualTo(3);
-            for (Enrollment enrollment : instance.enrollments()) {
-                assertThat(enrollment.events().size()).isEqualTo(1);
-                for (Event event : enrollment.events()) {
-                    assertThat(event.trackedEntityDataValues().size()).isEqualTo(1);
                 }
             }
         }
@@ -231,6 +222,35 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         assertThat(partitions.size()).isEqualTo(1);
         assertThat(partitions.get(0).size()).isEqualTo(3);
         assertThat(UidsHelper.getUidsList(partitions.get(0)).containsAll(Lists.newArrayList(tei1, tei2, tei3))).isEqualTo(true);
+    }
+
+    @Test
+    public void mark_payload_as_uploading() {
+        storeTrackedEntityInstance();
+
+        // Ignore result. Just interested in check that target TEIs are marked as UPLOADING
+        List<List<TrackedEntityInstance>> partitions = trackedEntityInstancePostCall.getPartitionsToSync(null);
+
+        TrackedEntityInstance instance = TrackedEntityInstanceStoreImpl.create(databaseAdapter).selectFirst();
+        assertThat(instance.state()).isEqualTo(State.UPLOADING);
+
+        List<Enrollment> enrollments = EnrollmentStoreImpl.create(databaseAdapter).selectAll();
+        for (Enrollment enrollment : enrollments) {
+            if ("enrollment1Id".equals(enrollment.uid()) || "enrollment2Id".equals(enrollment.uid())) {
+                assertThat(enrollment.state()).isEqualTo(State.UPLOADING);
+            } else {
+                assertThat(enrollment.state()).isNotEqualTo(State.UPLOADING);
+            }
+        }
+
+        List<Event> events = EventStoreImpl.create(databaseAdapter).selectAll();
+        for (Event event : events) {
+            if ("event1Id".equals(event.uid()) || "event2Id".equals(event.uid())) {
+                assertThat(event.state()).isEqualTo(State.UPLOADING);
+            } else {
+                assertThat(event.state()).isNotEqualTo(State.UPLOADING);
+            }
+        }
     }
 
     private void storeTrackedEntityInstance() {

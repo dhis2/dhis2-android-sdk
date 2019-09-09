@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.arch.db.stores.internal;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
@@ -39,8 +41,6 @@ import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isNull;
 

@@ -29,56 +29,20 @@
 package org.hisp.dhis.android.core.common.internal;
 
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
-import javax.inject.Inject;
+public interface DataStatePropagator {
+    void propagateEnrollmentUpdate(Enrollment enrollment);
 
-import dagger.Reusable;
+    void propagateEventUpdate(Event event);
 
-@Reusable
-public final class DataStatePropagator {
+    void propagateTrackedEntityDataValueUpdate(TrackedEntityDataValue dataValue);
 
-    private final TrackedEntityInstanceStore trackedEntityInstanceStore;
-    private final EnrollmentStore enrollmentStore;
-    private final EventStore eventStore;
+    void propagateTrackedEntityAttributeUpdate(TrackedEntityAttributeValue trackedEntityAttributeValue);
 
-    @Inject
-    public DataStatePropagator(TrackedEntityInstanceStore trackedEntityInstanceStore,
-                               EnrollmentStore enrollmentStore,
-                               EventStore eventStore) {
-        this.trackedEntityInstanceStore = trackedEntityInstanceStore;
-        this.enrollmentStore = enrollmentStore;
-        this.eventStore = eventStore;
-    }
+    void resetUploadingEnrollmentAndEventStates(String trackedEntityInstanceUid);
 
-    public void propagateEnrollmentUpdate(Enrollment enrollment) {
-        setTeiStateForUpdate(enrollment.trackedEntityInstance());
-    }
-
-    public void propagateEventUpdate(Event event) {
-        if (event.enrollment() != null) {
-            Enrollment enrollment = enrollmentStore.selectByUid(event.enrollment());
-            enrollmentStore.setStateForUpdate(enrollment.uid());
-            setTeiStateForUpdate(enrollment.trackedEntityInstance());
-        }
-    }
-
-    public void propagateTrackedEntityDataValueUpdate(TrackedEntityDataValue dataValue) {
-        Event event = eventStore.selectByUid(dataValue.event());
-        eventStore.setStateForUpdate(event.uid());
-        propagateEventUpdate(event);
-    }
-
-    public void propagateTrackedEntityAttributeUpdate(TrackedEntityAttributeValue trackedEntityAttributeValue) {
-        setTeiStateForUpdate(trackedEntityAttributeValue.trackedEntityInstance());
-    }
-
-    private void setTeiStateForUpdate(String trackedEntityInstanceUid) {
-        trackedEntityInstanceStore.setStateForUpdate(trackedEntityInstanceUid);
-    }
+    void resetUploadingEventStates(String enrollmentUid);
 }

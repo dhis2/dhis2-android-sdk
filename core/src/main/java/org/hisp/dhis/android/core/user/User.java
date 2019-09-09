@@ -30,24 +30,24 @@ package org.hisp.dhis.android.core.user;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitListAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserCredentialsAdapter;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 @AutoValue
-@JsonDeserialize(builder = AutoValue_User.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_User.Builder.class)
 public abstract class User extends BaseIdentifiableObject implements Model {
 
     @Nullable
@@ -108,7 +108,7 @@ public abstract class User extends BaseIdentifiableObject implements Model {
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_User.Builder();
+        return new $$AutoValue_User.Builder();
     }
 
     @NonNull

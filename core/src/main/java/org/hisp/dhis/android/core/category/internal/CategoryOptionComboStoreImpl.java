@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.category.internal;
 
 import android.database.sqlite.SQLiteStatement;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
@@ -39,7 +40,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.List;
 

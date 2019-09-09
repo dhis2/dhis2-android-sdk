@@ -29,8 +29,9 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueFields;
 
 public final class TrackedEntityDataValueTableInfo {
 
@@ -55,7 +56,7 @@ public final class TrackedEntityDataValueTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     EVENT,
                     TrackedEntityDataValueFields.CREATED,
                     TrackedEntityDataValueFields.LAST_UPDATED,
@@ -68,7 +69,7 @@ public final class TrackedEntityDataValueTableInfo {
 
         @Override
         public String[] whereUpdate() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     EVENT,
                     TrackedEntityDataValueFields.DATA_ELEMENT
             );

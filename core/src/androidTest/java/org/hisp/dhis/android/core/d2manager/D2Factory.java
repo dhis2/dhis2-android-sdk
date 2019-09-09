@@ -35,9 +35,9 @@ import com.facebook.stetho.okhttp3.StethoInterceptor;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.authentication.internal.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.configuration.Configuration;
 import org.hisp.dhis.android.core.configuration.ServerUrlParser;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;

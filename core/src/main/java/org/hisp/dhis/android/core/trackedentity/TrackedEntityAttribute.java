@@ -37,16 +37,17 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbValueTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAccessAdapter;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreAccessAdapter;
-import org.hisp.dhis.android.core.data.database.OptionSetWithUidColumnAdapter;
-import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields;
 
 import androidx.annotation.Nullable;
 
@@ -65,8 +66,8 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(OptionSetWithUidColumnAdapter.class)
-    public abstract OptionSet optionSet();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid optionSet();
 
     @Nullable
     @JsonProperty()
@@ -137,7 +138,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
 
         public abstract Builder sortOrderInListNoProgram(Integer sortOrderInListNoProgram);
 
-        public abstract Builder optionSet(OptionSet optionSet);
+        public abstract Builder optionSet(ObjectWithUid optionSet);
 
         public abstract Builder valueType(ValueType valueType);
 

@@ -60,13 +60,8 @@ public class TrackedEntityInstanceShould extends BaseObjectShould implements Obj
         assertThat(trackedEntityInstance.trackedEntityType()).isEqualTo("nEenWmSyUEp");
         assertThat(trackedEntityInstance.geometry().type()).isEqualTo(FeatureType.POINT);
         assertThat(trackedEntityInstance.geometry().coordinates()).isEqualTo("[9.0, 9.0]");
+        assertThat(trackedEntityInstance.deleted()).isFalse();
 
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(0).trackedEntityAttribute()).isEqualTo("gHGyrwKPzej");
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(1).trackedEntityAttribute()).isEqualTo("lZGmxYbs97q");
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(2).trackedEntityAttribute()).isEqualTo("zDhUuAYrxNC");
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(3).trackedEntityAttribute()).isEqualTo("FO4sWYJ64LQ");
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(4).trackedEntityAttribute()).isEqualTo("ZcBPrXKahq2");
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(5).trackedEntityAttribute()).isEqualTo("VqEFza8wbwA");
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(6).trackedEntityAttribute()).isEqualTo("w75KJ2mc4zz");
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(0).trackedEntityAttribute()).isEqualTo("cejWyOfXge6");
     }
 }

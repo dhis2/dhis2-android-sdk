@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
 import java.util.List;
@@ -55,6 +56,7 @@ public class ProgramModuleDownloader implements MetadataModuleDownloader<List<Pr
     private final UidsCallFactory<ProgramStage> programStageCallFactory;
     private final UidsCallFactory<ProgramRule> programRuleCallFactory;
     private final UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory;
+    private final UidsCallFactory<TrackedEntityAttribute> trackedEntityAttributeCallFactory;
     private final ListCallFactory<RelationshipType> relationshipTypeCallFactory;
     private final UidsCallFactory<OptionSet> optionSetCallFactory;
     private final UidsCallFactory<OptionGroup> optionGroupCallFactory;
@@ -65,6 +67,7 @@ public class ProgramModuleDownloader implements MetadataModuleDownloader<List<Pr
                             UidsCallFactory<ProgramStage> programStageCallFactory,
                             UidsCallFactory<ProgramRule> programRuleCallFactory,
                             UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory,
+                            UidsCallFactory<TrackedEntityAttribute> trackedEntityAttributeCallFactory,
                             ListCallFactory<RelationshipType> relationshipTypeCallFactory,
                             UidsCallFactory<OptionSet> optionSetCallFactory,
                             UidsCallFactory<OptionGroup> optionGroupCallFactory,
@@ -73,6 +76,7 @@ public class ProgramModuleDownloader implements MetadataModuleDownloader<List<Pr
         this.programStageCallFactory = programStageCallFactory;
         this.programRuleCallFactory = programRuleCallFactory;
         this.trackedEntityTypeCallFactory = trackedEntityTypeCallFactory;
+        this.trackedEntityAttributeCallFactory = trackedEntityAttributeCallFactory;
         this.relationshipTypeCallFactory = relationshipTypeCallFactory;
         this.optionSetCallFactory = optionSetCallFactory;
         this.optionGroupCallFactory = optionGroupCallFactory;
@@ -92,10 +96,16 @@ public class ProgramModuleDownloader implements MetadataModuleDownloader<List<Pr
 
             Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
 
-            trackedEntityTypeCallFactory.create(trackedEntityUids).call();
+            List<TrackedEntityType> trackedEntityTypes = trackedEntityTypeCallFactory.create(trackedEntityUids).call();
+
+            Set<String> attributeUids = ProgramParentUidsHelper.getAssignedTrackedEntityAttributeUids(programs,
+                    trackedEntityTypes);
+
+            List<TrackedEntityAttribute> attributes = trackedEntityAttributeCallFactory.create(attributeUids).call();
+
             relationshipTypeCallFactory.create().call();
 
-            Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(programs, programStages);
+            Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(attributes, programStages);
             optionSetCallFactory.create(optionSetUids).call();
 
             if (!versionManager.is2_29()) {

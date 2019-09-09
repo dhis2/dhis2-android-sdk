@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.object.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectWithStateStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
@@ -48,9 +48,9 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
         <M extends Model & ObjectWithUidInterface & DataModel, R extends ReadOnlyObjectRepository<M>>
         extends ReadWriteWithUidObjectRepositoryImpl<M, R> {
 
-    private final IdentifiableObjectWithStateStore<M> store;
+    private final IdentifiableDataObjectStore<M> store;
 
-    public ReadWriteWithUidDataObjectRepositoryImpl(IdentifiableObjectWithStateStore<M> store,
+    public ReadWriteWithUidDataObjectRepositoryImpl(IdentifiableDataObjectStore<M> store,
                                                     Map<String, ChildrenAppender<M>> childrenAppenders,
                                                     RepositoryScope scope,
                                                     ObjectRepositoryFactory<R> repositoryFactory) {
@@ -75,8 +75,9 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
             if (object.state() == State.TO_POST) {
                 store.delete(object.uid());
             } else {
-                store.setState(object.uid(), State.TO_DELETE);
-                propagateState();
+                store.setDeleted(object.uid());
+                store.setState(object.uid(), State.TO_UPDATE);
+                propagateState(object);
             }
         }
     }
@@ -84,11 +85,11 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
     @Override
     protected Unit updateObject(M m) throws D2Error {
         super.updateObject(m);
-        propagateState();
+        propagateState(m);
         return new Unit();
     }
 
-    protected void propagateState() {
+    protected void propagateState(M m) {
          // Method is empty because is the default action.
     }
 }

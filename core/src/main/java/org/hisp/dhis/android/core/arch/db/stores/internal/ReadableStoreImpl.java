@@ -30,17 +30,17 @@ package org.hisp.dhis.android.core.arch.db.stores.internal;
 
 import android.database.Cursor;
 
-import androidx.annotation.NonNull;
-
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public class ReadableStoreImpl<M extends Model> implements ReadableStore<M> {
     protected final DatabaseAdapter databaseAdapter;

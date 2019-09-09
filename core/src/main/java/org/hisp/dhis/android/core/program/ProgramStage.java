@@ -30,14 +30,20 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 
-import androidx.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AccessColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DBCaptureCoordinatesFromFeatureTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbFormTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.FeatureTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramStageDataElementListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramStageSectionListColumnAdapter;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.FeatureType;
@@ -45,17 +51,11 @@ import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.AccessColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DBCaptureCoordinatesFromFeatureTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbFormTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreProgramStageDataElementListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreProgramStageSectionListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramStage.Builder.class)
@@ -106,7 +106,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DbFeatureTypeColumnAdapter.class)
+    @ColumnAdapter(FeatureTypeColumnAdapter.class)
     public abstract FeatureType featureType();
 
     @Nullable
@@ -158,7 +158,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DbPeriodTypeColumnAdapter.class)
+    @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType periodType();
 
     @Nullable

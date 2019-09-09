@@ -39,7 +39,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 
 import java.util.Date;
 
@@ -104,6 +104,15 @@ public abstract class DataSetCompleteRegistration extends BaseDataModel {
 
         public abstract Builder storedBy(@Nullable String storedBy);
 
-        public abstract DataSetCompleteRegistration build();
+        abstract DataSetCompleteRegistration autoBuild();
+
+        // Auxiliary fields to access values
+        abstract Boolean deleted();
+        public DataSetCompleteRegistration build() {
+            if (deleted() == null) {
+                deleted(false);
+            }
+            return autoBuild();
+        }
     }
 }

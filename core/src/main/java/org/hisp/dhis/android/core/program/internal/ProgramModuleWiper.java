@@ -41,8 +41,8 @@ import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo;
 import org.hisp.dhis.android.core.program.ProgramStageTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.internal.TableWiper;
 
 import javax.inject.Inject;
 

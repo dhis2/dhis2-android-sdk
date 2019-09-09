@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSetElement;
 
 import dagger.Module;

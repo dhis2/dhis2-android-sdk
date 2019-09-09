@@ -61,7 +61,8 @@ public class EventStoreIntegrationShould extends IdentifiableDataObjectStoreAbst
     @Override
     protected Event buildObjectWithToDeleteState() {
         return EventSamples.get().toBuilder()
-                .state(State.TO_DELETE)
+                .state(State.TO_UPDATE)
+                .deleted(true)
                 .build();
     }
 

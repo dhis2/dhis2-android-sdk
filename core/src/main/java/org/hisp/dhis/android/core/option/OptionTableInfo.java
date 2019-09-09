@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
 
 public final class OptionTableInfo {
 
@@ -55,7 +55,7 @@ public final class OptionTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     OptionFields.SORT_ORDER,
                     OptionFields.OPTION_SET
             );

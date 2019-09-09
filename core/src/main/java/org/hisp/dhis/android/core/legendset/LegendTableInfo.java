@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.legendset;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.legendset.internal.LegendFields.COLOR;
 import static org.hisp.dhis.android.core.legendset.internal.LegendFields.END_VALUE;
@@ -60,7 +60,7 @@ public final class LegendTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     START_VALUE, END_VALUE, COLOR, LEGEND_SET
             );
         }

@@ -58,6 +58,7 @@ public class EventShould extends BaseObjectShould implements ObjectShould {
         assertThat(event.enrollment()).isEqualTo("RiLEKhWHlxZ");
         assertThat(event.geometry().type()).isEqualTo(FeatureType.POINT);
         assertThat(event.geometry().coordinates()).isEqualTo("[0.0, 0.0]");
+        assertThat(event.deleted()).isFalse();
 
         assertThat(event.created()).isEqualTo(
                 BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-08T21:40:22.000"));

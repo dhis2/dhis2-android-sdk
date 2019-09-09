@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.arch.db.querybuilders.internal;
 
 import android.content.ContentValues;
 
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem;
-import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +55,7 @@ public final class OrderByClauseBuilder {
                     .build()
                     .toSQLString());
         }
-        return Utils.commaAndSpaceSeparatedCollectionValues(stringList);
+        return CollectionsHelper.commaAndSpaceSeparatedCollectionValues(stringList);
     }
 
     @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})

@@ -41,7 +41,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueFields;
 
 import java.util.Date;
@@ -96,10 +96,6 @@ public abstract class DataValue extends BaseDataModel {
     @JsonProperty(DataValueFields.FOLLOW_UP)
     public abstract Boolean followUp();
 
-    @Nullable
-    @JsonProperty
-    public abstract Boolean deleted();
-
     @NonNull
     public static DataValue create(Cursor cursor) {
         return AutoValue_DataValue.createFromCursor(cursor);
@@ -144,8 +140,16 @@ public abstract class DataValue extends BaseDataModel {
         @JsonProperty(DataValueFields.FOLLOW_UP)
         public abstract DataValue.Builder followUp(@NonNull Boolean followUp);
 
-        public abstract DataValue.Builder deleted(@NonNull Boolean deleted);
+        abstract DataValue autoBuild();
 
-        public abstract DataValue build();
+        // Auxiliary fields
+        abstract Boolean deleted();
+
+        public DataValue build() {
+            if (deleted() == null) {
+                deleted(false);
+            }
+            return autoBuild();
+        }
     }
 }

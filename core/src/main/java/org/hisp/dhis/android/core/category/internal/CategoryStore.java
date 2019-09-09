@@ -30,13 +30,13 @@ package org.hisp.dhis.android.core.category.internal;
 
 import android.database.sqlite.SQLiteStatement;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryTableInfo;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import androidx.annotation.NonNull;
 

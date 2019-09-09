@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeComplexFilterItem;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
-import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -88,7 +88,7 @@ abstract class AbstractFilterConnector<R extends BaseRepository, V> {
         for (V v: values) {
             wrappedValues.add(wrapValue(v));
         }
-        return Utils.commaAndSpaceSeparatedCollectionValues(wrappedValues);
+        return CollectionsHelper.commaAndSpaceSeparatedCollectionValues(wrappedValues);
     }
 
     R newWithUnwrappedScope(String operator, String value) {

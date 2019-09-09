@@ -32,9 +32,9 @@ import android.content.Context;
 
 import com.facebook.stetho.Stetho;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
+import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
 
 import androidx.test.InstrumentationRegistry;
 

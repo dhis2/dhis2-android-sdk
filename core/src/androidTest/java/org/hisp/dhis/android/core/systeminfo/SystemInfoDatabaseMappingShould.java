@@ -31,10 +31,10 @@ package org.hisp.dhis.android.core.systeminfo;
 import android.content.ContentValues;
 import android.database.MatrixCursor;
 
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoTableInfo.Columns;
-import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -54,7 +54,7 @@ public class SystemInfoDatabaseMappingShould {
 
     @Test
     public void map_cursor_to_object() {
-        String[] columnsWithId = Utils.appendInNewArray(SystemInfoTableInfo.TABLE_INFO.columns().all(),
+        String[] columnsWithId = CollectionsHelper.appendInNewArray(SystemInfoTableInfo.TABLE_INFO.columns().all(),
                 SystemInfoTableInfo.Columns.ID);
         MatrixCursor cursor = new MatrixCursor(columnsWithId);
 

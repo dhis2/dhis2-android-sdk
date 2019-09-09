@@ -231,6 +231,16 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     }
 
     @Test
+    public void filter_by_deleted() {
+        List<Event> events =
+                d2.eventModule().events
+                        .byDeleted().isFalse()
+                        .blockingGet();
+
+        assertThat(events.size(), is(4));
+    }
+
+    @Test
     public void filter_by_tracked_entity_instance() {
         List<Event> events =
                 d2.eventModule().events

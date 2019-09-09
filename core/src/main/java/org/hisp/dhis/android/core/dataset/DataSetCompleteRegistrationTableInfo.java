@@ -29,10 +29,10 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationFields;
-import org.hisp.dhis.android.core.utils.Utils;
 
 public final class DataSetCompleteRegistrationTableInfo {
 
@@ -62,14 +62,15 @@ public final class DataSetCompleteRegistrationTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     PERIOD,
                     DATA_SET,
                     ORGANISATION_UNIT,
                     ATTRIBUTE_OPTION_COMBO,
                     DATE,
                     STORED_BY,
-                    STATE);
+                    STATE,
+                    DELETED);
         }
 
         @Override

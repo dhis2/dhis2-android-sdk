@@ -29,10 +29,10 @@
 package org.hisp.dhis.android.core.constant;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.constant.internal.ConstantFields;
-import org.hisp.dhis.android.core.utils.Utils;
 
 public final class ConstantTableInfo {
 
@@ -55,7 +55,7 @@ public final class ConstantTableInfo {
     static class Columns extends BaseIdentifiableObjectModel.Columns {
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     ConstantFields.VALUE
             );
         }

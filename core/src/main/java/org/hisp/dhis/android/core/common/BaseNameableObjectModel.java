@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.common;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 
 import androidx.annotation.Nullable;
 
@@ -44,7 +44,7 @@ public abstract class BaseNameableObjectModel extends BaseIdentifiableObjectMode
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION);
         }
     }

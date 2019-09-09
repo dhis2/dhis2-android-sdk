@@ -27,15 +27,15 @@
  */
 package org.hisp.dhis.android.core.relationship.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl;
 
 import javax.inject.Inject;
 

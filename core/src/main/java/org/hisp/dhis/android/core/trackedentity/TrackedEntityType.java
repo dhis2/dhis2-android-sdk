@@ -38,12 +38,12 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.FeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
-import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityTypeAttributeListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityTypeAttributeListColumnAdapter;
 
 import java.util.List;
 
@@ -59,7 +59,7 @@ public abstract class TrackedEntityType extends BaseNameableObject implements Mo
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DbFeatureTypeColumnAdapter.class)
+    @ColumnAdapter(FeatureTypeColumnAdapter.class)
     public abstract FeatureType featureType();
 
     public static Builder builder() {

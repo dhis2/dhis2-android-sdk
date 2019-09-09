@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.user.internal;
 
 import android.database.sqlite.SQLiteStatement;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStoreImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo;

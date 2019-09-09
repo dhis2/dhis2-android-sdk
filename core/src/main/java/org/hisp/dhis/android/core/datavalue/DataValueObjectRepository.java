@@ -98,7 +98,7 @@ public final class DataValueObjectRepository
         if (dataValue.state() == State.TO_POST) {
             super.delete(dataValue);
         } else {
-            setObject(dataValue.toBuilder().state(State.TO_DELETE).build());
+            setObject(dataValue.toBuilder().deleted(true).state(State.TO_UPDATE).build());
         }
     }
 

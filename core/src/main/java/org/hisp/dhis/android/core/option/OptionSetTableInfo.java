@@ -29,10 +29,10 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.option.internal.OptionSetFields;
-import org.hisp.dhis.android.core.utils.Utils;
 
 public final class OptionSetTableInfo {
 
@@ -56,7 +56,7 @@ public final class OptionSetTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     OptionSetFields.VERSION,
                     OptionSetFields.VALUE_TYPE
             );

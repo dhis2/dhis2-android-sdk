@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.relationship.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
@@ -174,27 +175,27 @@ public class RelationshipHandlerShould extends RelationshipSamples {
     @Test()
     public void update_relationship_handler_store_for_existing_relationship() {
         relationshipHandler.handle(existingRelationship);
-        verify(relationshipItemHandler).handle(fromItem.toBuilder().relationship(existingRelationship)
+        verify(relationshipItemHandler).handle(fromItem.toBuilder().relationship(ObjectWithUid.create(existingRelationship.uid()))
                 .relationshipItemType(RelationshipConstraintType.FROM).build());
-        verify(relationshipItemHandler).handle(toItem.toBuilder().relationship(existingRelationship)
+        verify(relationshipItemHandler).handle(toItem.toBuilder().relationship(ObjectWithUid.create(existingRelationship.uid()))
                 .relationshipItemType(RelationshipConstraintType.TO).build());
     }
 
     @Test()
     public void update_relationship_item_handler_for_existing_relationship_with_new_uid() {
         relationshipHandler.handle(existingRelationshipWithNewUid);
-        verify(relationshipItemHandler).handle(fromItem.toBuilder().relationship(existingRelationshipWithNewUid)
+        verify(relationshipItemHandler).handle(fromItem.toBuilder().relationship(ObjectWithUid.create(existingRelationshipWithNewUid.uid()))
                 .relationshipItemType(RelationshipConstraintType.FROM).build());
-        verify(relationshipItemHandler).handle(toItem.toBuilder().relationship(existingRelationshipWithNewUid)
+        verify(relationshipItemHandler).handle(toItem.toBuilder().relationship(ObjectWithUid.create(existingRelationshipWithNewUid.uid()))
                 .relationshipItemType(RelationshipConstraintType.TO).build());
     }
 
     @Test()
     public void update_relationship_item_handler_for_new_relationship() {
         relationshipHandler.handle(newRelationship);
-        verify(relationshipItemHandler).handle(tei3Item.toBuilder().relationship(newRelationship)
+        verify(relationshipItemHandler).handle(tei3Item.toBuilder().relationship(ObjectWithUid.create(newRelationship.uid()))
                 .relationshipItemType(RelationshipConstraintType.FROM).build());
-        verify(relationshipItemHandler).handle(tei4Item.toBuilder().relationship(newRelationship)
+        verify(relationshipItemHandler).handle(tei4Item.toBuilder().relationship(ObjectWithUid.create(newRelationship.uid()))
                 .relationshipItemType(RelationshipConstraintType.TO).build());
     }
 }

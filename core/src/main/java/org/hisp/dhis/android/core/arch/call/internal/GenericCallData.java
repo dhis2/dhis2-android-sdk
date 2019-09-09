@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.call.internal;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;

@@ -1,12 +1,12 @@
 package org.hisp.dhis.android.core.sms.domain.interactor;
 
-import org.hisp.dhis.android.core.sms.domain.converter.DatasetConverter;
-import org.hisp.dhis.android.core.sms.domain.converter.DeletionConverter;
-import org.hisp.dhis.android.core.sms.domain.converter.EnrollmentConverter;
-import org.hisp.dhis.android.core.sms.domain.converter.RelationshipConverter;
-import org.hisp.dhis.android.core.sms.domain.converter.SimpleEventConverter;
-import org.hisp.dhis.android.core.sms.domain.converter.TrackerEventConverter;
-import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
+import org.hisp.dhis.android.core.sms.domain.converter.internal.DatasetConverter;
+import org.hisp.dhis.android.core.sms.domain.converter.internal.DeletionConverter;
+import org.hisp.dhis.android.core.sms.domain.converter.internal.EnrollmentConverter;
+import org.hisp.dhis.android.core.sms.domain.converter.internal.RelationshipConverter;
+import org.hisp.dhis.android.core.sms.domain.converter.internal.SimpleEventConverter;
+import org.hisp.dhis.android.core.sms.domain.converter.internal.TrackerEventConverter;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
 
 import io.reactivex.Single;
 

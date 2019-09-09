@@ -34,11 +34,11 @@ import android.database.sqlite.SQLiteDatabase;
 import com.facebook.stetho.Stetho;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2DIComponent;
+import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
+import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.junit.After;
 import org.junit.Before;

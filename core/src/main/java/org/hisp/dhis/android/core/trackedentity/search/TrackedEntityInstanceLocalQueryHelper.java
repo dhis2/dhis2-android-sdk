@@ -31,20 +31,20 @@ package org.hisp.dhis.android.core.trackedentity.search;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 
 import java.util.List;
 
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
 import static org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields.PARENT;
 import static org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields.PATH;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueFields.VALUE;
+import static org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueFields.VALUE;
 
 final class TrackedEntityInstanceLocalQueryHelper {
 
@@ -115,8 +115,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
 
         queryStr += " ORDER BY CASE " +
                 "WHEN " + TEI_STATE + " IN ('" + State.TO_POST + "','" + State.TO_UPDATE + "') THEN 1 " +
-                "WHEN " + TEI_STATE + " = '" + State.TO_DELETE + "' THEN 2 " +
-                "WHEN " + TEI_STATE + " = '" + State.SYNCED + "' THEN 3 ELSE 4 END ASC, " +
+                "WHEN " + TEI_STATE + " = '" + State.SYNCED + "' THEN 2 ELSE 3 END ASC, " +
                 TEI_LAST_UPDATED + " DESC ";
 
         if (limit > 0) {

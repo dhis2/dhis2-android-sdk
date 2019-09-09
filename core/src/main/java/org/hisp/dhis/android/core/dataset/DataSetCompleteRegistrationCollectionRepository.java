@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
@@ -113,5 +114,9 @@ public final class DataSetCompleteRegistrationCollectionRepository
 
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byStoredBy() {
         return cf.string(DataSetCompleteRegistrationFields.STORED_BY);
+    }
+
+    public BooleanFilterConnector<DataSetCompleteRegistrationCollectionRepository> byDeleted() {
+        return cf.bool(DataSetCompleteRegistrationTableInfo.Columns.DELETED);
     }
 }

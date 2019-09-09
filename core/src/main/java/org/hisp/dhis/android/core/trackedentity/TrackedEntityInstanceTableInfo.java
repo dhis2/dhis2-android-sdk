@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 
 public final class TrackedEntityInstanceTableInfo {
 
@@ -51,27 +51,31 @@ public final class TrackedEntityInstanceTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
-        static final String UID = "uid";
-        static final String CREATED_AT_CLIENT = "createdAtClient";
-        static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
-        static final String ORGANISATION_UNIT = "organisationUnit";
-        static final String GEOMETRY_TYPE = "geometryType";
-        static final String GEOMETRY_COORDINATES = "geometryCoordinates";
+    public static class Columns extends BaseDataModel.Columns {
+        public static final String UID = "uid";
+        public static final String CREATED = TrackedEntityInstanceFields.CREATED;
+        public static final String LAST_UPDATED = TrackedEntityInstanceFields.LAST_UPDATED;
+        public static final String CREATED_AT_CLIENT = "createdAtClient";
+        public static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
+        public static final String ORGANISATION_UNIT = "organisationUnit";
+        public static final String TRACKED_ENTITY_TYPE = TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE;
+        public static final String GEOMETRY_TYPE = "geometryType";
+        public static final String GEOMETRY_COORDINATES = "geometryCoordinates";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     UID,
-                    TrackedEntityInstanceFields.CREATED,
-                    TrackedEntityInstanceFields.LAST_UPDATED,
+                    CREATED,
+                    LAST_UPDATED,
                     CREATED_AT_CLIENT,
                     LAST_UPDATED_AT_CLIENT,
                     ORGANISATION_UNIT,
-                    TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE,
+                    TRACKED_ENTITY_TYPE,
                     GEOMETRY_TYPE,
                     GEOMETRY_COORDINATES,
-                    BaseDataModel.Columns.STATE
+                    STATE,
+                    DELETED
             );
         }
 

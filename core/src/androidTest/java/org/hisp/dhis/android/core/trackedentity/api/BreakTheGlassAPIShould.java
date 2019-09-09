@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.trackedentity.api;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
+import org.hisp.dhis.android.core.arch.helpers.CodeGenerator;
+import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
@@ -41,10 +43,8 @@ import org.hisp.dhis.android.core.imports.internal.TEIImportSummary;
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstancePayload;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
-import org.hisp.dhis.android.core.utils.CodeGenerator;
-import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePayload;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
@@ -270,8 +270,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
     }
 
     private TrackedEntityInstancePayload wrapPayload(TrackedEntityInstance ...instances) {
-        TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
-        payload.trackedEntityInstances = Arrays.asList(instances);
+        TrackedEntityInstancePayload payload = TrackedEntityInstancePayload.create(Arrays.asList(instances));
         return payload;
     }
 

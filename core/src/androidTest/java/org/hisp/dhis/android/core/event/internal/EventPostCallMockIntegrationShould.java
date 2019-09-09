@@ -39,8 +39,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.After;
@@ -113,11 +113,11 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
     }
 
     @Test
-    public void handle_event_deletions() {
+    public void handle_event_deletions()throws D2Error {
         storeEvents();
         assertThat(d2.eventModule().events.blockingCount()).isEqualTo(4);
 
-        eventStore.setState("event1Id", State.TO_DELETE);
+        d2.eventModule().events.uid("event1Id").blockingDelete();
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts2.json");
 
@@ -135,18 +135,36 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
 
         Program program = d2.programModule().programs.one().blockingGet();
 
-        storeSingleEvent(event1, program, State.TO_POST);
-        storeSingleEvent(event2, program, State.TO_UPDATE);
-        storeSingleEvent(event3, program, State.TO_DELETE);
-        storeSingleEvent(event4, program, State.SYNCED);
+        storeSingleEvent(event1, program, State.TO_POST, false);
+        storeSingleEvent(event2, program, State.TO_UPDATE, false);
+        storeSingleEvent(event3, program, State.TO_UPDATE, true);
+        storeSingleEvent(event4, program, State.SYNCED, false);
 
         List<Event> events = eventPostCall.queryDataToSync(
                 d2.eventModule().events.byProgramUid().eq(program.uid())
-                .byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).blockingGet());
+                .byState().in(State.TO_POST, State.TO_UPDATE).blockingGet());
 
         assertThat(events.size()).isEqualTo(3);
         assertThat(UidsHelper.getUidsList(events).containsAll(Lists.newArrayList(event1, event2, event3)))
                 .isEqualTo(true);
+    }
+
+    @Test
+    public void mark_payload_as_uploading() {
+        storeEvents();
+
+        // Ignore result. Just interested in check that target events are marked as UPLOADING
+        List<Event> events = eventPostCall.queryDataToSync(null);
+
+        List<Event> dbEvents = d2.eventModule().events.blockingGet();
+
+        for (Event event : dbEvents) {
+            if ("event1Id".equals(event.uid()) || "event2Id".equals(event.uid()) || "event3Id".equals(event.uid())) {
+                assertThat(event.state()).isEqualTo(State.UPLOADING);
+            } else {
+                assertThat(event.state()).isNotEqualTo(State.UPLOADING);
+            }
+        }
     }
 
     private void storeEvents() {
@@ -217,7 +235,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
         assertThat(d2.eventModule().events.blockingCount()).isEqualTo(4);
     }
 
-    private void storeSingleEvent(String eventUid, Program program, State state) {
+    private void storeSingleEvent(String eventUid, Program program, State state, Boolean deleted) {
         OrganisationUnit orgUnit = d2.organisationUnitModule().organisationUnits.one().blockingGet();
         ProgramStage programStage = d2.programModule().programStages.one().blockingGet();
 
@@ -228,7 +246,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
                         .program(program.uid())
                         .programStage(programStage.uid())
                         .state(state)
-                        .deleted(false)
+                        .deleted(deleted)
                         .build());
     }
 }

@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core;
 
 import android.content.Context;
 
+import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
+import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
 import org.hisp.dhis.android.core.configuration.Configuration;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

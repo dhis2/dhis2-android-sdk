@@ -33,7 +33,7 @@ import android.util.Log;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 

@@ -3,10 +3,10 @@ package org.hisp.dhis.android.core.sms;
 import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase;
 import org.hisp.dhis.android.core.sms.domain.interactor.QrCodeCase;
 import org.hisp.dhis.android.core.sms.domain.interactor.SmsSubmitCase;
-import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;
-import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.DeviceStateRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
 
 import javax.inject.Inject;
 

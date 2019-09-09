@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
 
 import androidx.annotation.VisibleForTesting;
 
@@ -61,14 +61,14 @@ public final class DataSetDataElementLinkTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     DATA_SET, DATA_ELEMENT, CATEGORY_COMBO
             );
         }
 
         @Override
         public String[] whereUpdate() {
-            return Utils.appendInNewArray(super.all(), DATA_SET, DATA_ELEMENT);
+            return CollectionsHelper.appendInNewArray(super.all(), DATA_SET, DATA_ELEMENT);
         }
     }
 }

@@ -37,15 +37,15 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.OrganisationUnitWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataSetListAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitGroupListAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitListAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramListAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreDataSetListAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreOrganisationUnitGroupListAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreOrganisationUnitListAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreProgramListAdapter;
-import org.hisp.dhis.android.core.data.database.OrganisationUnitWithUidColumnAdapter;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.program.Program;
 

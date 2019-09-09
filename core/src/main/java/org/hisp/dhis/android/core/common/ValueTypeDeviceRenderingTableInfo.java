@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 
 public final class ValueTypeDeviceRenderingTableInfo {
 
@@ -60,7 +60,7 @@ public final class ValueTypeDeviceRenderingTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     BaseIdentifiableObjectModel.Columns.UID,
                     OBJECT_TABLE,
                     DEVICE_TYPE,
@@ -74,7 +74,7 @@ public final class ValueTypeDeviceRenderingTableInfo {
 
         @Override
         public String[] whereUpdate() {
-            return Utils.appendInNewArray(super.whereUpdate(),
+            return CollectionsHelper.appendInNewArray(super.whereUpdate(),
                     BaseIdentifiableObjectModel.Columns.UID,
                     DEVICE_TYPE
             );

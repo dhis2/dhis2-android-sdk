@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.arch.db.statementwrapper.internal;
 
 import android.database.sqlite.SQLiteStatement;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class SQLStatementWrapper {
     public final SQLiteStatement insert;

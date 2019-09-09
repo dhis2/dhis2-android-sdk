@@ -35,11 +35,11 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_Relationship.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_Relationship.Builder.class)
 public abstract class Relationship extends BaseRelationship {
 
     public static Builder builder() {
-        return new AutoValue_Relationship.Builder();
+        return new $$AutoValue_Relationship.Builder();
     }
 
     public static Relationship create(Cursor cursor) {

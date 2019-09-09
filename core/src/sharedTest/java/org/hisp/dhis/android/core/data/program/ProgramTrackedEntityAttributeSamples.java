@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.data.program;
 
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
 
@@ -42,7 +41,7 @@ public class ProgramTrackedEntityAttributeSamples {
         return builder
                 .id(1L)
                 .mandatory(Boolean.TRUE)
-                .trackedEntityAttribute(TrackedEntityAttribute.builder().uid("tracked_entity_attribute").build())
+                .trackedEntityAttribute(ObjectWithUid.create("tracked_entity_attribute"))
                 .allowFutureDate(Boolean.FALSE)
                 .displayInList(Boolean.FALSE)
                 .program(ObjectWithUid.create("program"))

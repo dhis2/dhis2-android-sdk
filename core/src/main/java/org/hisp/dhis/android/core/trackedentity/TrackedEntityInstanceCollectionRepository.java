@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
@@ -45,6 +46,9 @@ import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostCall;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
 import java.util.List;
 import java.util.Map;
@@ -80,7 +84,7 @@ public final class TrackedEntityInstanceCollectionRepository
     @Override
     public Observable<D2Progress> upload() {
         return Observable.fromCallable(() ->
-                byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).getWithoutChildren()
+                byState().in(State.TO_POST, State.TO_UPDATE).getWithoutChildren()
         ).flatMap(postCall::uploadTrackedEntityInstances);
     }
 
@@ -128,6 +132,10 @@ public final class TrackedEntityInstanceCollectionRepository
 
     public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> byState() {
         return cf.enumC(BaseDataModel.Columns.STATE);
+    }
+
+    public BooleanFilterConnector<TrackedEntityInstanceCollectionRepository> byDeleted() {
+        return cf.bool(TrackedEntityInstanceTableInfo.Columns.DELETED);
     }
 
     public TrackedEntityInstanceCollectionRepository byProgramUids(List<String> programUids) {

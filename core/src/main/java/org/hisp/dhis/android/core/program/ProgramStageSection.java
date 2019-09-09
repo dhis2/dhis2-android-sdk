@@ -37,13 +37,13 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.ProgramStageSectionRenderingColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataElementListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramIndicatorListAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.IgnoreDataElementListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreProgramIndicatorListAdapter;
-import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.data.database.ProgramStageSectionRenderingColumnAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
 import java.util.List;
@@ -51,7 +51,7 @@ import java.util.List;
 import androidx.annotation.Nullable;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramStageSection.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_ProgramStageSection.Builder.class)
 public abstract class ProgramStageSection extends BaseIdentifiableObject implements Model {
 
     @Nullable

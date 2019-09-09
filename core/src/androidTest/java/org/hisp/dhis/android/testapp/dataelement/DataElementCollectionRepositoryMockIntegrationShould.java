@@ -47,7 +47,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
     public void find_all() {
         List<DataElement> dataElements = d2.dataElementModule().dataElements
                 .blockingGet();
-        assertThat(dataElements.size(), is(5));
+        assertThat(dataElements.size(), is(10));
     }
 
     @Test
@@ -55,7 +55,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
         List<DataElement> dataElements = d2.dataElementModule().dataElements
                 .byValueType().eq(ValueType.TEXT)
                 .blockingGet();
-        assertThat(dataElements.size(), is(1));
+        assertThat(dataElements.size(), is(2));
     }
 
     @Test
@@ -63,7 +63,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
         List<DataElement> dataElements = d2.dataElementModule().dataElements
                 .byZeroIsSignificant().isFalse()
                 .blockingGet();
-        assertThat(dataElements.size(), is(3));
+        assertThat(dataElements.size(), is(8));
     }
 
     @Test
@@ -71,7 +71,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
         List<DataElement> dataElements = d2.dataElementModule().dataElements
                 .byAggregationType().eq("AVERAGE")
                 .blockingGet();
-        assertThat(dataElements.size(), is(1));
+        assertThat(dataElements.size(), is(2));
     }
 
     @Test
@@ -79,7 +79,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
         List<DataElement> dataElements = d2.dataElementModule().dataElements
                 .byFormName().eq("ANC Visit")
                 .blockingGet();
-        assertThat(dataElements.size(), is(1));
+        assertThat(dataElements.size(), is(2));
     }
 
     @Test
@@ -87,7 +87,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
         List<DataElement> dataElements = d2.dataElementModule().dataElements
                 .byDomainType().eq("TRACKER")
                 .blockingGet();
-        assertThat(dataElements.size(), is(5));
+        assertThat(dataElements.size(), is(10));
     }
 
     @Test
@@ -95,7 +95,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
         List<DataElement> dataElements = d2.dataElementModule().dataElements
                 .byDisplayFormName().eq("ANC Visit")
                 .blockingGet();
-        assertThat(dataElements.size(), is(1));
+        assertThat(dataElements.size(), is(2));
     }
 
     @Test
@@ -111,7 +111,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
         List<DataElement> dataElements = d2.dataElementModule().dataElements
                 .byCategoryComboUid().eq("m2jTvAj5kkm")
                 .blockingGet();
-        assertThat(dataElements.size(), is(1));
+        assertThat(dataElements.size(), is(6));
     }
 
     @Test

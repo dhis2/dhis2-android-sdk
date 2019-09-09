@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.utils;
 
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
@@ -44,21 +45,21 @@ public class ColumnsArrayUtils {
     }
 
     public static Object[] getIdentifiableModelAsObjectArray(BaseIdentifiableObjectModel m) {
-        return Utils.appendInNewArray(getModelAsObjectArray(m),
+        return CollectionsHelper.appendInNewArray(getModelAsObjectArray(m),
                 m.uid(), m.code(), m.name(), m.displayName(),
                 m.createdStr(), m.lastUpdatedStr()
         );
     }
 
     public static Object[] getNameableModelAsObjectArray(BaseNameableObjectModel m) {
-        return Utils.appendInNewArray(getIdentifiableModelAsObjectArray(m),
+        return CollectionsHelper.appendInNewArray(getIdentifiableModelAsObjectArray(m),
                 m.shortName(), m.displayShortName(),
                 m.description(), m.displayDescription()
         );
     }
 
     public static String[] getColumnsWithId(String[] columns) {
-        return Utils.appendInNewArray(new String[] {BaseModel.Columns.ID},
+        return CollectionsHelper.appendInNewArray(new String[] {BaseModel.Columns.ID},
                 columns
         );
     }

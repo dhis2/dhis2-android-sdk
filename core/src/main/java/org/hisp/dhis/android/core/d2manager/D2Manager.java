@@ -31,13 +31,13 @@ package org.hisp.dhis.android.core.d2manager;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
+import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
 import org.hisp.dhis.android.core.configuration.Configuration;
 import org.hisp.dhis.android.core.configuration.ConfigurationManager;
 import org.hisp.dhis.android.core.configuration.ConfigurationManagerFactory;
 import org.hisp.dhis.android.core.configuration.ServerUrlParser;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
 
 import androidx.annotation.VisibleForTesting;
 import io.reactivex.Completable;

@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkTransformer;
@@ -48,9 +47,8 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -60,9 +58,6 @@ public class ProgramStageSectionHandlerShould {
 
     @Mock
     private IdentifiableObjectStore<ProgramStageSection> programStageSectionStore;
-
-    @Mock
-    private Handler<ProgramIndicator> programIndicatorHandler;
 
     @Mock
     private LinkHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLink>
@@ -91,7 +86,7 @@ public class ProgramStageSectionHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         programStageSectionHandler = new ProgramStageSectionHandler(
-                programStageSectionStore, programIndicatorHandler,
+                programStageSectionStore,
                 programStageSectionProgramIndicatorLinkHandler, programStageSectionDataElementLinkHandler);
 
         when(programStageSection.uid()).thenReturn(PROGRAM_STAGE_SECTION_UID);
@@ -106,22 +101,16 @@ public class ProgramStageSectionHandlerShould {
     }
 
     @Test
-    public void handle_program_indicators() {
-        programStageSectionHandler.handle(programStageSection);
-        verify(programIndicatorHandler).handleMany(eq(programIndicators));
-    }
-
-    @Test
     public void handle_program_stage_section_data_element_links() {
         programStageSectionHandler.handle(programStageSection);
         verify(programStageSectionDataElementLinkHandler).handleMany(any(String.class),
-                anyListOf(DataElement.class), any(OrderedLinkTransformer.class));
+                anyList(), any(OrderedLinkTransformer.class));
     }
 
     @Test
     public void handle_program_stage_section_program_indicator_links() {
         programStageSectionHandler.handle(programStageSection);
         verify(programStageSectionProgramIndicatorLinkHandler).handleMany(any(String.class),
-                anyListOf(ProgramIndicator.class), any(Transformer.class));
+                anyList(), any(Transformer.class));
     }
 }

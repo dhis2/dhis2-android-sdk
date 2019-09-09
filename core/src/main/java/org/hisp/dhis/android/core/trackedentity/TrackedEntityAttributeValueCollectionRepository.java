@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueFields;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore;
 
 import java.util.Map;
 

@@ -29,10 +29,10 @@
 package org.hisp.dhis.android.core.indicator;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeFields;
-import org.hisp.dhis.android.core.utils.Utils;
 
 public final class IndicatorTypeTableInfo {
 
@@ -56,7 +56,7 @@ public final class IndicatorTypeTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     IndicatorTypeFields.NUMBER,
                     IndicatorTypeFields.FACTOR
             );

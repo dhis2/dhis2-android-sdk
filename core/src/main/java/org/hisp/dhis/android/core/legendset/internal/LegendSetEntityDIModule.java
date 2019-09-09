@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.legendset.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.legendset.Legend;
 import org.hisp.dhis.android.core.legendset.LegendSet;
 import org.hisp.dhis.android.core.legendset.LegendTableInfo;

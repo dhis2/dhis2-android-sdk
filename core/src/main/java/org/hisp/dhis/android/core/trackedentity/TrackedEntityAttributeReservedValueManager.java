@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
@@ -36,6 +34,7 @@ import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.helpers.internal.BooleanWrapper;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -47,8 +46,10 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTa
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeFields;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueQuery;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStoreInterface;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
-import org.hisp.dhis.android.core.utils.internal.BooleanWrapper;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,12 +57,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
 @Reusable
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class TrackedEntityAttributeReservedValueManager {
 
     private static final Integer MIN_TO_TRY_FILL = 50;

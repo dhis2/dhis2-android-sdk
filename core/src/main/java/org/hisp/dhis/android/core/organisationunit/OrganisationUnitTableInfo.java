@@ -29,10 +29,10 @@
 package org.hisp.dhis.android.core.organisationunit;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields;
-import org.hisp.dhis.android.core.utils.Utils;
 
 public final class OrganisationUnitTableInfo {
 
@@ -58,7 +58,7 @@ public final class OrganisationUnitTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     OrganisationUnitFields.PATH,
                     OrganisationUnitFields.OPENING_DATE,
                     OrganisationUnitFields.CLOSED_DATE,

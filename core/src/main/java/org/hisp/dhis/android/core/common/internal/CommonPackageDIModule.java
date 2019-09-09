@@ -29,10 +29,10 @@
 package org.hisp.dhis.android.core.common.internal;
 
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleEntityDIModule;
 import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingEntityDIModule;
 import org.hisp.dhis.android.core.common.valuetype.rendering.internal.ValueTypeRenderingEntityDIModule;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
@@ -55,5 +55,11 @@ public class CommonPackageDIModule {
                                     ResourceHandler resourceHandler,
                                     DHISVersionManager versionManager) {
         return GenericCallData.create(databaseAdapter, retrofit, resourceHandler, versionManager);
+    }
+
+    @Provides
+    @Reusable
+    public DataStatePropagator dataStatePropagator(DataStatePropagatorImpl impl) {
+        return impl;
     }
 }

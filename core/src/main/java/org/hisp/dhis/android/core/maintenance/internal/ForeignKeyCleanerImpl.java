@@ -31,11 +31,11 @@ package org.hisp.dhis.android.core.maintenance.internal;
 import android.database.Cursor;
 import android.util.Log;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
-import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -165,7 +165,7 @@ public final class ForeignKeyCleanerImpl implements ForeignKeyCleaner {
                         .fromColumn(fromColumn)
                         .toColumn(listCursor.getString(4))
                         .notFoundValue(getColumnValueAsString(objectCursor, fromColumn))
-                        .fromObjectRow(Utils.commaAndSpaceSeparatedArrayValues(
+                        .fromObjectRow(CollectionsHelper.commaAndSpaceSeparatedArrayValues(
                                 columnAndValues.toArray(new String[objectCursor.getColumnCount()])))
                         .fromObjectUid(uid)
                         .created(new Date())

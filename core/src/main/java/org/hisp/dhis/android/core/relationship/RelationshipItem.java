@@ -37,12 +37,13 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RelationshipItemEnrollmentColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RelationshipItemEventColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RelationshipItemTrackedEntityInstanceColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.RelationshipConstraintTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.data.database.DbRelationshipConstraintTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.RelationshipItemEnrollmentColumnAdapter;
-import org.hisp.dhis.android.core.data.database.RelationshipItemEventColumnAdapter;
-import org.hisp.dhis.android.core.data.database.RelationshipItemTrackedEntityInstanceColumnAdapter;
-import org.hisp.dhis.android.core.data.database.RelationshipWithUidColumnAdapter;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemFields;
 
 import androidx.annotation.Nullable;
@@ -53,12 +54,12 @@ public abstract class RelationshipItem implements Model {
 
     @Nullable
     @JsonIgnore()
-    @ColumnAdapter(RelationshipWithUidColumnAdapter.class)
-    public abstract Relationship relationship();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid relationship();
 
     @Nullable
     @JsonIgnore()
-    @ColumnAdapter(DbRelationshipConstraintTypeColumnAdapter.class)
+    @ColumnAdapter(RelationshipConstraintTypeColumnAdapter.class)
     public abstract RelationshipConstraintType relationshipItemType();
 
     @Nullable
@@ -130,7 +131,7 @@ public abstract class RelationshipItem implements Model {
 
         public abstract Builder event(RelationshipItemEvent event);
 
-        public abstract Builder relationship(Relationship relationship);
+        public abstract Builder relationship(ObjectWithUid relationship);
 
         public abstract Builder relationshipItemType(RelationshipConstraintType relationshipItemType);
 

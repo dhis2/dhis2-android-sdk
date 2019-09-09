@@ -33,12 +33,14 @@ import androidx.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -124,6 +126,8 @@ public final class EventPostCall {
             }
         }
 
+        markPartitionsAsUploading(eventRecreated);
+
         return eventRecreated;
     }
 
@@ -137,5 +141,10 @@ public final class EventPostCall {
                 null,
                 null
         );
+    }
+
+    private void markPartitionsAsUploading(List<Event> events) {
+        List<String> eventUids = UidsHelper.getUidsList(events);
+        eventStore.setState(eventUids, State.UPLOADING);
     }
 }

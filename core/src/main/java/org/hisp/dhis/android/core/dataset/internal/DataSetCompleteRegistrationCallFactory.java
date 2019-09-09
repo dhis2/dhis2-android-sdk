@@ -42,7 +42,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 import retrofit2.Call;
 
-import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionValues;
+import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues;
 
 @Reusable
 final class DataSetCompleteRegistrationCallFactory extends QueryCallFactoryImpl<DataSetCompleteRegistration,

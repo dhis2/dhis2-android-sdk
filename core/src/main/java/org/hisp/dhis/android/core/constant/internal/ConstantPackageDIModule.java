@@ -31,12 +31,12 @@ package org.hisp.dhis.android.core.constant.internal;
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.constant.ConstantTableInfo;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collections;
 import java.util.Map;

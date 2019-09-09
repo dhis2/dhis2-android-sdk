@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
 import java.util.Date;
 import java.util.Map;
@@ -74,7 +75,7 @@ public final class TrackedEntityInstanceObjectRepository
                     .build();
         }
         Date updateDate = new Date();
-        state = state == State.TO_POST || state == State.TO_DELETE ? state : State.TO_UPDATE;
+        state = state == State.TO_POST ? state : State.TO_UPDATE;
 
         return trackedEntityInstance.toBuilder()
                 .state(state)

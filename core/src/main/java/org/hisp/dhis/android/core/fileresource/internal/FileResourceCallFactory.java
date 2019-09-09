@@ -104,7 +104,7 @@ class FileResourceCallFactory {
                     trackedEntityAttributeValue.trackedEntityAttribute(),
                     Dimension.MEDIUM.name()));
 
-            FileResourceUtil.writeFileToDisk(responseBody, trackedEntityAttributeValue.value(), context);
+            FileResourceUtil.saveFileFromResponse(responseBody, trackedEntityAttributeValue.value(), context);
         }
     }
 }

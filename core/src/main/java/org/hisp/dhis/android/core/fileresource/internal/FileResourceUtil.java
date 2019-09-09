@@ -18,36 +18,6 @@ import okhttp3.ResponseBody;
 
 public final class FileResourceUtil {
 
-    public static File saveFile(File sourceFile, String fileResourceUid, Context context) throws IOException {
-        File destinationFile = null;
-        InputStream in = null;
-        OutputStream out = null;
-        try {
-            in = new FileInputStream(sourceFile);
-            destinationFile = new File(getFileResourceDirectory(context), fileResourceUid);
-            out = new FileOutputStream(destinationFile);
-
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (in != null) {
-                in.close();
-            }
-
-            if (out != null) {
-                out.close();
-            }
-        }
-
-        return destinationFile;
-    }
-
     static File getFile(Context context, String fileResourceUid) throws D2Error {
         File file = new File(getFileResourceDirectory(context), fileResourceUid);
 
@@ -79,42 +49,49 @@ public final class FileResourceUtil {
         }
     }
 
-    static void writeFileToDisk(ResponseBody body, String generatedFileName, Context context) {
+    public static File saveFile(File sourceFile, String fileResourceUid, Context context) throws IOException {
+        InputStream inputStream = new FileInputStream(sourceFile);
+
+        File destinationFile = new File(getFileResourceDirectory(context), fileResourceUid);
+
+        return writeInputStream(inputStream, destinationFile, sourceFile.length());
+    }
+
+    static void saveFileFromResponse(ResponseBody body, String generatedFileName, Context context) {
+        File destinationFile = new File(FileResourceUtil.getFileResourceDirectory(context), generatedFileName);
+
+        writeInputStream(body.byteStream(), destinationFile, body.contentLength());
+    }
+
+    private static File writeInputStream(InputStream inputStream, File file, long fileSize) {
+        OutputStream outputStream = null;
+
         try {
-            File file = new File(FileResourceUtil.getFileResourceDirectory(context), generatedFileName);
+            byte[] fileReader = new byte[1024];
+            long fileSizeDownloaded = 0;
+            outputStream = new FileOutputStream(file);
 
-            InputStream inputStream = null;
-            OutputStream outputStream = null;
+            while (true) {
+                int read = inputStream.read(fileReader);
 
-            try {
-                byte[] fileReader = new byte[1024];
-
-                long fileSize = body.contentLength();
-                long fileSizeDownloaded = 0;
-
-                inputStream = body.byteStream();
-                outputStream = new FileOutputStream(file);
-
-                while (true) {
-                    int read = inputStream.read(fileReader);
-
-                    if (read == -1) {
-                        break;
-                    }
-
-                    outputStream.write(fileReader, 0, read);
-
-                    fileSizeDownloaded += read;
-
-                    Log.d(FileResourceCallFactory.class.getCanonicalName(),
-                            "file download: " + fileSizeDownloaded + " of " + fileSize);
+                if (read == -1) {
+                    break;
                 }
 
-                outputStream.flush();
+                outputStream.write(fileReader, 0, read);
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
+                fileSizeDownloaded += read;
+
+                Log.d(FileResourceCallFactory.class.getCanonicalName(),
+                        "file download: " + fileSizeDownloaded + " of " + fileSize);
+            }
+
+            outputStream.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
                 if (inputStream != null) {
                     inputStream.close();
                 }
@@ -122,9 +99,11 @@ public final class FileResourceUtil {
                 if (outputStream != null) {
                     outputStream.close();
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
+        return file;
     }
 }

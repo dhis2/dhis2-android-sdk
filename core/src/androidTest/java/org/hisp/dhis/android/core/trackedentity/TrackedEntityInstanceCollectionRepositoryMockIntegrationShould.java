@@ -73,10 +73,15 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
     @Test
     public void include_tracked_entity_attribute_values_as_children() {
         TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances
-                .withTrackedEntityAttributeValues().uid("nWrB0TfWlvh").blockingGet();
-        assertThat(tei.trackedEntityAttributeValues().size(), is(1));
-        assertThat(tei.trackedEntityAttributeValues().get(0).trackedEntityAttribute(), is("lZGmxYbs97q"));
-        assertThat(tei.trackedEntityAttributeValues().get(0).value(), is("4081507"));
+                .withTrackedEntityAttributeValues().uid("nWrB0TfWlvD").blockingGet();
+
+        List<TrackedEntityAttributeValue> tea = d2.trackedEntityModule().trackedEntityAttributeValues.blockingGet();
+
+        assertThat(tei.trackedEntityAttributeValues().size(), is(2));
+
+
+        assertThat(tei.trackedEntityAttributeValues().get(0).trackedEntityAttribute(), is("aejWyOfXge6"));
+        assertThat(tei.trackedEntityAttributeValues().get(0).value(), is("123456"));
     }
 
     @Test

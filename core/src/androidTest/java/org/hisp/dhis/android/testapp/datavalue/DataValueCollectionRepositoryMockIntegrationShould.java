@@ -137,7 +137,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
         List<DataValue> dataValues =
                 d2.dataValueModule().dataValues
                         .byCreated()
-                        .eq(BaseIdentifiableObject.DATE_FORMAT.parse("2010-01-11T00:00:00.000+0000"))
+                        .eq(BaseIdentifiableObject.DATE_FORMAT.parse("2010-02-11T00:00:00.000+0100"))
                         .blockingGet();
 
         assertThat(dataValues.size(), is(1));

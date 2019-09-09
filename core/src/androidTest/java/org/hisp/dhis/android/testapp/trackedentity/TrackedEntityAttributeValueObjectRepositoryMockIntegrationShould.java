@@ -69,7 +69,7 @@ public class TrackedEntityAttributeValueObjectRepositoryMockIntegrationShould
         assertThat(d2.trackedEntityModule().trackedEntityAttributeValues
                 .value("no_attribute", "no_instance").blockingExists(), is(Boolean.FALSE));
         assertThat(d2.trackedEntityModule().trackedEntityAttributeValues
-                .value("lZGmxYbs97q", "nWrB0TfWlvh").blockingExists(), is(Boolean.TRUE));
+                .value("cejWyOfXge6", "nWrB0TfWlvh").blockingExists(), is(Boolean.TRUE));
     }
 
     private TrackedEntityAttributeValueObjectRepository objectRepository() {

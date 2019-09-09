@@ -32,7 +32,6 @@ import androidx.annotation.NonNull;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
@@ -65,6 +64,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
 
     @Test
     public void download_tracked_entity_instance_enrollments_and_events() throws Exception {
+
         String teiUid = "PgmUFEQYZdt";
 
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");

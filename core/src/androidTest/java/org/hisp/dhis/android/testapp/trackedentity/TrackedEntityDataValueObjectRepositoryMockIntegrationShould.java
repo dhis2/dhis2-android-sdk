@@ -29,11 +29,14 @@
 package org.hisp.dhis.android.testapp.trackedentity;
 
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -67,11 +70,14 @@ public class TrackedEntityDataValueObjectRepositoryMockIntegrationShould extends
     public void return_that_a_value_exists_only_if_it_has_been_created() {
         assertThat(d2.trackedEntityModule().trackedEntityDataValues
                 .value("no_event", "no_data_element").blockingExists(), is(Boolean.FALSE));
+
+        List<TrackedEntityDataValue> d = d2.trackedEntityModule().trackedEntityDataValues.blockingGet();
+
         assertThat(d2.trackedEntityModule().trackedEntityDataValues
-                .value("single1", "ebaJjqltK5N").blockingExists(), is(Boolean.TRUE));
+                .value("single1", "jDx8LZlznYu").blockingExists(), is(Boolean.TRUE));
     }
 
     private TrackedEntityDataValueObjectRepository objectRepository() {
-        return d2.trackedEntityModule().trackedEntityDataValues.value("event1", "ebaJjqltK5N");
+        return d2.trackedEntityModule().trackedEntityDataValues.value("event1", "bx6fsa0t90x");
     }
 }

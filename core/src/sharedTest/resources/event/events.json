@@ -27,43 +27,43 @@
         {
           "lastUpdated": "2015-02-28T12:05:00.222",
           "created": "2015-02-28T12:05:00.333",
-          "dataElement": "ebaJjqltK5N",
+          "dataElement": "g9eOBujte1U",
           "value": "1",
           "providedElsewhere": true,
           "storedBy": "storer"
         },
         {
-          "lastUpdated": "2015-02-28T12:05:00.000",
-          "created": "2015-02-28T12:05:00.000",
+          "lastUpdated": "2015-03-28T12:05:00.000",
+          "created": "2015-03-28T12:05:00.000",
           "dataElement": "bx6fsa0t90x",
           "value": "false",
           "providedElsewhere": false
         },
         {
-          "lastUpdated": "2015-02-28T12:05:00.000",
-          "created": "2015-02-28T12:05:00.000",
-          "dataElement": "wQLfBvPrXqq",
+          "lastUpdated": "2015-04-28T12:05:00.000",
+          "created": "2015-04-28T12:05:00.000",
+          "dataElement": "jDx8LZlznYu",
           "value": "NVP only",
           "providedElsewhere": false
         },
         {
-          "lastUpdated": "2015-02-28T12:05:00.000",
-          "created": "2015-02-28T12:05:00.000",
-          "dataElement": "a3kGcGDCuk6",
+          "lastUpdated": "2015-05-28T12:05:00.000",
+          "created": "2015-05-28T12:05:00.000",
+          "dataElement": "uFAQYm3UgBL",
           "value": "11",
           "providedElsewhere": false
         },
         {
-          "lastUpdated": "2015-02-28T12:05:00.000",
-          "created": "2015-02-28T12:05:00.000",
-          "dataElement": "UXz7xuGCEhU",
+          "lastUpdated": "2015-06-28T12:05:00.000",
+          "created": "2015-06-28T12:05:00.000",
+          "dataElement": "hB9F8vKFmlk",
           "value": "3843",
           "providedElsewhere": false
         },
         {
-          "lastUpdated": "2015-02-28T12:05:00.000",
-          "created": "2015-02-28T12:05:00.000",
-          "dataElement": "X8zyunlgUfM",
+          "lastUpdated": "2015-07-28T12:05:00.000",
+          "created": "2015-07-28T12:05:00.000",
+          "dataElement": "ciWE5jde1ax",
           "value": "Replacement",
           "providedElsewhere": false
         }
@@ -89,44 +89,45 @@
       },
       "dataValues": [
         {
-          "lastUpdated": "2015-02-28T12:05:00.000",
-          "created": "2015-02-28T12:05:00.000",
-          "dataElement": "ebaJjqltK5N",
+          "lastUpdated": "2014-01-28T12:05:00.222",
+          "created": "2014-02-28T12:05:00.333",
+          "dataElement": "g9eOBujte1U",
           "value": "1",
-          "providedElsewhere": false
+          "providedElsewhere": true,
+          "storedBy": "storer"
         },
         {
-          "lastUpdated": "2015-02-28T12:05:00.000",
-          "created": "2015-02-28T12:05:00.000",
+          "lastUpdated": "2014-09-28T12:05:00.000",
+          "created": "2014-01-28T12:05:00.000",
           "dataElement": "bx6fsa0t90x",
           "value": "false",
           "providedElsewhere": false
         },
         {
-          "lastUpdated": "2015-02-28T12:05:00.000",
-          "created": "2015-02-28T12:05:00.000",
-          "dataElement": "wQLfBvPrXqq",
+          "lastUpdated": "2014-06-28T12:05:00.000",
+          "created": "2014-05-28T12:05:00.000",
+          "dataElement": "jDx8LZlznYu",
           "value": "NVP only",
           "providedElsewhere": false
         },
         {
-          "lastUpdated": "2015-02-28T12:05:00.000",
-          "created": "2015-02-28T12:05:00.000",
-          "dataElement": "a3kGcGDCuk6",
+          "lastUpdated": "2014-07-28T12:05:00.000",
+          "created": "2014-12-28T12:05:00.000",
+          "dataElement": "uFAQYm3UgBL",
           "value": "11",
           "providedElsewhere": false
         },
         {
-          "lastUpdated": "2015-02-28T12:05:00.000",
-          "created": "2015-02-28T12:05:00.000",
-          "dataElement": "UXz7xuGCEhU",
+          "lastUpdated": "2014-08-28T12:05:00.000",
+          "created": "2014-10-28T12:05:00.000",
+          "dataElement": "hB9F8vKFmlk",
           "value": "3843",
           "providedElsewhere": false
         },
         {
-          "lastUpdated": "2015-02-28T12:05:00.000",
-          "created": "2015-02-28T12:05:00.000",
-          "dataElement": "X8zyunlgUfM",
+          "lastUpdated": "2014-12-28T12:05:00.000",
+          "created": "2014-09-28T12:05:00.000",
+          "dataElement": "ciWE5jde1ax",
           "value": "Replacement",
           "providedElsewhere": false
         }

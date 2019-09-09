@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentImportHandler;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
@@ -75,6 +76,9 @@ public class TrackedEntityInstanceImportHandlerShould {
     @Mock
     private ObjectStore<TrackerImportConflict> trackerImportConflictStore;
 
+    @Mock
+    private DataStatePropagator dataStatePropagator;
+
     // object to test
     private TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler;
 
@@ -85,7 +89,7 @@ public class TrackedEntityInstanceImportHandlerShould {
 
         trackedEntityInstanceImportHandler =
                 new TrackedEntityInstanceImportHandler(trackedEntityInstanceStore, enrollmentImportHandler,
-                        trackerImportConflictStore);
+                        trackerImportConflictStore, dataStatePropagator);
     }
 
     @Test

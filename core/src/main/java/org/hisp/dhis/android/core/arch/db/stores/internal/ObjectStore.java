@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
-import android.content.ContentValues;
-
 import androidx.annotation.NonNull;
 
 import java.util.List;
@@ -39,8 +37,6 @@ public interface ObjectStore<M> extends ReadableStore<M> {
     List<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
 
     long insert(@NonNull M m) throws RuntimeException;
-
-    int updateWhere(@NonNull ContentValues values, @NonNull String whereClause);
 
     int delete();
 

@@ -28,98 +28,21 @@
 
 package org.hisp.dhis.android.core.common.internal;
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventTableInfo;
-import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
-import java.util.List;
+public interface DataStatePropagator {
+    void propagateEnrollmentUpdate(Enrollment enrollment);
 
-import javax.inject.Inject;
+    void propagateEventUpdate(Event event);
 
-import dagger.Reusable;
+    void propagateTrackedEntityDataValueUpdate(TrackedEntityDataValue dataValue);
 
-@Reusable
-public final class DataStatePropagator {
+    void propagateTrackedEntityAttributeUpdate(TrackedEntityAttributeValue trackedEntityAttributeValue);
 
-    private final TrackedEntityInstanceStore trackedEntityInstanceStore;
-    private final EnrollmentStore enrollmentStore;
-    private final EventStore eventStore;
+    void resetUploadingEnrollmentAndEventStates(String trackedEntityInstanceUid);
 
-    @Inject
-    public DataStatePropagator(TrackedEntityInstanceStore trackedEntityInstanceStore,
-                               EnrollmentStore enrollmentStore,
-                               EventStore eventStore) {
-        this.trackedEntityInstanceStore = trackedEntityInstanceStore;
-        this.enrollmentStore = enrollmentStore;
-        this.eventStore = eventStore;
-    }
-
-    public void propagateEnrollmentUpdate(Enrollment enrollment) {
-        setTeiStateForUpdate(enrollment.trackedEntityInstance());
-    }
-
-    public void propagateEventUpdate(Event event) {
-        if (event.enrollment() != null) {
-            Enrollment enrollment = enrollmentStore.selectByUid(event.enrollment());
-            enrollmentStore.setStateForUpdate(enrollment.uid());
-            setTeiStateForUpdate(enrollment.trackedEntityInstance());
-        }
-    }
-
-    public void propagateTrackedEntityDataValueUpdate(TrackedEntityDataValue dataValue) {
-        Event event = eventStore.selectByUid(dataValue.event());
-        eventStore.setStateForUpdate(event.uid());
-        propagateEventUpdate(event);
-    }
-
-    public void propagateTrackedEntityAttributeUpdate(TrackedEntityAttributeValue trackedEntityAttributeValue) {
-        setTeiStateForUpdate(trackedEntityAttributeValue.trackedEntityInstance());
-    }
-
-    private void setTeiStateForUpdate(String trackedEntityInstanceUid) {
-        trackedEntityInstanceStore.setStateForUpdate(trackedEntityInstanceUid);
-    }
-
-    public void resetUploadingEnrollmentAndEventStates(String trackedEntityInstanceUid) {
-        if (trackedEntityInstanceUid == null) {
-            return;
-        }
-
-        String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid)
-                .build();
-        List<Enrollment> enrollments = enrollmentStore.selectWhere(whereClause);
-
-        for (Enrollment enrollment : enrollments) {
-            if (State.UPLOADING.equals(enrollment.state())) {
-                enrollmentStore.setState(enrollment.uid(), State.TO_UPDATE);
-                resetUploadingEventStates(enrollment.uid());
-            }
-        }
-    }
-
-    public void resetUploadingEventStates(String enrollmentUid) {
-        if (enrollmentUid == null) {
-            return;
-        }
-
-        String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(EventTableInfo.Columns.ENROLLMENT, enrollmentUid)
-                .build();
-        List<Event> events = eventStore.selectWhere(whereClause);
-
-        for (Event event : events) {
-            if (State.UPLOADING.equals(event.state())) {
-                eventStore.setState(event.uid(), State.TO_UPDATE);
-            }
-        }
-    }
+    void resetUploadingEventStates(String enrollmentUid);
 }

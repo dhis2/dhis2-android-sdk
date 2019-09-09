@@ -125,7 +125,7 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
                 .appendInKeyStringValues(UID, uids)
                 .build();
 
-        return updateWhere(updates, whereClause);
+        return databaseAdapter.database().update(tableName, updates, whereClause, null);
     }
 
     @Override

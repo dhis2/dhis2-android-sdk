@@ -108,7 +108,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
     }
 
     @Test
-    public void build_payload_with_the_enrollments_events_and_values_set_for_upload_update_or_delete() {
+    public void build_payload_with_the_enrollments_events_and_values_set_for_upload() {
         storeTrackedEntityInstance();
 
         List<List<TrackedEntityInstance>> partitions =
@@ -125,9 +125,15 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
                 }
             }
         }
+    }
+
+    @Test
+    public void build_payload_without_events_marked_as_error() {
+        storeTrackedEntityInstance();
 
         EnrollmentStoreImpl.create(databaseAdapter).setState("enrollment3Id", State.TO_POST);
-        partitions = trackedEntityInstancePostCall.getPartitionsToSync(null);
+        List<List<TrackedEntityInstance>> partitions =
+                trackedEntityInstancePostCall.getPartitionsToSync(null);
 
         assertThat(partitions.size()).isEqualTo(1);
         assertThat(partitions.get(0).size()).isEqualTo(1);
@@ -138,21 +144,6 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
                     assertThat(enrollment.events().size()).isEqualTo(0);
                 } else {
                     assertThat(enrollment.events().size()).isEqualTo(1);
-                }
-            }
-        }
-
-        EventStoreImpl.create(databaseAdapter).setState("event3Id", State.TO_POST);
-        partitions = trackedEntityInstancePostCall.getPartitionsToSync(null);
-
-        assertThat(partitions.size()).isEqualTo(1);
-        assertThat(partitions.get(0).size()).isEqualTo(1);
-        for (TrackedEntityInstance instance : partitions.get(0)) {
-            assertThat(instance.enrollments().size()).isEqualTo(3);
-            for (Enrollment enrollment : instance.enrollments()) {
-                assertThat(enrollment.events().size()).isEqualTo(1);
-                for (Event event : enrollment.events()) {
-                    assertThat(event.trackedEntityDataValues().size()).isEqualTo(1);
                 }
             }
         }

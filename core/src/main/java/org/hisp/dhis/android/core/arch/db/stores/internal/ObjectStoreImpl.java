@@ -28,9 +28,10 @@
 
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
+
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
@@ -40,8 +41,6 @@ import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isNull;
 
@@ -74,11 +73,6 @@ public class ObjectStoreImpl<M extends Model> extends ReadableStoreImpl<M> imple
     public List<String> selectStringColumnsWhereClause(String column, String clause) {
         Cursor cursor = databaseAdapter.query(builder.selectColumnWhere(column, clause));
         return mapStringColumnSetFromCursor(cursor);
-    }
-
-    @Override
-    public int updateWhere(@NonNull ContentValues values, @NonNull String whereClause) {
-        return databaseAdapter.database().update(builder.getTableName(), values, whereClause, null);
     }
 
     @Override

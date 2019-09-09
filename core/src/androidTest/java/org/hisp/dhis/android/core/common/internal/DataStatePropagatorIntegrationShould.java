@@ -67,7 +67,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
         this.trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl.create(d2.databaseAdapter());
         this.enrollmentStore = EnrollmentStoreImpl.create(d2.databaseAdapter());
         this.eventStore = EventStoreImpl.create(d2.databaseAdapter());
-        this.propagator = new DataStatePropagator(
+        this.propagator = new DataStatePropagatorImpl(
                 trackedEntityInstanceStore,
                 enrollmentStore,
                 eventStore);
@@ -137,6 +137,8 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
         assertThat(eventStore.getState(eventUid1), is(State.TO_UPDATE));
         assertThat(eventStore.getState(eventUid2), is(State.TO_POST));
         assertThat(eventStore.getState(eventUid3), is(State.TO_POST));
+
+        trackedEntityInstanceStore.delete(teiUid);
     }
 
     private void assertThatSetTeiToUpdateWhenEnrollmentPropagation(State state) throws D2Error {

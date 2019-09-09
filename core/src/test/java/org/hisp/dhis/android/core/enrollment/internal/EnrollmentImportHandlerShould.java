@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.enrollment.internal;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.internal.EventImportHandler;
 import org.hisp.dhis.android.core.imports.ImportStatus;
@@ -84,6 +85,9 @@ public class EnrollmentImportHandlerShould {
     @Mock
     private ObjectStore<TrackerImportConflict> trackerImportConflictStore;
 
+    @Mock
+    private DataStatePropagator dataStatePropagator;
+
     // object to test
     private EnrollmentImportHandler enrollmentImportHandler;
 
@@ -92,7 +96,7 @@ public class EnrollmentImportHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         enrollmentImportHandler = new EnrollmentImportHandler(enrollmentStore, trackedEntityInstanceStore, noteStore,
-                eventImportHandler, trackerImportConflictStore);
+                eventImportHandler, trackerImportConflictStore, dataStatePropagator);
     }
 
     @Test

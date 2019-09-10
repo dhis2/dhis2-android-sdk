@@ -35,4 +35,6 @@ public interface RxAPICallExecutor {
     <P> Single<P> wrapSingle(Single<P> single);
 
     <P> Observable<P> wrapObservableTransactionally(Observable<P> observable, boolean cleanForeignKeys);
+
+    void storeErrors(boolean storeErrors);
 }

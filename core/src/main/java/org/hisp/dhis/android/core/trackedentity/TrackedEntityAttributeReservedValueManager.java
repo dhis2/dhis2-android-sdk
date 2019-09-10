@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
@@ -76,6 +77,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     private final IdentifiableObjectStore<ProgramTrackedEntityAttribute> programTrackedEntityAttributeStore;
     private final LinkModelStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+    private final RxAPICallExecutor apiCallExecutor;
     private final D2CallExecutor executor;
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final QueryCallFactory<TrackedEntityAttributeReservedValue,
@@ -85,6 +87,7 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     @Inject
     TrackedEntityAttributeReservedValueManager(
+            RxAPICallExecutor apiCallExecutor,
             D2CallExecutor executor,
             ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             TrackedEntityAttributeReservedValueStoreInterface store,
@@ -95,6 +98,7 @@ public final class TrackedEntityAttributeReservedValueManager {
             UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             QueryCallFactory<TrackedEntityAttributeReservedValue,
                     TrackedEntityAttributeReservedValueQuery> reservedValueQueryCallFactory) {
+        this.apiCallExecutor = apiCallExecutor;
         this.executor = executor;
         this.systemInfoRepository = systemInfoRepository;
         this.store = store;
@@ -126,9 +130,10 @@ public final class TrackedEntityAttributeReservedValueManager {
      * @return Single with value of tracked entity attribute
      */
     public Single<String> getValue(@NonNull String attribute, @NonNull String organisationUnitUid) {
+        apiCallExecutor.storeErrors(false);
         Completable optionalDownload = downloadValuesIfBelowThreshold(
                 attribute, getOrganisationUnit(organisationUnitUid), null, new BooleanWrapper(false)
-        ).onErrorComplete();
+        ).onErrorComplete().doOnComplete(() -> apiCallExecutor.storeErrors(true));
 
         return optionalDownload.andThen(Single.create(emitter -> {
             String pattern = trackedEntityAttributeStore.selectByUid(attribute).pattern();

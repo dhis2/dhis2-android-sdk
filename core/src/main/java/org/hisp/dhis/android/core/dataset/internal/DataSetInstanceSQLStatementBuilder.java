@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStat
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo;
 import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.BaseDeletableDataModel;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo;
@@ -72,7 +73,7 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
     private static final String ATTRIBUTE_OPTION_COMBO_NAME_ALIAS = "attributeOptionComboDisplayName";
     private static final String COMPLETION_DATE_ALIAS = "completionDate";
 
-    public static final String DATAVALUE_ID = DATAVALUE_TABLE_ALIAS + "." + BaseDataModel.Columns.ID;
+    public static final String DATAVALUE_ID = DATAVALUE_TABLE_ALIAS + "." + BaseDeletableDataModel.Columns.ID;
     private static final String DATASET_UID = DATASET_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
     private static final String DATASET_NAME =
             DATASET_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.DISPLAY_NAME;
@@ -108,7 +109,7 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
                     getJoinDataSetCompleteRegistration();
 
     private static final String INNER_SELECT_CLAUSE = "SELECT " +
-            DATAVALUE_ID + AS + BaseDataModel.Columns.ID + "," +
+            DATAVALUE_ID + AS + BaseDeletableDataModel.Columns.ID + "," +
             DATASET_UID + AS + DATASET_UID_ALIAS + "," +
             DATASET_NAME + AS + DATASET_NAME_ALIAS + "," +
             PERIOD + AS + PERIOD_ALIAS + "," +

@@ -28,28 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-import androidx.annotation.Nullable;
-
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
-
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
-
-public abstract class BaseDataModel extends BaseModel implements DataModel {
-
-    public static class Columns extends BaseModel.Columns {
-        public static final String STATE = "state";
-    }
-
-    @Override
-    @Nullable
-    @ColumnName(Columns.STATE)
-    @ColumnAdapter(StateColumnAdapter.class)
-    public abstract State state();
-
-    @JsonPOJOBuilder(withPrefix = "")
-    protected static abstract class Builder<T extends Builder> extends BaseModel.Builder<T> {
-        public abstract T state(@Nullable State state);
-    }
+public interface DeletableDataModel extends DataModel, ObjectWithDeleteInterface{
+    Boolean deleted();
 }

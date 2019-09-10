@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.DataModel;
+import org.hisp.dhis.android.core.common.DeletableDataModel;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 
@@ -44,7 +44,7 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isDeleted;
 
-public class IdentifiableDataHandlerImpl<O extends DataModel & ObjectWithUidInterface>
+public class IdentifiableDataHandlerImpl<O extends DeletableDataModel & ObjectWithUidInterface>
         extends IdentifiableHandlerImpl<O> {
 
     public IdentifiableDataHandlerImpl(IdentifiableObjectStore<O> store) {

@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
 import org.hisp.dhis.android.core.event.Event;
 
 import java.util.List;
 import java.util.Map;
 
-public interface EventStore extends IdentifiableDataObjectStore<Event> {
+public interface EventStore extends IdentifiableDeletableDataObjectStore<Event> {
 
     Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost();
 

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.BaseDeletableDataModel;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 
 public final class EnrollmentTableInfo {
@@ -51,7 +51,7 @@ public final class EnrollmentTableInfo {
         }
     };
 
-    public static class Columns extends BaseDataModel.Columns {
+    public static class Columns extends BaseDeletableDataModel.Columns {
         public static final String UID = "uid";
         public static final String CREATED = EnrollmentFields.CREATED;
         public static final String LAST_UPDATED = EnrollmentFields.LAST_UPDATED;

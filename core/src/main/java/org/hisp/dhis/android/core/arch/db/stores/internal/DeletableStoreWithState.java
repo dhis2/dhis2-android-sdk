@@ -26,30 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.db.stores.internal;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.common.State;
 
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
+public interface DeletableStoreWithState extends StoreWithState {
 
-public abstract class BaseDataModel extends BaseModel implements DataModel {
+    HandleAction setStateOrDelete(@NonNull String uid, @NonNull State state);
 
-    public static class Columns extends BaseModel.Columns {
-        public static final String STATE = "state";
-    }
-
-    @Override
-    @Nullable
-    @ColumnName(Columns.STATE)
-    @ColumnAdapter(StateColumnAdapter.class)
-    public abstract State state();
-
-    @JsonPOJOBuilder(withPrefix = "")
-    protected static abstract class Builder<T extends Builder> extends BaseModel.Builder<T> {
-        public abstract T state(@Nullable State state);
-    }
+    int setDeleted(@NonNull String uid);
 }

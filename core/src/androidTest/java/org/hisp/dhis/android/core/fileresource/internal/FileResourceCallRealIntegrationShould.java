@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,7 +59,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
         d2 = D2Factory.create(RealServerMother.url2_33, databaseAdapter());
     }
 
-    @Test
+    //@Test
     public void download_and_write_files_successfully() throws Exception {
         syncDataAndMetadata();
 
@@ -76,7 +75,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
         assertThat(file.exists(), is(true));
     }
 
-    @Test
+    //@Test
     public void write_files_and_upload() throws Exception {
         syncDataAndMetadata();
 

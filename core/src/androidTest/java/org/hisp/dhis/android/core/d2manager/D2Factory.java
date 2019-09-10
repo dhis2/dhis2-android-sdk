@@ -33,35 +33,21 @@ import android.content.Context;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.arch.api.authentication.internal.BasicAuthenticatorFactory;
-import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.configuration.Configuration;
 import org.hisp.dhis.android.core.configuration.ServerUrlParser;
 
 import java.util.Collections;
-import java.util.concurrent.TimeUnit;
 
 import androidx.test.InstrumentationRegistry;
-import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 public class D2Factory {
 
     public static D2 create(String serverUrl, String databaseName) {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
 
-        D2Configuration d2Configuration = D2Configuration.builder()
-                .appVersion("1.0.0")
-                .readTimeoutInSeconds(30)
-                .connectTimeoutInSeconds(30)
-                .writeTimeoutInSeconds(30)
-                .networkInterceptors(Collections.singletonList(new StethoInterceptor()))
-                .interceptors(Collections.singletonList(loggingInterceptor))
-                .context(context)
-                .build();
+        D2Configuration d2Configuration = d2Configuration(context);
 
         D2Manager.setDatabaseName(databaseName);
 
@@ -76,24 +62,27 @@ public class D2Factory {
         return d2;
     }
 
-    public static D2 create(String url, DatabaseAdapter databaseAdapter) {
-        return new D2.Builder()
-                .configuration(Configuration.forServerUrl(ServerUrlParser.parse(url)))
-                .databaseAdapter(databaseAdapter)
-                .okHttpClient(okHttpClient(databaseAdapter))
-                .context(InstrumentationRegistry.getTargetContext().getApplicationContext())
+    private static D2Configuration d2Configuration(Context context) {
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        return D2Configuration.builder()
+                .appVersion("1.0.0")
+                .readTimeoutInSeconds(30)
+                .connectTimeoutInSeconds(30)
+                .writeTimeoutInSeconds(30)
+                .networkInterceptors(Collections.singletonList(new StethoInterceptor()))
+                .interceptors(Collections.singletonList(loggingInterceptor))
+                .context(context)
                 .build();
     }
 
-    private static OkHttpClient okHttpClient(DatabaseAdapter databaseAdapter) {
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
-        return new OkHttpClient.Builder()
-                .addInterceptor(new PreventURLDecodeInterceptor())
-                .addInterceptor(BasicAuthenticatorFactory.create(databaseAdapter))
-                .addInterceptor(loggingInterceptor)
-                .addNetworkInterceptor(new StethoInterceptor())
-                .readTimeout(30, TimeUnit.SECONDS)
+    public static D2 create(String url, DatabaseAdapter databaseAdapter) {
+        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        return new D2.Builder()
+                .configuration(Configuration.forServerUrl(ServerUrlParser.parse(url)))
+                .databaseAdapter(databaseAdapter)
+                .okHttpClient(OkHttpClientFactory.okHttpClient(d2Configuration(context), databaseAdapter, url))
+                .context(context)
                 .build();
     }
 }

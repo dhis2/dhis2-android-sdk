@@ -119,7 +119,8 @@ public final class D2Manager {
             d2 = new D2.Builder()
                     .configuration(configuration)
                     .databaseAdapter(databaseAdapter)
-                    .okHttpClient(OkHttpClientFactory.okHttpClient(d2Configuration, databaseAdapter))
+                    .okHttpClient(OkHttpClientFactory.okHttpClient(d2Configuration, databaseAdapter,
+                            configuration.serverUrl().toString()))
                     .context(d2Configuration.context())
                     .build();
 

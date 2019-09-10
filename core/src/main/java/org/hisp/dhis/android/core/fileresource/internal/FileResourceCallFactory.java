@@ -78,7 +78,7 @@ class FileResourceCallFactory {
 
         return () -> {
             downloadFileResources(trackedEntityAttributeValues, trackedEntityDataValues);
-            downloadFiles(trackedEntityAttributeValues);
+            downloadFiles(trackedEntityAttributeValues, trackedEntityDataValues);
 
             return new Unit();
         };

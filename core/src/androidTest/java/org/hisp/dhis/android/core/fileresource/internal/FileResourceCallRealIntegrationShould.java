@@ -34,6 +34,8 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -76,7 +78,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
     }
 
     //@Test
-    public void write_files_and_upload() throws Exception {
+    public void write_tracked_entity_attribute_related_files_and_upload() throws Exception {
         syncDataAndMetadata();
 
         d2.fileResourceModule().blockingDownload();
@@ -104,7 +106,39 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         List<FileResource> fileResources3 = d2.fileResourceModule().fileResources.blockingGet();
 
-        File file2 = new File(fileResources3.get(2).path(), fileResources3.get(2).uid());
+        File file2 = new File(fileResources3.get(1).path(), fileResources3.get(1).uid());
+
+        assertThat(file2.exists(), is(true));
+    }
+
+    //@Test
+    public void write_data_element_related_files_and_upload() throws Exception {
+        syncDataAndMetadata();
+
+        d2.fileResourceModule().blockingDownload();
+
+        List<FileResource> fileResources = d2.fileResourceModule().fileResources.blockingGet();
+
+        File file = new File(FileResourceUtil.getFileResourceDirectory(
+                InstrumentationRegistry.getTargetContext().getApplicationContext()), fileResources.get(0).uid());
+        assertThat(file.exists(), is(true));
+
+        String valueUid = d2.fileResourceModule().fileResources.blockingAdd(file);
+
+        DataElement dataElement =
+                d2.dataElementModule().dataElements.byValueType().eq(ValueType.IMAGE).one().blockingGet();
+
+        Event event = d2.eventModule().events.blockingGet().get(0);
+
+        d2.trackedEntityModule().trackedEntityDataValues.value(event.uid(), dataElement.uid()).blockingSet(valueUid);
+
+        List<FileResource> fileResources2 = d2.fileResourceModule().fileResources.blockingGet();
+
+        d2.fileResourceModule().fileResources.upload().blockingSubscribe();
+
+        List<FileResource> fileResources3 = d2.fileResourceModule().fileResources.blockingGet();
+
+        File file2 = new File(fileResources3.get(1).path(), fileResources3.get(1).uid());
 
         assertThat(file2.exists(), is(true));
     }
@@ -116,5 +150,8 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         d2.trackedEntityModule().trackedEntityInstanceDownloader
                 .byProgramUid("uy2gU8kT1jF").limit(20).download().blockingSubscribe();
+
+        d2.eventModule().eventDownloader
+                .byProgramUid("VBqh0ynB2wv").limit(40).download().blockingSubscribe();
     }
 }

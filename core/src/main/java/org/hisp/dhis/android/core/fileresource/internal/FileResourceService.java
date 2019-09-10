@@ -46,6 +46,7 @@ interface FileResourceService {
     String TRACKED_ENTITY_INSTANCES = "trackedEntityInstances";
     String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
     String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+    String EVENTS = "events";
 
     @Multipart
     @POST(FILE_RESOURCES)
@@ -55,7 +56,14 @@ interface FileResourceService {
     Call<FileResource> getFileResource(@Path(FILE_RESOURCE) String fileResource);
 
     @GET(TRACKED_ENTITY_INSTANCES + "/{" + TRACKED_ENTITY_INSTANCE + "}/{" + TRACKED_ENTITY_ATTRIBUTE + "}/image")
-    Call<ResponseBody> getFile(@Path(TRACKED_ENTITY_INSTANCE) String trackedEntityInstanceUid,
-                               @Path(TRACKED_ENTITY_ATTRIBUTE) String trackedEntityAttributeUid,
-                               @Query("dimension") String dimension);
+    Call<ResponseBody> getFileFromTrackedEntityAttribute(
+            @Path(TRACKED_ENTITY_INSTANCE) String trackedEntityInstanceUid,
+            @Path(TRACKED_ENTITY_ATTRIBUTE) String trackedEntityAttributeUid,
+            @Query("dimension") String dimension);
+
+    @GET(EVENTS + "/files")
+    Call<ResponseBody> getFileFromDataElement(
+            @Query("eventUid") String eventUid,
+            @Query("dataElementUid") String dataElementUid,
+            @Query("dimension") String dimension);
 }

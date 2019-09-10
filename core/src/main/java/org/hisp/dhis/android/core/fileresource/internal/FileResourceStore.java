@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.fileresource.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectWithStateStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
 import org.hisp.dhis.android.core.fileresource.FileResource;
 
-public interface FileResourceStore extends IdentifiableObjectWithStateStore<FileResource> {
+public interface FileResourceStore extends IdentifiableDataObjectStore<FileResource> {
 }

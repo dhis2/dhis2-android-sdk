@@ -33,10 +33,10 @@ import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleDownloader
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore;
 
 import java.util.List;
 import java.util.concurrent.Callable;

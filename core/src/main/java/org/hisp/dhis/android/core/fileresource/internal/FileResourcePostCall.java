@@ -43,8 +43,11 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueFields;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,6 +68,7 @@ public final class FileResourcePostCall {
     private final FileResourceService fileResourceService;
     private final APICallExecutor apiCallExecutor;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
+    private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final FileResourceStore fileResourceStore;
     private final HandlerWithTransformer<FileResource> fileResourceHandler;
     private final Context context;
@@ -73,12 +77,14 @@ public final class FileResourcePostCall {
     FileResourcePostCall(@NonNull FileResourceService fileResourceService,
                          @NonNull APICallExecutor apiCallExecutor,
                          @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
+                         @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
                          @NonNull FileResourceStore fileResourceStore,
                          @NonNull HandlerWithTransformer<FileResource> fileResourceHandler,
                          @NonNull Context context) {
         this.fileResourceService = fileResourceService;
         this.apiCallExecutor = apiCallExecutor;
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
+        this.trackedEntityDataValueStore = trackedEntityDataValueStore;
         this.fileResourceStore = fileResourceStore;
         this.fileResourceHandler = fileResourceHandler;
         this.context = context;
@@ -129,7 +135,7 @@ public final class FileResourcePostCall {
         try {
             FileResource downloadedFileResource = getDownloadedFileResource(responseBody);
 
-            updateTrackedEntityAttributeValue(fileResource, downloadedFileResource);
+            updateValue(fileResource, downloadedFileResource);
 
             updateFileResource(fileResource, downloadedFileResource, file);
 
@@ -149,15 +155,40 @@ public final class FileResourcePostCall {
         return  fileResourceResponse.response().fileResource();
     }
 
-    private void updateTrackedEntityAttributeValue(FileResource fileResource, FileResource downloadedFileResource) {
+    private void updateValue(FileResource fileResource, FileResource downloadedFileResource) {
+        if (!updateTrackedEntityAttributeValue(fileResource, downloadedFileResource)) {
+            updateTrackedEntityDataValue(fileResource, downloadedFileResource);
+        }
+    }
+
+    private boolean updateTrackedEntityAttributeValue(FileResource fileResource, FileResource downloadedFileResource) {
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(TrackedEntityAttributeValueFields.VALUE, fileResource.uid())
                 .build();
+
         TrackedEntityAttributeValue trackedEntityAttributeValue =
                 trackedEntityAttributeValueStore.selectOneWhere(whereClause);
 
         if (trackedEntityAttributeValue != null) {
             trackedEntityAttributeValueStore.updateWhere(trackedEntityAttributeValue.toBuilder()
+                    .value(downloadedFileResource.uid())
+                    .build());
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void updateTrackedEntityDataValue(FileResource fileResource, FileResource downloadedFileResource) {
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(TrackedEntityDataValueFields.VALUE, fileResource.uid())
+                .build();
+
+        TrackedEntityDataValue trackedEntityDataValue =
+                trackedEntityDataValueStore.selectOneWhere(whereClause);
+
+        if (trackedEntityDataValue != null) {
+            trackedEntityDataValueStore.updateWhere(trackedEntityDataValue.toBuilder()
                     .value(downloadedFileResource.uid())
                     .build());
         }

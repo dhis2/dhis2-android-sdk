@@ -139,7 +139,7 @@ public final class FileResourcePostCall {
 
             updateFileResource(fileResource, downloadedFileResource, file);
 
-            updateFile(file, fileResource, context);
+            updateFile(file, downloadedFileResource, context);
 
         } catch (IOException e) {
             e.printStackTrace();

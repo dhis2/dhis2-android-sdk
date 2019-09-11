@@ -32,17 +32,25 @@ import android.content.Context;
 
 import androidx.test.InstrumentationRegistry;
 
+import org.apache.commons.io.FileUtils;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.fileresource.RandomGeneratedInputStream;
 import org.hisp.dhis.android.core.fileresource.FileResource;
+import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo;
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.core.wipe.internal.TableWiper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -52,26 +60,105 @@ import static org.hamcrest.core.Is.is;
 public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
-    public void find_all() {
+    public void find_all() throws D2Error, IOException {
+        cleanFileResources();
+        d2.fileResourceModule().fileResources.blockingAdd(getFile());
         List<FileResource> fileResources =
                 d2.fileResourceModule().fileResources
+                        .blockingGet();
+
+        assertThat(fileResources.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_uid() throws D2Error, IOException {
+        cleanFileResources();
+        String fileUid = d2.fileResourceModule().fileResources.blockingAdd(getFile());
+        List<FileResource> fileResources =
+                d2.fileResourceModule().fileResources
+                        .byUid().eq(fileUid)
+                        .blockingGet();
+
+        assertThat(fileResources.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_name() throws D2Error, IOException {
+        cleanFileResources();
+        String fileUid = d2.fileResourceModule().fileResources.blockingAdd(getFile());
+        List<FileResource> fileResources =
+                d2.fileResourceModule().fileResources
+                        .byName().eq(fileUid)
+                        .blockingGet();
+
+        assertThat(fileResources.size(), is(1));
+    }
+    @Test
+    public void filter_by_last_updated() throws D2Error, IOException, ParseException {
+        cleanFileResources();
+        String BEFORE_DATE = "2007-12-24T12:24:25.203";
+        Date created = BaseIdentifiableObject.DATE_FORMAT.parse(BEFORE_DATE);
+
+        d2.fileResourceModule().fileResources.blockingAdd(getFile());
+        List<FileResource> fileResources =
+                d2.fileResourceModule().fileResources
+                        .byLastUpdated().after(created)
+                        .blockingGet();
+
+        assertThat(fileResources.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_content_type() throws D2Error, IOException {
+        cleanFileResources();
+        d2.fileResourceModule().fileResources.blockingAdd(getFile());
+        List<FileResource> fileResources =
+                d2.fileResourceModule().fileResources
+                        .byContentType().eq("image/png")
                         .blockingGet();
 
         assertThat(fileResources.size(), is(0));
     }
 
     @Test
-    public void filter_by_uid() {
+    public void filter_by_path() throws D2Error, IOException {
+        cleanFileResources();
+        d2.fileResourceModule().fileResources.blockingAdd(getFile());
         List<FileResource> fileResources =
                 d2.fileResourceModule().fileResources
-                        .byUid().eq("file1")
+                        .byPath().eq("/data/user/0/org.hisp.dhis.android.test/files/sdk_resources")
                         .blockingGet();
 
-        assertThat(fileResources.size(), is(0));
+        assertThat(fileResources.size(), is(1));
     }
 
     @Test
-    public void add_fileResources_to_the_repository() throws D2Error {
+    public void filter_by_state() throws D2Error, IOException {
+        cleanFileResources();
+        d2.fileResourceModule().fileResources.blockingAdd(getFile());
+        List<FileResource> fileResources =
+                d2.fileResourceModule().fileResources
+                        .byState().eq(State.TO_POST)
+                        .blockingGet();
+
+        assertThat(fileResources.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_content_length() throws D2Error, IOException {
+        cleanFileResources();
+        d2.fileResourceModule().fileResources.blockingAdd(getFile());
+        List<FileResource> fileResources =
+                d2.fileResourceModule().fileResources
+                        .byContentLength().eq(1024L)
+                        .blockingGet();
+
+        assertThat(fileResources.size(), is(1));
+    }
+
+    @Test
+    public void add_fileResources_to_the_repository() throws D2Error, IOException {
+        cleanFileResources();
         List<FileResource> fileResources1 = d2.fileResourceModule().fileResources.blockingGet();
         assertThat(fileResources1.size(), is(0));
 
@@ -93,7 +180,13 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
     private File getFile() {
         InputStream inputStream = new RandomGeneratedInputStream(1024);
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        File destinationFile = new File(FileResourceUtil.getFileResourceDirectory(context), "fileName");
+        File destinationFile = new File(FileResourceUtil.getFileResourceDirectory(context), "file1");
         return FileResourceUtil.writeInputStream(inputStream, destinationFile, 1024);
+    }
+
+    private void cleanFileResources() throws IOException {
+        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        FileUtils.cleanDirectory(FileResourceUtil.getFileResourceDirectory(context));
+        new TableWiper(databaseAdapter).wipeTable(FileResourceTableInfo.TABLE_INFO);
     }
 }

@@ -48,7 +48,7 @@ public final class RepositoryScopeHelper {
     public static RepositoryScope withUidFilterItem(RepositoryScope scope, String uid) {
         RepositoryScopeFilterItem filterItem = RepositoryScopeFilterItem.builder()
                 .key(BaseIdentifiableObjectModel.Columns.UID)
-                .operator("=")
+                .operator(FilterItemOperator.EQ)
                 .value("'" + uid + "'")
                 .build();
 

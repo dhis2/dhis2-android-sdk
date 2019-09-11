@@ -35,7 +35,7 @@ public abstract class RepositoryScopeFilterItem {
 
     public abstract String key();
 
-    public abstract String operator();
+    public abstract FilterItemOperator operator();
 
     public abstract String value();
 
@@ -48,7 +48,7 @@ public abstract class RepositoryScopeFilterItem {
 
         public abstract Builder key(String key);
 
-        public abstract Builder operator(String operator);
+        public abstract Builder operator(FilterItemOperator operator);
 
         public abstract Builder value(String value);
 

@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,7 +68,7 @@ public class UnwrappedEqInFilterConnectorShould {
     public void should_build_in_filter() {
         filterConnector.in("uid1", "uid2", "uid3");
         RepositoryScopeFilterItem expectedItem =
-                RepositoryScopeFilterItem.builder().key(key).operator("IN").value("(uid1, uid2, uid3)").build();
+                RepositoryScopeFilterItem.builder().key(key).operator(FilterItemOperator.IN).value("(uid1, uid2, uid3)").build();
 
         verify(baseRepositoryFactory).updated(updatedRepositoryScope.capture());
         RepositoryScopeFilterItem item = updatedRepositoryScope.getValue().filters().get(0);

@@ -26,31 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+package org.hisp.dhis.android.core.arch.repositories.scope.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
+public enum FilterItemOperator {
+    LIKE("LIKE", "like"),
+    EQ("=", "eq"),
+    NOT_EQ("!=", "!eq"),
+    IN("IN", "in"),
+    NOT_IN("NOT IN", "!in"),
+    LT("<", "lt"),
+    GT(">", "gt"),
+    VOID("","");
 
-public final class IntegerFilterConnector<R extends BaseRepository>
-        extends BaseAbstractFilterConnector<R, Integer> {
+    private String sqlOperator;
 
-    IntegerFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                           RepositoryScope scope,
-                           String key) {
-        super(repositoryFactory, scope, key);
+    private String apiOperator;
+
+    FilterItemOperator(String sqlOperator, String apiOperator) {
+        this.sqlOperator = sqlOperator;
+        this.apiOperator = apiOperator;
     }
 
-    public R smallerThan(int value) {
-        return newWithWrappedScope(FilterItemOperator.LT, value);
+    public String getSqlOperator() {
+        return this.sqlOperator;
     }
 
-    public R biggerThan(int value) {
-        return newWithWrappedScope(FilterItemOperator.GT, value);
-    }
-
-    String wrapValue(Integer value) {
-        return value.toString();
+    public String getApiOperator() {
+        return this.apiOperator;
     }
 }

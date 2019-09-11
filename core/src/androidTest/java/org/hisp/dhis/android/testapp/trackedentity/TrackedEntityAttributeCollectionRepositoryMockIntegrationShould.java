@@ -172,6 +172,16 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
     }
 
     @Test
+    public void by_field_mask() {
+        List<TrackedEntityAttribute> trackedEntityAttributes =
+                d2.trackedEntityModule().trackedEntityAttributes
+                        .byFieldMask().eq("XXXXX")
+                        .blockingGet();
+
+        assertThat(trackedEntityAttributes.size(), is(1));
+    }
+
+    @Test
     public void by_form_name() {
         List<TrackedEntityAttribute> trackedEntityAttributes =
                 d2.trackedEntityModule().trackedEntityAttributes

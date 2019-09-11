@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.dataelement.internal;
 
 import android.database.sqlite.SQLiteStatement;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
@@ -37,8 +39,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
-
-import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
@@ -58,6 +58,7 @@ public final class DataElementStore {
             sqLiteBind(sqLiteStatement, 16, o.displayFormName());
             sqLiteBind(sqLiteStatement, 17, o.optionSetUid());
             sqLiteBind(sqLiteStatement, 18, o.categoryComboUid());
+            sqLiteBind(sqLiteStatement, 19, o.fieldMask());
         }
     };
 

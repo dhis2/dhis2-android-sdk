@@ -50,6 +50,7 @@ public final class DataElementFields {
     public final static String DISPLAY_FORM_NAME = "displayFormName";
     public final static String OPTION_SET = "optionSet";
     public final static String CATEGORY_COMBO = "categoryCombo";
+    public final static String FIELD_MASK = "fieldMask";
     public final static String STYLE = "style";
     public final static String ACCESS = "access";
 
@@ -72,6 +73,7 @@ public final class DataElementFields {
                             .with(ObjectWithUid.uid),
                     fh.<ObjectWithUid>nestedField(CATEGORY_COMBO)
                             .with(ObjectWithUid.uid),
+                    fh.<String>field(FIELD_MASK),
                     fh.<ObjectStyle>nestedField(STYLE)
                             .with(ObjectStyleFields.allFields),
                     fh.<Access>nestedField(ACCESS)

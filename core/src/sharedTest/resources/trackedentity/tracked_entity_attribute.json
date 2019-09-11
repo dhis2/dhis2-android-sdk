@@ -23,6 +23,7 @@
   "dimensionItem": "ruQQnf6rswq",
   "unique": false,
   "inherit": false,
+  "fieldMask": "XXXXX",
   "optionSetValue": false,
   "dimensionItemType": "PROGRAM_ATTRIBUTE",
   "access": {

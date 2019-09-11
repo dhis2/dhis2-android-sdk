@@ -17,6 +17,7 @@
   "displayFormName": "ANC Visit",
   "zeroIsSignificant": false,
   "url": "",
+  "fieldMask": "XXXXX",
   "optionSetValue": true,
   "dimensionItemType": "DATA_ELEMENT",
   "optionSet": {

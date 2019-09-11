@@ -21,6 +21,7 @@
       "displayFormName": "ANC Visit",
       "numberType": "numTy",
       "zeroIsSignificant": false,
+      "fieldMask": "XXXXX",
       "url": "",
       "optionSetValue": true,
       "dimensionItemType": "DATA_ELEMENT",

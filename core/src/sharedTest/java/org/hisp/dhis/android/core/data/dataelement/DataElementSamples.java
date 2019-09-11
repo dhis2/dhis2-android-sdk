@@ -26,47 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.data.dataelement;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 
-public final class DataElementTableInfo {
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
 
-    private DataElementTableInfo() {
-    }
+public class DataElementSamples {
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    public static DataElement getDataElement() {
+        DataElement.Builder dataElementBuilder = DataElement.builder();
 
-        @Override
-        public String name() {
-            return "DataElement";
-        }
-
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
-
-    static class Columns extends BaseNameableObjectModel.Columns {
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    DataElementFields.VALUE_TYPE,
-                    DataElementFields.ZERO_IS_SIGNIFICANT,
-                    DataElementFields.AGGREGATION_TYPE,
-                    DataElementFields.FORM_NAME,
-                    DataElementFields.DOMAIN_TYPE,
-                    DataElementFields.DISPLAY_FORM_NAME,
-                    DataElementFields.OPTION_SET,
-                    DataElementFields.CATEGORY_COMBO,
-                    DataElementFields.FIELD_MASK
-            );
-        }
+        fillNameableProperties(dataElementBuilder);
+        dataElementBuilder
+                .id(1L)
+                .formName("form-name")
+                .displayFormName("display-form-name")
+                .valueType(ValueType.TEXT)
+                .zeroIsSignificant(Boolean.TRUE)
+                .domainType("TRACKER")
+                .aggregationType("AVERAGE")
+                .optionSet(ObjectWithUid.create("bWuNrMHEoZ0"))
+                .categoryCombo(ObjectWithUid.create("cWuNrMHEoZ1"))
+                .fieldMask("XXXX");
+        return dataElementBuilder.build();
     }
 }

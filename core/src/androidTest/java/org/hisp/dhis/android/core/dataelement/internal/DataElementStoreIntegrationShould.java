@@ -26,47 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.dataelement.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.dataelement.DataElementSamples;
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-public final class DataElementTableInfo {
+@RunWith(D2JunitRunner.class)
+public class DataElementStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<DataElement> {
 
-    private DataElementTableInfo() {
+    public DataElementStoreIntegrationShould() {
+        super(DataElementStore.create(DatabaseAdapterFactory.get()), DataElementTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get());
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    @Override
+    protected DataElement buildObject() {
+        return DataElementSamples.getDataElement();
+    }
 
-        @Override
-        public String name() {
-            return "DataElement";
-        }
-
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
-
-    static class Columns extends BaseNameableObjectModel.Columns {
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    DataElementFields.VALUE_TYPE,
-                    DataElementFields.ZERO_IS_SIGNIFICANT,
-                    DataElementFields.AGGREGATION_TYPE,
-                    DataElementFields.FORM_NAME,
-                    DataElementFields.DOMAIN_TYPE,
-                    DataElementFields.DISPLAY_FORM_NAME,
-                    DataElementFields.OPTION_SET,
-                    DataElementFields.CATEGORY_COMBO,
-                    DataElementFields.FIELD_MASK
-            );
-        }
+    @Override
+    protected DataElement buildObjectToUpdate() {
+        return DataElementSamples.getDataElement().toBuilder()
+                .formName("new-form-name")
+                .build();
     }
 }

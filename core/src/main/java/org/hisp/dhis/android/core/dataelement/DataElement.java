@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.dataelement;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -45,8 +47,6 @@ import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_DataElement.Builder.class)
@@ -91,6 +91,9 @@ public abstract class DataElement extends BaseNameableObject
     }
 
     @Nullable
+    public abstract String fieldMask();
+
+    @Nullable
     @ColumnAdapter(IgnoreAccessAdapter.class)
     public abstract Access access();
 
@@ -126,6 +129,8 @@ public abstract class DataElement extends BaseNameableObject
         public abstract DataElement.Builder optionSet(ObjectWithUid optionSet);
 
         public abstract DataElement.Builder categoryCombo(ObjectWithUid categoryCombo);
+
+        public abstract DataElement.Builder fieldMask(String fieldMask);
 
         public abstract DataElement.Builder access(Access access);
 

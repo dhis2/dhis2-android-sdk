@@ -44,7 +44,8 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
-public final class TrackedEntityInstanceStoreImpl extends IdentifiableDeletableDataObjectStoreImpl<TrackedEntityInstance>
+public final class TrackedEntityInstanceStoreImpl
+        extends IdentifiableDeletableDataObjectStoreImpl<TrackedEntityInstance>
         implements TrackedEntityInstanceStore {
 
     private static final StatementBinder<TrackedEntityInstance> BINDER = (o, sqLiteStatement) -> {

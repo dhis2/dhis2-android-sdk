@@ -107,10 +107,11 @@ class FileResourceCallFactory {
     private void downloadFiles(final List<TrackedEntityAttributeValue> trackedEntityAttributeValues,
                                final List<TrackedEntityDataValue> trackedEntityDataValues) throws D2Error {
         for (TrackedEntityAttributeValue trackedEntityAttributeValue : trackedEntityAttributeValues) {
-            ResponseBody responseBody = apiCallExecutor.executeObjectCall(fileResourceService.getFileFromTrackedEntityAttribute(
-                    trackedEntityAttributeValue.trackedEntityInstance(),
-                    trackedEntityAttributeValue.trackedEntityAttribute(),
-                    Dimension.MEDIUM.name()));
+            ResponseBody responseBody = apiCallExecutor.executeObjectCall(
+                    fileResourceService.getFileFromTrackedEntityAttribute(
+                            trackedEntityAttributeValue.trackedEntityInstance(),
+                            trackedEntityAttributeValue.trackedEntityAttribute(),
+                            Dimension.MEDIUM.name()));
 
             FileResourceUtil.saveFileFromResponse(responseBody, trackedEntityAttributeValue.value(), context);
         }

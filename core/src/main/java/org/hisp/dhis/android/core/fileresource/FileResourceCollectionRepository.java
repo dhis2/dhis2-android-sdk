@@ -65,6 +65,7 @@ import io.reactivex.Single;
 import static org.hisp.dhis.android.core.fileresource.FileResourceTableInfo.Columns;
 
 @Reusable
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class FileResourceCollectionRepository
         extends ReadWriteWithUidCollectionRepositoryImpl<FileResource, File, FileResourceCollectionRepository>
         implements ReadWriteWithUploadWithUidCollectionRepository<FileResource, File> {

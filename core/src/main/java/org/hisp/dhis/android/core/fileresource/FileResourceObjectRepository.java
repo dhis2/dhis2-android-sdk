@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.fileresource;
 
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyOneObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore;
@@ -37,8 +36,7 @@ import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore;
 import java.util.Map;
 
 public final class FileResourceObjectRepository
-        extends ReadOnlyOneObjectRepositoryImpl<FileResource, FileResourceObjectRepository>
-        implements ReadOnlyObjectRepository<FileResource> {
+        extends ReadOnlyOneObjectRepositoryImpl<FileResource, FileResourceObjectRepository> {
 
     FileResourceObjectRepository(final FileResourceStore store,
                                  final String uid,

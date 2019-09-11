@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.fileresource.internal;
 
 import android.content.Context;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import androidx.annotation.NonNull;
@@ -142,7 +143,7 @@ public final class FileResourcePostCall {
             updateFile(file, downloadedFileResource, context);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.v(FileResourcePostCall.class.getCanonicalName(), e.getMessage());
         }
     }
 
@@ -169,13 +170,13 @@ public final class FileResourcePostCall {
         TrackedEntityAttributeValue trackedEntityAttributeValue =
                 trackedEntityAttributeValueStore.selectOneWhere(whereClause);
 
-        if (trackedEntityAttributeValue != null) {
+        if (trackedEntityAttributeValue == null) {
+            return false;
+        } else {
             trackedEntityAttributeValueStore.updateWhere(trackedEntityAttributeValue.toBuilder()
                     .value(downloadedFileResource.uid())
                     .build());
             return true;
-        } else {
-            return false;
         }
     }
 

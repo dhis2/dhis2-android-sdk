@@ -18,6 +18,9 @@ import okhttp3.ResponseBody;
 
 public final class FileResourceUtil {
 
+    private FileResourceUtil() {
+    }
+
     static File getFile(Context context, String fileResourceUid) throws D2Error {
         File file = new File(getFileResourceDirectory(context), fileResourceUid);
 
@@ -34,8 +37,8 @@ public final class FileResourceUtil {
 
     public static File getFileResourceDirectory(Context context) {
         File file = new File(context.getFilesDir(), "sdk_resources");
-        if (!file.exists()) {
-            file.mkdirs();
+        if (!file.exists() && file.mkdirs()) {
+            return file;
         }
         return file;
     }
@@ -89,7 +92,7 @@ public final class FileResourceUtil {
             outputStream.flush();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.v(FileResourceUtil.class.getCanonicalName(), e.getMessage());
         } finally {
             try {
                 if (inputStream != null) {
@@ -100,7 +103,15 @@ public final class FileResourceUtil {
                     outputStream.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.v(FileResourceUtil.class.getCanonicalName(), e.getMessage());
+            }
+        }
+
+        if (outputStream != null) {
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+                Log.v(FileResourceUtil.class.getCanonicalName(), e.getMessage());
             }
         }
 

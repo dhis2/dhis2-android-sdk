@@ -55,14 +55,12 @@ public class IdentifiableDeletableDataObjectStoreImpl<M extends ObjectWithUidInt
 
     private final SQLiteStatement setStateIfUploadingStatement;
     private final SQLiteStatement setDeletedStatement;
-    protected final String tableName;
 
     public IdentifiableDeletableDataObjectStoreImpl(DatabaseAdapter databaseAdapter,
                                                     SQLStatementWrapper statements,
                                                     SQLStatementBuilder builder, StatementBinder<M> binder,
                                                     CursorModelFactory<M> modelFactory) {
         super(databaseAdapter, statements, builder, binder, modelFactory);
-        this.tableName = builder.getTableName();
         String whereUid =  " WHERE " + UID + " =?";
 
         String setState = "UPDATE " + tableName + " SET " +

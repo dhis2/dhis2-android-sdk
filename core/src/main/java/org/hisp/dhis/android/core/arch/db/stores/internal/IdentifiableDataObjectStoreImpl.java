@@ -60,7 +60,7 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
     private final String existsQuery;
     private final SQLiteStatement setStateStatement;
     private final SQLiteStatement setStateForUpdateStatement;
-    protected final String tableName;
+    final String tableName;
 
     public IdentifiableDataObjectStoreImpl(DatabaseAdapter databaseAdapter,
                                            SQLStatementWrapper statements,

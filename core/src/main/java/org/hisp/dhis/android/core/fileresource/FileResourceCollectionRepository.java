@@ -37,8 +37,10 @@ import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.LongFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
@@ -141,16 +143,16 @@ public final class FileResourceCollectionRepository
         return cf.string(Columns.NAME);
     }
 
-    public StringFilterConnector<FileResourceCollectionRepository> byLastUpdated() {
-        return cf.string(Columns.LAST_UPDATED);
+    public DateFilterConnector<FileResourceCollectionRepository> byLastUpdated() {
+        return cf.date(Columns.LAST_UPDATED);
     }
 
     public StringFilterConnector<FileResourceCollectionRepository> byContentType() {
         return cf.string(Columns.CONTENT_TYPE);
     }
 
-    public StringFilterConnector<FileResourceCollectionRepository> byContentLength() {
-        return cf.string(Columns.CONTENT_LENGTH);
+    public LongFilterConnector<FileResourceCollectionRepository> byContentLength() {
+        return cf.longC(Columns.CONTENT_LENGTH);
     }
 
     public StringFilterConnector<FileResourceCollectionRepository> byPath() {

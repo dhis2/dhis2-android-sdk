@@ -107,6 +107,10 @@ public final class TrackedEntityAttributeCollectionRepository
         return cf.bool(TrackedEntityAttributeFields.INHERIT);
     }
 
+    public StringFilterConnector<TrackedEntityAttributeCollectionRepository> byFieldMask() {
+        return cf.string(TrackedEntityAttributeFields.FIELD_MASK);
+    }
+
     public StringFilterConnector<TrackedEntityAttributeCollectionRepository> byFormName() {
         return cf.string(TrackedEntityAttributeFields.FORM_NAME);
     }

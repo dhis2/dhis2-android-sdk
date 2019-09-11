@@ -55,6 +55,7 @@ public class TrackedEntityAttributeSamples {
                 .orgUnitScope(Boolean.TRUE)
                 .unique(Boolean.TRUE)
                 .inherit(Boolean.TRUE)
+                .fieldMask("XXXXX")
                 .formName("form_name")
                 .build();
     }

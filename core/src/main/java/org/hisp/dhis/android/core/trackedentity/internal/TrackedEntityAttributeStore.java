@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 
 import android.database.sqlite.SQLiteStatement;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
@@ -38,8 +40,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
-
-import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
@@ -67,6 +67,7 @@ public final class TrackedEntityAttributeStore {
             sqLiteBind(sqLiteStatement, 21, o.unique());
             sqLiteBind(sqLiteStatement, 22, o.inherit());
             sqLiteBind(sqLiteStatement, 23, o.formName());
+            sqLiteBind(sqLiteStatement, 24, o.fieldMask());
         }
     };
 

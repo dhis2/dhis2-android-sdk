@@ -26,37 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.trackedentity;
+package org.hisp.dhis.android.core.data.dataelement;
 
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
 
-public class TrackedEntityAttributeSamples {
+public class DataElementSamples {
 
-    public static TrackedEntityAttribute get() {
+    public static DataElement getDataElement() {
+        DataElement.Builder dataElementBuilder = DataElement.builder();
 
-        TrackedEntityAttribute.Builder builder = TrackedEntityAttribute.builder();
-        fillNameableProperties(builder);
-
-        return builder
+        fillNameableProperties(dataElementBuilder);
+        dataElementBuilder
                 .id(1L)
-                .pattern("pattern")
-                .sortOrderInListNoProgram(1)
-                .optionSet(ObjectWithUid.create("option_set_uid"))
-                .valueType(ValueType.BOOLEAN)
-                .expression("expression")
-                .programScope(Boolean.TRUE)
-                .displayInListNoProgram(Boolean.TRUE)
-                .generated(Boolean.TRUE)
-                .displayOnVisitSchedule(Boolean.TRUE)
-                .orgUnitScope(Boolean.TRUE)
-                .unique(Boolean.TRUE)
-                .inherit(Boolean.TRUE)
-                .fieldMask("XXXXX")
-                .formName("form_name")
-                .build();
+                .formName("form-name")
+                .displayFormName("display-form-name")
+                .valueType(ValueType.TEXT)
+                .zeroIsSignificant(Boolean.TRUE)
+                .domainType("TRACKER")
+                .aggregationType("AVERAGE")
+                .optionSet(ObjectWithUid.create("bWuNrMHEoZ0"))
+                .categoryCombo(ObjectWithUid.create("cWuNrMHEoZ1"))
+                .fieldMask("XXXX");
+        return dataElementBuilder.build();
     }
 }

@@ -26,14 +26,46 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal;
+package org.hisp.dhis.android.core.arch.api.internal;
 
-import org.hisp.dhis.android.core.user.User;
+import java.io.IOException;
 
-public class UserWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<User> {
+import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
+import okhttp3.Request;
+import okhttp3.Response;
+
+public class ServerUrlInterceptor implements Interceptor {
+
+    private static String baseUrlUpToAPI;
+
+    public static void setServerUrl(String newHost) {
+        baseUrlUpToAPI = extractBeforeAPI(newHost);
+    }
 
     @Override
-    protected User build(String uid) {
-        return User.builder().uid(uid).build();
+    public Response intercept(Chain chain) throws IOException {
+        Request request = chain.request();
+
+        if (request.url().toString().startsWith("http://localhost")) {
+            return chain.proceed(request);
+        } else {
+            HttpUrl newUrl = HttpUrl.parse(baseUrlUpToAPI + "/api/" + extractAfterAPI(request.url().toString()));
+            Request newRequest = request.newBuilder().url(newUrl).build();
+
+            Response response = chain.proceed(newRequest);
+            if (response.code() == 302) {
+                setServerUrl(response.header("Location"));
+            }
+            return response;
+        }
+    }
+
+    private static String extractBeforeAPI(String url) {
+        return url.split("/api/")[0];
+    }
+
+    private static String extractAfterAPI(String url) {
+        return url.split("/api/")[1];
     }
 }

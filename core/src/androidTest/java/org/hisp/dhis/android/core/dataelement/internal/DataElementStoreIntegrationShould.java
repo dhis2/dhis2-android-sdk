@@ -26,37 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.trackedentity;
+package org.hisp.dhis.android.core.dataelement.internal;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.dataelement.DataElementSamples;
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
+@RunWith(D2JunitRunner.class)
+public class DataElementStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<DataElement> {
 
-public class TrackedEntityAttributeSamples {
+    public DataElementStoreIntegrationShould() {
+        super(DataElementStore.create(DatabaseAdapterFactory.get()), DataElementTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get());
+    }
 
-    public static TrackedEntityAttribute get() {
+    @Override
+    protected DataElement buildObject() {
+        return DataElementSamples.getDataElement();
+    }
 
-        TrackedEntityAttribute.Builder builder = TrackedEntityAttribute.builder();
-        fillNameableProperties(builder);
-
-        return builder
-                .id(1L)
-                .pattern("pattern")
-                .sortOrderInListNoProgram(1)
-                .optionSet(ObjectWithUid.create("option_set_uid"))
-                .valueType(ValueType.BOOLEAN)
-                .expression("expression")
-                .programScope(Boolean.TRUE)
-                .displayInListNoProgram(Boolean.TRUE)
-                .generated(Boolean.TRUE)
-                .displayOnVisitSchedule(Boolean.TRUE)
-                .orgUnitScope(Boolean.TRUE)
-                .unique(Boolean.TRUE)
-                .inherit(Boolean.TRUE)
-                .fieldMask("XXXXX")
-                .formName("form_name")
+    @Override
+    protected DataElement buildObjectToUpdate() {
+        return DataElementSamples.getDataElement().toBuilder()
+                .formName("new-form-name")
                 .build();
     }
 }

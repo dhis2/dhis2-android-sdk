@@ -115,6 +115,14 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
     }
 
     @Test
+    public void filter_by_field_mask() {
+        List<DataElement> dataElements = d2.dataElementModule().dataElements
+                .byFieldMask().eq("XXXXX")
+                .blockingGet();
+        assertThat(dataElements.size(), is(1));
+    }
+
+    @Test
     public void include_style_as_child() {
         DataElement dataElement = d2.dataElementModule().dataElements
                 .withStyle()

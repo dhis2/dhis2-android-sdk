@@ -88,6 +88,10 @@ public final class DataElementCollectionRepository
         return cf.string(DataElementFields.CATEGORY_COMBO);
     }
 
+    public StringFilterConnector<DataElementCollectionRepository> byFieldMask() {
+        return cf.string(DataElementFields.FIELD_MASK);
+    }
+
     public DataElementCollectionRepository withStyle() {
         return cf.withChild(DataElementFields.STYLE);
     }

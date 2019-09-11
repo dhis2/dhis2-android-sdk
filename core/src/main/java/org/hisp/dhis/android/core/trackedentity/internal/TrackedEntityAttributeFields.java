@@ -51,6 +51,7 @@ public final class TrackedEntityAttributeFields {
     public static final String ORG_UNIT_SCOPE = "orgunitScope";
     public static final String UNIQUE = "unique";
     public static final String INHERIT = "inherit";
+    public static final String FIELD_MASK = "fieldMask";
     public static final String STYLE = "style";
     private static final String ACCESS = "access";
     public static final String FORM_NAME = "formName";
@@ -75,6 +76,7 @@ public final class TrackedEntityAttributeFields {
                     fh.<Boolean>field(ORG_UNIT_SCOPE),
                     fh.<Boolean>field(UNIQUE),
                     fh.<Boolean>field(INHERIT),
+                    fh.<String>field(FIELD_MASK),
                     fh.nestedFieldWithUid(OPTION_SET),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
                     fh.<Access>nestedField(ACCESS).with(Access.read),

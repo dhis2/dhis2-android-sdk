@@ -64,7 +64,8 @@ public final class DataElementTableInfo {
                     DataElementFields.DOMAIN_TYPE,
                     DataElementFields.DISPLAY_FORM_NAME,
                     DataElementFields.OPTION_SET,
-                    DataElementFields.CATEGORY_COMBO
+                    DataElementFields.CATEGORY_COMBO,
+                    DataElementFields.FIELD_MASK
             );
         }
     }

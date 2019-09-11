@@ -52,7 +52,6 @@ import org.hisp.dhis.android.core.program.ProgramRuleActionType;
 import org.hisp.dhis.android.core.program.ProgramRuleTableInfo;
 import org.hisp.dhis.android.core.program.internal.ProgramRuleActionStore;
 import org.hisp.dhis.android.core.program.internal.ProgramRuleStore;
-import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserCredentialsTableInfo;
 import org.hisp.dhis.android.core.user.UserTableInfo;
@@ -236,7 +235,7 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
 
         executor.executeD2CallTransactionally(() -> {
             givenAMetadataInDatabase();
-            User user = User.builder().uid("no_user_uid").build();
+            ObjectWithUid user = ObjectWithUid.create("no_user_uid");
             UserCredentials userCredentials = UserCredentials.builder()
                     .id(2L)
                     .uid("user_credential_uid1")

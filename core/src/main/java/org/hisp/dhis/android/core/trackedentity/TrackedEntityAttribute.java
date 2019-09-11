@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -48,8 +50,6 @@ import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_TrackedEntityAttribute.Builder.class)
@@ -110,6 +110,10 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
 
     @Nullable
     @JsonProperty()
+    public abstract String fieldMask();
+
+    @Nullable
+    @JsonProperty()
     @ColumnAdapter(IgnoreAccessAdapter.class)
     public abstract Access access();
 
@@ -158,6 +162,8 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
         public abstract Builder unique(Boolean unique);
 
         public abstract Builder inherit(Boolean inherit);
+
+        public abstract Builder fieldMask(String fieldMask);
 
         public abstract Builder style(ObjectStyle style);
 

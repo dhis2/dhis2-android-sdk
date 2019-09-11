@@ -1,2 +1,5 @@
 up:
-  - CREATE TABLE FileResource (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, name TEXT, created TEXT, lastUpdated TEXT, contentType TEXT, contentLength INTEGER, path TEXT, state TEXT);
+- BEGIN TRANSACTION;
+- ALTER TABLE DataElement ADD COLUMN fieldMask TEXT;
+- ALTER TABLE TrackedEntityAttribute ADD COLUMN fieldMask TEXT;
+- COMMIT;

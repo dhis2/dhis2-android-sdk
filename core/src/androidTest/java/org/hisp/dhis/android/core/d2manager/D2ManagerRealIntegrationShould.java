@@ -28,19 +28,19 @@
 
 package org.hisp.dhis.android.core.d2manager;
 
+import androidx.test.InstrumentationRegistry;
+
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.common.collect.Lists;
 
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import androidx.test.InstrumentationRegistry;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -117,6 +117,6 @@ public class D2ManagerRealIntegrationShould {
         D2Manager.getD2().databaseAdapter().database().setForeignKeyConstraintsEnabled(Boolean.FALSE);
 
         UserCredentialsStoreImpl.create(D2Manager.getD2().databaseAdapter()).insert(UserCredentials.builder()
-                .user(User.builder().uid("user").build()).uid("uid").username("username").build());
+                .user(ObjectWithUid.create("user")).uid("uid").username("username").build());
     }
 }

@@ -63,7 +63,7 @@ public final class FileResourceUtil {
         writeInputStream(body.byteStream(), destinationFile, body.contentLength());
     }
 
-    private static File writeInputStream(InputStream inputStream, File file, long fileSize) {
+    public static File writeInputStream(InputStream inputStream, File file, long fileSize) {
         OutputStream outputStream = null;
 
         try {

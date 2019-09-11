@@ -28,7 +28,13 @@
 
 package org.hisp.dhis.android.testapp.fileresource;
 
+import android.content.Context;
+
+import androidx.test.InstrumentationRegistry;
+
+import org.hisp.dhis.android.core.data.fileresource.RandomGeneratedInputStream;
 import org.hisp.dhis.android.core.fileresource.FileResource;
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -36,6 +42,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -69,6 +76,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
         assertThat(fileResources1.size(), is(0));
 
         File file = getFile();
+        assertThat(file.exists(), is(true));
 
         String fileResourceUid = d2.fileResourceModule().fileResources.blockingAdd(file);
 
@@ -78,9 +86,14 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
         FileResource fileResource = d2.fileResourceModule().fileResources.uid(fileResourceUid).blockingGet();
         assertThat(fileResource.uid(), is(fileResourceUid));
 
+        File savedFile = new File(fileResource.path(), fileResource.uid());
+        assertThat(savedFile.exists(), is(true));
     }
 
     private File getFile() {
-        return new File(getClass().getClassLoader().getResource("fileresource/logo.png").getFile());
+        InputStream inputStream = new RandomGeneratedInputStream(1024);
+        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        File destinationFile = new File(FileResourceUtil.getFileResourceDirectory(context), "fileName");
+        return FileResourceUtil.writeInputStream(inputStream, destinationFile, 1024);
     }
 }

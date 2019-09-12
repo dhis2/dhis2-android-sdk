@@ -42,7 +42,7 @@ import io.reactivex.Observable;
 public final class FileResourceModule {
 
     public final FileResourceCollectionRepository fileResources;
-    public final FileResourceCall fileResourceCall;
+    private final FileResourceCall fileResourceCall;
 
     @Inject
     FileResourceModule(FileResourceCollectionRepository fileResources,

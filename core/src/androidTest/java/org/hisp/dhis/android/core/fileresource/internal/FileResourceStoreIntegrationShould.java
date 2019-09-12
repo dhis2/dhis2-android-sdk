@@ -25,3 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+package org.hisp.dhis.android.core.fileresource.internal;
+
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.fileresource.FileResourceSamples;
+import org.hisp.dhis.android.core.fileresource.FileResource;
+import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
+
+@RunWith(D2JunitRunner.class)
+public class FileResourceStoreIntegrationShould
+        extends IdentifiableObjectStoreAbstractIntegrationShould<FileResource> {
+
+    public FileResourceStoreIntegrationShould() {
+        super(FileResourceStoreImpl.create(DatabaseAdapterFactory.get()),
+                FileResourceTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+    }
+
+    @Override
+    protected FileResource buildObject() {
+        return FileResourceSamples.get();
+    }
+
+    @Override
+    protected FileResource buildObjectToUpdate() {
+        return FileResourceSamples.get().toBuilder()
+                .name("new_name")
+                .build();
+    }
+}

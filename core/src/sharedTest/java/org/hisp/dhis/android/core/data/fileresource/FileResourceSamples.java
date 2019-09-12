@@ -40,11 +40,11 @@ public class FileResourceSamples {
     public static FileResource get() {
         return FileResource.builder()
                 .id(1L)
-                .uid("event_uid")
+                .uid("file_resource_uid")
                 .created(getDate("2014-08-20T12:28:56.409"))
                 .lastUpdated(getDate("2015-10-14T13:36:53.063"))
                 .state(State.TO_POST)
-                .contentLength(1234L)
+                .contentLength(1024L)
                 .contentType("image/*")
                 .path("path")
                 .build();

@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.object.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.DataModel;
+import org.hisp.dhis.android.core.common.DeletableDataModel;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
@@ -45,12 +45,12 @@ import java.util.Map;
 import io.reactivex.Completable;
 
 public class ReadWriteWithUidDataObjectRepositoryImpl
-        <M extends Model & ObjectWithUidInterface & DataModel, R extends ReadOnlyObjectRepository<M>>
+        <M extends Model & ObjectWithUidInterface & DeletableDataModel, R extends ReadOnlyObjectRepository<M>>
         extends ReadWriteWithUidObjectRepositoryImpl<M, R> {
 
-    private final IdentifiableDataObjectStore<M> store;
+    private final IdentifiableDeletableDataObjectStore<M> store;
 
-    public ReadWriteWithUidDataObjectRepositoryImpl(IdentifiableDataObjectStore<M> store,
+    public ReadWriteWithUidDataObjectRepositoryImpl(IdentifiableDeletableDataObjectStore<M> store,
                                                     Map<String, ChildrenAppender<M>> childrenAppenders,
                                                     RepositoryScope scope,
                                                     ObjectRepositoryFactory<R> repositoryFactory) {

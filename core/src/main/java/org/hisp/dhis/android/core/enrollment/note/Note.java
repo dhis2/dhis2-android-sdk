@@ -30,21 +30,21 @@ package org.hisp.dhis.android.core.enrollment.note;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.BaseDeletableDataModel;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.enrollment.note.internal.NoteFields;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Note.Builder.class)
-public abstract class Note extends BaseDataModel implements ObjectWithUidInterface {
+public abstract class Note extends BaseDeletableDataModel implements ObjectWithUidInterface {
 
     @Nullable
     @JsonProperty(NoteFields.UID)
@@ -78,7 +78,7 @@ public abstract class Note extends BaseDataModel implements ObjectWithUidInterfa
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseDataModel.Builder<Builder> {
+    public static abstract class Builder extends BaseDeletableDataModel.Builder<Builder> {
         public abstract Builder id(Long id);
 
         @JsonProperty(NoteFields.UID)

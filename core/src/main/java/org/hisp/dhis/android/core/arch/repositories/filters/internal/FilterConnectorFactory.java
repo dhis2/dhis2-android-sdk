@@ -65,6 +65,10 @@ public class FilterConnectorFactory<R extends BaseRepository> {
         return new IntegerFilterConnector<>(repositoryFactory, scope, key);
     }
 
+    public LongFilterConnector<R> longC(String key) {
+        return new LongFilterConnector<>(repositoryFactory, scope, key);
+    }
+
     public DoubleFilterConnector<R> doubleC(String key) {
         return new DoubleFilterConnector<>(repositoryFactory, scope, key);
     }

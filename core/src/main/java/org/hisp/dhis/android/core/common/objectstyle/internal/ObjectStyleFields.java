@@ -31,15 +31,14 @@ package org.hisp.dhis.android.core.common.objectstyle.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleTableInfo;
 
 public final class ObjectStyleFields {
-    public static final String COLOR = "color";
-    public static final String ICON = "icon";
 
     private static FieldsHelper<ObjectStyle> fh = new FieldsHelper<>();
     public static final Fields<ObjectStyle> allFields = Fields.<ObjectStyle>builder().fields(
-            fh.<String>field(COLOR),
-            fh.<String>field(ICON)
+            fh.<String>field(ObjectStyleTableInfo.Columns.COLOR),
+            fh.<String>field(ObjectStyleTableInfo.Columns.ICON)
     ).build();
 
     private ObjectStyleFields() {

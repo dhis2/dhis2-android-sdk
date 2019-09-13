@@ -32,10 +32,10 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.legendset.Legend;
 import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.hisp.dhis.android.core.legendset.LegendSetTableInfo.Columns;
 
 public final class LegendSetFields {
 
-    public final static String SYMBOLIZER = "symbolizer";
     public final static String LEGENDS = "legends";
 
     private static final FieldsHelper<LegendSet> fh = new FieldsHelper<>();
@@ -43,7 +43,7 @@ public final class LegendSetFields {
     public static final Fields<LegendSet> allFields = Fields.<LegendSet>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<String>field(SYMBOLIZER),
+                    fh.<String>field(Columns.SYMBOLIZER),
                     fh.<Legend>nestedField(LEGENDS).with(LegendFields.allFields)
             ).build();
 

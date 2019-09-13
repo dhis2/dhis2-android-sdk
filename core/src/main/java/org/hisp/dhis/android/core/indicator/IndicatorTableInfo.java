@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.indicator.internal.IndicatorFields;
 
 public final class IndicatorTableInfo {
 
@@ -52,18 +51,26 @@ public final class IndicatorTableInfo {
         }
     };
 
-    static class Columns extends BaseNameableObjectModel.Columns {
+    public static class Columns extends BaseNameableObjectModel.Columns {
+
+        public final static String ANNUALIZED = "annualized";
+        public final static String INDICATOR_TYPE = "indicatorType";
+        public final static String NUMERATOR = "numerator";
+        public final static String NUMERATOR_DESCRIPTION = "numeratorDescription";
+        public final static String DENOMINATOR = "denominator";
+        public final static String DENOMINATOR_DESCRIPTION = "denominatorDescription";
+        public final static String URL = "url";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    IndicatorFields.ANNUALIZED,
-                    IndicatorFields.INDICATOR_TYPE,
-                    IndicatorFields.NUMERATOR,
-                    IndicatorFields.NUMERATOR_DESCRIPTION,
-                    IndicatorFields.DENOMINATOR,
-                    IndicatorFields.DENOMINATOR_DESCRIPTION,
-                    IndicatorFields.URL
+                    ANNUALIZED,
+                    INDICATOR_TYPE,
+                    NUMERATOR,
+                    NUMERATOR_DESCRIPTION,
+                    DENOMINATOR,
+                    DENOMINATOR_DESCRIPTION,
+                    URL
             );
         }
     }

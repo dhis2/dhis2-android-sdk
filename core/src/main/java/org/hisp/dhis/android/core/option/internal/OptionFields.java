@@ -45,8 +45,6 @@ public final class OptionFields {
 
     public static final Field<Option, String> uid = fh.uid();
 
-    static final Field<Option, String> lastUpdated = fh.lastUpdated();
-
     public static final Fields<Option> allFields = Fields.<Option>builder()
             .fields(fh.getIdentifiableFields())
             .fields(

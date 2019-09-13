@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
@@ -58,8 +57,8 @@ final class TrackedEntityInstanceLocalQueryHelper {
     private static String TEI_STATE = dot(TEI_ALIAS, BaseDataModel.Columns.STATE);
     private static String TEI_LAST_UPDATED = dot(TEI_ALIAS, "lastUpdated");
 
-    private static String ENROLLMENT_DATE = EnrollmentFields.ENROLLMENT_DATE;
-    private static String PROGRAM = EnrollmentFields.PROGRAM;
+    private static String ENROLLMENT_DATE = EnrollmentTableInfo.Columns.ENROLLMENT_DATE;
+    private static String PROGRAM = EnrollmentTableInfo.Columns.PROGRAM;
 
     private static String TRACKED_ENTITY_ATTRIBUTE =
             TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE;

@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo;
-import org.hisp.dhis.android.core.datavalue.internal.DataValueFields;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.period.PeriodTableInfo;
 
@@ -77,7 +76,7 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
     private static final String DATASET_UID = DATASET_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
     private static final String DATASET_NAME =
             DATASET_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.DISPLAY_NAME;
-    private static final String PERIOD = DATAVALUE_TABLE_ALIAS + "." + DataValueFields.PERIOD;
+    private static final String PERIOD = DATAVALUE_TABLE_ALIAS + "." + DataValueTableInfo.Columns.PERIOD;
     private static final String PERIOD_TYPE = PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.PERIOD_TYPE;
     private static final String PERIOD_START_DATE = PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.START_DATE;
     private static final String PERIOD_END_DATE = PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.END_DATE;
@@ -182,7 +181,7 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
 
     private static String getJoinDataSetElement() {
         return INNER_JOIN + DataSetDataElementLinkTableInfo.TABLE_INFO.name() + AS + DATASETELEMENT_TABLE_ALIAS +
-                ON + DATAVALUE_TABLE_ALIAS + "." + DataValueFields.DATA_ELEMENT + EQ +
+                ON + DATAVALUE_TABLE_ALIAS + "." + DataValueTableInfo.Columns.DATA_ELEMENT + EQ +
                 DATASETELEMENT_TABLE_ALIAS + "." + DataSetDataElementLinkTableInfo.Columns.DATA_ELEMENT;
     }
 
@@ -200,7 +199,7 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
 
     private static String getJoinAttributeOptionCombo() {
         return INNER_JOIN + CategoryOptionComboTableInfo.TABLE_INFO.name() + AS + AOC_TABLE_ALIAS +
-                ON + DATAVALUE_TABLE_ALIAS + "." + DataValueFields.ATTRIBUTE_OPTION_COMBO + EQ +
+                ON + DATAVALUE_TABLE_ALIAS + "." + DataValueTableInfo.Columns.ATTRIBUTE_OPTION_COMBO + EQ +
                 AOC_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
     }
 

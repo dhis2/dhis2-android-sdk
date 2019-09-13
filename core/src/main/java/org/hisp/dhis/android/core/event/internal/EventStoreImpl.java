@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventTableInfo;
 
@@ -142,7 +141,7 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
     @Override
     public int countTeisWhereEvents(String whereClause) {
         String whereStatement = whereClause == null ? "" : " WHERE " + whereClause;
-        String query = "SELECT COUNT(DISTINCT a." + EnrollmentFields.TRACKED_ENTITY_INSTANCE + ") " +
+        String query = "SELECT COUNT(DISTINCT a." + EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE + ") " +
                 "FROM " + EnrollmentTableInfo.TABLE_INFO.name() + " a " +
                 "INNER JOIN " +
                 "(SELECT DISTINCT " + EventFields.ENROLLMENT +

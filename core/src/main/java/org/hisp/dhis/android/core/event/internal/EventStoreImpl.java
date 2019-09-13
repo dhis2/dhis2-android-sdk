@@ -38,12 +38,12 @@ import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatement
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
-import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventTableInfo;
+import org.hisp.dhis.android.core.event.EventTableInfo.Columns;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,7 +79,7 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
     };
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            EventTableInfo.TABLE_INFO, EventFields.ENROLLMENT);
+            EventTableInfo.TABLE_INFO, Columns.ENROLLMENT);
 
     private EventStoreImpl(DatabaseAdapter databaseAdapter,
                            SQLStatementWrapper statementWrapper,
@@ -92,8 +92,8 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
     @Override
     public Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost() {
         String eventsAttachedToEnrollmentsQuery = new WhereClauseBuilder()
-                .appendIsNotNullValue(EventFields.ENROLLMENT)
-                .appendInKeyStringValues(BaseDataModel.Columns.STATE, Arrays.asList(
+                .appendIsNotNullValue(Columns.ENROLLMENT)
+                .appendInKeyStringValues(Columns.STATE, Arrays.asList(
                         State.TO_POST.name(),
                         State.TO_UPDATE.name())).build();
 
@@ -124,7 +124,7 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
         String byEnrollmentAndProgramStageQuery = "SELECT Event.* FROM Event " +
                 "WHERE Event.enrollment = '" + enrollmentUid + "' " +
                 "AND Event.programStage = '" + programStageUid + "' " +
-                "ORDER BY Event." + EventFields.EVENT_DATE + ", Event." + EventFields.LAST_UPDATED;
+                "ORDER BY Event." + Columns.EVENT_DATE + ", Event." + Columns.LAST_UPDATED;
 
         return eventListFromQuery(byEnrollmentAndProgramStageQuery);
     }
@@ -144,9 +144,9 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
         String query = "SELECT COUNT(DISTINCT a." + EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE + ") " +
                 "FROM " + EnrollmentTableInfo.TABLE_INFO.name() + " a " +
                 "INNER JOIN " +
-                "(SELECT DISTINCT " + EventFields.ENROLLMENT +
+                "(SELECT DISTINCT " + Columns.ENROLLMENT +
                     " FROM " + EventTableInfo.TABLE_INFO.name() + whereStatement + ") b " +
-                "ON a." + BaseIdentifiableObjectModel.Columns.UID + " = b." + EventFields.ENROLLMENT;
+                "ON a." + BaseIdentifiableObjectModel.Columns.UID + " = b." + Columns.ENROLLMENT;
 
         return processCount(databaseAdapter.query(query));
     }

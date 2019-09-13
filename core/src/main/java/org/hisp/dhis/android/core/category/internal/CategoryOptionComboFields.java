@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 
 public final class CategoryOptionComboFields {
 
-    public static final String CATEGORY_COMBO = "categoryCombo";
     public static final String CATEGORY_OPTIONS = "categoryOptions";
 
     private static final FieldsHelper<CategoryOptionCombo> fh = new FieldsHelper<>();

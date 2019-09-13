@@ -50,7 +50,7 @@ public class DataApprovalTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
 
         public static String WORKFLOW = "workflow";
         public static String ORGANISATION_UNIT = "organisationUnit";

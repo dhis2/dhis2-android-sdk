@@ -52,11 +52,11 @@ public class DataApprovalTableInfo {
 
     public static class Columns extends BaseModel.Columns {
 
-        public static String WORKFLOW = "workflow";
-        public static String ORGANISATION_UNIT = "organisationUnit";
-        public static String PERIOD = "period";
-        public static String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
-        public static String STATE = DataApprovalFields.STATE;
+        public static final String WORKFLOW = "workflow";
+        public static final String ORGANISATION_UNIT = "organisationUnit";
+        public static final String PERIOD = "period";
+        public static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
+        public static final String STATE = DataApprovalFields.STATE;
 
         @Override
         public String[] all() {

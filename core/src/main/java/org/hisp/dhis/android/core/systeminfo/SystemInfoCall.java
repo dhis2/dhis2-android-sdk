@@ -69,8 +69,8 @@ class SystemInfoCall implements CompletableProvider {
     }
 
     @Override
-    public Completable getCompletable() {
-        return apiCallExecutor.wrapSingle(systemInfoService.getSystemInfo(SystemInfoFields.allFields))
+    public Completable getCompletable(boolean storeError) {
+        return apiCallExecutor.wrapSingle(systemInfoService.getSystemInfo(SystemInfoFields.allFields), storeError)
                 .doOnSuccess(systemInfo -> {
                     if (DHISVersion.isAllowedVersion(systemInfo.version())) {
                         versionManager.setVersion(systemInfo.version());

@@ -135,7 +135,7 @@ class TrackedEntityInstanceWithLimitCallFactory {
     }
 
     private Observable<D2Progress> downloadSystemInfo(D2ProgressManager progressManager) {
-        return systemInfoRepository.download()
+        return systemInfoRepository.download(true)
                 .toSingle(() -> progressManager.increaseProgress(SystemInfo.class, false))
                 .toObservable();
     }

@@ -158,7 +158,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         when(userService.authenticate(any(String.class), any(Fields.class))).thenReturn(authenticateAPICall);
 
-        when(systemInfoRepository.download()).thenReturn(Completable.complete());
+        when(systemInfoRepository.download(true)).thenReturn(Completable.complete());
         whenAPICall().thenReturn(user);
 
         when(userStore.selectFirst()).thenReturn(loggedUser);

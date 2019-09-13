@@ -110,7 +110,7 @@ final class AggregatedDataCall {
 
         D2ProgressManager progressManager = new D2ProgressManager(totalCalls);
 
-        Observable<D2Progress> observable = systemInfoRepository.download()
+        Observable<D2Progress> observable = systemInfoRepository.download(true)
                 .toSingle(() -> progressManager.increaseProgressAndCompleteWithCount(SystemInfo.class))
                 .flatMapObservable(progress -> downloadInternal(progressManager, progress));
         return rxCallExecutor.wrapObservableTransactionally(observable, true);

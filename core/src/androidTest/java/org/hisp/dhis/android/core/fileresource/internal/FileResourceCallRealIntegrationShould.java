@@ -139,6 +139,21 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
         assertThat(file2.exists(), is(true));
     }
 
+    //@Test
+    public void not_download_existing_resources() throws Exception {
+        syncDataAndMetadata();
+
+        d2.fileResourceModule().blockingDownload();
+
+        List<FileResource> fileResources = d2.fileResourceModule().fileResources.blockingGet();
+
+        d2.fileResourceModule().blockingDownload();
+
+        List<FileResource> fileResources2 = d2.fileResourceModule().fileResources.blockingGet();
+
+        assertThat(fileResources.size(), is(fileResources2.size()));
+    }
+
     private void syncDataAndMetadata() throws Exception {
         d2.userModule().logIn("android", "Android123").blockingGet();
 

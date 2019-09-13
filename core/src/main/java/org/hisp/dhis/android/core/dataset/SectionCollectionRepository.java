@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.dataset.internal.SectionFields;
 
 import java.util.Map;
 
@@ -55,23 +56,23 @@ public final class SectionCollectionRepository
     }
 
     public StringFilterConnector<SectionCollectionRepository> byDescription() {
-        return cf.string(SectionFields.DESCRIPTION);
+        return cf.string(SectionTableInfo.Columns.DESCRIPTION);
     }
 
     public IntegerFilterConnector<SectionCollectionRepository> bySortOrder() {
-        return cf.integer(SectionFields.SORT_ORDER);
+        return cf.integer(SectionTableInfo.Columns.SORT_ORDER);
     }
 
     public BooleanFilterConnector<SectionCollectionRepository> byShowRowTotals() {
-        return cf.bool(SectionFields.SHOW_ROW_TOTALS);
+        return cf.bool(SectionTableInfo.Columns.SHOW_ROW_TOTALS);
     }
 
     public BooleanFilterConnector<SectionCollectionRepository> byShowColumnTotals() {
-        return cf.bool(SectionFields.SHOW_COLUMN_TOTALS);
+        return cf.bool(SectionTableInfo.Columns.SHOW_COLUMN_TOTALS);
     }
 
     public StringFilterConnector<SectionCollectionRepository> byDataSetUid() {
-        return cf.string(SectionFields.DATA_SET);
+        return cf.string(SectionTableInfo.Columns.DATA_SET);
     }
 
     public SectionCollectionRepository withDataElements() {

@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationFields;
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationPostCall;
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore;
 

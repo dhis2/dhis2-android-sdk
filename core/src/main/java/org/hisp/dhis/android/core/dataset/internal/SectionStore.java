@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.dataset.Section;
-import org.hisp.dhis.android.core.dataset.SectionFields;
 import org.hisp.dhis.android.core.dataset.SectionTableInfo;
 
 import androidx.annotation.NonNull;
@@ -60,7 +59,7 @@ final class SectionStore {
     };
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            SectionTableInfo.TABLE_INFO, SectionFields.DATA_SET);
+            SectionTableInfo.TABLE_INFO, SectionTableInfo.Columns.DATA_SET);
 
     private SectionStore() {}
 

@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo;
 
-public final class DataSetCompleteRegistrationFields {
+final class DataSetCompleteRegistrationFields {
 
     private static FieldsHelper<DataSetCompleteRegistration> fieldsHelper = new FieldsHelper<>();
 

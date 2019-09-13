@@ -32,8 +32,6 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
 
-import androidx.annotation.VisibleForTesting;
-
 public final class DataSetDataElementLinkTableInfo {
 
     public static final TableInfo TABLE_INFO = new TableInfo() {
@@ -52,7 +50,6 @@ public final class DataSetDataElementLinkTableInfo {
     private DataSetDataElementLinkTableInfo() {
     }
 
-    @VisibleForTesting
     public static class Columns extends BaseModel.Columns {
 
         public static final String DATA_SET = "dataSet";

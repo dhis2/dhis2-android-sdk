@@ -30,11 +30,10 @@ package org.hisp.dhis.android.core.dataelement;
 
 import android.content.ContentValues;
 
+import org.hisp.dhis.android.core.common.ValueType;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
 
 public class CreateDataElementUtils {
     private static final long ID = 2L;
@@ -69,17 +68,17 @@ public class CreateDataElementUtils {
         dataElement.put(DataElementTableInfo.Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
         dataElement.put(DataElementTableInfo.Columns.DESCRIPTION, DESCRIPTION);
         dataElement.put(DataElementTableInfo.Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
-        dataElement.put(DataElementFields.VALUE_TYPE, VALUE_TYPE.name());
-        dataElement.put(DataElementFields.ZERO_IS_SIGNIFICANT, ZERO_IS_SIGNIFICANT);
-        dataElement.put(DataElementFields.AGGREGATION_TYPE, AGGREGATION_OPERATOR);
-        dataElement.put(DataElementFields.FORM_NAME, FORM_NAME);
-        dataElement.put(DataElementFields.DOMAIN_TYPE, DOMAIN_TYPE);
-        dataElement.put(DataElementFields.DISPLAY_FORM_NAME, DISPLAY_FORM_NAME);
-        dataElement.put(DataElementFields.CATEGORY_COMBO, categoryComboId);
+        dataElement.put(DataElementTableInfo.Columns.VALUE_TYPE, VALUE_TYPE.name());
+        dataElement.put(DataElementTableInfo.Columns.ZERO_IS_SIGNIFICANT, ZERO_IS_SIGNIFICANT);
+        dataElement.put(DataElementTableInfo.Columns.AGGREGATION_TYPE, AGGREGATION_OPERATOR);
+        dataElement.put(DataElementTableInfo.Columns.FORM_NAME, FORM_NAME);
+        dataElement.put(DataElementTableInfo.Columns.DOMAIN_TYPE, DOMAIN_TYPE);
+        dataElement.put(DataElementTableInfo.Columns.DISPLAY_FORM_NAME, DISPLAY_FORM_NAME);
+        dataElement.put(DataElementTableInfo.Columns.CATEGORY_COMBO, categoryComboId);
         if (optionSetId == null) {
-            dataElement.putNull(DataElementFields.OPTION_SET);
+            dataElement.putNull(DataElementTableInfo.Columns.OPTION_SET);
         } else {
-            dataElement.put(DataElementFields.OPTION_SET, optionSetId);
+            dataElement.put(DataElementTableInfo.Columns.OPTION_SET, optionSetId);
         }
 
         return dataElement;

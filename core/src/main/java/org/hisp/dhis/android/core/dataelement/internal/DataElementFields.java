@@ -37,22 +37,12 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
 import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
 
 public final class DataElementFields {
 
-    public final static String VALUE_TYPE = "valueType";
-    public final static String ZERO_IS_SIGNIFICANT = "zeroIsSignificant";
-    public final static String AGGREGATION_TYPE = "aggregationType";
-    public final static String FORM_NAME = "formName";
-    public final static String NUMBER_TYPE = "numberType";
-    public final static String DOMAIN_TYPE = "domainType";
-    public final static String DIMENSION = "dimension";
-    public final static String DISPLAY_FORM_NAME = "displayFormName";
-    public final static String OPTION_SET = "optionSet";
-    public final static String CATEGORY_COMBO = "categoryCombo";
-    public final static String FIELD_MASK = "fieldMask";
     public final static String STYLE = "style";
-    public final static String ACCESS = "access";
+    private final static String ACCESS = "access";
 
     private static final FieldsHelper<DataElement> fh = new FieldsHelper<>();
 
@@ -63,17 +53,17 @@ public final class DataElementFields {
     public static final Fields<DataElement> allFields = Fields.<DataElement>builder()
             .fields(fh.getNameableFields())
             .fields(
-                    fh.<ValueType>field(VALUE_TYPE),
-                    fh.<Boolean>field(ZERO_IS_SIGNIFICANT),
-                    fh.<String>field(AGGREGATION_TYPE),
-                    fh.<String>field(FORM_NAME),
-                    fh.<String>field(DOMAIN_TYPE),
-                    fh.<String>field(DISPLAY_FORM_NAME),
-                    fh.<ObjectWithUid>nestedField(OPTION_SET)
+                    fh.<ValueType>field(DataElementTableInfo.Columns.VALUE_TYPE),
+                    fh.<Boolean>field(DataElementTableInfo.Columns.ZERO_IS_SIGNIFICANT),
+                    fh.<String>field(DataElementTableInfo.Columns.AGGREGATION_TYPE),
+                    fh.<String>field(DataElementTableInfo.Columns.FORM_NAME),
+                    fh.<String>field(DataElementTableInfo.Columns.DOMAIN_TYPE),
+                    fh.<String>field(DataElementTableInfo.Columns.DISPLAY_FORM_NAME),
+                    fh.<ObjectWithUid>nestedField(DataElementTableInfo.Columns.OPTION_SET)
                             .with(ObjectWithUid.uid),
-                    fh.<ObjectWithUid>nestedField(CATEGORY_COMBO)
+                    fh.<ObjectWithUid>nestedField(DataElementTableInfo.Columns.CATEGORY_COMBO)
                             .with(ObjectWithUid.uid),
-                    fh.<String>field(FIELD_MASK),
+                    fh.<String>field(DataElementTableInfo.Columns.FIELD_MASK),
                     fh.<ObjectStyle>nestedField(STYLE)
                             .with(ObjectStyleFields.allFields),
                     fh.<Access>nestedField(ACCESS)

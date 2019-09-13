@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.option.Option;
-import org.hisp.dhis.android.core.option.OptionFields;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetTableInfo.Columns;
 

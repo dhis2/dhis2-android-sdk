@@ -51,13 +51,16 @@ public final class OptionTableInfo {
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+
+        public final static String SORT_ORDER = "sortOrder";
+        public final static String OPTION_SET = "optionSet";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    OptionFields.SORT_ORDER,
-                    OptionFields.OPTION_SET
+                    SORT_ORDER,
+                    OPTION_SET
             );
         }
     }

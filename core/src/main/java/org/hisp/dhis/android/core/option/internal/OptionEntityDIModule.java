@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleChildrenAppender;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.option.Option;
-import org.hisp.dhis.android.core.option.OptionFields;
 import org.hisp.dhis.android.core.option.OptionTableInfo;
 
 import java.util.Collections;

@@ -26,18 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
+import org.hisp.dhis.android.core.option.Option;
+import org.hisp.dhis.android.core.option.OptionTableInfo.Columns;
+
 
 public final class OptionFields {
 
-    public final static String SORT_ORDER = "sortOrder";
-    public final static String OPTION_SET = "optionSet";
     public final static String STYLE = "style";
 
     private static final FieldsHelper<Option> fh = new FieldsHelper<>();
@@ -49,8 +50,8 @@ public final class OptionFields {
     public static final Fields<Option> allFields = Fields.<Option>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<Integer>field(SORT_ORDER),
-                    fh.nestedFieldWithUid(OPTION_SET),
+                    fh.<Integer>field(Columns.SORT_ORDER),
+                    fh.nestedFieldWithUid(Columns.OPTION_SET),
                     fh.<ObjectStyle>nestedField(STYLE)
                             .with(ObjectStyleFields.allFields)
             ).build();

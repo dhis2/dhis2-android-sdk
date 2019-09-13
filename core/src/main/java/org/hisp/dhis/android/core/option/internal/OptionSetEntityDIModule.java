@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.option.Option;
-import org.hisp.dhis.android.core.option.OptionFields;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionTableInfo;
 
@@ -64,7 +63,8 @@ public final class OptionSetEntityDIModule {
     @Provides
     @Reusable
     OrphanCleaner<OptionSet, Option> optionCleaner(DatabaseAdapter databaseAdapter) {
-        return new OrphanCleanerImpl<>(OptionTableInfo.TABLE_INFO.name(), OptionFields.OPTION_SET, databaseAdapter);
+        return new OrphanCleanerImpl<>(OptionTableInfo.TABLE_INFO.name(), OptionTableInfo.Columns.OPTION_SET,
+                databaseAdapter);
     }
 
     @Provides

@@ -40,7 +40,7 @@ final class DataSetElementChildrenAppender extends ChildrenAppender<DataSet> {
 
     private static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
             DataSetElementLinkTableInfo.TABLE_INFO,
-            DataSetElementFields.DATA_SET);
+            DataSetElementLinkTableInfo.Columns.DATA_SET);
 
     private final SingleParentChildStore<DataSet, DataSetElement> childStore;
 

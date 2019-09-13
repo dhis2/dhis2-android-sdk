@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.dataset.internal.DataSetElementFields;
 
 public final class DataSetElementLinkTableInfo {
 
@@ -51,22 +50,25 @@ public final class DataSetElementLinkTableInfo {
     private DataSetElementLinkTableInfo() {
     }
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
+        public static final String DATA_SET = "dataSet";
+        public static final String DATA_ELEMENT = "dataElement";
+        public static final String CATEGORY_COMBO = "categoryCombo";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    DataSetElementFields.DATA_SET,
-                    DataSetElementFields.DATA_ELEMENT,
-                    DataSetElementFields.CATEGORY_COMBO
+                    DATA_SET,
+                    DATA_ELEMENT,
+                    CATEGORY_COMBO
             );
         }
 
         @Override
         public String[] whereUpdate() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    DataSetElementFields.DATA_SET,
-                    DataSetElementFields.DATA_ELEMENT
+                    DATA_SET,
+                    DATA_ELEMENT
             );
         }
     }

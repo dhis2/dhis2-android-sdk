@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnly
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DoubleFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.constant.internal.ConstantFields;
 
 import java.util.Map;
 
@@ -55,7 +54,7 @@ public final class ConstantCollectionRepository extends ReadOnlyIdentifiableColl
     }
 
     public DoubleFilterConnector<ConstantCollectionRepository> byValue() {
-        return cf.doubleC(ConstantFields.VALUE);
+        return cf.doubleC(ConstantTableInfo.Columns.VALUE);
     }
 
 }

@@ -31,16 +31,15 @@ package org.hisp.dhis.android.core.constant.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.constant.Constant;
+import org.hisp.dhis.android.core.constant.ConstantTableInfo;
 
-public final class ConstantFields {
-
-    public static final String VALUE = "value";
+final class ConstantFields {
 
     private static final FieldsHelper<Constant> fh = new FieldsHelper<>();
 
     static final Fields<Constant> allFields = Fields.<Constant>builder()
             .fields(fh.getIdentifiableFields())
-            .fields(fh.<Double>field(VALUE))
+            .fields(fh.<Double>field(ConstantTableInfo.Columns.VALUE))
             .build();
 
     private ConstantFields() {

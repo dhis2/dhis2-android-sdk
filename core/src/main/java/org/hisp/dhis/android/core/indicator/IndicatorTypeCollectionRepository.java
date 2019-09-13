@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeFields;
+import org.hisp.dhis.android.core.indicator.IndicatorTypeTableInfo.Columns;
 
 import java.util.Map;
 
@@ -55,10 +55,10 @@ public final class IndicatorTypeCollectionRepository
     }
 
     public BooleanFilterConnector<IndicatorTypeCollectionRepository> byNumber() {
-        return cf.bool(IndicatorTypeFields.NUMBER);
+        return cf.bool(Columns.NUMBER);
     }
 
     public IntegerFilterConnector<IndicatorTypeCollectionRepository> byFactor() {
-        return cf.integer(IndicatorTypeFields.FACTOR);
+        return cf.integer(Columns.FACTOR);
     }
 }

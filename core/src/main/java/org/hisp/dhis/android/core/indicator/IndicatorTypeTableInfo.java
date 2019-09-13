@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeFields;
 
 public final class IndicatorTypeTableInfo {
 
@@ -52,13 +51,15 @@ public final class IndicatorTypeTableInfo {
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public final static String NUMBER = "number";
+        public final static String FACTOR = "factor";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    IndicatorTypeFields.NUMBER,
-                    IndicatorTypeFields.FACTOR
+                    NUMBER,
+                    FACTOR
             );
         }
     }

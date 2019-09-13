@@ -267,7 +267,8 @@ public final class TrackedEntityAttributeReservedValueManager {
                                        boolean storeError) {
 
         Completable downloadSystemInfo = systemInfoDownloaded.get() ? Completable.complete() :
-                systemInfoRepository.download(storeError).andThen(Completable.fromAction(() -> systemInfoDownloaded.set(true)));
+                systemInfoRepository.download(storeError).andThen(
+                        Completable.fromAction(() -> systemInfoDownloaded.set(true)));
 
         return downloadSystemInfo.andThen(Completable.fromAction(() -> {
             String trackedEntityAttributePattern;

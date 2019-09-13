@@ -31,19 +31,16 @@ package org.hisp.dhis.android.core.dataset.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.dataset.DataInputPeriod;
+import org.hisp.dhis.android.core.dataset.DataInputPeriodTableInfo;
 
-public final class DataInputPeriodFields {
-
-    public static final String PERIOD = "period";
-    public static final String OPENING_DATE = "openingDate";
-    public static final String CLOSING_DATE = "closingDate";
+final class DataInputPeriodFields {
 
     private static FieldsHelper<DataInputPeriod> fieldsHelper = new FieldsHelper<>();
 
     static final Fields<DataInputPeriod> allFields = Fields.<DataInputPeriod>builder().fields(
-            fieldsHelper.<String>field(PERIOD),
-            fieldsHelper.<String>field(OPENING_DATE),
-            fieldsHelper.<String>field(CLOSING_DATE)
+            fieldsHelper.<String>field(DataInputPeriodTableInfo.Columns.PERIOD),
+            fieldsHelper.<String>field(DataInputPeriodTableInfo.Columns.OPENING_DATE),
+            fieldsHelper.<String>field(DataInputPeriodTableInfo.Columns.CLOSING_DATE)
 
     ).build();
 

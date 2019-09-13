@@ -27,29 +27,40 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
+
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqLikeItemFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryCallFactory;
+import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryOnline;
 import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryRepositoryScope;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-import androidx.lifecycle.LiveData;
-import androidx.paging.DataSource;
-import androidx.paging.LivePagedListBuilder;
-import androidx.paging.PagedList;
 import dagger.Reusable;
 import io.reactivex.Single;
 
@@ -60,6 +71,8 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     private final TrackedEntityInstanceStore store;
     private final TrackedEntityInstanceQueryCallFactory onlineCallFactory;
     private final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders;
+    private final ScopedFilterConnectorFactory<TrackedEntityInstanceQueryCollectionRepository,
+                    TrackedEntityInstanceQueryRepositoryScope> connectorFactory;
 
     private final TrackedEntityInstanceQueryRepositoryScope scope;
 
@@ -73,6 +86,8 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         this.onlineCallFactory = onlineCallFactory;
         this.childrenAppenders = childrenAppenders;
         this.scope = scope;
+        this.connectorFactory = new ScopedFilterConnectorFactory<>(s ->
+                new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders, s));
     }
 
     /**
@@ -120,9 +135,67 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                 scope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build());
     }
 
-    public TrackedEntityInstanceQueryCollectionRepository query(TrackedEntityInstanceQuery query) {
-        return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().query(query).build());
+    public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+                TrackedEntityInstanceQueryRepositoryScope> byAttribute(String attributeId) {
+        return connectorFactory.eqLikeItemC(attributeId, filterItem -> {
+            List<RepositoryScopeFilterItem> attributes = new ArrayList<>(scope.attribute());
+            attributes.add(filterItem);
+            return scope.toBuilder().attribute(attributes).build();
+        });
+    }
+
+    public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope> byFilter(String attributeId) {
+        return connectorFactory.eqLikeItemC(attributeId, filterItem -> {
+            List<RepositoryScopeFilterItem> filters = new ArrayList<>(scope.filter());
+            filters.add(filterItem);
+            return scope.toBuilder().filter(filters).build();
+        });
+    }
+
+    public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope> byQuery() {
+        return connectorFactory.eqLikeItemC("", filterItem -> scope.toBuilder().query(filterItem).build());
+    }
+
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+                TrackedEntityInstanceQueryRepositoryScope, String> byProgram() {
+        return connectorFactory.eqConnector(programUid -> scope.toBuilder().program(programUid).build());
+    }
+
+    public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+                TrackedEntityInstanceQueryRepositoryScope, String> byOrgUnits() {
+        return connectorFactory.listConnector(orgunitUids -> scope.toBuilder().orgUnits(orgunitUids).build());
+    }
+
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, OrganisationUnitMode> byOrgUnitMode() {
+        return connectorFactory.eqConnector(mode -> scope.toBuilder().orgUnitMode(mode).build());
+    }
+
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+                TrackedEntityInstanceQueryRepositoryScope, Date> byProgramStartDate() {
+        return connectorFactory.eqConnector(date -> scope.toBuilder().programStartDate(date).build());
+    }
+
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+                TrackedEntityInstanceQueryRepositoryScope, Date> byProgramEndDate() {
+        return connectorFactory.eqConnector(date -> scope.toBuilder().programEndDate(date).build());
+    }
+
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+                TrackedEntityInstanceQueryRepositoryScope, String> byTrackedEntityType() {
+        return connectorFactory.eqConnector(type -> scope.toBuilder().trackedEntityType(type).build());
+    }
+
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, Boolean> byIncludeDeleted() {
+        return connectorFactory.eqConnector(bool -> scope.toBuilder().includeDeleted(bool).build());
+    }
+
+    public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, State> byStates() {
+        return connectorFactory.listConnector(states -> scope.toBuilder().states(states).build());
     }
 
     @Override
@@ -145,7 +218,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     @Override
     public List<TrackedEntityInstance> blockingGet() {
         if (scope.mode().equals(RepositoryMode.OFFLINE_ONLY) || scope.mode().equals(RepositoryMode.OFFLINE_FIRST)) {
-            String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope.query(), Collections.emptyList(),
+            String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, Collections.emptyList(),
                     -1);
             List<TrackedEntityInstance> instances = store.selectRawQuery(sqlQuery);
             return ChildrenAppenderExecutor.appendInObjectCollection(instances, childrenAppenders,
@@ -153,7 +226,8 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                             TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES), false));
         } else {
             try {
-                TrackedEntityInstanceQuery noPagingQuery = scope.query().toBuilder().paging(false).build();
+                TrackedEntityInstanceQueryOnline noPagingQuery = TrackedEntityInstanceQueryOnline.create(scope)
+                        .toBuilder().paging(false).build();
                 return onlineCallFactory.getCall(noPagingQuery).call();
             } catch (D2Error e) {
                 return Collections.emptyList();

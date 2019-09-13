@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.trackedentity.search;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
@@ -38,6 +40,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
+import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryRepositoryScope;
 
 import java.util.List;
 
@@ -69,7 +72,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
     private TrackedEntityInstanceLocalQueryHelper() { }
 
     @SuppressWarnings({"PMD.UseStringBufferForStringAppends"})
-    static String getSqlQuery(TrackedEntityInstanceQuery query, List<String> excludeList, int limit) {
+    static String getSqlQuery(TrackedEntityInstanceQueryRepositoryScope query, List<String> excludeList, int limit) {
 
         String queryStr = "SELECT DISTINCT " + TEI_ALL + " FROM " +
                 TrackedEntityInstanceTableInfo.TABLE_INFO.name() + " " + TEI_ALIAS;
@@ -125,11 +128,11 @@ final class TrackedEntityInstanceLocalQueryHelper {
         return queryStr;
     }
 
-    private static boolean hasProgram(TrackedEntityInstanceQuery query) {
+    private static boolean hasProgram(TrackedEntityInstanceQueryRepositoryScope query) {
         return query.program() != null;
     }
 
-    private static void appendProgramWhere(WhereClauseBuilder where, TrackedEntityInstanceQuery query) {
+    private static void appendProgramWhere(WhereClauseBuilder where, TrackedEntityInstanceQueryRepositoryScope query) {
         if (query.program() != null) {
             where.appendKeyStringValue(dot(ENROLLMENT_ALIAS, PROGRAM), query.program());
         }
@@ -143,13 +146,13 @@ final class TrackedEntityInstanceLocalQueryHelper {
         }
     }
 
-    private static boolean hasOrgunits(TrackedEntityInstanceQuery query) {
+    private static boolean hasOrgunits(TrackedEntityInstanceQueryRepositoryScope query) {
         return !query.orgUnits().isEmpty() &&
                 !OrganisationUnitMode.ALL.equals(query.orgUnitMode()) &&
                 !OrganisationUnitMode.ACCESSIBLE.equals(query.orgUnitMode());
     }
 
-    private static void appendOrgunitWhere(WhereClauseBuilder where, TrackedEntityInstanceQuery query) {
+    private static void appendOrgunitWhere(WhereClauseBuilder where, TrackedEntityInstanceQueryRepositoryScope query) {
         OrganisationUnitMode ouMode = query.orgUnitMode() == null ? OrganisationUnitMode.SELECTED : query.orgUnitMode();
 
         WhereClauseBuilder inner = new WhereClauseBuilder();
@@ -179,40 +182,35 @@ final class TrackedEntityInstanceLocalQueryHelper {
         }
     }
 
-    private static void appendQueryWhere(WhereClauseBuilder where, TrackedEntityInstanceQuery query) {
-        if (query.query() != null) {
-            for (String filterStr : query.query().getSqlFilters()) {
+    private static void appendQueryWhere(WhereClauseBuilder where, TrackedEntityInstanceQueryRepositoryScope scope) {
+        if (scope.query() != null) {
+            String[] tokens = scope.query().value().split(" ");
+            for (String token : tokens) {
+                String valueStr = scope.query().operator().equals(FilterItemOperator.LIKE) ? "%" + token + "%" : token;
                 String sub = String.format("SELECT 1 FROM %s %s WHERE %s = %s AND %s %s '%s'",
                         TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), TEAV_ALIAS,
                         dot(TEAV_ALIAS, TRACKED_ENTITY_INSTANCE), dot(TEI_ALIAS, UID),
-                        dot(TEAV_ALIAS, VALUE), query.query().operator().getSqlOperator(), filterStr);
+                        dot(TEAV_ALIAS, VALUE), scope.query().operator().getSqlOperator(), valueStr);
                 where.appendExistsSubQuery(sub);
             }
         }
     }
 
-    private static void appendFiltersWhere(WhereClauseBuilder where, TrackedEntityInstanceQuery query) {
+    private static void appendFiltersWhere(WhereClauseBuilder where, TrackedEntityInstanceQueryRepositoryScope query) {
         // TODO Filter by program attributes in case program is provided
 
-        for (QueryItem item : query.filter()) {
-            if (!item.filters().isEmpty()) {
-                appendFilterWhere(where, item);
-            }
-        }
-        for (QueryItem item : query.attribute()) {
-            if (!item.filters().isEmpty()) {
-                appendFilterWhere(where, item);
-            }
-        }
+        appendFilterWhere(where, query.filter());
+        appendFilterWhere(where, query.attribute());
     }
 
-    private static void appendFilterWhere(WhereClauseBuilder where, QueryItem item) {
-        for (QueryFilter filter : item.filters()) {
+    private static void appendFilterWhere(WhereClauseBuilder where, List<RepositoryScopeFilterItem> items) {
+        for (RepositoryScopeFilterItem item : items) {
+            String valueStr = item.operator().equals(FilterItemOperator.LIKE) ? "%" + item.value() + "%" : item.value();
             String sub = String.format("SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s %s '%s'",
                     TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), TEAV_ALIAS,
                     dot(TEAV_ALIAS, TRACKED_ENTITY_INSTANCE), dot(TEI_ALIAS, UID),
-                    dot(TEAV_ALIAS, TRACKED_ENTITY_ATTRIBUTE), item.item(),
-                    dot(TEAV_ALIAS, VALUE), filter.operator().getSqlOperator(), filter.getSqlFilter());
+                    dot(TEAV_ALIAS, TRACKED_ENTITY_ATTRIBUTE), item.key(),
+                    dot(TEAV_ALIAS, VALUE), item.operator().getSqlOperator(), valueStr);
             where.appendExistsSubQuery(sub);
         }
     }

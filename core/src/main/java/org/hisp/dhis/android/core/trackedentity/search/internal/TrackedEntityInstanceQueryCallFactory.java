@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity.search.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -36,7 +38,6 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 
 import java.text.ParseException;
 import java.util.List;
@@ -45,7 +46,6 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.net.ssl.HttpsURLConnection;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import retrofit2.Call;
 
@@ -67,11 +67,7 @@ public class TrackedEntityInstanceQueryCallFactory {
         this.apiCallExecutor = apiCallExecutor;
     }
 
-    public Callable<List<TrackedEntityInstance>> getCall(final TrackedEntityInstanceQuery query) {
-        return getCallInternal(TrackedEntityInstanceQueryOnline.create(query));
-    }
-
-    Callable<List<TrackedEntityInstance>> getCallInternal(final TrackedEntityInstanceQueryOnline query) {
+    public Callable<List<TrackedEntityInstance>> getCall(final TrackedEntityInstanceQueryOnline query) {
         return () -> queryTrackedEntityInstances(query);
     }
 

@@ -28,28 +28,80 @@
 
 package org.hisp.dhis.android.core.trackedentity.search.internal;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
+import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
-import androidx.annotation.NonNull;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 @AutoValue
-public abstract class TrackedEntityInstanceQueryRepositoryScope {
+public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
 
     @NonNull
     public abstract RepositoryMode mode();
 
+    private static final SafeDateFormat QUERY_FORMAT = new SafeDateFormat("yyyy-MM-dd");
+
     @NonNull
-    public abstract TrackedEntityInstanceQuery query();
+    public abstract List<String> orgUnits();
+
+    @Nullable
+    public abstract OrganisationUnitMode orgUnitMode();
+
+    @Nullable
+    public abstract String program();
+
+    @Nullable
+    public abstract RepositoryScopeFilterItem query();
+
+    @NonNull
+    public abstract List<RepositoryScopeFilterItem> attribute();
+
+    @NonNull
+    public abstract List<RepositoryScopeFilterItem> filter();
+
+    @Nullable
+    public abstract Date programStartDate();
+
+    @Nullable
+    public abstract Date programEndDate();
+
+    @Nullable
+    public abstract String trackedEntityType();
+
+    @Nullable
+    public abstract Boolean includeDeleted();
+
+    @Nullable
+    public abstract List<State> states();
+
+    public String formattedProgramStartDate() {
+        return programStartDate() == null ? null : QUERY_FORMAT.format(programStartDate());
+    }
+
+    public String formattedProgramEndDate() {
+        return programEndDate() == null ? null : QUERY_FORMAT.format(programEndDate());
+    }
 
     public abstract Builder toBuilder();
 
     public static Builder builder() {
         return new AutoValue_TrackedEntityInstanceQueryRepositoryScope.Builder()
-                .mode(RepositoryMode.OFFLINE_ONLY)
-                .query(TrackedEntityInstanceQuery.empty());
+                .attribute(Collections.emptyList())
+                .filter(Collections.emptyList())
+                .orgUnits(Collections.emptyList())
+                .mode(RepositoryMode.OFFLINE_ONLY);
     }
 
     public static TrackedEntityInstanceQueryRepositoryScope empty() {
@@ -61,15 +113,35 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope {
 
         public abstract Builder mode(RepositoryMode mode);
 
-        public abstract Builder query(TrackedEntityInstanceQuery query);
+        public abstract Builder orgUnits(List<String> orgUnits);
+
+        public abstract Builder orgUnitMode(OrganisationUnitMode orgUnitMode);
+
+        public abstract Builder program(String program);
+
+        public abstract Builder query(RepositoryScopeFilterItem query);
+
+        public abstract Builder attribute(List<RepositoryScopeFilterItem> attribute);
+
+        public abstract Builder filter(List<RepositoryScopeFilterItem> filter);
+
+        public abstract Builder programStartDate(Date programStartDate);
+
+        public abstract Builder programEndDate(Date programEndDate);
+
+        public abstract Builder trackedEntityType(String trackedEntityType);
+
+        public abstract Builder states(List<State> states);
+
+        public abstract Builder includeDeleted(Boolean includeDeleted);
 
         abstract TrackedEntityInstanceQueryRepositoryScope autoBuild();
 
         // Auxiliary fields to access values
-        abstract TrackedEntityInstanceQuery query();
+        abstract List<State> states();
 
         public TrackedEntityInstanceQueryRepositoryScope build() {
-            if (query() != null && query().states() != null) {
+            if (states() != null) {
                 mode(RepositoryMode.OFFLINE_ONLY);
             }
 

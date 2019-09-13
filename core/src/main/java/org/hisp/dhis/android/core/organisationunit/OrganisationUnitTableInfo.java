@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields;
 
 public final class OrganisationUnitTableInfo {
 
@@ -52,18 +51,22 @@ public final class OrganisationUnitTableInfo {
         }
     };
 
-    static class Columns extends BaseNameableObjectModel.Columns {
-
-        static final String DISPLAY_NAME_PATH = "displayNamePath";
+    public static class Columns extends BaseNameableObjectModel.Columns {
+        public static final String PARENT = "parent";
+        public static final String PATH = "path";
+        public static final String OPENING_DATE = "openingDate";
+        public static final String CLOSED_DATE = "closedDate";
+        public static final String LEVEL = "level";
+        public static final String DISPLAY_NAME_PATH = "displayNamePath";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    OrganisationUnitFields.PATH,
-                    OrganisationUnitFields.OPENING_DATE,
-                    OrganisationUnitFields.CLOSED_DATE,
-                    OrganisationUnitFields.LEVEL,
-                    OrganisationUnitFields.PARENT,
+                    PATH,
+                    OPENING_DATE,
+                    CLOSED_DATE,
+                    LEVEL,
+                    PARENT,
                     DISPLAY_NAME_PATH
             );
         }

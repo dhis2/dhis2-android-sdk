@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnly
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.option.OptionGroupTableInfo.Columns;
 import org.hisp.dhis.android.core.option.internal.OptionGroupFields;
 
 import java.util.Map;
@@ -54,7 +55,7 @@ public final class OptionGroupCollectionRepository
     }
 
     public StringFilterConnector<OptionGroupCollectionRepository> byOptionSetUid() {
-        return cf.string(OptionGroupFields.OPTION_SET);
+        return cf.string(Columns.OPTION_SET);
     }
 
     public OptionGroupCollectionRepository withOptions() {

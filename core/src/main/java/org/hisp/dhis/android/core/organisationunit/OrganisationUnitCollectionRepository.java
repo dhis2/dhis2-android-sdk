@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo.Columns;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo;
 
@@ -60,23 +61,23 @@ public final class OrganisationUnitCollectionRepository
     }
 
     public StringFilterConnector<OrganisationUnitCollectionRepository> byParentUid() {
-        return cf.string(OrganisationUnitFields.PARENT);
+        return cf.string(Columns.PARENT);
     }
 
     public StringFilterConnector<OrganisationUnitCollectionRepository> byPath() {
-        return cf.string(OrganisationUnitFields.PATH);
+        return cf.string(Columns.PATH);
     }
 
     public DateFilterConnector<OrganisationUnitCollectionRepository> byOpeningDate() {
-        return cf.date(OrganisationUnitFields.OPENING_DATE);
+        return cf.date(Columns.OPENING_DATE);
     }
 
     public DateFilterConnector<OrganisationUnitCollectionRepository> byClosedDate() {
-        return cf.date(OrganisationUnitFields.CLOSED_DATE);
+        return cf.date(Columns.CLOSED_DATE);
     }
 
     public IntegerFilterConnector<OrganisationUnitCollectionRepository> byLevel() {
-        return cf.integer(OrganisationUnitFields.LEVEL);
+        return cf.integer(Columns.LEVEL);
     }
 
     public StringFilterConnector<OrganisationUnitCollectionRepository> byDisplayNamePath() {

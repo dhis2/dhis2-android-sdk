@@ -49,7 +49,7 @@ public final class ValueTypeDeviceRenderingTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
         static final String OBJECT_TABLE = "objectTable";
         static final String DEVICE_TYPE = "deviceType";
         static final String TYPE = "type";

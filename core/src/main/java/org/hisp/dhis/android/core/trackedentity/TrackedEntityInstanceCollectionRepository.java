@@ -45,7 +45,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
@@ -141,8 +140,8 @@ public final class TrackedEntityInstanceCollectionRepository
     public TrackedEntityInstanceCollectionRepository byProgramUids(List<String> programUids) {
         return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).inLinkTable(
                 EnrollmentTableInfo.TABLE_INFO.name(),
-                EnrollmentFields.TRACKED_ENTITY_INSTANCE,
-                EnrollmentFields.PROGRAM,
+                EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                EnrollmentTableInfo.Columns.PROGRAM,
                 programUids);
     }
 

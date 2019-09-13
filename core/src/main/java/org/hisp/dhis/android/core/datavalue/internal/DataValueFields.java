@@ -37,16 +37,7 @@ import static org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns;
 
 public final class DataValueFields {
 
-    public static final String DATA_ELEMENT = Columns.DATA_ELEMENT;
-    public static final String PERIOD = Columns.PERIOD;
     public static final String ORGANISATION_UNIT = "orgUnit";
-    public static final String CATEGORY_OPTION_COMBO = Columns.CATEGORY_OPTION_COMBO;
-    public static final String ATTRIBUTE_OPTION_COMBO = Columns.ATTRIBUTE_OPTION_COMBO;
-    public static final String VALUE = Columns.VALUE;
-    public static final String STORED_BY = Columns.STORED_BY;
-    public static final String CREATED = Columns.CREATED;
-    public static final String LAST_UPDATED = Columns.LAST_UPDATED;
-    public static final String COMMENT = Columns.COMMENT;
     public static final String FOLLOW_UP = "followup";
     public static final String DELETED = "deleted";
 
@@ -55,16 +46,16 @@ public final class DataValueFields {
     static final Field<DataValue, String> lastUpdated = fieldsHelper.lastUpdated();
 
     static final Fields<DataValue> allFields = Fields.<DataValue>builder().fields(
-            fieldsHelper.<String>field(DATA_ELEMENT),
-            fieldsHelper.<String>field(PERIOD),
+            fieldsHelper.<String>field(Columns.DATA_ELEMENT),
+            fieldsHelper.<String>field(Columns.PERIOD),
             fieldsHelper.<String>field(ORGANISATION_UNIT),
-            fieldsHelper.<String>field(CATEGORY_OPTION_COMBO),
-            fieldsHelper.<String>field(ATTRIBUTE_OPTION_COMBO),
-            fieldsHelper.<String>field(VALUE),
-            fieldsHelper.<String>field(STORED_BY),
-            fieldsHelper.<String>field(CREATED),
-            fieldsHelper.<String>field(LAST_UPDATED),
-            fieldsHelper.<String>field(COMMENT),
+            fieldsHelper.<String>field(Columns.CATEGORY_OPTION_COMBO),
+            fieldsHelper.<String>field(Columns.ATTRIBUTE_OPTION_COMBO),
+            fieldsHelper.<String>field(Columns.VALUE),
+            fieldsHelper.<String>field(Columns.STORED_BY),
+            fieldsHelper.<String>field(Columns.CREATED),
+            fieldsHelper.<String>field(Columns.LAST_UPDATED),
+            fieldsHelper.<String>field(Columns.COMMENT),
             fieldsHelper.<Boolean>field(FOLLOW_UP),
             fieldsHelper.<Boolean>field(DELETED)
 

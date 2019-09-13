@@ -51,16 +51,22 @@ public final class SectionTableInfo {
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+
+        public final static String DESCRIPTION = "description";
+        public final static String SORT_ORDER = "sortOrder";
+        public final static String DATA_SET = "dataSet";
+        public final static String SHOW_ROW_TOTALS = "showRowTotals";
+        public final static String SHOW_COLUMN_TOTALS = "showColumnTotals";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    SectionFields.DESCRIPTION,
-                    SectionFields.SORT_ORDER,
-                    SectionFields.DATA_SET,
-                    SectionFields.SHOW_ROW_TOTALS,
-                    SectionFields.SHOW_COLUMN_TOTALS
+                    DESCRIPTION,
+                    SORT_ORDER,
+                    DATA_SET,
+                    SHOW_ROW_TOTALS,
+                    SHOW_COLUMN_TOTALS
             );
         }
     }

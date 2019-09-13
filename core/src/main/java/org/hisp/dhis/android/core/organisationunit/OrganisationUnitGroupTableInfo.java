@@ -52,13 +52,16 @@ public final class OrganisationUnitGroupTableInfo {
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+
+        public static final String SHORT_NAME = BaseNameableObjectModel.Columns.SHORT_NAME;
+        public static final String DISPLAY_SHORT_NAME = BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME;
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    BaseNameableObjectModel.Columns.SHORT_NAME,
-                    BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME
+                    SHORT_NAME,
+                    DISPLAY_SHORT_NAME
             );
         }
     }

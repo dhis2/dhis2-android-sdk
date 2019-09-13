@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.category.internal.CategoryFields;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
 
@@ -52,12 +51,13 @@ public final class CategoryTableInfo {
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String DATA_DIMENSION_TYPE = "dataDimensionType";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    CategoryFields.DATA_DIMENSION_TYPE
+                    DATA_DIMENSION_TYPE
             );
         }
     }

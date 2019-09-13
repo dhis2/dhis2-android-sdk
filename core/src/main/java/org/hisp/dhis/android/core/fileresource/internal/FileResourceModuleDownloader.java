@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleDownloader
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
+import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
 import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
@@ -109,7 +109,7 @@ public class FileResourceModuleDownloader implements MetadataModuleDownloader<Un
 
     private List<TrackedEntityDataValue> getTrackedEntityDataValues() {
         String dataElementUidsWhereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(DataElementFields.VALUE_TYPE, ValueType.IMAGE).build();
+                .appendKeyStringValue(DataElementTableInfo.Columns.VALUE_TYPE, ValueType.IMAGE).build();
 
         List<String> dataElementUids = dataElementStore.selectUidsWhere(dataElementUidsWhereClause);
 

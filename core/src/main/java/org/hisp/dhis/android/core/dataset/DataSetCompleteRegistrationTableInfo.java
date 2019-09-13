@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseDeletableDataModel;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationFields;
 
 public final class DataSetCompleteRegistrationTableInfo {
 
@@ -53,12 +52,12 @@ public final class DataSetCompleteRegistrationTableInfo {
 
     public static class Columns extends BaseDeletableDataModel.Columns {
 
-        public static final String PERIOD = DataSetCompleteRegistrationFields.PERIOD;
-        public static final String DATA_SET = DataSetCompleteRegistrationFields.DATA_SET;
-        public static final String ORGANISATION_UNIT = DataSetCompleteRegistrationFields.ORGANISATION_UNIT;
-        public static final String ATTRIBUTE_OPTION_COMBO = DataSetCompleteRegistrationFields.ATTRIBUTE_OPTION_COMBO;
-        public static final String DATE = DataSetCompleteRegistrationFields.DATE;
-        public static final String STORED_BY = DataSetCompleteRegistrationFields.STORED_BY;
+        public static final String PERIOD = "period";
+        public static final String DATA_SET = "dataSet";
+        public static final String ORGANISATION_UNIT = "organisationUnit";
+        public static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
+        public static final String DATE = "date";
+        public static final String STORED_BY = "storedBy";
 
         @Override
         public String[] all() {

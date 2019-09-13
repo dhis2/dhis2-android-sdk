@@ -41,36 +41,18 @@ import org.hisp.dhis.android.core.dataset.DataInputPeriod;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetElement;
 import org.hisp.dhis.android.core.dataset.Section;
-import org.hisp.dhis.android.core.dataset.SectionFields;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import static org.hisp.dhis.android.core.dataset.DataSetTableInfo.Columns;
 
 public final class DataSetFields {
 
-    private static final String PERIOD_TYPE = Columns.PERIOD_TYPE;
-    private static final String CATEGORY_COMBO = Columns.CATEGORY_COMBO;
-    private static final String MOBILE = Columns.MOBILE;
-    private static final String VERSION = Columns.VERSION;
-    private static final String EXPIRY_DAYS = Columns.EXPIRY_DAYS;
-    private static final String TIMELY_DAYS = Columns.TIMELY_DAYS;
-    private static final String NOTIFY_COMPLETING_USER = Columns.NOTIFY_COMPLETING_USER;
-    private static final String OPEN_FUTURE_PERIODS = Columns.OPEN_FUTURE_PERIODS;
-    private static final String FIELD_COMBINATION_REQUIRED = Columns.FIELD_COMBINATION_REQUIRED;
-    private static final String VALID_COMPLETE_ONLY = Columns.VALID_COMPLETE_ONLY;
-    private static final String NO_VALUE_REQUIRES_COMMENT = Columns.NO_VALUE_REQUIRES_COMMENT;
-    private static final String SKIP_OFFLINE = Columns.SKIP_OFFLINE;
-    private static final String DATA_ELEMENT_DECORATION = Columns.DATA_ELEMENT_DECORATION;
-    private static final String RENDER_AS_TABS = Columns.RENDER_AS_TABS;
-    private static final String RENDER_HORIZONTALLY = Columns.RENDER_HORIZONTALLY;
-    private static final String WORKFLOW = Columns.WORKFLOW;
-
     public static final String DATA_SET_ELEMENTS = "dataSetElements";
     public static final String INDICATORS = "indicators";
     public static final String SECTIONS = "sections";
     public static final String COMPULSORY_DATA_ELEMENT_OPERANDS = "compulsoryDataElementOperands";
     public static final String DATA_INPUT_PERIODS = "dataInputPeriods";
-    public static final String ACCESS = "access";
+    private static final String ACCESS = "access";
     public static final String STYLE = "style";
 
     private static FieldsHelper<DataSet> fh = new FieldsHelper<>();
@@ -80,22 +62,22 @@ public final class DataSetFields {
     static final Fields<DataSet> allFields = Fields.<DataSet>builder()
             .fields(fh.getNameableFields())
             .fields(
-                    fh.<PeriodType>field(PERIOD_TYPE),
-                    fh.nestedFieldWithUid(CATEGORY_COMBO),
-                    fh.<Boolean>field(MOBILE),
-                    fh.<Integer>field(VERSION),
-                    fh.<Integer>field(EXPIRY_DAYS),
-                    fh.<Integer>field(TIMELY_DAYS),
-                    fh.<Boolean>field(NOTIFY_COMPLETING_USER),
-                    fh.<Integer>field(OPEN_FUTURE_PERIODS),
-                    fh.<Boolean>field(FIELD_COMBINATION_REQUIRED),
-                    fh.<Boolean>field(VALID_COMPLETE_ONLY),
-                    fh.<Boolean>field(NO_VALUE_REQUIRES_COMMENT),
-                    fh.<Boolean>field(SKIP_OFFLINE),
-                    fh.<Boolean>field(DATA_ELEMENT_DECORATION),
-                    fh.<Boolean>field(RENDER_AS_TABS),
-                    fh.<Boolean>field(RENDER_HORIZONTALLY),
-                    fh.nestedFieldWithUid(WORKFLOW),
+                    fh.<PeriodType>field(Columns.PERIOD_TYPE),
+                    fh.nestedFieldWithUid(Columns.CATEGORY_COMBO),
+                    fh.<Boolean>field(Columns.MOBILE),
+                    fh.<Integer>field(Columns.VERSION),
+                    fh.<Integer>field(Columns.EXPIRY_DAYS),
+                    fh.<Integer>field(Columns.TIMELY_DAYS),
+                    fh.<Boolean>field(Columns.NOTIFY_COMPLETING_USER),
+                    fh.<Integer>field(Columns.OPEN_FUTURE_PERIODS),
+                    fh.<Boolean>field(Columns.FIELD_COMBINATION_REQUIRED),
+                    fh.<Boolean>field(Columns.VALID_COMPLETE_ONLY),
+                    fh.<Boolean>field(Columns.NO_VALUE_REQUIRES_COMMENT),
+                    fh.<Boolean>field(Columns.SKIP_OFFLINE),
+                    fh.<Boolean>field(Columns.DATA_ELEMENT_DECORATION),
+                    fh.<Boolean>field(Columns.RENDER_AS_TABS),
+                    fh.<Boolean>field(Columns.RENDER_HORIZONTALLY),
+                    fh.nestedFieldWithUid(Columns.WORKFLOW),
                     fh.<DataSetElement>nestedField(DATA_SET_ELEMENTS).with(DataSetElementFields.allFields),
                     fh.nestedFieldWithUid(INDICATORS),
                     fh.<Section>nestedField(SECTIONS).with(SectionFields.allFields),

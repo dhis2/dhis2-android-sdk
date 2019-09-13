@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnly
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupTableInfo.Columns;
 
 import java.util.Map;
 
@@ -55,10 +55,10 @@ public final class OrganisationUnitGroupCollectionRepository extends ReadOnlyIde
     }
 
     public StringFilterConnector<OrganisationUnitGroupCollectionRepository> byShortName() {
-        return cf.string(BaseNameableObject.SHORT_NAME);
+        return cf.string(Columns.SHORT_NAME);
     }
 
     public StringFilterConnector<OrganisationUnitGroupCollectionRepository> byDisplayShortName() {
-        return cf.string(BaseNameableObject.DISPLAY_SHORT_NAME);
+        return cf.string(Columns.DISPLAY_SHORT_NAME);
     }
 }

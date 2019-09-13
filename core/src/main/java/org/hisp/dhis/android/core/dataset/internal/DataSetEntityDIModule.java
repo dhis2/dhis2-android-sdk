@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleStoreIm
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.dataset.Section;
-import org.hisp.dhis.android.core.dataset.SectionFields;
 import org.hisp.dhis.android.core.dataset.SectionTableInfo;
 import org.hisp.dhis.android.core.indicator.internal.DataSetIndicatorChildrenAppender;
 
@@ -70,7 +69,8 @@ public final class DataSetEntityDIModule {
     @Provides
     @Reusable
     OrphanCleaner<DataSet, Section> sectionOrphanCleaner(DatabaseAdapter databaseAdapter) {
-        return new OrphanCleanerImpl<>(SectionTableInfo.TABLE_INFO.name(), SectionFields.DATA_SET, databaseAdapter);
+        return new OrphanCleanerImpl<>(SectionTableInfo.TABLE_INFO.name(), SectionTableInfo.Columns.DATA_SET,
+                databaseAdapter);
     }
 
     @Provides

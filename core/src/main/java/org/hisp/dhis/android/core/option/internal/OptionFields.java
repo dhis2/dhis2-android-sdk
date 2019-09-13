@@ -26,38 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.option.internal;
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandFields;
+import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
+import org.hisp.dhis.android.core.option.Option;
+import org.hisp.dhis.android.core.option.OptionTableInfo.Columns;
 
-public final class SectionFields {
 
-    public final static String DESCRIPTION = "description";
-    public final static String SORT_ORDER = "sortOrder";
-    public final static String DATA_SET = "dataSet";
-    public final static String SHOW_ROW_TOTALS = "showRowTotals";
-    public final static String SHOW_COLUMN_TOTALS = "showColumnTotals";
-    public final static String DATA_ELEMENTS = "dataElements";
-    public final static String GREYED_FIELDS = "greyedFields";
+public final class OptionFields {
 
-    private static final FieldsHelper<Section> fh = new FieldsHelper<>();
+    public final static String STYLE = "style";
 
-    public static final Fields<Section> allFields = Fields.<Section>builder()
+    private static final FieldsHelper<Option> fh = new FieldsHelper<>();
+
+    public static final Field<Option, String> uid = fh.uid();
+
+    public static final Fields<Option> allFields = Fields.<Option>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<String>field(DESCRIPTION),
-                    fh.<Integer>field(SORT_ORDER),
-                    fh.nestedFieldWithUid(DATA_SET),
-                    fh.<Boolean>field(SHOW_ROW_TOTALS),
-                    fh.<Boolean>field(SHOW_COLUMN_TOTALS),
-                    fh.nestedFieldWithUid(DATA_ELEMENTS),
-                    fh.<DataElementOperand>nestedField(GREYED_FIELDS)
-                            .with(DataElementOperandFields.allFields)
+                    fh.<Integer>field(Columns.SORT_ORDER),
+                    fh.nestedFieldWithUid(Columns.OPTION_SET),
+                    fh.<ObjectStyle>nestedField(STYLE)
+                            .with(ObjectStyleFields.allFields)
             ).build();
 
-    private SectionFields() {
+    private OptionFields() {
     }
 }

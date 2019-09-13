@@ -31,10 +31,9 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo.Columns;
 
-public final class OrganisationUnitLevelFields {
-
-    public static final String LEVEL = "level";
+final class OrganisationUnitLevelFields {
 
     private static final FieldsHelper<OrganisationUnitLevel> fh = new FieldsHelper<>();
 
@@ -42,7 +41,7 @@ public final class OrganisationUnitLevelFields {
             Fields.<OrganisationUnitLevel>builder()
                     .fields(fh.getIdentifiableFields())
                     .fields(
-                            fh.<String>field(LEVEL)
+                            fh.<String>field(Columns.LEVEL)
                     ).build();
 
     private OrganisationUnitLevelFields() {

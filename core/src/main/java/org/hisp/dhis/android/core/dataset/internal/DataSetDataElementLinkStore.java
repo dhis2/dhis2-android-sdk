@@ -51,7 +51,7 @@ final class DataSetDataElementLinkStore {
     public static LinkModelStore<DataSetElement> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.linkModelStore(databaseAdapter,
                 DataSetElementLinkTableInfo.TABLE_INFO,
-                DataSetElementFields.DATA_SET,
+                DataSetElementLinkTableInfo.Columns.DATA_SET,
                 BINDER,
                 DataSetElement::create);
     }

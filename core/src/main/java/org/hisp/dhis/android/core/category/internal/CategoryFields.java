@@ -33,11 +33,11 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.category.CategoryTableInfo;
 
 public final class CategoryFields {
 
     public static final String CATEGORY_OPTIONS = "categoryOptions";
-    public static final String DATA_DIMENSION_TYPE = "dataDimensionType";
 
     private static final FieldsHelper<Category> fh = new FieldsHelper<>();
 
@@ -47,7 +47,7 @@ public final class CategoryFields {
             .fields(fh.getIdentifiableFields())
             .fields(
                     fh.<CategoryOption>nestedField(CATEGORY_OPTIONS).with(CategoryOptionFields.allFields),
-                    fh.<String>field(DATA_DIMENSION_TYPE)
+                    fh.<String>field(CategoryTableInfo.Columns.DATA_DIMENSION_TYPE)
             ).build();
 
     private CategoryFields() {

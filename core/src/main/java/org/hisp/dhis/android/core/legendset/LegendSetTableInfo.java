@@ -33,8 +33,6 @@ import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
 
-import static org.hisp.dhis.android.core.legendset.internal.LegendSetFields.SYMBOLIZER;
-
 public final class LegendSetTableInfo {
 
     private LegendSetTableInfo() {
@@ -53,7 +51,8 @@ public final class LegendSetTableInfo {
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public final static String SYMBOLIZER = "symbolizer";
 
         @Override
         public String[] all() {

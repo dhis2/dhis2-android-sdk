@@ -59,7 +59,7 @@ public final class CategoryOptionComboStoreImpl extends IdentifiableObjectStoreI
     @Override
     public List<CategoryOptionCombo> getForCategoryCombo(String categoryComboUid) {
         String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(CategoryOptionComboFields.CATEGORY_COMBO, categoryComboUid)
+                .appendKeyStringValue(CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO, categoryComboUid)
                 .build();
         return selectWhere(whereClause);
     }

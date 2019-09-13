@@ -54,7 +54,7 @@ public final class CategoryCollectionRepository
     }
 
     public StringFilterConnector<CategoryCollectionRepository> byDataDimensionType() {
-        return cf.string(CategoryFields.DATA_DIMENSION_TYPE);
+        return cf.string(CategoryTableInfo.Columns.DATA_DIMENSION_TYPE);
     }
 
     public CategoryCollectionRepository withCategoryOptions() {

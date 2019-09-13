@@ -72,7 +72,7 @@ public final class EnrollmentStoreImpl
     };
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            EnrollmentTableInfo.TABLE_INFO, EnrollmentFields.TRACKED_ENTITY_INSTANCE);
+            EnrollmentTableInfo.TABLE_INFO, EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE);
 
     private EnrollmentStoreImpl(DatabaseAdapter databaseAdapter,
                                 SQLStatementWrapper statementWrapper,

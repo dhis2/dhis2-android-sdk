@@ -128,7 +128,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     public Single<String> getValue(@NonNull String attribute, @NonNull String organisationUnitUid) {
         Completable optionalDownload = downloadValuesIfBelowThreshold(
                 attribute, getOrganisationUnit(organisationUnitUid), null, new BooleanWrapper(false),
-                true
+                false
         ).onErrorComplete();
 
         return optionalDownload.andThen(Single.create(emitter -> {
@@ -222,12 +222,12 @@ public final class TrackedEntityAttributeReservedValueManager {
             List<OrganisationUnit> organisationUnits = getOrgUnitsLinkedToAttribute(attribute);
             return Observable.fromIterable(organisationUnits).flatMapSingle(organisationUnit ->
                     downloadValuesIfBelowThreshold(
-                            attribute, organisationUnit, numberOfValuesToFillUp, systemInfoDownloaded, false)
+                            attribute, organisationUnit, numberOfValuesToFillUp, systemInfoDownloaded, true)
                             .onErrorComplete()
                             .toSingle(this::increaseProgress));
         } else {
             return downloadValuesIfBelowThreshold(attribute, null, numberOfValuesToFillUp, systemInfoDownloaded,
-                    false)
+                    true)
                     .onErrorComplete()
                     .toSingle(this::increaseProgress)
                     .toObservable();

@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.common.Model;
 import io.reactivex.Completable;
 
 public interface ReadOnlyWithDownloadObjectRepository<M extends Model> extends ReadOnlyObjectRepository<M> {
-    Completable download();
+    Completable download(boolean storeError);
 }

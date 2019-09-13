@@ -46,7 +46,6 @@ final class RxAPICallExecutorImpl implements RxAPICallExecutor {
     private final ObjectStore<D2Error> errorStore;
     private final APIErrorMapper errorMapper;
     private final ForeignKeyCleaner foreignKeyCleaner;
-    private boolean storeErrors = true;
 
     @Inject
     RxAPICallExecutorImpl(DatabaseAdapter databaseAdapter,
@@ -60,13 +59,8 @@ final class RxAPICallExecutorImpl implements RxAPICallExecutor {
     }
 
     @Override
-    public void storeErrors(boolean storeErrors) {
-        this.storeErrors = storeErrors;
-    }
-
-    @Override
-    public <P> Single<P> wrapSingle(Single<P> single) {
-        return single.onErrorResumeNext(throwable -> Single.error(mapAndStore(throwable)));
+    public <P> Single<P> wrapSingle(Single<P> single, boolean storeError) {
+        return single.onErrorResumeNext(throwable -> Single.error(mapAndStore(throwable, storeError)));
     }
 
     @Override
@@ -81,14 +75,14 @@ final class RxAPICallExecutorImpl implements RxAPICallExecutor {
                     transaction.end();
                 }).onErrorResumeNext(throwable -> {
                     transaction.end();
-                    return Observable.error(mapAndStore(throwable));
+                    return Observable.error(mapAndStore(throwable, true));
                 }));
     }
 
-    private D2Error mapAndStore(Throwable throwable) {
+    private D2Error mapAndStore(Throwable throwable, boolean storeError) {
         D2Error d2Error = throwable instanceof D2Error ? (D2Error) throwable
                 : errorMapper.mapRetrofitException(throwable, errorMapper.getRxObjectErrorBuilder());
-        if (storeErrors) {
+        if (storeError) {
             errorStore.insert(d2Error);
         }
         return d2Error;

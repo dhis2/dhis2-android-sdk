@@ -33,15 +33,13 @@ import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
-public final class FileResourceStoreImpl extends IdentifiableDataObjectStoreImpl<FileResource>
-        implements IdentifiableDataObjectStore<FileResource> {
+public final class FileResourceStoreImpl extends IdentifiableDataObjectStoreImpl<FileResource> {
 
     private static final StatementBinder<FileResource> BINDER = (o, sqLiteStatement) -> {
         sqLiteBind(sqLiteStatement, 1, o.uid());

@@ -65,6 +65,7 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 
 @Reusable
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class FileResourcePostCall {
 
     private final FileResourceService fileResourceService;

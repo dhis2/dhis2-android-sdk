@@ -32,6 +32,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteConstraintException;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
@@ -47,7 +48,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall;
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore;
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -71,11 +71,11 @@ public final class FileResourceCollectionRepository
         implements ReadWriteWithUploadWithUidCollectionRepository<FileResource, File> {
 
     private final FileResourcePostCall postCall;
-    private final FileResourceStore store;
+    private final IdentifiableDataObjectStore<FileResource> store;
     private final Context context;
 
     @Inject
-    FileResourceCollectionRepository(final FileResourceStore store,
+    FileResourceCollectionRepository(final IdentifiableDataObjectStore<FileResource> store,
                                      final Map<String, ChildrenAppender<FileResource>> childrenAppenders,
                                      final RepositoryScope scope,
                                      final FileResourcePostCall postCall,

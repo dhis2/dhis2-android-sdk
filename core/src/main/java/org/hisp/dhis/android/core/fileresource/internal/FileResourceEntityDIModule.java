@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.fileresource.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
@@ -48,13 +49,13 @@ public final class FileResourceEntityDIModule {
 
     @Provides
     @Reusable
-    public FileResourceStore store(DatabaseAdapter databaseAdapter) {
+    public IdentifiableDataObjectStore<FileResource> store(DatabaseAdapter databaseAdapter) {
         return FileResourceStoreImpl.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    public HandlerWithTransformer<FileResource> handler(FileResourceStore store) {
+    public HandlerWithTransformer<FileResource> handler(IdentifiableDataObjectStore<FileResource> store) {
         return new IdentifiableWithoutDeleteInterfaceHandlerImpl<>(store);
     }
 

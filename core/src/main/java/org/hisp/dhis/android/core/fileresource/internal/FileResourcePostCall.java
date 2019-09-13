@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
 import org.hisp.dhis.android.core.common.State;
@@ -70,7 +71,7 @@ public final class FileResourcePostCall {
     private final APICallExecutor apiCallExecutor;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
-    private final FileResourceStore fileResourceStore;
+    private final IdentifiableDataObjectStore<FileResource> fileResourceStore;
     private final HandlerWithTransformer<FileResource> fileResourceHandler;
     private final Context context;
 
@@ -79,7 +80,7 @@ public final class FileResourcePostCall {
                          @NonNull APICallExecutor apiCallExecutor,
                          @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
                          @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
-                         @NonNull FileResourceStore fileResourceStore,
+                         @NonNull IdentifiableDataObjectStore<FileResource> fileResourceStore,
                          @NonNull HandlerWithTransformer<FileResource> fileResourceHandler,
                          @NonNull Context context) {
         this.fileResourceService = fileResourceService;

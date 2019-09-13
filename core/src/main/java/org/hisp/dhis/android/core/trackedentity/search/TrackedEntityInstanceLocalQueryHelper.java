@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo.Columns;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
@@ -41,8 +42,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFi
 import java.util.List;
 
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
-import static org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields.PARENT;
-import static org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields.PATH;
 import static org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueFields.VALUE;
 
 final class TrackedEntityInstanceLocalQueryHelper {
@@ -155,12 +154,12 @@ final class TrackedEntityInstanceLocalQueryHelper {
         switch (ouMode) {
             case DESCENDANTS:
                 for (String orgunit : query.orgUnits()) {
-                    inner.appendOrKeyLikeStringValue(dot(ORGUNIT_ALIAS, PATH), "%" + orgunit + "%");
+                    inner.appendOrKeyLikeStringValue(dot(ORGUNIT_ALIAS, Columns.PATH), "%" + orgunit + "%");
                 }
                 break;
             case CHILDREN:
                 for (String orgunit : query.orgUnits()) {
-                    inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, PARENT), orgunit);
+                    inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, Columns.PARENT), orgunit);
                     // TODO Include orgunit?
                     inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, UID), orgunit);
                 }

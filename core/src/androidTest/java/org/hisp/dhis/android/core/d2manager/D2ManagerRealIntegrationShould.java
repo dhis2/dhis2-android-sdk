@@ -53,9 +53,6 @@ public class D2ManagerRealIntegrationShould {
         d2Configuration = D2Configuration.builder()
                 .appName("app_name")
                 .appVersion("1.0.0")
-                .readTimeoutInSeconds(100)
-                .connectTimeoutInSeconds(100)
-                .writeTimeoutInSeconds(100)
                 .networkInterceptors(Lists.newArrayList(new StethoInterceptor()))
                 .context(InstrumentationRegistry.getTargetContext().getApplicationContext())
                 .build();

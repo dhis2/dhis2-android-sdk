@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.dataset.internal.DataSetModuleWiper;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueModuleWiper;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentModuleWiper;
 import org.hisp.dhis.android.core.event.internal.EventModuleWiper;
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceModuleWiper;
 import org.hisp.dhis.android.core.imports.internal.ImportModuleWiper;
 import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleWiper;
 import org.hisp.dhis.android.core.legendset.internal.LegendSetModuleWiper;
@@ -73,6 +74,7 @@ final class D2ModuleWipers {
 
             EnrollmentModuleWiper enrollment,
             EventModuleWiper event,
+            FileResourceModuleWiper fileResource,
             ImportModuleWiper importModule,
             IndicatorModuleWiper indicator,
             LegendSetModuleWiper legendSet,
@@ -100,6 +102,7 @@ final class D2ModuleWipers {
 
                 enrollment,
                 event,
+                fileResource,
                 importModule,
                 indicator,
                 legendSet,

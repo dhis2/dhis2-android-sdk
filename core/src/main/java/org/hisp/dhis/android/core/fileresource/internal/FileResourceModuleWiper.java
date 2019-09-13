@@ -28,8 +28,30 @@
 
 package org.hisp.dhis.android.core.fileresource.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
-import org.hisp.dhis.android.core.fileresource.FileResource;
+import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo;
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.internal.TableWiper;
 
-public interface FileResourceStore extends IdentifiableDataObjectStore<FileResource> {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+public final class FileResourceModuleWiper implements ModuleWiper {
+    private final TableWiper tableWiper;
+
+    @Inject
+    FileResourceModuleWiper(TableWiper tableWiper) {
+        this.tableWiper = tableWiper;
+    }
+
+    @Override
+    public void wipeMetadata() {
+        // No metadata to wipe
+    }
+
+    @Override
+    public void wipeData() {
+        tableWiper.wipeTable(FileResourceTableInfo.TABLE_INFO);
+    }
 }

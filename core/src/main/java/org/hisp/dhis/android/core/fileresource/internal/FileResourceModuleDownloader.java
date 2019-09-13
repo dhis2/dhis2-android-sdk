@@ -28,17 +28,20 @@
 package org.hisp.dhis.android.core.fileresource.internal;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleDownloader;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
+import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
@@ -58,25 +61,35 @@ public class FileResourceModuleDownloader implements MetadataModuleDownloader<Un
     private final IdentifiableObjectStore<DataElement> dataElementStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
+    private final IdentifiableDataObjectStore<FileResource> fileResourceStore;
 
     @Inject
     FileResourceModuleDownloader(FileResourceCallFactory fileResourceCallFactory,
                                  IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore,
                                  IdentifiableObjectStore<DataElement> dataElementStore,
                                  TrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
-                                 TrackedEntityDataValueStore trackedEntityDataValueStore) {
+                                 TrackedEntityDataValueStore trackedEntityDataValueStore,
+                                 IdentifiableDataObjectStore<FileResource> fileResourceStore) {
         this.fileResourceCallFactory = fileResourceCallFactory;
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
         this.dataElementStore = dataElementStore;
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
+        this.fileResourceStore = fileResourceStore;
     }
 
     public Callable<Unit> downloadMetadata() {
         return () -> {
-            fileResourceCallFactory.create(getTrackedEntityAttributeValues(), getTrackedEntityDataValues()).call();
+            fileResourceCallFactory.create(
+                    getTrackedEntityAttributeValues(),
+                    getTrackedEntityDataValues())
+                    .call();
             return new Unit();
         };
+    }
+
+    private List<String> getExistingFileResources() {
+        return fileResourceStore.selectUids();
     }
 
     private List<TrackedEntityAttributeValue> getTrackedEntityAttributeValues() {
@@ -85,9 +98,12 @@ public class FileResourceModuleDownloader implements MetadataModuleDownloader<Un
 
         List<String> trackedEntityAttributeUids = trackedEntityAttributeStore.selectUidsWhere(attributeUidsWhereClause);
 
-        String attributeValuesWhereClause = new WhereClauseBuilder().appendInKeyStringValues(
-                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE, trackedEntityAttributeUids)
+        String attributeValuesWhereClause = new WhereClauseBuilder()
+                .appendInKeyStringValues(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                        trackedEntityAttributeUids)
+                .appendNotInKeyStringValues(TrackedEntityAttributeValueFields.VALUE, getExistingFileResources())
                 .build();
+
         return trackedEntityAttributeValueStore.selectWhere(attributeValuesWhereClause);
     }
 
@@ -97,9 +113,11 @@ public class FileResourceModuleDownloader implements MetadataModuleDownloader<Un
 
         List<String> dataElementUids = dataElementStore.selectUidsWhere(dataElementUidsWhereClause);
 
-        String dataValuesWhereClause = new WhereClauseBuilder().appendInKeyStringValues(
-                TrackedEntityDataValueFields.DATA_ELEMENT, dataElementUids)
+        String dataValuesWhereClause = new WhereClauseBuilder()
+                .appendInKeyStringValues(TrackedEntityDataValueFields.DATA_ELEMENT, dataElementUids)
+                .appendNotInKeyStringValues(TrackedEntityDataValueFields.VALUE, getExistingFileResources())
                 .build();
+
         return trackedEntityDataValueStore.selectWhere(dataValuesWhereClause);
     }
 }

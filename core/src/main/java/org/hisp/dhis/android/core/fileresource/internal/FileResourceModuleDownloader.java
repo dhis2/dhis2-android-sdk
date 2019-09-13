@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
-import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
 import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;

@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFiel
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -97,6 +98,15 @@ public final class OrganisationUnitCollectionRepository
                 UserOrganisationUnitLinkTableInfo.Columns.ROOT,
                 Collections.singletonList(isRoot ? "1" : "0"));
     }
+
+    public OrganisationUnitCollectionRepository byProgramUids(List<String> programUids) {
+        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).inLinkTable(
+                OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
+                OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
+                OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
+                programUids);
+    }
+
 
     public OrganisationUnitCollectionRepository withPrograms() {
         return cf.withChild(OrganisationUnitFields.PROGRAMS);

@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
@@ -65,7 +65,7 @@ public abstract class ReadWriteWithUidCollectionRepositoryImpl
         this.transformer = transformer;
     }
 
-    public abstract ReadWriteObjectRepository<M> uid(String uid);
+    public abstract ReadOnlyObjectRepository<M> uid(String uid);
 
     @Override
     public Single<String> add(P projection) {

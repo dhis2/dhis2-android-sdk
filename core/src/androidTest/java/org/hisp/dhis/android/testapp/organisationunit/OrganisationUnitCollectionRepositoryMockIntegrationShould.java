@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -116,6 +117,14 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
                 .byRootOrganisationUnit(Boolean.FALSE)
                 .blockingGet();
         assertThat(notRootOrganisationUnits.size(), is(0));
+    }
+
+    @Test
+    public void filter_by_program() {
+        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits
+                .byProgramUids(Collections.singletonList("lxAQ7Zs9VYR"))
+                .blockingGet();
+        assertThat(organisationUnits.size(), is(1));
     }
 
     @Test

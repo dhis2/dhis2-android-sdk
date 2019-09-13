@@ -32,8 +32,10 @@ import android.content.Context;
 
 import com.google.auto.value.AutoValue;
 
+import java.util.Collections;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import okhttp3.Interceptor;
 
@@ -46,24 +48,33 @@ public abstract class D2Configuration {
     @Nullable
     public abstract String appVersion();
 
+    @NonNull
     public abstract Integer readTimeoutInSeconds();
 
+    @NonNull
     public abstract Integer connectTimeoutInSeconds();
 
+    @NonNull
     public abstract Integer writeTimeoutInSeconds();
 
-    @Nullable
+    @NonNull
     public abstract List<Interceptor> interceptors();
 
-    @Nullable
+    @NonNull
     public abstract List<Interceptor> networkInterceptors();
 
+    @NonNull
     public abstract Context context();
 
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_D2Configuration.Builder();
+        return new AutoValue_D2Configuration.Builder()
+                .readTimeoutInSeconds(30)
+                .connectTimeoutInSeconds(30)
+                .writeTimeoutInSeconds(30)
+                .networkInterceptors(Collections.emptyList())
+                .interceptors(Collections.emptyList());
     }
 
     @AutoValue.Builder

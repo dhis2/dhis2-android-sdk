@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelFields;
 
 public final class OrganisationUnitLevelTableInfo {
 
@@ -52,12 +51,13 @@ public final class OrganisationUnitLevelTableInfo {
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String LEVEL = "level";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    OrganisationUnitLevelFields.LEVEL
+                    LEVEL
             );
         }
     }

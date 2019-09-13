@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine;
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
@@ -40,11 +38,11 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 
 import java.util.Collections;
@@ -52,6 +50,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
 
@@ -173,7 +172,7 @@ public final class EventWithLimitCallFactory {
     }
 
     private Observable<D2Progress> downloadSystemInfo(D2ProgressManager progressManager) {
-        return systemInfoRepository.download()
+        return systemInfoRepository.download(true)
                 .toSingle(() -> progressManager.increaseProgress(SystemInfo.class, false))
                 .toObservable();
     }

@@ -30,6 +30,9 @@ package org.hisp.dhis.android.core.dataset;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -37,18 +40,15 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.common.BaseDeletableDataModel;
+import org.hisp.dhis.android.core.common.State;
 
 import java.util.Date;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_DataSetCompleteRegistration.Builder.class)
-public abstract class DataSetCompleteRegistration extends BaseDataModel {
+public abstract class DataSetCompleteRegistration extends BaseDeletableDataModel {
 
     @JsonProperty
     public abstract String period();
@@ -85,7 +85,7 @@ public abstract class DataSetCompleteRegistration extends BaseDataModel {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseDataModel.Builder<DataSetCompleteRegistration.Builder> {
+    public abstract static class Builder extends BaseDeletableDataModel.Builder<DataSetCompleteRegistration.Builder> {
 
         public Builder() {
             state(State.SYNCED);

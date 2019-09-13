@@ -30,13 +30,11 @@ package org.hisp.dhis.android.core.enrollment;
 
 import android.content.ContentValues;
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns;
+
+import androidx.annotation.NonNull;
 
 public class CreateEnrollmentUtils {
     private static final String UID = "test_enrollment";
@@ -56,16 +54,16 @@ public class CreateEnrollmentUtils {
                                        @NonNull String organisationUnitUid,
                                        @NonNull String trackedEntityInstanceUid) {
         ContentValues enrollment = new ContentValues();
-        enrollment.put(BaseIdentifiableObjectModel.Columns.UID, uid);
-        enrollment.put(EnrollmentTableInfo.Columns.ORGANISATION_UNIT, organisationUnitUid);
-        enrollment.put(EnrollmentFields.PROGRAM, programUid);
-        enrollment.put(EnrollmentFields.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid);
-        enrollment.put(EnrollmentFields.FOLLOW_UP, FOLLOW_UP);
-        enrollment.put(EnrollmentTableInfo.Columns.GEOMETRY_TYPE, GEOMETRY_TYPE.getFeatureType());
-        enrollment.put(EnrollmentTableInfo.Columns.GEOMETRY_COORDINATES, GEOMETRY_COORDINATES);
-        enrollment.put(BaseDataModel.Columns.STATE, STATE.name());
-        enrollment.put(EnrollmentFields.CREATED, DATE);
-        enrollment.put(EnrollmentFields.LAST_UPDATED, DATE);
+        enrollment.put(Columns.UID, uid);
+        enrollment.put(Columns.ORGANISATION_UNIT, organisationUnitUid);
+        enrollment.put(Columns.PROGRAM, programUid);
+        enrollment.put(Columns.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid);
+        enrollment.put(Columns.FOLLOW_UP, FOLLOW_UP);
+        enrollment.put(Columns.GEOMETRY_TYPE, GEOMETRY_TYPE.getFeatureType());
+        enrollment.put(Columns.GEOMETRY_COORDINATES, GEOMETRY_COORDINATES);
+        enrollment.put(Columns.STATE, STATE.name());
+        enrollment.put(Columns.CREATED, DATE);
+        enrollment.put(Columns.LAST_UPDATED, DATE);
 
         return enrollment;
     }

@@ -127,7 +127,8 @@ public final class TrackedEntityAttributeReservedValueManager {
      */
     public Single<String> getValue(@NonNull String attribute, @NonNull String organisationUnitUid) {
         Completable optionalDownload = downloadValuesIfBelowThreshold(
-                attribute, getOrganisationUnit(organisationUnitUid), null, new BooleanWrapper(false)
+                attribute, getOrganisationUnit(organisationUnitUid), null, new BooleanWrapper(false),
+                false
         ).onErrorComplete();
 
         return optionalDownload.andThen(Single.create(emitter -> {
@@ -221,11 +222,12 @@ public final class TrackedEntityAttributeReservedValueManager {
             List<OrganisationUnit> organisationUnits = getOrgUnitsLinkedToAttribute(attribute);
             return Observable.fromIterable(organisationUnits).flatMapSingle(organisationUnit ->
                     downloadValuesIfBelowThreshold(
-                            attribute, organisationUnit, numberOfValuesToFillUp, systemInfoDownloaded)
+                            attribute, organisationUnit, numberOfValuesToFillUp, systemInfoDownloaded, true)
                             .onErrorComplete()
                             .toSingle(this::increaseProgress));
         } else {
-            return downloadValuesIfBelowThreshold(attribute, null, numberOfValuesToFillUp, systemInfoDownloaded)
+            return downloadValuesIfBelowThreshold(attribute, null, numberOfValuesToFillUp, systemInfoDownloaded,
+                    true)
                     .onErrorComplete()
                     .toSingle(this::increaseProgress)
                     .toObservable();
@@ -235,7 +237,8 @@ public final class TrackedEntityAttributeReservedValueManager {
     private Completable downloadValuesIfBelowThreshold(String attribute,
                                                        OrganisationUnit organisationUnit,
                                                        Integer minNumberOfValuesToHave,
-                                                       BooleanWrapper systemInfoDownloaded) {
+                                                       BooleanWrapper systemInfoDownloaded,
+                                                       boolean storeError) {
         return Completable.defer(() -> {
             // TODO use server date
             store.deleteExpired(new Date());
@@ -250,7 +253,7 @@ public final class TrackedEntityAttributeReservedValueManager {
                 Integer numberToReserve =
                         (minNumberOfValuesToHave == null ? FILL_UP_TO : minNumberOfValuesToHave) - remainingValues;
 
-                return downloadValues(attribute, organisationUnit, numberToReserve, systemInfoDownloaded);
+                return downloadValues(attribute, organisationUnit, numberToReserve, systemInfoDownloaded, storeError);
             } else {
                 return Completable.complete();
             }
@@ -260,10 +263,12 @@ public final class TrackedEntityAttributeReservedValueManager {
     private Completable downloadValues(String trackedEntityAttributeUid,
                                        OrganisationUnit organisationUnit,
                                        Integer numberToReserve,
-                                       BooleanWrapper systemInfoDownloaded) {
+                                       BooleanWrapper systemInfoDownloaded,
+                                       boolean storeError) {
 
         Completable downloadSystemInfo = systemInfoDownloaded.get() ? Completable.complete() :
-                systemInfoRepository.download().andThen(Completable.fromAction(() -> systemInfoDownloaded.set(true)));
+                systemInfoRepository.download(storeError).andThen(
+                        Completable.fromAction(() -> systemInfoDownloaded.set(true)));
 
         return downloadSystemInfo.andThen(Completable.fromAction(() -> {
             String trackedEntityAttributePattern;

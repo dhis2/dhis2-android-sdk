@@ -48,6 +48,6 @@ public class SystemInfoModuleDownloader implements RxMetadataModuleDownloader {
 
     @Override
     public Completable downloadMetadata() {
-        return systemInfoRepository.download();
+        return systemInfoRepository.download(true);
     }
 }

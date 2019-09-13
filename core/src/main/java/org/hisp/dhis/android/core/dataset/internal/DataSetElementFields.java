@@ -31,20 +31,17 @@ package org.hisp.dhis.android.core.dataset.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.dataset.DataSetElement;
+import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo;
 
-public final class DataSetElementFields {
-
-    public static final String DATA_SET = "dataSet";
-    public static final String DATA_ELEMENT = "dataElement";
-    public static final String CATEGORY_COMBO = "categoryCombo";
+final class DataSetElementFields {
 
     private static final FieldsHelper<DataSetElement> fh = new FieldsHelper<>();
 
     public static final Fields<DataSetElement> allFields = Fields.<DataSetElement>builder()
             .fields(
-                    fh.nestedFieldWithUid(DATA_SET),
-                    fh.nestedFieldWithUid(DATA_ELEMENT),
-                    fh.nestedFieldWithUid(CATEGORY_COMBO)
+                    fh.nestedFieldWithUid(DataSetElementLinkTableInfo.Columns.DATA_SET),
+                    fh.nestedFieldWithUid(DataSetElementLinkTableInfo.Columns.DATA_ELEMENT),
+                    fh.nestedFieldWithUid(DataSetElementLinkTableInfo.Columns.CATEGORY_COMBO)
             ).build();
 
     private DataSetElementFields() {

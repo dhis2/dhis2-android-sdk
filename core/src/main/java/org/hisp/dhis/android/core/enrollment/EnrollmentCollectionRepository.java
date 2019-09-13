@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 
@@ -82,47 +83,47 @@ public final class EnrollmentCollectionRepository extends ReadWriteWithUidCollec
     }
 
     public DateFilterConnector<EnrollmentCollectionRepository> byCreated() {
-        return cf.date(EnrollmentFields.CREATED);
+        return cf.date(Columns.CREATED);
     }
 
     public DateFilterConnector<EnrollmentCollectionRepository> byLastUpdated() {
-        return cf.date(EnrollmentFields.LAST_UPDATED);
+        return cf.date(Columns.LAST_UPDATED);
     }
 
     public StringFilterConnector<EnrollmentCollectionRepository> byCreatedAtClient() {
-        return cf.string(EnrollmentTableInfo.Columns.CREATED_AT_CLIENT);
+        return cf.string(Columns.CREATED_AT_CLIENT);
     }
 
     public StringFilterConnector<EnrollmentCollectionRepository> byLastUpdatedAtClient() {
-        return cf.string(EnrollmentTableInfo.Columns.LAST_UPDATED_AT_CLIENT);
+        return cf.string(Columns.LAST_UPDATED_AT_CLIENT);
     }
 
     public StringFilterConnector<EnrollmentCollectionRepository> byOrganisationUnit() {
-        return cf.string(EnrollmentTableInfo.Columns.ORGANISATION_UNIT);
+        return cf.string(Columns.ORGANISATION_UNIT);
     }
 
     public StringFilterConnector<EnrollmentCollectionRepository> byProgram() {
-        return cf.string(EnrollmentFields.PROGRAM);
+        return cf.string(Columns.PROGRAM);
     }
 
     public DateFilterConnector<EnrollmentCollectionRepository> byEnrollmentDate() {
-        return cf.date(EnrollmentFields.ENROLLMENT_DATE);
+        return cf.date(Columns.ENROLLMENT_DATE);
     }
 
     public DateFilterConnector<EnrollmentCollectionRepository> byIncidentDate() {
-        return cf.date(EnrollmentFields.INCIDENT_DATE);
+        return cf.date(Columns.INCIDENT_DATE);
     }
 
     public BooleanFilterConnector<EnrollmentCollectionRepository> byFollowUp() {
-        return cf.bool(EnrollmentFields.FOLLOW_UP);
+        return cf.bool(Columns.FOLLOW_UP);
     }
 
     public EnumFilterConnector<EnrollmentCollectionRepository, EnrollmentStatus> byStatus() {
-        return cf.enumC(EnrollmentFields.STATUS);
+        return cf.enumC(Columns.STATUS);
     }
 
     public StringFilterConnector<EnrollmentCollectionRepository> byTrackedEntityInstance() {
-        return cf.string(EnrollmentFields.TRACKED_ENTITY_INSTANCE);
+        return cf.string(Columns.TRACKED_ENTITY_INSTANCE);
     }
 
     public EnumFilterConnector<EnrollmentCollectionRepository, FeatureType> byGeometryType() {

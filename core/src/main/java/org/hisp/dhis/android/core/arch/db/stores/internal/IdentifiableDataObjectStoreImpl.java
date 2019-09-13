@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBui
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.DataModel;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
@@ -48,7 +47,6 @@ import org.hisp.dhis.android.core.common.State;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.common.BaseDataModel.Columns.DELETED;
 import static org.hisp.dhis.android.core.common.BaseDataModel.Columns.STATE;
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
 
@@ -61,10 +59,8 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
     private final String selectStateQuery;
     private final String existsQuery;
     private final SQLiteStatement setStateStatement;
-    private final SQLiteStatement setStateIfUploadingStatement;
     private final SQLiteStatement setStateForUpdateStatement;
-    private final SQLiteStatement setDeletedStatement;
-    protected final String tableName;
+    final String tableName;
 
     public IdentifiableDataObjectStoreImpl(DatabaseAdapter databaseAdapter,
                                            SQLStatementWrapper statements,
@@ -78,9 +74,6 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
                 STATE + " =?" + whereUid;
         this.setStateStatement = databaseAdapter.compileStatement(setState);
 
-        String setStateIfUploading = setState + " AND " + STATE + EQ + "'" + State.UPLOADING + "'";
-        this.setStateIfUploadingStatement = databaseAdapter.compileStatement(setStateIfUploading);
-
         String setStateForUpdate = "UPDATE " + tableName + " SET " +
                 STATE + " = (case " +
                     "when " + STATE + EQ + "'" + State.TO_POST + "' then '" + State.TO_POST + "' " +
@@ -93,10 +86,6 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
                     " where "  +
                         UID + " =? ;";
         this.setStateForUpdateStatement = databaseAdapter.compileStatement(setStateForUpdate);
-
-        String setDeleted = "UPDATE " + tableName + " SET " +
-                DELETED + " = 1" + whereUid;
-        this.setDeletedStatement = databaseAdapter.compileStatement(setDeleted);
 
         this.selectStateQuery = "SELECT " + STATE + " FROM " + tableName + whereUid;
         this.existsQuery = "SELECT 1 FROM " + tableName + whereUid;
@@ -139,37 +128,6 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
     }
 
     @Override
-    public HandleAction setStateOrDelete(@NonNull String uid, @NonNull State state) {
-        boolean deleted = false;
-        if (state == State.SYNCED) {
-            String whereClause = new WhereClauseBuilder()
-                    .appendKeyStringValue(UID, uid)
-                    .appendKeyNumberValue(DELETED, 1)
-                    .appendKeyStringValue(STATE, State.UPLOADING)
-                    .build();
-
-            deleted = deleteWhere(whereClause);
-        }
-
-        if (deleted) {
-            return HandleAction.Delete;
-        } else {
-            setStateIfUploading(uid, state);
-            return HandleAction.Update;
-        }
-    }
-
-    private void setStateIfUploading(@NonNull String uid, @NonNull State state) {
-        sqLiteBind(setStateIfUploadingStatement, 1, state);
-
-        // bind the where argument
-        sqLiteBind(setStateIfUploadingStatement, 2, uid);
-
-        databaseAdapter.executeUpdateDelete(tableName, setStateIfUploadingStatement);
-        setStateIfUploadingStatement.clearBindings();
-    }
-
-    @Override
     public State getState(@NonNull String uid) {
         Cursor cursor = databaseAdapter.query(selectStateQuery, uid);
         State state = null;
@@ -188,15 +146,5 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
         int count = cursor.getCount();
         cursor.close();
         return count > 0;
-    }
-
-    @Override
-    public int setDeleted(@NonNull String uid) {
-        sqLiteBind(setDeletedStatement, 1, uid);
-
-        int updatedRow = databaseAdapter.executeUpdateDelete(tableName, setDeletedStatement);
-        setDeletedStatement.clearBindings();
-
-        return updatedRow;
     }
 }

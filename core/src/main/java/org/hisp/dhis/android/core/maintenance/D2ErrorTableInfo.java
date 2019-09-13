@@ -52,14 +52,14 @@ public final class D2ErrorTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
-        static final String RESOURCE_TYPE = "resourceType";
-        static final String URL = "url";
-        static final String ERROR_COMPONENT = "errorComponent";
-        static final String ERROR_CODE = "errorCode";
-        static final String ERROR_DESCRIPTION = "errorDescription";
-        static final String HTTP_ERROR_CODE = "httpErrorCode";
-        static final String CREATED = "created";
+    public static class Columns extends BaseModel.Columns {
+        public static final String RESOURCE_TYPE = "resourceType";
+        public static final String URL = "url";
+        public static final String ERROR_COMPONENT = "errorComponent";
+        public static final String ERROR_CODE = "errorCode";
+        public static final String ERROR_DESCRIPTION = "errorDescription";
+        public static final String HTTP_ERROR_CODE = "httpErrorCode";
+        public static final String CREATED = "created";
 
         @Override
         public String[] all() {

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
 
 public final class ObjectStyleTableInfo {
 
@@ -54,14 +53,16 @@ public final class ObjectStyleTableInfo {
 
         public static final String UID = BaseIdentifiableObjectModel.Columns.UID;
         public static final String OBJECT_TABLE = "objectTable";
+        public static final String COLOR = "color";
+        public static final String ICON = "icon";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
                     UID,
                     OBJECT_TABLE,
-                    ObjectStyleFields.COLOR,
-                    ObjectStyleFields.ICON);
+                    COLOR,
+                    ICON);
         }
 
         @Override

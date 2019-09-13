@@ -31,25 +31,19 @@ package org.hisp.dhis.android.core.dataset.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo;
 
-public final class DataSetCompleteRegistrationFields {
-
-    public static final String PERIOD = "period";
-    public static final String DATA_SET = "dataSet";
-    public static final String ORGANISATION_UNIT = "organisationUnit";
-    public static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
-    public static final String DATE = "date";
-    public static final String STORED_BY = "storedBy";
+final class DataSetCompleteRegistrationFields {
 
     private static FieldsHelper<DataSetCompleteRegistration> fieldsHelper = new FieldsHelper<>();
 
     static final Fields<DataSetCompleteRegistration> allFields = Fields.<DataSetCompleteRegistration>builder().fields(
-            fieldsHelper.<String>field(PERIOD),
-            fieldsHelper.<String>field(DATA_SET),
-            fieldsHelper.<String>field(ORGANISATION_UNIT),
-            fieldsHelper.<String>field(ATTRIBUTE_OPTION_COMBO),
-            fieldsHelper.<String>field(DATE),
-            fieldsHelper.<String>field(STORED_BY)
+            fieldsHelper.<String>field(DataSetCompleteRegistrationTableInfo.Columns.PERIOD),
+            fieldsHelper.<String>field(DataSetCompleteRegistrationTableInfo.Columns.DATA_SET),
+            fieldsHelper.<String>field(DataSetCompleteRegistrationTableInfo.Columns.ORGANISATION_UNIT),
+            fieldsHelper.<String>field(DataSetCompleteRegistrationTableInfo.Columns.ATTRIBUTE_OPTION_COMBO),
+            fieldsHelper.<String>field(DataSetCompleteRegistrationTableInfo.Columns.DATE),
+            fieldsHelper.<String>field(DataSetCompleteRegistrationTableInfo.Columns.STORED_BY)
     ).build();
 
     private DataSetCompleteRegistrationFields() {}

@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.Event;
@@ -541,7 +541,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         EnrollmentStore enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter());
         Enrollment enrollment = null;
         List<Enrollment> storedEnrollments = enrollmentStore.selectWhere(new WhereClauseBuilder()
-                .appendKeyStringValue(EnrollmentFields.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid).build());
+                .appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid).build());
         for (Enrollment storedEnrollment : storedEnrollments) {
             if(storedEnrollment.uid().equals(enrollmentUid)) {
                 enrollment = storedEnrollment;

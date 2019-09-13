@@ -33,26 +33,22 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo.Columns;
 
 public final class OrganisationUnitFields {
 
-    public static final String PARENT = "parent";
-    public static final String PATH = "path";
-    public static final String OPENING_DATE = "openingDate";
-    public static final String CLOSED_DATE = "closedDate";
-    public static final String LEVEL = "level";
     public static final String PROGRAMS = "programs";
     public static final String DATA_SETS = "dataSets";
-    public static final String ANCESTORS = "ancestors";
+    private static final String ANCESTORS = "ancestors";
     public static final String ORGANISATION_UNIT_GROUPS = "organisationUnitGroups";
 
     private static final FieldsHelper<OrganisationUnit> fh = new FieldsHelper<>();
 
     static final Field<OrganisationUnit, String> uid = fh.uid();
     private static final Field<OrganisationUnit, String> displayName = fh.displayName();
-    static final Field<OrganisationUnit, String> path = Field.create(PATH);
-    private static final Field<OrganisationUnit, String> openingDate = Field.create(OPENING_DATE);
-    private static final Field<OrganisationUnit, String> closedDate = Field.create(CLOSED_DATE);
+    static final Field<OrganisationUnit, String> path = Field.create(Columns.PATH);
+    private static final Field<OrganisationUnit, String> openingDate = Field.create(Columns.OPENING_DATE);
+    private static final Field<OrganisationUnit, String> closedDate = Field.create(Columns.CLOSED_DATE);
 
     public static final Fields<OrganisationUnit> allFields = Fields.<OrganisationUnit>builder()
             .fields(fh.getNameableFields())
@@ -60,8 +56,8 @@ public final class OrganisationUnitFields {
                     path,
                     openingDate,
                     closedDate,
-                    fh.<String>field(LEVEL),
-                    fh.nestedFieldWithUid(PARENT),
+                    fh.<String>field(Columns.LEVEL),
+                    fh.nestedFieldWithUid(Columns.PARENT),
                     fh.nestedFieldWithUid(PROGRAMS),
                     fh.nestedFieldWithUid(DATA_SETS),
                     fh.<OrganisationUnit>nestedField(ANCESTORS).with(uid, displayName),

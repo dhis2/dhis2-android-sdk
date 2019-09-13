@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.indicator.internal.IndicatorFields;
+import org.hisp.dhis.android.core.indicator.IndicatorTableInfo.Columns;
 
 import java.util.Map;
 
@@ -55,30 +55,30 @@ public final class IndicatorCollectionRepository
     }
 
     public BooleanFilterConnector<IndicatorCollectionRepository> byAnnualized() {
-        return cf.bool(IndicatorFields.ANNUALIZED);
+        return cf.bool(Columns.ANNUALIZED);
     }
 
     public StringFilterConnector<IndicatorCollectionRepository> byIndicatorTypeUid() {
-        return cf.string(IndicatorFields.INDICATOR_TYPE);
+        return cf.string(Columns.INDICATOR_TYPE);
     }
 
     public StringFilterConnector<IndicatorCollectionRepository> byNumerator() {
-        return cf.string(IndicatorFields.NUMERATOR);
+        return cf.string(Columns.NUMERATOR);
     }
 
     public StringFilterConnector<IndicatorCollectionRepository> byNumeratorDescription() {
-        return cf.string(IndicatorFields.NUMERATOR_DESCRIPTION);
+        return cf.string(Columns.NUMERATOR_DESCRIPTION);
     }
 
     public StringFilterConnector<IndicatorCollectionRepository> byDenominator() {
-        return cf.string(IndicatorFields.DENOMINATOR);
+        return cf.string(Columns.DENOMINATOR);
     }
 
     public StringFilterConnector<IndicatorCollectionRepository> byDenominatorDescription() {
-        return cf.string(IndicatorFields.DENOMINATOR_DESCRIPTION);
+        return cf.string(Columns.DENOMINATOR_DESCRIPTION);
     }
 
     public StringFilterConnector<IndicatorCollectionRepository> byUrl() {
-        return cf.string(IndicatorFields.URL);
+        return cf.string(Columns.URL);
     }
 }

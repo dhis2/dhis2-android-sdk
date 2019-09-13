@@ -31,5 +31,5 @@ package org.hisp.dhis.android.core.arch.call.internal;
 import io.reactivex.Completable;
 
 public interface CompletableProvider {
-    Completable getCompletable();
+    Completable getCompletable(boolean storeError);
 }

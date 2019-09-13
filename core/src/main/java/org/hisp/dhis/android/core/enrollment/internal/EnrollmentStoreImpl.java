@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBui
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStoreImpl;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
@@ -50,7 +50,7 @@ import java.util.Map;
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
 public final class EnrollmentStoreImpl
-        extends IdentifiableDataObjectStoreImpl<Enrollment> implements EnrollmentStore {
+        extends IdentifiableDeletableDataObjectStoreImpl<Enrollment> implements EnrollmentStore {
 
     private static final StatementBinder<Enrollment> BINDER = (o, sqLiteStatement) -> {
         sqLiteBind(sqLiteStatement, 1, o.uid());
@@ -72,7 +72,7 @@ public final class EnrollmentStoreImpl
     };
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            EnrollmentTableInfo.TABLE_INFO, EnrollmentFields.TRACKED_ENTITY_INSTANCE);
+            EnrollmentTableInfo.TABLE_INFO, EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE);
 
     private EnrollmentStoreImpl(DatabaseAdapter databaseAdapter,
                                 SQLStatementWrapper statementWrapper,

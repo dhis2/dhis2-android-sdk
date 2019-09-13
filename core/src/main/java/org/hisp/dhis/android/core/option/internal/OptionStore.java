@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.option.Option;
-import org.hisp.dhis.android.core.option.OptionFields;
 import org.hisp.dhis.android.core.option.OptionTableInfo;
 
 import androidx.annotation.NonNull;
@@ -48,7 +47,7 @@ import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLi
 final class OptionStore {
 
     static final SingleParentChildProjection CHILD_PROJECTION =
-            new SingleParentChildProjection(OptionTableInfo.TABLE_INFO, OptionFields.OPTION_SET);
+            new SingleParentChildProjection(OptionTableInfo.TABLE_INFO, OptionTableInfo.Columns.OPTION_SET);
 
     private OptionStore() {}
 

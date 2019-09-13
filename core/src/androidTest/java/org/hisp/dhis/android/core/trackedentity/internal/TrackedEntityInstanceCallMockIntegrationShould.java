@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
-import androidx.annotation.NonNull;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,7 +36,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.Event;
@@ -56,6 +54,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -201,7 +201,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
         EnrollmentStore enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter);
 
         List<Enrollment> downloadedEnrollments = enrollmentStore.selectWhere(new WhereClauseBuilder()
-                .appendKeyStringValue(EnrollmentFields.TRACKED_ENTITY_INSTANCE, teiUid).build());
+                .appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, teiUid).build());
         List<Enrollment> downloadedEnrollmentsWithoutIdAndDeleteFalse = new ArrayList<>();
         for (Enrollment enrollment : downloadedEnrollments) {
             downloadedEnrollmentsWithoutIdAndDeleteFalse.add(

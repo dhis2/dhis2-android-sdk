@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.category.internal.CategoryOptionComboFields;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
 
@@ -52,12 +51,13 @@ public final class CategoryOptionComboTableInfo {
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String CATEGORY_COMBO = "categoryCombo";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    CategoryOptionComboFields.CATEGORY_COMBO
+                    CATEGORY_COMBO
             );
         }
     }

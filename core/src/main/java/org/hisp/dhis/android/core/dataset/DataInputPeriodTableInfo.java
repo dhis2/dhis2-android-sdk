@@ -30,9 +30,8 @@ package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.BaseDeletableDataModel;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.dataset.internal.DataInputPeriodFields;
 
 public class DataInputPeriodTableInfo {
 
@@ -51,17 +50,20 @@ public class DataInputPeriodTableInfo {
         }
     };
 
-    public static class Columns extends BaseDataModel.Columns {
+    public static class Columns extends BaseDeletableDataModel.Columns {
 
         public static final String DATA_SET = "dataSet";
+        public static final String PERIOD = "period";
+        public static final String OPENING_DATE = "openingDate";
+        public static final String CLOSING_DATE = "closingDate";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
                     DATA_SET,
-                    DataInputPeriodFields.PERIOD,
-                    DataInputPeriodFields.OPENING_DATE,
-                    DataInputPeriodFields.CLOSING_DATE);
+                    PERIOD,
+                    OPENING_DATE,
+                    CLOSING_DATE);
         }
     }
 

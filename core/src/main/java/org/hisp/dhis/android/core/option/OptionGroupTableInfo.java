@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.option.internal.OptionGroupFields;
 
 public final class OptionGroupTableInfo {
 
@@ -52,12 +51,13 @@ public final class OptionGroupTableInfo {
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public final static String OPTION_SET = "optionSet";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    OptionGroupFields.OPTION_SET
+                    OPTION_SET
             );
         }
     }

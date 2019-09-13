@@ -98,7 +98,6 @@ public class SystemInfoCallShould {
 
 
     @Before
-    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         systemInfoSyncCall = new SystemInfoCall(
@@ -114,22 +113,22 @@ public class SystemInfoCallShould {
 
     @Test
     public void pass_correct_fields_to_service() {
-        when(apiCallExecutor.wrapSingle(systemInfoSingle)).thenReturn(Single.just(systemInfo));
-        systemInfoSyncCall.getCompletable();
+        when(apiCallExecutor.wrapSingle(systemInfoSingle, true)).thenReturn(Single.just(systemInfo));
+        systemInfoSyncCall.getCompletable(true);
         assertThat(filterCaptor.getValue()).isEqualTo(SystemInfoFields.allFields);
     }
 
     @Test
     public void emit_d2_error_when_api_call_executor_returns_error() {
-        when(apiCallExecutor.wrapSingle(systemInfoSingle)).thenReturn(Single.error(d2Error));
-        systemInfoSyncCall.getCompletable().test().assertError(d2Error);
+        when(apiCallExecutor.wrapSingle(systemInfoSingle, true)).thenReturn(Single.error(d2Error));
+        systemInfoSyncCall.getCompletable(true).test().assertError(d2Error);
     }
 
     @Test
     public void never_invoke_handlers_on_call_exception() {
-        when(apiCallExecutor.wrapSingle(systemInfoSingle)).thenReturn(Single.error(d2Error));
+        when(apiCallExecutor.wrapSingle(systemInfoSingle, true)).thenReturn(Single.error(d2Error));
 
-        systemInfoSyncCall.getCompletable().subscribe();
+        systemInfoSyncCall.getCompletable(true).subscribe();
 
         verify(databaseAdapter, never()).beginNewTransaction();
         verify(transaction, never()).begin();
@@ -142,9 +141,9 @@ public class SystemInfoCallShould {
 
     @Test
     public void invoke_handler_after_successful_call() {
-        when(apiCallExecutor.wrapSingle(systemInfoSingle)).thenReturn(Single.just(systemInfo));
+        when(apiCallExecutor.wrapSingle(systemInfoSingle, true)).thenReturn(Single.just(systemInfo));
 
-        systemInfoSyncCall.getCompletable().subscribe();
+        systemInfoSyncCall.getCompletable(true).subscribe();
 
         verify(systemInfoHandler).handle(systemInfo);
         verify(resourceHandler).handleResource(eq(Resource.Type.SYSTEM_INFO));
@@ -153,17 +152,17 @@ public class SystemInfoCallShould {
     @Test
     public void throw_d2_call_exception_when_system_version_not_supported() {
         when(systemInfo.version()).thenReturn("2.28");
-        when(apiCallExecutor.wrapSingle(systemInfoSingle)).thenReturn(Single.just(systemInfo));
+        when(apiCallExecutor.wrapSingle(systemInfoSingle, true)).thenReturn(Single.just(systemInfo));
 
-        systemInfoSyncCall.getCompletable().test().assertError(D2Error.class);
+        systemInfoSyncCall.getCompletable(true).test().assertError(D2Error.class);
     }
 
     @Test
     public void not_call_handler_when_system_version_not_supported() {
         when(systemInfo.version()).thenReturn("2.28");
-        when(apiCallExecutor.wrapSingle(systemInfoSingle)).thenReturn(Single.just(systemInfo));
+        when(apiCallExecutor.wrapSingle(systemInfoSingle, true)).thenReturn(Single.just(systemInfo));
 
-        systemInfoSyncCall.getCompletable().subscribe();
+        systemInfoSyncCall.getCompletable(true).subscribe();
 
         verify(systemInfoHandler, never()).handle(systemInfo);
         verify(resourceHandler, never()).handleResource(eq(Resource.Type.SYSTEM_INFO));

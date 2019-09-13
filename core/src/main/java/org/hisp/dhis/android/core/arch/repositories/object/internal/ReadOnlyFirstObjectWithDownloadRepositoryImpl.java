@@ -54,7 +54,7 @@ public class ReadOnlyFirstObjectWithDownloadRepositoryImpl<M extends Model, R ex
     }
 
     @Override
-    public Completable download() {
-        return downloadCompletableProvider.getCompletable();
+    public Completable download(boolean storeError) {
+        return downloadCompletableProvider.getCompletable(storeError);
     }
 }

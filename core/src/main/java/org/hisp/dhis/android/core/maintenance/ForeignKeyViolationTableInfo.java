@@ -50,15 +50,15 @@ public final class ForeignKeyViolationTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
-        final static String FROM_TABLE = "fromTable";
-        final static String FROM_COLUMN = "fromColumn";
-        final static String TO_TABLE = "toTable";
-        final static String TO_COLUMN = "toColumn";
-        final static String NOT_FOUND_VALUE = "notFoundValue";
-        final static String FROM_OBJECT_UID = "fromObjectUid";
-        final static String FROM_OBJECT_ROW = "fromObjectRow";
-        final static String CREATED = "created";
+    public static class Columns extends BaseModel.Columns {
+        public final static String FROM_TABLE = "fromTable";
+        public final static String FROM_COLUMN = "fromColumn";
+        public final static String TO_TABLE = "toTable";
+        public final static String TO_COLUMN = "toColumn";
+        public final static String NOT_FOUND_VALUE = "notFoundValue";
+        public final static String FROM_OBJECT_UID = "fromObjectUid";
+        public final static String FROM_OBJECT_ROW = "fromObjectRow";
+        public final static String CREATED = "created";
 
         @Override
         public String[] all() {

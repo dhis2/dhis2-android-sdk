@@ -36,10 +36,12 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo.Columns;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -59,23 +61,23 @@ public final class OrganisationUnitCollectionRepository
     }
 
     public StringFilterConnector<OrganisationUnitCollectionRepository> byParentUid() {
-        return cf.string(OrganisationUnitFields.PARENT);
+        return cf.string(Columns.PARENT);
     }
 
     public StringFilterConnector<OrganisationUnitCollectionRepository> byPath() {
-        return cf.string(OrganisationUnitFields.PATH);
+        return cf.string(Columns.PATH);
     }
 
     public DateFilterConnector<OrganisationUnitCollectionRepository> byOpeningDate() {
-        return cf.date(OrganisationUnitFields.OPENING_DATE);
+        return cf.date(Columns.OPENING_DATE);
     }
 
     public DateFilterConnector<OrganisationUnitCollectionRepository> byClosedDate() {
-        return cf.date(OrganisationUnitFields.CLOSED_DATE);
+        return cf.date(Columns.CLOSED_DATE);
     }
 
     public IntegerFilterConnector<OrganisationUnitCollectionRepository> byLevel() {
-        return cf.integer(OrganisationUnitFields.LEVEL);
+        return cf.integer(Columns.LEVEL);
     }
 
     public StringFilterConnector<OrganisationUnitCollectionRepository> byDisplayNamePath() {
@@ -97,6 +99,15 @@ public final class OrganisationUnitCollectionRepository
                 UserOrganisationUnitLinkTableInfo.Columns.ROOT,
                 Collections.singletonList(isRoot ? "1" : "0"));
     }
+
+    public OrganisationUnitCollectionRepository byProgramUids(List<String> programUids) {
+        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).inLinkTable(
+                OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
+                OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
+                OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
+                programUids);
+    }
+
 
     public OrganisationUnitCollectionRepository withPrograms() {
         return cf.withChild(OrganisationUnitFields.PROGRAMS);

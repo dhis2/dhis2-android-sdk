@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationFields;
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationPostCall;
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore;
 
@@ -93,27 +92,27 @@ public final class DataSetCompleteRegistrationCollectionRepository
 
 
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byPeriod() {
-        return cf.string(DataSetCompleteRegistrationFields.PERIOD);
+        return cf.string(DataSetCompleteRegistrationTableInfo.Columns.PERIOD);
     }
 
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byDataSetUid() {
-        return cf.string(DataSetCompleteRegistrationFields.DATA_SET);
+        return cf.string(DataSetCompleteRegistrationTableInfo.Columns.DATA_SET);
     }
 
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byOrganisationUnitUid() {
-        return cf.string(DataSetCompleteRegistrationFields.ORGANISATION_UNIT);
+        return cf.string(DataSetCompleteRegistrationTableInfo.Columns.ORGANISATION_UNIT);
     }
 
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byAttributeOptionComboUid() {
-        return cf.string(DataSetCompleteRegistrationFields.ATTRIBUTE_OPTION_COMBO);
+        return cf.string(DataSetCompleteRegistrationTableInfo.Columns.ATTRIBUTE_OPTION_COMBO);
     }
 
     public DateFilterConnector<DataSetCompleteRegistrationCollectionRepository> byDate() {
-        return cf.date(DataSetCompleteRegistrationFields.DATE);
+        return cf.date(DataSetCompleteRegistrationTableInfo.Columns.DATE);
     }
 
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byStoredBy() {
-        return cf.string(DataSetCompleteRegistrationFields.STORED_BY);
+        return cf.string(DataSetCompleteRegistrationTableInfo.Columns.STORED_BY);
     }
 
     public BooleanFilterConnector<DataSetCompleteRegistrationCollectionRepository> byDeleted() {

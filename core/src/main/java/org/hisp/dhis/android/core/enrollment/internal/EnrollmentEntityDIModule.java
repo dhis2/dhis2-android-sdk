@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.enrollment.note.internal.NoteChildrenAppender;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.event.internal.EventChildrenAppender;
-import org.hisp.dhis.android.core.event.internal.EventFields;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -84,7 +83,7 @@ public final class EnrollmentEntityDIModule {
     @Provides
     @Reusable
     OrphanCleaner<Enrollment, Event> eventOrphanCleaner(DatabaseAdapter databaseAdapter) {
-        return new DataOrphanCleanerImpl<>(EventTableInfo.TABLE_INFO.name(), EventFields.ENROLLMENT,
+        return new DataOrphanCleanerImpl<>(EventTableInfo.TABLE_INFO.name(), EventTableInfo.Columns.ENROLLMENT,
                 BaseDataModel.Columns.STATE, databaseAdapter);
     }
 }

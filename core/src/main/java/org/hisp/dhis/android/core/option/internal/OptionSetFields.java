@@ -33,26 +33,24 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.option.Option;
-import org.hisp.dhis.android.core.option.OptionFields;
 import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.option.OptionSetTableInfo.Columns;
 
 public final class OptionSetFields {
 
-    public final static String VERSION = "version";
-    public final static String VALUE_TYPE = "valueType";
     public final static String OPTIONS = "options";
 
     private static final FieldsHelper<OptionSet> fh = new FieldsHelper<>();
 
     public static final Field<OptionSet, String> uid = fh.uid();
 
-    public static final Field<OptionSet, String> version = Field.create(VERSION);
+    public static final Field<OptionSet, String> version = Field.create(Columns.VERSION);
 
     public static final Fields<OptionSet> allFields = Fields.<OptionSet>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
                     version,
-                    fh.<ValueType>field(VALUE_TYPE),
+                    fh.<ValueType>field(Columns.VALUE_TYPE),
                     fh.<Option>nestedField(OPTIONS)
                             .with(OptionFields.allFields)
             ).build();

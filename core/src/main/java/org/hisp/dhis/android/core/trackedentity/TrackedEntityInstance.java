@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -37,16 +39,16 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.Geometry;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEnrollmentListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationship229CompatibleListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStringColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityAttributeValueListColumnAdapter;
+import org.hisp.dhis.android.core.common.BaseDeletableDataModel;
+import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.Geometry;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
@@ -54,11 +56,9 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFi
 import java.util.Date;
 import java.util.List;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
 @JsonDeserialize(builder = AutoValue_TrackedEntityInstance.Builder.class)
-public abstract class TrackedEntityInstance extends BaseDataModel implements ObjectWithUidInterface {
+public abstract class TrackedEntityInstance extends BaseDeletableDataModel implements ObjectWithUidInterface {
 
     @Override
     @Nullable
@@ -134,7 +134,7 @@ public abstract class TrackedEntityInstance extends BaseDataModel implements Obj
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseDataModel.Builder<Builder> {
+    public abstract static class Builder extends BaseDeletableDataModel.Builder<Builder> {
         public abstract Builder id(Long id);
 
         @JsonProperty(TrackedEntityInstanceFields.UID)

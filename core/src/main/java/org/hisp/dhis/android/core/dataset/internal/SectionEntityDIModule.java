@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.dataset.Section;
-import org.hisp.dhis.android.core.dataset.SectionFields;
 
 import java.util.HashMap;
 import java.util.Map;

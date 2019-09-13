@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnly
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.legendset.LegendSetTableInfo.Columns;
 import org.hisp.dhis.android.core.legendset.internal.LegendSetFields;
 
 import java.util.Map;
@@ -54,7 +55,7 @@ public final class LegendSetCollectionRepository
     }
 
     public StringFilterConnector<LegendSetCollectionRepository> bySymbolizer() {
-        return cf.string(LegendSetFields.SYMBOLIZER);
+        return cf.string(Columns.SYMBOLIZER);
     }
 
     public LegendSetCollectionRepository withLegends() {

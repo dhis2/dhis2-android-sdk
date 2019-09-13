@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.enrollment;
 
 import android.database.Cursor;
 
-import androidx.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -40,17 +38,17 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.Coordinates;
-import org.hisp.dhis.android.core.common.Geometry;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStatusColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStatusColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCoordinatesColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEventListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNoteListColumnAdapter;
+import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
+import org.hisp.dhis.android.core.common.BaseDeletableDataModel;
+import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.Geometry;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.Event;
@@ -58,9 +56,11 @@ import org.hisp.dhis.android.core.event.Event;
 import java.util.Date;
 import java.util.List;
 
+import androidx.annotation.Nullable;
+
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Enrollment.Builder.class)
-public abstract class Enrollment extends BaseDataModel implements ObjectWithUidInterface {
+public abstract class Enrollment extends BaseDeletableDataModel implements ObjectWithUidInterface {
 
     @Override
     @Nullable
@@ -106,8 +106,8 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithUidI
     public abstract Date incidentDate();
 
     @Nullable
-    @JsonProperty(EnrollmentFields.FOLLOW_UP)
-    @ColumnName(EnrollmentFields.FOLLOW_UP)
+    @JsonProperty(EnrollmentTableInfo.Columns.FOLLOW_UP)
+    @ColumnName(EnrollmentTableInfo.Columns.FOLLOW_UP)
     public abstract Boolean followUp();
 
     @Nullable
@@ -155,7 +155,7 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithUidI
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseDataModel.Builder<Builder> {
+    public abstract static class Builder extends BaseDeletableDataModel.Builder<Builder> {
         public abstract Builder id(Long id);
 
         @JsonProperty(EnrollmentFields.UID)
@@ -178,7 +178,7 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithUidI
 
         public abstract Builder incidentDate(Date incidentDate);
 
-        @JsonProperty(EnrollmentFields.FOLLOW_UP)
+        @JsonProperty(EnrollmentTableInfo.Columns.FOLLOW_UP)
         public abstract Builder followUp(Boolean followUp);
 
         public abstract Builder status(EnrollmentStatus status);

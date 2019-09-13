@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.category.CategoryOptionTableInfo;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
-import org.hisp.dhis.android.core.option.OptionFields;
 import org.hisp.dhis.android.core.option.OptionSetTableInfo;
 import org.hisp.dhis.android.core.option.OptionTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
@@ -67,7 +66,7 @@ public class MaintenanceMockIntegrationShould extends BaseMockIntegrationTestFul
                 .toTable(OptionSetTableInfo.TABLE_INFO.name())
                 .toColumn(BaseIdentifiableObjectModel.Columns.UID)
                 .fromTable(OptionTableInfo.TABLE_INFO.name())
-                .fromColumn(OptionFields.OPTION_SET)
+                .fromColumn(OptionTableInfo.Columns.OPTION_SET)
                 .notFoundValue("non_existent_option_set_uid")
                 .fromObjectUid("non_existent_option_uid")
                 .build();

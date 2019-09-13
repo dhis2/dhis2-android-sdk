@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
-
-import androidx.annotation.NonNull;
 
 public class CreateTrackedEntityInstanceUtils {
     private static final State STATE = State.TO_POST;

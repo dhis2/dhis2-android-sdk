@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupTableInfo.Columns;
 
-public final class OrganisationUnitGroupFields {
+final class OrganisationUnitGroupFields {
 
     private static final FieldsHelper<OrganisationUnitGroup> fh = new FieldsHelper<>();
 
@@ -41,8 +41,8 @@ public final class OrganisationUnitGroupFields {
             Fields.<OrganisationUnitGroup>builder()
                     .fields(fh.getIdentifiableFields())
                     .fields(
-                        fh.<String>field(BaseNameableObject.SHORT_NAME),
-                        fh.<String>field(BaseNameableObject.DISPLAY_SHORT_NAME)
+                        fh.<String>field(Columns.SHORT_NAME),
+                        fh.<String>field(Columns.DISPLAY_SHORT_NAME)
                     ).build();
 
     private OrganisationUnitGroupFields() {

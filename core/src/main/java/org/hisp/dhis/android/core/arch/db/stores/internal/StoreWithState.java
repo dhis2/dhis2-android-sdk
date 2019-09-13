@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.db.stores.internal;
 
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.State;
 
 import java.util.List;
@@ -43,11 +42,7 @@ public interface StoreWithState {
 
     int setStateForUpdate(@NonNull String uid);
 
-    HandleAction setStateOrDelete(@NonNull String uid, @NonNull State state);
-
     State getState(@NonNull String uid);
 
     Boolean exists(@NonNull String uid);
-
-    int setDeleted(@NonNull String uid);
 }

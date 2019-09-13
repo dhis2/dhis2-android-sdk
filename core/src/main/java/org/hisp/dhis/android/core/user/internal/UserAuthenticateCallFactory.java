@@ -149,7 +149,7 @@ public final class UserAuthenticateCallFactory {
                     username, password);
             authenticatedUserStore.updateOrInsertWhere(authenticatedUserToStore);
 
-            systemInfoRepository.download().blockingAwait();
+            systemInfoRepository.download(true).blockingAwait();
 
             handleUser(authenticatedUser);
             transaction.setSuccessful();

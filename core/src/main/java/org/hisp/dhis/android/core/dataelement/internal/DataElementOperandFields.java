@@ -31,11 +31,9 @@ package org.hisp.dhis.android.core.dataelement.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo;
 
 public final class DataElementOperandFields {
-
-    public static final String DATA_ELEMENT = "dataElement";
-    public static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
 
     private static final FieldsHelper<DataElementOperand> fh = new FieldsHelper<>();
 
@@ -43,8 +41,8 @@ public final class DataElementOperandFields {
             .fields(
                     fh.uid(),
                     fh.deleted(),
-                    fh.nestedFieldWithUid(DATA_ELEMENT),
-                    fh.nestedFieldWithUid(CATEGORY_OPTION_COMBO)
+                    fh.nestedFieldWithUid(DataElementOperandTableInfo.Columns.DATA_ELEMENT),
+                    fh.nestedFieldWithUid(DataElementOperandTableInfo.Columns.CATEGORY_OPTION_COMBO)
             ).build();
 
     private DataElementOperandFields() {

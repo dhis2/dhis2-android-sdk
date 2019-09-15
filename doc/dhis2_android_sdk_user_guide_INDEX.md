@@ -102,7 +102,7 @@ new AsyncTask<Void, Void, List<Program>>() {
     protected List<Program> doInBackground() {
         return d2.programModule().programs.blockingGet();
     }
-    
+
     protected void onPostExecute(List<Program> programs) {
 
     }
@@ -479,6 +479,8 @@ d2.dataValueModule().dataSetReports
 
 **Important**: a Data set report in the SDK is not the same as a Data set report in Web UI. In Web UI, DataSetReports have a sense of aggregation of data values over time and hierarchy.
 
+### Dealing with FileResources
+
 ## Error management
 
 Errors that happen in the context of the SDK are wrapped in a type of exception: `D2Error`, with the following fields:
@@ -563,7 +565,6 @@ Observable<SmsRepository.SmsSendingState> sendingTask = smsSender.send();
 // given date is a minimum date, when message should be received, used to skip old messages that may have the same submission id
 Completable checkResultTask = smsSender.checkConfirmationSms(new Date());
 ```
-
 
 ## DHIS2 version compatibility strategy
 
@@ -722,3 +723,5 @@ At this point you should be able to debug the app/sdk by using Chrome Inspector 
 - Explore network traffic in "Network".
 
 ## Troubleshooting
+
+- Data is not downloaded/uploaded using blocking methods.

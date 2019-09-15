@@ -45,8 +45,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public final class ProgramStageDataElementCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl
+public final class ProgramStageDataElementCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl
         <ProgramStageDataElement, ProgramStageDataElementCollectionRepository> {
 
     @Inject

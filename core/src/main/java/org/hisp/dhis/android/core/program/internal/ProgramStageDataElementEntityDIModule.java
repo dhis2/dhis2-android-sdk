@@ -31,7 +31,11 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -50,5 +54,16 @@ public final class ProgramStageDataElementEntityDIModule {
     @Reusable
     public Handler<ProgramStageDataElement> handler(ProgramStageDataElementHandler impl) {
         return impl;
+    }
+
+    @Provides
+    @Reusable
+    @SuppressWarnings("PMD.NonStaticInitializer")
+    Map<String, ChildrenAppender<ProgramStageDataElement>> childrenAppenders(
+            ValueTypeRenderingChildrenAppender valueTypeRenderingChildrenAppender) {
+
+        return new HashMap<String, ChildrenAppender<ProgramStageDataElement>>() {{
+            put(ProgramStageDataElementFields.RENDER_TYPE, valueTypeRenderingChildrenAppender);
+        }};
     }
 }

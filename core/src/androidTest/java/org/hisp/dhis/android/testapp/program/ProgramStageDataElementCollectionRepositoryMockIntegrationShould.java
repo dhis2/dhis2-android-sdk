@@ -135,12 +135,14 @@ public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould
     public void include_render_type_as_children() {
         ProgramStageDataElement programStageDataElement =
                 d2.programModule().programStageDataElements
+                        .byUid().eq("QgGD234oA8C")
                         .withRenderType()
-                        .uid("QgGD234oA8C")
-                        .blockingGet();
+                        .one().blockingGet();
 
         assertThat(programStageDataElement.renderType().mobile().type(),
                 is(ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS));
+        assertThat(programStageDataElement.renderType().desktop().type(),
+                is(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS));
     }
 
     @Test

@@ -60,7 +60,7 @@ public final class ProgramSectionStore {
     };
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            ProgramSectionTableInfo.TABLE_INFO, ProgramSectionFields.PROGRAM);
+            ProgramSectionTableInfo.TABLE_INFO, ProgramSectionTableInfo.Columns.PROGRAM);
 
     private ProgramSectionStore() {}
 

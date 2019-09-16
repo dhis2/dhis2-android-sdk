@@ -93,7 +93,7 @@ final class ProgramOrphanCleaner implements ParentOrphanCleaner<Program> {
                 new OrphanCleanerImpl<>(ProgramSectionTableInfo.TABLE_INFO.name(),
                         ProgramSectionTableInfo.Columns.PROGRAM, databaseAdapter),
                 new OrphanCleanerImpl<>(ProgramStageTableInfo.TABLE_INFO.name(),
-                        ProgramStageFields.PROGRAM, databaseAdapter)
+                        ProgramStageTableInfo.Columns.PROGRAM, databaseAdapter)
         );
     }
 }

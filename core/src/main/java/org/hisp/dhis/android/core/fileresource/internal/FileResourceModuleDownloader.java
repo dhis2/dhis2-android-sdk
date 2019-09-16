@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
@@ -101,7 +100,8 @@ public class FileResourceModuleDownloader implements MetadataModuleDownloader<Un
         String attributeValuesWhereClause = new WhereClauseBuilder()
                 .appendInKeyStringValues(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
                         trackedEntityAttributeUids)
-                .appendNotInKeyStringValues(TrackedEntityAttributeValueFields.VALUE, getExistingFileResources())
+                .appendNotInKeyStringValues(TrackedEntityAttributeValueTableInfo.Columns.VALUE,
+                        getExistingFileResources())
                 .build();
 
         return trackedEntityAttributeValueStore.selectWhere(attributeValuesWhereClause);

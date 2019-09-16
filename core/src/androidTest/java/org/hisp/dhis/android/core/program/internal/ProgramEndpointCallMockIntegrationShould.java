@@ -341,10 +341,10 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
                 BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
                 BaseIdentifiableObjectModel.Columns.CREATED,
                 BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
-                ProgramRuleFields.PRIORITY,
-                ProgramRuleFields.CONDITION,
-                ProgramRuleFields.PROGRAM,
-                ProgramRuleFields.PROGRAM_STAGE
+                ProgramRuleTableInfo.Columns.PRIORITY,
+                ProgramRuleTableInfo.Columns.CONDITION,
+                ProgramRuleTableInfo.Columns.PROGRAM,
+                ProgramRuleTableInfo.Columns.PROGRAM_STAGE
         };
 
         Cursor programRuleCursor = database.query(ProgramRuleTableInfo.TABLE_INFO.name(), projection,
@@ -375,16 +375,16 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
                 ProgramRuleActionTableInfo.Columns.DISPLAY_NAME,
                 ProgramRuleActionTableInfo.Columns.CREATED,
                 ProgramRuleActionTableInfo.Columns.LAST_UPDATED,
-                ProgramRuleActionFields.DATA,
-                ProgramRuleActionFields.CONTENT,
-                ProgramRuleActionFields.LOCATION,
-                ProgramRuleActionFields.TRACKED_ENTITY_ATTRIBUTE,
-                ProgramRuleActionFields.PROGRAM_INDICATOR,
-                ProgramRuleActionFields.PROGRAM_STAGE_SECTION,
-                ProgramRuleActionFields.PROGRAM_RULE_ACTION_TYPE,
-                ProgramRuleActionFields.PROGRAM_STAGE,
-                ProgramRuleActionFields.DATA_ELEMENT,
-                ProgramRuleActionFields.PROGRAM_RULE
+                ProgramRuleActionTableInfo.Columns.DATA,
+                ProgramRuleActionTableInfo.Columns.CONTENT,
+                ProgramRuleActionTableInfo.Columns.LOCATION,
+                ProgramRuleActionTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                ProgramRuleActionTableInfo.Columns.PROGRAM_INDICATOR,
+                ProgramRuleActionTableInfo.Columns.PROGRAM_STAGE_SECTION,
+                ProgramRuleActionTableInfo.Columns.PROGRAM_RULE_ACTION_TYPE,
+                ProgramRuleActionTableInfo.Columns.PROGRAM_STAGE,
+                ProgramRuleActionTableInfo.Columns.DATA_ELEMENT,
+                ProgramRuleActionTableInfo.Columns.PROGRAM_RULE
         };
 
         Cursor programRuleActionCursor = database.query(ProgramRuleActionTableInfo.TABLE_INFO.name(), projection,

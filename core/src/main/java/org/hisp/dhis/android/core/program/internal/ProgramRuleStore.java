@@ -60,7 +60,7 @@ public final class ProgramRuleStore {
     };
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            ProgramRuleTableInfo.TABLE_INFO, ProgramRuleFields.PROGRAM);
+            ProgramRuleTableInfo.TABLE_INFO, ProgramRuleTableInfo.Columns.PROGRAM);
 
     private ProgramRuleStore() {}
 

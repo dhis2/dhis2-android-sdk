@@ -32,23 +32,19 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
+import org.hisp.dhis.android.core.program.ProgramRuleTableInfo.Columns;
 
 public final class ProgramRuleFields {
-
-    public static final String PRIORITY = "priority";
-    public static final String CONDITION = "condition";
-    public static final String PROGRAM = "program";
-    public static final String PROGRAM_STAGE = "programStage";
     public static final String PROGRAM_RULE_ACTIONS = "programRuleActions";
 
     private static FieldsHelper<ProgramRule> fh = new FieldsHelper<>();
     static final Fields<ProgramRule> allFields = Fields.<ProgramRule>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<Integer>field(PRIORITY),
-                    fh.<String>field(CONDITION),
-                    fh.nestedFieldWithUid(PROGRAM),
-                    fh.nestedFieldWithUid(PROGRAM_STAGE),
+                    fh.<Integer>field(Columns.PRIORITY),
+                    fh.<String>field(Columns.CONDITION),
+                    fh.nestedFieldWithUid(Columns.PROGRAM),
+                    fh.nestedFieldWithUid(Columns.PROGRAM_STAGE),
                     fh.<ProgramRuleAction>nestedField(PROGRAM_RULE_ACTIONS).with(ProgramRuleActionFields.allFields)
             ).build();
 

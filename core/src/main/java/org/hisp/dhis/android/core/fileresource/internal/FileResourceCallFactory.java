@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.fileresource.internal;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -85,17 +86,25 @@ class FileResourceCallFactory {
     }
 
     private void downloadFileResources(final List<TrackedEntityAttributeValue> trackedEntityAttributeValues,
-                                       final List<TrackedEntityDataValue> trackedEntityDataValues) throws D2Error {
+                                       final List<TrackedEntityDataValue> trackedEntityDataValues) {
         List<FileResource> fileResources = new ArrayList<>();
 
         for (TrackedEntityAttributeValue trackedEntityAttributeValue : trackedEntityAttributeValues) {
-            fileResources.add(apiCallExecutor.executeObjectCall(
-                    fileResourceService.getFileResource(trackedEntityAttributeValue.value())));
+            try {
+                fileResources.add(apiCallExecutor.executeObjectCall(
+                        fileResourceService.getFileResource(trackedEntityAttributeValue.value())));
+            } catch (D2Error d2Error) {
+                Log.v(FileResourceCallFactory.class.getCanonicalName(), d2Error.errorDescription());
+            }
         }
 
         for (TrackedEntityDataValue trackedEntityDataValue : trackedEntityDataValues) {
-            fileResources.add(apiCallExecutor.executeObjectCall(
-                    fileResourceService.getFileResource(trackedEntityDataValue.value())));
+            try {
+                fileResources.add(apiCallExecutor.executeObjectCall(
+                        fileResourceService.getFileResource(trackedEntityDataValue.value())));
+            } catch (D2Error d2Error) {
+                Log.v(FileResourceCallFactory.class.getCanonicalName(), d2Error.errorDescription());
+            }
         }
 
         handler.handleMany(fileResources, fileResource -> fileResource.toBuilder()
@@ -105,24 +114,33 @@ class FileResourceCallFactory {
     }
 
     private void downloadFiles(final List<TrackedEntityAttributeValue> trackedEntityAttributeValues,
-                               final List<TrackedEntityDataValue> trackedEntityDataValues) throws D2Error {
+                               final List<TrackedEntityDataValue> trackedEntityDataValues) {
         for (TrackedEntityAttributeValue trackedEntityAttributeValue : trackedEntityAttributeValues) {
-            ResponseBody responseBody = apiCallExecutor.executeObjectCall(
-                    fileResourceService.getFileFromTrackedEntityAttribute(
-                            trackedEntityAttributeValue.trackedEntityInstance(),
-                            trackedEntityAttributeValue.trackedEntityAttribute(),
-                            Dimension.MEDIUM.name()));
+            try {
+                ResponseBody responseBody = apiCallExecutor.executeObjectCall(
+                        fileResourceService.getFileFromTrackedEntityAttribute(
+                                trackedEntityAttributeValue.trackedEntityInstance(),
+                                trackedEntityAttributeValue.trackedEntityAttribute(),
+                                Dimension.MEDIUM.name()));
 
-            FileResourceUtil.saveFileFromResponse(responseBody, trackedEntityAttributeValue.value(), context);
+                FileResourceUtil.saveFileFromResponse(responseBody, trackedEntityAttributeValue.value(), context);
+            } catch (D2Error d2Error) {
+                Log.v(FileResourceCallFactory.class.getCanonicalName(), d2Error.errorDescription());
+            }
+
         }
 
         for (TrackedEntityDataValue trackedEntityDataValue : trackedEntityDataValues) {
-            ResponseBody responseBody = apiCallExecutor.executeObjectCall(fileResourceService.getFileFromDataElement(
-                    trackedEntityDataValue.event(),
-                    trackedEntityDataValue.dataElement(),
-                    Dimension.MEDIUM.name()));
+            try {
+                ResponseBody responseBody = apiCallExecutor.executeObjectCall(fileResourceService.getFileFromDataElement(
+                        trackedEntityDataValue.event(),
+                        trackedEntityDataValue.dataElement(),
+                        Dimension.MEDIUM.name()));
 
-            FileResourceUtil.saveFileFromResponse(responseBody, trackedEntityDataValue.value(), context);
+                FileResourceUtil.saveFileFromResponse(responseBody, trackedEntityDataValue.value(), context);
+            } catch (D2Error d2Error) {
+                Log.v(FileResourceCallFactory.class.getCanonicalName(), d2Error.errorDescription());
+            }
         }
     }
 }

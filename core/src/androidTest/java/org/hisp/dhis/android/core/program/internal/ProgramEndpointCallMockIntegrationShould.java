@@ -182,12 +182,12 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
                 BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
                 BaseIdentifiableObjectModel.Columns.CREATED,
                 BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
-                ProgramRuleVariableFields.USE_CODE_FOR_OPTION_SET,
-                ProgramRuleVariableFields.PROGRAM,
-                ProgramRuleVariableFields.PROGRAM_STAGE,
-                ProgramRuleVariableFields.DATA_ELEMENT,
-                ProgramRuleVariableFields.TRACKED_ENTITY_ATTRIBUTE,
-                ProgramRuleVariableFields.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
+                ProgramRuleVariableTableInfo.Columns.USE_CODE_FOR_OPTION_SET,
+                ProgramRuleVariableTableInfo.Columns.PROGRAM,
+                ProgramRuleVariableTableInfo.Columns.PROGRAM_STAGE,
+                ProgramRuleVariableTableInfo.Columns.DATA_ELEMENT,
+                ProgramRuleVariableTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                ProgramRuleVariableTableInfo.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
         };
 
         Cursor programRuleVariableCursor = database.query(ProgramRuleVariableTableInfo.TABLE_INFO.name(), projection,

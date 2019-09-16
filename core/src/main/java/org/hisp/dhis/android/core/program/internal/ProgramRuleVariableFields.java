@@ -32,26 +32,20 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableSourceType;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo.Columns;
 
 public final class ProgramRuleVariableFields {
-
-    public static final String USE_CODE_FOR_OPTION_SET = "useCodeForOptionSet";
-    public static final String PROGRAM = "program";
-    public static final String PROGRAM_STAGE = "programStage";
-    public static final String DATA_ELEMENT = "dataElement";
-    public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
-    public static final String PROGRAM_RULE_VARIABLE_SOURCE_TYPE = "programRuleVariableSourceType";
 
     private static FieldsHelper<ProgramRuleVariable> fh = new FieldsHelper<>();
     static final Fields<ProgramRuleVariable> allFields = Fields.<ProgramRuleVariable>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<Boolean>field(USE_CODE_FOR_OPTION_SET),
-                    fh.nestedFieldWithUid(PROGRAM),
-                    fh.nestedFieldWithUid(PROGRAM_STAGE),
-                    fh.nestedFieldWithUid(DATA_ELEMENT),
-                    fh.nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTE),
-                    fh.<ProgramRuleVariableSourceType>field(PROGRAM_RULE_VARIABLE_SOURCE_TYPE)
+                    fh.<Boolean>field(Columns.USE_CODE_FOR_OPTION_SET),
+                    fh.nestedFieldWithUid(Columns.PROGRAM),
+                    fh.nestedFieldWithUid(Columns.PROGRAM_STAGE),
+                    fh.nestedFieldWithUid(Columns.DATA_ELEMENT),
+                    fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_ATTRIBUTE),
+                    fh.<ProgramRuleVariableSourceType>field(Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE)
             ).build();
 
     private ProgramRuleVariableFields() {

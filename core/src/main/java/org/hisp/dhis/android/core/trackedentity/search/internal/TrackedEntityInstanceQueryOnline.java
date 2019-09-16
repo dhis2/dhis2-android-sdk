@@ -94,7 +94,7 @@ public abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     public static TrackedEntityInstanceQueryOnline create(TrackedEntityInstanceQueryRepositoryScope scope) {
         Map<String, String> attributes = new HashMap<>();
         for (RepositoryScopeFilterItem item : scope.attribute()) {
-            String filterClause = ":" + item.operator().getApiOperator() + ":" + item.value();
+            String filterClause = ":" + item.operator().getApiUpperOperator() + ":" + item.value();
             String existingClause = attributes.get(item.key());
             String newClause = (existingClause == null ? "" : existingClause) + filterClause;
 
@@ -108,7 +108,7 @@ public abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
 
         Map<String, String> filters = new HashMap<>();
         for (RepositoryScopeFilterItem item : scope.filter()) {
-            String filterClause = ":" + item.operator().getApiOperator() + ":" + item.value();
+            String filterClause = ":" + item.operator().getApiUpperOperator() + ":" + item.value();
             String existingClause = filters.get(item.key());
             String newClause = (existingClause == null ? "" : existingClause) + filterClause;
 
@@ -122,7 +122,7 @@ public abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
 
         String query = null;
         if (scope.query() != null) {
-            query = scope.query().operator().getApiOperator() + ":" + scope.query().value();
+            query = scope.query().operator().getApiUpperOperator() + ":" + scope.query().value();
         }
 
         return TrackedEntityInstanceQueryOnline.builder()

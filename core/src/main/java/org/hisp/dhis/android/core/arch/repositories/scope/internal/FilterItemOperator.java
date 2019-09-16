@@ -29,22 +29,25 @@
 package org.hisp.dhis.android.core.arch.repositories.scope.internal;
 
 public enum FilterItemOperator {
-    LIKE("LIKE", "like"),
-    EQ("=", "eq"),
-    NOT_EQ("!=", "!eq"),
-    IN("IN", "in"),
-    NOT_IN("NOT IN", "!in"),
-    LT("<", "lt"),
-    GT(">", "gt"),
-    VOID("","");
+    LIKE("LIKE", "like", "LIKE"),
+    EQ("=", "eq", "EQ"),
+    NOT_EQ("!=", "!eq", "NE"),
+    IN("IN", "in", "IN"),
+    NOT_IN("NOT IN", "!in", "!in"), //No upper API version for this
+    LT("<", "lt", "LT"),
+    GT(">", "gt", "GT"),
+    VOID("","", "");
 
     private String sqlOperator;
 
     private String apiOperator;
 
-    FilterItemOperator(String sqlOperator, String apiOperator) {
+    private String apiUpperOperator;
+
+    FilterItemOperator(String sqlOperator, String apiOperator, String apiUpperOperator) {
         this.sqlOperator = sqlOperator;
         this.apiOperator = apiOperator;
+        this.apiUpperOperator = apiUpperOperator;
     }
 
     public String getSqlOperator() {
@@ -53,5 +56,9 @@ public enum FilterItemOperator {
 
     public String getApiOperator() {
         return this.apiOperator;
+    }
+
+    public String getApiUpperOperator() {
+        return this.apiUpperOperator;
     }
 }

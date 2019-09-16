@@ -48,7 +48,7 @@ public abstract class EventCreateProjection {
     @NonNull
     public abstract String organisationUnit();
 
-    @NonNull
+    @Nullable
     public abstract String attributeOptionCombo();
 
     public static EventCreateProjection create(

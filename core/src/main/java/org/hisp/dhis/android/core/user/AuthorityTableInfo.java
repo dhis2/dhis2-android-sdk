@@ -51,7 +51,7 @@ public final class AuthorityTableInfo {
     };
 
     public static class Columns extends BaseModel.Columns {
-        static final String NAME = "name";
+        public static final String NAME = "name";
 
         @Override
         public String[] all() {

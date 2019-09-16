@@ -51,7 +51,7 @@ public final class ValueTypeDeviceRenderingTableInfo {
 
     public static class Columns extends BaseModel.Columns {
         static final String OBJECT_TABLE = "objectTable";
-        static final String DEVICE_TYPE = "deviceType";
+        public static final String DEVICE_TYPE = "deviceType";
         static final String TYPE = "type";
         static final String MIN = "min";
         static final String MAX = "max";

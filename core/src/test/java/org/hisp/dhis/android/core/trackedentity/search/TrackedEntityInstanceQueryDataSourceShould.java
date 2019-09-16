@@ -28,10 +28,13 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import androidx.paging.ItemKeyedDataSource;
+
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryCallFactory;
+import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryOnline;
 import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryRepositoryScope;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,8 +47,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import androidx.paging.ItemKeyedDataSource;
 
 import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.OFFLINE_FIRST;
 import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.OFFLINE_ONLY;
@@ -107,9 +108,11 @@ public class TrackedEntityInstanceQueryDataSourceShould {
         TrackedEntityInstanceQueryRepositoryScope scope = emptyScope.toBuilder().mode(ONLINE_ONLY).build();
         TrackedEntityInstanceQueryDataSource dataSource =
                 new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders);
-        dataSource.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, scope.query().pageSize(), false),
+        TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(scope);
+
+        dataSource.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, onlineQuery.pageSize(), false),
                 initialCallback);
-        verify(onlineCallFactory).getCall(scope.query());
+        verify(onlineCallFactory).getCall(onlineQuery);
         verify(initialCallback).onResult(onlineObjects);
     }
 
@@ -118,7 +121,9 @@ public class TrackedEntityInstanceQueryDataSourceShould {
         TrackedEntityInstanceQueryRepositoryScope scope = emptyScope.toBuilder().mode(OFFLINE_ONLY).build();
         TrackedEntityInstanceQueryDataSource dataSource =
                 new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders);
-        dataSource.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, scope.query().pageSize(), false),
+        TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(scope);
+
+        dataSource.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, onlineQuery.pageSize(), false),
                 initialCallback);
         verify(store).selectRawQuery(anyString());
         verify(initialCallback).onResult(offlineObjects);
@@ -134,7 +139,7 @@ public class TrackedEntityInstanceQueryDataSourceShould {
                 initialCallback);
         verify(store).selectRawQuery(anyString());
         verifyNoMoreInteractions(store);
-        verify(onlineCallFactory).getCall(any(TrackedEntityInstanceQuery.class));
+        verify(onlineCallFactory).getCall(any(TrackedEntityInstanceQueryOnline.class));
         verifyNoMoreInteractions(onlineCallFactory);
     }
 
@@ -148,7 +153,7 @@ public class TrackedEntityInstanceQueryDataSourceShould {
                 initialCallback);
         verify(store).selectRawQuery(anyString());
         verifyNoMoreInteractions(store);
-        verify(onlineCallFactory, times(2)).getCall(any(TrackedEntityInstanceQuery.class));
+        verify(onlineCallFactory, times(2)).getCall(any(TrackedEntityInstanceQueryOnline.class));
         verifyNoMoreInteractions(onlineCallFactory);
     }
 

@@ -28,9 +28,10 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryOnline;
 import org.mockito.ArgumentMatcher;
 
-class QueryPageMatcher implements ArgumentMatcher<TrackedEntityInstanceQuery> {
+class QueryPageMatcher implements ArgumentMatcher<TrackedEntityInstanceQueryOnline> {
 
     private final int page;
 
@@ -39,7 +40,7 @@ class QueryPageMatcher implements ArgumentMatcher<TrackedEntityInstanceQuery> {
     }
 
     @Override
-    public boolean matches(TrackedEntityInstanceQuery query) {
+    public boolean matches(TrackedEntityInstanceQueryOnline query) {
         return query != null && query.page() == page;
     }
 }

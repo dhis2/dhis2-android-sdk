@@ -27,8 +27,11 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryRepositoryScope;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,26 +47,23 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 @RunWith(JUnit4.class)
 public class TrackedEntityInstanceLocalQueryHelperShould {
 
-    private TrackedEntityInstanceQuery.Builder queryBuilder;
+    private TrackedEntityInstanceQueryRepositoryScope.Builder queryBuilder;
 
     @Before
     public void setUp() {
-        queryBuilder = TrackedEntityInstanceQuery.builder()
-                .page(1)
-                .pageSize(50)
-                .paging(true);
+        queryBuilder = TrackedEntityInstanceQueryRepositoryScope.builder();
     }
 
     @Test
     public void build_sql_query_with_programs() {
-        TrackedEntityInstanceQuery query  = queryBuilder
+        TrackedEntityInstanceQueryRepositoryScope scope = queryBuilder
                 .program("IpHINAT79UW")
                 .orgUnits(Collections.singletonList("DiszpKrYNg8"))
                 .orgUnitMode(OrganisationUnitMode.DESCENDANTS)
-                .query(QueryFilter.create(QueryOperator.LIKE,"female"))
+                .query(RepositoryScopeFilterItem.builder().key("").operator(FilterItemOperator.LIKE).value("female").build())
                 .build();
 
-        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(query, Collections.emptyList(), 50);
+        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, Collections.emptyList(), 50);
         assertThat(sqlQuery).contains("program");
     }
 
@@ -71,27 +71,27 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
     public void build_sql_query_with_enrollment_date() throws ParseException {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
-        TrackedEntityInstanceQuery query  = queryBuilder
+        TrackedEntityInstanceQueryRepositoryScope scope  = queryBuilder
                 .program("IpHINAT79UW")
                 .programStartDate(format.parse("2019-04-15"))
                 .programEndDate(format.parse("2019-05-19"))
-                .query(QueryFilter.create(QueryOperator.LIKE,"female"))
+                .query(RepositoryScopeFilterItem.builder().key("").operator(FilterItemOperator.LIKE).value("female").build())
                 .build();
 
-        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(query, Collections.emptyList(), 50);
+        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, Collections.emptyList(), 50);
         assertThat(sqlQuery).contains("enrollmentDate >= '2019-04-15'");
         assertThat(sqlQuery).contains("enrollmentDate <= '2019-05-19'");
     }
 
     @Test
     public void build_sql_query_with_states() {
-        TrackedEntityInstanceQuery query  = queryBuilder
+        TrackedEntityInstanceQueryRepositoryScope scope  = queryBuilder
                 .states(Arrays.asList(State.SYNCED, State.TO_POST, State.TO_UPDATE))
                 .program("IpHINAT79UW")
-                .query(QueryFilter.create(QueryOperator.LIKE,"female"))
+                .query(RepositoryScopeFilterItem.builder().key("").operator(FilterItemOperator.LIKE).value("female").build())
                 .build();
 
-        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(query, Collections.emptyList(), 50);
+        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, Collections.emptyList(), 50);
         assertThat(sqlQuery).contains("state IN ('SYNCED', 'TO_POST', 'TO_UPDATE')");
     }
 

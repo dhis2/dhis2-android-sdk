@@ -28,15 +28,20 @@
 
 package org.hisp.dhis.android.core.arch.repositories.scope.internal;
 
+import androidx.annotation.NonNull;
+
 import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class RepositoryScopeFilterItem {
 
+    @NonNull
     public abstract String key();
 
+    @NonNull
     public abstract FilterItemOperator operator();
 
+    @NonNull
     public abstract String value();
 
     public static Builder builder() {

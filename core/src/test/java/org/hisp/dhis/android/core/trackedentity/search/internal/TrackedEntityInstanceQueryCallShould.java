@@ -114,7 +114,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
         when(mapper.transform(any(SearchGrid.class))).thenReturn(teis);
 
         // Metadata call
-        call = new TrackedEntityInstanceQueryCallFactory(service, mapper, apiCallExecutor).getCallInternal(query);
+        call = new TrackedEntityInstanceQueryCallFactory(service, mapper, apiCallExecutor).getCall(query);
     }
 
     @Test

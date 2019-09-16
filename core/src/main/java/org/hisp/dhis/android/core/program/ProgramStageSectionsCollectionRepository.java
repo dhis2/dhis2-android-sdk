@@ -56,7 +56,7 @@ public final class ProgramStageSectionsCollectionRepository extends ReadOnlyIden
 
 
     public IntegerFilterConnector<ProgramStageSectionsCollectionRepository> bySortOrder() {
-        return cf.integer(ProgramStageSectionFields.SORT_ORDER);
+        return cf.integer(ProgramStageSectionTableInfo.Columns.SORT_ORDER);
     }
 
     public StringFilterConnector<ProgramStageSectionsCollectionRepository> byProgramStageUid() {

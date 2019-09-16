@@ -35,31 +35,24 @@ import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
+import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo.Columns;
 
-public final class ProgramStageDataElementFields {
-
-    public static final String DISPLAY_IN_REPORTS = "displayInReports";
-    public static final String DATA_ELEMENT = "dataElement";
-    public static final String COMPULSORY = "compulsory";
-    public static final String ALLOW_PROVIDED_ELSEWHERE = "allowProvidedElsewhere";
-    public static final String SORT_ORDER = "sortOrder";
-    public static final String ALLOW_FUTURE_DATE = "allowFutureDate";
-    public static final String PROGRAM_STAGE = "programStage";
-    public static final String RENDER_TYPE = "renderType";
+final class ProgramStageDataElementFields {
+    private static final String RENDER_TYPE = "renderType";
 
     private static FieldsHelper<ProgramStageDataElement> fh = new FieldsHelper<>();
 
     static final Fields<ProgramStageDataElement> allFields = Fields.<ProgramStageDataElement>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<String>field(DISPLAY_IN_REPORTS),
-                    fh.<DataElement>nestedField(DATA_ELEMENT).with(DataElementFields.allFields),
-                    fh.<Boolean>field(COMPULSORY),
-                    fh.<Boolean>field(ALLOW_PROVIDED_ELSEWHERE),
-                    fh.<Integer>field(SORT_ORDER),
-                    fh.<Boolean>field(ALLOW_FUTURE_DATE),
+                    fh.<String>field(Columns.DISPLAY_IN_REPORTS),
+                    fh.<DataElement>nestedField(Columns.DATA_ELEMENT).with(DataElementFields.allFields),
+                    fh.<Boolean>field(Columns.COMPULSORY),
+                    fh.<Boolean>field(Columns.ALLOW_PROVIDED_ELSEWHERE),
+                    fh.<Integer>field(Columns.SORT_ORDER),
+                    fh.<Boolean>field(Columns.ALLOW_FUTURE_DATE),
                     fh.<ValueTypeRendering>field(RENDER_TYPE),
-                    fh.<ObjectWithUid>nestedField(PROGRAM_STAGE).with(ObjectWithUid.uid)
+                    fh.<ObjectWithUid>nestedField(Columns.PROGRAM_STAGE).with(ObjectWithUid.uid)
             ).build();
 
 

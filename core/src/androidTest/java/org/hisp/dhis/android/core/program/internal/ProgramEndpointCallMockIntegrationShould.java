@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo;
 import org.hisp.dhis.android.core.program.ProgramRuleTableInfo;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
+import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityAttributeUtils;
@@ -68,33 +69,33 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
     private static String ACCESS_DATA_WRITE = "accessDataWrite";
     private static String[] PROGRAM_PROJECTION = {
             UID,
-            BaseIdentifiableObjectModel.Columns.CODE,
-            BaseIdentifiableObjectModel.Columns.NAME,
-            BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
-            BaseIdentifiableObjectModel.Columns.CREATED,
-            BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
-            BaseNameableObjectModel.Columns.SHORT_NAME,
-            BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME,
-            BaseNameableObjectModel.Columns.DESCRIPTION,
-            BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION,
-            ProgramFields.VERSION,
-            ProgramFields.ONLY_ENROLL_ONCE,
-            ProgramFields.ENROLLMENT_DATE_LABEL,
-            ProgramFields.DISPLAY_INCIDENT_DATE,
-            ProgramFields.INCIDENT_DATE_LABEL,
-            ProgramFields.REGISTRATION,
-            ProgramFields.SELECT_ENROLLMENT_DATES_IN_FUTURE,
-            ProgramFields.DATA_ENTRY_METHOD,
-            ProgramFields.IGNORE_OVERDUE_EVENTS,
-            ProgramFields.SELECT_INCIDENT_DATES_IN_FUTURE,
-            ProgramFields.USE_FIRST_STAGE_DURING_REGISTRATION,
-            ProgramFields.DISPLAY_FRONT_PAGE_LIST,
-            ProgramFields.PROGRAM_TYPE,
-            ProgramFields.RELATED_PROGRAM,
-            ProgramFields.TRACKED_ENTITY_TYPE,
-            ProgramFields.CATEGORY_COMBO,
+            Columns.CODE,
+            Columns.NAME,
+            Columns.DISPLAY_NAME,
+            Columns.CREATED,
+            Columns.LAST_UPDATED,
+            Columns.SHORT_NAME,
+            Columns.DISPLAY_SHORT_NAME,
+            Columns.DESCRIPTION,
+            Columns.DISPLAY_DESCRIPTION,
+            Columns.VERSION,
+            Columns.ONLY_ENROLL_ONCE,
+            Columns.ENROLLMENT_DATE_LABEL,
+            Columns.DISPLAY_INCIDENT_DATE,
+            Columns.INCIDENT_DATE_LABEL,
+            Columns.REGISTRATION,
+            Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE,
+            Columns.DATA_ENTRY_METHOD,
+            Columns.IGNORE_OVERDUE_EVENTS,
+            Columns.SELECT_INCIDENT_DATES_IN_FUTURE,
+            Columns.USE_FIRST_STAGE_DURING_REGISTRATION,
+            Columns.DISPLAY_FRONT_PAGE_LIST,
+            Columns.PROGRAM_TYPE,
+            Columns.RELATED_PROGRAM,
+            Columns.TRACKED_ENTITY_TYPE,
+            Columns.CATEGORY_COMBO,
             ACCESS_DATA_WRITE,
-            ProgramFields.ACCESS_LEVEL
+            Columns.ACCESS_LEVEL
     };
 
     private static Callable<List<Program>> programEndpointCall;

@@ -95,4 +95,22 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
         assertThat(sqlQuery).contains("state IN ('SYNCED', 'TO_POST', 'TO_UPDATE')");
     }
 
+    @Test
+    public void build_sql_query_with_include_deleted() {
+        TrackedEntityInstanceQueryRepositoryScope scopeDeleted = queryBuilder
+                .includeDeleted(true)
+                .build();
+
+        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scopeDeleted, Collections.emptyList(), 50);
+        assertThat(sqlQuery).doesNotContain("deleted");
+
+        TrackedEntityInstanceQueryRepositoryScope scope = queryBuilder
+                .program("IpHINAT79UW")
+                .includeDeleted(false)
+                .build();
+
+        String sqlQuery2 = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, Collections.emptyList(), 50);
+        assertThat(sqlQuery2).contains("deleted != 1");
+    }
+
 }

@@ -121,6 +121,7 @@ public interface TrackedEntityInstanceService {
             @Query(QUERY) String query,
             @Query(ATTRIBUTE) List<String> attribute,
             @Query(FILTER) List<String> filter,
+            @Query(INCLUDE_DELETED) boolean includeDeleted,
             @Query(PAGING) Boolean paging,
             @Query(PAGE) int page,
             @Query(PAGE_SIZE) int pageSize);

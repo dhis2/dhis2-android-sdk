@@ -144,6 +144,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
                 eq(query.query()),
                 eq(query.attribute()),
                 eq(query.filter()),
+                eq(query.includeDeleted()),
                 eq(query.paging()),
                 eq(query.page()),
                 eq(query.pageSize()));
@@ -177,6 +178,6 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
 
     private OngoingStubbing<Call<SearchGrid>> whenServiceQuery() {
         return when(service.query(anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyList(), anyList(), anyBoolean(), anyInt(), anyInt()));
+                anyString(), anyString(), anyList(), anyList(), anyBoolean(), anyBoolean(), anyInt(), anyInt()));
     }
 }

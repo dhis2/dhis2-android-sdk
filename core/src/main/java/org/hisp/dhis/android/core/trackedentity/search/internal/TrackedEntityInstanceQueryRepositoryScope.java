@@ -101,7 +101,8 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
                 .attribute(Collections.emptyList())
                 .filter(Collections.emptyList())
                 .orgUnits(Collections.emptyList())
-                .mode(RepositoryMode.OFFLINE_ONLY);
+                .mode(RepositoryMode.OFFLINE_ONLY)
+                .includeDeleted(false);
     }
 
     public static TrackedEntityInstanceQueryRepositoryScope empty() {

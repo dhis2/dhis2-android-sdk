@@ -76,6 +76,9 @@ public abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     @Nullable
     public abstract String trackedEntityType();
 
+    @NonNull
+    public abstract Boolean includeDeleted();
+
     String formattedProgramStartDate() {
         return programStartDate() == null ? null : QUERY_FORMAT.format(programStartDate());
     }
@@ -135,6 +138,7 @@ public abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
                 .programStartDate(scope.programStartDate())
                 .programEndDate(scope.programEndDate())
                 .trackedEntityType(scope.trackedEntityType())
+                .includeDeleted(false)
                 .page(1)
                 .pageSize(50)
                 .paging(true)
@@ -160,6 +164,8 @@ public abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         public abstract Builder programEndDate(Date programEndDate);
 
         public abstract Builder trackedEntityType(String trackedEntityType);
+
+        public abstract Builder includeDeleted(Boolean includeDeleted);
 
         public abstract TrackedEntityInstanceQueryOnline build();
     }

@@ -30,22 +30,17 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoTableInfo.Columns;
 
 final class SystemInfoFields {
 
-    static String SERVER_DATE = "serverDate";
-    static String DATE_FORMAT = "dateFormat";
-    static String VERSION = "version";
-    static String CONTEXT_PATH = "contextPath";
-    static String SYSTEM_NAME = "systemName";
-
     private static FieldsHelper<SystemInfo> fh = new FieldsHelper<>();
     static final Fields<SystemInfo> allFields = Fields.<SystemInfo>builder().fields(
-            fh.<String>field(SERVER_DATE),
-            fh.<String>field(DATE_FORMAT),
-            fh.<String>field(VERSION),
-            fh.<String>field(CONTEXT_PATH),
-            fh.<String>field(SYSTEM_NAME)
+            fh.<String>field(Columns.SERVER_DATE),
+            fh.<String>field(Columns.DATE_FORMAT),
+            fh.<String>field(Columns.VERSION),
+            fh.<String>field(Columns.CONTEXT_PATH),
+            fh.<String>field(Columns.SYSTEM_NAME)
     ).build();
 
     private SystemInfoFields() {

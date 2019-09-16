@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SinglePare
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo;
+import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo.Columns;
 
 import androidx.annotation.NonNull;
 
@@ -48,7 +49,7 @@ public final class ProgramIndicatorStore {
 
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            ProgramIndicatorTableInfo.TABLE_INFO, ProgramIndicatorFields.PROGRAM);
+            ProgramIndicatorTableInfo.TABLE_INFO, Columns.PROGRAM);
 
     private static StatementBinder<ProgramIndicator> BINDER = new NameableStatementBinder<ProgramIndicator>() {
 

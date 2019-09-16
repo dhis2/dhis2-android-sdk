@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.program.internal.ProgramRuleActionFields;
+import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo.Columns;
 
 import java.util.Map;
 
@@ -55,52 +56,52 @@ public final class ProgramRuleActionCollectionRepository
     }
 
     public StringFilterConnector<ProgramRuleActionCollectionRepository> byData() {
-        return cf.string(ProgramRuleActionFields.DATA);
+        return cf.string(Columns.DATA);
     }
 
     public StringFilterConnector<ProgramRuleActionCollectionRepository> byContent() {
-        return cf.string(ProgramRuleActionFields.CONTENT);
+        return cf.string(Columns.CONTENT);
     }
 
     public StringFilterConnector<ProgramRuleActionCollectionRepository> byLocation() {
-        return cf.string(ProgramRuleActionFields.LOCATION);
+        return cf.string(Columns.LOCATION);
     }
 
     public StringFilterConnector<ProgramRuleActionCollectionRepository> byTrackedEntityAttributeUid() {
-        return cf.string(ProgramRuleActionFields.TRACKED_ENTITY_ATTRIBUTE);
+        return cf.string(Columns.TRACKED_ENTITY_ATTRIBUTE);
     }
 
     public StringFilterConnector<ProgramRuleActionCollectionRepository> byProgramIndicatorUid() {
-        return cf.string(ProgramRuleActionFields.PROGRAM_INDICATOR);
+        return cf.string(Columns.PROGRAM_INDICATOR);
     }
 
     public StringFilterConnector<ProgramRuleActionCollectionRepository> byProgramStageSectionUid() {
-        return cf.string(ProgramRuleActionFields.PROGRAM_STAGE_SECTION);
+        return cf.string(Columns.PROGRAM_STAGE_SECTION);
     }
 
     public EnumFilterConnector<ProgramRuleActionCollectionRepository,
             ProgramRuleActionType> byProgramRuleActionType() {
 
-        return cf.enumC(ProgramRuleActionFields.PROGRAM_RULE_ACTION_TYPE);
+        return cf.enumC(Columns.PROGRAM_RULE_ACTION_TYPE);
     }
 
     public StringFilterConnector<ProgramRuleActionCollectionRepository> byProgramStageUid() {
-        return cf.string(ProgramRuleActionFields.PROGRAM_STAGE);
+        return cf.string(Columns.PROGRAM_STAGE);
     }
 
     public StringFilterConnector<ProgramRuleActionCollectionRepository> byDataElementUid() {
-        return cf.string(ProgramRuleActionFields.DATA_ELEMENT);
+        return cf.string(Columns.DATA_ELEMENT);
     }
 
     public StringFilterConnector<ProgramRuleActionCollectionRepository> byProgramRuleUid() {
-        return cf.string(ProgramRuleActionFields.PROGRAM_RULE);
+        return cf.string(Columns.PROGRAM_RULE);
     }
 
     public StringFilterConnector<ProgramRuleActionCollectionRepository> byOptionUid() {
-        return cf.string(ProgramRuleActionFields.OPTION);
+        return cf.string(Columns.OPTION);
     }
 
     public StringFilterConnector<ProgramRuleActionCollectionRepository> byOptionGroupUid() {
-        return cf.string(ProgramRuleActionFields.OPTION_GROUP);
+        return cf.string(Columns.OPTION_GROUP);
     }
 }

@@ -36,12 +36,12 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo.Columns;
 
 public final class TrackedEntityTypeFields {
 
     public final static String STYLE = "style";
     public final static String TRACKED_ENTITY_TYPE_ATTRIBUTES = "trackedEntityTypeAttributes";
-    public final static String FEATURE_TYPE = "featureType";
 
     private static final FieldsHelper<TrackedEntityType> fh = new FieldsHelper<>();
 
@@ -55,7 +55,7 @@ public final class TrackedEntityTypeFields {
                     fh.<TrackedEntityTypeAttribute>nestedField(TRACKED_ENTITY_TYPE_ATTRIBUTES)
                             .with(TrackedEntityTypeAttributeFields.allFields),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
-                    fh.<FeatureType>field(FEATURE_TYPE))
+                    fh.<FeatureType>field(Columns.FEATURE_TYPE))
             .build();
 
     private TrackedEntityTypeFields() {

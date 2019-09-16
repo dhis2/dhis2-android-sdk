@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo.Columns;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,12 +48,9 @@ import java.util.List;
 public final class TrackedEntityInstanceFields {
 
     public final static String UID = "trackedEntityInstance";
-    public final static String CREATED = "created";
-    public final static String LAST_UPDATED = "lastUpdated";
     public final static String ORGANISATION_UNIT = "orgUnit";
     public final static String TRACKED_ENTITY_ATTRIBUTE_VALUES = "attributes";
     public final static String RELATIONSHIPS = "relationships";
-    public final static String TRACKED_ENTITY_TYPE = "trackedEntityType";
     public final static String COORDINATES = "coordinates";
     public final static String DELETED = "deleted";
     public final static String ENROLLMENTS = "enrollments";
@@ -75,10 +73,10 @@ public final class TrackedEntityInstanceFields {
     private static List<Property<TrackedEntityInstance, ?>> getCommonFields() {
         return new ArrayList<>(Arrays.asList(
                 fh.<String>field(UID),
-                fh.<Date>field(CREATED),
-                fh.<Date>field(LAST_UPDATED),
+                fh.<Date>field(Columns.CREATED),
+                fh.<Date>field(Columns.LAST_UPDATED),
                 fh.<String>field(ORGANISATION_UNIT),
-                fh.<String>field(TRACKED_ENTITY_TYPE),
+                fh.<String>field(Columns.TRACKED_ENTITY_TYPE),
                 fh.<String>field(COORDINATES),
                 fh.<Geometry>field(GEOMETRY),
                 fh.<Boolean>field(DELETED),

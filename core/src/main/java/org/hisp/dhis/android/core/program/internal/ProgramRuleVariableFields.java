@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableSourceType;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo.Columns;
 
-public final class ProgramRuleVariableFields {
+final class ProgramRuleVariableFields {
 
     private static FieldsHelper<ProgramRuleVariable> fh = new FieldsHelper<>();
     static final Fields<ProgramRuleVariable> allFields = Fields.<ProgramRuleVariable>builder()

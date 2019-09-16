@@ -38,7 +38,7 @@ public final class ProgramStageSectionFields {
 
     public static final String PROGRAM_INDICATORS = "programIndicators";
     public static final String DATA_ELEMENTS = "dataElements";
-    public static final String RENDER_TYPE = "renderType";
+    private static final String RENDER_TYPE = "renderType";
 
     private static final FieldsHelper<ProgramStageSection> fh = new FieldsHelper<>();
 

@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeFields;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields;
@@ -287,9 +288,9 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     private List<OrganisationUnit> getOrgUnitsLinkedToAttribute(String attribute) {
         List<String> linkedProgramUids = programTrackedEntityAttributeStore.selectStringColumnsWhereClause(
-                ProgramTrackedEntityAttributeFields.PROGRAM,
+                ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM,
                 new WhereClauseBuilder().appendKeyStringValue(
-                        ProgramTrackedEntityAttributeFields.TRACKED_ENTITY_ATTRIBUTE,
+                        ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
                         attribute
                 ).build());
 

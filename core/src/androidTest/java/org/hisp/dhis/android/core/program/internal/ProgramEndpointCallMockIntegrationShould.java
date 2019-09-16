@@ -34,7 +34,6 @@ import android.database.Cursor;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;
 import org.hisp.dhis.android.core.legendset.LegendTableInfo;
 import org.hisp.dhis.android.core.program.Program;
@@ -215,21 +214,21 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
         programEndpointCall.call();
         String[] projection = {
                 UID,
-                BaseIdentifiableObjectModel.Columns.CODE,
-                BaseIdentifiableObjectModel.Columns.NAME,
-                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
-                BaseIdentifiableObjectModel.Columns.CREATED,
-                BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
-                BaseNameableObjectModel.Columns.SHORT_NAME,
-                BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME,
-                BaseNameableObjectModel.Columns.DESCRIPTION,
-                BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION,
-                ProgramTrackedEntityAttributeFields.MANDATORY,
-                ProgramTrackedEntityAttributeFields.TRACKED_ENTITY_ATTRIBUTE,
-                ProgramTrackedEntityAttributeFields.ALLOW_FUTURE_DATE,
-                ProgramTrackedEntityAttributeFields.DISPLAY_IN_LIST,
-                ProgramTrackedEntityAttributeFields.PROGRAM,
-                ProgramTrackedEntityAttributeFields.SORT_ORDER
+                ProgramTrackedEntityAttributeTableInfo.Columns.CODE,
+                ProgramTrackedEntityAttributeTableInfo.Columns.NAME,
+                ProgramTrackedEntityAttributeTableInfo.Columns.DISPLAY_NAME,
+                ProgramTrackedEntityAttributeTableInfo.Columns.CREATED,
+                ProgramTrackedEntityAttributeTableInfo.Columns.LAST_UPDATED,
+                ProgramTrackedEntityAttributeTableInfo.Columns.SHORT_NAME,
+                ProgramTrackedEntityAttributeTableInfo.Columns.DISPLAY_SHORT_NAME,
+                ProgramTrackedEntityAttributeTableInfo.Columns.DESCRIPTION,
+                ProgramTrackedEntityAttributeTableInfo.Columns.DISPLAY_DESCRIPTION,
+                ProgramTrackedEntityAttributeTableInfo.Columns.MANDATORY,
+                ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                ProgramTrackedEntityAttributeTableInfo.Columns.ALLOW_FUTURE_DATE,
+                ProgramTrackedEntityAttributeTableInfo.Columns.DISPLAY_IN_LIST,
+                ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM,
+                ProgramTrackedEntityAttributeTableInfo.Columns.SORT_ORDER
         };
 
         Cursor programTrackedEntityAttributeCursor = database.query(

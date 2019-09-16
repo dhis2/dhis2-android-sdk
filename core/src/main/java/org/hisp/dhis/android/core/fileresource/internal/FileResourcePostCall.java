@@ -45,8 +45,8 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
 
 import java.io.File;
@@ -183,7 +183,7 @@ public final class FileResourcePostCall {
 
     private void updateTrackedEntityDataValue(FileResource fileResource, FileResource downloadedFileResource) {
         String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(TrackedEntityDataValueFields.VALUE, fileResource.uid())
+                .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.VALUE, fileResource.uid())
                 .build();
 
         TrackedEntityDataValue trackedEntityDataValue =

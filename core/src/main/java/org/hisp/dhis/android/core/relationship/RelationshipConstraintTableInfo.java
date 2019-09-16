@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.relationship;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintFields;
 
 public final class RelationshipConstraintTableInfo {
 
@@ -51,24 +50,31 @@ public final class RelationshipConstraintTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
+        public static final String RELATIONSHIP_TYPE = "relationshipType";
+        public static final String CONSTRAINT_TYPE = "constraintType";
+        public static final String RELATIONSHIP_ENTITY = "relationshipEntity";
+        public static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
+        public static final String PROGRAM = "program";
+        public static final String PROGRAM_STAGE = "programStage";
+
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
-                    RelationshipConstraintFields.CONSTRAINT_TYPE,
-                    RelationshipConstraintFields.RELATIONSHIP_ENTITY,
-                    RelationshipConstraintFields.TRACKED_ENTITY_TYPE,
-                    RelationshipConstraintFields.PROGRAM,
-                    RelationshipConstraintFields.PROGRAM_STAGE
+                    RELATIONSHIP_TYPE,
+                    CONSTRAINT_TYPE,
+                    RELATIONSHIP_ENTITY,
+                    TRACKED_ENTITY_TYPE,
+                    PROGRAM,
+                    PROGRAM_STAGE
             );
         }
 
         @Override
         public String[] whereUpdate() {
             return new String[]{
-                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
-                    RelationshipConstraintFields.CONSTRAINT_TYPE
+                    RELATIONSHIP_TYPE,
+                    CONSTRAINT_TYPE
             };
         }
     }

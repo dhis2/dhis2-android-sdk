@@ -139,10 +139,11 @@ class FileResourceCallFactory {
 
         for (TrackedEntityDataValue trackedEntityDataValue : trackedEntityDataValues) {
             try {
-                ResponseBody responseBody = apiCallExecutor.executeObjectCall(fileResourceService.getFileFromDataElement(
-                        trackedEntityDataValue.event(),
-                        trackedEntityDataValue.dataElement(),
-                        Dimension.MEDIUM.name()));
+                ResponseBody responseBody = apiCallExecutor.executeObjectCall(
+                        fileResourceService.getFileFromDataElement(
+                                trackedEntityDataValue.event(),
+                                trackedEntityDataValue.dataElement(),
+                                Dimension.MEDIUM.name()));
 
                 FileResourceUtil.saveFileFromResponse(responseBody, trackedEntityDataValue.value(), context);
             } catch (D2Error d2Error) {

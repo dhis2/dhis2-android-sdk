@@ -36,25 +36,13 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo.Columns;
 
 public final class TrackedEntityAttributeFields {
-
-    public static final String PATTERN = "pattern";
-    public static final String SORT_ORDER_IN_LIST_NO_PROGRAM = "sortOrderInListNoProgram";
-    public static final String OPTION_SET = "optionSet";
-    public static final String VALUE_TYPE = "valueType";
-    public static final String EXPRESSION = "expression";
-    public static final String PROGRAM_SCOPE = "programScope";
-    public static final String DISPLAY_IN_LIST_NO_PROGRAM = "displayInListNoProgram";
-    public static final String GENERATED = "generated";
-    public static final String DISPLAY_ON_VISIT_SCHEDULE = "displayOnVisitSchedule";
-    public static final String ORG_UNIT_SCOPE = "orgunitScope";
     public static final String UNIQUE = "unique";
-    public static final String INHERIT = "inherit";
-    public static final String FIELD_MASK = "fieldMask";
     public static final String STYLE = "style";
     private static final String ACCESS = "access";
-    public static final String FORM_NAME = "formName";
+    public static final String ORG_UNIT_SCOPE = "orgunitScope";
 
     private static final FieldsHelper<TrackedEntityAttribute> fh = new FieldsHelper<>();
 
@@ -65,22 +53,22 @@ public final class TrackedEntityAttributeFields {
     public static final Fields<TrackedEntityAttribute> allFields = Fields.<TrackedEntityAttribute>builder()
             .fields(fh.getNameableFields())
             .fields(
-                    fh.<String>field(PATTERN),
-                    fh.<String>field(SORT_ORDER_IN_LIST_NO_PROGRAM),
-                    fh.<ValueType>field(VALUE_TYPE),
-                    fh.<String>field(EXPRESSION),
-                    fh.<Boolean>field(PROGRAM_SCOPE),
-                    fh.<Boolean>field(DISPLAY_IN_LIST_NO_PROGRAM),
-                    fh.<Boolean>field(GENERATED),
-                    fh.<Boolean>field(DISPLAY_ON_VISIT_SCHEDULE),
-                    fh.<Boolean>field(ORG_UNIT_SCOPE),
+                    fh.<String>field(Columns.PATTERN),
+                    fh.<String>field(Columns.SORT_ORDER_IN_LIST_NO_PROGRAM),
+                    fh.<ValueType>field(Columns.VALUE_TYPE),
+                    fh.<String>field(Columns.EXPRESSION),
+                    fh.<Boolean>field(Columns.PROGRAM_SCOPE),
+                    fh.<Boolean>field(Columns.DISPLAY_IN_LIST_NO_PROGRAM),
+                    fh.<Boolean>field(Columns.GENERATED),
+                    fh.<Boolean>field(Columns.DISPLAY_ON_VISIT_SCHEDULE),
+                    fh.<Boolean>field(Columns.ORG_UNIT_SCOPE),
                     fh.<Boolean>field(UNIQUE),
-                    fh.<Boolean>field(INHERIT),
-                    fh.<String>field(FIELD_MASK),
-                    fh.nestedFieldWithUid(OPTION_SET),
+                    fh.<Boolean>field(Columns.INHERIT),
+                    fh.<String>field(Columns.FIELD_MASK),
+                    fh.nestedFieldWithUid(Columns.OPTION_SET),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
                     fh.<Access>nestedField(ACCESS).with(Access.read),
-                    fh.<String>field(FORM_NAME)
+                    fh.<String>field(Columns.FORM_NAME)
                     ).build();
 
     private TrackedEntityAttributeFields() {

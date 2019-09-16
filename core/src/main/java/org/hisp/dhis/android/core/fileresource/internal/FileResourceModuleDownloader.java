@@ -37,10 +37,10 @@ import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
 import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueFields;
@@ -94,7 +94,7 @@ public class FileResourceModuleDownloader implements MetadataModuleDownloader<Un
 
     private List<TrackedEntityAttributeValue> getTrackedEntityAttributeValues() {
         String attributeUidsWhereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(TrackedEntityAttributeFields.VALUE_TYPE, ValueType.IMAGE).build();
+                .appendKeyStringValue(TrackedEntityAttributeTableInfo.Columns.VALUE_TYPE, ValueType.IMAGE).build();
 
         List<String> trackedEntityAttributeUids = trackedEntityAttributeStore.selectUidsWhere(attributeUidsWhereClause);
 

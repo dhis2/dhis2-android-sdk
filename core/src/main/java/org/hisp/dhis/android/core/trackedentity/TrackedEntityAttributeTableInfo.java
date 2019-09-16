@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields;
 
 public final class TrackedEntityAttributeTableInfo {
 
@@ -53,24 +52,38 @@ public final class TrackedEntityAttributeTableInfo {
 
     public static class Columns extends BaseNameableObjectModel.Columns {
         public static final String UNIQUE = "uniqueProperty";
+        public static final String PATTERN = "pattern";
+        public static final String SORT_ORDER_IN_LIST_NO_PROGRAM = "sortOrderInListNoProgram";
+        public static final String OPTION_SET = "optionSet";
+        public static final String VALUE_TYPE = "valueType";
+        public static final String EXPRESSION = "expression";
+        public static final String PROGRAM_SCOPE = "programScope";
+        public static final String DISPLAY_IN_LIST_NO_PROGRAM = "displayInListNoProgram";
+        public static final String GENERATED = "generated";
+        public static final String DISPLAY_ON_VISIT_SCHEDULE = "displayOnVisitSchedule";
+        public static final String ORG_UNIT_SCOPE = "orgunitScope";
+        public static final String INHERIT = "inherit";
+        public static final String FIELD_MASK = "fieldMask";
+        public static final String FORM_NAME = "formName";
+        
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    TrackedEntityAttributeFields.PATTERN,
-                    TrackedEntityAttributeFields.SORT_ORDER_IN_LIST_NO_PROGRAM,
-                    TrackedEntityAttributeFields.OPTION_SET,
-                    TrackedEntityAttributeFields.VALUE_TYPE,
-                    TrackedEntityAttributeFields.EXPRESSION,
-                    TrackedEntityAttributeFields.PROGRAM_SCOPE,
-                    TrackedEntityAttributeFields.DISPLAY_IN_LIST_NO_PROGRAM,
-                    TrackedEntityAttributeFields.GENERATED,
-                    TrackedEntityAttributeFields.DISPLAY_ON_VISIT_SCHEDULE,
-                    TrackedEntityAttributeFields.ORG_UNIT_SCOPE,
+                    PATTERN,
+                    SORT_ORDER_IN_LIST_NO_PROGRAM,
+                    OPTION_SET,
+                    VALUE_TYPE,
+                    EXPRESSION,
+                    PROGRAM_SCOPE,
+                    DISPLAY_IN_LIST_NO_PROGRAM,
+                    GENERATED,
+                    DISPLAY_ON_VISIT_SCHEDULE,
+                    ORG_UNIT_SCOPE,
                     UNIQUE,
-                    TrackedEntityAttributeFields.INHERIT,
-                    TrackedEntityAttributeFields.FORM_NAME,
-                    TrackedEntityAttributeFields.FIELD_MASK
+                    INHERIT,
+                    FORM_NAME,
+                    FIELD_MASK
             );
         }
     }

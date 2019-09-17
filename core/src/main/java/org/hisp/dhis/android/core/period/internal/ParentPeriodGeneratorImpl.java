@@ -36,6 +36,13 @@ import java.util.List;
 
 class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
 
+    private final PeriodGenerator daily;
+    private final WeeklyPeriodGenerators weekly;
+    private final PeriodGenerator biWeekly;
+    private final PeriodGenerator monthly;
+    private final NMonthlyPeriodGenerators nMonthly;
+    private final YearlyPeriodGenerators yearly;
+
     static class Past {
         static final int DAILY_PERIODS = 50;
         static final int WEEKLY_PERIODS = 10;
@@ -57,13 +64,6 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
         static final int SIXMONTHLY_PERIODS = 2;
         static final int YEARLY_PERIODS = 2;
     }
-
-    private final PeriodGenerator daily;
-    private final WeeklyPeriodGenerators weekly;
-    private final PeriodGenerator biWeekly;
-    private final PeriodGenerator monthly;
-    private final NMonthlyPeriodGenerators nMonthly;
-    private final YearlyPeriodGenerators yearly;
 
     ParentPeriodGeneratorImpl(PeriodGenerator daily,
                               WeeklyPeriodGenerators weekly,

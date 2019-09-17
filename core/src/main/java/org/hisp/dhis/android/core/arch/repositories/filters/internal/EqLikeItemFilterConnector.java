@@ -37,9 +37,9 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 
 public final class EqLikeItemFilterConnector<R extends BaseRepository, S extends BaseScope> {
 
-    private ScopedRepositoryFactory<R, S> repositoryFactory;
-    private BaseScopeFactory<S, RepositoryScopeFilterItem> baseScopeFactory;
-    private String key;
+    private final ScopedRepositoryFactory<R, S> repositoryFactory;
+    private final BaseScopeFactory<S, RepositoryScopeFilterItem> baseScopeFactory;
+    private final String key;
 
     EqLikeItemFilterConnector(ScopedRepositoryFactory<R, S> repositoryFactory,
                               BaseScopeFactory<S, RepositoryScopeFilterItem> baseScopeFactory,

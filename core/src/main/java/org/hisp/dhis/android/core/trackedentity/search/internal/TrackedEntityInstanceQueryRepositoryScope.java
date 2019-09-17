@@ -35,7 +35,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
 import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.common.State;
@@ -48,10 +47,10 @@ import java.util.List;
 @AutoValue
 public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
 
+    private static final SafeDateFormat QUERY_FORMAT = new SafeDateFormat("yyyy-MM-dd");
+
     @NonNull
     public abstract RepositoryMode mode();
-
-    private static final SafeDateFormat QUERY_FORMAT = new SafeDateFormat("yyyy-MM-dd");
 
     @NonNull
     public abstract List<String> orgUnits();

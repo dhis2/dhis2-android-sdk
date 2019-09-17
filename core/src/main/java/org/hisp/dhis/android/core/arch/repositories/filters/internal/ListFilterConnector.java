@@ -37,10 +37,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class ListFilterConnector<R  extends BaseRepository, S extends BaseScope, T> {
+public final class ListFilterConnector<R  extends BaseRepository, S extends BaseScope, T> {
 
-    private ScopedRepositoryFactory<R, S> repositoryFactory;
-    private BaseScopeFactory<S, List<T>> baseScopeFactory;
+    private final ScopedRepositoryFactory<R, S> repositoryFactory;
+    private final BaseScopeFactory<S, List<T>> baseScopeFactory;
 
     ListFilterConnector(ScopedRepositoryFactory<R, S> repositoryFactory,
                         BaseScopeFactory<S, List<T>> baseScopeFactory) {

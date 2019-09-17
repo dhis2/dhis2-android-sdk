@@ -93,36 +93,7 @@ public abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         return new AutoValue_TrackedEntityInstanceQueryOnline.Builder();
     }
 
-    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
     public static TrackedEntityInstanceQueryOnline create(TrackedEntityInstanceQueryRepositoryScope scope) {
-        Map<String, String> attributes = new HashMap<>();
-        for (RepositoryScopeFilterItem item : scope.attribute()) {
-            String filterClause = ":" + item.operator().getApiUpperOperator() + ":" + item.value();
-            String existingClause = attributes.get(item.key());
-            String newClause = (existingClause == null ? "" : existingClause) + filterClause;
-
-            attributes.put(item.key(), newClause);
-        }
-
-        List<String> attributeList = new ArrayList<>();
-        for (Map.Entry<String, String> entry : attributes.entrySet()) {
-            attributeList.add(entry.getKey() + entry.getValue());
-        }
-
-        Map<String, String> filters = new HashMap<>();
-        for (RepositoryScopeFilterItem item : scope.filter()) {
-            String filterClause = ":" + item.operator().getApiUpperOperator() + ":" + item.value();
-            String existingClause = filters.get(item.key());
-            String newClause = (existingClause == null ? "" : existingClause) + filterClause;
-
-            filters.put(item.key(), newClause);
-        }
-
-        List<String> filterList = new ArrayList<>();
-        for (Map.Entry<String, String> entry : filters.entrySet()) {
-            filterList.add(entry.getKey() + entry.getValue());
-        }
-
         String query = null;
         if (scope.query() != null) {
             query = scope.query().operator().getApiUpperOperator() + ":" + scope.query().value();
@@ -130,8 +101,8 @@ public abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
 
         return TrackedEntityInstanceQueryOnline.builder()
                 .query(query)
-                .attribute(attributeList)
-                .filter(filterList)
+                .attribute(toAPIFilterFormat(scope.attribute()))
+                .filter(toAPIFilterFormat(scope.filter()))
                 .orgUnits(scope.orgUnits())
                 .orgUnitMode(scope.orgUnitMode())
                 .program(scope.program())
@@ -143,6 +114,23 @@ public abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
                 .pageSize(50)
                 .paging(true)
                 .build();
+    }
+
+    private static List<String> toAPIFilterFormat(List<RepositoryScopeFilterItem> items) {
+        Map<String, String> itemMap = new HashMap<>();
+        for (RepositoryScopeFilterItem item : items) {
+            String filterClause = ":" + item.operator().getApiUpperOperator() + ":" + item.value();
+            String existingClause = itemMap.get(item.key());
+            String newClause = (existingClause == null ? "" : existingClause) + filterClause;
+
+            itemMap.put(item.key(), newClause);
+        }
+
+        List<String> itemList = new ArrayList<>();
+        for (Map.Entry<String, String> entry : itemMap.entrySet()) {
+            itemList.add(entry.getKey() + entry.getValue());
+        }
+        return itemList;
     }
 
     @AutoValue.Builder

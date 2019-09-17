@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo.Columns;
 import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementFields;
 
 import java.util.Map;
@@ -58,31 +59,31 @@ public final class ProgramStageDataElementCollectionRepository extends ReadOnlyI
     }
 
     public BooleanFilterConnector<ProgramStageDataElementCollectionRepository> byDisplayInReports() {
-        return cf.bool(ProgramStageDataElementFields.DISPLAY_IN_REPORTS);
+        return cf.bool(Columns.DISPLAY_IN_REPORTS);
     }
 
     public BooleanFilterConnector<ProgramStageDataElementCollectionRepository> byCompulsory() {
-        return cf.bool(ProgramStageDataElementFields.COMPULSORY);
+        return cf.bool(Columns.COMPULSORY);
     }
 
     public BooleanFilterConnector<ProgramStageDataElementCollectionRepository> byAllowProvidedElsewhere() {
-        return cf.bool(ProgramStageDataElementFields.ALLOW_PROVIDED_ELSEWHERE);
+        return cf.bool(Columns.ALLOW_PROVIDED_ELSEWHERE);
     }
 
     public IntegerFilterConnector<ProgramStageDataElementCollectionRepository> bySortOrder() {
-        return cf.integer(ProgramStageDataElementFields.SORT_ORDER);
+        return cf.integer(Columns.SORT_ORDER);
     }
 
     public BooleanFilterConnector<ProgramStageDataElementCollectionRepository> byAllowFutureDate() {
-        return cf.bool(ProgramStageDataElementFields.ALLOW_FUTURE_DATE);
+        return cf.bool(Columns.ALLOW_FUTURE_DATE);
     }
 
     public StringFilterConnector<ProgramStageDataElementCollectionRepository> byDataElement() {
-        return cf.string(ProgramStageDataElementFields.DATA_ELEMENT);
+        return cf.string(Columns.DATA_ELEMENT);
     }
 
     public StringFilterConnector<ProgramStageDataElementCollectionRepository> byProgramStage() {
-        return cf.string(ProgramStageDataElementFields.PROGRAM_STAGE);
+        return cf.string(Columns.PROGRAM_STAGE);
     }
 
     public ProgramStageDataElementCollectionRepository withRenderType() {
@@ -90,6 +91,6 @@ public final class ProgramStageDataElementCollectionRepository extends ReadOnlyI
     }
 
     public ProgramStageDataElementCollectionRepository orderBySortOrder(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(ProgramStageDataElementFields.SORT_ORDER, direction);
+        return cf.withOrderBy(Columns.SORT_ORDER, direction);
     }
 }

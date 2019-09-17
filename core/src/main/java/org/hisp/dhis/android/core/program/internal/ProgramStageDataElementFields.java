@@ -37,8 +37,8 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo.Columns;
 
-final class ProgramStageDataElementFields {
-    private static final String RENDER_TYPE = "renderType";
+public final class ProgramStageDataElementFields {
+    public static final String RENDER_TYPE = "renderType";
 
     private static FieldsHelper<ProgramStageDataElement> fh = new FieldsHelper<>();
 

@@ -67,7 +67,7 @@ public class PeriodHandlerShould {
     }
 
     @Test
-    public void call_generator_to_generate_periods() throws Exception {
+    public void call_generator_to_generate_periods() {
         periodHandler.generateAndPersist();
 
         verify(generator).generatePeriods();
@@ -75,7 +75,7 @@ public class PeriodHandlerShould {
     }
 
     @Test
-    public void call_store_to_persist_periods() throws Exception {
+    public void call_store_to_persist_periods() {
         periodHandler.generateAndPersist();
 
         verify(store).updateOrInsertWhere(p1);

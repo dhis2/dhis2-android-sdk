@@ -47,30 +47,30 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
     }
 
     @Test
-    public void generate_daily_periods_for_one_day() throws Exception {
+    public void generate_daily_periods_for_one_day() {
         calendar.set(2018, 1, 1);
         Period period = generateExpectedPeriod("20180201", calendar);
 
-        List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generateLastPeriods(1);
+        List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generatePeriods(1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
 
     @Test
-    public void generate_daily_periods() throws Exception {
+    public void generate_daily_periods() {
         calendar.set(2018,2,4);
         Period period1 = generateExpectedPeriod("20180304", calendar);
         calendar.set(2018, 2, 5);
         Period period2 = generateExpectedPeriod("20180305", calendar);
 
-        List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generateLastPeriods(2);
+        List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generatePeriods(2, 0);
         List<Period> expectedPeriods = Lists.newArrayList(period1, period2);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
     }
 
     @Test
-    public void generate_daily_periods_for_changing_year() throws Exception {
+    public void generate_daily_periods_for_changing_year() {
         calendar.set(2017,11,31);
         Period period1 = generateExpectedPeriod("20171231", calendar);
         calendar.set(2018, 0, 1);
@@ -78,7 +78,7 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         calendar.set(2018, 0, 2);
         Period period3 = generateExpectedPeriod("20180102", calendar);
 
-        List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generateLastPeriods(3);
+        List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generatePeriods(3, 0);
         List<Period> expectedPeriods = Lists.newArrayList(period1, period2, period3);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);

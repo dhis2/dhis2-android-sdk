@@ -61,21 +61,21 @@ public class AbstractPeriodGeneratorShould {
     }
 
     @Test
-    public void generate_one_requested_period() throws Exception {
-        List<Period> periods = generator.generateLastPeriods(1);
+    public void generate_one_requested_period() {
+        List<Period> periods = generator.generatePeriods(1, 0);
         assertThat(periods.size()).isEqualTo(1);
     }
 
     @Test
-    public void generate_many_requested_period() throws Exception {
-        List<Period> periods = generator.generateLastPeriods(5);
+    public void generate_many_requested_period() {
+        List<Period> periods = generator.generatePeriods(5, 0);
         assertThat(periods.size()).isEqualTo(5);
     }
 
     @Test
-    public void throw_exception_for_negative_periods() throws Exception {
+    public void throw_exception_for_negative_periods() {
         try {
-            generator.generateLastPeriods(-12);
+            generator.generatePeriods(-12, 0);
             fail("Exception was expected, but nothing was thrown.");
         } catch (RuntimeException e) {
             // No operation.
@@ -83,9 +83,9 @@ public class AbstractPeriodGeneratorShould {
     }
 
     @Test
-    public void throw_exception_for_zero_periods() throws Exception {
+    public void throw_exception_for_zero_periods() {
         try {
-            generator.generateLastPeriods(0);
+            generator.generatePeriods(0, 0);
             fail("Exception was expected, but nothing was thrown.");
         } catch (RuntimeException e) {
             // No operation.

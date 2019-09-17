@@ -36,14 +36,27 @@ import java.util.List;
 
 class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
 
-    static final int DAILY_PERIODS = 60;
-    static final int WEEKLY_PERIODS = 13;
-    static final int BIWEEKLY_PERIODS = 13;
-    static final int MONTHLY_PERIODS = 12;
-    static final int BIMONTHLY_PERIODS = 6;
-    static final int QUARTER_PERIODS = 5;
-    static final int SIXMONTHLY_PERIODS = 5;
-    static final int YEARLY_PERIODS = 5;
+    static class Past {
+        static final int DAILY_PERIODS = 60;
+        static final int WEEKLY_PERIODS = 13;
+        static final int BIWEEKLY_PERIODS = 13;
+        static final int MONTHLY_PERIODS = 12;
+        static final int BIMONTHLY_PERIODS = 6;
+        static final int QUARTER_PERIODS = 5;
+        static final int SIXMONTHLY_PERIODS = 5;
+        static final int YEARLY_PERIODS = 5;
+    }
+
+    static class Future {
+        static final int DAILY_PERIODS = 10;
+        static final int WEEKLY_PERIODS = 3;
+        static final int BIWEEKLY_PERIODS = 3;
+        static final int MONTHLY_PERIODS = 3;
+        static final int BIMONTHLY_PERIODS = 2;
+        static final int QUARTER_PERIODS = 2;
+        static final int SIXMONTHLY_PERIODS = 2;
+        static final int YEARLY_PERIODS = 2;
+    }
 
     private final PeriodGenerator daily;
     private final WeeklyPeriodGenerators weekly;
@@ -68,27 +81,27 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
 
     public List<Period> generatePeriods() {
         List<Period> periods = new ArrayList<>();
-        periods.addAll(daily.generateLastPeriods(DAILY_PERIODS));
+        periods.addAll(daily.generatePeriods(Past.DAILY_PERIODS, Future.DAILY_PERIODS));
 
-        periods.addAll(weekly.weekly.generateLastPeriods(WEEKLY_PERIODS));
-        periods.addAll(weekly.weeklyWednesday.generateLastPeriods(WEEKLY_PERIODS));
-        periods.addAll(weekly.weeklyThursday.generateLastPeriods(WEEKLY_PERIODS));
-        periods.addAll(weekly.weeklySaturday.generateLastPeriods(WEEKLY_PERIODS));
-        periods.addAll(weekly.weeklySunday.generateLastPeriods(WEEKLY_PERIODS));
+        periods.addAll(weekly.weekly.generatePeriods(Past.WEEKLY_PERIODS, Future.WEEKLY_PERIODS));
+        periods.addAll(weekly.weeklyWednesday.generatePeriods(Past.WEEKLY_PERIODS, Future.WEEKLY_PERIODS));
+        periods.addAll(weekly.weeklyThursday.generatePeriods(Past.WEEKLY_PERIODS, Future.WEEKLY_PERIODS));
+        periods.addAll(weekly.weeklySaturday.generatePeriods(Past.WEEKLY_PERIODS, Future.WEEKLY_PERIODS));
+        periods.addAll(weekly.weeklySunday.generatePeriods(Past.WEEKLY_PERIODS, Future.WEEKLY_PERIODS));
 
-        periods.addAll(biWeekly.generateLastPeriods(BIWEEKLY_PERIODS));
+        periods.addAll(biWeekly.generatePeriods(Past.BIWEEKLY_PERIODS, Future.BIWEEKLY_PERIODS));
 
-        periods.addAll(monthly.generateLastPeriods(MONTHLY_PERIODS));
+        periods.addAll(monthly.generatePeriods(Past.MONTHLY_PERIODS, Future.MONTHLY_PERIODS));
 
-        periods.addAll(nMonthly.biMonthly.generateLastPeriods(BIMONTHLY_PERIODS));
-        periods.addAll(nMonthly.quarter.generateLastPeriods(QUARTER_PERIODS));
-        periods.addAll(nMonthly.sixMonthly.generateLastPeriods(SIXMONTHLY_PERIODS));
-        periods.addAll(nMonthly.sixMonthlyApril.generateLastPeriods(SIXMONTHLY_PERIODS));
+        periods.addAll(nMonthly.biMonthly.generatePeriods(Past.BIMONTHLY_PERIODS, Future.BIMONTHLY_PERIODS));
+        periods.addAll(nMonthly.quarter.generatePeriods(Past.QUARTER_PERIODS, Future.QUARTER_PERIODS));
+        periods.addAll(nMonthly.sixMonthly.generatePeriods(Past.SIXMONTHLY_PERIODS, Future.SIXMONTHLY_PERIODS));
+        periods.addAll(nMonthly.sixMonthlyApril.generatePeriods(Past.SIXMONTHLY_PERIODS, Future.SIXMONTHLY_PERIODS));
 
-        periods.addAll(yearly.yearly.generateLastPeriods(YEARLY_PERIODS));
-        periods.addAll(yearly.financialApril.generateLastPeriods(YEARLY_PERIODS));
-        periods.addAll(yearly.financialJuly.generateLastPeriods(YEARLY_PERIODS));
-        periods.addAll(yearly.financialOct.generateLastPeriods(YEARLY_PERIODS));
+        periods.addAll(yearly.yearly.generatePeriods(Past.YEARLY_PERIODS, Future.YEARLY_PERIODS));
+        periods.addAll(yearly.financialApril.generatePeriods(Past.YEARLY_PERIODS, Future.YEARLY_PERIODS));
+        periods.addAll(yearly.financialJuly.generatePeriods(Past.YEARLY_PERIODS, Future.YEARLY_PERIODS));
+        periods.addAll(yearly.financialOct.generatePeriods(Past.YEARLY_PERIODS, Future.YEARLY_PERIODS));
 
         return periods;
     }

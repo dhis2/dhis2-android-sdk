@@ -49,29 +49,29 @@ public class BiWeeklyPeriodGeneratorShould {
     }
 
     @Test
-    public void generate_bi_weekly_periods_for_one_bi_week() throws Exception {
+    public void generate_bi_weekly_periods_for_one_bi_week() {
         calendar.set(2018, 2, 8);
         Period period = generateExpectedPeriod("2018BiW5", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
 
-        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generateLastPeriods(1);
+        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generatePeriods(1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
 
     @Test
-    public void generate_bi_weekly_periods() throws Exception {
+    public void generate_bi_weekly_periods() {
         calendar.set(2018,2,8);
         Period period1 = generateExpectedPeriod("2018BiW5", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
         calendar.set(2018, 2, 15);
         Period period2 = generateExpectedPeriod("2018BiW6", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
 
-        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generateLastPeriods(2);
+        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generatePeriods(2, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period1, period2));
     }
 
     @Test
-    public void generate_bi_weekly_periods_for_changing_year() throws Exception {
+    public void generate_bi_weekly_periods_for_changing_year() {
         calendar.set(2016,11,31);
         Period period1 = generateExpectedPeriod("2016BiW26", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
         calendar.set(2017, 0, 7);
@@ -79,16 +79,16 @@ public class BiWeeklyPeriodGeneratorShould {
         calendar.set(2017, 0, 18);
         Period period3 = generateExpectedPeriod("2017BiW2", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
 
-        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generateLastPeriods(3);
+        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generatePeriods(3, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period1, period2, period3));
     }
 
     @Test
-    public void generate_the_first_bi_week_including_january_4() throws Exception {
+    public void generate_the_first_bi_week_including_january_4() {
         calendar.set(2018, 0, 4);
 
-        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generateLastPeriods(1);
+        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generatePeriods(1, 0);
 
         Period period = generateExpectedPeriod("2018BiW1", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
 

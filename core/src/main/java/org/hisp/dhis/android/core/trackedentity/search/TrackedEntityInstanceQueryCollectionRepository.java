@@ -132,6 +132,18 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                 scope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build());
     }
 
+    /**
+     * Add an "attribute" filter to the query. If this method is call several times, conditions are appended with
+     * AND connector.
+     *
+     * For example,
+     * <pre><br>.byAttribute("uid1").eq("value1")<br>.byAttribute("uid2").eq("value2")<br></pre>
+     * means that the instance must have attribute "uid1" with value "value1" <b>AND</b> attribute "uid2" with
+     * value "value2".
+     *
+     * @param attributeId Attribute uid to use in the filter
+     * @return Repository connector
+     */
     public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
                 TrackedEntityInstanceQueryRepositoryScope> byAttribute(String attributeId) {
         return connectorFactory.eqLikeItemC(attributeId, filterItem -> {
@@ -141,6 +153,18 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         });
     }
 
+    /**
+     * Add an "filter" to the query. If this method is call several times, conditions are appended with
+     * AND connector.
+     *
+     * For example,
+     * <pre><br>.byFilter("uid1").eq("value1")<br>.byFilter("uid2").eq("value2")<br></pre>
+     * means that the instance must have attribute "uid1" with value "value1" <b>AND</b> attribute "uid2" with
+     * value "value2".
+     *
+     * @param attributeId Attribute uid to use in the filter
+     * @return Repository connector
+     */
     public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope> byFilter(String attributeId) {
         return connectorFactory.eqLikeItemC(attributeId, filterItem -> {
@@ -150,6 +174,11 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         });
     }
 
+    /**
+     * Search tracked entity instances with <b>any</b> attribute matching the query.
+     *
+     * @return Repository connector
+     */
     public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope> byQuery() {
         return connectorFactory.eqLikeItemC("", filterItem -> scope.toBuilder().query(filterItem).build());
@@ -185,11 +214,23 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         return connectorFactory.eqConnector(type -> scope.toBuilder().trackedEntityType(type).build());
     }
 
+    /**
+     * Whether to include or not deleted tracked entity instances.
+     * <br><b>IMPORTANT:</b> currently this filter only applies to <b>offline</b> instances.
+     *
+     * @return Repository connector
+     */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope, Boolean> byIncludeDeleted() {
         return connectorFactory.eqConnector(bool -> scope.toBuilder().includeDeleted(bool).build());
     }
 
+    /**
+     * Filter by sync status.
+     * <br><b>IMPORTANT:</b> using this filter forces <b>offlineOnly</b> mode.
+     *
+     * @return Repository connector
+     */
     public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope, State> byStates() {
         return connectorFactory.listConnector(states -> scope.toBuilder().states(states).build());

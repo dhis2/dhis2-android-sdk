@@ -37,14 +37,14 @@ import java.util.List;
 class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
 
     static class Past {
-        static final int DAILY_PERIODS = 60;
-        static final int WEEKLY_PERIODS = 13;
-        static final int BIWEEKLY_PERIODS = 13;
-        static final int MONTHLY_PERIODS = 12;
-        static final int BIMONTHLY_PERIODS = 6;
-        static final int QUARTER_PERIODS = 5;
-        static final int SIXMONTHLY_PERIODS = 5;
-        static final int YEARLY_PERIODS = 5;
+        static final int DAILY_PERIODS = 50;
+        static final int WEEKLY_PERIODS = 10;
+        static final int BIWEEKLY_PERIODS = 10;
+        static final int MONTHLY_PERIODS = 10;
+        static final int BIMONTHLY_PERIODS = 4;
+        static final int QUARTER_PERIODS = 4;
+        static final int SIXMONTHLY_PERIODS = 4;
+        static final int YEARLY_PERIODS = 4;
     }
 
     static class Future {

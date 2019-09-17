@@ -44,7 +44,8 @@ public final class RelationshipItemFields {
             .fields(
                     fh.<RelationshipItemTrackedEntityInstance>nestedField(Columns.TRACKED_ENTITY_INSTANCE)
                             .with(RelationshipItemTrackedEntityInstanceFields.trackedEntityInstance),
-            fh.<RelationshipItemEnrollment>nestedField(Columns.ENROLLMENT).with(RelationshipItemEnrollmentFields.enrollment),
+            fh.<RelationshipItemEnrollment>nestedField(Columns.ENROLLMENT)
+                    .with(RelationshipItemEnrollmentFields.enrollment),
             fh.<RelationshipItemEvent>nestedField(Columns.EVENT).with(RelationshipItemEventFields.event)
     ).build();
 

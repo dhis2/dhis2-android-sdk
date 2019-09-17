@@ -26,19 +26,52 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search.internal;
+package org.hisp.dhis.android.core.trackedentity.search;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import androidx.annotation.NonNull;
 
-@Module
-public final class TrackedEntityInstanceQueryEntityDIModule {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
 
-    @Provides
-    @Reusable
-    public TrackedEntityInstanceQueryRepositoryScope empty() {
-        return TrackedEntityInstanceQueryRepositoryScope.empty();
+import java.util.List;
+
+@AutoValue
+public abstract class SearchGrid {
+    private final static String HEADERS = "headers";
+    private final static String META_DATA = "metaData";
+    private final static String WIDTH = "width";
+    private final static String HEIGHT = "height";
+    private final static String ROWS = "rows";
+
+    @NonNull
+    @JsonProperty(HEADERS)
+    abstract List<SearchGridHeader> headers();
+
+    @NonNull
+    @JsonProperty(META_DATA)
+    abstract SearchGridMetadata metaData();
+
+    @NonNull
+    @JsonProperty(WIDTH)
+    abstract Integer width();
+
+    @NonNull
+    @JsonProperty(HEIGHT)
+    abstract Integer height();
+
+    @NonNull
+    @JsonProperty(ROWS)
+    abstract List<List<String>> rows();
+
+    @JsonCreator
+    static SearchGrid create(
+            @JsonProperty(HEADERS) List<SearchGridHeader> headers,
+            @JsonProperty(META_DATA) SearchGridMetadata metaData,
+            @JsonProperty(WIDTH) Integer width,
+            @JsonProperty(HEIGHT) Integer height,
+            @JsonProperty(ROWS) List<List<String>> rows) {
+
+        return new AutoValue_SearchGrid(headers, metaData, width, height, rows);
     }
-
 }

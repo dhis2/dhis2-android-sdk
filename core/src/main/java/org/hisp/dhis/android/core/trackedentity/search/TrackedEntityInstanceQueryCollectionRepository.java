@@ -48,9 +48,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
-import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryCallFactory;
-import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryOnline;
-import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryRepositoryScope;
 
 import java.util.ArrayList;
 import java.util.Collections;

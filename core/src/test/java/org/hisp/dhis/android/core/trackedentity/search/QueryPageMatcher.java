@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
-import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryOnline;
 import org.mockito.ArgumentMatcher;
 
 class QueryPageMatcher implements ArgumentMatcher<TrackedEntityInstanceQueryOnline> {

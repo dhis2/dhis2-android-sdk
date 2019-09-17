@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOpe
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
-import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryRepositoryScope;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

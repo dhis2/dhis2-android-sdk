@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search.internal;
+package org.hisp.dhis.android.core.trackedentity.search;
 
 import androidx.annotation.NonNull;
 
@@ -51,7 +51,7 @@ import retrofit2.Call;
 
 @SuppressWarnings({"PMD.PreserveStackTrace"})
 @Reusable
-public class TrackedEntityInstanceQueryCallFactory {
+class TrackedEntityInstanceQueryCallFactory {
 
     private final TrackedEntityInstanceService service;
     private final SearchGridMapper mapper;
@@ -67,7 +67,7 @@ public class TrackedEntityInstanceQueryCallFactory {
         this.apiCallExecutor = apiCallExecutor;
     }
 
-    public Callable<List<TrackedEntityInstance>> getCall(final TrackedEntityInstanceQueryOnline query) {
+    Callable<List<TrackedEntityInstance>> getCall(final TrackedEntityInstanceQueryOnline query) {
         return () -> queryTrackedEntityInstances(query);
     }
 

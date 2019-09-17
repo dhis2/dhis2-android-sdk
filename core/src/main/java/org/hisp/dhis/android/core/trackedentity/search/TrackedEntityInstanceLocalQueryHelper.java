@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo.Col
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
-import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryRepositoryScope;
 
 import java.util.List;
 

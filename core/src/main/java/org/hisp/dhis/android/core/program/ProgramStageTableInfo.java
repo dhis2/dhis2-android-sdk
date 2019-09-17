@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.program.internal.ProgramStageFields;
 
 public final class ProgramStageTableInfo {
 
@@ -52,34 +51,55 @@ public final class ProgramStageTableInfo {
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String DESCRIPTION = "description";
+        public static final String DISPLAY_DESCRIPTION = "displayDescription";
+        public static final String EXECUTION_DATE_LABEL = "executionDateLabel";
+        public static final String ALLOW_GENERATE_NEXT_VISIT = "allowGenerateNextVisit";
+        public static final String VALID_COMPLETE_ONLY = "validCompleteOnly";
+        public static final String REPORT_DATE_TO_USE = "reportDateToUse";
+        public static final String OPEN_AFTER_ENROLLMENT = "openAfterEnrollment";
+        public static final String REPEATABLE = "repeatable";
+        public static final String FEATURE_TYPE = "featureType";
+        public static final String FORM_TYPE = "formType";
+        public static final String DISPLAY_GENERATE_EVENT_BOX = "displayGenerateEventBox";
+        public static final String GENERATED_BY_ENROLMENT_DATE = "generatedByEnrollmentDate";
+        public static final String AUTO_GENERATE_EVENT = "autoGenerateEvent";
+        public static final String SORT_ORDER = "sortOrder";
+        public static final String HIDE_DUE_DATE = "hideDueDate";
+        public static final String BLOCK_ENTRY_FORM = "blockEntryForm";
+        public static final String MIN_DAYS_FROM_START = "minDaysFromStart";
+        public static final String STANDARD_INTERVAL = "standardInterval";
+        public static final String PERIOD_TYPE = "periodType";
+        public static final String PROGRAM = "program";
+        public static final String REMIND_COMPLETED = "remindCompleted";
         public static final String ACCESS_DATA_WRITE = "accessDataWrite";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    ProgramStageFields.DESCRIPTION,
-                    ProgramStageFields.DISPLAY_DESCRIPTION,
-                    ProgramStageFields.EXECUTION_DATE_LABEL,
-                    ProgramStageFields.ALLOW_GENERATE_NEXT_VISIT,
-                    ProgramStageFields.VALID_COMPLETE_ONLY,
-                    ProgramStageFields.REPORT_DATE_TO_USE,
-                    ProgramStageFields.OPEN_AFTER_ENROLLMENT,
-                    ProgramStageFields.REPEATABLE,
-                    ProgramStageFields.FORM_TYPE,
-                    ProgramStageFields.DISPLAY_GENERATE_EVENT_BOX,
-                    ProgramStageFields.GENERATED_BY_ENROLMENT_DATE,
-                    ProgramStageFields.AUTO_GENERATE_EVENT,
-                    ProgramStageFields.SORT_ORDER,
-                    ProgramStageFields.HIDE_DUE_DATE,
-                    ProgramStageFields.BLOCK_ENTRY_FORM,
-                    ProgramStageFields.MIN_DAYS_FROM_START,
-                    ProgramStageFields.STANDARD_INTERVAL,
-                    ProgramStageFields.PROGRAM,
-                    ProgramStageFields.PERIOD_TYPE,
+                    DESCRIPTION,
+                    DISPLAY_DESCRIPTION,
+                    EXECUTION_DATE_LABEL,
+                    ALLOW_GENERATE_NEXT_VISIT,
+                    VALID_COMPLETE_ONLY,
+                    REPORT_DATE_TO_USE,
+                    OPEN_AFTER_ENROLLMENT,
+                    REPEATABLE,
+                    FORM_TYPE,
+                    DISPLAY_GENERATE_EVENT_BOX,
+                    GENERATED_BY_ENROLMENT_DATE,
+                    AUTO_GENERATE_EVENT,
+                    SORT_ORDER,
+                    HIDE_DUE_DATE,
+                    BLOCK_ENTRY_FORM,
+                    MIN_DAYS_FROM_START,
+                    STANDARD_INTERVAL,
+                    PROGRAM,
+                    PERIOD_TYPE,
                     ACCESS_DATA_WRITE,
-                    ProgramStageFields.REMIND_COMPLETED,
-                    ProgramStageFields.FEATURE_TYPE
+                    REMIND_COMPLETED,
+                    FEATURE_TYPE
             );
         }
     }

@@ -32,8 +32,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -47,6 +45,7 @@ import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo.Columns;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
@@ -57,6 +56,8 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -73,11 +74,11 @@ public class TrackedEntityAttributeValueStoreShould extends BaseRealIntegrationT
     private static final String TRACKED_ENTITY = "test_trackedEntity";
 
     private static final String[] PROJECTION = {
-            TrackedEntityAttributeValueFields.VALUE,
-            TrackedEntityAttributeValueFields.CREATED,
-            TrackedEntityAttributeValueFields.LAST_UPDATED,
-            TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
-            TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE
+            Columns.VALUE,
+            Columns.CREATED,
+            Columns.LAST_UPDATED,
+            Columns.TRACKED_ENTITY_ATTRIBUTE,
+            Columns.TRACKED_ENTITY_INSTANCE
     };
 
     private TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;

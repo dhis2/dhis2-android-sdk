@@ -30,11 +30,10 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo.Columns;
+
+import androidx.annotation.NonNull;
 
 public class CreateTrackedEntityInstanceUtils {
     private static final State STATE = State.TO_POST;
@@ -46,12 +45,12 @@ public class CreateTrackedEntityInstanceUtils {
                                        @NonNull String organisationUnit,
                                        @NonNull String trackedEntityType) {
         ContentValues trackedEntityInstance = new ContentValues();
-        trackedEntityInstance.put(TrackedEntityInstanceTableInfo.Columns.UID, uid);
-        trackedEntityInstance.put(TrackedEntityInstanceFields.CREATED, DATE);
-        trackedEntityInstance.put(TrackedEntityInstanceFields.LAST_UPDATED, DATE);
-        trackedEntityInstance.put(TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT, organisationUnit);
-        trackedEntityInstance.put(TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE, trackedEntityType);
-        trackedEntityInstance.put(BaseDataModel.Columns.STATE, STATE.name());
+        trackedEntityInstance.put(Columns.UID, uid);
+        trackedEntityInstance.put(Columns.CREATED, DATE);
+        trackedEntityInstance.put(Columns.LAST_UPDATED, DATE);
+        trackedEntityInstance.put(Columns.ORGANISATION_UNIT, organisationUnit);
+        trackedEntityInstance.put(Columns.TRACKED_ENTITY_TYPE, trackedEntityType);
+        trackedEntityInstance.put(Columns.STATE, STATE.name());
         return trackedEntityInstance;
     }
 }

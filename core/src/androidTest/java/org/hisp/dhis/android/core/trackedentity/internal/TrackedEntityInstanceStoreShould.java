@@ -32,8 +32,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.FeatureType;
@@ -56,6 +54,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -82,12 +82,12 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
 
     private static final String[] PROJECTION = {
             Columns.UID,
-            TrackedEntityInstanceFields.CREATED,
-            TrackedEntityInstanceFields.LAST_UPDATED,
+            Columns.CREATED,
+            Columns.LAST_UPDATED,
             Columns.CREATED_AT_CLIENT,
             Columns.LAST_UPDATED_AT_CLIENT,
             Columns.ORGANISATION_UNIT,
-            TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE,
+            Columns.TRACKED_ENTITY_TYPE,
             Columns.GEOMETRY_TYPE,
             Columns.GEOMETRY_COORDINATES,
             BaseDataModel.Columns.STATE
@@ -147,7 +147,7 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
         ContentValues trackedEntityInstance = new ContentValues();
         trackedEntityInstance.put(Columns.UID, UID);
         trackedEntityInstance.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
-        trackedEntityInstance.put(TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE, TRACKED_ENTITY);
+        trackedEntityInstance.put(Columns.TRACKED_ENTITY_TYPE, TRACKED_ENTITY);
         trackedEntityInstance.put(BaseDataModel.Columns.STATE, STATE.name());
 
         database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstance);
@@ -155,7 +155,7 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
         String[] projection = {
                 Columns.UID,
                 Columns.ORGANISATION_UNIT,
-                TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE,
+                Columns.TRACKED_ENTITY_TYPE,
                 BaseDataModel.Columns.STATE
         };
 
@@ -176,7 +176,7 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
         ContentValues trackedEntityInstanceContentValues = new ContentValues();
         trackedEntityInstanceContentValues.put(Columns.UID, UID);
         trackedEntityInstanceContentValues.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
-        trackedEntityInstanceContentValues.put(TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE, TRACKED_ENTITY);
+        trackedEntityInstanceContentValues.put(Columns.TRACKED_ENTITY_TYPE, TRACKED_ENTITY);
         trackedEntityInstanceContentValues.put(BaseDataModel.Columns.STATE, State.TO_POST.name());
         database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstanceContentValues);
 

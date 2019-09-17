@@ -51,16 +51,20 @@ public final class RelationshipTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
+        public static final String UID = BaseIdentifiableObjectModel.Columns.UID;
+        public static final String NAME = BaseIdentifiableObjectModel.Columns.NAME;
+        public static final String CREATED = BaseIdentifiableObjectModel.Columns.CREATED;
+        public static final String LAST_UPDATED = BaseIdentifiableObjectModel.Columns.LAST_UPDATED;
         public static final String RELATIONSHIP_TYPE = "relationshipType";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    BaseIdentifiableObjectModel.Columns.UID,
-                    BaseIdentifiableObjectModel.Columns.NAME,
-                    BaseIdentifiableObjectModel.Columns.CREATED,
-                    BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
+                    UID,
+                    NAME,
+                    CREATED,
+                    LAST_UPDATED,
                     RELATIONSHIP_TYPE
             );
         }

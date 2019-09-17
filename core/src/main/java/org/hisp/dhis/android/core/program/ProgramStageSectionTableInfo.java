@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.program.internal.ProgramStageSectionFields;
 
 public final class ProgramStageSectionTableInfo {
 
@@ -52,6 +51,7 @@ public final class ProgramStageSectionTableInfo {
     };
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String SORT_ORDER = "sortOrder";
         public static final String PROGRAM_STAGE = "programStage";
         public static final String DESKTOP_RENDER_TYPE = "desktopRenderType";
         public static final String MOBILE_RENDER_TYPE = "mobileRenderType";
@@ -59,7 +59,7 @@ public final class ProgramStageSectionTableInfo {
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    ProgramStageSectionFields.SORT_ORDER,
+                    SORT_ORDER,
                     PROGRAM_STAGE,
                     DESKTOP_RENDER_TYPE,
                     MOBILE_RENDER_TYPE

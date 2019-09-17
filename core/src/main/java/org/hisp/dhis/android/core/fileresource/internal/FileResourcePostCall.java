@@ -32,8 +32,6 @@ import android.content.Context;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
@@ -45,10 +43,10 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueFields;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
 
 import java.io.File;
@@ -57,6 +55,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
 import okhttp3.MediaType;
@@ -166,7 +165,7 @@ public final class FileResourcePostCall {
 
     private boolean updateTrackedEntityAttributeValue(FileResource fileResource, FileResource downloadedFileResource) {
         String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(TrackedEntityAttributeValueFields.VALUE, fileResource.uid())
+                .appendKeyStringValue(TrackedEntityAttributeValueTableInfo.Columns.VALUE, fileResource.uid())
                 .build();
 
         TrackedEntityAttributeValue trackedEntityAttributeValue =
@@ -184,7 +183,7 @@ public final class FileResourcePostCall {
 
     private void updateTrackedEntityDataValue(FileResource fileResource, FileResource downloadedFileResource) {
         String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(TrackedEntityDataValueFields.VALUE, fileResource.uid())
+                .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.VALUE, fileResource.uid())
                 .build();
 
         TrackedEntityDataValue trackedEntityDataValue =

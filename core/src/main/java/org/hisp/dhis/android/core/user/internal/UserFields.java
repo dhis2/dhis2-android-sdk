@@ -53,7 +53,7 @@ public final class UserFields {
     public static final String NATIONALITY = "nationality";
     public static final String USER_CREDENTIALS = "userCredentials";
     public static final String ORGANISATION_UNITS = "organisationUnits";
-    public static final String TEI_SEARCH_ORGANISATION_UNITS = "teiSearchOrganisationUnits";
+    private static final String TEI_SEARCH_ORGANISATION_UNITS = "teiSearchOrganisationUnits";
 
     private static final Field<User, String> uid = Field.create(BaseIdentifiableObject.UID);
     private static final Field<User, String> code = Field.create(BaseIdentifiableObject.CODE);

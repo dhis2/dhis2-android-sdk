@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo.Columns;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeFields;
 
 import java.util.Map;
@@ -55,7 +56,7 @@ public final class TrackedEntityTypeCollectionRepository
     }
 
     public EnumFilterConnector<TrackedEntityTypeCollectionRepository, FeatureType> byFeatureType() {
-        return cf.enumC(TrackedEntityTypeFields.FEATURE_TYPE);
+        return cf.enumC(Columns.FEATURE_TYPE);
     }
 
     public TrackedEntityTypeCollectionRepository withStyle() {

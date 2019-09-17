@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueFields;
 
 public final class TrackedEntityAttributeValueTableInfo {
 
@@ -52,15 +51,18 @@ public final class TrackedEntityAttributeValueTableInfo {
     };
 
     public static class Columns extends BaseModel.Columns {
+        public static final String VALUE = "value";
+        public static final String CREATED = "created";
+        public static final String LAST_UPDATED = "lastUpdated";
         public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
         public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    TrackedEntityAttributeValueFields.VALUE,
-                    TrackedEntityAttributeValueFields.CREATED,
-                    TrackedEntityAttributeValueFields.LAST_UPDATED,
+                    VALUE,
+                    CREATED,
+                    LAST_UPDATED,
                     TRACKED_ENTITY_ATTRIBUTE,
                     TRACKED_ENTITY_INSTANCE
             );

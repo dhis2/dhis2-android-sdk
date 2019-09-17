@@ -50,7 +50,7 @@ public final class SystemSettingTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
         public static final String KEY = "key";
         public static final String VALUE = "value";
 

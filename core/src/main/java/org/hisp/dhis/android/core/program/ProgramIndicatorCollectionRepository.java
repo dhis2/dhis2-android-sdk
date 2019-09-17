@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo.Columns;
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorFields;
 
 import java.util.Map;
@@ -57,31 +58,31 @@ public final class ProgramIndicatorCollectionRepository
 
 
     public BooleanFilterConnector<ProgramIndicatorCollectionRepository> byDisplayInForm() {
-        return cf.bool(ProgramIndicatorFields.DISPLAY_IN_FORM);
+        return cf.bool(Columns.DISPLAY_IN_FORM);
     }
 
     public StringFilterConnector<ProgramIndicatorCollectionRepository> byExpression() {
-        return cf.string(ProgramIndicatorFields.EXPRESSION);
+        return cf.string(Columns.EXPRESSION);
     }
 
     public StringFilterConnector<ProgramIndicatorCollectionRepository> byDimensionItem() {
-        return cf.string(ProgramIndicatorFields.DIMENSION_ITEM);
+        return cf.string(Columns.DIMENSION_ITEM);
     }
 
     public StringFilterConnector<ProgramIndicatorCollectionRepository> byFilter() {
-        return cf.string(ProgramIndicatorFields.FILTER);
+        return cf.string(Columns.FILTER);
     }
 
     public IntegerFilterConnector<ProgramIndicatorCollectionRepository> byDecimals() {
-        return cf.integer(ProgramIndicatorFields.DECIMALS);
+        return cf.integer(Columns.DECIMALS);
     }
 
     public StringFilterConnector<ProgramIndicatorCollectionRepository> byAggregationType() {
-        return cf.string(ProgramIndicatorFields.AGGREGATION_TYPE);
+        return cf.string(Columns.AGGREGATION_TYPE);
     }
 
     public StringFilterConnector<ProgramIndicatorCollectionRepository> byProgramUid() {
-        return cf.string(ProgramIndicatorFields.PROGRAM);
+        return cf.string(Columns.PROGRAM);
     }
 
     public ProgramIndicatorCollectionRepository withLegendSets() {

@@ -64,7 +64,7 @@ public final class ProgramTrackedEntityAttributeStore {
     };
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            ProgramTrackedEntityAttributeTableInfo.TABLE_INFO, ProgramTrackedEntityAttributeFields.PROGRAM);
+            ProgramTrackedEntityAttributeTableInfo.TABLE_INFO, ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM);
 
     private ProgramTrackedEntityAttributeStore() {}
 

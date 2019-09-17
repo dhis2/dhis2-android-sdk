@@ -94,7 +94,7 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
                                                  @NonNull List<String> dataElementUids) {
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
-                .appendNotInKeyStringValues(TrackedEntityDataValueFields.DATA_ELEMENT, dataElementUids)
+                .appendNotInKeyStringValues(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, dataElementUids)
                 .build();
 
         return databaseAdapter.delete(TrackedEntityDataValueTableInfo.TABLE_INFO.name(), whereClause, null);

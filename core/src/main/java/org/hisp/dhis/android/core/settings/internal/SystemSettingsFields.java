@@ -34,8 +34,8 @@ import org.hisp.dhis.android.core.settings.SystemSettings;
 
 final class SystemSettingsFields {
 
-    static final String KEY_FLAG = "keyFlag";
-    static final String KEY_STYLE = "keyStyle";
+    private static final String KEY_FLAG = "keyFlag";
+    private static final String KEY_STYLE = "keyStyle";
 
     private static FieldsHelper<SystemSettings> fh = new FieldsHelper<>();
     static final Fields<SystemSettings> allFields = Fields.<SystemSettings>builder()

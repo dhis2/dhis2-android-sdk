@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.program.internal.ProgramRuleFields;
 
 public final class ProgramRuleTableInfo {
 
@@ -52,14 +51,19 @@ public final class ProgramRuleTableInfo {
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String PRIORITY = "priority";
+        public static final String CONDITION = "condition";
+        public static final String PROGRAM = "program";
+        public static final String PROGRAM_STAGE = "programStage";
+
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    ProgramRuleFields.PRIORITY,
-                    ProgramRuleFields.CONDITION,
-                    ProgramRuleFields.PROGRAM,
-                    ProgramRuleFields.PROGRAM_STAGE
+                    PRIORITY,
+                    CONDITION,
+                    PROGRAM,
+                    PROGRAM_STAGE
             );
         }
     }

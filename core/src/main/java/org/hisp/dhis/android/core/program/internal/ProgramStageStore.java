@@ -78,7 +78,7 @@ public final class ProgramStageStore {
     };
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            ProgramStageTableInfo.TABLE_INFO, ProgramStageFields.PROGRAM);
+            ProgramStageTableInfo.TABLE_INFO, ProgramStageTableInfo.Columns.PROGRAM);
 
     private ProgramStageStore() {}
 

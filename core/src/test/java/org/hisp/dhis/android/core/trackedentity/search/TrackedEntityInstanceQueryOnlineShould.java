@@ -29,8 +29,6 @@ package org.hisp.dhis.android.core.trackedentity.search;
 
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryRepositoryScope;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

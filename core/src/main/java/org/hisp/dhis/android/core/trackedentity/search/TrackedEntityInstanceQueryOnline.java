@@ -76,6 +76,7 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     @Nullable
     abstract String trackedEntityType();
 
+    //TODO It is not used in the query because it modifies returned grid structure: if true, it adds an extra column
     @NonNull
     abstract Boolean includeDeleted();
 

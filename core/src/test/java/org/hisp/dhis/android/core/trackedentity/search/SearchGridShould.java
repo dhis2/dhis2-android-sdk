@@ -30,9 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.search;
 
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.trackedentity.search.SearchGrid;
-import org.hisp.dhis.android.core.trackedentity.search.SearchGridHeader;
-import org.hisp.dhis.android.core.trackedentity.search.SearchGridMetadata;
 import org.junit.Test;
 
 import java.io.IOException;

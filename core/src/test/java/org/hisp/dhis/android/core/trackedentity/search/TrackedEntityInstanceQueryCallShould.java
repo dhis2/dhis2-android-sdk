@@ -34,10 +34,6 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService;
-import org.hisp.dhis.android.core.trackedentity.search.SearchGrid;
-import org.hisp.dhis.android.core.trackedentity.search.SearchGridMapper;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCallFactory;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -148,7 +144,6 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
                 eq(query.query()),
                 eq(query.attribute()),
                 eq(query.filter()),
-                eq(query.includeDeleted()),
                 eq(query.paging()),
                 eq(query.page()),
                 eq(query.pageSize()));
@@ -182,6 +177,6 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
 
     private OngoingStubbing<Call<SearchGrid>> whenServiceQuery() {
         return when(service.query(anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyList(), anyList(), anyBoolean(), anyBoolean(), anyInt(), anyInt()));
+                anyString(), anyString(), anyList(), anyList(), anyBoolean(), anyInt(), anyInt()));
     }
 }

@@ -36,7 +36,7 @@ public enum FilterItemOperator {
     NOT_IN("NOT IN", "!in", "!in"), //No upper API version for this
     LT("<", "lt", "LT"),
     GT(">", "gt", "GT"),
-    VOID("","", "");
+    VOID("", "", "");
 
     private String sqlOperator;
 

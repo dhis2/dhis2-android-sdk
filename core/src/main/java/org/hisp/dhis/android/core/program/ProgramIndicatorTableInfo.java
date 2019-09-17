@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.program.internal.ProgramIndicatorFields;
 
 public final class ProgramIndicatorTableInfo {
 
@@ -52,18 +51,25 @@ public final class ProgramIndicatorTableInfo {
         }
     };
 
-    static class Columns extends BaseNameableObjectModel.Columns {
+    public static class Columns extends BaseNameableObjectModel.Columns {
+        public static final String DISPLAY_IN_FORM = "displayInForm";
+        public static final String EXPRESSION = "expression";
+        public static final String DIMENSION_ITEM = "dimensionItem";
+        public static final String FILTER = "filter";
+        public static final String DECIMALS = "decimals";
+        public static final String AGGREGATION_TYPE = "aggregationType";
+        public static final String PROGRAM = "program";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    ProgramIndicatorFields.DISPLAY_IN_FORM,
-                    ProgramIndicatorFields.EXPRESSION,
-                    ProgramIndicatorFields.DIMENSION_ITEM,
-                    ProgramIndicatorFields.FILTER,
-                    ProgramIndicatorFields.DECIMALS,
-                    ProgramIndicatorFields.AGGREGATION_TYPE,
-                    ProgramIndicatorFields.PROGRAM
+                    DISPLAY_IN_FORM,
+                    EXPRESSION,
+                    DIMENSION_ITEM,
+                    FILTER,
+                    DECIMALS,
+                    AGGREGATION_TYPE,
+                    PROGRAM
             );
         }
     }

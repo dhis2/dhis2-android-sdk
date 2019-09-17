@@ -25,17 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.program.ProgramRuleTableInfo.Columns;
-import org.hisp.dhis.android.core.program.internal.ProgramRuleFields;
+import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo.Columns;
+import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementFields;
 
 import java.util.Map;
 
@@ -44,35 +46,51 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public final class ProgramRuleCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramRule, ProgramRuleCollectionRepository> {
+public final class ProgramStageDataElementCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl
+        <ProgramStageDataElement, ProgramStageDataElementCollectionRepository> {
 
     @Inject
-    ProgramRuleCollectionRepository(final IdentifiableObjectStore<ProgramRule> store,
-                                    final Map<String, ChildrenAppender<ProgramRule>> childrenAppenders,
-                                    final RepositoryScope scope) {
+    ProgramStageDataElementCollectionRepository(final IdentifiableObjectStore<ProgramStageDataElement> store,
+                                                final Map<String, ChildrenAppender<ProgramStageDataElement>>
+                                                        childrenAppenders,
+                                                final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new ProgramRuleCollectionRepository(store, childrenAppenders, s)));
+                s -> new ProgramStageDataElementCollectionRepository(store, childrenAppenders, s)));
     }
 
-
-    public IntegerFilterConnector<ProgramRuleCollectionRepository> byPriority() {
-        return cf.integer(Columns.PRIORITY);
+    public BooleanFilterConnector<ProgramStageDataElementCollectionRepository> byDisplayInReports() {
+        return cf.bool(Columns.DISPLAY_IN_REPORTS);
     }
 
-    public StringFilterConnector<ProgramRuleCollectionRepository> byCondition() {
-        return cf.string(Columns.CONDITION);
+    public BooleanFilterConnector<ProgramStageDataElementCollectionRepository> byCompulsory() {
+        return cf.bool(Columns.COMPULSORY);
     }
 
-    public StringFilterConnector<ProgramRuleCollectionRepository> byProgramUid() {
-        return cf.string(Columns.PROGRAM);
+    public BooleanFilterConnector<ProgramStageDataElementCollectionRepository> byAllowProvidedElsewhere() {
+        return cf.bool(Columns.ALLOW_PROVIDED_ELSEWHERE);
     }
 
-    public StringFilterConnector<ProgramRuleCollectionRepository> byProgramStageUid() {
+    public IntegerFilterConnector<ProgramStageDataElementCollectionRepository> bySortOrder() {
+        return cf.integer(Columns.SORT_ORDER);
+    }
+
+    public BooleanFilterConnector<ProgramStageDataElementCollectionRepository> byAllowFutureDate() {
+        return cf.bool(Columns.ALLOW_FUTURE_DATE);
+    }
+
+    public StringFilterConnector<ProgramStageDataElementCollectionRepository> byDataElement() {
+        return cf.string(Columns.DATA_ELEMENT);
+    }
+
+    public StringFilterConnector<ProgramStageDataElementCollectionRepository> byProgramStage() {
         return cf.string(Columns.PROGRAM_STAGE);
     }
 
-    public ProgramRuleCollectionRepository withProgramRuleActions() {
-        return cf.withChild(ProgramRuleFields.PROGRAM_RULE_ACTIONS);
+    public ProgramStageDataElementCollectionRepository withRenderType() {
+        return cf.withChild(ProgramStageDataElementFields.RENDER_TYPE);
+    }
+
+    public ProgramStageDataElementCollectionRepository orderBySortOrder(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.SORT_ORDER, direction);
     }
 }

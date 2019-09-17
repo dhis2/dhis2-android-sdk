@@ -39,12 +39,10 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo.Columns;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 
 import java.util.List;
 
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
-import static org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueFields.VALUE;
 
 final class TrackedEntityInstanceLocalQueryHelper {
 
@@ -95,7 +93,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
         }
 
         if (scope.trackedEntityType() != null) {
-            where.appendKeyStringValue(dot(TEI_ALIAS, TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE),
+            where.appendKeyStringValue(dot(TEI_ALIAS, TrackedEntityInstanceTableInfo.Columns.TRACKED_ENTITY_TYPE),
                     scope.trackedEntityType());
         }
 
@@ -194,7 +192,8 @@ final class TrackedEntityInstanceLocalQueryHelper {
                 String sub = String.format("SELECT 1 FROM %s %s WHERE %s = %s AND %s %s '%s'",
                         TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), TEAV_ALIAS,
                         dot(TEAV_ALIAS, TRACKED_ENTITY_INSTANCE), dot(TEI_ALIAS, UID),
-                        dot(TEAV_ALIAS, VALUE), scope.query().operator().getSqlOperator(), valueStr);
+                        dot(TEAV_ALIAS, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
+                        scope.query().operator().getSqlOperator(), valueStr);
                 where.appendExistsSubQuery(sub);
             }
         }
@@ -214,7 +213,8 @@ final class TrackedEntityInstanceLocalQueryHelper {
                     TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), TEAV_ALIAS,
                     dot(TEAV_ALIAS, TRACKED_ENTITY_INSTANCE), dot(TEI_ALIAS, UID),
                     dot(TEAV_ALIAS, TRACKED_ENTITY_ATTRIBUTE), item.key(),
-                    dot(TEAV_ALIAS, VALUE), item.operator().getSqlOperator(), valueStr);
+                    dot(TEAV_ALIAS, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
+                    item.operator().getSqlOperator(), valueStr);
             where.appendExistsSubQuery(sub);
         }
     }

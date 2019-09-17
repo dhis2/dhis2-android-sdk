@@ -44,9 +44,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeFields;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueQuery;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStoreInterface;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
@@ -287,9 +286,9 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     private List<OrganisationUnit> getOrgUnitsLinkedToAttribute(String attribute) {
         List<String> linkedProgramUids = programTrackedEntityAttributeStore.selectStringColumnsWhereClause(
-                ProgramTrackedEntityAttributeFields.PROGRAM,
+                ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM,
                 new WhereClauseBuilder().appendKeyStringValue(
-                        ProgramTrackedEntityAttributeFields.TRACKED_ENTITY_ATTRIBUTE,
+                        ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
                         attribute
                 ).build());
 
@@ -313,7 +312,7 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     private List<TrackedEntityAttribute> getGeneratedAttributes() {
         String whereClause = new WhereClauseBuilder()
-                .appendKeyNumberValue(TrackedEntityAttributeFields.GENERATED, 1).build();
+                .appendKeyNumberValue(TrackedEntityAttributeTableInfo.Columns.GENERATED, 1).build();
         return trackedEntityAttributeStore.selectWhere(whereClause);
     }
 

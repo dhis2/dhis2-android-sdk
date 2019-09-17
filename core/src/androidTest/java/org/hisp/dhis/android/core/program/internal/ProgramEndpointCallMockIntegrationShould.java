@@ -34,7 +34,6 @@ import android.database.Cursor;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;
 import org.hisp.dhis.android.core.legendset.LegendTableInfo;
 import org.hisp.dhis.android.core.program.Program;
@@ -43,6 +42,7 @@ import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo;
 import org.hisp.dhis.android.core.program.ProgramRuleTableInfo;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
+import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityAttributeUtils;
@@ -68,33 +68,33 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
     private static String ACCESS_DATA_WRITE = "accessDataWrite";
     private static String[] PROGRAM_PROJECTION = {
             UID,
-            BaseIdentifiableObjectModel.Columns.CODE,
-            BaseIdentifiableObjectModel.Columns.NAME,
-            BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
-            BaseIdentifiableObjectModel.Columns.CREATED,
-            BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
-            BaseNameableObjectModel.Columns.SHORT_NAME,
-            BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME,
-            BaseNameableObjectModel.Columns.DESCRIPTION,
-            BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION,
-            ProgramFields.VERSION,
-            ProgramFields.ONLY_ENROLL_ONCE,
-            ProgramFields.ENROLLMENT_DATE_LABEL,
-            ProgramFields.DISPLAY_INCIDENT_DATE,
-            ProgramFields.INCIDENT_DATE_LABEL,
-            ProgramFields.REGISTRATION,
-            ProgramFields.SELECT_ENROLLMENT_DATES_IN_FUTURE,
-            ProgramFields.DATA_ENTRY_METHOD,
-            ProgramFields.IGNORE_OVERDUE_EVENTS,
-            ProgramFields.SELECT_INCIDENT_DATES_IN_FUTURE,
-            ProgramFields.USE_FIRST_STAGE_DURING_REGISTRATION,
-            ProgramFields.DISPLAY_FRONT_PAGE_LIST,
-            ProgramFields.PROGRAM_TYPE,
-            ProgramFields.RELATED_PROGRAM,
-            ProgramFields.TRACKED_ENTITY_TYPE,
-            ProgramFields.CATEGORY_COMBO,
+            Columns.CODE,
+            Columns.NAME,
+            Columns.DISPLAY_NAME,
+            Columns.CREATED,
+            Columns.LAST_UPDATED,
+            Columns.SHORT_NAME,
+            Columns.DISPLAY_SHORT_NAME,
+            Columns.DESCRIPTION,
+            Columns.DISPLAY_DESCRIPTION,
+            Columns.VERSION,
+            Columns.ONLY_ENROLL_ONCE,
+            Columns.ENROLLMENT_DATE_LABEL,
+            Columns.DISPLAY_INCIDENT_DATE,
+            Columns.INCIDENT_DATE_LABEL,
+            Columns.REGISTRATION,
+            Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE,
+            Columns.DATA_ENTRY_METHOD,
+            Columns.IGNORE_OVERDUE_EVENTS,
+            Columns.SELECT_INCIDENT_DATES_IN_FUTURE,
+            Columns.USE_FIRST_STAGE_DURING_REGISTRATION,
+            Columns.DISPLAY_FRONT_PAGE_LIST,
+            Columns.PROGRAM_TYPE,
+            Columns.RELATED_PROGRAM,
+            Columns.TRACKED_ENTITY_TYPE,
+            Columns.CATEGORY_COMBO,
             ACCESS_DATA_WRITE,
-            ProgramFields.ACCESS_LEVEL
+            Columns.ACCESS_LEVEL
     };
 
     private static Callable<List<Program>> programEndpointCall;
@@ -182,12 +182,12 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
                 BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
                 BaseIdentifiableObjectModel.Columns.CREATED,
                 BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
-                ProgramRuleVariableFields.USE_CODE_FOR_OPTION_SET,
-                ProgramRuleVariableFields.PROGRAM,
-                ProgramRuleVariableFields.PROGRAM_STAGE,
-                ProgramRuleVariableFields.DATA_ELEMENT,
-                ProgramRuleVariableFields.TRACKED_ENTITY_ATTRIBUTE,
-                ProgramRuleVariableFields.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
+                ProgramRuleVariableTableInfo.Columns.USE_CODE_FOR_OPTION_SET,
+                ProgramRuleVariableTableInfo.Columns.PROGRAM,
+                ProgramRuleVariableTableInfo.Columns.PROGRAM_STAGE,
+                ProgramRuleVariableTableInfo.Columns.DATA_ELEMENT,
+                ProgramRuleVariableTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                ProgramRuleVariableTableInfo.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
         };
 
         Cursor programRuleVariableCursor = database.query(ProgramRuleVariableTableInfo.TABLE_INFO.name(), projection,
@@ -214,21 +214,21 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
         programEndpointCall.call();
         String[] projection = {
                 UID,
-                BaseIdentifiableObjectModel.Columns.CODE,
-                BaseIdentifiableObjectModel.Columns.NAME,
-                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
-                BaseIdentifiableObjectModel.Columns.CREATED,
-                BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
-                BaseNameableObjectModel.Columns.SHORT_NAME,
-                BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME,
-                BaseNameableObjectModel.Columns.DESCRIPTION,
-                BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION,
-                ProgramTrackedEntityAttributeFields.MANDATORY,
-                ProgramTrackedEntityAttributeFields.TRACKED_ENTITY_ATTRIBUTE,
-                ProgramTrackedEntityAttributeFields.ALLOW_FUTURE_DATE,
-                ProgramTrackedEntityAttributeFields.DISPLAY_IN_LIST,
-                ProgramTrackedEntityAttributeFields.PROGRAM,
-                ProgramTrackedEntityAttributeFields.SORT_ORDER
+                ProgramTrackedEntityAttributeTableInfo.Columns.CODE,
+                ProgramTrackedEntityAttributeTableInfo.Columns.NAME,
+                ProgramTrackedEntityAttributeTableInfo.Columns.DISPLAY_NAME,
+                ProgramTrackedEntityAttributeTableInfo.Columns.CREATED,
+                ProgramTrackedEntityAttributeTableInfo.Columns.LAST_UPDATED,
+                ProgramTrackedEntityAttributeTableInfo.Columns.SHORT_NAME,
+                ProgramTrackedEntityAttributeTableInfo.Columns.DISPLAY_SHORT_NAME,
+                ProgramTrackedEntityAttributeTableInfo.Columns.DESCRIPTION,
+                ProgramTrackedEntityAttributeTableInfo.Columns.DISPLAY_DESCRIPTION,
+                ProgramTrackedEntityAttributeTableInfo.Columns.MANDATORY,
+                ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                ProgramTrackedEntityAttributeTableInfo.Columns.ALLOW_FUTURE_DATE,
+                ProgramTrackedEntityAttributeTableInfo.Columns.DISPLAY_IN_LIST,
+                ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM,
+                ProgramTrackedEntityAttributeTableInfo.Columns.SORT_ORDER
         };
 
         Cursor programTrackedEntityAttributeCursor = database.query(
@@ -341,10 +341,10 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
                 BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
                 BaseIdentifiableObjectModel.Columns.CREATED,
                 BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
-                ProgramRuleFields.PRIORITY,
-                ProgramRuleFields.CONDITION,
-                ProgramRuleFields.PROGRAM,
-                ProgramRuleFields.PROGRAM_STAGE
+                ProgramRuleTableInfo.Columns.PRIORITY,
+                ProgramRuleTableInfo.Columns.CONDITION,
+                ProgramRuleTableInfo.Columns.PROGRAM,
+                ProgramRuleTableInfo.Columns.PROGRAM_STAGE
         };
 
         Cursor programRuleCursor = database.query(ProgramRuleTableInfo.TABLE_INFO.name(), projection,
@@ -375,16 +375,16 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
                 ProgramRuleActionTableInfo.Columns.DISPLAY_NAME,
                 ProgramRuleActionTableInfo.Columns.CREATED,
                 ProgramRuleActionTableInfo.Columns.LAST_UPDATED,
-                ProgramRuleActionFields.DATA,
-                ProgramRuleActionFields.CONTENT,
-                ProgramRuleActionFields.LOCATION,
-                ProgramRuleActionFields.TRACKED_ENTITY_ATTRIBUTE,
-                ProgramRuleActionFields.PROGRAM_INDICATOR,
-                ProgramRuleActionFields.PROGRAM_STAGE_SECTION,
-                ProgramRuleActionFields.PROGRAM_RULE_ACTION_TYPE,
-                ProgramRuleActionFields.PROGRAM_STAGE,
-                ProgramRuleActionFields.DATA_ELEMENT,
-                ProgramRuleActionFields.PROGRAM_RULE
+                ProgramRuleActionTableInfo.Columns.DATA,
+                ProgramRuleActionTableInfo.Columns.CONTENT,
+                ProgramRuleActionTableInfo.Columns.LOCATION,
+                ProgramRuleActionTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                ProgramRuleActionTableInfo.Columns.PROGRAM_INDICATOR,
+                ProgramRuleActionTableInfo.Columns.PROGRAM_STAGE_SECTION,
+                ProgramRuleActionTableInfo.Columns.PROGRAM_RULE_ACTION_TYPE,
+                ProgramRuleActionTableInfo.Columns.PROGRAM_STAGE,
+                ProgramRuleActionTableInfo.Columns.DATA_ELEMENT,
+                ProgramRuleActionTableInfo.Columns.PROGRAM_RULE
         };
 
         Cursor programRuleActionCursor = database.query(ProgramRuleActionTableInfo.TABLE_INFO.name(), projection,

@@ -64,7 +64,7 @@ public final class ProgramRuleEntityDIModule {
     @Reusable
     public OrphanCleaner<ProgramRule, ProgramRuleAction> actionCleaner(DatabaseAdapter databaseAdapter) {
         return new OrphanCleanerImpl<>(ProgramRuleActionTableInfo.TABLE_INFO.name(),
-                ProgramRuleActionFields.PROGRAM_RULE, databaseAdapter);
+                ProgramRuleActionTableInfo.Columns.PROGRAM_RULE, databaseAdapter);
     }
 
     @Provides

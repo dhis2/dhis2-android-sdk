@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleChildre
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
+import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -85,9 +86,9 @@ public final class ProgramEntityDIModule {
             put(ProgramFields.PROGRAM_TRACKED_ENTITY_ATTRIBUTES,
                     ProgramTrackedEntityAttributeChildrenAppender.create(databaseAdapter));
             put(ProgramFields.PROGRAM_SECTIONS, ProgramSectionChildrenAppender.create(databaseAdapter));
-            put(ProgramFields.CATEGORY_COMBO, categoryComboChildrenAppender);
-            put(ProgramFields.RELATED_PROGRAM, relatedProgramChildrenAppender);
-            put(ProgramFields.TRACKED_ENTITY_TYPE, trackedEntityTypeChildrenAppender);
+            put(Columns.CATEGORY_COMBO, categoryComboChildrenAppender);
+            put(Columns.RELATED_PROGRAM, relatedProgramChildrenAppender);
+            put(Columns.TRACKED_ENTITY_TYPE, trackedEntityTypeChildrenAppender);
         }};
     }
 

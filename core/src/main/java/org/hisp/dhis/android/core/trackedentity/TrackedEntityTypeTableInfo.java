@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeFields;
 
 public final class TrackedEntityTypeTableInfo {
 
@@ -53,11 +52,12 @@ public final class TrackedEntityTypeTableInfo {
     };
 
     public static class Columns extends BaseNameableObjectModel.Columns {
+        public final static String FEATURE_TYPE = "featureType";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    TrackedEntityTypeFields.FEATURE_TYPE
+                    FEATURE_TYPE
             );
         }
     }

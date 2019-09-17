@@ -33,28 +33,24 @@ import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
 import org.hisp.dhis.android.core.program.ProgramSection;
+import org.hisp.dhis.android.core.program.ProgramSectionTableInfo.Columns;
 
 public final class ProgramSectionFields {
 
-    public static final String DESCRIPTION = "description";
-    public static final String PROGRAM = "program";
     public static final String ATTRIBUTES = "programTrackedEntityAttribute";
-    public static final String SORT_ORDER = "sortOrder";
     public static final String STYLE = "style";
-    public static final String FORM_NAME = "formName";
 
     private static FieldsHelper<ProgramSection> fh = new FieldsHelper<>();
 
-    static final Fields<ProgramSection> allFields = Fields.<ProgramSection>builder()
+    public static final Fields<ProgramSection> allFields = Fields.<ProgramSection>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<String>field(DESCRIPTION),
-                    fh.nestedFieldWithUid(PROGRAM),
+                    fh.<String>field(Columns.DESCRIPTION),
+                    fh.nestedFieldWithUid(Columns.PROGRAM),
                     fh.nestedFieldWithUid(ATTRIBUTES),
-                    fh.<String>field(SORT_ORDER),
-                    fh.<String>field(DESCRIPTION),
+                    fh.<String>field(Columns.SORT_ORDER),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
-                    fh.<String>field(FORM_NAME)
+                    fh.<String>field(Columns.FORM_NAME)
             ).build();
 
     private ProgramSectionFields() {

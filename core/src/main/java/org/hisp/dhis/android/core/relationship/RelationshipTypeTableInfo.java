@@ -52,7 +52,7 @@ public final class RelationshipTypeTableInfo {
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
 
         public static final String FROM_TO_NAME = RelationshipTypeFields.FROM_TO_NAME;
         public static final String TO_FROM_NAME = RelationshipTypeFields.TO_FROM_NAME;

@@ -31,24 +31,22 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo.Columns;
 
 import java.util.Date;
 
 public final class TrackedEntityAttributeValueFields {
 
     public static final String ATTRIBUTE = "attribute";
-    public static final String VALUE = "value";
-    public final static String CREATED = "created";
-    public final static String LAST_UPDATED = "lastUpdated";
 
     private static final FieldsHelper<TrackedEntityAttributeValue> fh = new FieldsHelper<>();
 
     static final Fields<TrackedEntityAttributeValue> allFields = Fields.<TrackedEntityAttributeValue>builder()
             .fields(
                     fh.<String>field(ATTRIBUTE),
-                    fh.<String>field(VALUE),
-                    fh.<Date>field(CREATED),
-                    fh.<Date>field(LAST_UPDATED)
+                    fh.<String>field(Columns.VALUE),
+                    fh.<Date>field(Columns.CREATED),
+                    fh.<Date>field(Columns.LAST_UPDATED)
             ).build();
 
     private TrackedEntityAttributeValueFields() {

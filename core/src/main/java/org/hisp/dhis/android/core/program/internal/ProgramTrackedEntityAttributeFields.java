@@ -32,16 +32,9 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo.Columns;
 
 public final class ProgramTrackedEntityAttributeFields {
-
-    public static final String MANDATORY = "mandatory";
-    public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
-    public static final String ALLOW_FUTURE_DATE = "allowFutureDate";
-    public static final String DISPLAY_IN_LIST = "displayInList";
-    public static final String PROGRAM = "program";
-    public static final String SORT_ORDER = "sortOrder";
-    public static final String SEARCHABLE = "searchable";
     private static final String RENDER_TYPE = "renderType";
 
     private static FieldsHelper<ProgramTrackedEntityAttribute> fh = new FieldsHelper<>();
@@ -50,13 +43,13 @@ public final class ProgramTrackedEntityAttributeFields {
             = Fields.<ProgramTrackedEntityAttribute>builder()
             .fields(fh.getNameableFields())
             .fields(
-                    fh.<String>field(MANDATORY),
-                    fh.nestedFieldWithUid(PROGRAM),
-                    fh.<Boolean>field(ALLOW_FUTURE_DATE),
-                    fh.<Boolean>field(DISPLAY_IN_LIST),
-                    fh.<Integer>field(SORT_ORDER),
-                    fh.<Boolean>field(SEARCHABLE),
-                    fh.nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTE),
+                    fh.<String>field(Columns.MANDATORY),
+                    fh.nestedFieldWithUid(Columns.PROGRAM),
+                    fh.<Boolean>field(Columns.ALLOW_FUTURE_DATE),
+                    fh.<Boolean>field(Columns.DISPLAY_IN_LIST),
+                    fh.<Integer>field(Columns.SORT_ORDER),
+                    fh.<Boolean>field(Columns.SEARCHABLE),
+                    fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_ATTRIBUTE),
                     fh.<ValueTypeRendering>field(RENDER_TYPE)
                     ).build();
 

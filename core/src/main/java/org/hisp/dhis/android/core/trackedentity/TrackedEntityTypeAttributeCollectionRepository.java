@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttributeFields;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeTableInfo.Columns;
 
 import java.util.Map;
 
@@ -58,23 +58,23 @@ public final class TrackedEntityTypeAttributeCollectionRepository
     }
 
     public StringFilterConnector<TrackedEntityTypeAttributeCollectionRepository> byTrackedEntityTypeUid() {
-        return cf.string(TrackedEntityTypeAttributeFields.TRACKED_ENTITY_TYPE);
+        return cf.string(Columns.TRACKED_ENTITY_TYPE);
     }
 
     public StringFilterConnector<TrackedEntityTypeAttributeCollectionRepository> byTrackedEntityAttributeUid() {
-        return cf.string(TrackedEntityTypeAttributeFields.TRACKED_ENTITY_ATTRIBUTE);
+        return cf.string(Columns.TRACKED_ENTITY_ATTRIBUTE);
     }
 
     public BooleanFilterConnector<TrackedEntityTypeAttributeCollectionRepository> byDisplayInList() {
-        return cf.bool(TrackedEntityTypeAttributeFields.DISPLAY_IN_LIST);
+        return cf.bool(Columns.DISPLAY_IN_LIST);
     }
 
     public BooleanFilterConnector<TrackedEntityTypeAttributeCollectionRepository> byMandatory() {
-        return cf.bool(TrackedEntityTypeAttributeFields.MANDATORY);
+        return cf.bool(Columns.MANDATORY);
     }
 
     public BooleanFilterConnector<TrackedEntityTypeAttributeCollectionRepository> bySearchable() {
-        return cf.bool(TrackedEntityTypeAttributeFields.SEARCHABLE);
+        return cf.bool(Columns.SEARCHABLE);
     }
 
     public IntegerFilterConnector<TrackedEntityTypeAttributeCollectionRepository> bySortOrder() {

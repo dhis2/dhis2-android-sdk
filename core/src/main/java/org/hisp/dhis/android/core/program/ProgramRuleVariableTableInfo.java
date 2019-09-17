@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.program.internal.ProgramRuleVariableFields;
 
 public final class ProgramRuleVariableTableInfo {
 
@@ -52,16 +51,23 @@ public final class ProgramRuleVariableTableInfo {
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String USE_CODE_FOR_OPTION_SET = "useCodeForOptionSet";
+        public static final String PROGRAM = "program";
+        public static final String PROGRAM_STAGE = "programStage";
+        public static final String DATA_ELEMENT = "dataElement";
+        public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+        public static final String PROGRAM_RULE_VARIABLE_SOURCE_TYPE = "programRuleVariableSourceType";
+
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    ProgramRuleVariableFields.USE_CODE_FOR_OPTION_SET,
-                    ProgramRuleVariableFields.PROGRAM,
-                    ProgramRuleVariableFields.PROGRAM_STAGE,
-                    ProgramRuleVariableFields.DATA_ELEMENT,
-                    ProgramRuleVariableFields.TRACKED_ENTITY_ATTRIBUTE,
-                    ProgramRuleVariableFields.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
+                    USE_CODE_FOR_OPTION_SET,
+                    PROGRAM,
+                    PROGRAM_STAGE,
+                    DATA_ELEMENT,
+                    TRACKED_ENTITY_ATTRIBUTE,
+                    PROGRAM_RULE_VARIABLE_SOURCE_TYPE
             );
         }
     }

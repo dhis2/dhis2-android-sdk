@@ -40,7 +40,7 @@ final class ProgramStageDataElementChildrenAppender extends ChildrenAppender<Pro
 
     private static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
             ProgramStageDataElementTableInfo.TABLE_INFO,
-            ProgramStageDataElementFields.PROGRAM_STAGE);
+            ProgramStageDataElementTableInfo.Columns.PROGRAM_STAGE);
 
     private final SingleParentChildStore<ProgramStage, ProgramStageDataElement> childStore;
 

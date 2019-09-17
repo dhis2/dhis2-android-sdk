@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeTableInfo;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeTableInfo.Columns;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
@@ -52,7 +53,7 @@ final class TrackedEntityTypeAttributeStore {
     };
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            TrackedEntityTypeAttributeTableInfo.TABLE_INFO, TrackedEntityTypeAttributeFields.TRACKED_ENTITY_TYPE);
+            TrackedEntityTypeAttributeTableInfo.TABLE_INFO, Columns.TRACKED_ENTITY_TYPE);
 
     private TrackedEntityTypeAttributeStore() {}
 
@@ -60,7 +61,7 @@ final class TrackedEntityTypeAttributeStore {
         return StoreFactory.linkModelStore(
                 databaseAdapter,
                 TrackedEntityTypeAttributeTableInfo.TABLE_INFO,
-                TrackedEntityTypeAttributeFields.TRACKED_ENTITY_TYPE,
+                Columns.TRACKED_ENTITY_TYPE,
                 BINDER,
                 TrackedEntityTypeAttribute::create);
     }

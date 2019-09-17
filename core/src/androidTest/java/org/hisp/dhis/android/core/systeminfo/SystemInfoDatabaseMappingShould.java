@@ -72,10 +72,10 @@ public class SystemInfoDatabaseMappingShould {
     public void map_object_to_content_values() {
         ContentValues contentValues = systemInfo.toContentValues();
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(systemInfo.id());
-        assertThat(contentValues.getAsString(SystemInfoFields.SERVER_DATE)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(SystemInfoFields.DATE_FORMAT)).isEqualTo(systemInfo.dateFormat());
-        assertThat(contentValues.getAsString(SystemInfoFields.CONTEXT_PATH)).isEqualTo(systemInfo.contextPath());
-        assertThat(contentValues.getAsString(SystemInfoFields.VERSION)).isEqualTo(systemInfo.version());
-        assertThat(contentValues.getAsString(SystemInfoFields.SYSTEM_NAME)).isEqualTo(systemInfo.systemName());
+        assertThat(contentValues.getAsString(Columns.SERVER_DATE)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(Columns.DATE_FORMAT)).isEqualTo(systemInfo.dateFormat());
+        assertThat(contentValues.getAsString(Columns.CONTEXT_PATH)).isEqualTo(systemInfo.contextPath());
+        assertThat(contentValues.getAsString(Columns.VERSION)).isEqualTo(systemInfo.version());
+        assertThat(contentValues.getAsString(Columns.SYSTEM_NAME)).isEqualTo(systemInfo.systemName());
     }
 }

@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueFields;
 
 public final class TrackedEntityDataValueTableInfo {
 
@@ -53,17 +52,23 @@ public final class TrackedEntityDataValueTableInfo {
 
     public static class Columns extends BaseModel.Columns {
         public static final String EVENT = "event";
+        public final static String DATA_ELEMENT = "dataElement";
+        public final static String STORED_BY = "storedBy";
+        public final static String VALUE = "value";
+        public final static String CREATED = "created";
+        public final static String LAST_UPDATED = "lastUpdated";
+        public final static String PROVIDED_ELSEWHERE = "providedElsewhere";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
                     EVENT,
-                    TrackedEntityDataValueFields.CREATED,
-                    TrackedEntityDataValueFields.LAST_UPDATED,
-                    TrackedEntityDataValueFields.DATA_ELEMENT,
-                    TrackedEntityDataValueFields.STORED_BY,
-                    TrackedEntityDataValueFields.VALUE,
-                    TrackedEntityDataValueFields.PROVIDED_ELSEWHERE
+                    CREATED,
+                    LAST_UPDATED,
+                    DATA_ELEMENT,
+                    STORED_BY,
+                    VALUE,
+                    PROVIDED_ELSEWHERE
             );
         }
 
@@ -71,7 +76,7 @@ public final class TrackedEntityDataValueTableInfo {
         public String[] whereUpdate() {
             return CollectionsHelper.appendInNewArray(super.all(),
                     EVENT,
-                    TrackedEntityDataValueFields.DATA_ELEMENT
+                    DATA_ELEMENT
             );
         }
     }

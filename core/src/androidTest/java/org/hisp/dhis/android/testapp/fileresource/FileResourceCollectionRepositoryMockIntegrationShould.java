@@ -88,7 +88,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
         String fileUid = d2.fileResourceModule().fileResources.blockingAdd(getFile());
         List<FileResource> fileResources =
                 d2.fileResourceModule().fileResources
-                        .byName().eq(fileUid)
+                        .byName().eq(fileUid+ ".png")
                         .blockingGet();
 
         assertThat(fileResources.size(), is(1));
@@ -117,7 +117,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
                         .byContentType().eq("image/png")
                         .blockingGet();
 
-        assertThat(fileResources.size(), is(0));
+        assertThat(fileResources.size(), is(1));
     }
 
     @Test
@@ -173,14 +173,14 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
         FileResource fileResource = d2.fileResourceModule().fileResources.uid(fileResourceUid).blockingGet();
         assertThat(fileResource.uid(), is(fileResourceUid));
 
-        File savedFile = new File(fileResource.path(), fileResource.uid());
+        File savedFile = new File(fileResource.path(), fileResource.uid() + ".png");
         assertThat(savedFile.exists(), is(true));
     }
 
     private File getFile() {
         InputStream inputStream = new RandomGeneratedInputStream(1024);
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        File destinationFile = new File(FileResourceUtil.getFileResourceDirectory(context), "file1");
+        File destinationFile = new File(FileResourceUtil.getFileResourceDirectory(context), "file1.png");
         return FileResourceUtil.writeInputStream(inputStream, destinationFile, 1024);
     }
 

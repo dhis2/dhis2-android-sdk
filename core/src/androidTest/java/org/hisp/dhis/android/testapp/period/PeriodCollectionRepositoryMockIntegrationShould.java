@@ -48,7 +48,7 @@ public class PeriodCollectionRepositoryMockIntegrationShould extends BaseMockInt
     @Test
     public void find_all() {
         List<Period> periods = d2.periodModule().periods.blockingGet();
-        assertThat(periods.size(), is(199));
+        assertThat(periods.size(), is(191));
     }
 
     @Test
@@ -64,7 +64,7 @@ public class PeriodCollectionRepositoryMockIntegrationShould extends BaseMockInt
         List<Period> periods = d2.periodModule().periods
                 .byPeriodType()
                 .eq(PeriodType.Quarterly).blockingGet();
-        assertThat(periods.size(), is(6));
+        assertThat(periods.size(), is(5));
     }
 
     @Test

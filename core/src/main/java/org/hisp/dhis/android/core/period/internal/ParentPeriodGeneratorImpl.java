@@ -111,9 +111,7 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
     public List<Period> generatePeriods(PeriodType periodType, int futurePeriods) {
         if (periodType == PeriodType.Daily) {
             return daily.generatePeriods(Past.DAILY_PERIODS, futurePeriods);
-        }
-
-        else if (periodType == PeriodType.Weekly) {
+        } else if (periodType == PeriodType.Weekly) {
             return weekly.weekly.generatePeriods(Past.WEEKLY_PERIODS, futurePeriods);
         } else if (periodType == PeriodType.WeeklyWednesday) {
             return weekly.weeklyWednesday.generatePeriods(Past.WEEKLY_PERIODS, futurePeriods);
@@ -123,17 +121,11 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
             return weekly.weeklySaturday.generatePeriods(Past.WEEKLY_PERIODS, futurePeriods);
         } else if (periodType == PeriodType.WeeklySunday) {
             return weekly.weeklySunday.generatePeriods(Past.WEEKLY_PERIODS, futurePeriods);
-        }
-
-        else if (periodType == PeriodType.BiWeekly) {
+        } else if (periodType == PeriodType.BiWeekly) {
             return biWeekly.generatePeriods(Past.BIWEEKLY_PERIODS, futurePeriods);
-        }
-
-        else if (periodType == PeriodType.Monthly) {
+        } else if (periodType == PeriodType.Monthly) {
             return monthly.generatePeriods(Past.MONTHLY_PERIODS, futurePeriods);
-        }
-
-        else if (periodType == PeriodType.BiMonthly) {
+        } else if (periodType == PeriodType.BiMonthly) {
             return nMonthly.biMonthly.generatePeriods(Past.BIMONTHLY_PERIODS, futurePeriods);
         } else if (periodType == PeriodType.Quarterly) {
             return nMonthly.quarter.generatePeriods(Past.QUARTER_PERIODS, futurePeriods);
@@ -141,9 +133,7 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
             return nMonthly.sixMonthly.generatePeriods(Past.SIXMONTHLY_PERIODS, futurePeriods);
         } else if (periodType == PeriodType.SixMonthlyApril) {
             return nMonthly.sixMonthlyApril.generatePeriods(Past.SIXMONTHLY_PERIODS, futurePeriods);
-        }
-
-        else if (periodType == PeriodType.Yearly) {
+        } else if (periodType == PeriodType.Yearly) {
             return yearly.yearly.generatePeriods(Past.YEARLY_PERIODS, futurePeriods);
         } else if (periodType == PeriodType.FinancialApril) {
             return yearly.financialApril.generatePeriods(Past.YEARLY_PERIODS, futurePeriods);
@@ -151,9 +141,7 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
             return yearly.financialJuly.generatePeriods(Past.YEARLY_PERIODS, futurePeriods);
         } else if (periodType == PeriodType.FinancialOct) {
             return yearly.financialOct.generatePeriods(Past.YEARLY_PERIODS, futurePeriods);
-        }
-
-        else {
+        } else {
             return Collections.emptyList();
         }
     }

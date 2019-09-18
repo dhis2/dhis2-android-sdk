@@ -29,9 +29,11 @@
 package org.hisp.dhis.android.core.period.internal;
 
 import org.hisp.dhis.android.core.period.Period;
+import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
@@ -104,6 +106,56 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
         periods.addAll(yearly.financialOct.generatePeriods(Past.YEARLY_PERIODS, Future.YEARLY_PERIODS));
 
         return periods;
+    }
+
+    public List<Period> generatePeriods(PeriodType periodType, int futurePeriods) {
+        if (periodType == PeriodType.Daily) {
+            return daily.generatePeriods(Past.DAILY_PERIODS, futurePeriods);
+        }
+
+        else if (periodType == PeriodType.Weekly) {
+            return weekly.weekly.generatePeriods(Past.WEEKLY_PERIODS, futurePeriods);
+        } else if (periodType == PeriodType.WeeklyWednesday) {
+            return weekly.weeklyWednesday.generatePeriods(Past.WEEKLY_PERIODS, futurePeriods);
+        } else if (periodType == PeriodType.WeeklyThursday) {
+            return weekly.weeklyThursday.generatePeriods(Past.WEEKLY_PERIODS, futurePeriods);
+        } else if (periodType == PeriodType.WeeklySaturday) {
+            return weekly.weeklySaturday.generatePeriods(Past.WEEKLY_PERIODS, futurePeriods);
+        } else if (periodType == PeriodType.WeeklySunday) {
+            return weekly.weeklySunday.generatePeriods(Past.WEEKLY_PERIODS, futurePeriods);
+        }
+
+        else if (periodType == PeriodType.BiWeekly) {
+            return biWeekly.generatePeriods(Past.BIWEEKLY_PERIODS, futurePeriods);
+        }
+
+        else if (periodType == PeriodType.Monthly) {
+            return monthly.generatePeriods(Past.MONTHLY_PERIODS, futurePeriods);
+        }
+
+        else if (periodType == PeriodType.BiMonthly) {
+            return nMonthly.biMonthly.generatePeriods(Past.BIMONTHLY_PERIODS, futurePeriods);
+        } else if (periodType == PeriodType.Quarterly) {
+            return nMonthly.quarter.generatePeriods(Past.QUARTER_PERIODS, futurePeriods);
+        } else if (periodType == PeriodType.SixMonthly) {
+            return nMonthly.sixMonthly.generatePeriods(Past.SIXMONTHLY_PERIODS, futurePeriods);
+        } else if (periodType == PeriodType.SixMonthlyApril) {
+            return nMonthly.sixMonthlyApril.generatePeriods(Past.SIXMONTHLY_PERIODS, futurePeriods);
+        }
+
+        else if (periodType == PeriodType.Yearly) {
+            return yearly.yearly.generatePeriods(Past.YEARLY_PERIODS, futurePeriods);
+        } else if (periodType == PeriodType.FinancialApril) {
+            return yearly.financialApril.generatePeriods(Past.YEARLY_PERIODS, futurePeriods);
+        } else if (periodType == PeriodType.FinancialJuly) {
+            return yearly.financialJuly.generatePeriods(Past.YEARLY_PERIODS, futurePeriods);
+        } else if (periodType == PeriodType.FinancialOct) {
+            return yearly.financialOct.generatePeriods(Past.YEARLY_PERIODS, futurePeriods);
+        }
+
+        else {
+            return Collections.emptyList();
+        }
     }
 
     static ParentPeriodGeneratorImpl create() {

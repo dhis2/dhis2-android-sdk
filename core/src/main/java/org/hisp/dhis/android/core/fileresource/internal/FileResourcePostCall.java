@@ -120,7 +120,7 @@ public final class FileResourcePostCall {
     }
 
     private File getRelatedFile(FileResource fileResource) throws D2Error {
-        return FileResourceUtil.getFile(context, fileResource.uid());
+        return FileResourceUtil.getFile(context, fileResource);
     }
 
     private MultipartBody.Part getFilePart(File file) {

@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.fileresource.internal;
 import android.content.Context;
 import android.util.Log;
 
+import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -13,7 +14,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLConnection;
 
+import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 
 public final class FileResourceUtil {
@@ -21,8 +24,9 @@ public final class FileResourceUtil {
     private FileResourceUtil() {
     }
 
-    static File getFile(Context context, String fileResourceUid) throws D2Error {
-        File file = new File(getFileResourceDirectory(context), fileResourceUid);
+    static File getFile(Context context, FileResource fileResource) throws D2Error {
+        File file = new File(getFileResourceDirectory(context),
+                generateFileName(MediaType.get(fileResource.contentType()), fileResource.uid()));
 
         if (file.exists()) {
             return file;
@@ -44,24 +48,29 @@ public final class FileResourceUtil {
     }
 
     static void renameFile(File file, String newFileName, Context context) {
-        File newFile = new File(context.getFilesDir(), "sdk_resources/" + newFileName);
+        String contentType = URLConnection.guessContentTypeFromName(file.getName());
+        String generatedName = generateFileName(MediaType.get(contentType), newFileName);
+        File newFile = new File(context.getFilesDir(), "sdk_resources/" + generatedName);
 
         if (!file.renameTo(newFile)) {
             Log.d(FileResourceUtil.class.getCanonicalName(),
-                    "Fail renaming " + file.getName() + " to " + newFileName);
+                    "Fail renaming " + file.getName() + " to " + generatedName);
         }
     }
 
     public static File saveFile(File sourceFile, String fileResourceUid, Context context) throws IOException {
         InputStream inputStream = new FileInputStream(sourceFile);
 
-        File destinationFile = new File(getFileResourceDirectory(context), fileResourceUid);
+        String contentType = URLConnection.guessContentTypeFromName(sourceFile.getName());
+        String generatedName = generateFileName(MediaType.get(contentType), fileResourceUid);
+        File destinationFile = new File(getFileResourceDirectory(context), generatedName);
 
         return writeInputStream(inputStream, destinationFile, sourceFile.length());
     }
 
     static void saveFileFromResponse(ResponseBody body, String generatedFileName, Context context) {
-        File destinationFile = new File(FileResourceUtil.getFileResourceDirectory(context), generatedFileName);
+        File destinationFile = new File(FileResourceUtil.getFileResourceDirectory(context),
+                generateFileName(body.contentType(), generatedFileName));
 
         writeInputStream(body.byteStream(), destinationFile, body.contentLength());
     }
@@ -116,5 +125,9 @@ public final class FileResourceUtil {
         }
 
         return file;
+    }
+
+    static String generateFileName(MediaType mediaType, String fileName) {
+        return String.format("%s.%s", fileName, mediaType.subtype());
     }
 }

@@ -108,6 +108,11 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
         return periods;
     }
 
+    @SuppressWarnings({
+            "PMD.CyclomaticComplexity",
+            "PMD.ModifiedCyclomaticComplexity",
+            "PMD.StdCyclomaticComplexity"
+    })
     public List<Period> generatePeriods(PeriodType periodType, int futurePeriods) {
         if (periodType == PeriodType.Daily) {
             return daily.generatePeriods(Past.DAILY_PERIODS, futurePeriods);

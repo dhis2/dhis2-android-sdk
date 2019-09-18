@@ -53,6 +53,8 @@ public class BiWeeklyPeriodGeneratorShould {
         calendar.set(2018, 2, 8);
         Period period = generateExpectedPeriod("2018BiW5", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
 
+        calendar.set(2018, 2, 22);
+
         List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generatePeriods(1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
@@ -64,6 +66,7 @@ public class BiWeeklyPeriodGeneratorShould {
         Period period1 = generateExpectedPeriod("2018BiW5", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
         calendar.set(2018, 2, 15);
         Period period2 = generateExpectedPeriod("2018BiW6", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
+        calendar.set(2018, 2, 29);
 
         List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generatePeriods(2, 0);
 
@@ -78,6 +81,7 @@ public class BiWeeklyPeriodGeneratorShould {
         Period period2 = generateExpectedPeriod("2017BiW1", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
         calendar.set(2017, 0, 18);
         Period period3 = generateExpectedPeriod("2017BiW2", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
+        calendar.set(2017, 1, 1);
 
         List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generatePeriods(3, 0);
 
@@ -88,9 +92,11 @@ public class BiWeeklyPeriodGeneratorShould {
     public void generate_the_first_bi_week_including_january_4() {
         calendar.set(2018, 0, 4);
 
-        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generatePeriods(1, 0);
-
         Period period = generateExpectedPeriod("2018BiW1", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
+
+        calendar.set(2018, 0, 22);
+
+        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generatePeriods(1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }

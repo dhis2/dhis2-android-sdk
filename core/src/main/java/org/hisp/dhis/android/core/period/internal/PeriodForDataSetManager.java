@@ -54,10 +54,11 @@ public class PeriodForDataSetManager {
         this.periodStore = periodStore;
     }
 
-    public Single<List<Period>> getPeriodsForDataSet(String dataSetUid) {
+    Single<List<Period>> getPeriodsForDataSet(String dataSetUid) {
         return dataSetCollectionRepository.uid(dataSetUid).get().map(dataSet -> {
-            List<Period> periods = parentPeriodGenerator.generatePeriods(dataSet.periodType(),
-                    dataSet.openFuturePeriods());
+            Integer dataSetFuturePeriods = dataSet.openFuturePeriods();
+            int futurePeriods = dataSetFuturePeriods == null ? 0 : dataSetFuturePeriods;
+            List<Period> periods = parentPeriodGenerator.generatePeriods(dataSet.periodType(), futurePeriods);
             for (Period period: periods) {
                 periodStore.updateOrInsertWhere(period);
             }

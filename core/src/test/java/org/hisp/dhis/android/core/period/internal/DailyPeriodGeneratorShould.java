@@ -50,6 +50,7 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
     public void generate_daily_periods_for_one_day() {
         calendar.set(2018, 1, 1);
         Period period = generateExpectedPeriod("20180201", calendar);
+        calendar.set(2018, 1, 2);
 
         List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generatePeriods(1, 0);
 
@@ -62,6 +63,7 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         Period period1 = generateExpectedPeriod("20180304", calendar);
         calendar.set(2018, 2, 5);
         Period period2 = generateExpectedPeriod("20180305", calendar);
+        calendar.set(2018, 2, 6);
 
         List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generatePeriods(2, 0);
         List<Period> expectedPeriods = Lists.newArrayList(period1, period2);
@@ -77,6 +79,7 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         Period period2 = generateExpectedPeriod("20180101", calendar);
         calendar.set(2018, 0, 2);
         Period period3 = generateExpectedPeriod("20180102", calendar);
+        calendar.set(2018, 0, 3);
 
         List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generatePeriods(3, 0);
         List<Period> expectedPeriods = Lists.newArrayList(period1, period2, period3);

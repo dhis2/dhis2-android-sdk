@@ -46,12 +46,6 @@ import static org.hamcrest.core.Is.is;
 public class PeriodCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
-    public void find_all() {
-        List<Period> periods = d2.periodModule().periods.blockingGet();
-        assertThat(periods.size(), is(191));
-    }
-
-    @Test
     public void filter_by_period_id() {
         List<Period> periods = d2.periodModule().periods
                 .byPeriodId()

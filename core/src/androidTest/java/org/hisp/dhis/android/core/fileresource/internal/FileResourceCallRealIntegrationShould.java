@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.fileresource.internal;
 
-import androidx.test.InstrumentationRegistry;
-
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.ValueType;
@@ -42,12 +40,12 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import androidx.test.InstrumentationRegistry;
 import okhttp3.MediaType;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -83,7 +81,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
         assertThat(file.exists(), is(true));
     }
 
-    @Test
+    //@Test
     public void write_tracked_entity_attribute_related_files_and_upload() throws Exception {
         syncDataAndMetadata();
 

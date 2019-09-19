@@ -25,39 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
-import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingTableInfo;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
+import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 
-abstract class ValueTypeRenderingChildrenAppender<M extends ObjectWithUidInterface> extends ChildrenAppender<M> {
+import javax.inject.Inject;
 
-    private final ObjectWithoutUidStore<ValueTypeDeviceRendering> store;
+import dagger.Reusable;
 
-    ValueTypeRenderingChildrenAppender(ObjectWithoutUidStore<ValueTypeDeviceRendering> store) {
-        this.store = store;
+@Reusable
+final class DataElementValueTypeRenderingChildrenAppender
+        extends ValueTypeRenderingChildrenAppender<ProgramStageDataElement> {
+
+    @Inject
+    DataElementValueTypeRenderingChildrenAppender(ObjectWithoutUidStore<ValueTypeDeviceRendering> store) {
+        super(store);
     }
 
-    ValueTypeRendering getValueTypeDeviceRendering(M model) {
-        String desktopWhereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(BaseIdentifiableObjectModel.Columns.UID, model.uid())
-                .appendKeyStringValue(ValueTypeDeviceRenderingTableInfo.Columns.DEVICE_TYPE, ValueTypeRendering.DESKTOP)
-                .build();
-        ValueTypeDeviceRendering desktop = store.selectOneWhere(desktopWhereClause);
+    @Override
+    protected ProgramStageDataElement appendChildren(ProgramStageDataElement programStageDataElement) {
+        ValueTypeRendering valueTypeRendering = getValueTypeDeviceRendering(programStageDataElement);
 
-        String mobileWhereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(BaseIdentifiableObjectModel.Columns.UID, model.uid())
-                .appendKeyStringValue(ValueTypeDeviceRenderingTableInfo.Columns.DEVICE_TYPE, ValueTypeRendering.MOBILE)
-                .build();
-        ValueTypeDeviceRendering mobile = store.selectOneWhere(mobileWhereClause);
-
-        return ValueTypeRendering.create(desktop, mobile);
+        return programStageDataElement.toBuilder().renderType(valueTypeRendering).build();
     }
 }

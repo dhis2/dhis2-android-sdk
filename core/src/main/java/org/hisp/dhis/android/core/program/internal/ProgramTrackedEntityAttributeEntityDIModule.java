@@ -31,7 +31,11 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -50,5 +54,16 @@ public final class ProgramTrackedEntityAttributeEntityDIModule {
     @Reusable
     public Handler<ProgramTrackedEntityAttribute> handler(ProgramTrackedEntityAttributeHandler impl) {
         return impl;
+    }
+
+    @Provides
+    @Reusable
+    @SuppressWarnings("PMD.NonStaticInitializer")
+    Map<String, ChildrenAppender<ProgramTrackedEntityAttribute>> childrenAppenders(
+            ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender valueTypeRenderingChildrenAppender) {
+
+        return new HashMap<String, ChildrenAppender<ProgramTrackedEntityAttribute>>() {{
+            put(ProgramTrackedEntityAttributeFields.RENDER_TYPE, valueTypeRenderingChildrenAppender);
+        }};
     }
 }

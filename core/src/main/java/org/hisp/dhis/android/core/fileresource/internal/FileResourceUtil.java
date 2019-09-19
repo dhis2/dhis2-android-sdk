@@ -47,7 +47,7 @@ public final class FileResourceUtil {
         return file;
     }
 
-    static void renameFile(File file, String newFileName, Context context) {
+    static File renameFile(File file, String newFileName, Context context) {
         String contentType = URLConnection.guessContentTypeFromName(file.getName());
         String generatedName = generateFileName(MediaType.get(contentType), newFileName);
         File newFile = new File(context.getFilesDir(), "sdk_resources/" + generatedName);
@@ -56,6 +56,7 @@ public final class FileResourceUtil {
             Log.d(FileResourceUtil.class.getCanonicalName(),
                     "Fail renaming " + file.getName() + " to " + generatedName);
         }
+        return newFile;
     }
 
     public static File saveFile(File sourceFile, String fileResourceUid, Context context) throws IOException {
@@ -68,11 +69,12 @@ public final class FileResourceUtil {
         return writeInputStream(inputStream, destinationFile, sourceFile.length());
     }
 
-    static void saveFileFromResponse(ResponseBody body, String generatedFileName, Context context) {
+    static File saveFileFromResponse(ResponseBody body, String generatedFileName, Context context) {
         File destinationFile = new File(FileResourceUtil.getFileResourceDirectory(context),
                 generateFileName(body.contentType(), generatedFileName));
 
         writeInputStream(body.byteStream(), destinationFile, body.contentLength());
+        return destinationFile;
     }
 
     public static File writeInputStream(InputStream inputStream, File file, long fileSize) {

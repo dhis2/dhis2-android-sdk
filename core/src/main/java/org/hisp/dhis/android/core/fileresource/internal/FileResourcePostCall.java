@@ -32,6 +32,8 @@ import android.content.Context;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
@@ -55,7 +57,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
 import okhttp3.MediaType;
@@ -139,9 +140,9 @@ public final class FileResourcePostCall {
 
             updateValue(fileResource, downloadedFileResource);
 
-            updateFileResource(fileResource, downloadedFileResource, file);
+            File downloadedFile = updateFile(file, downloadedFileResource, context);
 
-            updateFile(file, downloadedFileResource, context);
+            updateFileResource(fileResource, downloadedFileResource, downloadedFile);
 
         } catch (IOException e) {
             Log.v(FileResourcePostCall.class.getCanonicalName(), e.getMessage());
@@ -196,15 +197,15 @@ public final class FileResourcePostCall {
         }
     }
 
+    private File updateFile(File file, FileResource fileResource, Context context) {
+        return FileResourceUtil.renameFile(file, fileResource.uid(), context);
+    }
+
     private void updateFileResource(FileResource fileResource, FileResource downloadedFileResource, File file) {
         fileResourceStore.delete(fileResource.uid());
         fileResourceHandler.handle(downloadedFileResource.toBuilder()
                 .state(State.SYNCED)
-                .path(file.getParent())
+                .path(file.getAbsolutePath())
                 .build());
-    }
-
-    private void updateFile(File file, FileResource fileResource, Context context) {
-        FileResourceUtil.renameFile(file, fileResource.uid(), context);
     }
 }

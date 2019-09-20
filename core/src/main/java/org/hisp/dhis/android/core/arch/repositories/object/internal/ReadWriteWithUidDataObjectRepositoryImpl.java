@@ -63,7 +63,7 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
     }
 
     public void blockingDelete() throws D2Error {
-        M object = withAllChildren().blockingGet();
+        M object = blockingGet();
         if (object == null) {
             throw D2Error
                     .builder()

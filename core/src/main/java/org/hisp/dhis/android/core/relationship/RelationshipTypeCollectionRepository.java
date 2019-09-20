@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields;
 
 import java.util.Map;
 
@@ -49,5 +50,9 @@ public final class RelationshipTypeCollectionRepository
                                          final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new RelationshipTypeCollectionRepository(store, childrenAppenders, s)));
+    }
+
+    public RelationshipTypeCollectionRepository withConstraints() {
+        return cf.withChild(RelationshipTypeFields.CONSTRAINTS);
     }
 }

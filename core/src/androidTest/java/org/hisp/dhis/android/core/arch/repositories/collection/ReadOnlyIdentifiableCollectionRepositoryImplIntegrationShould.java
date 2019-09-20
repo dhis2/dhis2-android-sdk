@@ -80,17 +80,19 @@ public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould exten
 
     @Test
     public void get_relationship_1_from_object_repository_with_children() {
-        ReadOnlyOneObjectRepositoryFinalImpl<RelationshipType> type1Repository
-                = relationshipTypeCollectionRepository.uid(RELATIONSHIP_TYPE_UID_1);
-        RelationshipType typeFromRepository = type1Repository.withAllChildren().blockingGet();
+        RelationshipType typeFromRepository = relationshipTypeCollectionRepository
+                .withConstraints()
+                .uid(RELATIONSHIP_TYPE_UID_1)
+                .blockingGet();
         assertThat(typeFromRepository).isEqualTo(RELATIONSHIP_TYPE_1);
     }
 
     @Test
     public void get_relationship_2_from_object_repository_with_children() {
-        ReadOnlyOneObjectRepositoryFinalImpl<RelationshipType> type1Repository
-                = relationshipTypeCollectionRepository.uid(RELATIONSHIP_TYPE_UID_2);
-        RelationshipType typeFromRepository = type1Repository.withAllChildren().blockingGet();
+        RelationshipType typeFromRepository = relationshipTypeCollectionRepository
+                .withConstraints()
+                .uid(RELATIONSHIP_TYPE_UID_2)
+                .blockingGet();
         assertThat(typeFromRepository).isEqualTo(RELATIONSHIP_TYPE_2);
     }
 }

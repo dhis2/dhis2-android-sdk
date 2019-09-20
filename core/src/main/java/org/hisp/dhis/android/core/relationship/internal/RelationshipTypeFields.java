@@ -48,7 +48,7 @@ public final class RelationshipTypeFields {
     private static final String ACCESS = "access";
 
     // Used only for children appending, can't be used in query
-    static final String CONSTRAINTS = "constraints";
+    public static final String CONSTRAINTS = "constraints";
 
     private static final FieldsHelper<RelationshipType> fh = new FieldsHelper<>();
 

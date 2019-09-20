@@ -77,7 +77,7 @@ public class CollectionRepositoryOneMethodMockIntegrationShould extends BaseMock
     @Test
     public void get_with_all_children_returns_object_children() {
         CategoryCombo combo = d2.categoryModule().categoryCombos
-                .one().withAllChildren().blockingGet();
+                .withCategories().withCategoryOptionCombos().one().blockingGet();
         assertThat(combo.uid(), is(BIRTH_UID));
         assertThat(combo.categories().size(), is(2));
         assertThat(combo.categoryOptionCombos().size(), is(2));

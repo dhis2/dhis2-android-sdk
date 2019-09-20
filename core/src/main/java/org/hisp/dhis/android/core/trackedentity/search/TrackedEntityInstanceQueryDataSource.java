@@ -27,9 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
-import androidx.annotation.NonNull;
-import androidx.paging.ItemKeyedDataSource;
-
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
@@ -42,6 +39,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.paging.ItemKeyedDataSource;
 
 import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.OFFLINE_FIRST;
 import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.OFFLINE_ONLY;
@@ -177,6 +177,6 @@ public final class TrackedEntityInstanceQueryDataSource
     private List<TrackedEntityInstance> appendAttributes(List<TrackedEntityInstance> withoutChildren) {
         return ChildrenAppenderExecutor.appendInObjectCollection(withoutChildren, childrenAppenders,
                 new ChildrenSelection(Collections.singleton(
-                        TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES), false));
+                        TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)));
     }
 }

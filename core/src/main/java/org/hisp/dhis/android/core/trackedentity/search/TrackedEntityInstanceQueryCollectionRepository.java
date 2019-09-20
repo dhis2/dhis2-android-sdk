@@ -155,6 +155,8 @@ public final class TrackedEntityInstanceQueryCollectionRepository
             try {
                 TrackedEntityInstanceQuery noPagingQuery = scope.query().toBuilder().paging(false).build();
                 return onlineCallFactory.getCall(noPagingQuery).call();
+            } catch (D2Error e) {
+                return Collections.emptyList();
             } catch (Exception e) {
                 return Collections.emptyList();
             }

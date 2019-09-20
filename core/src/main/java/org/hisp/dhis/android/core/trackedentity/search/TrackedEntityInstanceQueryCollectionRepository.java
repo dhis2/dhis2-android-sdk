@@ -27,11 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
-import androidx.lifecycle.LiveData;
-import androidx.paging.DataSource;
-import androidx.paging.LivePagedListBuilder;
-import androidx.paging.PagedList;
-
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
@@ -58,6 +53,10 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
 import dagger.Reusable;
 import io.reactivex.Single;
 
@@ -267,6 +266,8 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                 TrackedEntityInstanceQueryOnline noPagingQuery = TrackedEntityInstanceQueryOnline.create(scope)
                         .toBuilder().paging(false).build();
                 return onlineCallFactory.getCall(noPagingQuery).call();
+            } catch (D2Error e) {
+                return Collections.emptyList();
             } catch (Exception e) {
                 return Collections.emptyList();
             }

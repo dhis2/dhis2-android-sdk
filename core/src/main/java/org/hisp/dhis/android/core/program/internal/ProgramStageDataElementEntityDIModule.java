@@ -60,7 +60,7 @@ public final class ProgramStageDataElementEntityDIModule {
     @Reusable
     @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<ProgramStageDataElement>> childrenAppenders(
-            ValueTypeRenderingChildrenAppender valueTypeRenderingChildrenAppender) {
+            DataElementValueTypeRenderingChildrenAppender valueTypeRenderingChildrenAppender) {
 
         return new HashMap<String, ChildrenAppender<ProgramStageDataElement>>() {{
             put(ProgramStageDataElementFields.RENDER_TYPE, valueTypeRenderingChildrenAppender);

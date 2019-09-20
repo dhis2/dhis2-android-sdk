@@ -128,6 +128,14 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     }
 
     @Test
+    public void filter_by_data_Set() {
+        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits
+                .byDataSetUids(Collections.singletonList("lyLU2wR22tC"))
+                .blockingGet();
+        assertThat(organisationUnits.size(), is(1));
+    }
+
+    @Test
     public void filter_by_root_capture_organisation_unit() {
         List<OrganisationUnit> rootOrganisationUnits = d2.organisationUnitModule().organisationUnits
                 .byRootOrganisationUnit(Boolean.TRUE)

@@ -43,7 +43,7 @@ public final class StringFilterConnector<R extends BaseRepository>
     }
 
     public R like(String value) {
-        return newWithWrappedScope(FilterItemOperator.LIKE, value);
+        return newWithWrappedScope(FilterItemOperator.LIKE, "%" + value + "%");
     }
 
     String wrapValue(String value) {

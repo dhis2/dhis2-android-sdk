@@ -179,6 +179,6 @@ public final class TrackedEntityInstanceQueryDataSource
     private List<TrackedEntityInstance> appendAttributes(List<TrackedEntityInstance> withoutChildren) {
         return ChildrenAppenderExecutor.appendInObjectCollection(withoutChildren, childrenAppenders,
                 new ChildrenSelection(Collections.singleton(
-                        TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES), false));
+                        TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)));
     }
 }

@@ -150,13 +150,11 @@ public final class TrackedEntityInstanceQueryCollectionRepository
             List<TrackedEntityInstance> instances = store.selectRawQuery(sqlQuery);
             return ChildrenAppenderExecutor.appendInObjectCollection(instances, childrenAppenders,
                     new ChildrenSelection(Collections.singleton(
-                            TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES), false));
+                            TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)));
         } else {
             try {
                 TrackedEntityInstanceQuery noPagingQuery = scope.query().toBuilder().paging(false).build();
                 return onlineCallFactory.getCall(noPagingQuery).call();
-            } catch (D2Error e) {
-                return Collections.emptyList();
             } catch (Exception e) {
                 return Collections.emptyList();
             }

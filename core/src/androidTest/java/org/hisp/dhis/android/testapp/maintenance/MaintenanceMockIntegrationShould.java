@@ -81,12 +81,6 @@ public class MaintenanceMockIntegrationShould extends BaseMockIntegrationTestFul
     }
 
     @Test
-    public void allow_access_to_foreign_key_violations_with_children() {
-        List<ForeignKeyViolation> violations = d2.maintenanceModule().foreignKeyViolations.withAllChildren().blockingGet();
-        assertThat(violations.size(), is(2));
-    }
-
-    @Test
     public void get_no_vulnerabilities_for_high_threshold() {
         assertThat(d2.maintenanceModule().getPerformanceHintsService(100,
                 100).areThereVulnerabilities(), is(false));

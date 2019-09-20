@@ -45,9 +45,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import androidx.test.InstrumentationRegistry;
-import okhttp3.MediaType;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -73,10 +70,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         assertThat(fileResources.size(), is(2));
 
-        File file = new File(FileResourceUtil.getFileResourceDirectory(
-                InstrumentationRegistry.getTargetContext().getApplicationContext()),
-                FileResourceUtil.generateFileName(MediaType.parse(fileResources.get(0).contentType()),
-                        fileResources.get(0).uid()));
+        File file = new File(fileResources.get(0).path());
 
         assertThat(file.exists(), is(true));
     }
@@ -89,10 +83,8 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         List<FileResource> fileResources = d2.fileResourceModule().fileResources.blockingGet();
 
-        File file = new File(FileResourceUtil.getFileResourceDirectory(
-                InstrumentationRegistry.getTargetContext().getApplicationContext()),
-                FileResourceUtil.generateFileName(MediaType.parse(fileResources.get(0).contentType()),
-                        fileResources.get(0).uid()));
+        File file = new File(fileResources.get(0).path());
+
         assertThat(file.exists(), is(true));
 
         String valueUid = d2.fileResourceModule().fileResources.blockingAdd(file);
@@ -110,9 +102,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         List<FileResource> fileResources2 = d2.fileResourceModule().fileResources.blockingGet();
 
-        File file2 = new File(fileResources2.get(1).path(),
-                FileResourceUtil.generateFileName(MediaType.parse(fileResources2.get(1).contentType()),
-                        fileResources2.get(1).uid()));
+        File file2 = new File(fileResources2.get(1).path());
 
         assertThat(file2.exists(), is(true));
 
@@ -121,7 +111,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
         TrackedEntityInstance trackedEntityInstance2 =
                 d2.trackedEntityModule().trackedEntityInstances.blockingGet().get(0);
 
-        assertThat(trackedEntityInstance2.state()   , is(State.SYNCED));
+        assertThat(trackedEntityInstance2.state(), is(State.SYNCED));
     }
 
     //@Test
@@ -132,10 +122,8 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         List<FileResource> fileResources = d2.fileResourceModule().fileResources.blockingGet();
 
-        File file = new File(FileResourceUtil.getFileResourceDirectory(
-                InstrumentationRegistry.getTargetContext().getApplicationContext()),
-                FileResourceUtil.generateFileName(MediaType.parse(fileResources.get(0).contentType()),
-                        fileResources.get(0).uid()));
+        File file = new File(fileResources.get(0).path());
+
         assertThat(file.exists(), is(true));
 
         String valueUid = d2.fileResourceModule().fileResources.blockingAdd(file);
@@ -151,10 +139,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         List<FileResource> fileResources2 = d2.fileResourceModule().fileResources.blockingGet();
 
-        File file2 = new File(FileResourceUtil.getFileResourceDirectory(
-                InstrumentationRegistry.getTargetContext().getApplicationContext()),
-                FileResourceUtil.generateFileName(MediaType.parse(fileResources2.get(1).contentType()),
-                        fileResources2.get(1).uid()));
+        File file2 = new File(fileResources2.get(1).path());
 
         assertThat(file2.exists(), is(true));
     }

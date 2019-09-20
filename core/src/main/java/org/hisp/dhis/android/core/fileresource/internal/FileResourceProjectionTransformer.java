@@ -49,7 +49,7 @@ final class FileResourceProjectionTransformer implements Transformer<File, FileR
                 .lastUpdated(creationDate)
                 .contentLength(file.length())
                 .contentType(URLConnection.guessContentTypeFromName(file.getName()))
-                .path(file.getParent())
+                .path(file.getAbsolutePath())
                 .build();
     }
 }

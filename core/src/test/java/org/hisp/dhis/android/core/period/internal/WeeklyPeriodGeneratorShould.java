@@ -52,6 +52,8 @@ public class WeeklyPeriodGeneratorShould {
     public void generate_weekly_periods_for_one_week() {
         calendar.set(2018, 2, 8);
         Period period = generateExpectedPeriod("2018W10", calendar, Calendar.MONDAY, PeriodType.Weekly);
+        calendar.set(2018, 2, 15);
+
 
         List<Period> generatedPeriods = WeeklyPeriodGeneratorFactory.weekly(calendar)
                 .generatePeriods(1, 0);
@@ -65,6 +67,7 @@ public class WeeklyPeriodGeneratorShould {
         Period period1 = generateExpectedPeriod("2018W10", calendar, Calendar.MONDAY, PeriodType.Weekly);
         calendar.set(2018, 2, 15);
         Period period2 = generateExpectedPeriod("2018W11", calendar, Calendar.MONDAY, PeriodType.Weekly);
+        calendar.set(2018, 2, 22);
 
         List<Period> generatedPeriods = WeeklyPeriodGeneratorFactory.weekly(calendar)
                 .generatePeriods(2, 0);
@@ -80,6 +83,7 @@ public class WeeklyPeriodGeneratorShould {
         Period period2 = generateExpectedPeriod("2017W1", calendar, Calendar.MONDAY, PeriodType.Weekly);
         calendar.set(2017, 0, 14);
         Period period3 = generateExpectedPeriod("2017W2", calendar, Calendar.MONDAY, PeriodType.Weekly);
+        calendar.set(2017, 0, 21);
 
         List<Period> generatedPeriods = WeeklyPeriodGeneratorFactory.weekly(calendar)
                 .generatePeriods(3, 0);
@@ -91,17 +95,6 @@ public class WeeklyPeriodGeneratorShould {
     public void generate_the_first_week_including_january_4() {
         calendar.set(2018, 0, 4);
 
-        List<Period> generatedPeriods = WeeklyPeriodGeneratorFactory
-                .weekly(calendar).generatePeriods(1, 0);
-        List<Period> generatedWedPeriods = WeeklyPeriodGeneratorFactory
-                .wednesday(calendar).generatePeriods(1, 0);
-        List<Period> generatedThuPeriods = WeeklyPeriodGeneratorFactory
-                .thursday(calendar).generatePeriods(1, 0);
-        List<Period> generatedSatPeriods = WeeklyPeriodGeneratorFactory
-                .saturday(calendar).generatePeriods(1, 0);
-        List<Period> generatedSunPeriods = WeeklyPeriodGeneratorFactory
-                .sunday(calendar).generatePeriods(1, 0);
-
         Period period = generateExpectedPeriod("2018W1", calendar,
                 Calendar.MONDAY, PeriodType.Weekly);
         Period periodWednesday = generateExpectedPeriod("2018WedW1", calendar,
@@ -112,6 +105,19 @@ public class WeeklyPeriodGeneratorShould {
                 Calendar.SATURDAY, PeriodType.WeeklySaturday);
         Period periodSunday = generateExpectedPeriod("2018SunW1", calendar,
                 Calendar.SUNDAY, PeriodType.WeeklySunday);
+
+        calendar.set(2018, 0, 11);
+
+        List<Period> generatedPeriods = WeeklyPeriodGeneratorFactory
+                .weekly(calendar).generatePeriods(1, 0);
+        List<Period> generatedWedPeriods = WeeklyPeriodGeneratorFactory
+                .wednesday(calendar).generatePeriods(1, 0);
+        List<Period> generatedThuPeriods = WeeklyPeriodGeneratorFactory
+                .thursday(calendar).generatePeriods(1, 0);
+        List<Period> generatedSatPeriods = WeeklyPeriodGeneratorFactory
+                .saturday(calendar).generatePeriods(1, 0);
+        List<Period> generatedSunPeriods = WeeklyPeriodGeneratorFactory
+                .sunday(calendar).generatePeriods(1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
         assertThat(generatedWedPeriods).isEqualTo(Lists.newArrayList(periodWednesday));

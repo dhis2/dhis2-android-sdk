@@ -26,33 +26,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.period.internal;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository;
+import org.hisp.dhis.android.core.period.Period;
 
-import java.text.ParseException;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import javax.inject.Inject;
 
-@RunWith(D2JunitRunner.class)
-public class PeriodMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
+import dagger.Reusable;
+import io.reactivex.Single;
 
-    @Test
-    public void get_period_passing_period_type_and_a_date() throws ParseException {
-        Period period = d2.periodModule().periodHelper.getPeriod(PeriodType.BiWeekly,
-                BaseIdentifiableObject.DATE_FORMAT.parse("2019-06-24T12:24:25.319"));
-        assertThat(period.periodId(), is("2019BiW13"));
+@Reusable
+public class PeriodForDataSetManager {
+
+    private final DataSetCollectionRepository dataSetCollectionRepository;
+    private final ParentPeriodGenerator parentPeriodGenerator;
+    private final PeriodStore periodStore;
+
+    @Inject
+    PeriodForDataSetManager(DataSetCollectionRepository dataSetCollectionRepository,
+                            ParentPeriodGenerator parentPeriodGenerator,
+                            PeriodStore periodStore) {
+        this.dataSetCollectionRepository = dataSetCollectionRepository;
+        this.parentPeriodGenerator = parentPeriodGenerator;
+        this.periodStore = periodStore;
     }
 
-    @Test
-    public void get_periods_for_dataset() {
-        List<Period> periods = d2.periodModule().periodHelper.blockingGetPeriodsForDataSet("lyLU2wR22tC");
-        assertThat(periods.size(), is(14));
+    Single<List<Period>> getPeriodsForDataSet(String dataSetUid) {
+        return dataSetCollectionRepository.uid(dataSetUid).get().map(dataSet -> {
+            Integer dataSetFuturePeriods = dataSet.openFuturePeriods();
+            int futurePeriods = dataSetFuturePeriods == null ? 0 : dataSetFuturePeriods;
+            List<Period> periods = parentPeriodGenerator.generatePeriods(dataSet.periodType(), futurePeriods);
+            for (Period period: periods) {
+                periodStore.updateOrInsertWhere(period);
+            }
+
+            return periods;
+        });
     }
 }

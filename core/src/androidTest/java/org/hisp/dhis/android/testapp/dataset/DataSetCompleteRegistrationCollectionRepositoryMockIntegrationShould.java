@@ -60,7 +60,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
         List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
                 d2.dataSetModule().dataSetCompleteRegistrations
                         .byPeriod()
-                        .eq("2019")
+                        .eq("2018")
                         .blockingGet();
 
         assertThat(dataSetCompleteRegistrations.size(), is(1));

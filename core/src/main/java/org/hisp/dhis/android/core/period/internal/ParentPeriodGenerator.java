@@ -29,9 +29,11 @@
 package org.hisp.dhis.android.core.period.internal;
 
 import org.hisp.dhis.android.core.period.Period;
+import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.List;
 
 interface ParentPeriodGenerator {
     List<Period> generatePeriods();
+    List<Period> generatePeriods(PeriodType periodType, int futurePeriods);
 }

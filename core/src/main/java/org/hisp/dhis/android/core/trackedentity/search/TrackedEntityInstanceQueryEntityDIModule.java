@@ -26,54 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search.internal;
+package org.hisp.dhis.android.core.trackedentity.search;
 
-import com.google.auto.value.AutoValue;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
+@Module
+public final class TrackedEntityInstanceQueryEntityDIModule {
 
-import androidx.annotation.NonNull;
-
-@AutoValue
-public abstract class TrackedEntityInstanceQueryRepositoryScope {
-
-    @NonNull
-    public abstract RepositoryMode mode();
-
-    @NonNull
-    public abstract TrackedEntityInstanceQuery query();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_TrackedEntityInstanceQueryRepositoryScope.Builder()
-                .mode(RepositoryMode.OFFLINE_ONLY)
-                .query(TrackedEntityInstanceQuery.empty());
+    @Provides
+    @Reusable
+    public TrackedEntityInstanceQueryRepositoryScope empty() {
+        return TrackedEntityInstanceQueryRepositoryScope.empty();
     }
 
-    public static TrackedEntityInstanceQueryRepositoryScope empty() {
-        return builder().build();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder mode(RepositoryMode mode);
-
-        public abstract Builder query(TrackedEntityInstanceQuery query);
-
-        abstract TrackedEntityInstanceQueryRepositoryScope autoBuild();
-
-        // Auxiliary fields to access values
-        abstract TrackedEntityInstanceQuery query();
-
-        public TrackedEntityInstanceQueryRepositoryScope build() {
-            if (query() != null && query().states() != null) {
-                mode(RepositoryMode.OFFLINE_ONLY);
-            }
-
-            return autoBuild();
-        }
-    }
 }

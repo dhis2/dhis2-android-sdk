@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,7 +66,7 @@ public class BooleanFilterConnectorShould {
     public void should_build_filter_item_on_false() {
         filterConnector.eq(false);
         RepositoryScopeFilterItem expectedItem =
-                RepositoryScopeFilterItem.builder().key(key).operator("=").value("0").build();
+                RepositoryScopeFilterItem.builder().key(key).operator(FilterItemOperator.EQ).value("0").build();
 
         verify(baseRepositoryFactory).updated(updatedRepositoryScope.capture());
         RepositoryScopeFilterItem item = updatedRepositoryScope.getValue().filters().get(0);
@@ -77,7 +78,7 @@ public class BooleanFilterConnectorShould {
     public void should_build_filter_item_on_true() {
         filterConnector.eq(true);
         RepositoryScopeFilterItem expectedItem =
-                RepositoryScopeFilterItem.builder().key(key).operator("=").value("1").build();
+                RepositoryScopeFilterItem.builder().key(key).operator(FilterItemOperator.EQ).value("1").build();
 
         verify(baseRepositoryFactory).updated(updatedRepositoryScope.capture());
         RepositoryScopeFilterItem item = updatedRepositoryScope.getValue().filters().get(0);

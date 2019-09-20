@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 
 import java.util.List;
 
@@ -51,7 +52,7 @@ public final class SubQueryFilterConnector<R extends BaseRepository>
     public R inLinkTable(String linkTable, String linkParent, String linkChild, List<String> children) {
         WhereClauseBuilder clauseBuilder = new WhereClauseBuilder().appendInKeyStringValues(linkChild, children);
 
-        return newWithWrappedScope("IN", "(" + String.format(
+        return newWithWrappedScope(FilterItemOperator.IN, "(" + String.format(
                 "SELECT DISTINCT %s FROM %s WHERE %s", linkParent, linkTable, clauseBuilder.build()) + ")");
     }
 
@@ -63,11 +64,11 @@ public final class SubQueryFilterConnector<R extends BaseRepository>
             String clause = new WhereClauseBuilder().appendKeyStringValue(linkChild, child).build();
             String value = "(" + String.format("SELECT %s FROM %s WHERE %s ", linkParent, linkTable, clause) + ")";
 
-            repositoryScope = repositoryScope == null ? updatedUnwrappedScope("IN", value) :
-                    updatePassedScope("IN", value, repositoryScope);
+            repositoryScope = repositoryScope == null ? updatedUnwrappedScope(FilterItemOperator.IN, value) :
+                    updatePassedScope(FilterItemOperator.IN, value, repositoryScope);
         }
 
-        return newWithPassedScope("IN", "(" + String.format(
+        return newWithPassedScope(FilterItemOperator.IN, "(" + String.format(
                 "SELECT %s FROM %s WHERE 1 GROUP BY %s HAVING COUNT(*) = %s ",
                 linkParent, linkTable, linkParent, children.size()) + ")", repositoryScope);
     }

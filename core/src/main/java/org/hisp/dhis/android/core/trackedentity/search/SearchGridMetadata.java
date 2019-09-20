@@ -28,60 +28,26 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
+
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 
 @AutoValue
-public abstract class QueryFilter {
+abstract class SearchGridMetadata {
+    private final static String NAMES = "names";
 
     @NonNull
-    public abstract QueryOperator operator();
+    @JsonProperty(NAMES)
+    abstract Map<String, String> names();
 
-    @NonNull
-    public abstract String filter();
+    @JsonCreator
+    static SearchGridMetadata create(
+            @JsonProperty(NAMES) Map<String, String> names) {
 
-
-    public static Builder builder() {
-        return new AutoValue_QueryFilter.Builder()
-                .operator(QueryOperator.EQ);
-    }
-
-    public static QueryFilter create(QueryOperator operator, String filter) {
-        return builder().operator(operator).filter(filter).build();
-    }
-
-    public static QueryFilter create(String filter) {
-        return builder().filter(filter).build();
-    }
-
-    String[] getSqlFilters() {
-        String[] tokens = filter().split(" ");
-        if (operator().equals(QueryOperator.LIKE)) {
-            String[] result = new String[tokens.length];
-            for (int i = 0; i < tokens.length; i++) {
-                result[i] = "%" + tokens[i] + "%";
-            }
-            return result;
-        } else {
-            return tokens;
-        }
-    }
-
-    String getSqlFilter() {
-        if (operator().equals(QueryOperator.LIKE)) {
-            return "%" + filter() + "%";
-        } else {
-            return filter();
-        }
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder operator(QueryOperator operator);
-
-        public abstract Builder filter(String filter);
-
-        public abstract QueryFilter build();
+        return new AutoValue_SearchGridMetadata(names);
     }
 }

@@ -28,39 +28,48 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 
 @AutoValue
-public abstract class QueryItem {
+abstract class SearchGridHeader {
+    private final static String NAME = "name";
+    private final static String COLUMN = "column";
+    private final static String TYPE = "type";
+    private final static String HIDDEN = "hidden";
+    private final static String META = "meta";
 
     @NonNull
-    public abstract String item();
+    @JsonProperty(NAME)
+    abstract String name();
 
     @NonNull
-    public abstract List<QueryFilter> filters();
+    @JsonProperty(COLUMN)
+    abstract String column();
 
+    @NonNull
+    @JsonProperty(TYPE)
+    abstract String type();
 
-    public static Builder builder() {
-        return new AutoValue_QueryItem.Builder()
-                .filters(Collections.emptyList());
-    }
+    @NonNull
+    @JsonProperty(HIDDEN)
+    abstract Boolean hidden();
 
-    public static QueryItem create(String item, QueryFilter... filters) {
-        return builder().item(item).filters(Arrays.asList(filters)).build();
-    }
+    @NonNull
+    @JsonProperty(META)
+    abstract Boolean meta();
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder item(String item);
+    @JsonCreator
+    static SearchGridHeader create(
+            @JsonProperty(NAME) String name,
+            @JsonProperty(COLUMN) String column,
+            @JsonProperty(TYPE) String type,
+            @JsonProperty(HIDDEN) Boolean hidden,
+            @JsonProperty(META) Boolean meta) {
 
-        public abstract Builder filters(List<QueryFilter> filters);
-
-        public abstract QueryItem build();
+        return new AutoValue_SearchGridHeader(name, column, type, hidden, meta);
     }
 }

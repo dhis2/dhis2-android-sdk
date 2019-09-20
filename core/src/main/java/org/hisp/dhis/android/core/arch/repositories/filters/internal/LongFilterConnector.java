@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 
 public final class LongFilterConnector<R extends BaseRepository>
         extends BaseAbstractFilterConnector<R, Long> {
@@ -42,11 +43,11 @@ public final class LongFilterConnector<R extends BaseRepository>
     }
 
     public R smallerThan(long value) {
-        return newWithWrappedScope("<", value);
+        return newWithWrappedScope(FilterItemOperator.LT, value);
     }
 
     public R biggerThan(long value) {
-        return newWithWrappedScope(">", value);
+        return newWithWrappedScope(FilterItemOperator.GT, value);
     }
 
     String wrapValue(Long value) {

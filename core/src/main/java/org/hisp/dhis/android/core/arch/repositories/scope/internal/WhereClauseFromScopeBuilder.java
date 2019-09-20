@@ -45,7 +45,7 @@ public class WhereClauseFromScopeBuilder {
         }
 
         for (RepositoryScopeFilterItem item: scope.filters()) {
-            builder.appendKeyOperatorValue(item.key(), item.operator(), item.value());
+            builder.appendKeyOperatorValue(item.key(), item.operator().getSqlOperator(), item.value());
         }
 
         for (RepositoryScopeComplexFilterItem item: scope.complexFilters()) {

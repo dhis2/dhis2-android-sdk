@@ -29,28 +29,35 @@
 package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ScopedRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.BaseScopeFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 
-public final class IntegerFilterConnector<R extends BaseRepository>
-        extends BaseAbstractFilterConnector<R, Integer> {
+public final class EqLikeItemFilterConnector<R extends BaseRepository, S extends BaseScope> {
 
-    IntegerFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                           RepositoryScope scope,
-                           String key) {
-        super(repositoryFactory, scope, key);
+    private final ScopedRepositoryFactory<R, S> repositoryFactory;
+    private final BaseScopeFactory<S, RepositoryScopeFilterItem> baseScopeFactory;
+    private final String key;
+
+    EqLikeItemFilterConnector(ScopedRepositoryFactory<R, S> repositoryFactory,
+                              BaseScopeFactory<S, RepositoryScopeFilterItem> baseScopeFactory,
+                              String key) {
+        this.repositoryFactory = repositoryFactory;
+        this.baseScopeFactory = baseScopeFactory;
+        this.key = key;
     }
 
-    public R smallerThan(int value) {
-        return newWithWrappedScope(FilterItemOperator.LT, value);
+    public R eq(String value) {
+        RepositoryScopeFilterItem item = RepositoryScopeFilterItem.builder()
+                .key(key).operator(FilterItemOperator.EQ).value(value).build();
+        return repositoryFactory.updated(baseScopeFactory.updated(item));
     }
 
-    public R biggerThan(int value) {
-        return newWithWrappedScope(FilterItemOperator.GT, value);
-    }
-
-    String wrapValue(Integer value) {
-        return value.toString();
+    public R like(String value) {
+        RepositoryScopeFilterItem item = RepositoryScopeFilterItem.builder()
+                .key(key).operator(FilterItemOperator.LIKE).value(value).build();
+        return repositoryFactory.updated(baseScopeFactory.updated(item));
     }
 }

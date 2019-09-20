@@ -26,31 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
+import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
 
-public final class IntegerFilterConnector<R extends BaseRepository>
-        extends BaseAbstractFilterConnector<R, Integer> {
-
-    IntegerFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                           RepositoryScope scope,
-                           String key) {
-        super(repositoryFactory, scope, key);
-    }
-
-    public R smallerThan(int value) {
-        return newWithWrappedScope(FilterItemOperator.LT, value);
-    }
-
-    public R biggerThan(int value) {
-        return newWithWrappedScope(FilterItemOperator.GT, value);
-    }
-
-    String wrapValue(Integer value) {
-        return value.toString();
-    }
+public interface ScopedRepositoryFactory<R extends BaseRepository, S extends BaseScope> {
+    R updated(S updatedScope);
 }

@@ -26,31 +26,52 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+package org.hisp.dhis.android.core.trackedentity.search;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
+import androidx.annotation.NonNull;
 
-public final class IntegerFilterConnector<R extends BaseRepository>
-        extends BaseAbstractFilterConnector<R, Integer> {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
 
-    IntegerFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                           RepositoryScope scope,
-                           String key) {
-        super(repositoryFactory, scope, key);
-    }
+import java.util.List;
 
-    public R smallerThan(int value) {
-        return newWithWrappedScope(FilterItemOperator.LT, value);
-    }
+@AutoValue
+public abstract class SearchGrid {
+    private final static String HEADERS = "headers";
+    private final static String META_DATA = "metaData";
+    private final static String WIDTH = "width";
+    private final static String HEIGHT = "height";
+    private final static String ROWS = "rows";
 
-    public R biggerThan(int value) {
-        return newWithWrappedScope(FilterItemOperator.GT, value);
-    }
+    @NonNull
+    @JsonProperty(HEADERS)
+    abstract List<SearchGridHeader> headers();
 
-    String wrapValue(Integer value) {
-        return value.toString();
+    @NonNull
+    @JsonProperty(META_DATA)
+    abstract SearchGridMetadata metaData();
+
+    @NonNull
+    @JsonProperty(WIDTH)
+    abstract Integer width();
+
+    @NonNull
+    @JsonProperty(HEIGHT)
+    abstract Integer height();
+
+    @NonNull
+    @JsonProperty(ROWS)
+    abstract List<List<String>> rows();
+
+    @JsonCreator
+    static SearchGrid create(
+            @JsonProperty(HEADERS) List<SearchGridHeader> headers,
+            @JsonProperty(META_DATA) SearchGridMetadata metaData,
+            @JsonProperty(WIDTH) Integer width,
+            @JsonProperty(HEIGHT) Integer height,
+            @JsonProperty(ROWS) List<List<String>> rows) {
+
+        return new AutoValue_SearchGrid(headers, metaData, width, height, rows);
     }
 }

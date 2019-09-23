@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.paging.internal.RepositoryDataSource;
 import org.hisp.dhis.android.core.arch.repositories.paging.internal.RepositoryPagingConfig;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem;
@@ -145,7 +146,7 @@ public class RepositoryPagingShould  {
         when(keyContentValues.getAsString("name")).thenReturn("key-name");
 
         RepositoryScope filterScope = RepositoryScopeHelper.withFilterItem(emptyScope,
-                RepositoryScopeFilterItem.builder().key("program").operator("=").value("'uid'").build());
+                RepositoryScopeFilterItem.builder().key("program").operator(FilterItemOperator.EQ).value("'uid'").build());
 
         RepositoryScope updatedScope = RepositoryScopeHelper.withOrderBy(filterScope,
                 RepositoryScopeOrderByItem.builder().column("code").direction(RepositoryScope.OrderByDirection.DESC).build());

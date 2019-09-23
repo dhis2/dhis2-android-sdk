@@ -26,50 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search.internal;
+package org.hisp.dhis.android.core.arch.repositories.scope.internal;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
 
-import androidx.annotation.NonNull;
-
-@AutoValue
-abstract class SearchGridHeader {
-    private final static String NAME = "name";
-    private final static String COLUMN = "column";
-    private final static String TYPE = "type";
-    private final static String HIDDEN = "hidden";
-    private final static String META = "meta";
-
-    @NonNull
-    @JsonProperty(NAME)
-    abstract String name();
-
-    @NonNull
-    @JsonProperty(COLUMN)
-    abstract String column();
-
-    @NonNull
-    @JsonProperty(TYPE)
-    abstract String type();
-
-    @NonNull
-    @JsonProperty(HIDDEN)
-    abstract Boolean hidden();
-
-    @NonNull
-    @JsonProperty(META)
-    abstract Boolean meta();
-
-    @JsonCreator
-    static SearchGridHeader create(
-            @JsonProperty(NAME) String name,
-            @JsonProperty(COLUMN) String column,
-            @JsonProperty(TYPE) String type,
-            @JsonProperty(HIDDEN) Boolean hidden,
-            @JsonProperty(META) Boolean meta) {
-
-        return new AutoValue_SearchGridHeader(name, column, type, hidden, meta);
-    }
+public interface BaseScopeFactory<S extends BaseScope, I> {
+    S updated(I item);
 }

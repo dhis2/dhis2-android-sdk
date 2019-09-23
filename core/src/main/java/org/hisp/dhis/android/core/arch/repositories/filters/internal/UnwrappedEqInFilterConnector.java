@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,11 +53,11 @@ public final class UnwrappedEqInFilterConnector<R extends BaseRepository>
     }
 
     public R eq(String value) {
-        return newWithWrappedScope("=", value);
+        return newWithWrappedScope(FilterItemOperator.EQ, value);
     }
 
     public R in(Collection<String> values) {
-        return newWithUnwrappedScope("IN", "(" + getCommaSeparatedValues(values) + ")");
+        return newWithUnwrappedScope(FilterItemOperator.IN, "(" + getCommaSeparatedValues(values) + ")");
     }
 
     public R in(String... values) {

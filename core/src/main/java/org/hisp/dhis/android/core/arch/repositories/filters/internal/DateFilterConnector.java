@@ -33,6 +33,7 @@ import androidx.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.period.DatePeriod;
 import org.hisp.dhis.android.core.period.Period;
@@ -51,11 +52,11 @@ public final class DateFilterConnector<R extends BaseRepository> extends BaseAbs
     }
 
     public R before(Date value) {
-        return newWithWrappedScope("<", value);
+        return newWithWrappedScope(FilterItemOperator.LT, value);
     }
 
     public R after(Date value) {
-        return newWithWrappedScope(">", value);
+        return newWithWrappedScope(FilterItemOperator.GT, value);
     }
 
     public R inDatePeriods(@NonNull List<DatePeriod> datePeriods) {

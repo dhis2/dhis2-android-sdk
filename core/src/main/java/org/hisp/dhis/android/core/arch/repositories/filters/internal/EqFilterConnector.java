@@ -26,19 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search;
+package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-public enum QueryOperator {
-    LIKE("LIKE"),
-    EQ("LIKE");     // Intentionally LIKE to perform case insensitive matching
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ScopedRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.BaseScopeFactory;
 
-    private String sqlOperator;
+public final class EqFilterConnector<R  extends BaseRepository, S extends BaseScope, T> {
 
-    QueryOperator(String sqlOperator) {
-        this.sqlOperator = sqlOperator;
+    private final ScopedRepositoryFactory<R, S> repositoryFactory;
+    private final BaseScopeFactory<S, T> baseScopeFactory;
+
+    EqFilterConnector(ScopedRepositoryFactory<R, S> repositoryFactory,
+                      BaseScopeFactory<S, T> baseScopeFactory) {
+        this.repositoryFactory = repositoryFactory;
+        this.baseScopeFactory = baseScopeFactory;
     }
 
-    public String getSqlOperator() {
-        return this.sqlOperator;
+    public R eq(T value) {
+        return repositoryFactory.updated(baseScopeFactory.updated(value));
     }
 }

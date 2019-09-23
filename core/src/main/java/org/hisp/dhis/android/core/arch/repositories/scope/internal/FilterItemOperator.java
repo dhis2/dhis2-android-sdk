@@ -26,52 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search.internal;
+package org.hisp.dhis.android.core.arch.repositories.scope.internal;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
+public enum FilterItemOperator {
+    LIKE("LIKE", "like", "LIKE"),
+    EQ("=", "eq", "EQ"),
+    NOT_EQ("!=", "!eq", "NE"),
+    IN("IN", "in", "IN"),
+    NOT_IN("NOT IN", "!in", "!in"), //No upper API version for this
+    LT("<", "lt", "LT"),
+    GT(">", "gt", "GT"),
+    VOID("", "", "");
 
-import java.util.List;
+    private String sqlOperator;
 
-import androidx.annotation.NonNull;
+    private String apiOperator;
 
-@AutoValue
-public abstract class SearchGrid {
-    private final static String HEADERS = "headers";
-    private final static String META_DATA = "metaData";
-    private final static String WIDTH = "width";
-    private final static String HEIGHT = "height";
-    private final static String ROWS = "rows";
+    private String apiUpperOperator;
 
-    @NonNull
-    @JsonProperty(HEADERS)
-    public abstract List<SearchGridHeader> headers();
+    FilterItemOperator(String sqlOperator, String apiOperator, String apiUpperOperator) {
+        this.sqlOperator = sqlOperator;
+        this.apiOperator = apiOperator;
+        this.apiUpperOperator = apiUpperOperator;
+    }
 
-    @NonNull
-    @JsonProperty(META_DATA)
-    public abstract SearchGridMetadata metaData();
+    public String getSqlOperator() {
+        return this.sqlOperator;
+    }
 
-    @NonNull
-    @JsonProperty(WIDTH)
-    public abstract Integer width();
+    public String getApiOperator() {
+        return this.apiOperator;
+    }
 
-    @NonNull
-    @JsonProperty(HEIGHT)
-    public abstract Integer height();
-
-    @NonNull
-    @JsonProperty(ROWS)
-    public abstract List<List<String>> rows();
-
-    @JsonCreator
-    static SearchGrid create(
-            @JsonProperty(HEADERS) List<SearchGridHeader> headers,
-            @JsonProperty(META_DATA) SearchGridMetadata metaData,
-            @JsonProperty(WIDTH) Integer width,
-            @JsonProperty(HEIGHT) Integer height,
-            @JsonProperty(ROWS) List<List<String>> rows) {
-
-        return new AutoValue_SearchGrid(headers, metaData, width, height, rows);
+    public String getApiUpperOperator() {
+        return this.apiUpperOperator;
     }
 }

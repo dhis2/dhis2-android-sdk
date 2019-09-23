@@ -30,29 +30,30 @@ package org.hisp.dhis.android.core.category;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.CategoryComboWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCategoryOptionListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import java.util.List;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
-@JsonDeserialize(builder = AutoValue_CategoryOptionCombo.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_CategoryOptionCombo.Builder.class)
 public abstract class CategoryOptionCombo extends BaseIdentifiableObject implements Model {
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(CategoryComboWithUidColumnAdapter.class)
-    public abstract CategoryCombo categoryCombo();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid categoryCombo();
 
     @Nullable
     @JsonProperty()
@@ -66,7 +67,7 @@ public abstract class CategoryOptionCombo extends BaseIdentifiableObject impleme
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_CategoryOptionCombo.Builder();
+        return new $$AutoValue_CategoryOptionCombo.Builder();
     }
 
     @AutoValue.Builder
@@ -75,7 +76,7 @@ public abstract class CategoryOptionCombo extends BaseIdentifiableObject impleme
 
         public abstract Builder id(Long id);
 
-        public abstract Builder categoryCombo(CategoryCombo categoryCombo);
+        public abstract Builder categoryCombo(ObjectWithUid categoryCombo);
 
         public abstract Builder categoryOptions(List<CategoryOption> categoryOptions);
 

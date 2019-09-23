@@ -51,7 +51,7 @@ public class CategoryCollectionRepositoryMockIntegrationShould extends BaseMockI
     @Test
     public void filter_by_name() {
         List<Category> categories = d2.categoryModule().categories
-                .byName().like("%e%")
+                .byName().like("e")
                 .blockingGet();
         assertThat(categories.size(), is(3));
     }

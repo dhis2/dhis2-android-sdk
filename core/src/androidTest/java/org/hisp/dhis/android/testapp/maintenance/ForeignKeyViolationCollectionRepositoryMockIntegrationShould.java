@@ -95,7 +95,7 @@ public class ForeignKeyViolationCollectionRepositoryMockIntegrationShould extend
     @Test
     public void filter_by_from_object_row() {
         List<ForeignKeyViolation> foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations
-                .byFromObjectRow().like("%categoryOption: non_existent_category_option_uid%").blockingGet();
+                .byFromObjectRow().like("categoryOption: non_existent_category_option_uid").blockingGet();
         assertThat(foreignKeyViolations.size(), is(1));
     }
 

@@ -126,7 +126,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
         d2.fileResourceModule().fileResources.blockingAdd(getFile());
         List<FileResource> fileResources =
                 d2.fileResourceModule().fileResources
-                        .byPath().like("%files/sdk_resources%")
+                        .byPath().like("files/sdk_resources")
                         .blockingGet();
 
         assertThat(fileResources.size(), is(1));

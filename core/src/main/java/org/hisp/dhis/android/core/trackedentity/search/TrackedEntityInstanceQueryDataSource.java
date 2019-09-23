@@ -27,6 +27,9 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import androidx.annotation.NonNull;
+import androidx.paging.ItemKeyedDataSource;
+
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
@@ -34,16 +37,11 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
-import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryCallFactory;
-import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryRepositoryScope;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import androidx.annotation.NonNull;
-import androidx.paging.ItemKeyedDataSource;
 
 import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.OFFLINE_FIRST;
 import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.OFFLINE_ONLY;
@@ -129,7 +127,7 @@ public final class TrackedEntityInstanceQueryDataSource
     }
 
     private List<TrackedEntityInstance> queryOffline(int requestedLoadSize) {
-        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope.query(), returnedUids,
+        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, returnedUids,
                 requestedLoadSize);
         List<TrackedEntityInstance> instances = store.selectRawQuery(sqlQuery);
         addUids(returnedUids, instances);
@@ -137,7 +135,7 @@ public final class TrackedEntityInstanceQueryDataSource
     }
 
     private List<TrackedEntityInstance> queryOnline(int requestLoadSize, boolean isInitial) {
-        TrackedEntityInstanceQuery onlineQuery = scope.query().toBuilder()
+        TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(scope).toBuilder()
                 .page(currentOnlinePage + 1)
                 .pageSize(requestLoadSize)
                 .paging(true).build();

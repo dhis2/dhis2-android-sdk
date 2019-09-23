@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttrib
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeCallFactory;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeEntityDIModule;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeService;
-import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryEntityDIModule;
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryEntityDIModule;
 
 import dagger.Module;
 import dagger.Provides;

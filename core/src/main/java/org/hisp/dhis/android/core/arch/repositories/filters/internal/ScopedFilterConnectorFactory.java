@@ -26,28 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search.internal;
+package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ScopedRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.BaseScopeFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 
-import java.util.Map;
+import java.util.List;
 
-import androidx.annotation.NonNull;
+public class ScopedFilterConnectorFactory<R extends BaseRepository, S extends BaseScope> {
 
-@AutoValue
-abstract class SearchGridMetadata {
-    private final static String NAMES = "names";
+    public final ScopedRepositoryFactory<R, S> repositoryFactory;
 
-    @NonNull
-    @JsonProperty(NAMES)
-    abstract Map<String, String> names();
+    public ScopedFilterConnectorFactory(ScopedRepositoryFactory<R, S> repositoryFactory) {
+        this.repositoryFactory = repositoryFactory;
+    }
 
-    @JsonCreator
-    static SearchGridMetadata create(
-            @JsonProperty(NAMES) Map<String, String> names) {
+    public <T> EqFilterConnector<R, S, T> eqConnector(BaseScopeFactory<S, T> baseScopeFactory) {
+        return new EqFilterConnector<>(repositoryFactory, baseScopeFactory);
+    }
 
-        return new AutoValue_SearchGridMetadata(names);
+    public <T> ListFilterConnector<R, S, T> listConnector(BaseScopeFactory<S, List<T>> baseScopeFactory) {
+        return new ListFilterConnector<>(repositoryFactory, baseScopeFactory);
+    }
+
+    public EqLikeItemFilterConnector<R, S> eqLikeItemC(String key, BaseScopeFactory<S,
+            RepositoryScopeFilterItem> baseScopeFactory) {
+        return new EqLikeItemFilterConnector<>(repositoryFactory, baseScopeFactory, key);
     }
 }

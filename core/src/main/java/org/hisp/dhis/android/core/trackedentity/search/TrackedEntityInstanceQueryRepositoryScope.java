@@ -28,10 +28,15 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
+import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
@@ -39,13 +44,13 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 @AutoValue
-public abstract class TrackedEntityInstanceQuery extends BaseQuery {
+abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
 
     private static final SafeDateFormat QUERY_FORMAT = new SafeDateFormat("yyyy-MM-dd");
+
+    @NonNull
+    public abstract RepositoryMode mode();
 
     @NonNull
     public abstract List<String> orgUnits();
@@ -57,13 +62,13 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
     public abstract String program();
 
     @Nullable
-    public abstract QueryFilter query();
+    public abstract RepositoryScopeFilterItem query();
 
     @NonNull
-    public abstract List<QueryItem> attribute();
+    public abstract List<RepositoryScopeFilterItem> attribute();
 
     @NonNull
-    public abstract List<QueryItem> filter();
+    public abstract List<RepositoryScopeFilterItem> filter();
 
     @Nullable
     public abstract Date programStartDate();
@@ -73,6 +78,9 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
 
     @Nullable
     public abstract String trackedEntityType();
+
+    @Nullable
+    public abstract Boolean includeDeleted();
 
     @Nullable
     public abstract List<State> states();
@@ -85,32 +93,37 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
         return programEndDate() == null ? null : QUERY_FORMAT.format(programEndDate());
     }
 
-    public static Builder builder() {
-        return new AutoValue_TrackedEntityInstanceQuery.Builder()
-                .attribute(Collections.<QueryItem>emptyList())
-                .filter(Collections.emptyList())
-                .orgUnits(Collections.emptyList());
-    }
-
     public abstract Builder toBuilder();
 
-    public static TrackedEntityInstanceQuery empty() {
-        return builder().page(1).pageSize(DEFAULT_PAGE_SIZE).paging(true).build();
+    public static Builder builder() {
+        return new AutoValue_TrackedEntityInstanceQueryRepositoryScope.Builder()
+                .attribute(Collections.emptyList())
+                .filter(Collections.emptyList())
+                .orgUnits(Collections.emptyList())
+                .mode(RepositoryMode.OFFLINE_ONLY)
+                .includeDeleted(false);
+    }
+
+    public static TrackedEntityInstanceQueryRepositoryScope empty() {
+        return builder().build();
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseQuery.Builder<Builder> {
+    abstract static class Builder {
+
+        public abstract Builder mode(RepositoryMode mode);
+
         public abstract Builder orgUnits(List<String> orgUnits);
 
         public abstract Builder orgUnitMode(OrganisationUnitMode orgUnitMode);
 
         public abstract Builder program(String program);
 
-        public abstract Builder query(QueryFilter query);
+        public abstract Builder query(RepositoryScopeFilterItem query);
 
-        public abstract Builder attribute(List<QueryItem> attribute);
+        public abstract Builder attribute(List<RepositoryScopeFilterItem> attribute);
 
-        public abstract Builder filter(List<QueryItem> filter);
+        public abstract Builder filter(List<RepositoryScopeFilterItem> filter);
 
         public abstract Builder programStartDate(Date programStartDate);
 
@@ -120,6 +133,19 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
 
         public abstract Builder states(List<State> states);
 
-        public abstract TrackedEntityInstanceQuery build();
+        public abstract Builder includeDeleted(Boolean includeDeleted);
+
+        abstract TrackedEntityInstanceQueryRepositoryScope autoBuild();
+
+        // Auxiliary fields to access values
+        abstract List<State> states();
+
+        public TrackedEntityInstanceQueryRepositoryScope build() {
+            if (states() != null) {
+                mode(RepositoryMode.OFFLINE_ONLY);
+            }
+
+            return autoBuild();
+        }
     }
 }

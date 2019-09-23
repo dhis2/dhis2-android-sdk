@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo.Columns;
 
 public final class ProgramTrackedEntityAttributeFields {
-    private static final String RENDER_TYPE = "renderType";
+    public static final String RENDER_TYPE = "renderType";
 
     private static FieldsHelper<ProgramTrackedEntityAttribute> fh = new FieldsHelper<>();
 

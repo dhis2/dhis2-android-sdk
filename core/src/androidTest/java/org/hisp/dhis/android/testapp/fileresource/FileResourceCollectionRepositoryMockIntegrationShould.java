@@ -173,7 +173,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
         FileResource fileResource = d2.fileResourceModule().fileResources.uid(fileResourceUid).blockingGet();
         assertThat(fileResource.uid(), is(fileResourceUid));
 
-        File savedFile = new File(fileResource.path(), fileResource.uid() + ".png");
+        File savedFile = new File(fileResource.path());
         assertThat(savedFile.exists(), is(true));
     }
 

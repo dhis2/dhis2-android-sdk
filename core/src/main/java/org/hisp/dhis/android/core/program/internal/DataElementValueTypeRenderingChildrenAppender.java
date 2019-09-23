@@ -25,32 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal;
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
+import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
+import javax.inject.Inject;
 
-public final class IntegerFilterConnector<R extends BaseRepository>
-        extends BaseAbstractFilterConnector<R, Integer> {
+import dagger.Reusable;
 
-    IntegerFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                           RepositoryScope scope,
-                           String key) {
-        super(repositoryFactory, scope, key);
+@Reusable
+final class DataElementValueTypeRenderingChildrenAppender
+        extends ValueTypeRenderingChildrenAppender<ProgramStageDataElement> {
+
+    @Inject
+    DataElementValueTypeRenderingChildrenAppender(ObjectWithoutUidStore<ValueTypeDeviceRendering> store) {
+        super(store);
     }
 
-    public R smallerThan(int value) {
-        return newWithWrappedScope(FilterItemOperator.LT, value);
-    }
+    @Override
+    protected ProgramStageDataElement appendChildren(ProgramStageDataElement programStageDataElement) {
+        ValueTypeRendering valueTypeRendering = getValueTypeDeviceRendering(programStageDataElement);
 
-    public R biggerThan(int value) {
-        return newWithWrappedScope(FilterItemOperator.GT, value);
-    }
-
-    String wrapValue(Integer value) {
-        return value.toString();
+        return programStageDataElement.toBuilder().renderType(valueTypeRendering).build();
     }
 }

@@ -26,19 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search.internal;
+package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ScopedRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.BaseScopeFactory;
 
-@Module
-public final class TrackedEntityInstanceQueryEntityDIModule {
+public final class EqFilterConnector<R  extends BaseRepository, S extends BaseScope, T> {
 
-    @Provides
-    @Reusable
-    public TrackedEntityInstanceQueryRepositoryScope empty() {
-        return TrackedEntityInstanceQueryRepositoryScope.empty();
+    private final ScopedRepositoryFactory<R, S> repositoryFactory;
+    private final BaseScopeFactory<S, T> baseScopeFactory;
+
+    EqFilterConnector(ScopedRepositoryFactory<R, S> repositoryFactory,
+                      BaseScopeFactory<S, T> baseScopeFactory) {
+        this.repositoryFactory = repositoryFactory;
+        this.baseScopeFactory = baseScopeFactory;
     }
 
+    public R eq(T value) {
+        return repositoryFactory.updated(baseScopeFactory.updated(value));
+    }
 }

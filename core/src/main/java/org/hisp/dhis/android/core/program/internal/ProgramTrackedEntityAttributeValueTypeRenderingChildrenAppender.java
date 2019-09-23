@@ -25,55 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal;
 
-package org.hisp.dhis.android.core.trackedentity.search.internal;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 
-import com.google.auto.value.AutoValue;
+import javax.inject.Inject;
 
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
+import dagger.Reusable;
 
-import androidx.annotation.NonNull;
+@Reusable
+final class ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender
+        extends ValueTypeRenderingChildrenAppender<ProgramTrackedEntityAttribute> {
 
-@AutoValue
-public abstract class TrackedEntityInstanceQueryRepositoryScope {
-
-    @NonNull
-    public abstract RepositoryMode mode();
-
-    @NonNull
-    public abstract TrackedEntityInstanceQuery query();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_TrackedEntityInstanceQueryRepositoryScope.Builder()
-                .mode(RepositoryMode.OFFLINE_ONLY)
-                .query(TrackedEntityInstanceQuery.empty());
+    @Inject
+    ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender(
+            ObjectWithoutUidStore<ValueTypeDeviceRendering> store) {
+        super(store);
     }
 
-    public static TrackedEntityInstanceQueryRepositoryScope empty() {
-        return builder().build();
-    }
+    @Override
+    protected ProgramTrackedEntityAttribute appendChildren(
+            ProgramTrackedEntityAttribute programTrackedEntityAttribute) {
+        ValueTypeRendering valueTypeRendering = getValueTypeDeviceRendering(programTrackedEntityAttribute);
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder mode(RepositoryMode mode);
-
-        public abstract Builder query(TrackedEntityInstanceQuery query);
-
-        abstract TrackedEntityInstanceQueryRepositoryScope autoBuild();
-
-        // Auxiliary fields to access values
-        abstract TrackedEntityInstanceQuery query();
-
-        public TrackedEntityInstanceQueryRepositoryScope build() {
-            if (query() != null && query().states() != null) {
-                mode(RepositoryMode.OFFLINE_ONLY);
-            }
-
-            return autoBuild();
-        }
+        return programTrackedEntityAttribute.toBuilder().renderType(valueTypeRendering).build();
     }
 }

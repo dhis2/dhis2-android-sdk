@@ -26,41 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search;
+package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ScopedRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.BaseScopeFactory;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import androidx.annotation.NonNull;
+public final class ListFilterConnector<R  extends BaseRepository, S extends BaseScope, T> {
 
-@AutoValue
-public abstract class QueryItem {
+    private final ScopedRepositoryFactory<R, S> repositoryFactory;
+    private final BaseScopeFactory<S, List<T>> baseScopeFactory;
 
-    @NonNull
-    public abstract String item();
-
-    @NonNull
-    public abstract List<QueryFilter> filters();
-
-
-    public static Builder builder() {
-        return new AutoValue_QueryItem.Builder()
-                .filters(Collections.emptyList());
+    ListFilterConnector(ScopedRepositoryFactory<R, S> repositoryFactory,
+                        BaseScopeFactory<S, List<T>> baseScopeFactory) {
+        this.repositoryFactory = repositoryFactory;
+        this.baseScopeFactory = baseScopeFactory;
     }
 
-    public static QueryItem create(String item, QueryFilter... filters) {
-        return builder().item(item).filters(Arrays.asList(filters)).build();
+    public R eq(T value) {
+        return repositoryFactory.updated(baseScopeFactory.updated(Collections.singletonList(value)));
     }
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder item(String item);
+    public R in(List<T> values) {
+        return repositoryFactory.updated(baseScopeFactory.updated(values));
+    }
 
-        public abstract Builder filters(List<QueryFilter> filters);
-
-        public abstract QueryItem build();
+    @SafeVarargs
+    public final R in(T... values) {
+        return in(Arrays.asList(values));
     }
 }

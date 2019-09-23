@@ -28,17 +28,17 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
-public enum QueryOperator {
-    LIKE("LIKE"),
-    EQ("LIKE");     // Intentionally LIKE to perform case insensitive matching
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    private String sqlOperator;
+@Module
+public final class TrackedEntityInstanceQueryEntityDIModule {
 
-    QueryOperator(String sqlOperator) {
-        this.sqlOperator = sqlOperator;
+    @Provides
+    @Reusable
+    public TrackedEntityInstanceQueryRepositoryScope empty() {
+        return TrackedEntityInstanceQueryRepositoryScope.empty();
     }
 
-    public String getSqlOperator() {
-        return this.sqlOperator;
-    }
 }

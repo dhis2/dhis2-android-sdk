@@ -53,6 +53,6 @@ public class PeriodMockIntegrationShould extends BaseMockIntegrationTestFullDisp
     @Test
     public void get_periods_for_dataset() {
         List<Period> periods = d2.periodModule().periodHelper.blockingGetPeriodsForDataSet("lyLU2wR22tC");
-        assertThat(periods.size(), is(14));
+        assertThat(periods.size(), is(13));
     }
 }

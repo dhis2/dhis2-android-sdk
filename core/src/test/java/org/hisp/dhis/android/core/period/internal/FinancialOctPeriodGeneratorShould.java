@@ -51,7 +51,7 @@ public class FinancialOctPeriodGeneratorShould extends PeriodGeneratorBaseShould
         calendar.set(2017, 9, 1);
         Period period = generateExpectedPeriod("2017Oct", calendar);
 
-        calendar.set(2018, 1, 21);
+        calendar.set(2019, 1, 21);
         YearlyPeriodGenerator generator = YearlyPeriodGeneratorFactory.financialOct(calendar);
         List<Period> generatedPeriods = generator.generatePeriods(1, 0);
 
@@ -63,7 +63,7 @@ public class FinancialOctPeriodGeneratorShould extends PeriodGeneratorBaseShould
         calendar.set(2017, 9, 1);
         Period period = generateExpectedPeriod("2017Oct", calendar);
 
-        calendar.set(2017, 9, 1);
+        calendar.set(2018, 9, 1);
         YearlyPeriodGenerator generator = YearlyPeriodGeneratorFactory.financialOct(calendar);
         List<Period> generatedPeriods = generator.generatePeriods(1, 0);
 
@@ -75,7 +75,7 @@ public class FinancialOctPeriodGeneratorShould extends PeriodGeneratorBaseShould
         calendar.set(2016, 9, 1);
         Period period = generateExpectedPeriod("2016Oct", calendar);
 
-        calendar.set(2017, 8, 30);
+        calendar.set(2018, 8, 30);
         YearlyPeriodGenerator generator = YearlyPeriodGeneratorFactory.financialOct(calendar);
         List<Period> generatedPeriods = generator.generatePeriods(1, 0);
 
@@ -90,7 +90,7 @@ public class FinancialOctPeriodGeneratorShould extends PeriodGeneratorBaseShould
         Period period2 = generateExpectedPeriod("2017Oct", calendar);
         List<Period> expectedPeriods = Lists.newArrayList(period1, period2);
 
-        calendar.set(2018, 1, 21);
+        calendar.set(2019, 1, 21);
         YearlyPeriodGenerator generator = YearlyPeriodGeneratorFactory.financialOct(calendar);
         List<Period> generatedPeriods = generator.generatePeriods(2, 0);
 

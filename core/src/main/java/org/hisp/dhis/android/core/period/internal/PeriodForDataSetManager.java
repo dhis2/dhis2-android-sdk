@@ -28,39 +28,42 @@
 
 package org.hisp.dhis.android.core.period.internal;
 
+import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository;
 import org.hisp.dhis.android.core.period.Period;
-import org.hisp.dhis.android.core.period.PeriodType;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
+import dagger.Reusable;
 import io.reactivex.Single;
-import io.reactivex.annotations.NonNull;
 
-@Singleton
-public class PeriodHelper {
+@Reusable
+public class PeriodForDataSetManager {
 
+    private final DataSetCollectionRepository dataSetCollectionRepository;
+    private final ParentPeriodGenerator parentPeriodGenerator;
     private final PeriodStore periodStore;
-    private final PeriodForDataSetManager periodForDataSetManager;
 
     @Inject
-    PeriodHelper(PeriodStore periodStore, PeriodForDataSetManager periodForDataSetManager) {
+    PeriodForDataSetManager(DataSetCollectionRepository dataSetCollectionRepository,
+                            ParentPeriodGenerator parentPeriodGenerator,
+                            PeriodStore periodStore) {
+        this.dataSetCollectionRepository = dataSetCollectionRepository;
+        this.parentPeriodGenerator = parentPeriodGenerator;
         this.periodStore = periodStore;
-        this.periodForDataSetManager = periodForDataSetManager;
     }
 
-    public Period getPeriod(@NonNull PeriodType periodType, @NonNull Date date) {
-        return periodStore.selectPeriodByTypeAndDate(periodType, date);
-    }
+    Single<List<Period>> getPeriodsForDataSet(String dataSetUid) {
+        return dataSetCollectionRepository.uid(dataSetUid).get().map(dataSet -> {
+            Integer dataSetFuturePeriods = dataSet.openFuturePeriods();
+            int futurePeriods = dataSetFuturePeriods == null ? 0 : dataSetFuturePeriods;
+            List<Period> periods = parentPeriodGenerator.generatePeriods(dataSet.periodType(), futurePeriods);
+            for (Period period: periods) {
+                periodStore.updateOrInsertWhere(period);
+            }
 
-    public Single<List<Period>> getPeriodsForDataSet(String dataSetUid) {
-        return periodForDataSetManager.getPeriodsForDataSet(dataSetUid);
-    }
-
-    public List<Period> blockingGetPeriodsForDataSet(String dataSetUid) {
-        return getPeriodsForDataSet(dataSetUid).blockingGet();
+            return periods;
+        });
     }
 }

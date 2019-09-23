@@ -67,7 +67,7 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
         List<Period> periods = new ArrayList<>();
         setCalendarToStartTimeOfADay(calendar);
         moveToStartOfCurrentPeriod();
-        movePeriods(1 - past);
+        movePeriods(1 - past - 1);
 
         for (int i = 0; i < past + future; i++) {
             Date startDate = calendar.getTime();

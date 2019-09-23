@@ -69,7 +69,7 @@ public class DataApprovalCollectionRepositoryMockIntegrationShould extends BaseM
     @Test
     public void filter_by_period() {
         List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals
-                .byPeriodId().eq("2019")
+                .byPeriodId().eq("2018")
                 .blockingGet();
         assertThat(dataApprovals.size(), is(1));
     }

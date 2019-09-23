@@ -65,7 +65,7 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
     @Test
     public void filter_by_period() {
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances
-                .byPeriod().eq("2019")
+                .byPeriod().eq("2018")
                 .blockingGet();
         assertThat(dataSetInstances.size(), is(1));
     }
@@ -83,7 +83,7 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances
                 .byPeriodStartDate().after(BaseIdentifiableObject.parseDate("2018-07-15T00:00:00.000"))
                 .blockingGet();
-        assertThat(dataSetInstances.size(), is(2));
+        assertThat(dataSetInstances.size(), is(1));
     }
 
     @Test
@@ -91,7 +91,7 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances
                 .byPeriodEndDate().after(BaseIdentifiableObject.parseDate("2018-07-15T00:00:00.000"))
                 .blockingGet();
-        assertThat(dataSetInstances.size(), is(3));
+        assertThat(dataSetInstances.size(), is(2));
     }
 
     @Test
@@ -105,7 +105,7 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
     @Test
     public void fill_completion_information() {
         List<DataSetInstance> dataSetInstanceCompleted = d2.dataSetModule().dataSetInstances
-                .byPeriod().eq("2019")
+                .byPeriod().eq("2018")
                 .blockingGet();
         assertThat(dataSetInstanceCompleted.get(0).completed(), is(true));
         assertThat(dataSetInstanceCompleted.get(0).completionDate(), is(notNullValue()));

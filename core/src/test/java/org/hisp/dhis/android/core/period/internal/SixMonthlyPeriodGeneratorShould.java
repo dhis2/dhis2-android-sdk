@@ -51,7 +51,7 @@ public class SixMonthlyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         calendar.set(2018, 0, 1);
         Period period = generateExpectedPeriod("2018S1", calendar);
 
-        calendar.set(2018, 1, 21);
+        calendar.set(2018, 7, 21);
         NMonthlyPeriodGenerator generator = NMonthlyPeriodGeneratorFactory.sixMonthly(calendar);
         List<Period> generatedPeriods = generator.generatePeriods(1, 0);
 
@@ -63,7 +63,7 @@ public class SixMonthlyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         calendar.set(2018, 0, 1);
         Period period = generateExpectedPeriod("2018S1", calendar);
 
-        calendar.set(2018, 0, 1);
+        calendar.set(2018, 6, 1);
         NMonthlyPeriodGenerator generator = NMonthlyPeriodGeneratorFactory.sixMonthly(calendar);
         List<Period> generatedPeriods = generator.generatePeriods(1, 0);
 
@@ -75,7 +75,7 @@ public class SixMonthlyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         calendar.set(2017, 6, 1);
         Period period = generateExpectedPeriod("2017S2", calendar);
 
-        calendar.set(2017, 11, 31);
+        calendar.set(2018, 5, 30);
         NMonthlyPeriodGenerator generator = NMonthlyPeriodGeneratorFactory.sixMonthly(calendar);
         List<Period> generatedPeriods = generator.generatePeriods(1, 0);
 
@@ -90,7 +90,7 @@ public class SixMonthlyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         Period period2 = generateExpectedPeriod("2018S1", calendar);
         List<Period> expectedPeriods = Lists.newArrayList(period1, period2);
 
-        calendar.set(2018, 1, 21);
+        calendar.set(2018, 7, 21);
         NMonthlyPeriodGenerator generator = NMonthlyPeriodGeneratorFactory.sixMonthly(calendar);
         List<Period> generatedPeriods = generator.generatePeriods(2, 0);
 

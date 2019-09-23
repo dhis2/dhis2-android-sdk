@@ -60,7 +60,6 @@ import java.util.List;
 public abstract class Event extends BaseDeletableDataModel implements ObjectWithUidInterface {
 
     @Override
-    @Nullable
     @JsonProperty(EventFields.UID)
     public abstract String uid();
 

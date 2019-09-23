@@ -175,7 +175,7 @@ public class TrackedEntityInstanceHandlerShould {
 
     @Test
     public void invoke_enrollment_cleaner_if_full_update() {
-        when(trackedEntityInstance.toBuilder()).thenReturn(TrackedEntityInstance.builder());
+        when(trackedEntityInstance.toBuilder()).thenReturn(TrackedEntityInstance.builder().uid("uid"));
         when(trackedEntityInstanceStore.updateOrInsert(any(TrackedEntityInstance.class))).thenReturn(HandleAction.Update);
 
         trackedEntityInstanceHandler.handleMany(Collections.singletonList(trackedEntityInstance), false, true);
@@ -185,7 +185,7 @@ public class TrackedEntityInstanceHandlerShould {
 
     @Test
     public void do_not_invoke_enrollment_cleaner_if_not_full_update() {
-        when(trackedEntityInstance.toBuilder()).thenReturn(TrackedEntityInstance.builder());
+        when(trackedEntityInstance.toBuilder()).thenReturn(TrackedEntityInstance.builder().uid("uid"));
         when(trackedEntityInstanceStore.updateOrInsert(any(TrackedEntityInstance.class))).thenReturn(HandleAction.Update);
 
         trackedEntityInstanceHandler.handleMany(Collections.singletonList(trackedEntityInstance), false, false);

@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.Model;
 
 import java.util.Map;
@@ -73,9 +72,5 @@ public abstract class ReadOnlyObjectRepositoryImpl<M extends Model, R extends Re
     @Override
     public boolean blockingExists() {
         return getWithoutChildren() != null;
-    }
-
-    public R withAllChildren() {
-        return repositoryFactory.updated(RepositoryScopeHelper.withAllChildren(scope));
     }
 }

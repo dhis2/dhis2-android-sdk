@@ -75,7 +75,7 @@ public class OptionSetCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void include_options_as_children_in_collection_repository_when_all_selected() {
         OptionSet optionSet = d2.optionModule().optionSets
-                .withAllChildren()
+                .withOptions()
                 .uid("VQ2lai3OfVG")
                 .blockingGet();
         assertThat(optionSet.options().get(0).name(), is("0-14 years"));
@@ -84,7 +84,7 @@ public class OptionSetCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void include_options_as_children_in_object_repository_when_all_selected() {
         OptionSet optionSet = d2.optionModule().optionSets
-                .withAllChildren()
+                .withOptions()
                 .uid("VQ2lai3OfVG")
                 .blockingGet();
         assertThat(optionSet.options().get(0).name(), is("0-14 years"));

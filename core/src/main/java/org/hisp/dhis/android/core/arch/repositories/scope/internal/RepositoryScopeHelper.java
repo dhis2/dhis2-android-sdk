@@ -61,10 +61,6 @@ public final class RepositoryScopeHelper {
         return scope.toBuilder().complexFilters(copiedItems).build();
     }
 
-    public static RepositoryScope withAllChildren(RepositoryScope scope) {
-        return scope.toBuilder().children(scope.children().selectAllChildren()).build();
-    }
-
     public static RepositoryScope withChild(RepositoryScope scope, String child) {
         return scope.toBuilder().children(scope.children().withChild(child)).build();
     }

@@ -46,25 +46,25 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
     private final YearlyPeriodGenerators yearly;
 
     static class Past {
-        static final int DAILY_PERIODS = 60;
-        static final int WEEKLY_PERIODS = 13;
-        static final int BIWEEKLY_PERIODS = 13;
-        static final int MONTHLY_PERIODS = 12;
-        static final int BIMONTHLY_PERIODS = 6;
-        static final int QUARTER_PERIODS = 5;
-        static final int SIXMONTHLY_PERIODS = 5;
-        static final int YEARLY_PERIODS = 5;
+        static final int DAILY_PERIODS = 59;
+        static final int WEEKLY_PERIODS = 12;
+        static final int BIWEEKLY_PERIODS = 12;
+        static final int MONTHLY_PERIODS = 11;
+        static final int BIMONTHLY_PERIODS = 5;
+        static final int QUARTER_PERIODS = 4;
+        static final int SIXMONTHLY_PERIODS = 4;
+        static final int YEARLY_PERIODS = 4;
     }
 
     static class Future {
-        static final int DAILY_PERIODS = 0;
-        static final int WEEKLY_PERIODS = 0;
-        static final int BIWEEKLY_PERIODS = 0;
-        static final int MONTHLY_PERIODS = 0;
-        static final int BIMONTHLY_PERIODS = 0;
-        static final int QUARTER_PERIODS = 0;
-        static final int SIXMONTHLY_PERIODS = 0;
-        static final int YEARLY_PERIODS = 0;
+        static final int DAILY_PERIODS = 1;
+        static final int WEEKLY_PERIODS = 1;
+        static final int BIWEEKLY_PERIODS = 1;
+        static final int MONTHLY_PERIODS = 1;
+        static final int BIMONTHLY_PERIODS = 1;
+        static final int QUARTER_PERIODS = 1;
+        static final int SIXMONTHLY_PERIODS = 1;
+        static final int YEARLY_PERIODS = 1;
     }
 
     ParentPeriodGeneratorImpl(PeriodGenerator daily,

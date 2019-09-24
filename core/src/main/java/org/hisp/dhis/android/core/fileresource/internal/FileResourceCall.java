@@ -60,7 +60,7 @@ public class FileResourceCall {
     }
 
     public Observable<D2Progress> download() {
-        D2ProgressManager progressManager = new D2ProgressManager(1);
+        D2ProgressManager progressManager = new D2ProgressManager(2);
 
         Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
                 progressManager.increaseProgress(SystemInfo.class, false));

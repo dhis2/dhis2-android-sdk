@@ -36,6 +36,8 @@ import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,6 +47,7 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 @Reusable
 public final class DataSetCompleteRegistrationPostCall {
@@ -52,21 +55,29 @@ public final class DataSetCompleteRegistrationPostCall {
     private final DataSetCompleteRegistrationService dataSetCompleteRegistrationService;
     private final DataSetCompleteRegistrationStore  dataSetCompleteRegistrationStore;
     private final APICallExecutor apiCallExecutor;
+    private final SystemInfoModuleDownloader systemInfoDownloader;
 
     @Inject
     DataSetCompleteRegistrationPostCall(
             @NonNull DataSetCompleteRegistrationService dataSetCompleteRegistrationService,
             @NonNull DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore,
-            @NonNull APICallExecutor apiCallExecutor) {
+            @NonNull APICallExecutor apiCallExecutor,
+            @NonNull SystemInfoModuleDownloader systemInfoDownloader) {
 
         this.dataSetCompleteRegistrationService = dataSetCompleteRegistrationService;
         this.dataSetCompleteRegistrationStore = dataSetCompleteRegistrationStore;
         this.apiCallExecutor = apiCallExecutor;
+        this.systemInfoDownloader = systemInfoDownloader;
     }
 
     public Observable<D2Progress> uploadDataSetCompleteRegistrations() {
-        return Observable.create(emitter -> {
-            D2ProgressManager progressManager = new D2ProgressManager(1);
+
+        D2ProgressManager progressManager = new D2ProgressManager(2);
+
+        Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
+                progressManager.increaseProgress(SystemInfo.class, false));
+
+        return systemInfoDownload.flatMapObservable(systemInfoProgress -> Observable.create(emitter -> {
 
             List<DataSetCompleteRegistration> toPostDataSetCompleteRegistrations = new ArrayList<>();
             List<DataSetCompleteRegistration> toDeleteDataSetCompleteRegistrations = new ArrayList<>();
@@ -106,8 +117,7 @@ public final class DataSetCompleteRegistrationPostCall {
 
             emitter.onNext(progressManager.increaseProgress(DataSetCompleteRegistration.class, true));
             emitter.onComplete();
-        });
-
+        }));
     }
 
     private void appendToDeleteRegistrations(

@@ -39,9 +39,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbValueTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAccessAdapter;
 import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
@@ -93,10 +91,6 @@ public abstract class DataElement extends BaseNameableObject
     @Nullable
     public abstract String fieldMask();
 
-    @Nullable
-    @ColumnAdapter(IgnoreAccessAdapter.class)
-    public abstract Access access();
-
     public static Builder builder() {
         return new $$AutoValue_DataElement.Builder();
     }
@@ -131,8 +125,6 @@ public abstract class DataElement extends BaseNameableObject
         public abstract DataElement.Builder categoryCombo(ObjectWithUid categoryCombo);
 
         public abstract DataElement.Builder fieldMask(String fieldMask);
-
-        public abstract DataElement.Builder access(Access access);
 
         public abstract DataElement build();
     }

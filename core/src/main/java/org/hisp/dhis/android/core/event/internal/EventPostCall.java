@@ -39,6 +39,8 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
 
@@ -51,6 +53,7 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 @Reusable
 public final class EventPostCall {
@@ -64,6 +67,7 @@ public final class EventPostCall {
     private final EventImportHandler eventImportHandler;
 
     private final APICallExecutor apiCallExecutor;
+    private final SystemInfoModuleDownloader systemInfoDownloader;
 
     @Inject
     EventPostCall(@NonNull DHISVersionManager versionManager,
@@ -71,37 +75,46 @@ public final class EventPostCall {
                   @NonNull EventStore eventStore,
                   @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
                   @NonNull APICallExecutor apiCallExecutor,
-                  @NonNull EventImportHandler eventImportHandler) {
+                  @NonNull EventImportHandler eventImportHandler,
+                  @NonNull SystemInfoModuleDownloader systemInfoDownloader) {
         this.versionManager = versionManager;
         this.eventService = eventService;
         this.eventStore = eventStore;
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
         this.apiCallExecutor = apiCallExecutor;
         this.eventImportHandler = eventImportHandler;
+        this.systemInfoDownloader = systemInfoDownloader;
     }
 
     public Observable<D2Progress> uploadEvents(List<Event> filteredEvents) {
-        return Observable.create(emitter -> {
+        return Observable.defer(() -> {
             List<Event> eventsToPost = queryDataToSync(filteredEvents);
 
             // if there is nothing to send, return null
             if (eventsToPost.isEmpty()) {
-                emitter.onComplete();
+                return Observable.empty();
             } else {
-                D2ProgressManager progressManager = new D2ProgressManager(1);
+                D2ProgressManager progressManager = new D2ProgressManager(2);
 
-                EventPayload eventPayload = new EventPayload();
-                eventPayload.events = eventsToPost;
+                Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
+                        progressManager.increaseProgress(SystemInfo.class, false));
 
-                String strategy = versionManager.is2_29() ? "CREATE_AND_UPDATE" : "SYNC";
+                return systemInfoDownload.flatMapObservable(systemInfoProgress -> Observable.create(emitter -> {
+                    emitter.onNext(systemInfoProgress);
 
-                EventWebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                        eventService.postEvents(eventPayload, strategy), Collections.singletonList(409),
-                        EventWebResponse.class);
+                    EventPayload eventPayload = new EventPayload();
+                    eventPayload.events = eventsToPost;
 
-                handleWebResponse(webResponse);
-                emitter.onNext(progressManager.increaseProgress(Event.class, true));
-                emitter.onComplete();
+                    String strategy = versionManager.is2_29() ? "CREATE_AND_UPDATE" : "SYNC";
+
+                    EventWebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
+                            eventService.postEvents(eventPayload, strategy), Collections.singletonList(409),
+                            EventWebResponse.class);
+
+                    handleWebResponse(webResponse);
+                    emitter.onNext(progressManager.increaseProgress(Event.class, true));
+                    emitter.onComplete();
+                }));
             }
         });
     }

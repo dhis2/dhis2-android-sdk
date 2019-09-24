@@ -34,6 +34,8 @@ import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,6 +45,7 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 @Reusable
 public final class DataValuePostCall {
@@ -50,19 +53,27 @@ public final class DataValuePostCall {
     private final DataValueService dataValueService;
     private final DataValueStore dataValueStore;
     private final APICallExecutor apiCallExecutor;
+    private final SystemInfoModuleDownloader systemInfoDownloader;
 
     @Inject
     DataValuePostCall(@NonNull DataValueService dataValueService,
                       @NonNull DataValueStore dataValueSetStore,
-                      APICallExecutor apiCallExecutor) {
+                      @NonNull APICallExecutor apiCallExecutor,
+                      @NonNull SystemInfoModuleDownloader systemInfoDownloader) {
 
         this.dataValueService = dataValueService;
         this.dataValueStore = dataValueSetStore;
         this.apiCallExecutor = apiCallExecutor;
+        this.systemInfoDownloader = systemInfoDownloader;
     }
 
     public Observable<D2Progress> uploadDataValues() {
-        return Observable.create(emitter -> {
+        D2ProgressManager progressManager = new D2ProgressManager(null);
+
+        Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
+                progressManager.increaseProgress(SystemInfo.class, false));
+
+        return systemInfoDownload.flatMapObservable(systemInfoProgress -> Observable.create(emitter -> {
             Collection<DataValue> toPostDataValues = new ArrayList<>();
 
             appendPostableDataValues(toPostDataValues);
@@ -71,8 +82,6 @@ public final class DataValuePostCall {
             if (toPostDataValues.isEmpty()) {
                 emitter.onComplete();
             } else {
-                D2ProgressManager progressManager = new D2ProgressManager(1);
-
                 DataValueSet dataValueSet = new DataValueSet(toPostDataValues);
 
                 DataValueImportSummary dataValueImportSummary = apiCallExecutor.executeObjectCall(
@@ -83,7 +92,7 @@ public final class DataValuePostCall {
                 emitter.onNext(progressManager.increaseProgress(DataValue.class, true));
                 emitter.onComplete();
             }
-        });
+        }));
     }
 
     private void appendPostableDataValues(Collection<DataValue> dataValues) {

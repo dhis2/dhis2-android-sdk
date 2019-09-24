@@ -26,26 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.testapp.trackedentity.search;
 
-/**
- * Defines the selection of organisation units.
- *
- * <ul>
- * <li>SELECTED: specified units only.</li>
- * <li>CHILDREN: immediate children of specified units, including specified units.</li>
- * <li>DESCENDANTS: all units in sub-hierarchy of specified units, including specified units.</li>
- * <li>ACCESSIBLE: all organisation units accessible by the user (search scope).</li>
- * <li>ALL: all units in system.</li>
- * </ul>
- *
- * @author Lars Helge Overland
- */
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public enum OrganisationUnitMode {
-    SELECTED,
-    CHILDREN,
-    DESCENDANTS,
-    ACCESSIBLE,
-    ALL
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+
+@RunWith(D2JunitRunner.class)
+public class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould
+        extends BaseMockIntegrationTestFullDispatcher {
+
+    @Test
+    public void find_by_program() {
+        List<TrackedEntityInstance> trackedEntityInstances =
+                d2.trackedEntityModule().trackedEntityInstanceQuery
+                        .byProgram().eq("lxAQ7Zs9VYR")
+                        .blockingGet();
+
+        assertThat(trackedEntityInstances.size(), is(2));
+    }
 }

@@ -27,6 +27,11 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
+
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
@@ -53,10 +58,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import androidx.lifecycle.LiveData;
-import androidx.paging.DataSource;
-import androidx.paging.LivePagedListBuilder;
-import androidx.paging.PagedList;
 import dagger.Reusable;
 import io.reactivex.Single;
 
@@ -73,7 +74,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     private final TrackedEntityInstanceQueryRepositoryScope scope;
 
     @Inject
-    public TrackedEntityInstanceQueryCollectionRepository(
+    TrackedEntityInstanceQueryCollectionRepository(
             final TrackedEntityInstanceStore store,
             final TrackedEntityInstanceQueryCallFactory onlineCallFactory,
             final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
@@ -183,31 +184,61 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         return connectorFactory.eqLikeItemC("", filterItem -> scope.toBuilder().query(filterItem).build());
     }
 
+    /**
+     * Filter by enrollment program. Only one program can be specified.
+     *
+     * @return Repository connector
+     */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
                 TrackedEntityInstanceQueryRepositoryScope, String> byProgram() {
         return connectorFactory.eqConnector(programUid -> scope.toBuilder().program(programUid).build());
     }
 
+    /**
+     * Filter by tracked entity instance organisation unit.
+     *
+     * @return Repository connector
+     */
     public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
                 TrackedEntityInstanceQueryRepositoryScope, String> byOrgUnits() {
         return connectorFactory.listConnector(orgunitUids -> scope.toBuilder().orgUnits(orgunitUids).build());
     }
 
+    /**
+     * Define the organisation unit mode. See {@link OrganisationUnitMode} for more details on the modes.
+     *
+     * @return Repository connector
+     */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope, OrganisationUnitMode> byOrgUnitMode() {
         return connectorFactory.eqConnector(mode -> scope.toBuilder().orgUnitMode(mode).build());
     }
 
+    /**
+     * Define an enrollment start date. It only applies if a program has been specified in {@link #byProgram()}.
+     *
+     * @return Repository connector
+     */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
                 TrackedEntityInstanceQueryRepositoryScope, Date> byProgramStartDate() {
         return connectorFactory.eqConnector(date -> scope.toBuilder().programStartDate(date).build());
     }
 
+    /**
+     * Define an enrollment end date. It only applies if a program has been specified in {@link #byProgram()}.
+     *
+     * @return Repository connector
+     */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
                 TrackedEntityInstanceQueryRepositoryScope, Date> byProgramEndDate() {
         return connectorFactory.eqConnector(date -> scope.toBuilder().programEndDate(date).build());
     }
 
+    /**
+     * Filter by TrackedEntityType. Only one type can be specified.
+     *
+     * @return Repository connector
+     */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
                 TrackedEntityInstanceQueryRepositoryScope, String> byTrackedEntityType() {
         return connectorFactory.eqConnector(type -> scope.toBuilder().trackedEntityType(type).build());

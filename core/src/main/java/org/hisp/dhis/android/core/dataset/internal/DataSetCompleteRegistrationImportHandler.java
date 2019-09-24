@@ -75,8 +75,7 @@ final class DataSetCompleteRegistrationImportHandler {
         }
 
         if (dataValueImportSummary.importConflicts() != null) {
-            dataValueImportSummary.importConflicts().addAll(conflicts);
-            conflicts = dataValueImportSummary.importConflicts();
+            conflicts.addAll(dataValueImportSummary.importConflicts());
         }
 
         return recreateDataValueImportSummary(dataValueImportSummary, conflicts,

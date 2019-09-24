@@ -31,16 +31,23 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqLikeItemFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
-import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryCallFactory;
-import org.hisp.dhis.android.core.trackedentity.search.internal.TrackedEntityInstanceQueryRepositoryScope;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -60,6 +67,8 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     private final TrackedEntityInstanceStore store;
     private final TrackedEntityInstanceQueryCallFactory onlineCallFactory;
     private final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders;
+    private final ScopedFilterConnectorFactory<TrackedEntityInstanceQueryCollectionRepository,
+                    TrackedEntityInstanceQueryRepositoryScope> connectorFactory;
 
     private final TrackedEntityInstanceQueryRepositoryScope scope;
 
@@ -73,6 +82,8 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         this.onlineCallFactory = onlineCallFactory;
         this.childrenAppenders = childrenAppenders;
         this.scope = scope;
+        this.connectorFactory = new ScopedFilterConnectorFactory<>(s ->
+                new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders, s));
     }
 
     /**
@@ -120,9 +131,108 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                 scope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build());
     }
 
-    public TrackedEntityInstanceQueryCollectionRepository query(TrackedEntityInstanceQuery query) {
-        return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().query(query).build());
+    /**
+     * Add an "attribute" filter to the query. If this method is call several times, conditions are appended with
+     * AND connector.
+     *
+     * For example,
+     * <pre><br>.byAttribute("uid1").eq("value1")<br>.byAttribute("uid2").eq("value2")<br></pre>
+     * means that the instance must have attribute "uid1" with value "value1" <b>AND</b> attribute "uid2" with
+     * value "value2".
+     *
+     * @param attributeId Attribute uid to use in the filter
+     * @return Repository connector
+     */
+    public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+                TrackedEntityInstanceQueryRepositoryScope> byAttribute(String attributeId) {
+        return connectorFactory.eqLikeItemC(attributeId, filterItem -> {
+            List<RepositoryScopeFilterItem> attributes = new ArrayList<>(scope.attribute());
+            attributes.add(filterItem);
+            return scope.toBuilder().attribute(attributes).build();
+        });
+    }
+
+    /**
+     * Add an "filter" to the query. If this method is call several times, conditions are appended with
+     * AND connector.
+     *
+     * For example,
+     * <pre><br>.byFilter("uid1").eq("value1")<br>.byFilter("uid2").eq("value2")<br></pre>
+     * means that the instance must have attribute "uid1" with value "value1" <b>AND</b> attribute "uid2" with
+     * value "value2".
+     *
+     * @param attributeId Attribute uid to use in the filter
+     * @return Repository connector
+     */
+    public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope> byFilter(String attributeId) {
+        return connectorFactory.eqLikeItemC(attributeId, filterItem -> {
+            List<RepositoryScopeFilterItem> filters = new ArrayList<>(scope.filter());
+            filters.add(filterItem);
+            return scope.toBuilder().filter(filters).build();
+        });
+    }
+
+    /**
+     * Search tracked entity instances with <b>any</b> attribute matching the query.
+     *
+     * @return Repository connector
+     */
+    public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope> byQuery() {
+        return connectorFactory.eqLikeItemC("", filterItem -> scope.toBuilder().query(filterItem).build());
+    }
+
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+                TrackedEntityInstanceQueryRepositoryScope, String> byProgram() {
+        return connectorFactory.eqConnector(programUid -> scope.toBuilder().program(programUid).build());
+    }
+
+    public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+                TrackedEntityInstanceQueryRepositoryScope, String> byOrgUnits() {
+        return connectorFactory.listConnector(orgunitUids -> scope.toBuilder().orgUnits(orgunitUids).build());
+    }
+
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, OrganisationUnitMode> byOrgUnitMode() {
+        return connectorFactory.eqConnector(mode -> scope.toBuilder().orgUnitMode(mode).build());
+    }
+
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+                TrackedEntityInstanceQueryRepositoryScope, Date> byProgramStartDate() {
+        return connectorFactory.eqConnector(date -> scope.toBuilder().programStartDate(date).build());
+    }
+
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+                TrackedEntityInstanceQueryRepositoryScope, Date> byProgramEndDate() {
+        return connectorFactory.eqConnector(date -> scope.toBuilder().programEndDate(date).build());
+    }
+
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+                TrackedEntityInstanceQueryRepositoryScope, String> byTrackedEntityType() {
+        return connectorFactory.eqConnector(type -> scope.toBuilder().trackedEntityType(type).build());
+    }
+
+    /**
+     * Whether to include or not deleted tracked entity instances.
+     * <br><b>IMPORTANT:</b> currently this filter only applies to <b>offline</b> instances.
+     *
+     * @return Repository connector
+     */
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, Boolean> byIncludeDeleted() {
+        return connectorFactory.eqConnector(bool -> scope.toBuilder().includeDeleted(bool).build());
+    }
+
+    /**
+     * Filter by sync status.
+     * <br><b>IMPORTANT:</b> using this filter forces <b>offlineOnly</b> mode.
+     *
+     * @return Repository connector
+     */
+    public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, State> byStates() {
+        return connectorFactory.listConnector(states -> scope.toBuilder().states(states).build());
     }
 
     @Override
@@ -145,15 +255,16 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     @Override
     public List<TrackedEntityInstance> blockingGet() {
         if (scope.mode().equals(RepositoryMode.OFFLINE_ONLY) || scope.mode().equals(RepositoryMode.OFFLINE_FIRST)) {
-            String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope.query(), Collections.emptyList(),
+            String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, Collections.emptyList(),
                     -1);
             List<TrackedEntityInstance> instances = store.selectRawQuery(sqlQuery);
             return ChildrenAppenderExecutor.appendInObjectCollection(instances, childrenAppenders,
                     new ChildrenSelection(Collections.singleton(
-                            TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES), false));
+                            TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)));
         } else {
             try {
-                TrackedEntityInstanceQuery noPagingQuery = scope.query().toBuilder().paging(false).build();
+                TrackedEntityInstanceQueryOnline noPagingQuery = TrackedEntityInstanceQueryOnline.create(scope)
+                        .toBuilder().paging(false).build();
                 return onlineCallFactory.getCall(noPagingQuery).call();
             } catch (D2Error e) {
                 return Collections.emptyList();

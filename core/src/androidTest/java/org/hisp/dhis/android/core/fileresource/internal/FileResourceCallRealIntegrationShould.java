@@ -28,9 +28,8 @@
 
 package org.hisp.dhis.android.core.fileresource.internal;
 
-import androidx.test.InstrumentationRegistry;
-
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
@@ -71,8 +70,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         assertThat(fileResources.size(), is(2));
 
-        File file = new File(FileResourceUtil.getFileResourceDirectory(
-                InstrumentationRegistry.getTargetContext().getApplicationContext()), fileResources.get(0).uid());
+        File file = new File(fileResources.get(0).path());
 
         assertThat(file.exists(), is(true));
     }
@@ -85,8 +83,8 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         List<FileResource> fileResources = d2.fileResourceModule().fileResources.blockingGet();
 
-        File file = new File(FileResourceUtil.getFileResourceDirectory(
-                InstrumentationRegistry.getTargetContext().getApplicationContext()), fileResources.get(0).uid());
+        File file = new File(fileResources.get(0).path());
+
         assertThat(file.exists(), is(true));
 
         String valueUid = d2.fileResourceModule().fileResources.blockingAdd(file);
@@ -104,9 +102,16 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         List<FileResource> fileResources2 = d2.fileResourceModule().fileResources.blockingGet();
 
-        File file2 = new File(fileResources2.get(1).path(), fileResources2.get(1).uid());
+        File file2 = new File(fileResources2.get(1).path());
 
         assertThat(file2.exists(), is(true));
+
+        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
+
+        TrackedEntityInstance trackedEntityInstance2 =
+                d2.trackedEntityModule().trackedEntityInstances.blockingGet().get(0);
+
+        assertThat(trackedEntityInstance2.state(), is(State.SYNCED));
     }
 
     //@Test
@@ -117,8 +122,8 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         List<FileResource> fileResources = d2.fileResourceModule().fileResources.blockingGet();
 
-        File file = new File(FileResourceUtil.getFileResourceDirectory(
-                InstrumentationRegistry.getTargetContext().getApplicationContext()), fileResources.get(0).uid());
+        File file = new File(fileResources.get(0).path());
+
         assertThat(file.exists(), is(true));
 
         String valueUid = d2.fileResourceModule().fileResources.blockingAdd(file);
@@ -134,7 +139,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         List<FileResource> fileResources2 = d2.fileResourceModule().fileResources.blockingGet();
 
-        File file2 = new File(fileResources2.get(1).path(), fileResources2.get(1).uid());
+        File file2 = new File(fileResources2.get(1).path());
 
         assertThat(file2.exists(), is(true));
     }

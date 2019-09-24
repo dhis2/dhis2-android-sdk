@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepo
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeComplexFilterItem;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 
 import java.util.ArrayList;
@@ -56,21 +57,21 @@ abstract class AbstractFilterConnector<R extends BaseRepository, V> {
 
     abstract String wrapValue(V value);
 
-    RepositoryScope updatedUnwrappedScope(String operator, String valueStr) {
+    RepositoryScope updatedUnwrappedScope(FilterItemOperator operator, String valueStr) {
         return RepositoryScopeHelper.withFilterItem(scope,
                 RepositoryScopeFilterItem.builder().key(key).operator(operator).value(valueStr).build());
     }
 
-    R newWithWrappedScope(String operator, V value) {
+    R newWithWrappedScope(FilterItemOperator operator, V value) {
         return repositoryFactory.updated(updatedUnwrappedScope(operator, wrapValue(value)));
     }
 
-    RepositoryScope updatePassedScope(String operator, String valueStr, RepositoryScope scope) {
+    RepositoryScope updatePassedScope(FilterItemOperator operator, String valueStr, RepositoryScope scope) {
         return RepositoryScopeHelper.withFilterItem(scope,
                 RepositoryScopeFilterItem.builder().key(key).operator(operator).value(valueStr).build());
     }
 
-    R newWithPassedScope(String operator, V value, RepositoryScope scope) {
+    R newWithPassedScope(FilterItemOperator operator, V value, RepositoryScope scope) {
         return repositoryFactory.updated(updatePassedScope(operator, wrapValue(value), scope));
     }
 
@@ -91,7 +92,7 @@ abstract class AbstractFilterConnector<R extends BaseRepository, V> {
         return CollectionsHelper.commaAndSpaceSeparatedCollectionValues(wrappedValues);
     }
 
-    R newWithUnwrappedScope(String operator, String value) {
+    R newWithUnwrappedScope(FilterItemOperator operator, String value) {
         return repositoryFactory.updated(updatedUnwrappedScope(operator, value));
 
     }

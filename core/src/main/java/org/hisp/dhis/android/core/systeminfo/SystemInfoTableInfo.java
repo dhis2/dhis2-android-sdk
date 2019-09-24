@@ -51,19 +51,25 @@ public final class SystemInfoTableInfo {
     };
 
     public static class Columns extends BaseModel.Columns {
+        static String SERVER_DATE = "serverDate";
+        static String DATE_FORMAT = "dateFormat";
+        static String VERSION = "version";
+        static String CONTEXT_PATH = "contextPath";
+        static String SYSTEM_NAME = "systemName";
+
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    SystemInfoFields.SERVER_DATE,
-                    SystemInfoFields.DATE_FORMAT,
-                    SystemInfoFields.VERSION,
-                    SystemInfoFields.CONTEXT_PATH,
-                    SystemInfoFields.SYSTEM_NAME);
+                    SERVER_DATE,
+                    DATE_FORMAT,
+                    VERSION,
+                    CONTEXT_PATH,
+                    SYSTEM_NAME);
         }
 
         @Override
         public String[] whereUpdate() {
-            return new String[]{SystemInfoFields.CONTEXT_PATH};
+            return new String[]{CONTEXT_PATH};
         }
     }
 }

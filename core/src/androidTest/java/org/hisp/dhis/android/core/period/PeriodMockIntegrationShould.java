@@ -35,6 +35,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.text.ParseException;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -47,5 +48,11 @@ public class PeriodMockIntegrationShould extends BaseMockIntegrationTestFullDisp
         Period period = d2.periodModule().periodHelper.getPeriod(PeriodType.BiWeekly,
                 BaseIdentifiableObject.DATE_FORMAT.parse("2019-06-24T12:24:25.319"));
         assertThat(period.periodId(), is("2019BiW13"));
+    }
+
+    @Test
+    public void get_periods_for_dataset() {
+        List<Period> periods = d2.periodModule().periodHelper.blockingGetPeriodsForDataSet("lyLU2wR22tC");
+        assertThat(periods.size(), is(13));
     }
 }

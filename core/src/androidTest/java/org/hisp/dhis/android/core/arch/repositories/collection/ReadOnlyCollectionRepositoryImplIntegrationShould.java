@@ -90,17 +90,6 @@ public class ReadOnlyCollectionRepositoryImplIntegrationShould extends BaseMockI
     }
 
     @Test
-    public void get_all_relationship_types_with_children_when_calling_get_with_children() {
-        List<RelationshipType> types = relationshipTypeCollectionRepository.withAllChildren().blockingGet();
-        assertThat(types.size()).isEqualTo(2);
-
-        for (RelationshipType targetType: types) {
-            RelationshipType referenceType = typeMap.get(targetType.uid());
-            assertThat(targetType).isEqualTo(referenceType);
-        }
-    }
-
-    @Test
     public void get_count_with_unrestricted_scope() {
         int count = relationshipTypeCollectionRepository.blockingCount();
 

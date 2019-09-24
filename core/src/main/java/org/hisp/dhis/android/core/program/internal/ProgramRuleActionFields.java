@@ -31,38 +31,27 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
+import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo.Columns;
 import org.hisp.dhis.android.core.program.ProgramRuleActionType;
 
 public final class ProgramRuleActionFields {
-    public static final String DATA = "data";
-    public static final String CONTENT = "content";
-    public static final String LOCATION = "location";
-    public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
-    public static final String PROGRAM_INDICATOR = "programIndicator";
-    public static final String PROGRAM_STAGE_SECTION = "programStageSection";
-    public static final String PROGRAM_RULE_ACTION_TYPE = "programRuleActionType";
-    public static final String PROGRAM_RULE = "programRule";
-    public static final String PROGRAM_STAGE = "programStage";
-    public static final String DATA_ELEMENT = "dataElement";
-    public static final String OPTION = "option";
-    public static final String OPTION_GROUP = "optionGroup";
 
     private static FieldsHelper<ProgramRuleAction> fh = new FieldsHelper<>();
 
     static final Fields<ProgramRuleAction> allFields = Fields.<ProgramRuleAction>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<String>field(DATA),
-                    fh.<String>field(CONTENT),
-                    fh.<String>field(LOCATION),
-                    fh.nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTE),
-                    fh.nestedFieldWithUid(PROGRAM_INDICATOR),
-                    fh.nestedFieldWithUid(PROGRAM_STAGE_SECTION),
-                    fh.<ProgramRuleActionType>field(PROGRAM_RULE_ACTION_TYPE),
-                    fh.nestedFieldWithUid(PROGRAM_STAGE),
-                    fh.nestedFieldWithUid(DATA_ELEMENT),
-                    fh.nestedFieldWithUid(OPTION),
-                    fh.nestedFieldWithUid(OPTION_GROUP)
+                    fh.<String>field(Columns.DATA),
+                    fh.<String>field(Columns.CONTENT),
+                    fh.<String>field(Columns.LOCATION),
+                    fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_ATTRIBUTE),
+                    fh.nestedFieldWithUid(Columns.PROGRAM_INDICATOR),
+                    fh.nestedFieldWithUid(Columns.PROGRAM_STAGE_SECTION),
+                    fh.<ProgramRuleActionType>field(Columns.PROGRAM_RULE_ACTION_TYPE),
+                    fh.nestedFieldWithUid(Columns.PROGRAM_STAGE),
+                    fh.nestedFieldWithUid(Columns.DATA_ELEMENT),
+                    fh.nestedFieldWithUid(Columns.OPTION),
+                    fh.nestedFieldWithUid(Columns.OPTION_GROUP)
                     ).build();
 
     private ProgramRuleActionFields() {

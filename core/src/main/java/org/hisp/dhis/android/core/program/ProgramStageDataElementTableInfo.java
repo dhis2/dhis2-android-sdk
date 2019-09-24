@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementFields;
 
 public class ProgramStageDataElementTableInfo {
 
@@ -49,18 +48,26 @@ public class ProgramStageDataElementTableInfo {
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+
+        public static final String DISPLAY_IN_REPORTS = "displayInReports";
+        public static final String DATA_ELEMENT = "dataElement";
+        public static final String COMPULSORY = "compulsory";
+        public static final String ALLOW_PROVIDED_ELSEWHERE = "allowProvidedElsewhere";
+        public static final String SORT_ORDER = "sortOrder";
+        public static final String ALLOW_FUTURE_DATE = "allowFutureDate";
+        public static final String PROGRAM_STAGE = "programStage";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    ProgramStageDataElementFields.DISPLAY_IN_REPORTS,
-                    ProgramStageDataElementFields.DATA_ELEMENT,
-                    ProgramStageDataElementFields.COMPULSORY,
-                    ProgramStageDataElementFields.ALLOW_PROVIDED_ELSEWHERE,
-                    ProgramStageDataElementFields.SORT_ORDER,
-                    ProgramStageDataElementFields.ALLOW_FUTURE_DATE,
-                    ProgramStageDataElementFields.PROGRAM_STAGE
+                    DISPLAY_IN_REPORTS,
+                    DATA_ELEMENT,
+                    COMPULSORY,
+                    ALLOW_PROVIDED_ELSEWHERE,
+                    SORT_ORDER,
+                    ALLOW_FUTURE_DATE,
+                    PROGRAM_STAGE
             );
         }
     }

@@ -44,7 +44,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.RelationshipCo
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemFields;
+import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo.Columns;
 
 import androidx.annotation.Nullable;
 
@@ -101,11 +101,11 @@ public abstract class RelationshipItem implements Model {
 
     public String elementType() {
         if (hasTrackedEntityInstance()) {
-            return RelationshipItemFields.TRACKED_ENTITY_INSTANCE;
+            return Columns.TRACKED_ENTITY_INSTANCE;
         } else if (hasEnrollment()) {
-            return RelationshipItemFields.ENROLLMENT;
+            return Columns.ENROLLMENT;
         } else {
-            return RelationshipItemFields.EVENT;
+            return Columns.EVENT;
         }
     }
 

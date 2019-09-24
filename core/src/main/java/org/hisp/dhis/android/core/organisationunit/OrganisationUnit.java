@@ -30,6 +30,9 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -38,7 +41,7 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.OrganisationUnitWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataSetListAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitGroupListAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitListAdapter;
@@ -46,6 +49,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgram
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.program.Program;
 
@@ -53,11 +57,8 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 @AutoValue
-@JsonDeserialize(builder = AutoValue_OrganisationUnit.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_OrganisationUnit.Builder.class)
 public abstract class OrganisationUnit extends BaseNameableObject implements Model {
 
     public enum Scope {
@@ -67,8 +68,8 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Mod
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(OrganisationUnitWithUidColumnAdapter.class)
-    public abstract OrganisationUnit parent();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid parent();
 
     @Nullable
     @JsonProperty()
@@ -120,7 +121,7 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Mod
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_OrganisationUnit.Builder();
+        return new $$AutoValue_OrganisationUnit.Builder();
     }
 
     @AutoValue.Builder
@@ -128,7 +129,7 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Mod
     public abstract static class Builder extends BaseNameableObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        public abstract Builder parent(OrganisationUnit parent);
+        public abstract Builder parent(ObjectWithUid parent);
 
         public abstract Builder path(String path);
 

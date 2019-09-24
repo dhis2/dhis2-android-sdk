@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeFields;
 
 public final class ProgramTrackedEntityAttributeTableInfo {
 
@@ -52,17 +51,24 @@ public final class ProgramTrackedEntityAttributeTableInfo {
     };
 
     public static class Columns extends BaseNameableObjectModel.Columns {
+        public static final String MANDATORY = "mandatory";
+        public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+        public static final String ALLOW_FUTURE_DATE = "allowFutureDate";
+        public static final String DISPLAY_IN_LIST = "displayInList";
+        public static final String PROGRAM = "program";
+        public static final String SORT_ORDER = "sortOrder";
+        public static final String SEARCHABLE = "searchable";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    ProgramTrackedEntityAttributeFields.MANDATORY,
-                    ProgramTrackedEntityAttributeFields.TRACKED_ENTITY_ATTRIBUTE,
-                    ProgramTrackedEntityAttributeFields.ALLOW_FUTURE_DATE,
-                    ProgramTrackedEntityAttributeFields.DISPLAY_IN_LIST,
-                    ProgramTrackedEntityAttributeFields.PROGRAM,
-                    ProgramTrackedEntityAttributeFields.SORT_ORDER,
-                    ProgramTrackedEntityAttributeFields.SEARCHABLE
+                    MANDATORY,
+                    TRACKED_ENTITY_ATTRIBUTE,
+                    ALLOW_FUTURE_DATE,
+                    DISPLAY_IN_LIST,
+                    PROGRAM,
+                    SORT_ORDER,
+                    SEARCHABLE
             );
         }
     }

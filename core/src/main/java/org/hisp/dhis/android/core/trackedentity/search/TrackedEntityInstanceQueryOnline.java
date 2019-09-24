@@ -26,23 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search.internal;
+package org.hisp.dhis.android.core.trackedentity.search;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
-import org.hisp.dhis.android.core.trackedentity.search.QueryFilter;
-import org.hisp.dhis.android.core.trackedentity.search.QueryItem;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import java.util.Map;
 
 @AutoValue
 abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
@@ -76,6 +76,10 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     @Nullable
     abstract String trackedEntityType();
 
+    //TODO It is not used in the query because it modifies returned grid structure: if true, it adds an extra column
+    @NonNull
+    abstract Boolean includeDeleted();
+
     String formattedProgramStartDate() {
         return programStartDate() == null ? null : QUERY_FORMAT.format(programStartDate());
     }
@@ -84,49 +88,50 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         return programEndDate() == null ? null : QUERY_FORMAT.format(programEndDate());
     }
 
+    abstract Builder toBuilder();
+
     static Builder builder() {
         return new AutoValue_TrackedEntityInstanceQueryOnline.Builder();
     }
 
-    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
-    static TrackedEntityInstanceQueryOnline create(TrackedEntityInstanceQuery teiQuery) {
-        List<String> attributes = new ArrayList<>();
-        for (QueryItem item : teiQuery.attribute()) {
-            StringBuilder attributeBuilder = new StringBuilder(item.item());
-            for (QueryFilter filter : item.filters()) {
-                attributeBuilder.append(':').append(filter.operator()).append(':').append(filter.filter());
-            }
-            attributes.add(attributeBuilder.toString());
-        }
-
-        List<String> filters = new ArrayList<>();
-        for (QueryItem item : teiQuery.filter()) {
-            StringBuilder filterBuilder = new StringBuilder(item.item());
-            for (QueryFilter filter : item.filters()) {
-                filterBuilder.append(':').append(filter.operator()).append(':').append(filter.filter());
-            }
-            filters.add(filterBuilder.toString());
-        }
-
+    static TrackedEntityInstanceQueryOnline create(TrackedEntityInstanceQueryRepositoryScope scope) {
         String query = null;
-        if (teiQuery.query() != null && teiQuery.query().filter() != null) {
-            query = teiQuery.query().operator().name() + ":" + teiQuery.query().filter();
+        if (scope.query() != null) {
+            query = scope.query().operator().getApiUpperOperator() + ":" + scope.query().value();
         }
 
         return TrackedEntityInstanceQueryOnline.builder()
                 .query(query)
-                .attribute(attributes)
-                .filter(filters)
-                .orgUnits(teiQuery.orgUnits())
-                .orgUnitMode(teiQuery.orgUnitMode())
-                .program(teiQuery.program())
-                .programStartDate(teiQuery.programStartDate())
-                .programEndDate(teiQuery.programEndDate())
-                .trackedEntityType(teiQuery.trackedEntityType())
-                .page(teiQuery.page())
-                .pageSize(teiQuery.pageSize())
-                .paging(teiQuery.paging())
+                .attribute(toAPIFilterFormat(scope.attribute()))
+                .filter(toAPIFilterFormat(scope.filter()))
+                .orgUnits(scope.orgUnits())
+                .orgUnitMode(scope.orgUnitMode())
+                .program(scope.program())
+                .programStartDate(scope.programStartDate())
+                .programEndDate(scope.programEndDate())
+                .trackedEntityType(scope.trackedEntityType())
+                .includeDeleted(false)
+                .page(1)
+                .pageSize(50)
+                .paging(true)
                 .build();
+    }
+
+    static List<String> toAPIFilterFormat(List<RepositoryScopeFilterItem> items) {
+        Map<String, String> itemMap = new HashMap<>();
+        for (RepositoryScopeFilterItem item : items) {
+            String filterClause = ":" + item.operator().getApiUpperOperator() + ":" + item.value();
+            String existingClause = itemMap.get(item.key());
+            String newClause = (existingClause == null ? "" : existingClause) + filterClause;
+
+            itemMap.put(item.key(), newClause);
+        }
+
+        List<String> itemList = new ArrayList<>();
+        for (Map.Entry<String, String> entry : itemMap.entrySet()) {
+            itemList.add(entry.getKey() + entry.getValue());
+        }
+        return itemList;
     }
 
     @AutoValue.Builder
@@ -148,6 +153,8 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         abstract Builder programEndDate(Date programEndDate);
 
         abstract Builder trackedEntityType(String trackedEntityType);
+
+        abstract Builder includeDeleted(Boolean includeDeleted);
 
         abstract TrackedEntityInstanceQueryOnline build();
     }

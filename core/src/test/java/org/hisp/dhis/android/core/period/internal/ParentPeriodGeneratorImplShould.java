@@ -37,14 +37,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.BIMONTHLY_PERIODS;
-import static org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.BIWEEKLY_PERIODS;
-import static org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.DAILY_PERIODS;
-import static org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.MONTHLY_PERIODS;
-import static org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.QUARTER_PERIODS;
-import static org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.SIXMONTHLY_PERIODS;
-import static org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.WEEKLY_PERIODS;
-import static org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.YEARLY_PERIODS;
+import static org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.Past;
+import static org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.Future;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -165,60 +159,60 @@ public class ParentPeriodGeneratorImplShould {
         periodGenerator = new ParentPeriodGeneratorImpl(dailyPeriodGenerator, weeklyPeriodGenerators,
                 biWeeklyPeriodGenerator, monthlyPeriodGenerator, nMonthlyPeriodGenerators, yearlyPeriodGenerators);
         
-        mockGenerator(dailyPeriodGenerator, DAILY_PERIODS, dailyPeriod);
-        mockGenerator(weeklyPeriodGenerator, WEEKLY_PERIODS, weeklyPeriod);
-        mockGenerator(weeklyWednesdayPeriodGenerator, WEEKLY_PERIODS, weeklyWednesdayPeriod);
-        mockGenerator(weeklyThursdayPeriodGenerator, WEEKLY_PERIODS, weeklyThursdayPeriod);
-        mockGenerator(weeklySaturdayPeriodGenerator, WEEKLY_PERIODS, weeklySaturdayPeriod);
-        mockGenerator(weeklySundayPeriodGenerator, WEEKLY_PERIODS, weeklySundayPeriod);
-        mockGenerator(biWeeklyPeriodGenerator, BIWEEKLY_PERIODS, biWeeklyPeriod);
-        mockGenerator(monthlyPeriodGenerator, MONTHLY_PERIODS, monthlyPeriod);
-        mockGenerator(biMonthlyPeriodGenerator, BIMONTHLY_PERIODS, biMonthlyPeriod);
-        mockGenerator(quarterPeriodGenerator, QUARTER_PERIODS, quarterPeriod);
-        mockGenerator(sixMonthlyPeriodGenerator, SIXMONTHLY_PERIODS, sixMonthlyPeriod);
-        mockGenerator(sixMonthlyAprilPeriodGenerator, SIXMONTHLY_PERIODS, sixMonthlyAprilPeriod);
-        mockGenerator(yearlyPeriodGenerator, YEARLY_PERIODS, yearlyPeriod);
-        mockGenerator(financialAprilPeriodGenerator, YEARLY_PERIODS, financialAprilPeriod);
-        mockGenerator(financialJulyPeriodGenerator, YEARLY_PERIODS, financialJulyPeriod);
-        mockGenerator(financialOctPeriodGenerator, YEARLY_PERIODS, financialOctPeriod);
+        mockGenerator(dailyPeriodGenerator, Past.DAILY_PERIODS, Future.DAILY_PERIODS, dailyPeriod);
+        mockGenerator(weeklyPeriodGenerator, Past.WEEKLY_PERIODS, Future.WEEKLY_PERIODS, weeklyPeriod);
+        mockGenerator(weeklyWednesdayPeriodGenerator, Past.WEEKLY_PERIODS, Future.WEEKLY_PERIODS, weeklyWednesdayPeriod);
+        mockGenerator(weeklyThursdayPeriodGenerator, Past.WEEKLY_PERIODS,Future.WEEKLY_PERIODS, weeklyThursdayPeriod);
+        mockGenerator(weeklySaturdayPeriodGenerator, Past.WEEKLY_PERIODS, Future.WEEKLY_PERIODS, weeklySaturdayPeriod);
+        mockGenerator(weeklySundayPeriodGenerator, Past.WEEKLY_PERIODS, Future.WEEKLY_PERIODS, weeklySundayPeriod);
+        mockGenerator(biWeeklyPeriodGenerator, Past.BIWEEKLY_PERIODS, Future.BIWEEKLY_PERIODS, biWeeklyPeriod);
+        mockGenerator(monthlyPeriodGenerator, Past.MONTHLY_PERIODS, Future.MONTHLY_PERIODS, monthlyPeriod);
+        mockGenerator(biMonthlyPeriodGenerator, Past.BIMONTHLY_PERIODS, Future.BIMONTHLY_PERIODS, biMonthlyPeriod);
+        mockGenerator(quarterPeriodGenerator, Past.QUARTER_PERIODS, Future.QUARTER_PERIODS, quarterPeriod);
+        mockGenerator(sixMonthlyPeriodGenerator, Past.SIXMONTHLY_PERIODS, Future.SIXMONTHLY_PERIODS, sixMonthlyPeriod);
+        mockGenerator(sixMonthlyAprilPeriodGenerator, Past.SIXMONTHLY_PERIODS, Future.SIXMONTHLY_PERIODS, sixMonthlyAprilPeriod);
+        mockGenerator(yearlyPeriodGenerator, Past.YEARLY_PERIODS, Future.YEARLY_PERIODS, yearlyPeriod);
+        mockGenerator(financialAprilPeriodGenerator, Past.YEARLY_PERIODS, Future.YEARLY_PERIODS, financialAprilPeriod);
+        mockGenerator(financialJulyPeriodGenerator, Past.YEARLY_PERIODS, Future.YEARLY_PERIODS, financialJulyPeriod);
+        mockGenerator(financialOctPeriodGenerator, Past.YEARLY_PERIODS, Future.YEARLY_PERIODS, financialOctPeriod);
     }
 
-    private void mockGenerator(PeriodGenerator generator, int periodCount, Period period) {
-        when(generator.generateLastPeriods(periodCount)).thenReturn(Lists.newArrayList(period));
+    private void mockGenerator(PeriodGenerator generator, int past, int future, Period period) {
+        when(generator.generatePeriods(past, future)).thenReturn(Lists.newArrayList(period));
     }
 
-    private void verifyChildGeneratorCalled(PeriodGenerator generator, int periodCount) throws Exception {
-        verify(generator).generateLastPeriods(periodCount);
+    private void verifyChildGeneratorCalled(PeriodGenerator generator, int past, int future) {
+        verify(generator).generatePeriods(past, future);
     }
 
-    private void assertChildAnswerInParentAnswer(Period period) throws Exception {
+    private void assertChildAnswerInParentAnswer(Period period) {
         assertThat(periodGenerator.generatePeriods().contains(period)).isEqualTo(true);
     }
 
     @Test
-    public void call_all_child_period_generators() throws Exception {
+    public void call_all_child_period_generators() {
         periodGenerator.generatePeriods();
 
-        verifyChildGeneratorCalled(dailyPeriodGenerator, DAILY_PERIODS);
-        verifyChildGeneratorCalled(weeklyPeriodGenerator, WEEKLY_PERIODS);
-        verifyChildGeneratorCalled(weeklyWednesdayPeriodGenerator, WEEKLY_PERIODS);
-        verifyChildGeneratorCalled(weeklyThursdayPeriodGenerator, WEEKLY_PERIODS);
-        verifyChildGeneratorCalled(weeklySaturdayPeriodGenerator, WEEKLY_PERIODS);
-        verifyChildGeneratorCalled(weeklySundayPeriodGenerator, WEEKLY_PERIODS);
-        verifyChildGeneratorCalled(biWeeklyPeriodGenerator, BIWEEKLY_PERIODS);
-        verifyChildGeneratorCalled(monthlyPeriodGenerator, MONTHLY_PERIODS);
-        verifyChildGeneratorCalled(biMonthlyPeriodGenerator, BIMONTHLY_PERIODS);
-        verifyChildGeneratorCalled(quarterPeriodGenerator, QUARTER_PERIODS);
-        verifyChildGeneratorCalled(sixMonthlyPeriodGenerator, SIXMONTHLY_PERIODS);
-        verifyChildGeneratorCalled(sixMonthlyAprilPeriodGenerator, SIXMONTHLY_PERIODS);
-        verifyChildGeneratorCalled(yearlyPeriodGenerator, YEARLY_PERIODS);
-        verifyChildGeneratorCalled(financialAprilPeriodGenerator, YEARLY_PERIODS);
-        verifyChildGeneratorCalled(financialJulyPeriodGenerator, YEARLY_PERIODS);
-        verifyChildGeneratorCalled(financialOctPeriodGenerator, YEARLY_PERIODS);
+        verifyChildGeneratorCalled(dailyPeriodGenerator, Past.DAILY_PERIODS, Future.DAILY_PERIODS);
+        verifyChildGeneratorCalled(weeklyPeriodGenerator, Past.WEEKLY_PERIODS, Future.WEEKLY_PERIODS);
+        verifyChildGeneratorCalled(weeklyWednesdayPeriodGenerator, Past.WEEKLY_PERIODS, Future.WEEKLY_PERIODS);
+        verifyChildGeneratorCalled(weeklyThursdayPeriodGenerator, Past.WEEKLY_PERIODS, Future.WEEKLY_PERIODS);
+        verifyChildGeneratorCalled(weeklySaturdayPeriodGenerator, Past.WEEKLY_PERIODS, Future.WEEKLY_PERIODS);
+        verifyChildGeneratorCalled(weeklySundayPeriodGenerator, Past.WEEKLY_PERIODS, Future.WEEKLY_PERIODS);
+        verifyChildGeneratorCalled(biWeeklyPeriodGenerator, Past.BIWEEKLY_PERIODS, Future.BIWEEKLY_PERIODS);
+        verifyChildGeneratorCalled(monthlyPeriodGenerator, Past.MONTHLY_PERIODS, Future.MONTHLY_PERIODS);
+        verifyChildGeneratorCalled(biMonthlyPeriodGenerator, Past.BIMONTHLY_PERIODS, Future.BIMONTHLY_PERIODS);
+        verifyChildGeneratorCalled(quarterPeriodGenerator, Past.QUARTER_PERIODS, Future.QUARTER_PERIODS);
+        verifyChildGeneratorCalled(sixMonthlyPeriodGenerator, Past.SIXMONTHLY_PERIODS, Future.SIXMONTHLY_PERIODS);
+        verifyChildGeneratorCalled(sixMonthlyAprilPeriodGenerator, Past.SIXMONTHLY_PERIODS, Future.SIXMONTHLY_PERIODS);
+        verifyChildGeneratorCalled(yearlyPeriodGenerator, Past.YEARLY_PERIODS, Future.YEARLY_PERIODS);
+        verifyChildGeneratorCalled(financialAprilPeriodGenerator, Past.YEARLY_PERIODS, Future.YEARLY_PERIODS);
+        verifyChildGeneratorCalled(financialJulyPeriodGenerator, Past.YEARLY_PERIODS, Future.YEARLY_PERIODS);
+        verifyChildGeneratorCalled(financialOctPeriodGenerator, Past.YEARLY_PERIODS, Future.YEARLY_PERIODS);
     }
 
     @Test
-    public void return_all_child_periods_returned() throws Exception {
+    public void return_all_child_periods_returned() {
         periodGenerator.generatePeriods();
 
         assertChildAnswerInParentAnswer(dailyPeriod);

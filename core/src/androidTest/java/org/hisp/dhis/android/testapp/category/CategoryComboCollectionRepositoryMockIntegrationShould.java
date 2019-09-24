@@ -66,7 +66,7 @@ public class CategoryComboCollectionRepositoryMockIntegrationShould extends Base
     public void find_objects_with_children_with_equal_name() {
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byName().eq("Births");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.withAllChildren().blockingGet();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.withCategories().blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
         assertThat(combos.get(0).categories().isEmpty(), is(false));
@@ -118,7 +118,7 @@ public class CategoryComboCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void find_objects_with_like_name() {
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
-                .byName().like("%bi%");
+                .byName().like("bi");
         List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
@@ -127,7 +127,7 @@ public class CategoryComboCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void find_objects_with_like_code() {
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
-                .byCode().like("%bi%");
+                .byCode().like("bi");
         List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
@@ -213,7 +213,7 @@ public class CategoryComboCollectionRepositoryMockIntegrationShould extends Base
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse(BEFORE_DATE);
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byLastUpdated().after(created)
-                .byName().like("%t%");
+                .byName().like("t");
         List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(2));
     }

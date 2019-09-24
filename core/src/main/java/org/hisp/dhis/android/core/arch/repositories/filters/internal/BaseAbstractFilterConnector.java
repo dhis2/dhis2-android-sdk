@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -44,15 +45,15 @@ abstract class BaseAbstractFilterConnector<R extends BaseRepository, V> extends 
     }
 
     public R eq(V value) {
-        return newWithWrappedScope("=", value);
+        return newWithWrappedScope(FilterItemOperator.EQ, value);
     }
 
     public R neq(V value) {
-        return newWithWrappedScope("!=", value);
+        return newWithWrappedScope(FilterItemOperator.NOT_EQ, value);
     }
 
     public R in(Collection<V> values) {
-        return newWithUnwrappedScope("IN", "(" + getCommaSeparatedValues(values) + ")");
+        return newWithUnwrappedScope(FilterItemOperator.IN, "(" + getCommaSeparatedValues(values) + ")");
     }
 
     @SafeVarargs
@@ -61,7 +62,7 @@ abstract class BaseAbstractFilterConnector<R extends BaseRepository, V> extends 
     }
 
     public R notIn(Collection<V> values) {
-        return newWithUnwrappedScope("NOT IN", "(" + getCommaSeparatedValues(values) + ")");
+        return newWithUnwrappedScope(FilterItemOperator.NOT_IN, "(" + getCommaSeparatedValues(values) + ")");
     }
 
     @SafeVarargs
@@ -70,11 +71,11 @@ abstract class BaseAbstractFilterConnector<R extends BaseRepository, V> extends 
     }
 
     public final R isNull() {
-        return newWithUnwrappedScope("", "IS NULL");
+        return newWithUnwrappedScope(FilterItemOperator.VOID, "IS NULL");
     }
 
     public final R isNotNull() {
-        return newWithUnwrappedScope("", "IS NOT NULL");
+        return newWithUnwrappedScope(FilterItemOperator.VOID, "IS NOT NULL");
     }
 
 }

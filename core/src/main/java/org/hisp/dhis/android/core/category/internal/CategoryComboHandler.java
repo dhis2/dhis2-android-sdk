@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import javax.inject.Inject;
 
@@ -66,7 +67,7 @@ final class CategoryComboHandler extends IdentifiableHandlerImpl<CategoryCombo> 
     @Override
     protected void afterObjectHandled(final CategoryCombo combo, HandleAction action) {
         optionComboHandler.handleMany(combo.categoryOptionCombos(),
-                optionCombo -> optionCombo.toBuilder().categoryCombo(combo).build());
+                optionCombo -> optionCombo.toBuilder().categoryCombo(ObjectWithUid.create(combo.uid())).build());
 
         categoryCategoryComboLinkHandler.handleMany(combo.uid(), combo.categories(),
                 (category, sortOrder) -> CategoryCategoryComboLink.builder()

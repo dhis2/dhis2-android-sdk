@@ -40,11 +40,10 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo.Columns;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
@@ -94,51 +93,51 @@ public final class TrackedEntityInstanceCollectionRepository
     }
 
     public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byUid() {
-        return cf.string(TrackedEntityInstanceTableInfo.Columns.UID);
+        return cf.string(Columns.UID);
     }
 
     public DateFilterConnector<TrackedEntityInstanceCollectionRepository> byCreated() {
-        return cf.date(TrackedEntityInstanceFields.CREATED);
+        return cf.date(Columns.CREATED);
     }
 
     public DateFilterConnector<TrackedEntityInstanceCollectionRepository> byLastUpdated() {
-        return cf.date(TrackedEntityInstanceFields.LAST_UPDATED);
+        return cf.date(Columns.LAST_UPDATED);
     }
 
     public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byCreatedAtClient() {
-        return cf.string(TrackedEntityInstanceTableInfo.Columns.CREATED_AT_CLIENT);
+        return cf.string(Columns.CREATED_AT_CLIENT);
     }
 
     public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byLastUpdatedAtClient() {
-        return cf.string(TrackedEntityInstanceTableInfo.Columns.LAST_UPDATED_AT_CLIENT);
+        return cf.string(Columns.LAST_UPDATED_AT_CLIENT);
     }
 
     public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byOrganisationUnitUid() {
-        return cf.string(TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT);
+        return cf.string(Columns.ORGANISATION_UNIT);
     }
 
     public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byTrackedEntityType() {
-        return cf.string(TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE);
+        return cf.string(Columns.TRACKED_ENTITY_TYPE);
     }
 
     public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, FeatureType> byGeometryType() {
-        return cf.enumC(TrackedEntityInstanceTableInfo.Columns.GEOMETRY_TYPE);
+        return cf.enumC(Columns.GEOMETRY_TYPE);
     }
 
     public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byGeometryCoordinates() {
-        return cf.string(TrackedEntityInstanceTableInfo.Columns.GEOMETRY_COORDINATES);
+        return cf.string(Columns.GEOMETRY_COORDINATES);
     }
 
     public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> byState() {
-        return cf.enumC(BaseDataModel.Columns.STATE);
+        return cf.enumC(Columns.STATE);
     }
 
     public BooleanFilterConnector<TrackedEntityInstanceCollectionRepository> byDeleted() {
-        return cf.bool(TrackedEntityInstanceTableInfo.Columns.DELETED);
+        return cf.bool(Columns.DELETED);
     }
 
     public TrackedEntityInstanceCollectionRepository byProgramUids(List<String> programUids) {
-        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).inLinkTable(
+        return cf.subQuery(Columns.UID).inLinkTable(
                 EnrollmentTableInfo.TABLE_INFO.name(),
                 EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
                 EnrollmentTableInfo.Columns.PROGRAM,

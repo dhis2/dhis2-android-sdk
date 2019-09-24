@@ -33,12 +33,14 @@ import com.google.common.collect.Lists;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
+import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -99,9 +101,24 @@ public class D2ErrorCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_d2_error_by_created() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        Date startDate = cal.getTime();
+
+        cal.set(Calendar.HOUR, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        Date endDate = cal.getTime();
+
+        Period todayPeriod = Period.builder()
+                .periodType(PeriodType.Daily)
+                .startDate(startDate)
+                .endDate(endDate)
+                .build();
         List<D2Error> d2Errors = d2.maintenanceModule().d2Errors
-                .byCreated().inPeriods(Lists.newArrayList(
-                        d2.periodModule().periodHelper.getPeriod(PeriodType.Monthly, new Date()))).blockingGet();
+                .byCreated().inPeriods(Lists.newArrayList(todayPeriod)).blockingGet();
         assertThat(d2Errors.size(), is(2));
     }
 }

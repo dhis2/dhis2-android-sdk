@@ -128,6 +128,14 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     }
 
     @Test
+    public void filter_by_data_Set() {
+        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits
+                .byDataSetUids(Collections.singletonList("lyLU2wR22tC"))
+                .blockingGet();
+        assertThat(organisationUnits.size(), is(1));
+    }
+
+    @Test
     public void filter_by_root_capture_organisation_unit() {
         List<OrganisationUnit> rootOrganisationUnits = d2.organisationUnitModule().organisationUnits
                 .byRootOrganisationUnit(Boolean.TRUE)
@@ -160,42 +168,42 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void include_programs_as_children_in_collection_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .withAllChildren().blockingGet().get(0);
+                .withPrograms().blockingGet().get(0);
         assertThat(organisationUnit.programs().get(0).name(), is("Antenatal care visit"));
     }
 
     @Test
     public void include_data_sets_as_children_in_collection_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .withAllChildren().blockingGet().get(0);
+                .withDataSets().blockingGet().get(0);
         assertThat(organisationUnit.dataSets().get(0).name(), is("ART monthly summary"));
     }
 
     @Test
     public void include_organisation_unit_groups_as_children_in_collection_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .withAllChildren().blockingGet().get(0);
+                .withOrganisationUnitGroups().blockingGet().get(0);
         assertThat(organisationUnit.organisationUnitGroups().get(0).name(), is("CHC"));
     }
 
     @Test
     public void include_programs_as_children_in_object_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .one().withAllChildren().blockingGet();
+                .withPrograms().one().blockingGet();
         assertThat(organisationUnit.programs().get(0).name(), is("Antenatal care visit"));
     }
 
     @Test
     public void include_data_sets_as_children_in_object_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .one().withAllChildren().blockingGet();
+                .withDataSets().one().blockingGet();
         assertThat(organisationUnit.dataSets().get(0).name(), is("ART monthly summary"));
     }
 
     @Test
     public void include_organisation_unit_groups_as_children_in_object_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .one().withAllChildren().blockingGet();
+                .withOrganisationUnitGroups().one().blockingGet();
         assertThat(organisationUnit.organisationUnitGroups().get(0).name(), is("CHC"));
     }
 }

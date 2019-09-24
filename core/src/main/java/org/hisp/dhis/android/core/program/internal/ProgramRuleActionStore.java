@@ -66,7 +66,7 @@ public final class ProgramRuleActionStore {
     };
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            ProgramRuleActionTableInfo.TABLE_INFO, ProgramRuleActionFields.PROGRAM_RULE);
+            ProgramRuleActionTableInfo.TABLE_INFO, ProgramRuleActionTableInfo.Columns.PROGRAM_RULE);
 
     private ProgramRuleActionStore() {}
 

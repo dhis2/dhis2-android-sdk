@@ -31,24 +31,19 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeTableInfo.Columns;
 
-public final class TrackedEntityTypeAttributeFields {
-
-    public final static String TRACKED_ENTITY_TYPE = "trackedEntityType";
-    public final static String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
-    public final static String DISPLAY_IN_LIST = "displayInList";
-    public final static String MANDATORY = "mandatory";
-    public final static String SEARCHABLE = "searchable";
+final class TrackedEntityTypeAttributeFields {
 
     private static final FieldsHelper<TrackedEntityTypeAttribute> fh = new FieldsHelper<>();
 
     public static final Fields<TrackedEntityTypeAttribute> allFields = Fields.<TrackedEntityTypeAttribute>builder()
             .fields(
-                    fh.nestedFieldWithUid(TRACKED_ENTITY_TYPE),
-                    fh.nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTE),
-                    fh.<Boolean>field(DISPLAY_IN_LIST),
-                    fh.<Boolean>field(MANDATORY),
-                    fh.<Boolean>field(SEARCHABLE)
+                    fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_TYPE),
+                    fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_ATTRIBUTE),
+                    fh.<Boolean>field(Columns.DISPLAY_IN_LIST),
+                    fh.<Boolean>field(Columns.MANDATORY),
+                    fh.<Boolean>field(Columns.SEARCHABLE)
             ).build();
 
     private TrackedEntityTypeAttributeFields() {

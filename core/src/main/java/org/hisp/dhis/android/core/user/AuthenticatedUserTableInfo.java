@@ -50,10 +50,10 @@ public final class AuthenticatedUserTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
-        static final String USER = "user";
-        static final String CREDENTIALS = "credentials";
-        static final String HASH = "hash";
+    public static class Columns extends BaseModel.Columns {
+        public static final String USER = "user";
+        public static final String CREDENTIALS = "credentials";
+        public static final String HASH = "hash";
 
         @Override
         public String[] all() {

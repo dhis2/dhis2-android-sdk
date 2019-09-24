@@ -266,7 +266,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     @Test
     public void include_object_style_as_children_in_object_repository_when_all_selected() {
         Program program = d2.programModule().programs
-                .one().withAllChildren().blockingGet();
+                .withStyle().one().blockingGet();
         assertThat(program.style().icon(), is("program-icon"));
         assertThat(program.style().color(), is("#333"));
     }
@@ -283,7 +283,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     @Test
     public void include_object_style_as_children_in_collection_repository_when_all_selected() {
         Program program = d2.programModule().programs
-                .withAllChildren().blockingGet().get(0);
+                .withStyle().blockingGet().get(0);
         assertThat(program.style().icon(), is("program-icon"));
         assertThat(program.style().color(), is("#333"));
     }
@@ -300,7 +300,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     @Test
     public void include_program_stages_as_children_when_all_selected() {
         Program program = d2.programModule().programs
-                .one().withAllChildren().blockingGet();
+                .withProgramStages().one().blockingGet();
         assertThat(program.programStages().size(), is(2));
         assertThat(program.programStages().get(0).name(), is("Antenatal care visit - Program rules demo"));
     }

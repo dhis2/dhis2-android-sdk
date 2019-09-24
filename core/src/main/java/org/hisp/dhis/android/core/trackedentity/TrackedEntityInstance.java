@@ -61,7 +61,6 @@ import java.util.List;
 public abstract class TrackedEntityInstance extends BaseDeletableDataModel implements ObjectWithUidInterface {
 
     @Override
-    @Nullable
     @JsonProperty(TrackedEntityInstanceFields.UID)
     public abstract String uid();
 

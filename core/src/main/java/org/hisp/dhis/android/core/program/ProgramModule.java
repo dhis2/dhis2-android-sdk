@@ -47,6 +47,8 @@ public final class ProgramModule {
     public final ProgramSectionCollectionRepository programSections;
     public final ProgramStageCollectionRepository programStages;
     public final ProgramStageSectionsCollectionRepository programStageSections;
+    public final ProgramStageDataElementCollectionRepository programStageDataElements;
+    public final ProgramTrackedEntityAttributeCollectionRepository programTrackedEntityAttributes;
 
     public final ProgramIndicatorEngine programIndicatorEngine;
 
@@ -59,6 +61,8 @@ public final class ProgramModule {
                   ProgramSectionCollectionRepository programSections,
                   ProgramStageCollectionRepository programStages,
                   ProgramStageSectionsCollectionRepository programStageSections,
+                  ProgramStageDataElementCollectionRepository programStageDataElements,
+                  ProgramTrackedEntityAttributeCollectionRepository programTrackedEntityAttributes,
                   ProgramIndicatorEngine programIndicatorEngine) {
         this.programs = programs;
         this.programIndicators = programIndicators;
@@ -68,6 +72,8 @@ public final class ProgramModule {
         this.programSections = programSections;
         this.programStages = programStages;
         this.programStageSections = programStageSections;
+        this.programStageDataElements = programStageDataElements;
+        this.programTrackedEntityAttributes = programTrackedEntityAttributes;
         this.programIndicatorEngine = programIndicatorEngine;
     }
 }

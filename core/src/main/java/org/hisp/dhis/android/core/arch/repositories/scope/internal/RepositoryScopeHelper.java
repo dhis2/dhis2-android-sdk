@@ -48,7 +48,7 @@ public final class RepositoryScopeHelper {
     public static RepositoryScope withUidFilterItem(RepositoryScope scope, String uid) {
         RepositoryScopeFilterItem filterItem = RepositoryScopeFilterItem.builder()
                 .key(BaseIdentifiableObjectModel.Columns.UID)
-                .operator("=")
+                .operator(FilterItemOperator.EQ)
                 .value("'" + uid + "'")
                 .build();
 
@@ -59,10 +59,6 @@ public final class RepositoryScopeHelper {
         List<RepositoryScopeComplexFilterItem> copiedItems = new ArrayList<>(scope.complexFilters());
         copiedItems.add(item);
         return scope.toBuilder().complexFilters(copiedItems).build();
-    }
-
-    public static RepositoryScope withAllChildren(RepositoryScope scope) {
-        return scope.toBuilder().children(scope.children().selectAllChildren()).build();
     }
 
     public static RepositoryScope withChild(RepositoryScope scope, String child) {

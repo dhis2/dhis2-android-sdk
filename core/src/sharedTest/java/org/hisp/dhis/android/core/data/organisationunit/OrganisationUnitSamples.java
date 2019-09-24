@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.data.organisationunit;
 
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
@@ -76,7 +77,7 @@ public class OrganisationUnitSamples {
                 .path("/ImspTQPwCqd/at6UHUQatSo/qtr8GGlm4gg/cDw53Ej8rju")
                 .openingDate("2008-01-01T00:00:00.000")
                 .level(4)
-                .parent(OrganisationUnit.builder().uid("qtr8GGlm4gg").build())
+                .parent(ObjectWithUid.create("qtr8GGlm4gg"))
                 .displayNamePath("/Afro Arab Clinic")
                 .build();
     }
@@ -97,7 +98,7 @@ public class OrganisationUnitSamples {
                 .path("/ImspTQPwCqd/at6UHUQatSo/qtr8GGlm4gg/Rp268JB6Ne4")
                 .openingDate("2010-01-01T00:00:00.000")
                 .level(4)
-                .parent(OrganisationUnit.builder().uid("qtr8GGlm4gg").build())
+                .parent(ObjectWithUid.create("qtr8GGlm4gg"))
                 .displayNamePath("/Adonkia CHP")
                 .build();
     }

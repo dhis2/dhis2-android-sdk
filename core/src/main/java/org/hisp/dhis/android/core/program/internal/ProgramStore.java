@@ -101,8 +101,8 @@ public final class ProgramStore extends IdentifiableObjectStoreImpl<Program> imp
     @Override
     public List<String> queryWithoutRegistrationProgramUids() throws RuntimeException {
         String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(ProgramFields.PROGRAM_TYPE, ProgramType.WITHOUT_REGISTRATION.toString())
-                .build();
+                .appendKeyStringValue(ProgramTableInfo.Columns.PROGRAM_TYPE,
+                        ProgramType.WITHOUT_REGISTRATION.toString()).build();
         return selectStringColumnsWhereClause(BaseIdentifiableObjectModel.Columns.UID, whereClause);
     }
 }

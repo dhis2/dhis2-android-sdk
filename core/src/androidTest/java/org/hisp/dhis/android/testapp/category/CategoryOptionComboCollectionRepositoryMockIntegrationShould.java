@@ -117,14 +117,14 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
     @Test
     public void include_category_options_as_children_in_collection_repository_when_all_selected() {
         CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos
-                .withAllChildren().blockingGet().get(0);
+                .withCategoryOptions().blockingGet().get(0);
         assertThat(categoryOptionCombo.categoryOptions().get(0).name(), is("At PHU"));
     }
 
     @Test
     public void include_category_options_as_children_in_object_repository_when_all_selected() {
         CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos
-                .one().withAllChildren().blockingGet();
+                .withCategoryOptions().one().blockingGet();
         assertThat(categoryOptionCombo.categoryOptions().get(0).name(), is("At PHU"));
     }
 }

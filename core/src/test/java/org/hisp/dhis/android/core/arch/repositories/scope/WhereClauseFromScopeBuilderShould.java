@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.repositories.scope;
 
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder;
 import org.junit.Before;
@@ -53,8 +54,8 @@ public class WhereClauseFromScopeBuilderShould {
     @Mock
     private WhereClauseBuilder builder;
 
-    private RepositoryScopeFilterItem eqItem = RepositoryScopeFilterItem.builder().key("k1").operator("=").value("v1").build();
-    private RepositoryScopeFilterItem likeItem = RepositoryScopeFilterItem.builder().key("k2").operator("LIKE").value("v2").build();
+    private RepositoryScopeFilterItem eqItem = RepositoryScopeFilterItem.builder().key("k1").operator(FilterItemOperator.EQ).value("v1").build();
+    private RepositoryScopeFilterItem likeItem = RepositoryScopeFilterItem.builder().key("k2").operator(FilterItemOperator.LIKE).value("v2").build();
 
 
     @Before
@@ -67,7 +68,7 @@ public class WhereClauseFromScopeBuilderShould {
         WhereClauseFromScopeBuilder scopeBuilder = new WhereClauseFromScopeBuilder(builder);
         List<RepositoryScopeFilterItem> filterItems = Collections.singletonList(eqItem);
         scopeBuilder.getWhereClause(scopeForItems(filterItems));
-        verify(builder).appendKeyOperatorValue(eqItem.key(), eqItem.operator(), eqItem.value());
+        verify(builder).appendKeyOperatorValue(eqItem.key(), eqItem.operator().getSqlOperator(), eqItem.value());
         verify(builder).build();
         verifyNoMoreInteractions(builder);
     }
@@ -77,7 +78,7 @@ public class WhereClauseFromScopeBuilderShould {
         WhereClauseFromScopeBuilder scopeBuilder = new WhereClauseFromScopeBuilder(builder);
         List<RepositoryScopeFilterItem> filterItems = Collections.singletonList(likeItem);
         scopeBuilder.getWhereClause(scopeForItems(filterItems));
-        verify(builder).appendKeyOperatorValue(likeItem.key(), likeItem.operator(), likeItem.value());
+        verify(builder).appendKeyOperatorValue(likeItem.key(), likeItem.operator().getSqlOperator(), likeItem.value());
         verify(builder).build();
         verifyNoMoreInteractions(builder);
     }
@@ -87,8 +88,8 @@ public class WhereClauseFromScopeBuilderShould {
         WhereClauseFromScopeBuilder scopeBuilder = new WhereClauseFromScopeBuilder(builder);
         List<RepositoryScopeFilterItem> filterItems = Lists.newArrayList(eqItem, likeItem);
         scopeBuilder.getWhereClause(scopeForItems(filterItems));
-        verify(builder).appendKeyOperatorValue(eqItem.key(), eqItem.operator(), eqItem.value());
-        verify(builder).appendKeyOperatorValue(likeItem.key(), likeItem.operator(), likeItem.value());
+        verify(builder).appendKeyOperatorValue(eqItem.key(), eqItem.operator().getSqlOperator(), eqItem.value());
+        verify(builder).appendKeyOperatorValue(likeItem.key(), likeItem.operator().getSqlOperator(), likeItem.value());
         verify(builder).build();
         verifyNoMoreInteractions(builder);
     }

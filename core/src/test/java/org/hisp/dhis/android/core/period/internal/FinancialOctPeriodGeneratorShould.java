@@ -47,52 +47,52 @@ public class FinancialOctPeriodGeneratorShould extends PeriodGeneratorBaseShould
     }
 
     @Test
-    public void generate_periods_for_one_year() throws Exception {
+    public void generate_periods_for_one_year() {
         calendar.set(2017, 9, 1);
         Period period = generateExpectedPeriod("2017Oct", calendar);
 
-        calendar.set(2018, 1, 21);
+        calendar.set(2019, 1, 21);
         YearlyPeriodGenerator generator = YearlyPeriodGeneratorFactory.financialOct(calendar);
-        List<Period> generatedPeriods = generator.generateLastPeriods(1);
+        List<Period> generatedPeriods = generator.generatePeriods(1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
 
     @Test
-    public void generate_starting_period_on_oct_1() throws Exception {
+    public void generate_starting_period_on_oct_1() {
         calendar.set(2017, 9, 1);
         Period period = generateExpectedPeriod("2017Oct", calendar);
 
-        calendar.set(2017, 9, 1);
+        calendar.set(2018, 9, 1);
         YearlyPeriodGenerator generator = YearlyPeriodGeneratorFactory.financialOct(calendar);
-        List<Period> generatedPeriods = generator.generateLastPeriods(1);
+        List<Period> generatedPeriods = generator.generatePeriods(1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
 
     @Test
-    public void generate_ending_period_on_sep_30() throws Exception {
+    public void generate_ending_period_on_sep_30() {
         calendar.set(2016, 9, 1);
         Period period = generateExpectedPeriod("2016Oct", calendar);
 
-        calendar.set(2017, 8, 30);
+        calendar.set(2018, 8, 30);
         YearlyPeriodGenerator generator = YearlyPeriodGeneratorFactory.financialOct(calendar);
-        List<Period> generatedPeriods = generator.generateLastPeriods(1);
+        List<Period> generatedPeriods = generator.generatePeriods(1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
 
     @Test
-    public void generate_periods_for_two_year() throws Exception {
+    public void generate_periods_for_two_year() {
         calendar.set(2016, 9, 1);
         Period period1 = generateExpectedPeriod("2016Oct", calendar);
         calendar.set(2017, 9, 1);
         Period period2 = generateExpectedPeriod("2017Oct", calendar);
         List<Period> expectedPeriods = Lists.newArrayList(period1, period2);
 
-        calendar.set(2018, 1, 21);
+        calendar.set(2019, 1, 21);
         YearlyPeriodGenerator generator = YearlyPeriodGeneratorFactory.financialOct(calendar);
-        List<Period> generatedPeriods = generator.generateLastPeriods(2);
+        List<Period> generatedPeriods = generator.generatePeriods(2, 0);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
     }

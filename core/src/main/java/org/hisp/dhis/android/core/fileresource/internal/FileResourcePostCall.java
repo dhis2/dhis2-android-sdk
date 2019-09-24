@@ -45,10 +45,10 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueFields;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
 
 import java.io.File;
@@ -120,7 +120,7 @@ public final class FileResourcePostCall {
     }
 
     private File getRelatedFile(FileResource fileResource) throws D2Error {
-        return FileResourceUtil.getFile(context, fileResource.uid());
+        return FileResourceUtil.getFile(context, fileResource);
     }
 
     private MultipartBody.Part getFilePart(File file) {
@@ -140,9 +140,9 @@ public final class FileResourcePostCall {
 
             updateValue(fileResource, downloadedFileResource);
 
-            updateFileResource(fileResource, downloadedFileResource, file);
+            File downloadedFile = updateFile(file, downloadedFileResource, context);
 
-            updateFile(file, downloadedFileResource, context);
+            updateFileResource(fileResource, downloadedFileResource, downloadedFile);
 
         } catch (IOException e) {
             Log.v(FileResourcePostCall.class.getCanonicalName(), e.getMessage());
@@ -166,7 +166,7 @@ public final class FileResourcePostCall {
 
     private boolean updateTrackedEntityAttributeValue(FileResource fileResource, FileResource downloadedFileResource) {
         String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(TrackedEntityAttributeValueFields.VALUE, fileResource.uid())
+                .appendKeyStringValue(TrackedEntityAttributeValueTableInfo.Columns.VALUE, fileResource.uid())
                 .build();
 
         TrackedEntityAttributeValue trackedEntityAttributeValue =
@@ -184,7 +184,7 @@ public final class FileResourcePostCall {
 
     private void updateTrackedEntityDataValue(FileResource fileResource, FileResource downloadedFileResource) {
         String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(TrackedEntityDataValueFields.VALUE, fileResource.uid())
+                .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.VALUE, fileResource.uid())
                 .build();
 
         TrackedEntityDataValue trackedEntityDataValue =
@@ -197,15 +197,15 @@ public final class FileResourcePostCall {
         }
     }
 
+    private File updateFile(File file, FileResource fileResource, Context context) {
+        return FileResourceUtil.renameFile(file, fileResource.uid(), context);
+    }
+
     private void updateFileResource(FileResource fileResource, FileResource downloadedFileResource, File file) {
         fileResourceStore.delete(fileResource.uid());
         fileResourceHandler.handle(downloadedFileResource.toBuilder()
                 .state(State.SYNCED)
-                .path(file.getParent())
+                .path(file.getAbsolutePath())
                 .build());
-    }
-
-    private void updateFile(File file, FileResource fileResource, Context context) {
-        FileResourceUtil.renameFile(file, fileResource.uid(), context);
     }
 }

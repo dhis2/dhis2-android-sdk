@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.program.internal.ProgramSectionFields;
 
 public final class ProgramSectionTableInfo {
 
@@ -51,15 +50,19 @@ public final class ProgramSectionTableInfo {
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String DESCRIPTION = "description";
+        public static final String PROGRAM = "program";
+        public static final String SORT_ORDER = "sortOrder";
+        public static final String FORM_NAME = "formName";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    ProgramSectionFields.DESCRIPTION,
-                    ProgramSectionFields.PROGRAM,
-                    ProgramSectionFields.SORT_ORDER,
-                    ProgramSectionFields.FORM_NAME
+                    DESCRIPTION,
+                    PROGRAM,
+                    SORT_ORDER,
+                    FORM_NAME
             );
         }
     }

@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
 import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns;
 import org.hisp.dhis.android.core.program.internal.ProgramFields;
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
 
@@ -63,67 +64,67 @@ public final class ProgramCollectionRepository
     }
 
     public IntegerFilterConnector<ProgramCollectionRepository> byVersion() {
-        return cf.integer(ProgramFields.VERSION);
+        return cf.integer(Columns.VERSION);
     }
 
     public BooleanFilterConnector<ProgramCollectionRepository> byOnlyEnrollOnce() {
-        return cf.bool(ProgramFields.ONLY_ENROLL_ONCE);
+        return cf.bool(Columns.ONLY_ENROLL_ONCE);
     }
 
     public StringFilterConnector<ProgramCollectionRepository> byEnrollmentDateLabel() {
-        return cf.string(ProgramFields.ENROLLMENT_DATE_LABEL);
+        return cf.string(Columns.ENROLLMENT_DATE_LABEL);
     }
 
     public BooleanFilterConnector<ProgramCollectionRepository> byDisplayIncidentDate() {
-        return cf.bool(ProgramFields.DISPLAY_INCIDENT_DATE);
+        return cf.bool(Columns.DISPLAY_INCIDENT_DATE);
     }
 
     public StringFilterConnector<ProgramCollectionRepository> byIncidentDateLabel() {
-        return cf.string(ProgramFields.INCIDENT_DATE_LABEL);
+        return cf.string(Columns.INCIDENT_DATE_LABEL);
     }
 
     public BooleanFilterConnector<ProgramCollectionRepository> byRegistration() {
-        return cf.bool(ProgramFields.REGISTRATION);
+        return cf.bool(Columns.REGISTRATION);
     }
 
     public BooleanFilterConnector<ProgramCollectionRepository> bySelectEnrollmentDatesInFuture() {
-        return cf.bool(ProgramFields.SELECT_ENROLLMENT_DATES_IN_FUTURE);
+        return cf.bool(Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE);
     }
 
     public BooleanFilterConnector<ProgramCollectionRepository> byDataEntryMethod() {
-        return cf.bool(ProgramFields.DATA_ENTRY_METHOD);
+        return cf.bool(Columns.DATA_ENTRY_METHOD);
     }
 
     public BooleanFilterConnector<ProgramCollectionRepository> byIgnoreOverdueEvents() {
-        return cf.bool(ProgramFields.IGNORE_OVERDUE_EVENTS);
+        return cf.bool(Columns.IGNORE_OVERDUE_EVENTS);
     }
 
     public BooleanFilterConnector<ProgramCollectionRepository> bySelectIncidentDatesInFuture() {
-        return cf.bool(ProgramFields.SELECT_INCIDENT_DATES_IN_FUTURE);
+        return cf.bool(Columns.SELECT_INCIDENT_DATES_IN_FUTURE);
     }
 
     public BooleanFilterConnector<ProgramCollectionRepository> byUseFirstStageDuringRegistration() {
-        return cf.bool(ProgramFields.USE_FIRST_STAGE_DURING_REGISTRATION);
+        return cf.bool(Columns.USE_FIRST_STAGE_DURING_REGISTRATION);
     }
 
     public BooleanFilterConnector<ProgramCollectionRepository> byDisplayFrontPageList() {
-        return cf.bool(ProgramFields.DISPLAY_FRONT_PAGE_LIST);
+        return cf.bool(Columns.DISPLAY_FRONT_PAGE_LIST);
     }
 
     public EnumFilterConnector<ProgramCollectionRepository, ProgramType> byProgramType() {
-        return cf.enumC(ProgramFields.PROGRAM_TYPE);
+        return cf.enumC(Columns.PROGRAM_TYPE);
     }
 
     public StringFilterConnector<ProgramCollectionRepository> byRelatedProgramUid() {
-        return cf.string(ProgramFields.RELATED_PROGRAM);
+        return cf.string(Columns.RELATED_PROGRAM);
     }
 
     public StringFilterConnector<ProgramCollectionRepository> byTrackedEntityTypeUid() {
-        return cf.string(ProgramFields.TRACKED_ENTITY_TYPE);
+        return cf.string(Columns.TRACKED_ENTITY_TYPE);
     }
 
     public StringFilterConnector<ProgramCollectionRepository> byCategoryComboUid() {
-        return cf.string(ProgramFields.CATEGORY_COMBO);
+        return cf.string(Columns.CATEGORY_COMBO);
     }
 
     public BooleanFilterConnector<ProgramCollectionRepository> byAccessDataWrite() {
@@ -131,31 +132,31 @@ public final class ProgramCollectionRepository
     }
 
     public IntegerFilterConnector<ProgramCollectionRepository> byExpiryDays() {
-        return cf.integer(ProgramFields.EXPIRY_DAYS);
+        return cf.integer(Columns.EXPIRY_DAYS);
     }
 
     public IntegerFilterConnector<ProgramCollectionRepository> byCompleteEventsExpiryDays() {
-        return cf.integer(ProgramFields.COMPLETE_EVENTS_EXPIRY_DAYS);
+        return cf.integer(Columns.COMPLETE_EVENTS_EXPIRY_DAYS);
     }
 
     public EnumFilterConnector<ProgramCollectionRepository, PeriodType> byExpiryPeriodType() {
-        return cf.enumC(ProgramFields.EXPIRY_PERIOD_TYPE);
+        return cf.enumC(Columns.EXPIRY_PERIOD_TYPE);
     }
 
     public IntegerFilterConnector<ProgramCollectionRepository> byMinAttributesRequiredToSearch() {
-        return cf.integer(ProgramFields.MIN_ATTRIBUTES_REQUIRED_TO_SEARCH);
+        return cf.integer(Columns.MIN_ATTRIBUTES_REQUIRED_TO_SEARCH);
     }
 
     public IntegerFilterConnector<ProgramCollectionRepository> byMaxTeiCountToReturn() {
-        return cf.integer(ProgramFields.MAX_TEI_COUNT_TO_RETURN);
+        return cf.integer(Columns.MAX_TEI_COUNT_TO_RETURN);
     }
 
     public EnumFilterConnector<ProgramCollectionRepository, FeatureType> byFeatureType() {
-        return cf.enumC(ProgramFields.FEATURE_TYPE);
+        return cf.enumC(Columns.FEATURE_TYPE);
     }
 
     public EnumFilterConnector<ProgramCollectionRepository, AccessLevel> byAccessLevel() {
-        return cf.enumC(ProgramFields.ACCESS_LEVEL);
+        return cf.enumC(Columns.ACCESS_LEVEL);
     }
 
     public ProgramCollectionRepository byOrganisationUnitUid(String uid) {
@@ -199,14 +200,14 @@ public final class ProgramCollectionRepository
     }
 
     public ProgramCollectionRepository withCategoryCombo() {
-        return cf.withChild(ProgramFields.CATEGORY_COMBO);
+        return cf.withChild(Columns.CATEGORY_COMBO);
     }
 
     public ProgramCollectionRepository withRelatedProgram() {
-        return cf.withChild(ProgramFields.RELATED_PROGRAM);
+        return cf.withChild(Columns.RELATED_PROGRAM);
     }
 
     public ProgramCollectionRepository withTrackedEntityType() {
-        return cf.withChild(ProgramFields.TRACKED_ENTITY_TYPE);
+        return cf.withChild(Columns.TRACKED_ENTITY_TYPE);
     }
 }

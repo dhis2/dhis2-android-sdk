@@ -32,8 +32,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils;
@@ -73,6 +71,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import static com.google.common.truth.Truth.assertThat;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -103,14 +103,14 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
     private static final String TRACKED_ENTITY_INSTANCE = "test_tei";
     private static final String ENROLLMENT = "test_enrollment";
 
-    public static final String[] PROJECTION = {
-            TrackedEntityDataValueTableInfo.Columns.EVENT,
-            TrackedEntityDataValueFields.CREATED,
-            TrackedEntityDataValueFields.LAST_UPDATED,
-            TrackedEntityDataValueFields.DATA_ELEMENT,
-            TrackedEntityDataValueFields.STORED_BY,
-            TrackedEntityDataValueFields.VALUE,
-            TrackedEntityDataValueFields.PROVIDED_ELSEWHERE
+    private static final String[] PROJECTION = {
+            Columns.EVENT,
+            Columns.CREATED,
+            Columns.LAST_UPDATED,
+            Columns.DATA_ELEMENT,
+            Columns.STORED_BY,
+            Columns.VALUE,
+            Columns.PROVIDED_ELSEWHERE
     };
 
     private Date date;

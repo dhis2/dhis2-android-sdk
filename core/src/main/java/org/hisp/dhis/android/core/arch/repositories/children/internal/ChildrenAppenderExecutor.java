@@ -79,14 +79,10 @@ public final class ChildrenAppenderExecutor {
 
     private static <M extends Model> Collection<ChildrenAppender<M>> getSelectedChildrenAppenders(
             Map<String, ChildrenAppender<M>> appendersMap, ChildrenSelection childrenSelection) {
-        if (childrenSelection.areAllChildrenSelected) {
-            return appendersMap.values();
-        } else {
-            List<ChildrenAppender<M>> appendersList = new ArrayList<>(appendersMap.size());
-            for (String key : childrenSelection.children) {
-                appendersList.add(appendersMap.get(key));
-            }
-            return appendersList;
+        List<ChildrenAppender<M>> appendersList = new ArrayList<>(appendersMap.size());
+        for (String key : childrenSelection.children) {
+            appendersList.add(appendersMap.get(key));
         }
+        return appendersList;
     }
 }

@@ -31,28 +31,22 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo.Columns;
 
 import java.util.Date;
 
 public final class TrackedEntityDataValueFields {
 
-    public final static String DATA_ELEMENT = "dataElement";
-    public final static String STORED_BY = "storedBy";
-    public final static String VALUE = "value";
-    public final static String CREATED = "created";
-    public final static String LAST_UPDATED = "lastUpdated";
-    public final static String PROVIDED_ELSEWHERE = "providedElsewhere";
-
     private static final FieldsHelper<TrackedEntityDataValue> fh = new FieldsHelper<>();
 
     public static final Fields<TrackedEntityDataValue> allFields = Fields.<TrackedEntityDataValue>builder()
             .fields(
-                    fh.<String>field(DATA_ELEMENT),
-                    fh.<String>field(STORED_BY),
-                    fh.<String>field(VALUE),
-                    fh.<Date>field(CREATED),
-                    fh.<Date>field(LAST_UPDATED),
-                    fh.<Boolean>field(PROVIDED_ELSEWHERE)
+                    fh.<String>field(Columns.DATA_ELEMENT),
+                    fh.<String>field(Columns.STORED_BY),
+                    fh.<String>field(Columns.VALUE),
+                    fh.<Date>field(Columns.CREATED),
+                    fh.<Date>field(Columns.LAST_UPDATED),
+                    fh.<Boolean>field(Columns.PROVIDED_ELSEWHERE)
             ).build();
 
     private TrackedEntityDataValueFields() {

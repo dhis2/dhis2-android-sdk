@@ -43,12 +43,12 @@ public final class RelationshipTypeFields {
     public static final String FROM_TO_NAME = "fromToName";
     public static final String TO_FROM_NAME = "toFromName";
     public static final String BIDIRECTIONAL = "bidirectional";
-    public static final String FROM_CONSTRAINT = "fromConstraint";
-    public static final String TO_CONSTRAINT = "toConstraint";
+    private static final String FROM_CONSTRAINT = "fromConstraint";
+    private static final String TO_CONSTRAINT = "toConstraint";
     private static final String ACCESS = "access";
 
     // Used only for children appending, can't be used in query
-    static final String CONSTRAINTS = "constraints";
+    public static final String CONSTRAINTS = "constraints";
 
     private static final FieldsHelper<RelationshipType> fh = new FieldsHelper<>();
 

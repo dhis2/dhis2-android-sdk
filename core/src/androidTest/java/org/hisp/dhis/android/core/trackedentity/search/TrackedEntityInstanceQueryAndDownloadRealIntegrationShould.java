@@ -46,7 +46,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends BaseRealIntegrationTest {
     private D2 d2;
-    private TrackedEntityInstanceQuery.Builder queryBuilder;
+    private TrackedEntityInstanceQueryCollectionRepository repository;
 
     @Before
     @Override
@@ -59,9 +59,8 @@ public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends 
         List<String> orgUnits = new ArrayList<>();
         orgUnits.add("O6uvpzGd5pu");
 
-        queryBuilder = TrackedEntityInstanceQuery.builder()
-                .paging(true).page(1).pageSize(50)
-                .orgUnits(orgUnits).orgUnitMode(OrganisationUnitMode.ACCESSIBLE);
+        repository = d2.trackedEntityModule().trackedEntityInstanceQuery
+                .byOrgUnits().in(orgUnits).byOrgUnitMode().eq(OrganisationUnitMode.ACCESSIBLE);
     }
 
     //@Test
@@ -70,9 +69,7 @@ public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends 
 
         d2.metadataModule().blockingDownload();
 
-        TrackedEntityInstanceQuery query = queryBuilder.build();
-        List<TrackedEntityInstance> queriedTeis =
-                d2.trackedEntityModule().trackedEntityInstanceQuery.onlineOnly().query(query).blockingGet();
+        List<TrackedEntityInstance> queriedTeis = repository.onlineOnly().blockingGet();
         assertThat(queriedTeis).isNotEmpty();
 
         Set<String> uids = new HashSet<>(queriedTeis.size());

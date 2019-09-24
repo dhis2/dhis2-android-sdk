@@ -25,15 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal;
 
-package org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import javax.inject.Inject;
 
-public class OrganisationUnitWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<OrganisationUnit> {
+import dagger.Reusable;
+
+@Reusable
+final class ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender
+        extends ValueTypeRenderingChildrenAppender<ProgramTrackedEntityAttribute> {
+
+    @Inject
+    ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender(
+            ObjectWithoutUidStore<ValueTypeDeviceRendering> store) {
+        super(store);
+    }
 
     @Override
-    protected OrganisationUnit build(String uid) {
-        return OrganisationUnit.builder().uid(uid).build();
+    protected ProgramTrackedEntityAttribute appendChildren(
+            ProgramTrackedEntityAttribute programTrackedEntityAttribute) {
+        ValueTypeRendering valueTypeRendering = getValueTypeDeviceRendering(programTrackedEntityAttribute);
+
+        return programTrackedEntityAttribute.toBuilder().renderType(valueTypeRendering).build();
     }
 }

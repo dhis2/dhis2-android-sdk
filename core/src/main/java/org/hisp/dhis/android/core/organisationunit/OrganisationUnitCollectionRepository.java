@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo.Columns;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo;
@@ -108,6 +109,13 @@ public final class OrganisationUnitCollectionRepository
                 programUids);
     }
 
+    public OrganisationUnitCollectionRepository byDataSetUids(List<String> dataSetUids) {
+        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).inLinkTable(
+                DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
+                DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
+                DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET,
+                dataSetUids);
+    }
 
     public OrganisationUnitCollectionRepository withPrograms() {
         return cf.withChild(OrganisationUnitFields.PROGRAMS);

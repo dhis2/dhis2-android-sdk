@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 
 public final class StringFilterConnector<R extends BaseRepository>
         extends BaseAbstractFilterConnector<R, String> {
@@ -42,7 +43,7 @@ public final class StringFilterConnector<R extends BaseRepository>
     }
 
     public R like(String value) {
-        return newWithWrappedScope("LIKE", value);
+        return newWithWrappedScope(FilterItemOperator.LIKE, "%" + value + "%");
     }
 
     String wrapValue(String value) {

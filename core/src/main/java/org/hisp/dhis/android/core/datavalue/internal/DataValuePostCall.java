@@ -68,31 +68,33 @@ public final class DataValuePostCall {
     }
 
     public Observable<D2Progress> uploadDataValues() {
-        D2ProgressManager progressManager = new D2ProgressManager(null);
-
-        Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
-                progressManager.increaseProgress(SystemInfo.class, false));
-
-        return systemInfoDownload.flatMapObservable(systemInfoProgress -> Observable.create(emitter -> {
+        return Observable.defer(() -> {
             Collection<DataValue> toPostDataValues = new ArrayList<>();
 
             appendPostableDataValues(toPostDataValues);
             appendUpdatableDataValues(toPostDataValues);
 
             if (toPostDataValues.isEmpty()) {
-                emitter.onComplete();
+                return Observable.empty();
             } else {
-                DataValueSet dataValueSet = new DataValueSet(toPostDataValues);
+                D2ProgressManager progressManager = new D2ProgressManager(2);
 
-                DataValueImportSummary dataValueImportSummary = apiCallExecutor.executeObjectCall(
-                        dataValueService.postDataValues(dataValueSet));
+                Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
+                        progressManager.increaseProgress(SystemInfo.class, false));
 
-                handleImportSummary(dataValueSet, dataValueImportSummary);
+                return systemInfoDownload.flatMapObservable(systemInfoProgress -> Observable.create(emitter -> {
+                    DataValueSet dataValueSet = new DataValueSet(toPostDataValues);
 
-                emitter.onNext(progressManager.increaseProgress(DataValue.class, true));
-                emitter.onComplete();
+                    DataValueImportSummary dataValueImportSummary = apiCallExecutor.executeObjectCall(
+                            dataValueService.postDataValues(dataValueSet));
+
+                    handleImportSummary(dataValueSet, dataValueImportSummary);
+
+                    emitter.onNext(progressManager.increaseProgress(DataValue.class, true));
+                    emitter.onComplete();
+                }));
             }
-        }));
+        });
     }
 
     private void appendPostableDataValues(Collection<DataValue> dataValues) {

@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.testapp.arch.helpers;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import androidx.test.InstrumentationRegistry;
 
@@ -54,7 +56,8 @@ public class FileResizerHelperShould {
 
         File resizedFile = FileResizerHelper.resizeFile(file, FileResizerHelper.Dimension.SMALL);
 
-        assertThat(resizedFile.length(), is(256L));
+        Bitmap resizedBitmap = BitmapFactory.decodeFile(resizedFile.getAbsolutePath());
+        assertThat(resizedBitmap.getHeight(), is(256));
     }
 
     private File getFile() {

@@ -59,13 +59,16 @@ public final class FileResizerHelper {
 
     public static File resizeFile(File fileToResize, Dimension dimension) throws D2Error {
         Bitmap bitmap = BitmapFactory.decodeFile(fileToResize.getAbsolutePath());
-        long scaleFactor = bitmap.getWidth() / bitmap.getHeight();
+        Float width = ((Integer) bitmap.getWidth()).floatValue();
+        Float height = ((Integer) bitmap.getHeight()).floatValue();
+
+        float scaleFactor = width / height;
         if (scaleFactor > 1) {
             return resize(fileToResize, bitmap,
-                    dimension.getDimension(), (int) scaleFactor * dimension.getDimension());
+                    dimension.getDimension(), (int) (scaleFactor * dimension.getDimension()));
         } else {
             return resize(fileToResize, bitmap,
-                    (int) scaleFactor * dimension.getDimension(),  dimension.getDimension());
+                    (int) (scaleFactor * dimension.getDimension()),  dimension.getDimension());
         }
     }
 

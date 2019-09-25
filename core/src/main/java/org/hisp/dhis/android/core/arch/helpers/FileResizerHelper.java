@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.helpers;
 
 import android.graphics.Bitmap;
@@ -36,6 +37,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 public final class FileResizerHelper {
 
@@ -65,34 +67,37 @@ public final class FileResizerHelper {
         float scaleFactor = width / height;
         if (scaleFactor > 1) {
             return resize(fileToResize, bitmap,
-                    dimension.getDimension(), (int) (scaleFactor * dimension.getDimension()));
+                    dimension.getDimension(), (int) (scaleFactor * dimension.getDimension()), dimension);
         } else {
             return resize(fileToResize, bitmap,
-                    (int) (scaleFactor * dimension.getDimension()),  dimension.getDimension());
+                    (int) (scaleFactor * dimension.getDimension()),  dimension.getDimension(), dimension);
         }
     }
 
-    private static File resize(File fileToResize, Bitmap bitmap, int dstWidth, int dstHeight) throws D2Error {
-
+    private static File resize(File fileToResize, Bitmap bitmap, int dstWidth, int dstHeight, Dimension dimension)
+            throws D2Error {
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, dstWidth, dstHeight, false);
+        File resizedFile = new File(fileToResize.getParent(), "resized-" + dimension.name() + "-"
+                + fileToResize.getName());
 
-        File resizedFile = new File(fileToResize.getParent(), "resized-" + fileToResize.getName());
-        FileOutputStream fileOutputStream;
-        try {
-            fileOutputStream = new FileOutputStream(resizedFile);
+        try (FileOutputStream fileOutputStream = new FileOutputStream(resizedFile)){
             scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
             fileOutputStream.flush();
             fileOutputStream.close();
             bitmap.recycle();
             scaledBitmap.recycle();
-        } catch (Exception e) {
-            throw D2Error.builder()
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .errorCode(D2ErrorCode.FAIL_RESIZING_IMAGE)
-                    .errorDescription(e.getMessage())
-                    .build();
+        } catch (IOException e) {
+            throw buildD2Error(e);
         }
 
         return resizedFile;
+    }
+
+    private static D2Error buildD2Error(Exception e) {
+        return D2Error.builder()
+                .errorComponent(D2ErrorComponent.SDK)
+                .errorCode(D2ErrorCode.FAIL_RESIZING_IMAGE)
+                .errorDescription(e.getMessage())
+                .build();
     }
 }

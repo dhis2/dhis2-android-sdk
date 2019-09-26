@@ -108,7 +108,8 @@ public class EventEndpointCallShould {
 
         RecordedRequest request = mockWebServer.takeRequest();
 
-        assertThat(request.getPath(), containsString("orgUnit=OU&program=P"));
+        assertThat(request.getPath(), containsString("orgUnit=OU"));
+        assertThat(request.getPath(), containsString("program=P"));
     }
 
     private Callable<List<Event>> givenAEventCallByUIds(int numUIds) {

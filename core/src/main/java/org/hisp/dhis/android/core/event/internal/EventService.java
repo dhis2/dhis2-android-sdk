@@ -43,6 +43,7 @@ import retrofit2.http.Query;
 
 interface EventService {
     String ORG_UNIT = "orgUnit";
+    String OU_MODE = "ouMode";
     String PROGRAM = "program";
     String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
     String FIELDS = "fields";
@@ -61,6 +62,7 @@ interface EventService {
     @GET(EVENTS)
     Call<Payload<Event>> getEvents(
             @Query(ORG_UNIT) String orgUnit,
+            @Query(OU_MODE) String orgUnitMode,
             @Query(PROGRAM) String program,
             @Query(TRACKED_ENTITY_INSTANCE) String trackedEntityInstance,
             @Query(FIELDS) @Which Fields<Event> fields,

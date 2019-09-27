@@ -53,7 +53,7 @@ import io.reactivex.Single;
 public final class DataSetCompleteRegistrationPostCall {
 
     private final DataSetCompleteRegistrationService dataSetCompleteRegistrationService;
-    private final DataSetCompleteRegistrationStore  dataSetCompleteRegistrationStore;
+    private final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
     private final APICallExecutor apiCallExecutor;
     private final SystemInfoModuleDownloader systemInfoDownloader;
 
@@ -71,53 +71,63 @@ public final class DataSetCompleteRegistrationPostCall {
     }
 
     public Observable<D2Progress> uploadDataSetCompleteRegistrations() {
-
-        D2ProgressManager progressManager = new D2ProgressManager(2);
-
-        Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
-                progressManager.increaseProgress(SystemInfo.class, false));
-
-        return systemInfoDownload.flatMapObservable(systemInfoProgress -> Observable.create(emitter -> {
-
+        return Observable.defer(() -> {
             List<DataSetCompleteRegistration> toPostDataSetCompleteRegistrations = new ArrayList<>();
             List<DataSetCompleteRegistration> toDeleteDataSetCompleteRegistrations = new ArrayList<>();
-            DataValueImportSummary dataValueImportSummary = DataValueImportSummary.EMPTY;
 
             appendPostableDataValues(toPostDataSetCompleteRegistrations);
             appendToDeleteRegistrations(toDeleteDataSetCompleteRegistrations);
 
-            DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload
-                    = new DataSetCompleteRegistrationPayload(toPostDataSetCompleteRegistrations);
-            if (!toPostDataSetCompleteRegistrations.isEmpty()) {
-                dataValueImportSummary = apiCallExecutor.executeObjectCall(
-                        dataSetCompleteRegistrationService.postDataSetCompleteRegistrations(
-                                dataSetCompleteRegistrationPayload));
-            }
+            int toPostCallCount = toPostDataSetCompleteRegistrations.isEmpty() ? 0 : 1;
+            int toDeleteCallCount = toDeleteDataSetCompleteRegistrations.isEmpty() ? 0 : 1;
 
-            List<DataSetCompleteRegistration> deletedDataSetCompleteRegistrations = new ArrayList<>();
-            List<DataSetCompleteRegistration> withErrorDataSetCompleteRegistrations = new ArrayList<>();
-            if (!toDeleteDataSetCompleteRegistrations.isEmpty()) {
-                for (DataSetCompleteRegistration dataSetCompleteRegistration : toDeleteDataSetCompleteRegistrations) {
-                    try {
-                        apiCallExecutor.executeObjectCallWithEmptyResponse(
-                                dataSetCompleteRegistrationService.deleteDataSetCompleteRegistration(
-                                        dataSetCompleteRegistration.dataSet(),
-                                        dataSetCompleteRegistration.period(),
-                                        dataSetCompleteRegistration.organisationUnit(),
-                                        false));
-                        deletedDataSetCompleteRegistrations.add(dataSetCompleteRegistration);
-                    } catch (D2Error d2Error) {
-                        withErrorDataSetCompleteRegistrations.add(dataSetCompleteRegistration);
+            if (toPostCallCount + toDeleteCallCount == 0) {
+                return Observable.empty();
+            } else {
+                D2ProgressManager progressManager = new D2ProgressManager(toPostCallCount + toDeleteCallCount + 1);
+
+                Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
+                        progressManager.increaseProgress(SystemInfo.class, false));
+
+                return systemInfoDownload.flatMapObservable(systemInfoProgress -> Observable.create(emitter -> {
+                    emitter.onNext(systemInfoProgress);
+
+                    DataValueImportSummary dataValueImportSummary = DataValueImportSummary.EMPTY;
+
+                    DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload
+                            = new DataSetCompleteRegistrationPayload(toPostDataSetCompleteRegistrations);
+                    if (!toPostDataSetCompleteRegistrations.isEmpty()) {
+                        dataValueImportSummary = apiCallExecutor.executeObjectCall(
+                                dataSetCompleteRegistrationService.postDataSetCompleteRegistrations(
+                                        dataSetCompleteRegistrationPayload));
                     }
-                }
+
+                    List<DataSetCompleteRegistration> deletedDataSetCompleteRegistrations = new ArrayList<>();
+                    List<DataSetCompleteRegistration> withErrorDataSetCompleteRegistrations = new ArrayList<>();
+                    if (!toDeleteDataSetCompleteRegistrations.isEmpty()) {
+                        for (DataSetCompleteRegistration dataSetCompleteRegistration : toDeleteDataSetCompleteRegistrations) {
+                            try {
+                                apiCallExecutor.executeObjectCallWithEmptyResponse(
+                                        dataSetCompleteRegistrationService.deleteDataSetCompleteRegistration(
+                                                dataSetCompleteRegistration.dataSet(),
+                                                dataSetCompleteRegistration.period(),
+                                                dataSetCompleteRegistration.organisationUnit(),
+                                                false));
+                                deletedDataSetCompleteRegistrations.add(dataSetCompleteRegistration);
+                            } catch (D2Error d2Error) {
+                                withErrorDataSetCompleteRegistrations.add(dataSetCompleteRegistration);
+                            }
+                        }
+                    }
+
+                    handleImportSummary(dataSetCompleteRegistrationPayload, dataValueImportSummary,
+                            deletedDataSetCompleteRegistrations, withErrorDataSetCompleteRegistrations);
+
+                    emitter.onNext(progressManager.increaseProgress(DataSetCompleteRegistration.class, true));
+                    emitter.onComplete();
+                }));
             }
-
-            handleImportSummary(dataSetCompleteRegistrationPayload, dataValueImportSummary,
-                    deletedDataSetCompleteRegistrations, withErrorDataSetCompleteRegistrations);
-
-            emitter.onNext(progressManager.increaseProgress(DataSetCompleteRegistration.class, true));
-            emitter.onComplete();
-        }));
+        });
     }
 
     private void appendToDeleteRegistrations(

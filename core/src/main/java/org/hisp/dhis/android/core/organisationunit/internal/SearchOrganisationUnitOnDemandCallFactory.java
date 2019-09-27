@@ -55,13 +55,13 @@ final class SearchOrganisationUnitOnDemandCallFactory {
     private final OrganisationUnitService service;
     private final APICallExecutor apiCallExecutor;
     private final D2CallExecutor d2CallExecutor;
-    private final SearchOrganisationUnitHandler handler;
+    private final OrganisationUnitHandler handler;
 
     @Inject
     SearchOrganisationUnitOnDemandCallFactory(OrganisationUnitService service,
                                               APICallExecutor apiCallExecutor,
                                               D2CallExecutor d2CallExecutor,
-                                              SearchOrganisationUnitHandler handler) {
+                                              OrganisationUnitHandler handler) {
         this.service = service;
         this.apiCallExecutor = apiCallExecutor;
         this.d2CallExecutor = d2CallExecutor;
@@ -88,7 +88,7 @@ final class SearchOrganisationUnitOnDemandCallFactory {
         return objectList -> {
             if (objectList != null && !objectList.isEmpty()) {
                 d2CallExecutor.executeD2CallTransactionally(() -> {
-                    handler.setUser(user);
+                    handler.setData(null, null, user, OrganisationUnit.Scope.SCOPE_TEI_SEARCH);
                     handler.handleMany(objectList, new OrganisationUnitDisplayPathTransformer());
                     return null;
                 });

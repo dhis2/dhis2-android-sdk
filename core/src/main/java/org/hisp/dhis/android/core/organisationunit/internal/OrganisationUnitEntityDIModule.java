@@ -59,12 +59,6 @@ public final class OrganisationUnitEntityDIModule implements IdentifiableStorePr
 
     @Provides
     @Reusable
-    public SearchOrganisationUnitHandler searchHandler(SearchOrganisationUnitHandlerImpl impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
     @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<OrganisationUnit>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         return new HashMap<String, ChildrenAppender<OrganisationUnit>>() {{

@@ -54,7 +54,7 @@ public class FileResizerHelperShould {
 
     @Test
     public void resize_to_small_file() throws D2Error {
-        File file = getFile(Bitmap.CompressFormat.PNG, getBitmap(1024, 2048));
+        File file = getFile(Bitmap.CompressFormat.PNG, getBitmap(2048, 1024));
         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 
         assertThat(bitmap.getHeight(), is(1024));
@@ -69,7 +69,7 @@ public class FileResizerHelperShould {
 
     @Test
     public void resize_to_medium_file() throws D2Error {
-        File file = getFile(Bitmap.CompressFormat.PNG, getBitmap(1024, 2048));
+        File file = getFile(Bitmap.CompressFormat.PNG, getBitmap(2048, 1024));
         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 
         assertThat(bitmap.getHeight(), is(1024));
@@ -84,7 +84,7 @@ public class FileResizerHelperShould {
 
     @Test
     public void resize_to_large_file() throws D2Error {
-        File file = getFile(Bitmap.CompressFormat.PNG, getBitmap(1024, 2048));
+        File file = getFile(Bitmap.CompressFormat.PNG, getBitmap(2048, 1024));
         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 
         assertThat(bitmap.getHeight(), is(1024));
@@ -99,7 +99,7 @@ public class FileResizerHelperShould {
 
     @Test
     public void resize_jpeg() throws D2Error {
-        File file = getFile(Bitmap.CompressFormat.JPEG, getBitmap(1024, 2048));
+        File file = getFile(Bitmap.CompressFormat.JPEG, getBitmap(2048, 1024));
         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 
         assertThat(bitmap.getHeight(), is(1024));

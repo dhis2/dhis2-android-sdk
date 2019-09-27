@@ -111,7 +111,8 @@ public final class TrackedEntityInstancePostCall {
                                   @NonNull RelationshipItemStore relationshipItemStore,
                                   @NonNull ObjectWithoutUidStore<Note> noteStore,
                                   @NonNull TEIWebResponseHandler teiWebResponseHandler,
-                                  @NonNull APICallExecutor apiCallExecutor, SystemInfoModuleDownloader systemInfoDownloader) {
+                                  @NonNull APICallExecutor apiCallExecutor,
+                                  @NonNull SystemInfoModuleDownloader systemInfoDownloader) {
         this.versionManager = versionManager;
         this.relationshipDHISVersionManager = relationshipDHISVersionManager;
         this.relationshipRepository = relationshipRepository;

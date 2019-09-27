@@ -38,6 +38,9 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URLConnection;
+
+import okhttp3.MediaType;
 
 public final class FileResizerHelper {
 
@@ -67,7 +70,7 @@ public final class FileResizerHelper {
         float scaleFactor = width / height;
         if (scaleFactor > 1) {
             return resize(fileToResize, bitmap,
-                    dimension.getDimension(), (int) (scaleFactor * dimension.getDimension()), dimension);
+                    dimension.getDimension(), (int) (dimension.getDimension() / scaleFactor), dimension);
         } else {
             return resize(fileToResize, bitmap,
                     (int) (scaleFactor * dimension.getDimension()),  dimension.getDimension(), dimension);
@@ -81,7 +84,7 @@ public final class FileResizerHelper {
                 + fileToResize.getName());
 
         try (FileOutputStream fileOutputStream = new FileOutputStream(resizedFile)){
-            scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+            scaledBitmap.compress(getCompressFormat(resizedFile), 100, fileOutputStream);
             fileOutputStream.flush();
             fileOutputStream.close();
             bitmap.recycle();
@@ -91,6 +94,13 @@ public final class FileResizerHelper {
         }
 
         return resizedFile;
+    }
+
+    private static Bitmap.CompressFormat getCompressFormat(File file) {
+        String contentType = URLConnection.guessContentTypeFromName(file.getName());
+        MediaType mediaType = MediaType.get(contentType);
+        return mediaType.subtype().equals("jpeg") ? Bitmap.CompressFormat.JPEG :
+                Bitmap.CompressFormat.PNG;
     }
 
     private static D2Error buildD2Error(Exception e) {

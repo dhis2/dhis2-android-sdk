@@ -47,6 +47,14 @@ public final class FileResourceUtil {
         return file;
     }
 
+    public static File getFileCacheResourceDirectory(Context context) {
+        File file = new File(context.getCacheDir(), "sdk_cache_resources");
+        if (!file.exists() && file.mkdirs()) {
+            return file;
+        }
+        return file;
+    }
+
     static File renameFile(File file, String newFileName, Context context) {
         String contentType = URLConnection.guessContentTypeFromName(file.getName());
         String generatedName = generateFileName(MediaType.get(contentType), newFileName);

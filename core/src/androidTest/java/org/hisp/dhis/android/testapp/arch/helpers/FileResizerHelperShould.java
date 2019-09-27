@@ -54,7 +54,7 @@ public class FileResizerHelperShould {
 
     @Test
     public void resize_to_small_file() throws D2Error {
-        File file = getFile(Bitmap.CompressFormat.PNG);
+        File file = getFile(Bitmap.CompressFormat.PNG, getBitmap(1024, 2048));
         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 
         assertThat(bitmap.getHeight(), is(1024));
@@ -69,7 +69,7 @@ public class FileResizerHelperShould {
 
     @Test
     public void resize_to_medium_file() throws D2Error {
-        File file = getFile(Bitmap.CompressFormat.PNG);
+        File file = getFile(Bitmap.CompressFormat.PNG, getBitmap(1024, 2048));
         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 
         assertThat(bitmap.getHeight(), is(1024));
@@ -84,7 +84,7 @@ public class FileResizerHelperShould {
 
     @Test
     public void resize_to_large_file() throws D2Error {
-        File file = getFile(Bitmap.CompressFormat.PNG);
+        File file = getFile(Bitmap.CompressFormat.PNG, getBitmap(1024, 2048));
         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 
         assertThat(bitmap.getHeight(), is(1024));
@@ -99,7 +99,7 @@ public class FileResizerHelperShould {
 
     @Test
     public void resize_jpeg() throws D2Error {
-        File file = getFile(Bitmap.CompressFormat.JPEG);
+        File file = getFile(Bitmap.CompressFormat.JPEG, getBitmap(1024, 2048));
         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 
         assertThat(bitmap.getHeight(), is(1024));
@@ -112,14 +112,29 @@ public class FileResizerHelperShould {
         assertThat(resizedBitmap.getWidth(), is(256));
     }
 
-    private static File getFile(Bitmap.CompressFormat compressFormat) {
+    @Test
+    public void do_not_resize_small_to_large_file() throws D2Error {
+        File file = getFile(Bitmap.CompressFormat.PNG, getBitmap(100, 125));
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+
+        assertThat(bitmap.getHeight(), is(125));
+        assertThat(bitmap.getWidth(), is(100));
+
+        File resizedFile = FileResizerHelper.resizeFile(file, FileResizerHelper.Dimension.LARGE);
+        Bitmap resizedBitmap = BitmapFactory.decodeFile(resizedFile.getAbsolutePath());
+
+        assertThat(resizedBitmap.getHeight(), is(125));
+        assertThat(resizedBitmap.getWidth(), is(100));
+    }
+
+    private static File getFile(Bitmap.CompressFormat compressFormat, Bitmap bitmap) {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
         File imageFile = new File(FileResourceUtil.getFileResourceDirectory(context), "image." +
                 compressFormat.name().toLowerCase());
         OutputStream os;
         try {
             os = new FileOutputStream(imageFile);
-            getBitmap().compress(compressFormat, 100, os);
+            bitmap.compress(compressFormat, 100, os);
             os.flush();
             os.close();
         } catch (Exception e) {
@@ -128,7 +143,7 @@ public class FileResizerHelperShould {
         return imageFile;
     }
 
-    private static Bitmap getBitmap() {
-        return Bitmap.createBitmap(2048, 1024, Bitmap.Config.RGB_565, Boolean.FALSE);
+    private static Bitmap getBitmap(int width, int height) {
+        return Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565, Boolean.FALSE);
     }
 }

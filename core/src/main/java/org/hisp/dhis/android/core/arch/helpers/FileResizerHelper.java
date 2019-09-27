@@ -69,9 +69,15 @@ public final class FileResizerHelper {
 
         float scaleFactor = width / height;
         if (scaleFactor > 1) {
+            if (width < dimension.getDimension()) {
+                return fileToResize;
+            }
             return resize(fileToResize, bitmap,
                     dimension.getDimension(), (int) (dimension.getDimension() / scaleFactor), dimension);
         } else {
+            if (height < dimension.getDimension()) {
+                return fileToResize;
+            }
             return resize(fileToResize, bitmap,
                     (int) (scaleFactor * dimension.getDimension()),  dimension.getDimension(), dimension);
         }

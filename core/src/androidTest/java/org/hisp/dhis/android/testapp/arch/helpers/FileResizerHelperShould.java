@@ -31,6 +31,7 @@ package org.hisp.dhis.android.testapp.arch.helpers;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import androidx.test.InstrumentationRegistry;
 
@@ -38,9 +39,12 @@ import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper;
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -48,20 +52,83 @@ import static org.hamcrest.core.Is.is;
 @RunWith(D2JunitRunner.class)
 public class FileResizerHelperShould {
 
-    //@Test
+    @Test
     public void resize_to_small_file() throws D2Error {
-        File file = getFile();
+        File file = getFile(Bitmap.CompressFormat.PNG);
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 
-        assertThat(file.length(), is(198137L));
+        assertThat(bitmap.getHeight(), is(1024));
+        assertThat(bitmap.getWidth(), is(2048));
 
         File resizedFile = FileResizerHelper.resizeFile(file, FileResizerHelper.Dimension.SMALL);
-
         Bitmap resizedBitmap = BitmapFactory.decodeFile(resizedFile.getAbsolutePath());
-        assertThat(resizedBitmap.getHeight(), is(256));
+
+        assertThat(resizedBitmap.getHeight(), is(128));
+        assertThat(resizedBitmap.getWidth(), is(256));
     }
 
-    private File getFile() {
+    @Test
+    public void resize_to_medium_file() throws D2Error {
+        File file = getFile(Bitmap.CompressFormat.PNG);
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+
+        assertThat(bitmap.getHeight(), is(1024));
+        assertThat(bitmap.getWidth(), is(2048));
+
+        File resizedFile = FileResizerHelper.resizeFile(file, FileResizerHelper.Dimension.MEDIUM);
+        Bitmap resizedBitmap = BitmapFactory.decodeFile(resizedFile.getAbsolutePath());
+
+        assertThat(resizedBitmap.getHeight(), is(256));
+        assertThat(resizedBitmap.getWidth(), is(512));
+    }
+
+    @Test
+    public void resize_to_large_file() throws D2Error {
+        File file = getFile(Bitmap.CompressFormat.PNG);
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+
+        assertThat(bitmap.getHeight(), is(1024));
+        assertThat(bitmap.getWidth(), is(2048));
+
+        File resizedFile = FileResizerHelper.resizeFile(file, FileResizerHelper.Dimension.LARGE);
+        Bitmap resizedBitmap = BitmapFactory.decodeFile(resizedFile.getAbsolutePath());
+
+        assertThat(resizedBitmap.getHeight(), is(512));
+        assertThat(resizedBitmap.getWidth(), is(1024));
+    }
+
+    @Test
+    public void resize_jpeg() throws D2Error {
+        File file = getFile(Bitmap.CompressFormat.JPEG);
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+
+        assertThat(bitmap.getHeight(), is(1024));
+        assertThat(bitmap.getWidth(), is(2048));
+
+        File resizedFile = FileResizerHelper.resizeFile(file, FileResizerHelper.Dimension.SMALL);
+        Bitmap resizedBitmap = BitmapFactory.decodeFile(resizedFile.getAbsolutePath());
+
+        assertThat(resizedBitmap.getHeight(), is(128));
+        assertThat(resizedBitmap.getWidth(), is(256));
+    }
+
+    private static File getFile(Bitmap.CompressFormat compressFormat) {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        return new File(FileResourceUtil.getFileResourceDirectory(context), "ShRULyY1Ggy.png");
+        File imageFile = new File(FileResourceUtil.getFileResourceDirectory(context), "image." +
+                compressFormat.name().toLowerCase());
+        OutputStream os;
+        try {
+            os = new FileOutputStream(imageFile);
+            getBitmap().compress(compressFormat, 100, os);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            Log.e(FileResizerHelperShould.class.getSimpleName(), "Error writing bitmap", e);
+        }
+        return imageFile;
+    }
+
+    private static Bitmap getBitmap() {
+        return Bitmap.createBitmap(2048, 1024, Bitmap.Config.RGB_565, Boolean.FALSE);
     }
 }

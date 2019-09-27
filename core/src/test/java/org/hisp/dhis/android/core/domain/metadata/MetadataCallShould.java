@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.domain.metadata;
 
 import org.assertj.core.util.Lists;
@@ -39,6 +40,7 @@ import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader;
@@ -138,8 +140,10 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Mock
     private SmsModule smsModule;
+
     @Mock
     private ConfigCase configCase;
+
     @Mock
     private Callable<Void> refreshMetadataIdsCallable;
 
@@ -188,7 +192,8 @@ public class MetadataCallShould extends BaseCallShould {
                 organisationUnitDownloader,
                 dataSetDownloader,
                 constantDownloader,
-                smsModule);
+                smsModule,
+                databaseAdapter);
     }
 
     @Test
@@ -254,5 +259,11 @@ public class MetadataCallShould extends BaseCallShould {
     public void call_foreign_key_cleaner() {
         metadataCall.download();
         verify(rxAPICallExecutor).wrapObservableTransactionally(any(), eq(true));
+    }
+
+    @Test
+    public void delete_foreign_key_violations_before_calls() {
+        metadataCall.download().blockingSubscribe();
+        verify(databaseAdapter).delete(ForeignKeyViolationTableInfo.TABLE_INFO.name());
     }
 }

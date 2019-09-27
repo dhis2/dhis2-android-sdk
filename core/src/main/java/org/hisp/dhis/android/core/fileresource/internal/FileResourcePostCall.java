@@ -44,6 +44,8 @@ import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
@@ -59,6 +61,7 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -75,6 +78,8 @@ public final class FileResourcePostCall {
     private final IdentifiableDataObjectStore<FileResource> fileResourceStore;
     private final HandlerWithTransformer<FileResource> fileResourceHandler;
     private final Context context;
+    private final SystemInfoModuleDownloader systemInfoDownloader;
+
 
     @Inject
     FileResourcePostCall(@NonNull FileResourceService fileResourceService,
@@ -83,7 +88,8 @@ public final class FileResourcePostCall {
                          @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
                          @NonNull IdentifiableDataObjectStore<FileResource> fileResourceStore,
                          @NonNull HandlerWithTransformer<FileResource> fileResourceHandler,
-                         @NonNull Context context) {
+                         @NonNull Context context,
+                         @NonNull SystemInfoModuleDownloader systemInfoDownloader) {
         this.fileResourceService = fileResourceService;
         this.apiCallExecutor = apiCallExecutor;
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
@@ -91,30 +97,38 @@ public final class FileResourcePostCall {
         this.fileResourceStore = fileResourceStore;
         this.fileResourceHandler = fileResourceHandler;
         this.context = context;
+        this.systemInfoDownloader = systemInfoDownloader;
     }
 
     public Observable<D2Progress> uploadFileResources(List<FileResource> filteredFileResources) {
-        return Observable.create(emitter -> {
+        return Observable.defer(() -> {
 
-            // if there is nothing to send, return null
+            // if there is nothing to send, complete
             if (filteredFileResources.isEmpty()) {
-                emitter.onComplete();
+                return Observable.empty();
             } else {
-                D2ProgressManager progressManager = new D2ProgressManager(1);
+                D2ProgressManager progressManager = new D2ProgressManager(filteredFileResources.size() + 1);
 
-                for (FileResource fileResource : filteredFileResources) {
+                Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
+                        progressManager.increaseProgress(SystemInfo.class, false));
 
-                    File file = getRelatedFile(fileResource);
+                return systemInfoDownload.flatMapObservable(systemInfoProgress -> Observable.create(emitter -> {
+                    emitter.onNext(systemInfoProgress);
 
-                    ResponseBody responseBody =
-                            apiCallExecutor.executeObjectCall(fileResourceService.uploadFile(getFilePart(file)));
+                    for (FileResource fileResource : filteredFileResources) {
 
-                    handleResponse(responseBody.string(), fileResource, file);
+                        File file = getRelatedFile(fileResource);
 
-                    emitter.onNext(progressManager.increaseProgress(FileResource.class, true));
-                }
+                        ResponseBody responseBody =
+                                apiCallExecutor.executeObjectCall(fileResourceService.uploadFile(getFilePart(file)));
 
-                emitter.onComplete();
+                        handleResponse(responseBody.string(), fileResource, file);
+
+                        emitter.onNext(progressManager.increaseProgress(FileResource.class, true));
+                    }
+
+                    emitter.onComplete();
+                }));
             }
         });
     }

@@ -25,17 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.domain.metadata;
+
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.program.Program;
@@ -52,7 +57,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -71,6 +75,7 @@ public class MetadataCall {
     private final DataSetModuleDownloader dataSetDownloader;
     private final ConstantModuleDownloader constantModuleDownloader;
     private final SmsModule smsModule;
+    private final DatabaseAdapter databaseAdapter;
 
     @Inject
     MetadataCall(@NonNull RxAPICallExecutor rxCallExecutor,
@@ -82,7 +87,8 @@ public class MetadataCall {
                  @NonNull OrganisationUnitModuleDownloader organisationUnitDownloadModule,
                  @NonNull DataSetModuleDownloader dataSetDownloader,
                  @NonNull ConstantModuleDownloader constantModuleDownloader,
-                 @NonNull SmsModule smsModule) {
+                 @NonNull SmsModule smsModule,
+                 @NonNull DatabaseAdapter databaseAdapter) {
         this.rxCallExecutor = rxCallExecutor;
         this.systemInfoDownloader = systemInfoDownloader;
         this.systemSettingDownloader = systemSettingDownloader;
@@ -93,6 +99,7 @@ public class MetadataCall {
         this.dataSetDownloader = dataSetDownloader;
         this.constantModuleDownloader = constantModuleDownloader;
         this.smsModule = smsModule;
+        this.databaseAdapter = databaseAdapter;
     }
 
     public Observable<D2Progress> download() {
@@ -103,6 +110,8 @@ public class MetadataCall {
 
         return rxCallExecutor.wrapObservableTransactionally(
                 systemInfoDownload.flatMapObservable(systemInfoProgress -> Observable.create(emitter -> {
+
+                    databaseAdapter.delete(ForeignKeyViolationTableInfo.TABLE_INFO.name());
 
                     emitter.onNext(systemInfoProgress);
 

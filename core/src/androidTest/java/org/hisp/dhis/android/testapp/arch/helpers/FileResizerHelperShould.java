@@ -144,6 +144,6 @@ public class FileResizerHelperShould {
     }
 
     private static Bitmap getBitmap(int width, int height) {
-        return Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565, Boolean.FALSE);
+        return Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
     }
 }

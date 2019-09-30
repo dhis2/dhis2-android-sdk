@@ -72,7 +72,7 @@ public class NotePostCallRealIntegrationShould extends BaseRealIntegrationTest {
         downloadUpdateAndSyncTei();
     }
 
-    public void downloadUpdateAndSyncTei() throws Exception {
+    private void downloadUpdateAndSyncTei() throws Exception {
         d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
 
         d2.metadataModule().blockingDownload();

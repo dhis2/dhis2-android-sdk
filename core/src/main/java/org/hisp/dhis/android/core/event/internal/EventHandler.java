@@ -55,11 +55,12 @@ final class EventHandler extends IdentifiableDataHandlerImpl<Event> {
     @Override
     protected void afterObjectHandled(Event event, HandleAction action) {
         final String eventUid = event.uid();
-        trackedEntityDataValueHandler.handleMany(event.trackedEntityDataValues(),
-                dataValue -> dataValue.toBuilder().event(eventUid).build());
 
         if (action == HandleAction.Delete) {
             Log.d(this.getClass().getSimpleName(), eventUid + " with no org. unit, invalid eventDate or deleted");
+        } else {
+            trackedEntityDataValueHandler.handleMany(event.trackedEntityDataValues(),
+                    dataValue -> dataValue.toBuilder().event(eventUid).build());
         }
     }
 

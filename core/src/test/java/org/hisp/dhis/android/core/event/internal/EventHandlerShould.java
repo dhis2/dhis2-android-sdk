@@ -42,6 +42,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
@@ -74,7 +75,7 @@ public class EventHandlerShould {
     }
 
     @Test
-    public void do_nothing_when_passing_empty_list_argument() throws Exception {
+    public void do_nothing_when_passing_empty_list_argument() {
         eventHandler.handleMany(new ArrayList<>());
 
         // verify that store is never invoked
@@ -84,7 +85,7 @@ public class EventHandlerShould {
     }
 
     @Test
-    public void invoke_only_delete_when_a_event_is_set_as_deleted() throws Exception {
+    public void invoke_only_delete_when_a_event_is_set_as_deleted() {
         when(event.deleted()).thenReturn(Boolean.TRUE);
 
         eventHandler.handle(event);
@@ -98,7 +99,7 @@ public class EventHandlerShould {
     }
 
     @Test
-    public void invoke_update_and_insert_when_handle_event_not_inserted() throws Exception {
+    public void invoke_update_and_insert_when_handle_event_not_inserted() {
         when(eventStore.updateOrInsert(any(Event.class))).thenReturn(HandleAction.Insert);
         when(event.organisationUnit()).thenReturn("org_unit_uid");
         when(event.status()).thenReturn(EventStatus.SCHEDULE);
@@ -107,8 +108,20 @@ public class EventHandlerShould {
 
         // verify that update and insert is invoked, since we're updating before inserting
         verify(eventStore, times(1)).updateOrInsert(any(Event.class));
+        verify(trackedEntityDataValueHandler, times(1)).handleMany(anyCollection(), any());
+
 
         // verify that delete is never invoked
         verify(eventStore, never()).deleteIfExists(anyString());
+    }
+
+    @Test
+    public void do_not_persist_data_values_if_event_is_deleted() {
+        when(event.deleted()).thenReturn(Boolean.TRUE);
+
+        eventHandler.handle(event);
+
+        // verify that data value handler is never invoked
+        verify(trackedEntityDataValueHandler, never()).handleMany(anyCollection(), any());
     }
 }

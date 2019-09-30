@@ -59,6 +59,7 @@ public class DataValuePostCallRealIntegrationShould extends BaseRealIntegrationT
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void dataValuesWithToPostState_shouldBeUploaded() throws Exception {
+        d2.userModule().logIn("android", "Android123").blockingGet();
 
         d2.metadataModule().blockingDownload();
         d2.aggregatedModule().data().download().subscribe();
@@ -105,11 +106,11 @@ public class DataValuePostCallRealIntegrationShould extends BaseRealIntegrationT
 
         DataValue dataValue =
                 DataValue.builder()
-                        .dataElement("WUg3MYWQ7pt")
-                        .categoryOptionCombo("bjDvmb4bfuf")
-                        .attributeOptionCombo("nvLjum6Xbv5")
+                        .dataElement("Qb790K82yqZ")
+                        .categoryOptionCombo("Gmbgme7z9BF")
+                        .attributeOptionCombo("RgrNGmlMOAJ")
                         .period("2018")
-                        .organisationUnit("DiszpKrYNg8")
+                        .organisationUnit("s91COhdBQ23")
                         .value(String.valueOf(value))
                         .state(state)
                         .build();

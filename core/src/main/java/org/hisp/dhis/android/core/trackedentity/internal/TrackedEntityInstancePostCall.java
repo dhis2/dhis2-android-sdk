@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
@@ -54,6 +52,8 @@ import org.hisp.dhis.android.core.relationship.RelationshipHelper;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -66,8 +66,10 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.ExcessiveImports"})
 @Reusable
@@ -92,6 +94,7 @@ public final class TrackedEntityInstancePostCall {
     private final TEIWebResponseHandler teiWebResponseHandler;
 
     private final APICallExecutor apiCallExecutor;
+    private final SystemInfoModuleDownloader systemInfoDownloader;
 
     private static final int DEFAULT_PAGE_SIZE = 10;
 
@@ -108,7 +111,8 @@ public final class TrackedEntityInstancePostCall {
                                   @NonNull RelationshipItemStore relationshipItemStore,
                                   @NonNull ObjectWithoutUidStore<Note> noteStore,
                                   @NonNull TEIWebResponseHandler teiWebResponseHandler,
-                                  @NonNull APICallExecutor apiCallExecutor) {
+                                  @NonNull APICallExecutor apiCallExecutor,
+                                  @NonNull SystemInfoModuleDownloader systemInfoDownloader) {
         this.versionManager = versionManager;
         this.relationshipDHISVersionManager = relationshipDHISVersionManager;
         this.relationshipRepository = relationshipRepository;
@@ -122,40 +126,48 @@ public final class TrackedEntityInstancePostCall {
         this.noteStore = noteStore;
         this.teiWebResponseHandler = teiWebResponseHandler;
         this.apiCallExecutor = apiCallExecutor;
+        this.systemInfoDownloader = systemInfoDownloader;
     }
 
     public Observable<D2Progress> uploadTrackedEntityInstances(
             List<TrackedEntityInstance> filteredTrackedEntityInstances) {
-        return Observable.create(emitter -> {
+        return Observable.defer(() -> {
             List<List<TrackedEntityInstance>> trackedEntityInstancesToPost =
                 getPartitionsToSync(filteredTrackedEntityInstances);
 
             // if size is 0, then no need to do network request
             if (trackedEntityInstancesToPost.isEmpty()) {
-                emitter.onComplete();
+                return Observable.empty();
             } else {
-                D2ProgressManager progressManager = new D2ProgressManager(1);
+                D2ProgressManager progressManager = new D2ProgressManager(2);
 
-                String strategy;
-                if (versionManager.is2_29()) {
-                    strategy = "CREATE_AND_UPDATE";
-                } else {
-                    strategy = "SYNC";
-                }
+                Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
+                        progressManager.increaseProgress(SystemInfo.class, false));
 
-                for (List<TrackedEntityInstance> partition : trackedEntityInstancesToPost) {
-                    TrackedEntityInstancePayload trackedEntityInstancePayload =
-                            TrackedEntityInstancePayload.create(partition);
+                return systemInfoDownload.flatMapObservable(systemInfoProgress -> Observable.create(emitter -> {
+                    emitter.onNext(systemInfoProgress);
 
-                    TEIWebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                            trackedEntityInstanceService.postTrackedEntityInstances(
-                                    trackedEntityInstancePayload, strategy),
-                            Collections.singletonList(409), TEIWebResponse.class);
-                    teiWebResponseHandler.handleWebResponse(webResponse);
-                }
+                    String strategy;
+                    if (versionManager.is2_29()) {
+                        strategy = "CREATE_AND_UPDATE";
+                    } else {
+                        strategy = "SYNC";
+                    }
 
-                emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance.class, true));
-                emitter.onComplete();
+                    for (List<TrackedEntityInstance> partition : trackedEntityInstancesToPost) {
+                        TrackedEntityInstancePayload trackedEntityInstancePayload =
+                                TrackedEntityInstancePayload.create(partition);
+
+                        TEIWebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
+                                trackedEntityInstanceService.postTrackedEntityInstances(
+                                        trackedEntityInstancePayload, strategy),
+                                Collections.singletonList(409), TEIWebResponse.class);
+                        teiWebResponseHandler.handleWebResponse(webResponse);
+                    }
+
+                    emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance.class, true));
+                    emitter.onComplete();
+                }));
             }
         });
     }

@@ -78,13 +78,10 @@ public final class DataSetCompleteRegistrationPostCall {
             appendPostableDataValues(toPostDataSetCompleteRegistrations);
             appendToDeleteRegistrations(toDeleteDataSetCompleteRegistrations);
 
-            int toPostCallCount = toPostDataSetCompleteRegistrations.isEmpty() ? 0 : 1;
-            int toDeleteCallCount = toDeleteDataSetCompleteRegistrations.isEmpty() ? 0 : 1;
-
-            if (toPostCallCount + toDeleteCallCount == 0) {
+            if (toPostDataSetCompleteRegistrations.isEmpty() && toDeleteDataSetCompleteRegistrations.isEmpty()) {
                 return Observable.empty();
             } else {
-                D2ProgressManager progressManager = new D2ProgressManager(toPostCallCount + toDeleteCallCount + 1);
+                D2ProgressManager progressManager = new D2ProgressManager(2);
 
                 Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
                         progressManager.increaseProgress(SystemInfo.class, false));

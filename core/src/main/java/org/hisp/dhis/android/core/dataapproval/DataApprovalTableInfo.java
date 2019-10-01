@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.dataapproval;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalFields;
 
 public class DataApprovalTableInfo {
 
@@ -56,7 +55,7 @@ public class DataApprovalTableInfo {
         public static final String ORGANISATION_UNIT = "organisationUnit";
         public static final String PERIOD = "period";
         public static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
-        public static final String STATE = DataApprovalFields.STATE;
+        public static final String STATE = "state";
 
         @Override
         public String[] all() {

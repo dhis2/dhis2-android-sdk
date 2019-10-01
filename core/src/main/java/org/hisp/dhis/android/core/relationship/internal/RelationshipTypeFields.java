@@ -35,14 +35,12 @@ import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo.Columns;
 
 public final class RelationshipTypeFields {
 
     private static final String B_IS_TO_A = "bIsToA";
     private static final String A_IS_TO_B = "aIsToB";
-    public static final String FROM_TO_NAME = "fromToName";
-    public static final String TO_FROM_NAME = "toFromName";
-    public static final String BIDIRECTIONAL = "bidirectional";
     private static final String FROM_CONSTRAINT = "fromConstraint";
     private static final String TO_CONSTRAINT = "toConstraint";
     private static final String ACCESS = "access";
@@ -59,9 +57,9 @@ public final class RelationshipTypeFields {
             .fields(
                     fh.<String>field(B_IS_TO_A),
                     fh.<String>field(A_IS_TO_B),
-                    fh.<String>field(FROM_TO_NAME),
-                    fh.<String>field(TO_FROM_NAME),
-                    fh.<String>field(BIDIRECTIONAL),
+                    fh.<String>field(Columns.FROM_TO_NAME),
+                    fh.<String>field(Columns.TO_FROM_NAME),
+                    fh.<String>field(Columns.BIDIRECTIONAL),
                     fh.<RelationshipConstraint>nestedField(FROM_CONSTRAINT)
                             .with(RelationshipConstraintFields.allFields),
                     fh.<RelationshipConstraint>nestedField(TO_CONSTRAINT)

@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields;
 
 public final class RelationshipTypeTableInfo {
 
@@ -54,9 +53,9 @@ public final class RelationshipTypeTableInfo {
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
 
-        public static final String FROM_TO_NAME = RelationshipTypeFields.FROM_TO_NAME;
-        public static final String TO_FROM_NAME = RelationshipTypeFields.TO_FROM_NAME;
-        public static final String BIDIRECTIONAL = RelationshipTypeFields.BIDIRECTIONAL;
+        public static final String FROM_TO_NAME = "fromToName";
+        public static final String TO_FROM_NAME = "toFromName";
+        public static final String BIDIRECTIONAL = "bidirectional";
         public static final String ACCESS_DATA_WRITE = "accessDataWrite";
 
         @Override

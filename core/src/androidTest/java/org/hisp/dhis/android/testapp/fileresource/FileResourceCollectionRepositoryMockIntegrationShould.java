@@ -33,6 +33,7 @@ import android.content.Context;
 import androidx.test.InstrumentationRegistry;
 
 import org.apache.commons.io.FileUtils;
+import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.fileresource.RandomGeneratedInputStream;
@@ -180,13 +181,13 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
     private File getFile() {
         InputStream inputStream = new RandomGeneratedInputStream(1024);
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        File destinationFile = new File(FileResourceUtil.getFileResourceDirectory(context), "file1.png");
+        File destinationFile = new File(FileResourceDirectoryHelper.getFileResourceDirectory(context), "file1.png");
         return FileResourceUtil.writeInputStream(inputStream, destinationFile, 1024);
     }
 
     private void cleanFileResources() throws IOException {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        FileUtils.cleanDirectory(FileResourceUtil.getFileResourceDirectory(context));
+        FileUtils.cleanDirectory(FileResourceDirectoryHelper.getFileResourceDirectory(context));
         new TableWiper(databaseAdapter).wipeTable(FileResourceTableInfo.TABLE_INFO);
     }
 }

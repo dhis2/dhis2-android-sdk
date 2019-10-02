@@ -478,6 +478,45 @@ d2.dataValueModule().dataSetReports
 
 ### Dealing with FileResources
 
+The SDK offers a module (the `FileResourceModule`) and two helpers (the `FileResourceDirectoryHelper` and `FileResizerHelper`) that allow working with files.
+
+#### File resources module
+This module contains methods to download the file resources associated with the downloaded metadata and the file resources collection repository of the database.
+
+- **File resources download**. 
+The `download()` method will search for those tracked entity attribute values ​​and tracked entity data values ​​whose tracked entity attribute type and data element type respectively are of the image type and whose file resource has not been previously downloaded and will download them.
+    ```
+    d2.fileResourceModule().download();
+    ```
+
+    After downloading the files, you can obtain the different file resources downloaded through the repository.
+
+- **File resource collection repository**.
+Through this repository it is possible to request files, save new ones and upload them to the server. 
+
+    - **Get**. It has a behavior similar to any other Sdk repository. It allows getting collections by applying different filters if desired.
+        ```
+        d2.fileResourceModule().fileResources
+            .[ filters ]
+            .get()
+        ```
+    - **Add**. To save a file you have to add it using the `add()` method of the repository by passing it an object of type `File`. The `add()` method will return the uid that was generated when adding the file.
+        ```
+        d2.fileResourceModule().fileResources
+            .add(file);
+        ```
+    - **Upload**. Calling the `upload()` method will trigger a series of successive calls in which all non-synchronized files will be sent to the server. After each upload, the server response will be processed. The server will provide a new uid to the file resource and the Sdk will automatically rename the file and update the `FileResource` object and the tracked entity attribute values ​​or tracked entity data values ​​associated with it.
+        ```
+        d2.fileResourceModule().fileResources
+            .upload()
+        ```
+
+#### File resizer helper
+
+
+#### File resource directory helper
+
+
 ## Error management
 
 Errors that happen in the context of the SDK are wrapped in a type of exception: `D2Error`, with the following fields:

@@ -57,6 +57,7 @@ final class EventProjectionTransformer implements Transformer<EventCreateProject
                 .organisationUnit(projection.organisationUnit())
                 .attributeOptionCombo(projection.attributeOptionCombo())
                 .status(EventStatus.ACTIVE)
+                .deleted(false)
                 .build();
     }
 }

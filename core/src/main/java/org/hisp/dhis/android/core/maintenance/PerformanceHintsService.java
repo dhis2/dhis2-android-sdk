@@ -70,27 +70,15 @@ public class PerformanceHintsService {
 
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public List<Program> getProgramsWithExcessiveProgramRules() {
-        // TODO use Program repository when it's ready to retrieve directly program with program rules
-        List<Program> programs = programStore.selectAll();
         List<ProgramRule> programRules = programRuleStore.selectAll();
 
-        List<Program> programsWithEmptyProgramRules = new ArrayList<>(programs.size());
-        for (Program program : programs) {
-            programsWithEmptyProgramRules.add(program.toBuilder().programRules(new ArrayList<>()).build());
-        }
-
-        Map<String, Program> programsMap = UidsHelper.mapByUid(programsWithEmptyProgramRules);
-
-        for (ProgramRule rule : programRules) {
-            Program program = programsMap.get(rule.program().uid());
-            if (program != null) {
-                program.programRules().add(rule);
-            }
-        }
+        Map<String, List<ProgramRule>> rulesMap =
+                UidsHelper.mapByParentUid(programRules, programRule -> programRule.program().uid());
 
         List<Program> programsWithExcessiveProgramRules = new ArrayList<>();
-        for (Program program : programsWithEmptyProgramRules) {
-            if (program.programRules().size() > programRulesPerProgramThreshold) {
+        for (Map.Entry<String, List<ProgramRule>> entry : rulesMap.entrySet()) {
+            if (entry.getValue().size() > programRulesPerProgramThreshold) {
+                Program program = programStore.selectByUid(entry.getKey());
                 programsWithExcessiveProgramRules.add(program);
             }
         }

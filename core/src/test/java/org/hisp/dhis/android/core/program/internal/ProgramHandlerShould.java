@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
-import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramSection;
 import org.hisp.dhis.android.core.program.ProgramStage;
@@ -74,9 +73,6 @@ public class ProgramHandlerShould {
 
     @Mock
     private Handler<ProgramIndicator> programIndicatorHandler;
-
-    @Mock
-    private Handler<ProgramRule> programRuleHandler;
 
     @Mock
     private Handler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler;
@@ -118,13 +114,7 @@ public class ProgramHandlerShould {
     private List<ProgramIndicator> programIndicators;
 
     @Mock
-    private ProgramRule programRule;
-
-    @Mock
     private ProgramRuleVariable programRuleVariable;
-
-    @Mock
-    private List<ProgramRule> programRules;
 
     @Mock
     private List<ProgramRuleVariable> programRuleVariables;
@@ -140,7 +130,7 @@ public class ProgramHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         programHandler = new ProgramHandler(
-                programStore, programRuleVariableHandler, programIndicatorHandler, programRuleHandler,
+                programStore, programRuleVariableHandler, programIndicatorHandler,
                 programTrackedEntityAttributeHandler, programSectionHandler, styleHandler, orphanCleaner,
                 collectionCleaner);
 
@@ -170,13 +160,11 @@ public class ProgramHandlerShould {
         when(program.relatedProgram()).thenReturn(relatedProgram);
         when(program.trackedEntityType()).thenReturn(trackedEntityType);
 
-        programRules = Collections.singletonList(programRule);
         programRuleVariables = Collections.singletonList(programRuleVariable);
 
         when(program.programStages()).thenReturn(programStages);
         when(program.programTrackedEntityAttributes()).thenReturn(programTrackedEntityAttributes);
         when(program.programIndicators()).thenReturn(programIndicators);
-        when(program.programRules()).thenReturn(programRules);
         when(program.programRuleVariables()).thenReturn(programRuleVariables);
         when(program.programSections()).thenReturn(programSections);
         when(program.access()).thenReturn(access);
@@ -195,12 +183,6 @@ public class ProgramHandlerShould {
     public void call_program_indicator_handler() {
         programHandler.handle(program);
         verify(programIndicatorHandler).handleMany(anyListOf(ProgramIndicator.class));
-    }
-
-    @Test
-    public void call_program_rule_handler() {
-        programHandler.handle(program);
-        verify(programRuleHandler).handleMany(programRules);
     }
 
     @Test

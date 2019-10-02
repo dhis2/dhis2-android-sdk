@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
@@ -64,15 +65,13 @@ public class ProgramRuleHandlerShould {
     private ProgramRule programRule;
 
     @Mock
-    private OrphanCleaner<ObjectWithUid, ProgramRule> programRuleCleaner;
+    private SubCollectionCleaner<ProgramRule> programRuleCleaner;
 
     @Mock
     private OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner;
 
     @Mock
     private List<ProgramRuleAction> programRuleActions;
-
-    private ObjectWithUid program = ObjectWithUid.create("program");
 
     // object to test
     private IdentifiableHandlerImpl<ProgramRule> programRuleHandler;
@@ -84,7 +83,7 @@ public class ProgramRuleHandlerShould {
                 programRuleCleaner, programRuleActionCleaner);
 
         when(programRule.uid()).thenReturn("test_program_rule_uid");
-        when(programRule.program()).thenReturn(program);
+        when(programRule.program()).thenReturn(ObjectWithUid.create("program"));
         when(programRule.programRuleActions()).thenReturn(programRuleActions);
     }
 
@@ -117,6 +116,6 @@ public class ProgramRuleHandlerShould {
     public void call_program_rule_orphan_cleaner() {
         Collection<ProgramRule> rules = Collections.singletonList(programRule);
         programRuleHandler.handleMany(rules);
-        verify(programRuleCleaner).deleteOrphan(program, rules);
+        verify(programRuleCleaner).deleteNotPresent(rules);
     }
 }

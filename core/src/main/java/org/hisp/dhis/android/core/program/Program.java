@@ -38,6 +38,7 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AccessColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DBCaptureCoordinatesFromFeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbProgramTypeColumnAdapter;
@@ -174,6 +175,12 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     @ColumnAdapter(IgnoreProgramStageListColumnAdapter.class)
     public abstract List<ProgramStage> programStages();
 
+    /**
+     * @deprecated use d2.programModule().programRules.byProgramUid() instead
+     *
+     * @return
+     */
+    @Deprecated
     @Nullable
     @JsonIgnore()
     @ColumnAdapter(IgnoreProgramRuleListColumnAdapter.class)

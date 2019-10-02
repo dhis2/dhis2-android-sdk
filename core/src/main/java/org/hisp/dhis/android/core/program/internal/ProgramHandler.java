@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
-import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramSection;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
@@ -56,7 +55,6 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
 
     private final Handler<ProgramRuleVariable> programRuleVariableHandler;
     private final Handler<ProgramIndicator> programIndicatorHandler;
-    private final Handler<ProgramRule> programRuleHandler;
     private final Handler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler;
     private final Handler<ProgramSection> programSectionHandler;
     private final ObjectStyleHandler styleHandler;
@@ -67,7 +65,6 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
     ProgramHandler(ProgramStoreInterface programStore,
                    Handler<ProgramRuleVariable> programRuleVariableHandler,
                    Handler<ProgramIndicator> programIndicatorHandler,
-                   Handler<ProgramRule> programRuleHandler,
                    Handler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler,
                    Handler<ProgramSection> programSectionHandler,
                    ObjectStyleHandler styleHandler,
@@ -76,7 +73,6 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
         super(programStore);
         this.programRuleVariableHandler = programRuleVariableHandler;
         this.programIndicatorHandler = programIndicatorHandler;
-        this.programRuleHandler = programRuleHandler;
         this.programTrackedEntityAttributeHandler = programTrackedEntityAttributeHandler;
         this.programSectionHandler = programSectionHandler;
         this.styleHandler = styleHandler;
@@ -88,7 +84,6 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
     protected void afterObjectHandled(Program program, HandleAction action) {
         programTrackedEntityAttributeHandler.handleMany(program.programTrackedEntityAttributes());
         programIndicatorHandler.handleMany(program.programIndicators());
-        programRuleHandler.handleMany(program.programRules());
         programRuleVariableHandler.handleMany(program.programRuleVariables());
         programSectionHandler.handleMany(program.programSections());
         styleHandler.handle(program.style(), program.uid(), ProgramTableInfo.TABLE_INFO.name());

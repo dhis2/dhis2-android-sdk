@@ -155,7 +155,6 @@ public class PerformanceHintsServiceShould {
 
         assertThat(programs.size()).isEqualTo(1);
         assertThat(programs.get(0).uid()).isEqualTo("p2");
-        assertThat(programs.get(0).programRules()).isEqualTo(Lists.newArrayList(programRule2, programRule3, programRule4));
 
         assertThat(performanceHintsService.areThereVulnerabilities()).isEqualTo(true);
     }

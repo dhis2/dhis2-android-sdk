@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl;
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleanerImpl;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
@@ -71,9 +73,10 @@ public final class ProgramRuleEntityDIModule {
 
     @Provides
     @Reusable
-    OrphanCleaner<ObjectWithUid, ProgramRule> ruleCleaner(DatabaseAdapter databaseAdapter) {
-        return new OrphanCleanerImpl<>(ProgramRuleTableInfo.TABLE_INFO.name(),
-                ProgramRuleTableInfo.Columns.PROGRAM, databaseAdapter);
+    SubCollectionCleaner<ProgramRule> ruleCleaner(DatabaseAdapter databaseAdapter) {
+        return new SubCollectionCleanerImpl<>(ProgramRuleTableInfo.TABLE_INFO.name(),
+                ProgramRuleTableInfo.Columns.PROGRAM, databaseAdapter,
+                programRule -> programRule.program().uid());
     }
 
     @Provides

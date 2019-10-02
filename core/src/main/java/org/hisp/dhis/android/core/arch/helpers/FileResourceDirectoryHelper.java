@@ -34,6 +34,8 @@ import java.io.File;
 
 public final class FileResourceDirectoryHelper {
 
+    private FileResourceDirectoryHelper() {}
+
     public static File getFileResourceDirectory(Context context) {
         File file = new File(context.getFilesDir(), "sdk_resources");
         if (!file.exists() && file.mkdirs()) {

@@ -36,7 +36,7 @@ import android.util.Log;
 import androidx.test.InstrumentationRegistry;
 
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper;
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil;
+import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
@@ -129,7 +129,7 @@ public class FileResizerHelperShould {
 
     private static File getFile(Bitmap.CompressFormat compressFormat, Bitmap bitmap) {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        File imageFile = new File(FileResourceUtil.getFileResourceDirectory(context), "image." +
+        File imageFile = new File(FileResourceDirectoryHelper.getFileResourceDirectory(context), "image." +
                 compressFormat.name().toLowerCase());
         OutputStream os;
         try {

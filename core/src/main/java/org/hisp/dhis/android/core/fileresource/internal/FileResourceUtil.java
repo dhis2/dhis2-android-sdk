@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.fileresource.internal;
 import android.content.Context;
 import android.util.Log;
 
+import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper;
 import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -25,7 +26,7 @@ public final class FileResourceUtil {
     }
 
     static File getFile(Context context, FileResource fileResource) throws D2Error {
-        File file = new File(getFileResourceDirectory(context),
+        File file = new File(FileResourceDirectoryHelper.getFileResourceDirectory(context),
                 generateFileName(MediaType.get(fileResource.contentType()), fileResource.uid()));
 
         if (file.exists()) {
@@ -37,22 +38,6 @@ public final class FileResourceUtil {
                     .errorDescription("File not found for this file resource uid")
                     .build();
         }
-    }
-
-    public static File getFileResourceDirectory(Context context) {
-        File file = new File(context.getFilesDir(), "sdk_resources");
-        if (!file.exists() && file.mkdirs()) {
-            return file;
-        }
-        return file;
-    }
-
-    public static File getFileCacheResourceDirectory(Context context) {
-        File file = new File(context.getCacheDir(), "sdk_cache_resources");
-        if (!file.exists() && file.mkdirs()) {
-            return file;
-        }
-        return file;
     }
 
     static File renameFile(File file, String newFileName, Context context) {
@@ -72,13 +57,13 @@ public final class FileResourceUtil {
 
         String contentType = URLConnection.guessContentTypeFromName(sourceFile.getName());
         String generatedName = generateFileName(MediaType.get(contentType), fileResourceUid);
-        File destinationFile = new File(getFileResourceDirectory(context), generatedName);
+        File destinationFile = new File(FileResourceDirectoryHelper.getFileResourceDirectory(context), generatedName);
 
         return writeInputStream(inputStream, destinationFile, sourceFile.length());
     }
 
     static File saveFileFromResponse(ResponseBody body, String generatedFileName, Context context) {
-        File destinationFile = new File(FileResourceUtil.getFileResourceDirectory(context),
+        File destinationFile = new File(FileResourceDirectoryHelper.getFileResourceDirectory(context),
                 generateFileName(body.contentType(), generatedFileName));
 
         writeInputStream(body.byteStream(), destinationFile, body.contentLength());

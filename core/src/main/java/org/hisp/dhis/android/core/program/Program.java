@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -38,7 +40,6 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AccessColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DBCaptureCoordinatesFromFeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbProgramTypeColumnAdapter;
@@ -64,8 +65,6 @@ import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
 import java.util.List;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_Program.Builder.class)
@@ -176,7 +175,7 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     public abstract List<ProgramStage> programStages();
 
     /**
-     * @deprecated use d2.programModule().programRules.byProgramUid() instead
+     * @deprecated use d2.programModule().programRules instead
      *
      * @return
      */

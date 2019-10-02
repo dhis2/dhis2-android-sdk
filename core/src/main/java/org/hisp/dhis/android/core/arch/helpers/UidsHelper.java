@@ -32,9 +32,7 @@ import org.hisp.dhis.android.core.common.IdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -95,6 +93,7 @@ public final class UidsHelper {
         return map;
     }
 
+    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
     public static <O extends ObjectWithUidInterface> Map<String, List<O>> mapByParentUid(
             Collection<O> objects, Transformer<O, String> parentExtractor) {
 

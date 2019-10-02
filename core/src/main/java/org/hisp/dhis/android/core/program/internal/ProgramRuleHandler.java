@@ -32,9 +32,16 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -43,14 +50,17 @@ import dagger.Reusable;
 @Reusable
 final class ProgramRuleHandler extends IdentifiableHandlerImpl<ProgramRule> {
     private final HandlerWithTransformer<ProgramRuleAction> programRuleActionHandler;
+    private final OrphanCleaner<ObjectWithUid, ProgramRule> programRuleCleaner;
     private final OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner;
 
     @Inject
     ProgramRuleHandler(IdentifiableObjectStore<ProgramRule> programRuleStore,
                        HandlerWithTransformer<ProgramRuleAction> programRuleActionHandler,
+                       OrphanCleaner<ObjectWithUid, ProgramRule> programRuleCleaner,
                        OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner) {
         super(programRuleStore);
         this.programRuleActionHandler = programRuleActionHandler;
+        this.programRuleCleaner = programRuleCleaner;
         this.programRuleActionCleaner = programRuleActionCleaner;
     }
 
@@ -60,6 +70,16 @@ final class ProgramRuleHandler extends IdentifiableHandlerImpl<ProgramRule> {
                 pra -> pra.toBuilder().programRule(ObjectWithUid.create(programRule.uid())).build());
         if (handleAction == HandleAction.Update) {
             programRuleActionCleaner.deleteOrphan(programRule, programRule.programRuleActions());
+        }
+    }
+
+    @Override
+    protected void afterCollectionHandled(Collection<ProgramRule> programRules) {
+        Map<String, List<ProgramRule>> cols = UidsHelper.mapByParentUid(programRules,
+                programRule -> programRule.program().uid());
+
+        for (Map.Entry<String, List<ProgramRule>> entry : cols.entrySet()) {
+            this.programRuleCleaner.deleteOrphan(ObjectWithUid.create(entry.getKey()), entry.getValue());
         }
     }
 }

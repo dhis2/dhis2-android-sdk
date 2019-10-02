@@ -27,11 +27,14 @@
  */
 package org.hisp.dhis.android.core.arch.helpers;
 
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.IdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -88,6 +91,22 @@ public final class UidsHelper {
         Map<String, O> map = new HashMap<>(objects.size());
         for (O o: objects) {
             map.put(o.uid(), o);
+        }
+        return map;
+    }
+
+    public static <O extends ObjectWithUidInterface> Map<String, List<O>> mapByParentUid(
+            Collection<O> objects, Transformer<O, String> parentExtractor) {
+
+        Map<String, List<O>> map = new HashMap<>();
+        for (O o : objects) {
+            String parentUid = parentExtractor.transform(o);
+            List<O> list = map.get(parentUid);
+            if (list == null) {
+                list = new ArrayList<>();
+            }
+            list.add(o);
+            map.put(parentUid, list);
         }
         return map;
     }

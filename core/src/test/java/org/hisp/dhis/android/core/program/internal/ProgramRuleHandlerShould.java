@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
 import org.junit.Before;
@@ -42,6 +42,8 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -62,10 +64,15 @@ public class ProgramRuleHandlerShould {
     private ProgramRule programRule;
 
     @Mock
+    private OrphanCleaner<ObjectWithUid, ProgramRule> programRuleCleaner;
+
+    @Mock
     private OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner;
 
     @Mock
     private List<ProgramRuleAction> programRuleActions;
+
+    private ObjectWithUid program = ObjectWithUid.create("program");
 
     // object to test
     private IdentifiableHandlerImpl<ProgramRule> programRuleHandler;
@@ -74,21 +81,22 @@ public class ProgramRuleHandlerShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         programRuleHandler = new ProgramRuleHandler(programRuleStore, programRuleActionHandler,
-                programRuleActionCleaner);
+                programRuleCleaner, programRuleActionCleaner);
 
         when(programRule.uid()).thenReturn("test_program_rule_uid");
+        when(programRule.program()).thenReturn(program);
         when(programRule.programRuleActions()).thenReturn(programRuleActions);
     }
 
     @Test
     public void extend_identifiable_sync_handler_impl() {
-        IdentifiableHandlerImpl<ProgramRule> genericHandler = new ProgramRuleHandler(null, null, null);
+        IdentifiableHandlerImpl<ProgramRule> genericHandler = new ProgramRuleHandler(null, null, null, null);
     }
 
     @Test
     public void call_program_rule_action_handler() {
         programRuleHandler.handle(programRule);
-        verify(programRuleActionHandler).handleMany(same(programRuleActions), any(Transformer.class));
+        verify(programRuleActionHandler).handleMany(same(programRuleActions), any());
     }
 
     @Test
@@ -103,5 +111,12 @@ public class ProgramRuleHandlerShould {
         when(programRuleStore.updateOrInsert(programRule)).thenReturn(HandleAction.Insert);
         programRuleHandler.handle(programRule);
         verify(programRuleActionCleaner, never()).deleteOrphan(programRule, programRuleActions);
+    }
+
+    @Test
+    public void call_program_rule_orphan_cleaner() {
+        Collection<ProgramRule> rules = Collections.singletonList(programRule);
+        programRuleHandler.handleMany(rules);
+        verify(programRuleCleaner).deleteOrphan(program, rules);
     }
 }

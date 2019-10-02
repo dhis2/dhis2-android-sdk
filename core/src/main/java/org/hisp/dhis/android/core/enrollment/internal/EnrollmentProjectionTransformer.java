@@ -55,6 +55,7 @@ final class EnrollmentProjectionTransformer implements Transformer<EnrollmentCre
                 .program(projection.program())
                 .trackedEntityInstance(projection.trackedEntityInstance())
                 .status(EnrollmentStatus.ACTIVE)
+                .deleted(false)
                 .build();
     }
 }

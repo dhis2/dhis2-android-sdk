@@ -120,7 +120,8 @@ public final class DataValueObjectRepository
                     .organisationUnit(organisationUnit)
                     .dataElement(dataElement)
                     .categoryOptionCombo(categoryOptionCombo)
-                    .attributeOptionCombo(attributeOptionCombo);
+                    .attributeOptionCombo(attributeOptionCombo)
+                    .deleted(false);
         }
     }
 }

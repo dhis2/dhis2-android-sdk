@@ -53,6 +53,7 @@ final class TrackedEntityInstanceProjectionTransformer
                 .lastUpdatedAtClient(creationDate)
                 .organisationUnit(projection.organisationUnit())
                 .trackedEntityType(projection.trackedEntityType())
+                .deleted(false)
                 .build();
     }
 }

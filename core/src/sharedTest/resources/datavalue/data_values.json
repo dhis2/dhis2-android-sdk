@@ -50,6 +50,18 @@
       "created": "2012-08-11T00:00:00.000+0000",
       "lastUpdated": "2012-08-11T00:00:00.000+0000",
       "followup": false
+    },
+    {
+      "dataElement": "g9eOBujte1U",
+      "period": "201907",
+      "orgUnit": "DiszpKrYNg8",
+      "categoryOptionCombo": "bRowv6yZOF2",
+      "attributeOptionCombo": "bRowv6yZOF2",
+      "value": "12",
+      "storedBy": "bodata1",
+      "created": "2012-08-11T00:00:00.000+0000",
+      "lastUpdated": "2012-08-11T00:00:00.000+0000",
+      "followup": false
     }
   ]
 }

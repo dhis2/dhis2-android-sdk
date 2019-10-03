@@ -89,7 +89,8 @@ public class PerformanceHintsServiceShould {
         when(programRule4.program()).thenReturn(ObjectWithUid.create(program2.uid()));
 
         when(organisationUnitStore.count()).thenReturn(0);
-        when(programStore.selectAll()).thenReturn(Collections.emptyList());
+        when(programStore.selectByUid("p1")).thenReturn(program1);
+        when(programStore.selectByUid("p2")).thenReturn(program2);
         when(programRuleStore.selectAll()).thenReturn(Collections.emptyList());
 
         int ORGANISATION_UNIT_THRESHOLD = 3;
@@ -155,7 +156,6 @@ public class PerformanceHintsServiceShould {
 
         assertThat(programs.size()).isEqualTo(1);
         assertThat(programs.get(0).uid()).isEqualTo("p2");
-        assertThat(programs.get(0).programRules()).isEqualTo(Lists.newArrayList(programRule2, programRule3, programRule4));
 
         assertThat(performanceHintsService.areThereVulnerabilities()).isEqualTo(true);
     }

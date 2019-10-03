@@ -337,14 +337,6 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     }
 
     @Test
-    public void include_program_rules_as_children() {
-        Program program = d2.programModule().programs
-                .withProgramRules().one().blockingGet();
-        assertThat(program.programRules().size(), is(3));
-        assertThat(program.programRules().get(0).name(), is("Show error for high hemoglobin value"));
-    }
-
-    @Test
     public void include_program_tracked_entity_attributes_as_children() {
         Program program = d2.programModule().programs
                 .withProgramTrackedEntityAttributes().one().blockingGet();

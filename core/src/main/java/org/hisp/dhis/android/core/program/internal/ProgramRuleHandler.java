@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
@@ -36,6 +37,8 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
 
+import java.util.Collection;
+
 import javax.inject.Inject;
 
 import dagger.Reusable;
@@ -43,14 +46,17 @@ import dagger.Reusable;
 @Reusable
 final class ProgramRuleHandler extends IdentifiableHandlerImpl<ProgramRule> {
     private final HandlerWithTransformer<ProgramRuleAction> programRuleActionHandler;
+    private final SubCollectionCleaner<ProgramRule> programRuleCleaner;
     private final OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner;
 
     @Inject
     ProgramRuleHandler(IdentifiableObjectStore<ProgramRule> programRuleStore,
                        HandlerWithTransformer<ProgramRuleAction> programRuleActionHandler,
+                       SubCollectionCleaner<ProgramRule> programRuleCleaner,
                        OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner) {
         super(programRuleStore);
         this.programRuleActionHandler = programRuleActionHandler;
+        this.programRuleCleaner = programRuleCleaner;
         this.programRuleActionCleaner = programRuleActionCleaner;
     }
 
@@ -61,5 +67,10 @@ final class ProgramRuleHandler extends IdentifiableHandlerImpl<ProgramRule> {
         if (handleAction == HandleAction.Update) {
             programRuleActionCleaner.deleteOrphan(programRule, programRule.programRuleActions());
         }
+    }
+
+    @Override
+    protected void afterCollectionHandled(Collection<ProgramRule> programRules) {
+        this.programRuleCleaner.deleteNotPresent(programRules);
     }
 }

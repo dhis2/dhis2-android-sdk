@@ -23,6 +23,9 @@
       "periodType": "Monthly",
       "openFuturePeriods": 2,
       "expiryDays": 1,
+      "workflow": {
+        "id": "workflowId"
+      },
       "categoryCombo": {
         "id": "m2jTvAj5kkm"
       },

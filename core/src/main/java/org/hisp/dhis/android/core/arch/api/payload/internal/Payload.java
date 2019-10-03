@@ -32,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,6 +45,7 @@ public class Payload<T> {
     List<T> items;
 
     public Payload() {
+        items = new ArrayList<>();
         // explicit empty constructor
     }
 

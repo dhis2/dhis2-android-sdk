@@ -117,4 +117,13 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
         assertThat(dataSetInstanceUncompleted.get(0).completionDate(), is(nullValue()));
     }
 
+    @Test
+    public void does_not_include_values_with_other_coc() {
+        List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances
+                .byPeriod().eq("201907")
+                .blockingGet();
+        assertThat(dataSetInstances.size(), is(1));
+        assertThat(dataSetInstances.get(0).valueCount(), is(1));
+    }
+
 }

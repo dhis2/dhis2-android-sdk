@@ -35,8 +35,10 @@ import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseDeletableDataModel;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkTableInfo;
+import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
@@ -54,8 +56,10 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
     private static final String DATAVALUE_TABLE_ALIAS = "dv";
     private static final String PERIOD_TABLE_ALIAS = "pe";
     private static final String DATASETELEMENT_TABLE_ALIAS = "dse";
+    private static final String DATAELEMENT_TABLE_ALIAS = "de";
     private static final String ORGUNIT_TABLE_ALIAS = "ou";
     private static final String DATASET_TABLE_ALIAS = "ds";
+    private static final String COC_TABLE_ALIAS = "coc";
     private static final String AOC_TABLE_ALIAS = "aoc";
     private static final String COMPLETE_TABLE_ALIAS = "dscr";
 
@@ -90,6 +94,8 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
             AOC_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.DISPLAY_NAME;
     private static final String COMPLETION_DATE =
             COMPLETE_TABLE_ALIAS + "." + DataSetCompleteRegistrationTableInfo.Columns.DATE;
+    private static final String DSE_CATEGORY_COMBO =
+            DATASETELEMENT_TABLE_ALIAS + "." + DataSetElementLinkTableInfo.Columns.CATEGORY_COMBO;
 
     private static final String STATE = DATAVALUE_TABLE_ALIAS + "." + BaseDataModel.Columns.STATE;
 
@@ -102,8 +108,10 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
             " FROM " + DataValueTableInfo.TABLE_INFO.name() + AS + DATAVALUE_TABLE_ALIAS +
                     getJoinPeriod() +
                     getJoinDataSetElement() +
+                    getJoinDataelement() +
                     getJoinDataSet() +
                     getJoinOrganisationUnit() +
+                    getJoinCategoryOptionCombo() +
                     getJoinAttributeOptionCombo() +
                     getJoinDataSetCompleteRegistration();
 
@@ -126,13 +134,19 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
             SELECT_STATE_ORDERING +
             FROM_CLAUSE;
 
+    private static final String COC_BY_DATASET_WHERE_CLAUSE = " WHERE " +
+            "(CASE WHEN " + DSE_CATEGORY_COMBO + " IS NOT NULL THEN " + DSE_CATEGORY_COMBO +
+            " ELSE " + DATAELEMENT_TABLE_ALIAS + "." + DataElementTableInfo.Columns.CATEGORY_COMBO + " END)" +
+            EQ + COC_TABLE_ALIAS + "." + CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO;
+
     private static final String GROUP_BY_CLAUSE = " GROUP BY " +
             DATASET_UID + "," +
             PERIOD + "," +
             ORGANISATION_UNIT_UID + "," +
             ATTRIBUTE_OPTION_COMBO_UID;
 
-    private static final String SELECT_CLAUSE = "SELECT * FROM (" + INNER_SELECT_CLAUSE + GROUP_BY_CLAUSE +")";
+    private static final String SELECT_CLAUSE =
+            "SELECT * FROM (" + INNER_SELECT_CLAUSE + COC_BY_DATASET_WHERE_CLAUSE + GROUP_BY_CLAUSE +")";
 
     @Override
     public String selectWhere(String whereClause) {
@@ -185,6 +199,12 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
                 DATASETELEMENT_TABLE_ALIAS + "." + DataSetDataElementLinkTableInfo.Columns.DATA_ELEMENT;
     }
 
+    private static String getJoinDataelement() {
+        return INNER_JOIN + DataElementTableInfo.TABLE_INFO.name() + AS + DATAELEMENT_TABLE_ALIAS +
+                ON + DATAVALUE_TABLE_ALIAS + "." + DataValueTableInfo.Columns.DATA_ELEMENT + EQ +
+                DATAELEMENT_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
+    }
+
     private static String getJoinOrganisationUnit() {
         return INNER_JOIN + OrganisationUnitTableInfo.TABLE_INFO.name() + AS + ORGUNIT_TABLE_ALIAS +
                 ON + DATAVALUE_TABLE_ALIAS + "." + DataValueTableInfo.Columns.ORGANISATION_UNIT + EQ +
@@ -195,6 +215,12 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
         return INNER_JOIN + DataSetTableInfo.TABLE_INFO.name() + AS + DATASET_TABLE_ALIAS +
                 ON + DATASETELEMENT_TABLE_ALIAS + "." + DataSetDataElementLinkTableInfo.Columns.DATA_SET + EQ +
                 DATASET_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
+    }
+
+    private static String getJoinCategoryOptionCombo() {
+        return INNER_JOIN + CategoryOptionComboTableInfo.TABLE_INFO.name() + AS + COC_TABLE_ALIAS +
+                ON + DATAVALUE_TABLE_ALIAS + "." + DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO + EQ +
+                COC_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
     }
 
     private static String getJoinAttributeOptionCombo() {

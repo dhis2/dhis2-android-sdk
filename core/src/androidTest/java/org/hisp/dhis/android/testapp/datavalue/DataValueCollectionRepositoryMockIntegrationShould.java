@@ -52,7 +52,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                 d2.dataValueModule().dataValues
                         .blockingGet();
 
-        assertThat(dataValues.size(), is(4));
+        assertThat(dataValues.size(), is(5));
     }
 
     @Test
@@ -63,7 +63,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                         .eq("g9eOBujte1U")
                         .blockingGet();
 
-        assertThat(dataValues.size(), is(4));
+        assertThat(dataValues.size(), is(5));
     }
 
     @Test
@@ -85,7 +85,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                         .eq("DiszpKrYNg8")
                         .blockingGet();
 
-        assertThat(dataValues.size(), is(4));
+        assertThat(dataValues.size(), is(5));
     }
 
     @Test
@@ -107,7 +107,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                         .eq("bRowv6yZOF2")
                         .blockingGet();
 
-        assertThat(dataValues.size(), is(4));
+        assertThat(dataValues.size(), is(5));
     }
 
     @Test
@@ -173,7 +173,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                         .isFalse()
                         .blockingGet();
 
-        assertThat(dataValues.size(), is(3));
+        assertThat(dataValues.size(), is(4));
     }
 
     @Test
@@ -183,7 +183,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                         .byState().eq(State.SYNCED)
                         .blockingGet();
 
-        assertThat(dataValues.size(), is(4));
+        assertThat(dataValues.size(), is(5));
     }
 
     @Test
@@ -193,7 +193,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                         .byDeleted().isFalse()
                         .blockingGet();
 
-        assertThat(dataValues.size(), is(4));
+        assertThat(dataValues.size(), is(5));
     }
 
     @Test

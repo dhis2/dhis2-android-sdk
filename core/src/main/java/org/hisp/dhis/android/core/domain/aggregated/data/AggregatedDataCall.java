@@ -65,6 +65,7 @@ import androidx.annotation.NonNull;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
+@SuppressWarnings("PMD.ExcessiveImports")
 final class AggregatedDataCall {
 
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;

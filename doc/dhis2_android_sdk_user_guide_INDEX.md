@@ -478,13 +478,13 @@ d2.dataValueModule().dataSetReports
 
 ### Dealing with FileResources
 
-The SDK offers a module (the `FileResourceModule`) and two helpers (the `FileResourceDirectoryHelper` and `FileResizerHelper`) that allow working with files.
+The SDK offers a module (the `FileResourceModule`) and two helpers (the `FileResourceDirectoryHelper` and `FileResizerHelper`) that allow to work with files.
 
 #### File resources module
 This module contains methods to download the file resources associated with the downloaded metadata and the file resources collection repository of the database.
 
 - **File resources download**. 
-The `download()` method will search for those tracked entity attribute values ​​and tracked entity data values ​​whose tracked entity attribute type and data element type respectively are of the image type and whose file resource has not been previously downloaded and will download them.
+The `download()` method will search for the tracked entity attribute values ​​and tracked entity data values ​​whose tracked entity attribute type and data element type are of the image type and whose file resource has not been previously downloaded and the method will download the file resources associated.
     ```
     d2.fileResourceModule().download();
     ```
@@ -494,13 +494,13 @@ The `download()` method will search for those tracked entity attribute values �
 - **File resource collection repository**.
 Through this repository it is possible to request files, save new ones and upload them to the server. 
 
-    - **Get**. It has a behavior similar to any other Sdk repository. It allows getting collections by applying different filters if desired.
+    - **Get**. It behaves in a similiar fashion to any other Sdk repository. It allows to get collections by applying different filters if desired.
         ```
         d2.fileResourceModule().fileResources
             .[ filters ]
             .get()
         ```
-    - **Add**. To save a file you have to add it using the `add()` method of the repository by passing it an object of type `File`. The `add()` method will return the uid that was generated when adding the file.
+    - **Add**. To save a file you have to add it using the `add()` method of the repository by providing an object of type `File`. The `add()` method will return the uid that was generated when adding the file.
         ```
         d2.fileResourceModule().fileResources
             .add(file);
@@ -513,7 +513,7 @@ Through this repository it is possible to request files, save new ones and uploa
 
 #### File resizer helper
 
-The Sdk provides a helper to resize image files (`FileResizerHelper`). The helper is located in the `core.arch.helpers` package of the Sdk. This helper contains a static `resizeFile()` method that accepts the file you want to reduce and the dimension to which you want to reduce.
+The Sdk provides a helper to resize image files (`FileResizerHelper`). The helper is located in the `core.arch.helpers` package of the Sdk. This helper contains a static `resizeFile()` method that accepts the file you want to reduce and the dimension to which you want to reduce it.
 
 The possible dimensions are in the following table.
 
@@ -521,20 +521,20 @@ The possible dimensions are in the following table.
 |-------|--------|--------|
 | 256px | 512px  | 1024px |
 
-The helper takes the file, measures the height and width of the image, determines which of the two sides is larger and reduces the larger of the sides to the given dimension and the other side scales it to its proportional size. **Image scaling will always keep the proportions**.
+The helper takes the file, measures the height and width of the image, determines which of the two sides is larger and reduces the largest of the sides to the given dimension and the other side is scaled to its proportional size. **Image scaling will always keep the proportions**.
 
-In the event that the last image is smaller than the dimension to which you want to resize, the same file will be returned without being modified.
+In the event that the last image is smaller than the dimension to which you want to resize it, the same file will be returned without being modified.
 
 The `resizeFile()` method will return a new file located in the same parent directory of the file to be resized under the name `resized-DIMENSION-` + the name of the file without resizing.
 
 
 #### File resource directory helper
 
-Contained on the `core.arch.helpers` package of the Sdk is the `FileResourceDirectoryHelper`. This helper provides two methods.
+Contained in the `core.arch.helpers` package of the Sdk is the `FileResourceDirectoryHelper`. This helper provides two methods.
 
 - `getFileResourceDirectory()`. This method returns a `File` object whose path points to the `sdk_resources` directory where the Sdk will save the files associated with the file resources.
 
-- `getFileCacheResourceDirectory()`. This method returns a `File` object whose path points to the `sdk_cache_resources` directory. This should be the place where volatile files are stored, such as camera photos or images to be resized. Because the directory is contained in the cache directory, Android may auto-delete the files in the cache directory once the system gets low on memory. Third party apps can also delete files from the cache directory. And even the user can manually clear the cache from Settings. However, just because those things can clear the cache does not mean that they automatically will clear the cache, and so the cache will need to been tidy up from time to time proactively.
+- `getFileCacheResourceDirectory()`. This method returns a `File` object whose path points to the `sdk_cache_resources` directory. This should be the place where volatile files are stored, such as camera photos or images to be resized. Since the directory is contained in the cache directory, Android may auto-delete the files in the cache directory once the system is about to run out of memory. Third party applications can also delete files from the cache directory. Even the user can manually clear the cache from Settings. However, the fact that the cache can be cleared in the methods explained above should not mean that the cache will automatically get cleared; therefore, the cache will need to be tidied up from time to time proactively.
 
 
 ## Error management

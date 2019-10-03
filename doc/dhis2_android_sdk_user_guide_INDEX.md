@@ -513,6 +513,20 @@ Through this repository it is possible to request files, save new ones and uploa
 
 #### File resizer helper
 
+The Sdk provides a helper to resize image files (`FileResizerHelper`). The helper is located in the `core.arch.helpers` package of the Sdk. This helper contains a static `resizeFile()` method that accepts the file you want to reduce and the dimension to which you want to reduce.
+
+The possible dimensions are in the following table.
+
+| Small | Medium | Large  |
+|-------|--------|--------|
+| 256px | 512px  | 1024px |
+
+The helper takes the file, measures the height and width of the image, determines which of the two sides is larger and reduces the larger of the sides to the given dimension and the other side scales it to its proportional size. **Image scaling will always keep the proportions**.
+
+In the event that the last image is smaller than the dimension to which you want to resize, the same file will be returned without being modified.
+
+The `resizeFile()` method will return a new file located in the same parent directory of the file to be resized under the name `resized-DIMENSION-` + the name of the file without resizing.
+
 
 #### File resource directory helper
 

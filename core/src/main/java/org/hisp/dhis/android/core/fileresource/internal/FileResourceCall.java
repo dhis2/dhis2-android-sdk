@@ -27,56 +27,102 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
 import org.hisp.dhis.android.core.fileresource.FileResource;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 
 @Reusable
 public class FileResourceCall {
 
     private final RxAPICallExecutor rxCallExecutor;
 
-    private final SystemInfoModuleDownloader systemInfoDownloader;
-    private final FileResourceModuleDownloader fileResourceModuleDownloader;
+    private final FileResourceCallFactory fileResourceCallFactory;
+    private final IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
+    private final IdentifiableObjectStore<DataElement> dataElementStore;
+    private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
+    private final TrackedEntityDataValueStore trackedEntityDataValueStore;
+    private final IdentifiableDataObjectStore<FileResource> fileResourceStore;
 
     @Inject
-    public FileResourceCall(@NonNull RxAPICallExecutor rxCallExecutor,
-                            @NonNull SystemInfoModuleDownloader systemInfoDownloader,
-                            @NonNull FileResourceModuleDownloader fileResourceModuleDownloader) {
+    FileResourceCall(@NonNull RxAPICallExecutor rxCallExecutor,
+                     @NonNull FileResourceCallFactory fileResourceCallFactory,
+                     @NonNull IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore,
+                     @NonNull IdentifiableObjectStore<DataElement> dataElementStore,
+                     @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
+                     @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
+                     @NonNull IdentifiableDataObjectStore<FileResource> fileResourceStore) {
         this.rxCallExecutor = rxCallExecutor;
-        this.systemInfoDownloader = systemInfoDownloader;
-        this.fileResourceModuleDownloader = fileResourceModuleDownloader;
+        this.fileResourceCallFactory = fileResourceCallFactory;
+        this.trackedEntityAttributeStore = trackedEntityAttributeStore;
+        this.dataElementStore = dataElementStore;
+        this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
+        this.trackedEntityDataValueStore = trackedEntityDataValueStore;
+        this.fileResourceStore = fileResourceStore;
     }
 
     public Observable<D2Progress> download() {
-        D2ProgressManager progressManager = new D2ProgressManager(2);
-
-        Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
-                progressManager.increaseProgress(SystemInfo.class, false));
-
-        return rxCallExecutor.wrapObservableTransactionally(
-                systemInfoDownload.flatMapObservable(systemInfoProgress -> Observable.create(emitter -> {
-
-                    fileResourceModuleDownloader.downloadMetadata().call();
-                    emitter.onNext(progressManager.increaseProgress(FileResource.class, false));
-
-                    emitter.onComplete();
-
-                })), true);
+        return rxCallExecutor.wrapObservableTransactionally(fileResourceCallFactory.create(
+                getTrackedEntityAttributeValues(),
+                getTrackedEntityDataValues()), true);
     }
 
     public void blockingDownload() {
         download().blockingSubscribe();
+    }
+
+    private List<String> getExistingFileResources() {
+        return fileResourceStore.selectUids();
+    }
+
+    private List<TrackedEntityAttributeValue> getTrackedEntityAttributeValues() {
+        String attributeUidsWhereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(TrackedEntityAttributeTableInfo.Columns.VALUE_TYPE, ValueType.IMAGE).build();
+
+        List<String> trackedEntityAttributeUids = trackedEntityAttributeStore.selectUidsWhere(attributeUidsWhereClause);
+
+        String attributeValuesWhereClause = new WhereClauseBuilder()
+                .appendInKeyStringValues(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                        trackedEntityAttributeUids)
+                .appendNotInKeyStringValues(TrackedEntityAttributeValueTableInfo.Columns.VALUE,
+                        getExistingFileResources())
+                .build();
+
+        return trackedEntityAttributeValueStore.selectWhere(attributeValuesWhereClause);
+    }
+
+    private List<TrackedEntityDataValue> getTrackedEntityDataValues() {
+        String dataElementUidsWhereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(DataElementTableInfo.Columns.VALUE_TYPE, ValueType.IMAGE).build();
+
+        List<String> dataElementUids = dataElementStore.selectUidsWhere(dataElementUidsWhereClause);
+
+        String dataValuesWhereClause = new WhereClauseBuilder()
+                .appendInKeyStringValues(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, dataElementUids)
+                .appendNotInKeyStringValues(TrackedEntityDataValueTableInfo.Columns.VALUE, getExistingFileResources())
+                .build();
+
+        return trackedEntityDataValueStore.selectWhere(dataValuesWhereClause);
     }
 }

@@ -31,26 +31,29 @@ package org.hisp.dhis.android.core.fileresource.internal;
 import android.content.Context;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 import okhttp3.ResponseBody;
 
 @Reusable
@@ -61,6 +64,7 @@ class FileResourceCallFactory {
     private final IdentifiableDataObjectStore<FileResource> store;
     private final APICallExecutor apiCallExecutor;
     private final Context context;
+    private final SystemInfoModuleDownloader systemInfoDownloader;
 
     private enum Dimension {
         SMALL, MEDIUM
@@ -71,23 +75,44 @@ class FileResourceCallFactory {
                             @NonNull HandlerWithTransformer<FileResource> handler,
                             @NonNull IdentifiableDataObjectStore<FileResource> store,
                             @NonNull APICallExecutor apiCallExecutor,
-                            @NonNull Context context) {
+                            @NonNull Context context,
+                            @NonNull SystemInfoModuleDownloader systemInfoDownloader) {
         this.fileResourceService = fileResourceService;
         this.handler = handler;
         this.store = store;
         this.apiCallExecutor = apiCallExecutor;
         this.context = context;
+        this.systemInfoDownloader = systemInfoDownloader;
     }
 
-    public Callable<Unit> create(final List<TrackedEntityAttributeValue> trackedEntityAttributeValues,
-                                 final List<TrackedEntityDataValue> trackedEntityDataValues) {
+    public Observable<D2Progress> create(final List<TrackedEntityAttributeValue> trackedEntityAttributeValues,
+                                         final List<TrackedEntityDataValue> trackedEntityDataValues) {
 
-        return () -> {
-            downloadAttributeValueFiles(trackedEntityAttributeValues);
-            downloadDataValueFiles(trackedEntityDataValues);
+        int attributeNotifications = trackedEntityAttributeValues.isEmpty() ? 0 : 1;
+        int dataValueNotifications = trackedEntityDataValues.isEmpty() ? 0 : 1;
+        if (attributeNotifications + dataValueNotifications == 0) {
+            return Observable.empty();
+        } else {
+            D2ProgressManager progressManager = new D2ProgressManager(
+                    attributeNotifications + dataValueNotifications + 1);
 
-            return new Unit();
-        };
+            Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
+                    progressManager.increaseProgress(SystemInfo.class, false));
+
+            return systemInfoDownload.flatMapObservable(systemInfoProgress -> Observable.create(emitter -> {
+                if (attributeNotifications == 1) {
+                    downloadAttributeValueFiles(trackedEntityAttributeValues);
+                    emitter.onNext(progressManager.increaseProgress(TrackedEntityAttributeValue.class, true));
+                }
+
+                if (dataValueNotifications == 1) {
+                    downloadDataValueFiles(trackedEntityDataValues);
+                    emitter.onNext(progressManager.increaseProgress(TrackedEntityDataValue.class, true));
+                }
+
+                emitter.onComplete();
+            }));
+        }
     }
 
     private void downloadAttributeValueFiles(final List<TrackedEntityAttributeValue> trackedEntityAttributeValues) {

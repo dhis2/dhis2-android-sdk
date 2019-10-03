@@ -530,6 +530,12 @@ The `resizeFile()` method will return a new file located in the same parent dire
 
 #### File resource directory helper
 
+Contained on the `core.arch.helpers` package of the Sdk is the `FileResourceDirectoryHelper`. This helper provides two methods.
+
+- `getFileResourceDirectory()`. This method returns a `File` object whose path points to the `sdk_resources` directory where the Sdk will save the files associated with the file resources.
+
+- `getFileCacheResourceDirectory()`. This method returns a `File` object whose path points to the `sdk_cache_resources` directory. This should be the place where volatile files are stored, such as camera photos or images to be resized. Because the directory is contained in the cache directory, Android may auto-delete the files in the cache directory once the system gets low on memory. Third party apps can also delete files from the cache directory. And even the user can manually clear the cache from Settings. However, just because those things can clear the cache does not mean that they automatically will clear the cache, and so the cache will need to been tidy up from time to time proactively.
+
 
 ## Error management
 

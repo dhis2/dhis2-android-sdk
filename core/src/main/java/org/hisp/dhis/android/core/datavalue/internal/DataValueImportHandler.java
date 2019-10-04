@@ -33,12 +33,17 @@ import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 
-import androidx.annotation.NonNull;
+import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import dagger.Reusable;
+
+@Reusable
 final class DataValueImportHandler {
 
     private final DataValueStore dataValueStore;
 
+    @Inject
     DataValueImportHandler(DataValueStore dataValueStore) {
         this.dataValueStore = dataValueStore;
     }

@@ -38,12 +38,17 @@ import org.hisp.dhis.android.core.imports.ImportStatus;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
+import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import dagger.Reusable;
+
+@Reusable
 final class DataSetCompleteRegistrationImportHandler {
 
     private final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
 
+    @Inject
     DataSetCompleteRegistrationImportHandler(
             DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore) {
         this.dataSetCompleteRegistrationStore = dataSetCompleteRegistrationStore;

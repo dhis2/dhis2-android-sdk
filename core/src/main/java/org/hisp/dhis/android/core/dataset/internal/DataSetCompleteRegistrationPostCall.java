@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -53,34 +52,40 @@ import io.reactivex.Single;
 public final class DataSetCompleteRegistrationPostCall {
 
     private final DataSetCompleteRegistrationService dataSetCompleteRegistrationService;
-    private final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
+    private final DataSetCompleteRegistrationImportHandler dataSetCompleteRegistrationImportHandler;
     private final APICallExecutor apiCallExecutor;
     private final SystemInfoModuleDownloader systemInfoDownloader;
 
     @Inject
     DataSetCompleteRegistrationPostCall(
             @NonNull DataSetCompleteRegistrationService dataSetCompleteRegistrationService,
-            @NonNull DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore,
+            @NonNull DataSetCompleteRegistrationImportHandler dataSetCompleteRegistrationImportHandler,
             @NonNull APICallExecutor apiCallExecutor,
             @NonNull SystemInfoModuleDownloader systemInfoDownloader) {
 
         this.dataSetCompleteRegistrationService = dataSetCompleteRegistrationService;
-        this.dataSetCompleteRegistrationStore = dataSetCompleteRegistrationStore;
+        this.dataSetCompleteRegistrationImportHandler = dataSetCompleteRegistrationImportHandler;
         this.apiCallExecutor = apiCallExecutor;
         this.systemInfoDownloader = systemInfoDownloader;
     }
 
-    public Observable<D2Progress> uploadDataSetCompleteRegistrations() {
+    public Observable<D2Progress> uploadDataSetCompleteRegistrations(
+            List<DataSetCompleteRegistration> dataSetCompleteRegistrations) {
         return Observable.defer(() -> {
-            List<DataSetCompleteRegistration> toPostDataSetCompleteRegistrations = new ArrayList<>();
-            List<DataSetCompleteRegistration> toDeleteDataSetCompleteRegistrations = new ArrayList<>();
-
-            appendPostableDataValues(toPostDataSetCompleteRegistrations);
-            appendToDeleteRegistrations(toDeleteDataSetCompleteRegistrations);
-
-            if (toPostDataSetCompleteRegistrations.isEmpty() && toDeleteDataSetCompleteRegistrations.isEmpty()) {
+            if (dataSetCompleteRegistrations.isEmpty()) {
                 return Observable.empty();
             } else {
+                List<DataSetCompleteRegistration> toPostDataSetCompleteRegistrations = new ArrayList<>();
+                List<DataSetCompleteRegistration> toDeleteDataSetCompleteRegistrations = new ArrayList<>();
+
+                for (DataSetCompleteRegistration dscr: dataSetCompleteRegistrations) {
+                    if (dscr.deleted()) {
+                        toDeleteDataSetCompleteRegistrations.add(dscr);
+                    } else {
+                        toPostDataSetCompleteRegistrations.add(dscr);
+                    }
+                }
+
                 D2ProgressManager progressManager = new D2ProgressManager(2);
 
                 Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
@@ -129,35 +134,11 @@ public final class DataSetCompleteRegistrationPostCall {
             }
         }
 
-        handleImportSummary(dataSetCompleteRegistrationPayload, dataValueImportSummary,
-                deletedDataSetCompleteRegistrations, withErrorDataSetCompleteRegistrations);
+        dataSetCompleteRegistrationImportHandler.handleImportSummary(
+                dataSetCompleteRegistrationPayload, dataValueImportSummary, deletedDataSetCompleteRegistrations,
+                withErrorDataSetCompleteRegistrations);
 
         emitter.onNext(progressManager.increaseProgress(DataSetCompleteRegistration.class, true));
         emitter.onComplete();
-    }
-
-    private void appendToDeleteRegistrations(
-            Collection<DataSetCompleteRegistration> toDeleteDataSetCompleteRegistrations) {
-        toDeleteDataSetCompleteRegistrations.addAll(
-                dataSetCompleteRegistrationStore.getDeletedRegistrationsPendingToSync());
-    }
-
-    private void appendPostableDataValues(Collection<DataSetCompleteRegistration> dataSetCompleteRegistrations) {
-        dataSetCompleteRegistrations.addAll(
-                dataSetCompleteRegistrationStore.getNonDeletedRegistrationsPendingToSync());
-    }
-
-    private DataValueImportSummary handleImportSummary(
-            DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload,
-            DataValueImportSummary dataValueImportSummary,
-            List<DataSetCompleteRegistration> deletedDataSetCompleteRegistrations,
-            List<DataSetCompleteRegistration> withErrorDataSetCompleteRegistrations) {
-
-        DataSetCompleteRegistrationImportHandler dataSetCompleteRegistrationImportHandler =
-                new DataSetCompleteRegistrationImportHandler(dataSetCompleteRegistrationStore);
-
-        return dataSetCompleteRegistrationImportHandler.handleImportSummary(
-                dataSetCompleteRegistrationPayload, dataValueImportSummary, deletedDataSetCompleteRegistrations,
-                withErrorDataSetCompleteRegistrations);
     }
 }

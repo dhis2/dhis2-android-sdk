@@ -72,7 +72,9 @@ public final class DataValueCollectionRepository
 
     @Override
     public Observable<D2Progress> upload() {
-        return postCall.uploadDataValues();
+        return Observable.fromCallable(() ->
+                byState().in(State.TO_POST, State.TO_UPDATE).getWithoutChildren()
+        ).flatMap(postCall::uploadDataValues);
     }
 
     public DataValueObjectRepository value(String period,

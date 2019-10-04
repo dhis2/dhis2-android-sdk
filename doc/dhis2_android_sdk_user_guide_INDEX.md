@@ -481,7 +481,7 @@ d2.dataValueModule().dataSetReports
 The SDK offers a module (the `FileResourceModule`) and two helpers (the `FileResourceDirectoryHelper` and `FileResizerHelper`) that allow to work with files.
 
 #### File resources module
-This module contains methods to download the file resources associated with the downloaded metadata and the file resources collection repository of the database.
+This module contains methods to download the file resources associated with the downloaded data and the file resources collection repository of the database.
 
 - **File resources download**. 
 The `download()` method will search for the tracked entity attribute values ​​and tracked entity data values ​​whose tracked entity attribute type and data element type are of the image type and whose file resource has not been previously downloaded and the method will download the file resources associated.
@@ -500,7 +500,7 @@ Through this repository it is possible to request files, save new ones and uploa
             .[ filters ]
             .get()
         ```
-    - **Add**. To save a file you have to add it using the `add()` method of the repository by providing an object of type `File`. The `add()` method will return the uid that was generated when adding the file.
+    - **Add**. To save a file you have to add it using the `add()` method of the repository by providing an object of type `File`. The `add()` method will return the uid that was generated when adding the file. This uid should be used to update the tracked entity attribute value or the tracked entity data value associated with the file resource.
         ```
         d2.fileResourceModule().fileResources
             .add(file);

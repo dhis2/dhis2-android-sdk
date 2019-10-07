@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
@@ -73,8 +75,6 @@ import org.junit.runner.RunWith;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -127,8 +127,7 @@ public class ProgramIndicatorEngineIntegrationShould extends BaseMockIntegration
         ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, CategoryCombo.DEFAULT_UID);
         database.insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo);
 
-        Access access = Access.create(true, null, null, null, null, null,
-                DataAccess.create(true, true));
+        Access access = Access.create(true, null, DataAccess.create(true, true));
         Program program = Program.builder().uid(programUid)
                 .access(access)
                 .trackedEntityType(TrackedEntityType.builder().uid(teiTypeUid).build())

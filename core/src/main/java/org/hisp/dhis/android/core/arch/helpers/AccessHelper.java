@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.helpers;
 
 import org.hisp.dhis.android.core.common.Access;
@@ -34,6 +35,6 @@ public final class AccessHelper {
     private AccessHelper() {}
 
     public static Integer getAccessDataWrite(Access access) {
-        return access != null && access.data() != null && access.data().write() ? 1 : 0;
+        return access.data().write() ? 1 : 0;
     }
 }

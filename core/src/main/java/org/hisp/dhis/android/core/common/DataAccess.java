@@ -35,8 +35,6 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
 public abstract class DataAccess {
     private static final String READ = "read";
@@ -48,17 +46,46 @@ public abstract class DataAccess {
     public static final Fields<DataAccess> allFields = Fields.<DataAccess>builder().fields(
             read, write).build();
 
-    @Nullable
     @JsonProperty(READ)
     public abstract Boolean read();
 
-    @Nullable
     @JsonProperty(WRITE)
     public abstract Boolean write();
 
     @JsonCreator
     public static DataAccess create(@JsonProperty(READ) Boolean read,
                                     @JsonProperty(WRITE) Boolean write) {
-        return new AutoValue_DataAccess(read, write);
+        return builder().read(read).write(write).build();
+    }
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_DataAccess.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder read(Boolean read);
+
+        public abstract Builder write(Boolean write);
+
+        abstract DataAccess autoBuild();
+
+        // Auxiliary fields
+        abstract Boolean read();
+
+        abstract Boolean write();
+
+        public DataAccess build() {
+            if (read() == null) {
+                read(Boolean.TRUE);
+            }
+            if (write() == null) {
+                read(Boolean.TRUE);
+            }
+
+            return autoBuild();
+        }
     }
 }

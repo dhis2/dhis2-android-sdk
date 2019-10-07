@@ -32,13 +32,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 
-import java.util.Collection;
-
 public interface DataSetCompleteRegistrationStore extends ObjectWithoutUidStore<DataSetCompleteRegistration> {
-
-    Collection<DataSetCompleteRegistration> getDeletedRegistrationsPendingToSync();
-
-    Collection<DataSetCompleteRegistration> getNonDeletedRegistrationsPendingToSync();
 
     void setState(DataSetCompleteRegistration dataSetCompleteRegistration, State newState);
 

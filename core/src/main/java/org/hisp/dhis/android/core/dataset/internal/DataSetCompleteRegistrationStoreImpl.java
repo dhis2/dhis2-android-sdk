@@ -30,16 +30,12 @@ package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo;
-
-import java.util.Arrays;
-import java.util.Collection;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
@@ -87,26 +83,6 @@ final class DataSetCompleteRegistrationStoreImpl extends
                         DataSetCompleteRegistrationTableInfo.TABLE_INFO.columns());
 
         return new DataSetCompleteRegistrationStoreImpl(databaseAdapter, sqlStatementBuilder);
-    }
-
-    @Override
-    public Collection<DataSetCompleteRegistration> getNonDeletedRegistrationsPendingToSync() {
-        String whereClause = new WhereClauseBuilder()
-                .appendInKeyEnumValues(DataSetCompleteRegistration.Columns.STATE,
-                        Arrays.asList(State.TO_UPDATE, State.TO_POST))
-                .appendKeyNumberValue(DataSetCompleteRegistration.Columns.DELETED, 0)
-                .build();
-        return selectWhere(whereClause);
-    }
-
-    @Override
-    public Collection<DataSetCompleteRegistration> getDeletedRegistrationsPendingToSync() {
-        String whereClause = new WhereClauseBuilder()
-                .appendInKeyEnumValues(DataSetCompleteRegistration.Columns.STATE,
-                        Arrays.asList(State.TO_UPDATE, State.TO_POST))
-                .appendKeyNumberValue(DataSetCompleteRegistration.Columns.DELETED, 1)
-                .build();
-        return selectWhere(whereClause);
     }
 
     /**

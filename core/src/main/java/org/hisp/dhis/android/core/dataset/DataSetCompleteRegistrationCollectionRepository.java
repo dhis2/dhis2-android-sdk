@@ -36,10 +36,12 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollecti
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo.Columns;
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationPostCall;
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore;
 
@@ -87,35 +89,42 @@ public final class DataSetCompleteRegistrationCollectionRepository
 
     @Override
     public Observable<D2Progress> upload() {
-        return postCall.uploadDataSetCompleteRegistrations();
+        return Observable.fromCallable(() ->
+                byState().in(State.TO_POST, State.TO_UPDATE).getWithoutChildren()
+        ).flatMap(postCall::uploadDataSetCompleteRegistrations);
     }
 
 
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byPeriod() {
-        return cf.string(DataSetCompleteRegistrationTableInfo.Columns.PERIOD);
+        return cf.string(Columns.PERIOD);
     }
 
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byDataSetUid() {
-        return cf.string(DataSetCompleteRegistrationTableInfo.Columns.DATA_SET);
+        return cf.string(Columns.DATA_SET);
     }
 
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byOrganisationUnitUid() {
-        return cf.string(DataSetCompleteRegistrationTableInfo.Columns.ORGANISATION_UNIT);
+        return cf.string(Columns.ORGANISATION_UNIT);
     }
 
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byAttributeOptionComboUid() {
-        return cf.string(DataSetCompleteRegistrationTableInfo.Columns.ATTRIBUTE_OPTION_COMBO);
+        return cf.string(Columns.ATTRIBUTE_OPTION_COMBO);
     }
 
     public DateFilterConnector<DataSetCompleteRegistrationCollectionRepository> byDate() {
-        return cf.date(DataSetCompleteRegistrationTableInfo.Columns.DATE);
+        return cf.date(Columns.DATE);
     }
 
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byStoredBy() {
-        return cf.string(DataSetCompleteRegistrationTableInfo.Columns.STORED_BY);
+        return cf.string(Columns.STORED_BY);
     }
 
     public BooleanFilterConnector<DataSetCompleteRegistrationCollectionRepository> byDeleted() {
-        return cf.bool(DataSetCompleteRegistrationTableInfo.Columns.DELETED);
+        return cf.bool(Columns.DELETED);
     }
+
+    public EnumFilterConnector<DataSetCompleteRegistrationCollectionRepository, State> byState() {
+        return cf.enumC(Columns.STATE);
+    }
+
 }

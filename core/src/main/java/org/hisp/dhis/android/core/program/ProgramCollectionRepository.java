@@ -205,10 +205,6 @@ public final class ProgramCollectionRepository
         return cf.withChild(ProgramFields.PROGRAM_SECTIONS);
     }
 
-    public ProgramCollectionRepository withCategoryCombo() {
-        return cf.withChild(Columns.CATEGORY_COMBO);
-    }
-
     public ProgramCollectionRepository withRelatedProgram() {
         return cf.withChild(Columns.RELATED_PROGRAM);
     }

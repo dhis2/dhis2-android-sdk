@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
@@ -76,7 +76,7 @@ final class RelationshipTypeEndpointCallFactory extends ListCallFactoryImpl<Rela
             protected retrofit2.Call<Payload<RelationshipType>> getCall(String lastUpdated) {
                 String accessDataFilter = null;
                 if (!versionManager.is2_29()) {
-                    accessDataFilter = "access.data." + DataAccess.read.eq(true).generateString();
+                    accessDataFilter = "access.data." + DataAccessFields.read.eq(true).generateString();
                 }
 
                 return service.getRelationshipTypes(RelationshipTypeFields.allFields,

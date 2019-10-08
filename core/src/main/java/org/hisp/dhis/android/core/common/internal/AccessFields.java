@@ -26,23 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.helpers;
+package org.hisp.dhis.android.core.common.internal;
 
-import androidx.annotation.NonNull;
-
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.api.fields.internal.NestedField;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 
-public final class AccessHelper {
+public final class AccessFields {
 
-    private AccessHelper() {}
+    private static final String READ = "read";
+    private static final String WRITE = "write";
+    private static final String DATA = "data";
 
-    public static Access defaultAccess() {
-        return createForDataWrite(Boolean.TRUE);
-    }
+    public static final Field<Access, Boolean> read = Field.create(READ);
+    public static final Field<Access, Boolean> write = Field.create(WRITE);
+    public static final NestedField<Access, DataAccess> data = NestedField.create(DATA);
 
-    public static Access createForDataWrite(@NonNull Boolean accessDataWrite) {
-        return Access.builder().read(Boolean.TRUE).write(Boolean.TRUE)
-                .data(DataAccess.builder().read(Boolean.TRUE).write(accessDataWrite).build()).build();
+    public static final Fields<Access> allFields = Fields.<Access>builder().fields(
+            read,
+            write,
+            data
+    ).build();
+
+    private AccessFields() {
     }
 }

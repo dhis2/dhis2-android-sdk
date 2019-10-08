@@ -30,17 +30,16 @@ package org.hisp.dhis.android.core.dataset.internal;
 
 import android.database.sqlite.SQLiteStatement;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
-
-import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
@@ -67,7 +66,7 @@ final class DataSetStore {
             sqLiteBind(sqLiteStatement, 23, o.dataElementDecoration());
             sqLiteBind(sqLiteStatement, 24, o.renderAsTabs());
             sqLiteBind(sqLiteStatement, 25, o.renderHorizontally());
-            sqLiteBind(sqLiteStatement, 26, AccessHelper.getAccessDataWrite(o.access()));
+            sqLiteBind(sqLiteStatement, 26, o.access().data().write());
             sqLiteBind(sqLiteStatement, 27, UidsHelper.getUidOrNull(o.workflow()));
         }
     };

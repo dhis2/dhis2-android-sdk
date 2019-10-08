@@ -34,7 +34,8 @@ import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.CategoryOptionTableInfo;
 import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.internal.AccessFields;
+import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 
 public final class CategoryOptionFields {
 
@@ -49,7 +50,7 @@ public final class CategoryOptionFields {
             .fields(
                     fh.<String>field(CategoryOptionTableInfo.Columns.START_DATE),
                     fh.<String>field(CategoryOptionTableInfo.Columns.END_DATE),
-                    fh.<Access>nestedField(ACCESS).with(Access.data.with(DataAccess.allFields))
+                    fh.<Access>nestedField(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields))
             ).build();
 
     private CategoryOptionFields() {

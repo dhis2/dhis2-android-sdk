@@ -26,23 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.helpers;
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
 
-import androidx.annotation.NonNull;
+import android.content.ContentValues;
+import android.database.Cursor;
 
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.DataAccess;
 
-public final class AccessHelper {
+public class DefaultAccessColumnAdapter implements ColumnTypeAdapter<Access> {
 
-    private AccessHelper() {}
-
-    public static Access defaultAccess() {
-        return createForDataWrite(Boolean.TRUE);
+    @Override
+    public Access fromCursor(Cursor cursor, String columnName) {
+        return AccessHelper.defaultAccess();
     }
 
-    public static Access createForDataWrite(@NonNull Boolean accessDataWrite) {
-        return Access.builder().read(Boolean.TRUE).write(Boolean.TRUE)
-                .data(DataAccess.builder().read(Boolean.TRUE).write(accessDataWrite).build()).build();
+    @Override
+    public void toContentValues(ContentValues values, String columnName, Access value) {
+        // Empty action is the default action
     }
 }

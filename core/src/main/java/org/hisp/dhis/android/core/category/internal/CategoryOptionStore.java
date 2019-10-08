@@ -30,16 +30,15 @@ package org.hisp.dhis.android.core.category.internal;
 
 import android.database.sqlite.SQLiteStatement;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.CategoryOptionTableInfo;
-
-import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
@@ -54,7 +53,7 @@ final class CategoryOptionStore {
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 11, o.startDate());
             sqLiteBind(sqLiteStatement, 12, o.endDate());
-            sqLiteBind(sqLiteStatement, 13, AccessHelper.getAccessDataWrite(o.access()));
+            sqLiteBind(sqLiteStatement, 13, o.access().data().write());
         }
     };
 

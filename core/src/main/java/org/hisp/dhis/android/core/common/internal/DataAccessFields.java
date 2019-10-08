@@ -26,9 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
+package org.hisp.dhis.android.core.common.internal;
 
-import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.common.DataAccess;
 
-public final class IgnoreAccessAdapter extends IgnoreColumnAdapter<Access> {
+public final class DataAccessFields {
+
+    private static final String READ = "read";
+    private static final String WRITE = "write";
+
+    public static final Field<DataAccess, Boolean> read = Field.create(READ);
+    public static final Field<DataAccess, Boolean> write = Field.create(WRITE);
+
+    public static final Fields<DataAccess> allFields = Fields.<DataAccess>builder().fields(
+            read,
+            write
+    ).build();
+
+    private DataAccessFields() {
+    }
 }

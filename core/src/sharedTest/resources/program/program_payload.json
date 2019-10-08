@@ -3,6 +3,14 @@
     {
       "id": "IpHINAT79UW",
       "version": 3,
+      "access": {
+        "read": true,
+        "write": false,
+        "data": {
+          "read": false,
+          "write": false
+        }
+      },
       "programStages": [
         {
           "id": "A03MvHHogjR",

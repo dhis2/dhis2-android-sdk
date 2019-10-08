@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.data.dataset;
 
-import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -58,7 +58,7 @@ public class DataSetSamples {
                 .dataElementDecoration(true)
                 .renderAsTabs(false)
                 .renderHorizontally(true)
-                .access(Access.createForDataWrite(true));
+                .access(AccessHelper.createForDataWrite(true));
         return dataSetBuilder.build();
     }
 }

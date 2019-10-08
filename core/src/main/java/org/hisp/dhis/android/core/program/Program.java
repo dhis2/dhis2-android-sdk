@@ -37,7 +37,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AccessColumnAdapter;
@@ -55,6 +54,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgram
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramSectionListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramStageListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramTrackedEntityAttributeListColumnAdapter;
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
@@ -158,10 +158,8 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
         return combo == null ? CategoryCombo.DEFAULT_UID : combo.uid();
     }
 
-    @Nullable
     @JsonProperty()
     @ColumnAdapter(AccessColumnAdapter.class)
-    @ColumnName(ProgramTableInfo.Columns.ACCESS_DATA_WRITE)
     public abstract Access access();
 
     @Nullable
@@ -312,9 +310,10 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
 
         abstract Program autoBuild();
 
-        // Auxiliary fields to access values
+        // Auxiliary fields
         abstract Boolean captureCoordinates();
         abstract FeatureType featureType();
+        abstract Access access();
         abstract AccessLevel accessLevel();
 
         public Program build() {
@@ -324,6 +323,12 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
                 }
             } else {
                 captureCoordinates(featureType() != FeatureType.NONE);
+            }
+
+            try {
+                access();
+            } catch (IllegalStateException e) {
+                access(AccessHelper.defaultAccess());
             }
 
             if (accessLevel() == null) {

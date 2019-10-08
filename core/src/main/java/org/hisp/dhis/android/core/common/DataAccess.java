@@ -28,37 +28,60 @@
 
 package org.hisp.dhis.android.core.common;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-
-import androidx.annotation.Nullable;
-
 @AutoValue
+@JsonDeserialize(builder = AutoValue_DataAccess.Builder.class)
 public abstract class DataAccess {
-    private static final String READ = "read";
-    private static final String WRITE = "write";
 
-    public static final Field<DataAccess, Boolean> read = Field.create(READ);
-    public static final Field<DataAccess, Boolean> write = Field.create(WRITE);
-
-    public static final Fields<DataAccess> allFields = Fields.<DataAccess>builder().fields(
-            read, write).build();
-
-    @Nullable
-    @JsonProperty(READ)
+    @JsonProperty()
     public abstract Boolean read();
 
-    @Nullable
-    @JsonProperty(WRITE)
+    @JsonProperty()
     public abstract Boolean write();
 
-    @JsonCreator
-    public static DataAccess create(@JsonProperty(READ) Boolean read,
-                                    @JsonProperty(WRITE) Boolean write) {
-        return new AutoValue_DataAccess(read, write);
+    public static DataAccess create(Boolean read,
+                                    Boolean write) {
+        return builder().read(read).write(write).build();
+    }
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_DataAccess.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+        public abstract Builder read(Boolean read);
+
+        public abstract Builder write(Boolean write);
+
+        abstract DataAccess autoBuild();
+
+        // Auxiliary fields
+        abstract Boolean read();
+
+        abstract Boolean write();
+
+        public DataAccess build() {
+            try {
+                read();
+            } catch (IllegalStateException e) {
+                read(Boolean.TRUE);
+            }
+
+            try {
+                write();
+            } catch (IllegalStateException e) {
+                write(Boolean.TRUE);
+            }
+
+            return autoBuild();
+        }
     }
 }

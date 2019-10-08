@@ -54,11 +54,12 @@ public final class SectionGreyedFieldsLinkTableInfo {
 
         public static final String SECTION = "section";
         public static final String DATA_ELEMENT_OPERAND = "dataElementOperand";
+        public static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    SECTION, DATA_ELEMENT_OPERAND);
+                    SECTION, DATA_ELEMENT_OPERAND, CATEGORY_OPTION_COMBO);
         }
 
         @Override

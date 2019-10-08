@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
@@ -72,6 +73,9 @@ public class SectionHandlerShould {
     private LinkHandler<DataElementOperand, SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler;
 
     @Mock
+    private LinkModelStore<SectionGreyedFieldsLink> sectionGreyedFieldsStore;
+
+    @Mock
     private Section section;
 
     // object to test
@@ -84,7 +88,7 @@ public class SectionHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         sectionHandler = new SectionHandler(sectionStore, sectionDataElementLinkHandler,
-                greyedFieldsHandler, sectionGreyedFieldsLinkHandler);
+                greyedFieldsHandler, sectionGreyedFieldsLinkHandler, sectionGreyedFieldsStore);
 
         when(section.uid()).thenReturn("section_uid");
 

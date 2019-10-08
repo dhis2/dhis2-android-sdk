@@ -46,6 +46,9 @@ public abstract class SectionGreyedFieldsLink implements Model {
     @Nullable
     public abstract String dataElementOperand();
 
+    @Nullable
+    public abstract String categoryOptionCombo();
+
     public static Builder builder() {
         return new AutoValue_SectionGreyedFieldsLink.Builder();
     }
@@ -64,6 +67,8 @@ public abstract class SectionGreyedFieldsLink implements Model {
         public abstract Builder section(String section);
 
         public abstract Builder dataElementOperand(String dataElementOperand);
+
+        public abstract Builder categoryOptionCombo(String categoryOptionCombo);
 
         public abstract SectionGreyedFieldsLink build();
     }

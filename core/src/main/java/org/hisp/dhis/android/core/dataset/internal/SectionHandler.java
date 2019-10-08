@@ -27,17 +27,21 @@
  */
 package org.hisp.dhis.android.core.dataset.internal;
 
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.dataset.Section;
 import org.hisp.dhis.android.core.dataset.SectionDataElementLink;
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink;
+import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo;
 
 import javax.inject.Inject;
 
@@ -49,17 +53,20 @@ final class SectionHandler extends IdentifiableHandlerImpl<Section> {
     private final OrderedLinkHandler<DataElement, SectionDataElementLink> sectionDataElementLinkHandler;
     private final Handler<DataElementOperand> greyedFieldsHandler;
     private final LinkHandler<DataElementOperand, SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler;
+    private final LinkModelStore<SectionGreyedFieldsLink> sectionGreyedFieldsStore;
 
     @Inject
     SectionHandler(IdentifiableObjectStore<Section> sectionStore,
                    OrderedLinkHandler<DataElement, SectionDataElementLink> sectionDataElementLinkHandler,
                    Handler<DataElementOperand> greyedFieldsHandler,
-                   LinkHandler<DataElementOperand, SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler) {
+                   LinkHandler<DataElementOperand, SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler,
+                   LinkModelStore<SectionGreyedFieldsLink> sectionGreyedFieldsStore) {
 
         super(sectionStore);
         this.sectionDataElementLinkHandler = sectionDataElementLinkHandler;
         this.greyedFieldsHandler = greyedFieldsHandler;
         this.sectionGreyedFieldsLinkHandler = sectionGreyedFieldsLinkHandler;
+        this.sectionGreyedFieldsStore = sectionGreyedFieldsStore;
     }
 
     @Override
@@ -73,8 +80,15 @@ final class SectionHandler extends IdentifiableHandlerImpl<Section> {
 
         greyedFieldsHandler.handleMany(section.greyedFields());
 
+        sectionGreyedFieldsStore.deleteWhere(new WhereClauseBuilder().appendKeyStringValue(
+                SectionGreyedFieldsLinkTableInfo.Columns.SECTION,
+                section.uid()
+        ).build());
         sectionGreyedFieldsLinkHandler.handleMany(section.uid(), section.greyedFields(),
                 dataElementOperand -> SectionGreyedFieldsLink.builder()
-                        .section(section.uid()).dataElementOperand(dataElementOperand.uid()).build());
+                        .section(section.uid())
+                        .dataElementOperand(dataElementOperand.uid())
+                        .categoryOptionCombo(UidsHelper.getUidOrNull(dataElementOperand.categoryOptionCombo()))
+                        .build());
     }
 }

@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -44,6 +46,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColu
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramStageDataElementListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramStageSectionListColumnAdapter;
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.FeatureType;
@@ -54,8 +57,6 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.List;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramStage.Builder.class)
@@ -166,7 +167,6 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
-    @Nullable
     @JsonProperty()
     @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
@@ -247,9 +247,10 @@ public abstract class ProgramStage extends BaseIdentifiableObject
 
         abstract ProgramStage autoBuild();
 
-        // Auxiliary fields to access values
+        // Auxiliary fields
         abstract Boolean captureCoordinates();
         abstract FeatureType featureType();
+        abstract Access access();
         public ProgramStage build() {
             if (featureType() == null) {
                 if (captureCoordinates() != null) {
@@ -257,6 +258,14 @@ public abstract class ProgramStage extends BaseIdentifiableObject
                 }
             } else {
                 captureCoordinates(featureType() != FeatureType.NONE);
+            }
+
+            try {
+                if (access() == null) {
+                    access(AccessHelper.defaultAccess());
+                }
+            } catch (IllegalStateException e) {
+                access(AccessHelper.defaultAccess());
             }
 
             return autoBuild();

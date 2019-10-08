@@ -30,18 +30,17 @@ package org.hisp.dhis.android.core.program.internal;
 
 import android.database.sqlite.SQLiteStatement;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
-import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageTableInfo;
-
-import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
@@ -71,7 +70,7 @@ public final class ProgramStageStore {
             sqLiteBind(sqLiteStatement, 23, o.standardInterval());
             sqLiteBind(sqLiteStatement, 24, UidsHelper.getUidOrNull(o.program()));
             sqLiteBind(sqLiteStatement, 25, o.periodType());
-            sqLiteBind(sqLiteStatement, 26, AccessHelper.getAccessDataWrite(o.access()));
+            sqLiteBind(sqLiteStatement, 26, o.access().data().write());
             sqLiteBind(sqLiteStatement, 27, o.remindCompleted());
             sqLiteBind(sqLiteStatement, 28, o.featureType());
         }

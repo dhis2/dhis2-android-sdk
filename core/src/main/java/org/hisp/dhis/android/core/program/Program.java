@@ -45,7 +45,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbProgramType
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AccessLevelColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.FeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.CategoryComboWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ProgramWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.TrackedEntityTypeWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramIndicatorListColumnAdapter;
@@ -61,6 +61,7 @@ import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
@@ -150,11 +151,11 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(CategoryComboWithUidColumnAdapter.class)
-    public abstract CategoryCombo categoryCombo();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid categoryCombo();
 
     public String categoryComboUid() {
-        CategoryCombo combo = categoryCombo();
+        ObjectWithUid combo = categoryCombo();
         return combo == null ? CategoryCombo.DEFAULT_UID : combo.uid();
     }
 
@@ -280,7 +281,7 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
 
         public abstract Builder trackedEntityType(TrackedEntityType trackedEntityType);
 
-        public abstract Builder categoryCombo(CategoryCombo categoryCombo);
+        public abstract Builder categoryCombo(ObjectWithUid categoryCombo);
 
         public abstract Builder access(Access access);
 

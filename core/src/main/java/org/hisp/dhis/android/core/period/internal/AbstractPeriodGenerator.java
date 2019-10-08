@@ -39,12 +39,14 @@ import java.util.List;
 import java.util.Locale;
 
 abstract class AbstractPeriodGenerator implements PeriodGenerator {
-    protected final Calendar calendar;
+    private final Calendar initialCalendar;
+    protected Calendar calendar;
     final SimpleDateFormat idFormatter;
     private final PeriodType periodType;
 
 
     AbstractPeriodGenerator(Calendar calendar, String dateFormatStr, PeriodType periodType) {
+        this.initialCalendar = (Calendar) calendar.clone();
         this.calendar = (Calendar) calendar.clone();
         this.idFormatter = new SimpleDateFormat(dateFormatStr, Locale.US);
         this.periodType = periodType;
@@ -52,6 +54,7 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
 
     @Override
     public final List<Period> generatePeriods(int past, int future) throws RuntimeException {
+        this.calendar = (Calendar) initialCalendar.clone();
         if (past < 0) {
             throw new RuntimeException("Number of past periods can't be negative.");
         }

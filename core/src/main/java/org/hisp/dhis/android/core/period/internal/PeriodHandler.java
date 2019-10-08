@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.period.internal;
 
 import org.hisp.dhis.android.core.period.Period;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import dagger.Reusable;
@@ -46,7 +48,8 @@ public final class PeriodHandler {
     }
 
     public void generateAndPersist() {
-        for (Period period : generator.generatePeriods()) {
+        List<Period> periods = generator.generatePeriods();
+        for (Period period : periods) {
             store.updateOrInsertWhere(period);
         }
     }

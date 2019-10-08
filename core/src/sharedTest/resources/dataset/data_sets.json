@@ -21,7 +21,7 @@
       "renderAsTabs": true,
       "mobile": false,
       "periodType": "Monthly",
-      "openFuturePeriods": 2,
+      "openFuturePeriods": 3,
       "expiryDays": 1,
       "workflow": {
         "id": "workflowId"

@@ -28,8 +28,10 @@
 
 package org.hisp.dhis.android.core.period.internal;
 
+import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository;
 import org.hisp.dhis.android.core.period.Period;
+import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.List;
 
@@ -59,11 +61,33 @@ public class PeriodForDataSetManager {
             Integer dataSetFuturePeriods = dataSet.openFuturePeriods();
             int futurePeriods = dataSetFuturePeriods == null ? 0 : dataSetFuturePeriods;
             List<Period> periods = parentPeriodGenerator.generatePeriods(dataSet.periodType(), futurePeriods);
-            for (Period period: periods) {
-                periodStore.updateOrInsertWhere(period);
-            }
-
+            storePeriods(periods);
             return periods;
         });
+    }
+
+    public List<Period> getPeriodsForDataSets(PeriodType periodType, List<DataSet> dataSets) {
+        int maxFuturePeriods = 0;
+        boolean someHasOpen = false;
+        for (DataSet dataSet: dataSets) {
+            if (dataSet.openFuturePeriods() != null) {
+                maxFuturePeriods = Math.max(maxFuturePeriods, dataSet.openFuturePeriods());
+                someHasOpen = true;
+            }
+        }
+
+        if (!someHasOpen) {
+            maxFuturePeriods = 1;
+        }
+
+        List<Period> periods = parentPeriodGenerator.generatePeriods(periodType, maxFuturePeriods);
+        storePeriods(periods);
+        return periods;
+    }
+
+    private void storePeriods(List<Period> periods) {
+        for (Period period : periods) {
+            periodStore.updateOrInsertWhere(period);
+        }
     }
 }

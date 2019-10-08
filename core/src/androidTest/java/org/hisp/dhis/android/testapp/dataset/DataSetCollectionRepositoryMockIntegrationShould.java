@@ -141,7 +141,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
     @Test
     public void filter_by_open_future_periods() {
         List<DataSet> dataSets = d2.dataSetModule().dataSets
-                .byOpenFuturePeriods().eq(2)
+                .byOpenFuturePeriods().eq(3)
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
     }

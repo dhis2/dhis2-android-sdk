@@ -35,15 +35,15 @@ import androidx.annotation.Nullable;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AccessColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipConstraintAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStringColumnAdapter;
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
+import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.Model;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_RelationshipType.Builder.class)
@@ -84,9 +84,7 @@ public abstract class RelationshipType extends BaseIdentifiableObject implements
     @Nullable
     public abstract Boolean bidirectional();
 
-    @Nullable
     @ColumnAdapter(AccessColumnAdapter.class)
-    @ColumnName(RelationshipTypeTableInfo.Columns.ACCESS_DATA_WRITE)
     public abstract Access access();
 
     public static Builder builder() {
@@ -138,8 +136,11 @@ public abstract class RelationshipType extends BaseIdentifiableObject implements
             if (bidirectional() == null) {
                 bidirectional(false);                                   // Since 2.32
             }
-            if (access() == null || access().data() == null) {
-                access(Access.createForDataWrite(true));                // Since 2.30
+
+            try {
+                access();
+            } catch (IllegalStateException e) {
+                access(AccessHelper.createForDataWrite(true));                // Since 2.30
             }
             return autoBuild();
         }

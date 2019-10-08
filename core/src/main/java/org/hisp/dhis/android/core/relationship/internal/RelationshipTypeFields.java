@@ -32,7 +32,8 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.internal.AccessFields;
+import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo.Columns;
@@ -64,7 +65,7 @@ public final class RelationshipTypeFields {
                             .with(RelationshipConstraintFields.allFields),
                     fh.<RelationshipConstraint>nestedField(TO_CONSTRAINT)
                             .with(RelationshipConstraintFields.allFields),
-                    fh.<Access>nestedField(ACCESS).with(Access.data.with(DataAccess.allFields))
+                    fh.<Access>nestedField(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields))
             ).build();
 
     private RelationshipTypeFields() {

@@ -28,38 +28,25 @@
 
 package org.hisp.dhis.android.core.common;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.NestedField;
-
 @AutoValue
+@JsonDeserialize(builder = AutoValue_Access.Builder.class)
 public abstract class Access {
-    private static final String READ = "read";
-    private static final String WRITE = "write";
-    private static final String DATA = "data";
 
-    public static final Field<Access, Boolean> read = Field.create(READ);
-    public static final Field<Access, Boolean> write = Field.create(WRITE);
-    public static final NestedField<Access, DataAccess> data = NestedField.create(DATA);
-
-    public static final String ACCESS_DATA_WRITE = "accessDataWrite";
-
-    @JsonProperty(READ)
+    @JsonProperty()
     public abstract Boolean read();
 
-    @JsonProperty(WRITE)
+    @JsonProperty()
     public abstract Boolean write();
 
-    @JsonProperty(DATA)
+    @JsonProperty()
     public abstract DataAccess data();
 
-    @JsonCreator
-    public static Access create(@JsonProperty(READ) Boolean read,
-                                @JsonProperty(WRITE) Boolean write,
-                                @JsonProperty(DATA) DataAccess data) {
+    public static Access create(Boolean read, Boolean write, DataAccess data) {
         return builder()
                 .read(read)
                 .write(write)
@@ -67,15 +54,12 @@ public abstract class Access {
                 .build();
     }
 
-    public static Access createForDataWrite(Boolean accessDataWrite) {
-        return Access.create(null, null, DataAccess.create(true, accessDataWrite));
-    }
-
     public static Builder builder() {
         return new AutoValue_Access.Builder();
     }
 
     @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder read(Boolean read);
 
@@ -93,15 +77,21 @@ public abstract class Access {
         abstract DataAccess data();
 
         public Access build() {
-            if (read() == null) {
+            try {
+                read();
+            } catch (IllegalStateException e) {
                 read(Boolean.TRUE);
             }
 
-            if (write() == null) {
-                read(Boolean.TRUE);
+            try {
+                write();
+            } catch (IllegalStateException e) {
+                write(Boolean.TRUE);
             }
 
-            if (data() == null) {
+            try {
+                data();
+            } catch (IllegalStateException e) {
                 data(DataAccess.create(Boolean.TRUE, Boolean.TRUE));
             }
 

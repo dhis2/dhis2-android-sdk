@@ -31,9 +31,10 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.internal.AccessFields;
+import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.AccessLevel;
@@ -80,7 +81,7 @@ public final class ProgramFields {
                     fh.nestedFieldWithUid(Columns.RELATED_PROGRAM),
                     fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_TYPE),
                     fh.nestedFieldWithUid(Columns.CATEGORY_COMBO),
-                    fh.<Access>nestedField(ACCESS).with(Access.data.with(DataAccess.write)),
+                    fh.<Access>nestedField(ACCESS).with(AccessFields.data.with(DataAccessFields.write)),
                     fh.<ProgramIndicator>nestedField(PROGRAM_INDICATORS).with(ProgramIndicatorFields.allFields),
                     fh.nestedFieldWithUid(PROGRAM_STAGES),
                     fh.<ProgramRuleVariable>nestedField(PROGRAM_RULE_VARIABLES)

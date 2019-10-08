@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.program.Program;
 
 import javax.inject.Inject;
@@ -66,7 +66,7 @@ final class ProgramEndpointCallFactory extends ListCallFactoryImpl<Program> {
         return new PayloadNoResourceCallFetcher<Program>(apiCallExecutor) {
             @Override
             protected retrofit2.Call<Payload<Program>> getCall() {
-                String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
+                String accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString();
                 return service.getPrograms(ProgramFields.allFields, accessDataReadFilter, Boolean.FALSE);
             }
         };

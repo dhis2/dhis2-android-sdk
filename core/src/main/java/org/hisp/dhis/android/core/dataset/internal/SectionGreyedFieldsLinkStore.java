@@ -43,6 +43,7 @@ final class SectionGreyedFieldsLinkStore {
             = (o, sqLiteStatement) -> {
         sqLiteBind(sqLiteStatement, 1, o.section());
         sqLiteBind(sqLiteStatement, 2, o.dataElementOperand());
+        sqLiteBind(sqLiteStatement, 3, o.categoryOptionCombo());
     };
 
     private SectionGreyedFieldsLinkStore() {}

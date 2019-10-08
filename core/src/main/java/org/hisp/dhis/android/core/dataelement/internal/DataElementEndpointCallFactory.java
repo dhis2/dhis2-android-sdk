@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.internal.AccessFields;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
 import java.util.Set;
@@ -69,7 +69,7 @@ final class DataElementEndpointCallFactory extends UidsCallFactoryImpl<DataEleme
     protected CallFetcher<DataElement> fetcher(Set<String> uids) {
 
         return new UidsNoResourceCallFetcher<DataElement>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
-            String accessReadFilter = "access." + Access.read.eq(true).generateString();
+            String accessReadFilter = "access." + AccessFields.read.eq(true).generateString();
 
             @Override
             protected retrofit2.Call<Payload<DataElement>> getCall(UidsQuery query) {

@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.data.category;
 
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.category.CategoryOption;
-import org.hisp.dhis.android.core.common.Access;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
@@ -45,7 +45,7 @@ public class CategoryOptionSamples {
                 .id(1L)
                 .startDate(CREATED)
                 .endDate(LAST_UPDATED)
-                .access(Access.createForDataWrite(false))
+                .access(AccessHelper.createForDataWrite(false))
                 .build();
     }
 }

@@ -35,7 +35,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.text.ParseException;
-import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -51,8 +50,14 @@ public class PeriodMockIntegrationShould extends BaseMockIntegrationTestFullDisp
     }
 
     @Test
-    public void get_periods_for_dataset() {
-        List<Period> periods = d2.periodModule().periodHelper.blockingGetPeriodsForDataSet("lyLU2wR22tC");
-        assertThat(periods.size(), is(13));
+    public void get_periods() {
+        assertThat(d2.periodModule().periods.blockingCount(), is(193));
+    }
+
+    @Test
+    public void ensure_future_periods_are_downloaded() {
+        int MONTHLY_PERIODS = 11; // Copy from ParentPeriodGeneratorImpl to keep it private
+        assertThat(d2.periodModule().periods.byPeriodType().eq(PeriodType.Monthly).blockingCount(),
+                is(MONTHLY_PERIODS + 3));
     }
 }

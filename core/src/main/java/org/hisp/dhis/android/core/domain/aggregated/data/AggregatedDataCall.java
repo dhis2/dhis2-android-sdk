@@ -46,8 +46,8 @@ import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueQuery;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.period.Period;
-import org.hisp.dhis.android.core.period.PeriodCollectionRepository;
 import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.period.internal.PeriodForDataSetManager;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
@@ -78,8 +78,8 @@ final class AggregatedDataCall {
     private final CategoryOptionComboStore categoryOptionComboStore;
     private final RxAPICallExecutor rxCallExecutor;
 
-    private final PeriodCollectionRepository periodCollectionRepository;
     private final DataSetCollectionRepository dataSetCollectionRepository;
+    private final PeriodForDataSetManager periodManager;
 
     @Inject
     AggregatedDataCall(@NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
@@ -91,8 +91,8 @@ final class AggregatedDataCall {
                        @NonNull UserOrganisationUnitLinkStore organisationUnitStore,
                        @NonNull CategoryOptionComboStore categoryOptionComboStore,
                        @NonNull RxAPICallExecutor rxCallExecutor,
-                       @NonNull PeriodCollectionRepository periodCollectionRepository,
-                       @NonNull DataSetCollectionRepository dataSetCollectionRepository) {
+                       @NonNull DataSetCollectionRepository dataSetCollectionRepository,
+                       @NonNull PeriodForDataSetManager periodManager) {
         this.systemInfoRepository = systemInfoRepository;
         this.dhisVersionManager = dhisVersionManager;
         this.dataValueCallFactory = dataValueCallFactory;
@@ -102,8 +102,8 @@ final class AggregatedDataCall {
         this.categoryOptionComboStore = categoryOptionComboStore;
         this.rxCallExecutor = rxCallExecutor;
 
-        this.periodCollectionRepository = periodCollectionRepository;
         this.dataSetCollectionRepository = dataSetCollectionRepository;
+        this.periodManager = periodManager;
     }
 
     Observable<D2Progress> download() {
@@ -122,12 +122,9 @@ final class AggregatedDataCall {
                     if (dataSets.isEmpty()) {
                         return Observable.empty();
                     } else {
-                        return periodCollectionRepository.byPeriodType().eq(periodType).get()
-                                .flatMapObservable(periods -> {
-                                    List<String> periodIds = selectPeriodIds(periods);
-                                    return downloadInternal(dataSets, periodIds, progressManager,
-                                            systemInfoProgress);
-                                });
+                        List<Period> periods = periodManager.getPeriodsForDataSets(periodType, dataSets);
+                        List<String> periodIds = selectPeriodIds(periods);
+                        return downloadInternal(dataSets, periodIds, progressManager, systemInfoProgress);
                     }
                 }));
     }

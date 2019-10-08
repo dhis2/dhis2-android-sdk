@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.data.program;
 
-import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.program.AccessLevel;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramType;
@@ -62,7 +62,7 @@ public class ProgramSamples {
                 .programType(ProgramType.WITH_REGISTRATION)
                 .relatedProgram(Program.builder().uid("program_uid").build())
                 .trackedEntityType(TrackedEntityType.builder().uid("tracked_entity_type").build())
-                .categoryCombo(CategoryCombo.builder().uid("category_combo_uid").build())
+                .categoryCombo(ObjectWithUid.create("category_combo_uid"))
                 .access(Access.create(null, null, DataAccess.create(true, true)))
                 .expiryDays(2)
                 .completeEventsExpiryDays(3)

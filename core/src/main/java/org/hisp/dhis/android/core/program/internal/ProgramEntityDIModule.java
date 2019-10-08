@@ -67,7 +67,6 @@ public final class ProgramEntityDIModule {
     @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<Program>> childrenAppenders(
             DatabaseAdapter databaseAdapter,
-            ProgramCategoryComboChildrenAppender categoryComboChildrenAppender,
             RelatedProgramChildrenAppender relatedProgramChildrenAppender,
             ProgramTrackedEntityTypeChildrenAppender trackedEntityTypeChildrenAppender) {
 
@@ -86,7 +85,6 @@ public final class ProgramEntityDIModule {
             put(ProgramFields.PROGRAM_TRACKED_ENTITY_ATTRIBUTES,
                     ProgramTrackedEntityAttributeChildrenAppender.create(databaseAdapter));
             put(ProgramFields.PROGRAM_SECTIONS, ProgramSectionChildrenAppender.create(databaseAdapter));
-            put(Columns.CATEGORY_COMBO, categoryComboChildrenAppender);
             put(Columns.RELATED_PROGRAM, relatedProgramChildrenAppender);
             put(Columns.TRACKED_ENTITY_TYPE, trackedEntityTypeChildrenAppender);
         }};

@@ -40,8 +40,9 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbValueTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DefaultAccessColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAccessAdapter;
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
@@ -112,9 +113,8 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
     @JsonProperty()
     public abstract String fieldMask();
 
-    @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreAccessAdapter.class)
+    @ColumnAdapter(DefaultAccessColumnAdapter.class)
     public abstract Access access();
 
     @Nullable
@@ -171,6 +171,19 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
 
         public abstract Builder formName(String formName);
 
-        public abstract TrackedEntityAttribute build();
+        abstract TrackedEntityAttribute autoBuild();
+
+        // Auxiliary fields
+        abstract Access access();
+
+        public TrackedEntityAttribute build() {
+            try {
+                access();
+            } catch (IllegalStateException e) {
+                access(AccessHelper.defaultAccess());
+            }
+
+            return autoBuild();
+        }
     }
 }

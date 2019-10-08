@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.common.internal.AccessFields;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo.Columns;
@@ -67,7 +68,7 @@ public final class TrackedEntityAttributeFields {
                     fh.<String>field(Columns.FIELD_MASK),
                     fh.nestedFieldWithUid(Columns.OPTION_SET),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
-                    fh.<Access>nestedField(ACCESS).with(Access.read),
+                    fh.<Access>nestedField(ACCESS).with(AccessFields.read),
                     fh.<String>field(Columns.FORM_NAME)
                     ).build();
 

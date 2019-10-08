@@ -146,7 +146,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
         CategoryCombo categoryCombo = CategoryCombo.builder().uid(categoryComboUid).build();
         database().insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo.toContentValues());
 
-        Program program = Program.builder().uid(programUid).categoryCombo(categoryCombo)
+        Program program = Program.builder().uid(programUid).categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
                 .access(Access.create(null, null, DataAccess.create(true, true))).build();
         ProgramStore.create(databaseAdapter()).insert(program);
 

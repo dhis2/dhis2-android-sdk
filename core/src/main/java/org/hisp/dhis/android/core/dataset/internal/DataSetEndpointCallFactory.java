@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 
@@ -70,7 +70,7 @@ final class DataSetEndpointCallFactory extends ListCallFactoryImpl<DataSet> {
 
             @Override
             protected Call<Payload<DataSet>> getCall(String lastUpdated) {
-                String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
+                String accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString();
                 return dataSetService.getDataSets(DataSetFields.allFields, accessDataReadFilter, Boolean.FALSE);
             }
         };

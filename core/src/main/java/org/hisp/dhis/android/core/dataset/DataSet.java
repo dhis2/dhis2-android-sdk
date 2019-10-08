@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.dataset;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -44,6 +46,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataInp
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataSetElementListAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreIndicatorListAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreSectionListAdapter;
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
@@ -54,8 +57,6 @@ import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.List;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_DataSet.Builder.class)
@@ -133,7 +134,7 @@ public abstract class DataSet extends BaseNameableObject implements Model, Objec
     @JsonProperty()
     @ColumnAdapter(IgnoreDataSetElementListAdapter.class)
     public abstract List<DataSetElement> dataSetElements();
-    
+
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreIndicatorListAdapter.class)
@@ -154,7 +155,6 @@ public abstract class DataSet extends BaseNameableObject implements Model, Objec
     @ColumnAdapter(IgnoreDataInputPeriodListColumnAdapter.class)
     public abstract List<DataInputPeriod> dataInputPeriods();
 
-    @Nullable
     @JsonProperty()
     @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
@@ -219,6 +219,19 @@ public abstract class DataSet extends BaseNameableObject implements Model, Objec
 
         public abstract Builder access(Access access);
 
-        public abstract DataSet build();
+        abstract DataSet autoBuild();
+
+        // Auxiliary fields
+        abstract Access access();
+
+        public DataSet build() {
+            try {
+                access();
+            } catch (IllegalStateException e) {
+                access(AccessHelper.defaultAccess());
+            }
+
+            return autoBuild();
+        }
     }
 }

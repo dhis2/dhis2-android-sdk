@@ -32,8 +32,9 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.internal.AccessFields;
+import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandFields;
@@ -85,7 +86,7 @@ public final class DataSetFields {
                     fh.<DataElementOperand>nestedField(COMPULSORY_DATA_ELEMENT_OPERANDS)
                             .with(DataElementOperandFields.allFields),
                     fh.<DataInputPeriod>nestedField(DATA_INPUT_PERIODS).with(DataInputPeriodFields.allFields),
-                    fh.<Access>nestedField(ACCESS).with(Access.data.with(DataAccess.write)),
+                    fh.<Access>nestedField(ACCESS).with(AccessFields.data.with(DataAccessFields.write)),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields)
 
     ).build();

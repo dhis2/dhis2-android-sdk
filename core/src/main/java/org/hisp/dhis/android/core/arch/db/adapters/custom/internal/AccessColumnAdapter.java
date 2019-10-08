@@ -38,16 +38,17 @@ import org.hisp.dhis.android.core.common.Access;
 
 public class AccessColumnAdapter implements ColumnTypeAdapter<Access> {
 
+    private static final String ACCESS_DATA_WRITE = "accessDataWrite";
+
     @Override
     public Access fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex(Access.ACCESS_DATA_WRITE);
-        Integer accessDataWrite = cursor.getInt(columnIndex);
-        return Access.createForDataWrite(accessDataWrite == 1);
+        int columnIndex = cursor.getColumnIndex(ACCESS_DATA_WRITE);
+        int accessDataWrite = cursor.getInt(columnIndex);
+        return AccessHelper.createForDataWrite(accessDataWrite == 1);
     }
 
     @Override
     public void toContentValues(ContentValues values, String columnName, Access value) {
-        Integer accessDataWrite = AccessHelper.getAccessDataWrite(value);
-        values.put(Access.ACCESS_DATA_WRITE, accessDataWrite);
+        values.put(ACCESS_DATA_WRITE, value.data().write());
     }
 }

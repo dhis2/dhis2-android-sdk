@@ -26,9 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
 
-public final class IgnoreAccessAdapter extends IgnoreColumnAdapter<Access> {
+public class DefaultAccessColumnAdapter implements ColumnTypeAdapter<Access> {
+
+    @Override
+    public Access fromCursor(Cursor cursor, String columnName) {
+        return AccessHelper.defaultAccess();
+    }
+
+    @Override
+    public void toContentValues(ContentValues values, String columnName, Access value) {
+        // Empty action is the default action
+    }
 }

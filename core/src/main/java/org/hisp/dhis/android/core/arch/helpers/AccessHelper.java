@@ -28,13 +28,21 @@
 
 package org.hisp.dhis.android.core.arch.helpers;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.DataAccess;
 
 public final class AccessHelper {
 
     private AccessHelper() {}
 
-    public static Integer getAccessDataWrite(Access access) {
-        return access.data().write() ? 1 : 0;
+    public static Access defaultAccess() {
+        return createForDataWrite(Boolean.TRUE);
+    }
+
+    public static Access createForDataWrite(@NonNull Boolean accessDataWrite) {
+        return Access.builder().read(Boolean.TRUE).write(Boolean.TRUE)
+                .data(DataAccess.builder().read(Boolean.TRUE).write(accessDataWrite).build()).build();
     }
 }

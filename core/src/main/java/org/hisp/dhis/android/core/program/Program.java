@@ -46,7 +46,6 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AccessLevelCol
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.FeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ProgramWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.TrackedEntityTypeWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramIndicatorListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramRuleListColumnAdapter;
@@ -141,8 +140,8 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(ProgramWithUidColumnAdapter.class)
-    public abstract Program relatedProgram();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid relatedProgram();
 
     @Nullable
     @JsonProperty()
@@ -277,7 +276,7 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
         public abstract Builder programTrackedEntityAttributes(List<ProgramTrackedEntityAttribute>
                                                                        programTrackedEntityAttributes);
 
-        public abstract Builder relatedProgram(Program relatedProgram);
+        public abstract Builder relatedProgram(ObjectWithUid relatedProgram);
 
         public abstract Builder trackedEntityType(TrackedEntityType trackedEntityType);
 

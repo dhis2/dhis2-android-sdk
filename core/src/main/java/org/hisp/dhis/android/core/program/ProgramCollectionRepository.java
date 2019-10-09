@@ -205,10 +205,6 @@ public final class ProgramCollectionRepository
         return cf.withChild(ProgramFields.PROGRAM_SECTIONS);
     }
 
-    public ProgramCollectionRepository withRelatedProgram() {
-        return cf.withChild(Columns.RELATED_PROGRAM);
-    }
-
     public ProgramCollectionRepository withTrackedEntityType() {
         return cf.withChild(Columns.TRACKED_ENTITY_TYPE);
     }

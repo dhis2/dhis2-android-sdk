@@ -271,6 +271,13 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     }
 
     @Test
+    public void include_related_program_as_object_with_uid() {
+        Program program = d2.programModule().programs
+                .one().blockingGet();
+        assertThat(program.relatedProgram().uid(), is("lxAQ7Zs9VYR"));
+    }
+
+    @Test
     public void include_object_style_as_children_in_object_repository_when_all_selected() {
         Program program = d2.programModule().programs
                 .withStyle().one().blockingGet();
@@ -357,13 +364,6 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
                 .withProgramSections().one().blockingGet();
         assertThat(program.programSections().size(), is(2));
         assertThat(program.programSections().get(0).name(), is("My Program Section"));
-    }
-
-    @Test
-    public void include_related_program_as_children() {
-        Program program = d2.programModule().programs
-                .withRelatedProgram().one().blockingGet();
-        assertThat(program.relatedProgram().name(), is("Antenatal care visit"));
     }
 
     @Test

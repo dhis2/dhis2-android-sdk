@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
@@ -102,7 +103,7 @@ public class ProgramHandlerShould {
     private List<ProgramStage> programStages;
 
     @Mock
-    private Program relatedProgram;
+    private ObjectWithUid relatedProgram;
 
     @Mock
     private TrackedEntityType trackedEntityType;

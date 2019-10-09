@@ -60,7 +60,7 @@ public class ProgramSamples {
                 .useFirstStageDuringRegistration(true)
                 .displayFrontPageList(false)
                 .programType(ProgramType.WITH_REGISTRATION)
-                .relatedProgram(Program.builder().uid("program_uid").build())
+                .relatedProgram(ObjectWithUid.create("program_uid"))
                 .trackedEntityType(TrackedEntityType.builder().uid("tracked_entity_type").build())
                 .categoryCombo(ObjectWithUid.create("category_combo_uid"))
                 .access(Access.create(null, null, DataAccess.create(true, true)))

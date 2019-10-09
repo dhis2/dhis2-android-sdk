@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.program.ProgramStage;
 
@@ -73,9 +74,10 @@ public final class ProgramStageEndpointCallFactory extends UidsCallFactoryImpl<P
             @Override
             protected retrofit2.Call<Payload<ProgramStage>> getCall(UidsQuery query) {
                 String accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString();
+                String programUidsFilterStr = "program." + ObjectWithUid.uid.in(query.uids()).generateString();
                 return service.getProgramStages(
                         ProgramStageFields.allFields,
-                        ProgramStageFields.uid.in(query.uids()),
+                        programUidsFilterStr,
                         accessDataReadFilter,
                         Boolean.FALSE);
             }

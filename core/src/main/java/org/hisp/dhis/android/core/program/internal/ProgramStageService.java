@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.program.ProgramStage;
@@ -41,7 +39,7 @@ import retrofit2.http.Query;
 interface ProgramStageService {
     @GET("programStages")
     Call<Payload<ProgramStage>> getProgramStages(@Query("fields") @Which Fields<ProgramStage> fields,
-                                                 @Query("filter") @Where Filter<ProgramStage, String> uids,
+                                                 @Query("filter") String programUidsFilterString,
                                                  @Query("filter") String accessDataReadFilter,
                                                  @Query("paging") Boolean paging);
 }

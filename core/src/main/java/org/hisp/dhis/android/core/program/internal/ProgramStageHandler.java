@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
@@ -54,7 +54,7 @@ final class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage> {
     private final ObjectStyleHandler styleHandler;
     private final OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner;
     private final OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner;
-    private final CollectionCleaner<ProgramStage> collectionCleaner;
+    private final SubCollectionCleaner<ProgramStage> programStageCleaner;
 
     @Inject
     ProgramStageHandler(IdentifiableObjectStore<ProgramStage> programStageStore,
@@ -63,14 +63,14 @@ final class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage> {
                         ObjectStyleHandler styleHandler,
                         OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner,
                         OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner,
-                        CollectionCleaner<ProgramStage> collectionCleaner) {
+                        SubCollectionCleaner<ProgramStage> programStageCleaner) {
         super(programStageStore);
         this.programStageSectionHandler = programStageSectionHandler;
         this.programStageDataElementHandler = programStageDataElementHandler;
         this.styleHandler = styleHandler;
         this.programStageDataElementCleaner = programStageDataElementCleaner;
         this.programStageSectionCleaner = programStageSectionCleaner;
-        this.collectionCleaner = collectionCleaner;
+        this.programStageCleaner = programStageCleaner;
     }
 
     @Override
@@ -93,6 +93,6 @@ final class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage> {
 
     @Override
     protected void afterCollectionHandled(Collection<ProgramStage> programStages) {
-        collectionCleaner.deleteNotPresent(programStages);
+        programStageCleaner.deleteNotPresent(programStages);
     }
 }

@@ -49,9 +49,9 @@ final class ProgramTrackedEntityTypeChildrenAppender extends ChildrenAppender<Pr
     @Override
     protected Program appendChildren(Program program) {
         Program.Builder builder = program.toBuilder();
-        Program relatedProgramWithUid = program.relatedProgram();
-        if (relatedProgramWithUid != null) {
-            builder.trackedEntityType(store.selectByUid(program.trackedEntityType().uid()));
+        TrackedEntityType trackedEntityType = program.trackedEntityType();
+        if (trackedEntityType != null) {
+            builder.trackedEntityType(store.selectByUid(trackedEntityType.uid()));
         }
         return builder.build();
     }

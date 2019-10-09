@@ -31,11 +31,23 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 class OrganisationUnitDisplayPathTransformer implements Transformer<OrganisationUnit, OrganisationUnit> {
+
+    private final OrganisationUnitDisplayPathGenerator organisationUnitDisplayPathGenerator;
+
+    @Inject
+    OrganisationUnitDisplayPathTransformer(OrganisationUnitDisplayPathGenerator organisationUnitDisplayPathGenerator) {
+        this.organisationUnitDisplayPathGenerator = organisationUnitDisplayPathGenerator;
+    }
 
     @Override
     public OrganisationUnit transform(OrganisationUnit organisationUnit) {
-        String path = new OrganisationUnitDisplayPathGenerator().generateDisplayPath(organisationUnit);
+        String path = organisationUnitDisplayPathGenerator.generateDisplayPath(organisationUnit);
         OrganisationUnit.Builder builder = organisationUnit.toBuilder();
         builder.displayNamePath(path);
         return builder.build();

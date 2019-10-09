@@ -102,7 +102,7 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Mod
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreOrganisationUnitListAdapter.class)
-    public abstract List<OrganisationUnit> ancestors();
+    abstract List<OrganisationUnit> ancestors();
 
     @Nullable
     @JsonProperty()
@@ -151,7 +151,7 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Mod
 
         public abstract Builder dataSets(List<DataSet> dataSets);
 
-        public abstract Builder ancestors(List<OrganisationUnit> ancestors);
+        abstract Builder ancestors(List<OrganisationUnit> ancestors);
 
         public abstract Builder organisationUnitGroups(List<OrganisationUnitGroup> organisationUnitGroups);
 

@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitAncestorsAccessor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,6 +56,24 @@ public final class OrganisationUnitEntityDIModule implements IdentifiableStorePr
     @Reusable
     public OrganisationUnitHandler handler(DatabaseAdapter databaseAdapter) {
         return OrganisationUnitHandlerImpl.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    public OrganisationUnitDisplayPathTransformer pathTransformer(OrganisationUnitDisplayPathGenerator pathGenerator) {
+        return new OrganisationUnitDisplayPathTransformer(pathGenerator);
+    }
+
+    @Provides
+    @Reusable
+    public OrganisationUnitDisplayPathGenerator generator(OrganisationUnitAncestorsAccessor ancestorsAccessor) {
+        return new OrganisationUnitDisplayPathGenerator(ancestorsAccessor);
+    }
+
+    @Provides
+    @Reusable
+    public OrganisationUnitAncestorsAccessor ancestorsAccessor() {
+        return new OrganisationUnitAncestorsAccessor();
     }
 
     @Provides

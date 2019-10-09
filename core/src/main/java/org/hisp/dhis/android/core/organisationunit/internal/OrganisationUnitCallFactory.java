@@ -53,6 +53,7 @@ class OrganisationUnitCallFactory {
 
     private final OrganisationUnitService organisationUnitService;
     private final OrganisationUnitHandler handler;
+    private final OrganisationUnitDisplayPathTransformer pathTransformer;
 
     private final APICallExecutor apiCallExecutor;
     private final ResourceHandler resourceHandler;
@@ -60,10 +61,12 @@ class OrganisationUnitCallFactory {
     @Inject
     OrganisationUnitCallFactory(@NonNull OrganisationUnitService organisationUnitService,
                                 @NonNull OrganisationUnitHandler handler,
+                                @NonNull OrganisationUnitDisplayPathTransformer pathTransformer,
                                 @NonNull APICallExecutor apiCallExecutor,
                                 @NonNull ResourceHandler resourceHandler) {
         this.organisationUnitService = organisationUnitService;
         this.handler = handler;
+        this.pathTransformer = pathTransformer;
         this.apiCallExecutor = apiCallExecutor;
         this.resourceHandler = resourceHandler;
     }
@@ -110,7 +113,6 @@ class OrganisationUnitCallFactory {
                                   final Set<String> dataSetUids) throws D2Error {
 
         handler.setData(programUids, dataSetUids, user, scope);
-        OrganisationUnitDisplayPathTransformer transformer = new OrganisationUnitDisplayPathTransformer();
 
         for (String uid : orgUnits) {
             OrganisationUnitQuery.Builder queryBuilder = OrganisationUnitQuery.builder().orgUnit(uid);
@@ -121,7 +123,7 @@ class OrganisationUnitCallFactory {
                 pageQuery = queryBuilder.build();
                 pageOrgunits = apiCallExecutor.executePayloadCall(getOrganisationUnitAndDescendants(pageQuery));
 
-                handler.handleMany(pageOrgunits, transformer);
+                handler.handleMany(pageOrgunits, pathTransformer);
 
                 queryBuilder.page(pageQuery.page() + 1);
             }

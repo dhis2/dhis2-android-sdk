@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitAncestorsAccessor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,6 +55,9 @@ public class OrganisationUnitDisplayPathGeneratorShould {
     @Mock
     private OrganisationUnit organisationUnit;
 
+    @Mock
+    private OrganisationUnitAncestorsAccessor organisationUnitAncestorsAccessor;
+
     private static final String GRANDPARENT_DISPLAY_NAME = "grandparentDisplayName";
     private static final String PARENT_DISPLAY_NAME = "parentDisplayName";
     private static final String ORG_UNIT_DISPLAY_NAME = "orgUnitDisplayName";
@@ -62,7 +66,8 @@ public class OrganisationUnitDisplayPathGeneratorShould {
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
 
-        when(organisationUnit.ancestors()).thenReturn(Lists.newArrayList(grandparent, parent));
+        when(organisationUnitAncestorsAccessor.accessAncestors(organisationUnit))
+                .thenReturn(Lists.newArrayList(grandparent, parent));
         when(parent.uid()).thenReturn("parentUid");
 
         when(grandparent.displayName()).thenReturn(GRANDPARENT_DISPLAY_NAME);
@@ -74,7 +79,8 @@ public class OrganisationUnitDisplayPathGeneratorShould {
     public void build_display_name_path_from_ancestors() {
         String expectedDisplayNamePath = "/" + GRANDPARENT_DISPLAY_NAME + "/" + PARENT_DISPLAY_NAME
                 + "/" + ORG_UNIT_DISPLAY_NAME;
-        OrganisationUnitDisplayPathGenerator generator = new OrganisationUnitDisplayPathGenerator();
-        assertThat(generator.generateDisplayPath(organisationUnit)).isEqualTo(expectedDisplayNamePath);
+
+        assertThat(new OrganisationUnitDisplayPathGenerator(organisationUnitAncestorsAccessor)
+                .generateDisplayPath(organisationUnit)).isEqualTo(expectedDisplayNamePath);
     }
 }

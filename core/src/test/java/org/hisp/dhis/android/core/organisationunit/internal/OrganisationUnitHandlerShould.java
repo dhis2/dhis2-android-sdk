@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.organisationunit.internal;
 
 import org.assertj.core.util.Lists;
@@ -95,6 +96,11 @@ public class OrganisationUnitHandlerShould {
     @Mock
     private User user;
 
+    @Mock
+    private OrganisationUnitDisplayPathGenerator pathGenerator;
+
+    private OrganisationUnitDisplayPathTransformer pathTransformer;
+
     private Set<String> programUids;
 
     private Set<String> dataSetUids;
@@ -113,6 +119,8 @@ public class OrganisationUnitHandlerShould {
         programUids = Sets.newHashSet(Lists.newArrayList(programUid));
         String dataSetUid = "test_data_set_uid";
         dataSetUids = Sets.newHashSet(Lists.newArrayList(dataSetUid));
+
+        pathTransformer = new OrganisationUnitDisplayPathTransformer(pathGenerator);
 
         organisationUnitHandler = new OrganisationUnitHandlerImpl(
                 organisationUnitStore, userOrganisationUnitLinkHandler, organisationUnitProgramLinkHandler,
@@ -142,13 +150,13 @@ public class OrganisationUnitHandlerShould {
     @Test
     public void persist_user_organisation_unit_link() {
         organisationUnitHandler.setData(programUids, dataSetUids, user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
-        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
+        organisationUnitHandler.handleMany(organisationUnits, pathTransformer);
     }
 
     @Test
     public void persist_program_organisation_unit_link_when_programs_uids() {
         organisationUnitHandler.setData(programUids, dataSetUids, user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
-        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
+        organisationUnitHandler.handleMany(organisationUnits, pathTransformer);
         verify(organisationUnitProgramLinkHandler).handleMany(anyString(), anyListOf(Program.class),
                 any(Transformer.class));
     }
@@ -157,7 +165,7 @@ public class OrganisationUnitHandlerShould {
     public void persist_program_organisation_unit_link_when_no_programs_uids() {
         organisationUnitHandler.setData(null, null, user,
                 OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
-        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
+        organisationUnitHandler.handleMany(organisationUnits, pathTransformer);
 
         verifyNoMoreInteractions(organisationUnitProgramLinkStore);
     }
@@ -165,7 +173,7 @@ public class OrganisationUnitHandlerShould {
     @Test
     public void persist_organisation_unit_groups() {
         organisationUnitHandler.setData(programUids, dataSetUids, user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
-        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
+        organisationUnitHandler.handleMany(organisationUnits, pathTransformer);
 
         verify(organisationUnitGroupHandler).handleMany(anyListOf(OrganisationUnitGroup.class));
     }
@@ -173,7 +181,7 @@ public class OrganisationUnitHandlerShould {
     @Test
     public void persist_organisation_unit_organisation_unit_group_link() {
         organisationUnitHandler.setData(programUids, dataSetUids, user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
-        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
+        organisationUnitHandler.handleMany(organisationUnits, pathTransformer);
 
         verify(organisationUnitGroupLinkHandler).handleMany(anyString(), anyListOf(OrganisationUnitGroup.class),
                 any(Transformer.class));
@@ -183,7 +191,7 @@ public class OrganisationUnitHandlerShould {
     public void dont_persist_organisation_unit_organisation_unit_group_link_when_no_organisation_unit_groups() {
         organisationUnitHandler.setData(programUids, dataSetUids, user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
 
-        organisationUnitHandler.handleMany(Lists.newArrayList(organisationUnitWithoutGroups), new OrganisationUnitDisplayPathTransformer());
+        organisationUnitHandler.handleMany(Lists.newArrayList(organisationUnitWithoutGroups), pathTransformer);
 
         verify(organisationUnitGroupLinkHandler, never()).handleMany(anyString(),
                 anyListOf(OrganisationUnitGroup.class), any(Transformer.class));

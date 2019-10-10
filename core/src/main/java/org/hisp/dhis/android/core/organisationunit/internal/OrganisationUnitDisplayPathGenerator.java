@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.organisationunit.internal;
 
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitAncestorsAccessor;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitInternalAccessor;
 
 import java.util.List;
 
@@ -40,15 +40,15 @@ import dagger.Reusable;
 @Reusable
 class OrganisationUnitDisplayPathGenerator {
 
-    private final OrganisationUnitAncestorsAccessor organisationUnitAncestorsAccessor;
+    private final OrganisationUnitInternalAccessor organisationUnitInternalAccessor;
 
     @Inject
-    OrganisationUnitDisplayPathGenerator(OrganisationUnitAncestorsAccessor organisationUnitAncestorsAccessor) {
-        this.organisationUnitAncestorsAccessor = organisationUnitAncestorsAccessor;
+    OrganisationUnitDisplayPathGenerator(OrganisationUnitInternalAccessor organisationUnitInternalAccessor) {
+        this.organisationUnitInternalAccessor = organisationUnitInternalAccessor;
     }
 
     String generateDisplayPath(OrganisationUnit organisationUnit) {
-        List<OrganisationUnit> ancestors = organisationUnitAncestorsAccessor.accessAncestors(organisationUnit);
+        List<OrganisationUnit> ancestors = organisationUnitInternalAccessor.accessAncestors(organisationUnit);
         if (ancestors == null) {
             return "";
         } else {

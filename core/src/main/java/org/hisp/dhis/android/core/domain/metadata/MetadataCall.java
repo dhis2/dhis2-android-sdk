@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.domain.metadata;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
@@ -57,9 +55,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 
 @Reusable
 public class MetadataCall {
@@ -105,15 +103,12 @@ public class MetadataCall {
     public Observable<D2Progress> download() {
         D2ProgressManager progressManager = new D2ProgressManager(9);
 
-        Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
-                progressManager.increaseProgress(SystemInfo.class, false));
-
         return rxCallExecutor.wrapObservableTransactionally(
-                systemInfoDownload.flatMapObservable(systemInfoProgress -> Observable.create(emitter -> {
+                systemInfoDownloader.downloadMetadata().andThen(Observable.create(emitter -> {
 
                     databaseAdapter.delete(ForeignKeyViolationTableInfo.TABLE_INFO.name());
 
-                    emitter.onNext(systemInfoProgress);
+                    emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
 
                     systemSettingDownloader.downloadMetadata().call();
                     emitter.onNext(progressManager.increaseProgress(SystemSetting.class, false));

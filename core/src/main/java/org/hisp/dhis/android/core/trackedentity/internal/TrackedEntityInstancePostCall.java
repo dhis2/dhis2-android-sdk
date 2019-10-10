@@ -69,7 +69,6 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 
 @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.ExcessiveImports"})
 @Reusable
@@ -141,11 +140,8 @@ public final class TrackedEntityInstancePostCall {
             } else {
                 D2ProgressManager progressManager = new D2ProgressManager(2);
 
-                Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
-                        progressManager.increaseProgress(SystemInfo.class, false));
-
-                return systemInfoDownload.flatMapObservable(systemInfoProgress -> Observable.create(emitter -> {
-                    emitter.onNext(systemInfoProgress);
+                return systemInfoDownloader.downloadMetadata().andThen(Observable.create(emitter -> {
+                    emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
 
                     String strategy;
                     if (versionManager.is2_29()) {

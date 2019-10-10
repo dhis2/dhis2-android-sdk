@@ -32,8 +32,6 @@ import android.content.Context;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
@@ -59,9 +57,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -109,11 +107,8 @@ public final class FileResourcePostCall {
             } else {
                 D2ProgressManager progressManager = new D2ProgressManager(filteredFileResources.size() + 1);
 
-                Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
-                        progressManager.increaseProgress(SystemInfo.class, false));
-
-                return systemInfoDownload.flatMapObservable(systemInfoProgress -> Observable.create(emitter -> {
-                    emitter.onNext(systemInfoProgress);
+                return systemInfoDownloader.downloadMetadata().andThen(Observable.create(emitter -> {
+                    emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
 
                     for (FileResource fileResource : filteredFileResources) {
 

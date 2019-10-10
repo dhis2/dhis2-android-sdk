@@ -33,13 +33,12 @@ import android.database.Cursor;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.D2ErrorCodeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.D2ErrorComponentColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreExceptionAdapter;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 
 import java.util.Date;
 
@@ -47,14 +46,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 @AutoValue
-public abstract class D2Error extends Exception implements ObjectWithUidInterface, Model {
-
-    @Nullable
-    public abstract String resourceType();
-
-    @Override
-    @Nullable
-    public abstract String uid();
+public abstract class D2Error extends Exception implements Model {
 
     @Nullable
     public abstract String url();
@@ -94,10 +86,6 @@ public abstract class D2Error extends Exception implements ObjectWithUidInterfac
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
-
-        public abstract Builder resourceType(String resourceType);
-
-        public abstract Builder uid(String uid);
 
         public abstract Builder url(String url);
 

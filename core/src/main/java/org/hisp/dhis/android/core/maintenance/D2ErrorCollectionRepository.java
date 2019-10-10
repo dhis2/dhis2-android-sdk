@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 
 import java.util.Map;
 
@@ -55,14 +54,6 @@ public final class D2ErrorCollectionRepository
                                 final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new D2ErrorCollectionRepository(store, childrenAppenders, s)));
-    }
-
-    public StringFilterConnector<D2ErrorCollectionRepository> byResourceType() {
-        return cf.string(D2ErrorTableInfo.Columns.RESOURCE_TYPE);
-    }
-
-    public StringFilterConnector<D2ErrorCollectionRepository> byUid() {
-        return cf.string(BaseIdentifiableObjectModel.Columns.UID);
     }
 
     public StringFilterConnector<D2ErrorCollectionRepository> byUrl() {

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitAncestorsAccessor;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitInternalAccessor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,7 +56,7 @@ public class OrganisationUnitDisplayPathGeneratorShould {
     private OrganisationUnit organisationUnit;
 
     @Mock
-    private OrganisationUnitAncestorsAccessor organisationUnitAncestorsAccessor;
+    private OrganisationUnitInternalAccessor organisationUnitInternalAccessor;
 
     private static final String GRANDPARENT_DISPLAY_NAME = "grandparentDisplayName";
     private static final String PARENT_DISPLAY_NAME = "parentDisplayName";
@@ -66,7 +66,7 @@ public class OrganisationUnitDisplayPathGeneratorShould {
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
 
-        when(organisationUnitAncestorsAccessor.accessAncestors(organisationUnit))
+        when(organisationUnitInternalAccessor.accessAncestors(organisationUnit))
                 .thenReturn(Lists.newArrayList(grandparent, parent));
         when(parent.uid()).thenReturn("parentUid");
 
@@ -80,7 +80,7 @@ public class OrganisationUnitDisplayPathGeneratorShould {
         String expectedDisplayNamePath = "/" + GRANDPARENT_DISPLAY_NAME + "/" + PARENT_DISPLAY_NAME
                 + "/" + ORG_UNIT_DISPLAY_NAME;
 
-        assertThat(new OrganisationUnitDisplayPathGenerator(organisationUnitAncestorsAccessor)
+        assertThat(new OrganisationUnitDisplayPathGenerator(organisationUnitInternalAccessor)
                 .generateDisplayPath(organisationUnit)).isEqualTo(expectedDisplayNamePath);
     }
 }

@@ -33,7 +33,7 @@ import java.util.List;
 import dagger.Reusable;
 
 @Reusable
-public class OrganisationUnitAncestorsAccessor {
+public class OrganisationUnitInternalAccessor {
 
     public List<OrganisationUnit> accessAncestors(OrganisationUnit organisationUnit) {
         return organisationUnit.ancestors();

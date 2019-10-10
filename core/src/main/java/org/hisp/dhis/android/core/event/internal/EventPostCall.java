@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
@@ -51,9 +49,9 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 
 @Reusable
 public final class EventPostCall {
@@ -95,12 +93,9 @@ public final class EventPostCall {
                 return Observable.empty();
             } else {
                 D2ProgressManager progressManager = new D2ProgressManager(2);
+                return systemInfoDownloader.downloadMetadata().andThen(Observable.create(emitter -> {
 
-                Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
-                        progressManager.increaseProgress(SystemInfo.class, false));
-
-                return systemInfoDownload.flatMapObservable(systemInfoProgress -> Observable.create(emitter -> {
-                    emitter.onNext(systemInfoProgress);
+                    emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
 
                     EventPayload eventPayload = new EventPayload();
                     eventPayload.events = eventsToPost;

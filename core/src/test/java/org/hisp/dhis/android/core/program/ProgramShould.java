@@ -88,9 +88,6 @@ public class ProgramShould extends BaseObjectShould implements ObjectShould {
         assertThat(program.relatedProgram().uid()).isEqualTo("IpHINAT79UW");
         assertThat(program.programIndicators()).isEmpty();
 
-        assertThat(program.programStages().get(0).uid()).isEqualTo("WZbXY0S00lP");
-        assertThat(program.programStages().get(1).uid()).isEqualTo("PUZaKR0Jh2k");
-
         assertThat(program.programRuleVariables().get(0).uid()).isEqualTo("varonrw1032");
         assertThat(program.programRuleVariables().get(1).uid()).isEqualTo("idLCptBEOF9");
 

@@ -120,6 +120,9 @@ public class OrganisationUnitCallUnitShould {
     @Mock
     private OrganisationUnitHandler organisationUnitHandler;
 
+    @Mock
+    private OrganisationUnitDisplayPathTransformer organisationUnitDisplayPathTransformer;
+
     //the call we are testing:
     private Callable<Unit> organisationUnitCall;
 
@@ -168,7 +171,7 @@ public class OrganisationUnitCallUnitShould {
         when(user.nationality()).thenReturn("user_nationality");
 
         organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService, organisationUnitHandler,
-                apiCallExecutor, resourceHandler)
+                organisationUnitDisplayPathTransformer, apiCallExecutor, resourceHandler)
                 .create(user, new HashSet<>(), new HashSet<>());
 
         //Return only one organisationUnit.

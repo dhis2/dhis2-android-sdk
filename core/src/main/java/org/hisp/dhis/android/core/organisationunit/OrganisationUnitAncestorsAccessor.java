@@ -26,39 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit.internal;
-
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitAncestorsAccessor;
+package org.hisp.dhis.android.core.organisationunit;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-class OrganisationUnitDisplayPathGenerator {
+public class OrganisationUnitAncestorsAccessor {
 
-    private final OrganisationUnitAncestorsAccessor organisationUnitAncestorsAccessor;
-
-    @Inject
-    OrganisationUnitDisplayPathGenerator(OrganisationUnitAncestorsAccessor organisationUnitAncestorsAccessor) {
-        this.organisationUnitAncestorsAccessor = organisationUnitAncestorsAccessor;
-    }
-
-    String generateDisplayPath(OrganisationUnit organisationUnit) {
-        List<OrganisationUnit> ancestors = organisationUnitAncestorsAccessor.accessAncestors(organisationUnit);
-        if (ancestors == null) {
-            return "";
-        } else {
-            String separator = "/";
-            StringBuilder sb = new StringBuilder();
-            for (OrganisationUnit ancestor: ancestors) {
-                sb.append(separator).append(ancestor.displayName());
-            }
-            sb.append(separator).append(organisationUnit.displayName());
-            return sb.toString();
-        }
+    public List<OrganisationUnit> accessAncestors(OrganisationUnit organisationUnit) {
+        return organisationUnit.ancestors();
     }
 }

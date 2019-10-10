@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
@@ -104,7 +104,7 @@ public class ProgramStageHandlerShould {
     private OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner;
 
     @Mock
-    private CollectionCleaner<ProgramStage> collectionCleaner;
+    private SubCollectionCleaner<ProgramStage> programStageCleaner;
 
     @Mock
     private ProgramStage.Builder programStageBuilder;
@@ -123,7 +123,7 @@ public class ProgramStageHandlerShould {
                 styleHandler,
                 programStageDataElementCleaner,
                 programStageSectionCleaner,
-                collectionCleaner);
+                programStageCleaner);
 
         programStageSections = new ArrayList<>();
         programStageSections.add(programStageSection);
@@ -193,6 +193,6 @@ public class ProgramStageHandlerShould {
     public void call_collection_cleaner_when_calling_handle_many() {
         List<ProgramStage> programStages = Collections.singletonList(programStage);
         programStageHandler.handleMany(programStages);
-        verify(collectionCleaner).deleteNotPresent(programStages);
+        verify(programStageCleaner).deleteNotPresent(programStages);
     }
 }

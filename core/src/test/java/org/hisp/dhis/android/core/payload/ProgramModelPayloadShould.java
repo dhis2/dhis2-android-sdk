@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.ObjectShould;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramStage;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -67,18 +66,10 @@ public class ProgramModelPayloadShould extends BaseObjectShould implements Objec
         assertThat(program.version()).isEqualTo(3);
         assertThat(program.access()).isEqualTo(Access.create(true, false,
                 DataAccess.create(false, false)));
-        assertThat(program.programStages()).isNotNull();
-        assertThat(program.programStages()).isNotEmpty();
 
         Program program1 = programs.get(1);
         assertThat(program1.uid()).isEqualTo("q04UBOqq3rp");
         assertThat(program1.version()).isEqualTo(1);
         assertThat(program1.access()).isEqualTo(Access.builder().build());
-        assertThat(program1.programStages()).isNotNull();
-        assertThat(program1.programStages()).isNotEmpty();
-
-        ProgramStage programStage1 = program1.programStages().get(0);
-        assertThat(programStage1.uid()).isEqualTo("pSllsjpfLH2");
-        assertThat(programStage1.access()).isEqualTo(Access.builder().build());
     }
 }

@@ -38,8 +38,6 @@ import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo;
 import org.hisp.dhis.android.core.program.ProgramSection;
 import org.hisp.dhis.android.core.program.ProgramSectionTableInfo;
-import org.hisp.dhis.android.core.program.ProgramStage;
-import org.hisp.dhis.android.core.program.ProgramStageTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
 
@@ -49,20 +47,17 @@ final class ProgramOrphanCleaner implements ParentOrphanCleaner<Program> {
     private final OrphanCleaner<Program, ProgramIndicator> programIndicatorCleaner;
     private final OrphanCleaner<Program, ProgramTrackedEntityAttribute> programTrackedEntityAttributeCleaner;
     private final OrphanCleaner<Program, ProgramSection> programSectionCleaner;
-    private final OrphanCleaner<Program, ProgramStage> programStageCleaner;
 
     private ProgramOrphanCleaner(
             OrphanCleaner<Program, ProgramRuleVariable> programRuleVariableCleaner,
             OrphanCleaner<Program, ProgramIndicator> programIndicatorCleaner,
             OrphanCleaner<Program, ProgramTrackedEntityAttribute>
                     programTrackedEntityAttributeCleaner,
-            OrphanCleaner<Program, ProgramSection> programSectionCleaner,
-            OrphanCleaner<Program, ProgramStage> programStageCleaner) {
+            OrphanCleaner<Program, ProgramSection> programSectionCleaner) {
         this.programRuleVariableCleaner = programRuleVariableCleaner;
         this.programIndicatorCleaner = programIndicatorCleaner;
         this.programTrackedEntityAttributeCleaner = programTrackedEntityAttributeCleaner;
         this.programSectionCleaner = programSectionCleaner;
-        this.programStageCleaner = programStageCleaner;
     }
 
     @Override
@@ -71,7 +66,6 @@ final class ProgramOrphanCleaner implements ParentOrphanCleaner<Program> {
         programIndicatorCleaner.deleteOrphan(program, program.programIndicators());
         programTrackedEntityAttributeCleaner.deleteOrphan(program, program.programTrackedEntityAttributes());
         programSectionCleaner.deleteOrphan(program, program.programSections());
-        programStageCleaner.deleteOrphan(program, program.programStages());
     }
 
     public static ProgramOrphanCleaner create(DatabaseAdapter databaseAdapter) {
@@ -83,9 +77,7 @@ final class ProgramOrphanCleaner implements ParentOrphanCleaner<Program> {
                 new OrphanCleanerImpl<>(ProgramTrackedEntityAttributeTableInfo.
                         TABLE_INFO.name(), ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM, databaseAdapter),
                 new OrphanCleanerImpl<>(ProgramSectionTableInfo.TABLE_INFO.name(),
-                        ProgramSectionTableInfo.Columns.PROGRAM, databaseAdapter),
-                new OrphanCleanerImpl<>(ProgramStageTableInfo.TABLE_INFO.name(),
-                        ProgramStageTableInfo.Columns.PROGRAM, databaseAdapter)
+                        ProgramSectionTableInfo.Columns.PROGRAM, databaseAdapter)
         );
     }
 }

@@ -88,11 +88,10 @@ public class ProgramModuleDownloader implements MetadataModuleDownloader<List<Pr
         return () -> {
             List<Program> programs = programCallFactory.create().call();
 
-            Set<String> assignedProgramStageUids = ProgramParentUidsHelper.getAssignedProgramStageUids(programs);
-            List<ProgramStage> programStages =
-                    programStageCallFactory.create(assignedProgramStageUids).call();
+            Set<String> programUids = UidsHelper.getUids(programs);
+            List<ProgramStage> programStages = programStageCallFactory.create(programUids).call();
 
-            programRuleCallFactory.create(UidsHelper.getUids(programs)).call();
+            programRuleCallFactory.create(programUids).call();
 
             Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
 

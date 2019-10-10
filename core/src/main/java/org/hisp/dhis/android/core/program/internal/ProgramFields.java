@@ -50,6 +50,7 @@ public final class ProgramFields {
     public static final String PROGRAM_TRACKED_ENTITY_ATTRIBUTES = "programTrackedEntityAttributes";
     private static final String CAPTURE_COORDINATES = "captureCoordinates";
     public static final String PROGRAM_INDICATORS = "programIndicators";
+    @Deprecated
     public static final String PROGRAM_STAGES = "programStages";
     public static final String PROGRAM_RULES = "programRules";
     public static final String PROGRAM_RULE_VARIABLES = "programRuleVariables";
@@ -83,7 +84,6 @@ public final class ProgramFields {
                     fh.nestedFieldWithUid(Columns.CATEGORY_COMBO),
                     fh.<Access>nestedField(ACCESS).with(AccessFields.data.with(DataAccessFields.write)),
                     fh.<ProgramIndicator>nestedField(PROGRAM_INDICATORS).with(ProgramIndicatorFields.allFields),
-                    fh.nestedFieldWithUid(PROGRAM_STAGES),
                     fh.<ProgramRuleVariable>nestedField(PROGRAM_RULE_VARIABLES)
                             .with(ProgramRuleVariableFields.allFields),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),

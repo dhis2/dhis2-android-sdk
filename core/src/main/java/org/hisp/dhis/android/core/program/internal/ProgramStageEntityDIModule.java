@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl;
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleanerImpl;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
@@ -71,7 +71,7 @@ public final class ProgramStageEntityDIModule implements IdentifiableStoreProvid
 
     @Provides
     @Reusable
-    public OrphanCleaner<ProgramStage, ProgramStageDataElement> dataElementOrphanCleaner(
+    OrphanCleaner<ProgramStage, ProgramStageDataElement> dataElementOrphanCleaner(
             DatabaseAdapter databaseAdapter) {
         return new OrphanCleanerImpl<>(ProgramStageDataElementTableInfo.TABLE_INFO.name(),
                 ProgramStageDataElementTableInfo.Columns.PROGRAM_STAGE, databaseAdapter);
@@ -79,15 +79,17 @@ public final class ProgramStageEntityDIModule implements IdentifiableStoreProvid
 
     @Provides
     @Reusable
-    public OrphanCleaner<ProgramStage, ProgramStageSection> sectionOrphanCleaner(DatabaseAdapter databaseAdapter) {
+    OrphanCleaner<ProgramStage, ProgramStageSection> sectionOrphanCleaner(DatabaseAdapter databaseAdapter) {
         return new OrphanCleanerImpl<>(ProgramStageSectionTableInfo.TABLE_INFO.name(),
                         ProgramStageSectionTableInfo.Columns.PROGRAM_STAGE, databaseAdapter);
     }
 
     @Provides
     @Reusable
-    public CollectionCleaner<ProgramStage> collectionCleaner(DatabaseAdapter databaseAdapter) {
-        return new CollectionCleanerImpl<>(ProgramStageTableInfo.TABLE_INFO.name(), databaseAdapter);
+    SubCollectionCleaner<ProgramStage> stageCleaner(DatabaseAdapter databaseAdapter) {
+        return new SubCollectionCleanerImpl<>(ProgramStageTableInfo.TABLE_INFO.name(),
+                ProgramStageTableInfo.Columns.PROGRAM, databaseAdapter,
+                programStage -> programStage.program().uid());
     }
 
     @Provides

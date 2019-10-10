@@ -167,6 +167,12 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     @ColumnAdapter(IgnoreProgramIndicatorListColumnAdapter.class)
     public abstract List<ProgramIndicator> programIndicators();
 
+    /**
+     * @deprecated use d2.programModule().programStages instead
+     *
+     * @return
+     */
+    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramStageListColumnAdapter.class)

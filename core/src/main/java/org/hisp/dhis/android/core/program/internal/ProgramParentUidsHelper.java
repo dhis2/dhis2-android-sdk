@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
@@ -102,16 +101,6 @@ final class ProgramParentUidsHelper {
             }
         }
         return uids;
-    }
-
-    static Set<String> getAssignedProgramStageUids(List<Program> programs) {
-        Set<String> programStageUids = new HashSet<>();
-
-        for (Program program : programs) {
-            UidsHelper.addUids(programStageUids, program.programStages());
-        }
-
-        return programStageUids;
     }
 
     static Set<String> getAssignedTrackedEntityAttributeUids(List<Program> programs, List<TrackedEntityType> types) {

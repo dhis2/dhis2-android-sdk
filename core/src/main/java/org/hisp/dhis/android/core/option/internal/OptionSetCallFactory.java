@@ -72,7 +72,7 @@ final class OptionSetCallFactory extends UidsCallFactoryImpl<OptionSet> {
             @Override
             protected retrofit2.Call<Payload<OptionSet>> getCall(UidsQuery query) {
                 return service.optionSets(OptionSetFields.allFields, OptionSetFields.uid.in(query.uids()),
-                        null, query.paging());
+                        query.paging());
             }
         };
     }

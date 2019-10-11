@@ -240,6 +240,7 @@ public final class D2 {
             return this;
         }
 
+        @SuppressWarnings("PMD.AccessorClassGeneration")
         public D2 build() {
             if (databaseAdapter == null) {
                 throw new IllegalArgumentException("databaseAdapter == null");

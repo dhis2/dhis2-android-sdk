@@ -80,7 +80,7 @@ public final class D2 {
     private final D2Modules modules;
     private final D2DIComponent d2DIComponent;
 
-    D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter, @NonNull Context context) {
+    private D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter, @NonNull Context context) {
 
         if (BuildConfig.DEBUG) {
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
@@ -254,7 +254,10 @@ public final class D2 {
             }
 
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(ServerUrlParser.parse("https://play.dhis2.org/2.29/")) // TODO
+                    // Actual baseUrl will be set later during logIn through ServerUrlInterceptor. But it's mandatory
+                    // to create Retrofit
+                    .baseUrl(ServerUrlParser.parse("https://temporary-dhis-url.org/"))
+
                     .client(okHttpClient)
                     .addConverterFactory(JacksonConverterFactory.create(ObjectMapperFactory.objectMapper()))
                     .addConverterFactory(FilterConverterFactory.create())

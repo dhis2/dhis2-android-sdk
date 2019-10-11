@@ -51,20 +51,6 @@ import static org.hamcrest.core.Is.is;
 public class D2ErrorCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
-    public void filter_d2_error_by_resource_type() {
-        List<D2Error> d2Errors = d2.maintenanceModule()
-                .d2Errors.byResourceType().eq("Program").blockingGet();
-        assertThat(d2Errors.size(), is(1));
-    }
-
-    @Test
-    public void filter_d2_error_by_uid() {
-        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors
-                .byUid().like("test_uid").blockingGet();
-        assertThat(d2Errors.size(), is(1));
-    }
-
-    @Test
     public void filter_d2_error_by_url() {
         List<D2Error> d2Errors = d2.maintenanceModule().d2Errors
                 .byUrl().like("http://dhis2.org/api/programs/uid").blockingGet();

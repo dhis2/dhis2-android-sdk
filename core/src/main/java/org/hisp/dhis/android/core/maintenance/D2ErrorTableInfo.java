@@ -32,8 +32,6 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
-
 public final class D2ErrorTableInfo {
 
     private D2ErrorTableInfo() {
@@ -53,7 +51,6 @@ public final class D2ErrorTableInfo {
     };
 
     public static class Columns extends BaseModel.Columns {
-        public static final String RESOURCE_TYPE = "resourceType";
         public static final String URL = "url";
         public static final String ERROR_COMPONENT = "errorComponent";
         public static final String ERROR_CODE = "errorCode";
@@ -64,8 +61,6 @@ public final class D2ErrorTableInfo {
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    RESOURCE_TYPE,
-                    UID,
                     URL,
                     ERROR_COMPONENT,
                     ERROR_CODE,

@@ -93,8 +93,6 @@ public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockInte
         ObjectStore<D2Error> d2ErrorStore = D2ErrorStore.create(databaseAdapter);
         d2ErrorStore.insert(D2ErrorSamples.get());
         d2ErrorStore.insert(D2Error.builder()
-                .resourceType("DataElement")
-                .uid("uid")
                 .errorComponent(D2ErrorComponent.SDK)
                 .errorCode(D2ErrorCode.DIFFERENT_SERVER_OFFLINE)
                 .url("http://dhis2.org/api/programs/uid")

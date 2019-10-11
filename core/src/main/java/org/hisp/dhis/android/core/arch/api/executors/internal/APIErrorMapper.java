@@ -125,24 +125,20 @@ final class APIErrorMapper {
     }
 
     D2Error.Builder getCollectionErrorBuilder(Call<?> call) {
-        return getBaseErrorBuilder(call)
-                .uid(null);
+        return getBaseErrorBuilder(call);
     }
 
     D2Error.Builder getObjectErrorBuilder(Call<?> call) {
-        return getBaseErrorBuilder(call)
-                .uid("TODO"); // TODO
+        return getBaseErrorBuilder(call);
     }
 
     D2Error.Builder getRxObjectErrorBuilder() {
         return D2Error.builder()
-                .resourceType("TODO") // TODO
                 .errorComponent(D2ErrorComponent.Server);
     }
 
     private D2Error.Builder getBaseErrorBuilder(Call<?> call) {
         return D2Error.builder()
-                .resourceType("TODO") // TODO
                 .url(getUrl(call))
                 .errorComponent(D2ErrorComponent.Server);
     }

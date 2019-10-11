@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.dataset.internal;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCollectionRepository;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
@@ -55,7 +54,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
 
         super.setUp();
 
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2 = D2Factory.create();
 
         dataSetCompleteRegistrationStore = DataSetCompleteRegistrationStoreImpl.create(databaseAdapter());
     }
@@ -63,7 +62,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void upload_data_set_complete_registrations_with_to_post_state() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
         d2.metadataModule().blockingDownload();
         d2.aggregatedModule().data().download().subscribe();
 
@@ -86,7 +85,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void upload_data_set_complete_registrations_with_to_update_state() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
         d2.metadataModule().blockingDownload();
         d2.aggregatedModule().data().download().subscribe();
 
@@ -106,7 +105,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void update_and_delete_different_data_set_complete_registrations() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
         d2.metadataModule().blockingDownload();
         d2.aggregatedModule().data().download().subscribe();
 
@@ -133,7 +132,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void delete_data_set_complete_registrations_with_to_delete_state() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
         d2.metadataModule().blockingDownload();
         d2.aggregatedModule().data().download().subscribe();
 

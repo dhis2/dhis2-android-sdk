@@ -100,7 +100,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
     public void setUp() throws IOException {
         super.setUp();
 
-        d2 = D2Factory.create(this.serverUrl, databaseAdapter());
+        d2 = D2Factory.create();
 
         executor = APICallExecutorImpl.create(d2.databaseAdapter());
 
@@ -299,6 +299,6 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
                 .build();
     }
     private void login() {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
+        d2.userModule().logIn(username, password, serverUrl).blockingGet();
     }
 }

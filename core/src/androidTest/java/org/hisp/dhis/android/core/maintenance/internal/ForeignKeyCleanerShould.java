@@ -30,11 +30,10 @@ package org.hisp.dhis.android.core.maintenance.internal;
 
 import android.database.Cursor;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.arch.api.internal.ServerUrlInterceptor;
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
@@ -66,6 +65,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -92,8 +93,9 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
         super.setUp();
 
         dhis2MockServer = new Dhis2MockServer();
+        ServerUrlInterceptor.setServerUrl(dhis2MockServer.getBaseEndpoint() + "api/");
 
-        d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
+        d2 = D2Factory.createForDatabaseAdapter(databaseAdapter());
     }
 
     @Override
@@ -259,6 +261,7 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
     private void givenAMetadataInDatabase() {
         try {
             dhis2MockServer.setRequestDispatcher();
+            d2.userModule().logIn(username, password, dhis2MockServer.getBaseEndpoint());
             d2.metadataModule().blockingDownload();
         } catch (Exception ignore) {
         }

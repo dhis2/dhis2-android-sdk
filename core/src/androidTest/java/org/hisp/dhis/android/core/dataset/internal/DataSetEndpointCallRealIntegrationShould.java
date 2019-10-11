@@ -50,7 +50,7 @@ public class DataSetEndpointCallRealIntegrationShould extends BaseRealIntegratio
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        d2 = D2Factory.create("https://play.dhis2.org/android-current/api/", databaseAdapter());
+        d2 = D2Factory.create();
         dataSetCall = createCall();
     }
 
@@ -61,7 +61,7 @@ public class DataSetEndpointCallRealIntegrationShould extends BaseRealIntegratio
     // @Test
     public void download_data_sets() throws Exception {
         if (!d2.userModule().isLogged().blockingGet()) {
-            d2.userModule().logIn("android", "Android123").blockingGet();
+            d2.userModule().logIn(username, password, url).blockingGet();
         }
 
         /*  This test won't pass independently of DataElementEndpointCallFactory and

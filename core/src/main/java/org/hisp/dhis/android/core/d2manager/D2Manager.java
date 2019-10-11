@@ -34,17 +34,12 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
 import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
-import org.hisp.dhis.android.core.configuration.Configuration;
-import org.hisp.dhis.android.core.configuration.ConfigurationManager;
-import org.hisp.dhis.android.core.configuration.ConfigurationManagerFactory;
-import org.hisp.dhis.android.core.configuration.ServerUrlParser;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import androidx.annotation.VisibleForTesting;
-import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
-import okhttp3.HttpUrl;
 
 public final class D2Manager {
 
@@ -52,37 +47,11 @@ public final class D2Manager {
 
     private static D2 d2;
     private static D2Configuration d2Configuration;
+
+    @VisibleForTesting
     static DatabaseAdapter databaseAdapter;
-    private static ConfigurationManager configurationManager;
-    private static Configuration configuration;
 
     private D2Manager() {
-    }
-
-    public static Completable setUp(@Nullable D2Configuration d2Config) {
-        return Completable.fromAction(() -> {
-            long startTime = System.currentTimeMillis();
-            d2Configuration = D2ConfigurationValidator.validateAndSetDefaultValues(d2Config);
-            databaseAdapter = newDatabaseAdapter();
-            configurationManager = ConfigurationManagerFactory.create(databaseAdapter);
-            configuration = configurationManager.get();
-
-            long setUpTime = System.currentTimeMillis() - startTime;
-            Log.i(D2Manager.class.getName(), "Set up took " + setUpTime + "ms");
-        });
-    }
-
-    public static boolean isServerUrlSet() {
-        return configuration != null;
-    }
-
-    public static Completable setServerUrl(@NonNull String url) {
-        return Completable.fromAction(() -> {
-            ensureSetUp();
-            HttpUrl httpUrl = ServerUrlParser.parse(url);
-            configuration = Configuration.forServerUrl(httpUrl);
-            configurationManager.configure(configuration);
-        });
     }
 
     public static D2 getD2() throws IllegalStateException {
@@ -93,43 +62,36 @@ public final class D2Manager {
         }
     }
 
-    private static void ensureSetUp() {
-        if (d2Configuration == null) {
-            throw new IllegalStateException("You have to setUp first");
-        }
-    }
-
-    private static void ensureServerUrl() {
-        if (configuration == null) {
-            throw new IllegalStateException("You have to configure server URL first");
-        }
-    }
-
     public static boolean isD2Instantiated() {
         return d2 != null;
     }
 
-    public static Single<D2> instantiateD2() {
+    public static Single<D2> instantiateD2(@NonNull D2Configuration d2Config) {
         return Single.fromCallable(() -> {
-            ensureSetUp();
-            ensureServerUrl();
+            setUp(d2Config);
 
             long startTime = System.currentTimeMillis();
 
             d2 = new D2.Builder()
-                    .configuration(configuration)
                     .databaseAdapter(databaseAdapter)
-                    .okHttpClient(OkHttpClientFactory.okHttpClient(d2Configuration, databaseAdapter,
-                            configuration.serverUrl().toString()))
+                    .okHttpClient(OkHttpClientFactory.okHttpClient(d2Configuration, databaseAdapter))
                     .context(d2Configuration.context())
                     .build();
-
 
             long setUpTime = System.currentTimeMillis() - startTime;
             Log.i(D2Manager.class.getName(), "D2 instantiation took " + setUpTime + "ms");
 
             return d2;
         });
+    }
+
+    private static void setUp(@Nullable D2Configuration d2Config) throws D2Error {
+        long startTime = System.currentTimeMillis();
+        d2Configuration = D2ConfigurationValidator.validateAndSetDefaultValues(d2Config);
+        databaseAdapter = newDatabaseAdapter();
+
+        long setUpTime = System.currentTimeMillis() - startTime;
+        Log.i(D2Manager.class.getName(), "Set up took " + setUpTime + "ms");
     }
 
     private static DatabaseAdapter newDatabaseAdapter() {
@@ -147,7 +109,5 @@ public final class D2Manager {
         d2Configuration = null;
         d2 = null;
         databaseAdapter =  null;
-        configurationManager = null;
-        configuration = null;
     }
 }

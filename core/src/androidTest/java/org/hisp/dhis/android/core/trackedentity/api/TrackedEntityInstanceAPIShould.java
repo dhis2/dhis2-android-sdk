@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.Event;
@@ -98,7 +97,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
     public void setUp() throws IOException {
         super.setUp();
 
-        d2 = D2Factory.create(this.serverUrl, databaseAdapter());
+        d2 = D2Factory.create();
 
         executor = APICallExecutorImpl.create(d2.databaseAdapter());
 
@@ -589,7 +588,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
     }
 
     private void login() {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
+        d2.userModule().logIn(username, password, serverUrl).blockingGet();
     }
 
     private void syncMetadata() {

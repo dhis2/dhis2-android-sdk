@@ -33,7 +33,6 @@ import com.google.common.collect.Lists;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
@@ -52,12 +51,12 @@ public class CategoryEndpointCallRealIntegrationShould extends BaseRealIntegrati
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2 = D2Factory.create();
     }
 
     //@Test
     public void call_categories_endpoint() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
         Callable<List<Category>> categoryEndpointCall = getD2DIComponent(d2).internalModules().category.categoryCallFactory.create(
                 new HashSet<>(Lists.newArrayList("cX5k9anHEHd")));

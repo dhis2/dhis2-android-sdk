@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.datavalue.internal;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
@@ -51,7 +50,7 @@ public class DataValuePostCallRealIntegrationShould extends BaseRealIntegrationT
 
         super.setUp();
 
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2 = D2Factory.create();
 
         dataValueStore = DataValueStore.create(databaseAdapter());
     }
@@ -59,7 +58,7 @@ public class DataValuePostCallRealIntegrationShould extends BaseRealIntegrationT
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void dataValuesWithToPostState_shouldBeUploaded() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
         d2.metadataModule().blockingDownload();
         d2.aggregatedModule().data().download().subscribe();

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
@@ -47,12 +46,12 @@ public class EventWithLimitCallRealIntegrationShould extends BaseRealIntegration
     public void setUp() throws IOException {
         super.setUp();
 
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2 = D2Factory.create();
     }
 
     //@Test
     public void download_tracked_entity_instances() {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
         d2.metadataModule().blockingDownload();
 

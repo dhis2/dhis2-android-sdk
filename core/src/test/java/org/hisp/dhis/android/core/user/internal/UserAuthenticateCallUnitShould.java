@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.user.internal;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.internal.APIUrlProvider;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
@@ -127,15 +126,15 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Mock
     private WipeModule wipeModule;
 
-    @Mock
-    private APIUrlProvider apiUrlProvider;
-
     // call we are testing
     private Single<User> logInSingle;
 
     private static final String USERNAME = "test_username";
     private static final String UID = "test_uid";
     private static final String PASSWORD = "test_password";
+
+    private static final String baseEndpoint = "https://dhis-instance.org";
+    private static final String serverUrl = baseEndpoint + "/api/";
 
     @Before
     @SuppressWarnings("unchecked")
@@ -152,7 +151,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(authenticatedUser.credentials()).thenReturn(base64(USERNAME, PASSWORD));
         when(authenticatedUser.hash()).thenReturn(md5(USERNAME, PASSWORD));
 
-        String baseEndpoint = "https://dhis-instance.org";
         when(systemInfoFromAPI.contextPath()).thenReturn(baseEndpoint);
         when(systemInfoFromDb.contextPath()).thenReturn(baseEndpoint);
 
@@ -169,18 +167,15 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
             return transaction;
         });
 
-        when(apiUrlProvider.getAPIUrl()).thenReturn(baseEndpoint + "/api/");
-
         when(d2Error.errorCode()).thenReturn(D2ErrorCode.SOCKET_TIMEOUT);
 
-        logInSingle = instantiateCall(USERNAME, PASSWORD);
+        logInSingle = instantiateCall(USERNAME, PASSWORD, serverUrl);
     }
 
-    private Single<User> instantiateCall(String username, String password) {
+    private Single<User> instantiateCall(String username, String password, String serverUrl) {
         return new UserAuthenticateCallFactory(databaseAdapter, apiCallExecutor,
                 userService, userHandler, resourceHandler, authenticatedUserStore,
-                systemInfoRepository, userStore, wipeModule,
-                apiUrlProvider).logIn(username, password);
+                systemInfoRepository, userStore, wipeModule).logIn(username, password, serverUrl);
     }
 
     private OngoingStubbing<User> whenAPICall() throws D2Error {
@@ -189,13 +184,13 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Test
     public void throw_d2_call_exception_for_null_username() {
-        TestObserver<User> testObserver = instantiateCall(null, PASSWORD).test();
+        TestObserver<User> testObserver = instantiateCall(null, PASSWORD, serverUrl).test();
         assertD2Error(testObserver);
     }
 
     @Test
     public void throw_d2_call_exception_for_null_password() {
-        TestObserver<User> testObserver = instantiateCall(USERNAME, null).test();
+        TestObserver<User> testObserver = instantiateCall(USERNAME, null, serverUrl).test();
         assertD2Error(testObserver);
     }
 

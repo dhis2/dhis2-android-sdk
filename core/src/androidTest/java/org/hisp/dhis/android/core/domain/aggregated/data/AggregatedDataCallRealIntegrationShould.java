@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.domain.aggregated.data;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
@@ -49,7 +48,7 @@ public class AggregatedDataCallRealIntegrationShould extends BaseRealIntegration
     public void setUp() throws IOException {
         super.setUp();
 
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2 = D2Factory.create();
     }
 
 
@@ -72,7 +71,7 @@ public class AggregatedDataCallRealIntegrationShould extends BaseRealIntegration
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
     //@Test
     public void response_successful_on_sync_data_once() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
         d2.metadataModule().blockingDownload();
         d2.aggregatedModule().data().download().subscribe();
@@ -80,7 +79,7 @@ public class AggregatedDataCallRealIntegrationShould extends BaseRealIntegration
 
     //@Test
     public void response_successful_on_sync_data_value_two_times() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
         d2.metadataModule().blockingDownload();
         d2.aggregatedModule().data().download().subscribe();

@@ -31,9 +31,6 @@ package org.hisp.dhis.android.core;
 import android.content.Context;
 import android.os.StrictMode;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.VisibleForTesting;
-
 import org.hisp.dhis.android.BuildConfig;
 import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory;
 import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory;
@@ -43,7 +40,7 @@ import org.hisp.dhis.android.core.arch.d2.internal.D2Modules;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
 import org.hisp.dhis.android.core.category.CategoryModule;
-import org.hisp.dhis.android.core.configuration.Configuration;
+import org.hisp.dhis.android.core.configuration.ServerUrlParser;
 import org.hisp.dhis.android.core.constant.ConstantModule;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetModule;
@@ -69,6 +66,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -215,19 +214,12 @@ public final class D2 {
     }
 
     public static class Builder {
-        private Configuration configuration;
         private DatabaseAdapter databaseAdapter;
         private OkHttpClient okHttpClient;
         private Context context;
 
         public Builder() {
             // empty constructor
-        }
-
-        @NonNull
-        public Builder configuration(@NonNull Configuration configuration) {
-            this.configuration = configuration;
-            return this;
         }
 
         @NonNull
@@ -253,10 +245,6 @@ public final class D2 {
                 throw new IllegalArgumentException("databaseAdapter == null");
             }
 
-            if (configuration == null) {
-                throw new IllegalStateException("configuration must be set first");
-            }
-
             if (okHttpClient == null) {
                 throw new IllegalArgumentException("okHttpClient == null");
             }
@@ -266,7 +254,7 @@ public final class D2 {
             }
 
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(configuration.serverUrl())
+                    .baseUrl(ServerUrlParser.parse("https://play.dhis2.org/2.29/")) // TODO
                     .client(okHttpClient)
                     .addConverterFactory(JacksonConverterFactory.create(ObjectMapperFactory.objectMapper()))
                     .addConverterFactory(FilterConverterFactory.create())

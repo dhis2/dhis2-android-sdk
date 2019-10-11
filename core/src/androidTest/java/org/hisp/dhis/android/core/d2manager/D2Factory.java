@@ -34,8 +34,6 @@ import com.facebook.stetho.okhttp3.StethoInterceptor;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.configuration.Configuration;
-import org.hisp.dhis.android.core.configuration.ServerUrlParser;
 
 import java.util.Collections;
 
@@ -44,22 +42,23 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 public class D2Factory {
 
-    public static D2 create(String serverUrl, String databaseName) {
+    public static D2 create(String databaseName) {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
 
         D2Configuration d2Configuration = d2Configuration(context);
 
         D2Manager.setDatabaseName(databaseName);
 
-        D2 d2 = D2Manager.setUp(d2Configuration)
-                .andThen(D2Manager.setServerUrl(serverUrl))
-                .andThen(D2Manager.instantiateD2())
-                .blockingGet();
+        D2 d2 = D2Manager.instantiateD2(d2Configuration).blockingGet();
 
         D2Manager.clear();
         D2Manager.setDatabaseName(null);
 
         return d2;
+    }
+
+    public static D2 create() {
+        return create(null);
     }
 
     private static D2Configuration d2Configuration(Context context) {
@@ -76,12 +75,11 @@ public class D2Factory {
                 .build();
     }
 
-    public static D2 create(String url, DatabaseAdapter databaseAdapter) {
+    public static D2 createForDatabaseAdapter(DatabaseAdapter databaseAdapter) {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
         return new D2.Builder()
-                .configuration(Configuration.forServerUrl(ServerUrlParser.parse(url)))
                 .databaseAdapter(databaseAdapter)
-                .okHttpClient(OkHttpClientFactory.okHttpClient(d2Configuration(context), databaseAdapter, url))
+                .okHttpClient(OkHttpClientFactory.okHttpClient(d2Configuration(context), databaseAdapter))
                 .context(context)
                 .build();
     }

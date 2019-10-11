@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.d2manager;
 
-import androidx.test.InstrumentationRegistry;
-
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.common.collect.Lists;
 
@@ -38,9 +36,10 @@ import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import androidx.test.InstrumentationRegistry;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -60,28 +59,12 @@ public class D2ManagerRealIntegrationShould {
         D2Manager.setDatabaseName(null);
     }
 
-    @Before
-    public void setUp() {
-        D2Manager.setUp(d2Configuration).blockingAwait();
-    }
-
     @After
     public void tearDown() {
         if (D2Manager.databaseAdapter != null) {
             D2Manager.databaseAdapter.database().close();
         }
         D2Manager.clear();
-    }
-
-    @Test
-    public void return_false_if_not_configured() {
-        assertThat(D2Manager.isServerUrlSet()).isFalse();
-    }
-
-    @Test
-    public void return_true_if_configured() {
-        configureD2();
-        assertThat(D2Manager.isServerUrlSet()).isTrue();
     }
 
     @Test
@@ -101,13 +84,13 @@ public class D2ManagerRealIntegrationShould {
     public void create_a_d2_instance_which_downloads_and_persists_data_from_server() throws Exception {
         configureD2();
 
-        D2Manager.getD2().userModule().logIn("android", "Android123").blockingGet();
+        D2Manager.getD2().userModule().logIn(RealServerMother.username, RealServerMother.password, RealServerMother.url).blockingGet();
 
         assertThat(D2Manager.getD2().userModule().authenticatedUser.blockingGet().user() != null).isTrue();
     }
 
     private void configureD2() {
-        D2Manager.setServerUrl(RealServerMother.url).andThen(D2Manager.instantiateD2()).blockingGet();
+        D2Manager.instantiateD2(d2Configuration).blockingGet();
     }
 
     private void persistCredentialsInDb() {

@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.arch.d2.internal;
 
 import android.content.Context;
 
+import androidx.annotation.VisibleForTesting;
+
 import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule;
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
@@ -58,6 +60,7 @@ import org.hisp.dhis.android.core.imports.internal.ImportPackageDIModule;
 import org.hisp.dhis.android.core.indicator.internal.IndicatorPackageDIModule;
 import org.hisp.dhis.android.core.legendset.internal.LegendPackageDIModule;
 import org.hisp.dhis.android.core.maintenance.internal.MaintenancePackageDIModule;
+import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.internal.OptionPackageDIModule;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitPackageDIModule;
@@ -78,7 +81,6 @@ import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 
 import javax.inject.Singleton;
 
-import androidx.annotation.VisibleForTesting;
 import dagger.Component;
 import retrofit2.Retrofit;
 
@@ -131,6 +133,8 @@ public interface D2DIComponent {
     ListCallFactory<Program> programCallFactory();
     @VisibleForTesting
     UidsCallFactory<OptionSet> optionSetCallFactory();
+    @VisibleForTesting
+    UidsCallFactory<Option> optionCallFactory();
     @VisibleForTesting
     UidsCallFactory<DataElement> dataElementCallFactory();
     @VisibleForTesting

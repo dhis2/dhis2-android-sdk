@@ -25,19 +25,75 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.option.internal;
 
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
+import org.hisp.dhis.android.core.option.Option;
+import org.hisp.dhis.android.core.option.OptionTableInfo;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class OptionSetHandlerShould {
+public class OptionHandlerShould {
+    @Mock
+    private IdentifiableObjectStore<Option> optionStore;
+
+    @Mock
+    private Option option;
+
+    @Mock
+    private ObjectStyle style;
+
+    @Mock
+    private SubCollectionCleaner<Option> optionCleaner;
+
+    @Mock
+    private ObjectStyleHandler styleHandler;
+
+    private List<Option> options;
+
+    // object to test
+    private OptionHandler optionHandler;
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        optionHandler = new OptionHandler(optionStore, styleHandler, optionCleaner);
+        when(option.uid()).thenReturn("test_option_uid");
+        options = Collections.singletonList(option);
+        when(option.style()).thenReturn(style);
+    }
+
+    @Test
+    public void handle_style() {
+        optionHandler.handle(option);
+        verify(styleHandler).handle(style, option.uid(), OptionTableInfo.TABLE_INFO.name());
+    }
+
+    @Test
+    public void clean_orphan_options() {
+        optionHandler.handleMany(options);
+        verify(optionCleaner).deleteNotPresent(options);
+    }
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<OptionSet> genericHandler = new OptionSetHandler(null);
+        IdentifiableHandlerImpl<Option> genericHandler =
+                new OptionHandler(null, null, null);
     }
 }

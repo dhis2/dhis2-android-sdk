@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.BaseCallShould;
+import org.hisp.dhis.android.core.configuration.ConfigurationManager;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
@@ -125,6 +126,9 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Mock
     private WipeModule wipeModule;
+
+    @Mock
+    private ConfigurationManager configurationManager;
 
     // call we are testing
     private Single<User> logInSingle;

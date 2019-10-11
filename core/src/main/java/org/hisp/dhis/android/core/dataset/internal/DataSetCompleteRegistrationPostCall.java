@@ -46,7 +46,6 @@ import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
-import io.reactivex.Single;
 
 @Reusable
 public final class DataSetCompleteRegistrationPostCall {
@@ -88,14 +87,11 @@ public final class DataSetCompleteRegistrationPostCall {
 
                 D2ProgressManager progressManager = new D2ProgressManager(2);
 
-                Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
-                        progressManager.increaseProgress(SystemInfo.class, false));
+                return systemInfoDownloader.downloadMetadata().andThen(Observable.create(emitter -> {
+                    emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
 
-                return systemInfoDownload.flatMapObservable(systemInfoProgress -> Observable.create(emitter -> {
-                    emitter.onNext(systemInfoProgress);
                     uploadInternal(progressManager, emitter, toPostDataSetCompleteRegistrations,
                             toDeleteDataSetCompleteRegistrations);
-
                 }));
             }
         });

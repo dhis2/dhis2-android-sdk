@@ -43,7 +43,6 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 
 @Reusable
 public final class DataValuePostCall {
@@ -72,10 +71,9 @@ public final class DataValuePostCall {
             } else {
                 D2ProgressManager progressManager = new D2ProgressManager(2);
 
-                Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
-                        progressManager.increaseProgress(SystemInfo.class, false));
+                return systemInfoDownloader.downloadMetadata().andThen(Observable.create(emitter -> {
+                    emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
 
-                return systemInfoDownload.flatMapObservable(systemInfoProgress -> Observable.create(emitter -> {
                     DataValueSet dataValueSet = new DataValueSet(dataValues);
 
                     DataValueImportSummary dataValueImportSummary = apiCallExecutor.executeObjectCall(

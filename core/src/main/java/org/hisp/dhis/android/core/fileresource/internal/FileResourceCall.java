@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
@@ -38,9 +36,9 @@ import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 
 @Reusable
 public class FileResourceCall {
@@ -51,9 +49,9 @@ public class FileResourceCall {
     private final FileResourceModuleDownloader fileResourceModuleDownloader;
 
     @Inject
-    public FileResourceCall(@NonNull RxAPICallExecutor rxCallExecutor,
-                            @NonNull SystemInfoModuleDownloader systemInfoDownloader,
-                            @NonNull FileResourceModuleDownloader fileResourceModuleDownloader) {
+    FileResourceCall(@NonNull RxAPICallExecutor rxCallExecutor,
+                     @NonNull SystemInfoModuleDownloader systemInfoDownloader,
+                     @NonNull FileResourceModuleDownloader fileResourceModuleDownloader) {
         this.rxCallExecutor = rxCallExecutor;
         this.systemInfoDownloader = systemInfoDownloader;
         this.fileResourceModuleDownloader = fileResourceModuleDownloader;
@@ -62,11 +60,10 @@ public class FileResourceCall {
     public Observable<D2Progress> download() {
         D2ProgressManager progressManager = new D2ProgressManager(2);
 
-        Single<D2Progress> systemInfoDownload = systemInfoDownloader.downloadMetadata().toSingle(() ->
-                progressManager.increaseProgress(SystemInfo.class, false));
-
         return rxCallExecutor.wrapObservableTransactionally(
-                systemInfoDownload.flatMapObservable(systemInfoProgress -> Observable.create(emitter -> {
+                systemInfoDownloader.downloadMetadata().andThen(Observable.create(emitter -> {
+
+                    emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
 
                     fileResourceModuleDownloader.downloadMetadata().call();
                     emitter.onNext(progressManager.increaseProgress(FileResource.class, false));

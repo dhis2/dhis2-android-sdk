@@ -89,6 +89,10 @@ public final class D2Manager {
         });
     }
 
+    public static D2 blockingInstantiateD2(@NonNull D2Configuration d2Config) {
+        return instantiateD2(d2Config).blockingGet();
+    }
+
     private static void setUp(@Nullable D2Configuration d2Config) throws D2Error {
         long startTime = System.currentTimeMillis();
         d2Configuration = D2ConfigurationValidator.validateAndSetDefaultValues(d2Config);

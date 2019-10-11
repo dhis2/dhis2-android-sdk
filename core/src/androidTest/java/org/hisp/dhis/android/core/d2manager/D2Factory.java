@@ -49,7 +49,7 @@ public class D2Factory {
 
         D2Manager.setDatabaseName(databaseName);
 
-        D2 d2 = D2Manager.instantiateD2(d2Configuration).blockingGet();
+        D2 d2 = D2Manager.blockingInstantiateD2(d2Configuration);
 
         D2Manager.clear();
         D2Manager.setDatabaseName(null);

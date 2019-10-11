@@ -59,6 +59,7 @@ public class Dhis2MockServer {
     private static final String TRACKED_ENTITY_ATTRIBUTES_JSON = "trackedentity/tracked_entity_attributes.json";
     private static final String RELATIONSHIP_TYPES_JSON = "relationship/relationship_types.json";
     private static final String OPTION_SETS_JSON = "option/option_sets.json";
+    private static final String OPTIONS_JSON = "option/options.json";
     private static final String OPTION_GROUPS_JSON = "option/option_groups.json";
     private static final String DATA_SETS_JSON = "dataset/data_sets.json";
     private static final String DATA_ELEMENTS_JSON = "dataelement/data_elements.json";
@@ -143,6 +144,8 @@ public class Dhis2MockServer {
                     return createMockResponse(RELATIONSHIP_TYPES_JSON);
                 } else if (path.startsWith("/api/optionSets?")) {
                     return createMockResponse(OPTION_SETS_JSON);
+                } else if (path.startsWith("/api/options?")) {
+                    return createMockResponse(OPTIONS_JSON);
                 } else if (path.startsWith("/api/optionGroups?")) {
                     return createMockResponse(OPTION_GROUPS_JSON);
                 } else if (path.startsWith("/api/dataSets?")) {
@@ -193,6 +196,7 @@ public class Dhis2MockServer {
         enqueueMockResponse(TRACKED_ENTITY_ATTRIBUTES_JSON);
         enqueueMockResponse(RELATIONSHIP_TYPES_JSON);
         enqueueMockResponse(OPTION_SETS_JSON);
+        enqueueMockResponse(OPTIONS_JSON);
         enqueueMockResponse(OPTION_GROUPS_JSON);
         enqueueMockResponse(DATA_SETS_JSON);
         enqueueMockResponse(DATA_ELEMENTS_JSON);

@@ -77,7 +77,7 @@ public abstract class EventAPIRealShould extends BaseRealIntegrationTest {
     public void setUp() throws IOException {
         super.setUp();
 
-        d2 = D2Factory.create();
+        d2 = D2Factory.forNewDatabase();
         apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter());
 
         eventService = d2.retrofit().create(EventService.class);

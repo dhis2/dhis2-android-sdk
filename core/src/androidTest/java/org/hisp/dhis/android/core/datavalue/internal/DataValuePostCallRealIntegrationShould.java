@@ -50,7 +50,7 @@ public class DataValuePostCallRealIntegrationShould extends BaseRealIntegrationT
 
         super.setUp();
 
-        d2 = D2Factory.create();
+        d2 = D2Factory.forNewDatabase();
 
         dataValueStore = DataValueStore.create(databaseAdapter());
     }

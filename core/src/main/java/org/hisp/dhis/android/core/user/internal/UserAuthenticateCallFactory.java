@@ -36,6 +36,8 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+import org.hisp.dhis.android.core.configuration.Configuration;
+import org.hisp.dhis.android.core.configuration.ConfigurationManager;
 import org.hisp.dhis.android.core.configuration.ServerUrlParser;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -73,6 +75,7 @@ public final class UserAuthenticateCallFactory {
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final IdentifiableObjectStore<User> userStore;
     private final WipeModule wipeModule;
+    private final ConfigurationManager configurationManager;
 
     @Inject
     UserAuthenticateCallFactory(
@@ -84,7 +87,8 @@ public final class UserAuthenticateCallFactory {
             @NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore,
             @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             @NonNull IdentifiableObjectStore<User> userStore,
-            @NonNull WipeModule wipeModule) {
+            @NonNull WipeModule wipeModule,
+            @NonNull ConfigurationManager configurationManager) {
         this.databaseAdapter = databaseAdapter;
         this.apiCallExecutor = apiCallExecutor;
 
@@ -96,6 +100,7 @@ public final class UserAuthenticateCallFactory {
         this.systemInfoRepository = systemInfoRepository;
         this.userStore = userStore;
         this.wipeModule = wipeModule;
+        this.configurationManager = configurationManager;
     }
 
     public Single<User> logIn(final String username, final String password, final String serverUrl) {
@@ -115,6 +120,7 @@ public final class UserAuthenticateCallFactory {
 
         HttpUrl httpServerUrl = ServerUrlParser.parse(serverUrl);
         ServerUrlInterceptor.setServerUrl(httpServerUrl.toString());
+        configurationManager.configure(Configuration.forServerUrl(httpServerUrl));
 
         Call<User> authenticateCall =
                 userService.authenticate(basic(username, password), UserFields.allFieldsWithoutOrgUnit);

@@ -100,7 +100,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 
         MockitoAnnotations.initMocks(this);
 
-        d2 = D2Factory.create();
+        d2 = D2Factory.forNewDatabase();
 
         login();
 

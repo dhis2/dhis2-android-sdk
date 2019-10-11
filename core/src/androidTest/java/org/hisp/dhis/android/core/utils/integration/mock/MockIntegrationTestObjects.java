@@ -70,7 +70,7 @@ public class MockIntegrationTestObjects {
 
         dhis2MockServer = new Dhis2MockServer();
 
-        d2 = D2Factory.create(dbName);
+        d2 = D2Factory.forDatabaseName(dbName);
 
         database = d2.databaseAdapter().database();
         databaseAdapter = d2.databaseAdapter();

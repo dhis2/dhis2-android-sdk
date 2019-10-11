@@ -55,7 +55,7 @@ public class EventEndpointCallRealIntegrationShould extends BaseRealIntegrationT
     public void setUp() throws IOException {
         super.setUp();
 
-        d2 = D2Factory.create();
+        d2 = D2Factory.forNewDatabase();
     }
 
     //This test is commented because technically it is flaky.

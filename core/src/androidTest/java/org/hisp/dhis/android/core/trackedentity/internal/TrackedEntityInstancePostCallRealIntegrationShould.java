@@ -108,7 +108,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     public void setUp() throws IOException {
         super.setUp();
 
-        d2= D2Factory.create();
+        d2= D2Factory.forNewDatabase();
 
         trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter());
         enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter());

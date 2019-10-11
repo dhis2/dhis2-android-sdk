@@ -42,7 +42,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 public class D2Factory {
 
-    public static D2 create(String databaseName) {
+    public static D2 forDatabaseName(String databaseName) {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
 
         D2Configuration d2Configuration = d2Configuration(context);
@@ -57,8 +57,8 @@ public class D2Factory {
         return d2;
     }
 
-    public static D2 create() {
-        return create(null);
+    public static D2 forNewDatabase() {
+        return forDatabaseName(null);
     }
 
     private static D2Configuration d2Configuration(Context context) {
@@ -75,7 +75,7 @@ public class D2Factory {
                 .build();
     }
 
-    public static D2 createForDatabaseAdapter(DatabaseAdapter databaseAdapter) {
+    public static D2 forDatabaseAdapter(DatabaseAdapter databaseAdapter) {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
         return new D2.Builder()
                 .databaseAdapter(databaseAdapter)

@@ -62,13 +62,13 @@ public class NotePostCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void download_tei_add_one_note_and_sync_in_2_29() throws Exception {
-        d2 = D2Factory.create();
+        d2 = D2Factory.forNewDatabase();
         downloadUpdateAndSyncTei(RealServerMother.url2_29);
     }
 
     //@Test
     public void download_tei_add_one_note_and_sync_in_2_30_or_more() throws Exception {
-        d2 = D2Factory.create();
+        d2 = D2Factory.forNewDatabase();
         downloadUpdateAndSyncTei(RealServerMother.url2_30);
     }
 

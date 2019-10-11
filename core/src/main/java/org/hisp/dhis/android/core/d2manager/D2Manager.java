@@ -31,9 +31,13 @@ package org.hisp.dhis.android.core.d2manager;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.arch.api.internal.ServerUrlInterceptor;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
 import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
+import org.hisp.dhis.android.core.configuration.Configuration;
+import org.hisp.dhis.android.core.configuration.ConfigurationManager;
+import org.hisp.dhis.android.core.configuration.ConfigurationManagerFactory;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import androidx.annotation.VisibleForTesting;
@@ -89,6 +93,13 @@ public final class D2Manager {
         long startTime = System.currentTimeMillis();
         d2Configuration = D2ConfigurationValidator.validateAndSetDefaultValues(d2Config);
         databaseAdapter = newDatabaseAdapter();
+
+        ConfigurationManager configurationManager = ConfigurationManagerFactory.create(databaseAdapter);
+        Configuration configuration = configurationManager.get();
+
+        if (configuration != null) {
+            ServerUrlInterceptor.setServerUrl(configuration.serverUrl().toString());
+        }
 
         long setUpTime = System.currentTimeMillis() - startTime;
         Log.i(D2Manager.class.getName(), "Set up took " + setUpTime + "ms");

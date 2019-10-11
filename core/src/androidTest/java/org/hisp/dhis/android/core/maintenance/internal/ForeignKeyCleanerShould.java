@@ -95,7 +95,7 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
         dhis2MockServer = new Dhis2MockServer();
         ServerUrlInterceptor.setServerUrl(dhis2MockServer.getBaseEndpoint() + "api/");
 
-        d2 = D2Factory.createForDatabaseAdapter(databaseAdapter());
+        d2 = D2Factory.forDatabaseAdapter(databaseAdapter());
     }
 
     @Override

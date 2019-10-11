@@ -56,7 +56,7 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
     public void setUp() throws IOException {
         super.setUp();
 
-        d2 = D2Factory.create();
+        d2 = D2Factory.forNewDatabase();
 
         authenticatedUserStore = AuthenticatedUserStore.create(databaseAdapter());
     }

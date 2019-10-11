@@ -52,7 +52,7 @@ public class WipeDBCallRealIntegrationShould extends BaseRealIntegrationTest {
     public void setUp() throws IOException {
         super.setUp();
 
-        d2 = D2Factory.create();
+        d2 = D2Factory.forNewDatabase();
     }
 
     //@Test

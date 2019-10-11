@@ -175,7 +175,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private Single<User> instantiateCall(String username, String password, String serverUrl) {
         return new UserAuthenticateCallFactory(databaseAdapter, apiCallExecutor,
                 userService, userHandler, resourceHandler, authenticatedUserStore,
-                systemInfoRepository, userStore, wipeModule).logIn(username, password, serverUrl);
+                systemInfoRepository, userStore, wipeModule, configurationManager).logIn(username, password, serverUrl);
     }
 
     private OngoingStubbing<User> whenAPICall() throws D2Error {

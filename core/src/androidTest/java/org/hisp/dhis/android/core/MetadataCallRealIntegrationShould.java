@@ -45,14 +45,12 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
-    Exception e;
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
-
-        d2 = D2Factory.create();
+        d2 = D2Factory.forNewDatabase();
     }
 
 
@@ -80,7 +78,7 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
 
         d2.metadataModule().blockingDownload();
 
-        //TODO: add aditional sync + break point.
+        //TODO: add additional sync + break point.
         //when debugger stops at the new break point manually change metadata online & resume.
         //This way I can make sure that additive (updates) work as well.
         //The changes could be to one of the programs, adding stuff to it.

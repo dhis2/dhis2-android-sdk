@@ -52,7 +52,7 @@ public class DataElementEndpointCallRealIntegrationShould extends BaseRealIntegr
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        d2 = D2Factory.create();
+        d2 = D2Factory.forNewDatabase();
         dataElementCall = createCall();
     }
 

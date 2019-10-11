@@ -26,46 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.configuration;
 
-import com.google.common.truth.Truth;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
-import org.junit.Before;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-import java.io.IOException;
-import java.util.List;
+@Module
+public final class ConfigurationPackageDIModule {
 
-public class TrackedEntityInstanceCallRealIntegrationShould extends BaseRealIntegrationTest {
-
-    private D2 d2;
-
-    @Override
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
-
-        d2 = D2Factory.forNewDatabase();
-    }
-
-    //This test is commented because technically it is flaky.
-    //It depends on a live server to operate and the login is hardcoded here.
-    //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-
-    //@Test
-    public void download_tei_enrollments_and_events() {
-        d2.userModule().logIn(username, password, url).blockingGet();
-
-        d2.metadataModule().blockingDownload();
-
-        d2.trackedEntityModule()
-                .trackedEntityInstanceDownloader.byUid().eq("IaxoagO9899").download().blockingSubscribe();
-
-        List<TrackedEntityInstance> teiResponse = d2.trackedEntityModule().trackedEntityInstances.byUid().eq("IaxoagO9899")
-                .blockingGet();
-
-        Truth.assertThat(teiResponse.isEmpty()).isFalse();
+    @Provides
+    @Reusable
+    ConfigurationManager programCallFactory(DatabaseAdapter databaseAdapter) {
+        return ConfigurationManagerFactory.create(databaseAdapter);
     }
 }

@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.repositories.object;
 
 import org.hisp.dhis.android.core.common.Model;
@@ -32,7 +33,10 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import io.reactivex.Completable;
 
+
 public interface ReadWriteObjectRepository<M extends Model> extends ReadOnlyObjectRepository<M> {
     Completable delete();
     void blockingDelete() throws D2Error;
+    Completable deleteIfExist();
+    void blockingDeleteIfExist();
 }

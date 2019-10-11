@@ -64,6 +64,12 @@ public final class OptionSetCollectionRepository
         return cf.enumC(Columns.VALUE_TYPE);
     }
 
+    /**
+     * @deprecated use d2.optionModule().options.byOptionSetUid() instead
+     *
+     * @return
+     */
+    @Deprecated
     public OptionSetCollectionRepository withOptions() {
         return cf.withChild(OptionSetFields.OPTIONS);
     }

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.option.internal;
 
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleanerImpl;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
@@ -57,6 +59,14 @@ public final class OptionEntityDIModule {
     @Reusable
     Handler<Option> handler(OptionHandler impl) {
         return impl;
+    }
+
+    @Provides
+    @Reusable
+    SubCollectionCleaner<Option> optionCleaner(DatabaseAdapter databaseAdapter) {
+        return new SubCollectionCleanerImpl<>(OptionTableInfo.TABLE_INFO.name(),
+                OptionTableInfo.Columns.OPTION_SET, databaseAdapter,
+                option -> option.optionSet().uid());
     }
 
     @Provides

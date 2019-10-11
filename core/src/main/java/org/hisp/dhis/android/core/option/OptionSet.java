@@ -30,21 +30,21 @@ package org.hisp.dhis.android.core.option;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbValueTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOptionListAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbValueTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOptionListAdapter;
 
 import java.util.List;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_OptionSet.Builder.class)
@@ -59,6 +59,12 @@ public abstract class OptionSet extends BaseIdentifiableObject implements Model 
     @ColumnAdapter(DbValueTypeColumnAdapter.class)
     public abstract ValueType valueType();
 
+    /**
+     * @deprecated use d2.optionModule().options instead
+     *
+     * @return
+     */
+    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreOptionListAdapter.class)

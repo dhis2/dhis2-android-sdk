@@ -32,8 +32,6 @@ import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleanerImpl;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
 import org.junit.Before;
@@ -48,63 +46,88 @@ import java.util.concurrent.Callable;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class OptionSetCallShould extends BaseMockIntegrationTestEmptyEnqueable {
+public class OptionCallShould extends BaseMockIntegrationTestEmptyEnqueable {
 
-    private Callable<List<OptionSet>> optionSetCall;
+    private Callable<List<Option>> optionCall;
     private D2CallExecutor d2CallExecutor;
 
     @Before
-    public void setUp() throws D2Error {
+    public void setUp() throws Exception {
         dhis2MockServer.enqueueMockResponse("option/option_sets.json");
+        dhis2MockServer.enqueueMockResponse("option/options.json");
         Set<String> uids = new HashSet<>();
-        uids.add("POc7DkGU3QU");
 
-        optionSetCall = objects.d2DIComponent.optionSetCallFactory().create(uids);
+        uids.add("Y1ILwhy5VDY");
+        uids.add("egT1YqFWsVk");
+        uids.add("non_existent_option_uid");
+        uids.add("Z1ILwhy5VDY");
+
+        optionCall = objects.d2DIComponent.optionCallFactory().create(uids);
 
         d2CallExecutor = D2CallExecutor.create(databaseAdapter);
-    }
 
-    @Test
-    public void persist_option_sets_in_data_base_when_call() throws Exception {
         executeOptionSetCall();
-
-        OptionSetCollectionRepository optionSets = d2.optionModule().optionSets;
-        assertThat(optionSets.blockingCount()).isEqualTo(2);
-        assertThat(optionSets.uid("VQ2lai3OfVG").blockingExists()).isTrue();
-        assertThat(optionSets.uid("TQ2lai3OfVG").blockingExists()).isTrue();
     }
 
     @Test
-    public void return_option_set_after_call() throws Exception {
-        List<OptionSet> optionSetList = executeOptionSetCall();
+    public void persist_options_in_data_base_when_call() throws Exception {
+        executeOptionCall();
 
-        assertThat(optionSetList.size()).isEqualTo(2);
-
-        OptionSet optionSet = optionSetList.get(0);
-
-        assertThat(optionSet.uid()).isEqualTo("VQ2lai3OfVG");
-        assertThat(optionSet.code()).isNull();
-        assertThat(optionSet.name()).isEqualTo("Age category");
-        assertThat(optionSet.displayName()).isEqualTo("Age category");
-        assertThat(optionSet.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2014-06-22T10:59:26.564"));
-        assertThat(optionSet.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-06T14:23:38.789"));
-        assertThat(optionSet.version()).isEqualTo(1);
-        assertThat(optionSet.valueType()).isEqualTo(ValueType.TEXT);
+        OptionCollectionRepository options = d2.optionModule().options;
+        assertThat(options.blockingCount()).isEqualTo(3);
+        assertThat(options.uid("Y1ILwhy5VDY").blockingExists()).isTrue();
+        assertThat(options.uid("egT1YqFWsVk").blockingExists()).isTrue();
+        assertThat(options.uid("non_existent_option_uid").blockingExists()).isFalse();
+        assertThat(options.uid("Z1ILwhy5VDY").blockingExists()).isTrue();
     }
 
-    private List<OptionSet> executeOptionSetCall() throws Exception{
+    @Test
+    public void return_options_after_call() throws Exception {
+        List<Option> optionList = executeOptionCall();
 
-        return d2CallExecutor.executeD2CallTransactionally(() -> {
+        assertThat(optionList.size()).isEqualTo(4);
+
+        Option option = optionList.get(0);
+
+        assertThat(option.uid()).isEqualTo("Y1ILwhy5VDY");
+        assertThat(option.code()).isEqualTo("0-14 years");
+        assertThat(option.name()).isEqualTo("0-14 years");
+        assertThat(option.displayName()).isEqualTo("0-14 years");
+        assertThat(option.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2014-08-18T12:39:16.000"));
+        assertThat(option.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2014-08-18T12:39:16.000"));
+        assertThat(option.optionSet().uid()).isEqualTo("VQ2lai3OfVG");
+        assertThat(option.sortOrder()).isEqualTo(1);
+    }
+
+    private void executeOptionSetCall() throws Exception {
+        d2CallExecutor.executeD2CallTransactionally(() -> {
             List<OptionSet> optionSets = null;
             try {
-                optionSets = optionSetCall.call();
+                Set<String> uids = new HashSet<>();
+                uids.add("POc7DkGU3QU");
+
+                optionSets = objects.d2DIComponent.optionSetCallFactory().create(uids).call();
             } catch (Exception ignored) {
             }
 
             ForeignKeyCleanerImpl.create(databaseAdapter).cleanForeignKeyErrors();
             return optionSets;
+        });
+    }
+
+    private List<Option> executeOptionCall() throws Exception{
+
+        return d2CallExecutor.executeD2CallTransactionally(() -> {
+            List<Option> options = null;
+            try {
+                options = optionCall.call();
+            } catch (Exception ignored) {
+            }
+
+            ForeignKeyCleanerImpl.create(databaseAdapter).cleanForeignKeyErrors();
+            return options;
         });
     }
 }

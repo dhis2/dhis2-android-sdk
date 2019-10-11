@@ -44,6 +44,5 @@ public interface OptionSetService {
     @GET("optionSets")
     Call<Payload<OptionSet>> optionSets(@Query("fields") @Which Fields<OptionSet> fields,
                                         @Query("filter") @Where Filter<OptionSet, String> filter,
-                                        @Query("filter") @Where Filter<OptionSet, String> lastUpdated,
                                         @Query("paging") boolean paging);
 }

@@ -38,7 +38,8 @@ import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.option.Option;
 
 import java.util.Set;
 
@@ -47,40 +48,44 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class OptionSetCallFactory extends UidsCallFactoryImpl<OptionSet> {
+public final class OptionEndpointCallFactory extends UidsCallFactoryImpl<Option> {
 
-    private static final int MAX_UID_LIST_SIZE = 130;
+    private static final int MAX_UID_LIST_SIZE = 64;
 
-    private final OptionSetService service;
-    private final Handler<OptionSet> handler;
+    private final OptionService service;
+    private final Handler<Option> handler;
 
     @Inject
-    OptionSetCallFactory(GenericCallData data,
-                                APICallExecutor apiCallExecutor,
-                                OptionSetService service,
-                                Handler<OptionSet> handler) {
+    OptionEndpointCallFactory(GenericCallData data,
+                              APICallExecutor apiCallExecutor,
+                              OptionService service,
+                              Handler<Option> handler) {
         super(data, apiCallExecutor);
         this.service = service;
         this.handler = handler;
     }
 
     @Override
-    protected CallFetcher<OptionSet> fetcher(Set<String> uids) {
+    protected CallFetcher<Option> fetcher(Set<String> uids) {
 
-        return new UidsNoResourceCallFetcher<OptionSet>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
+        return new UidsNoResourceCallFetcher<Option>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
 
             @Override
-            protected retrofit2.Call<Payload<OptionSet>> getCall(UidsQuery query) {
-                return service.optionSets(OptionSetFields.allFields, OptionSetFields.uid.in(query.uids()),
-                        query.paging());
+            protected retrofit2.Call<Payload<Option>> getCall(UidsQuery query) {
+                String optionSetUidsFilterStr = "optionSet." + ObjectWithUid.uid.in(query.uids()).generateString();
+                return service.getOptions(
+                        OptionFields.allFields,
+                        optionSetUidsFilterStr,
+                        Boolean.FALSE);
             }
         };
     }
 
     @Override
-    protected CallProcessor<OptionSet> processor() {
+    protected CallProcessor<Option> processor() {
         return new TransactionalNoResourceSyncCallProcessor<>(
                 data.databaseAdapter(),
-                handler);
+                handler
+        );
     }
 }

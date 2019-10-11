@@ -28,19 +28,19 @@
 
 package org.hisp.dhis.android.core.option.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.option.Option;
 
-import javax.inject.Inject;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-import dagger.Reusable;
+interface OptionService {
 
-@Reusable
-final class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet> {
-
-    @Inject
-    OptionSetHandler(IdentifiableObjectStore<OptionSet> optionSetStore) {
-        super(optionSetStore);
-    }
+    @GET("options")
+    Call<Payload<Option>> getOptions(@Query("fields") @Which Fields<Option> fields,
+                                           @Query("filter") String optionSetUidsFilterString,
+                                           @Query("paging") Boolean paging);
 }

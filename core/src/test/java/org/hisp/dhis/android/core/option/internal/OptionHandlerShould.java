@@ -30,39 +30,70 @@ package org.hisp.dhis.android.core.option.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionTableInfo;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
-import javax.inject.Inject;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import dagger.Reusable;
+@RunWith(JUnit4.class)
+public class OptionHandlerShould {
+    @Mock
+    private IdentifiableObjectStore<Option> optionStore;
 
-@Reusable
-final class OptionHandler extends IdentifiableHandlerImpl<Option> {
-    private final ObjectStyleHandler styleHandler;
-    private final SubCollectionCleaner<Option> optionCleaner;
+    @Mock
+    private Option option;
 
-    @Inject
-    OptionHandler(IdentifiableObjectStore<Option> optionStore,
-                  ObjectStyleHandler styleHandler,
-                  SubCollectionCleaner<Option> optionCleaner) {
-        super(optionStore);
-        this.styleHandler = styleHandler;
-        this.optionCleaner = optionCleaner;
+    @Mock
+    private ObjectStyle style;
+
+    @Mock
+    private SubCollectionCleaner<Option> optionCleaner;
+
+    @Mock
+    private ObjectStyleHandler styleHandler;
+
+    private List<Option> options;
+
+    // object to test
+    private OptionHandler optionHandler;
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        optionHandler = new OptionHandler(optionStore, styleHandler, optionCleaner);
+        when(option.uid()).thenReturn("test_option_uid");
+        options = Collections.singletonList(option);
+        when(option.style()).thenReturn(style);
     }
 
-    @Override
-    protected void afterObjectHandled(Option option, HandleAction action) {
-        styleHandler.handle(option.style(), option.uid(), OptionTableInfo.TABLE_INFO.name());
+    @Test
+    public void handle_style() {
+        optionHandler.handle(option);
+        verify(styleHandler).handle(style, option.uid(), OptionTableInfo.TABLE_INFO.name());
     }
 
-    @Override
-    protected void afterCollectionHandled(Collection<Option> options) {
-        optionCleaner.deleteNotPresent(options);
+    @Test
+    public void clean_orphan_options() {
+        optionHandler.handleMany(options);
+        verify(optionCleaner).deleteNotPresent(options);
+    }
+
+    @Test
+    public void extend_identifiable_handler_impl() {
+        IdentifiableHandlerImpl<Option> genericHandler =
+                new OptionHandler(null, null, null);
     }
 }

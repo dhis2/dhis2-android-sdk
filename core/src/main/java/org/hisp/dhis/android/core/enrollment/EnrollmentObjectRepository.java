@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithUidDataObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.Geometry;
@@ -43,8 +42,7 @@ import java.util.Date;
 import java.util.Map;
 
 public final class EnrollmentObjectRepository
-        extends ReadWriteWithUidDataObjectRepositoryImpl<Enrollment, EnrollmentObjectRepository>
-        implements ReadWriteObjectRepository<Enrollment> {
+        extends ReadWriteWithUidDataObjectRepositoryImpl<Enrollment, EnrollmentObjectRepository> {
 
     private final DataStatePropagator dataStatePropagator;
 

@@ -73,7 +73,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
                 = d2.dataSetModule().dataSetCompleteRegistrations;
         repository.blockingAdd(dataSetCompleteRegistration);
 
-        repository.upload().blockingSubscribe();
+        repository.blockingUpload();
 
         /*int importCountTotal = dataValueImportSummary.importCount().imported() +
                 dataValueImportSummary.importCount().updated() +
@@ -94,7 +94,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
 
         assertThat(insertToPostDataSetCompleteRegistration(dataSetCompleteRegistration)).isTrue();
 
-        d2.dataSetModule().dataSetCompleteRegistrations.upload().blockingSubscribe();
+        d2.dataSetModule().dataSetCompleteRegistrations.blockingUpload();
 
         /*int importCountTotal = dataValueImportSummary.importCount().updated() +
                 dataValueImportSummary.importCount().ignored();
@@ -121,7 +121,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
         dataSetCompleteRegistrationStore.setDeleted(toDeleteDataSetCompleteRegistration);
         dataSetCompleteRegistrationStore.setState(toDeleteDataSetCompleteRegistration, State.TO_UPDATE);
 
-        repository.upload().blockingSubscribe();
+        repository.blockingUpload();
 
         /*int importCountTotal = dataValueImportSummary.importCount().updated() +
                 dataValueImportSummary.importCount().ignored();
@@ -145,7 +145,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
         dataSetCompleteRegistrationStore.setDeleted(dataSetCompleteRegistration);
         dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, State.TO_UPDATE);
 
-        repository.upload().blockingSubscribe();
+        repository.blockingUpload();
 
         // assertThat(dataValueImportSummary.importCount().deleted() == 1).isTrue();
     }

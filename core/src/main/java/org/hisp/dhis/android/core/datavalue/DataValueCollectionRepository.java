@@ -77,6 +77,11 @@ public final class DataValueCollectionRepository
         ).flatMap(postCall::uploadDataValues);
     }
 
+    @Override
+    public void blockingUpload() {
+        upload().blockingSubscribe();
+    }
+
     public DataValueObjectRepository value(String period,
                                            String organisationUnit,
                                            String dataElement,

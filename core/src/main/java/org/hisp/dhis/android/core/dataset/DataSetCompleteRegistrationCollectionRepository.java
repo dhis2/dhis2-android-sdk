@@ -94,6 +94,10 @@ public final class DataSetCompleteRegistrationCollectionRepository
         ).flatMap(postCall::uploadDataSetCompleteRegistrations);
     }
 
+    @Override
+    public void blockingUpload() {
+        upload().blockingSubscribe();
+    }
 
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byPeriod() {
         return cf.string(Columns.PERIOD);

@@ -33,10 +33,6 @@ import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
 
-import static org.hisp.dhis.android.core.legendset.internal.LegendFields.COLOR;
-import static org.hisp.dhis.android.core.legendset.internal.LegendFields.END_VALUE;
-import static org.hisp.dhis.android.core.legendset.internal.LegendFields.START_VALUE;
-
 public final class LegendTableInfo {
 
     private LegendTableInfo() {
@@ -56,6 +52,9 @@ public final class LegendTableInfo {
     };
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public final static String START_VALUE = "startValue";
+        public final static String END_VALUE = "endValue";
+        public final static String COLOR = "color";
         public final static String LEGEND_SET = "legendSet";
 
         @Override

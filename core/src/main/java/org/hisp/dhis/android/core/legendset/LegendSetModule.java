@@ -38,9 +38,12 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public final class LegendSetModule {
 
     public final LegendSetCollectionRepository legendSets;
+    public final LegendCollectionRepository legends;
 
     @Inject
-    LegendSetModule(LegendSetCollectionRepository legendSets) {
+    LegendSetModule(LegendSetCollectionRepository legendSets,
+                    LegendCollectionRepository legends) {
         this.legendSets = legendSets;
+        this.legends = legends;
     }
 }

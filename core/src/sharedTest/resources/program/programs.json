@@ -196,11 +196,17 @@
               "legends": [
                 {
                   "id": "BzQkRWHS7lu",
-                  "name": "45 - 60"
+                  "name": "45 - 60",
+                  "startValue": 45,
+                  "endValue": 60,
+                  "color": "#F38026"
                 },
                 {
                   "id": "kEf6QhFVMab",
-                  "name": "15 - 30"
+                  "name": "15 - 30",
+                  "startValue": 15,
+                  "endValue": 30,
+                  "color": "#E6AE5E"
                 }
               ]
             }

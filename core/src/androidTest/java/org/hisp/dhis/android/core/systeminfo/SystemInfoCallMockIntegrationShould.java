@@ -64,7 +64,7 @@ public class SystemInfoCallMockIntegrationShould extends BaseMockIntegrationTest
 
     @Test
     public void persist_system_info_when_call() {
-        systemInfoRepository.download(true).test().awaitTerminalEvent();
+        systemInfoRepository.blockingDownload(true);
         isSystemInfoInDb(systemInfoFromAPI);
     }
 
@@ -73,7 +73,7 @@ public class SystemInfoCallMockIntegrationShould extends BaseMockIntegrationTest
         database.insert(tableInfo.name(), null, systemInfoFromDB.toContentValues());
         isSystemInfoInDb(systemInfoFromDB);
 
-        systemInfoRepository.download(true).test().awaitTerminalEvent();
+        systemInfoRepository.blockingDownload(true);
         isSystemInfoInDb(systemInfoFromAPI);
     }
 

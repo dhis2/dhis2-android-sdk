@@ -25,33 +25,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.domain.metadata;
 
-import org.hisp.dhis.android.core.arch.call.D2Progress;
+package org.hisp.dhis.android.core.domain.aggregated;
+
 import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader;
+import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedDataModule;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import io.reactivex.Observable;
 
 @Reusable
-public final class MetadataModuleImpl implements WithProgressDownloader {
+public final class AggregatedModuleImpl implements AggregatedModule {
 
-    private final MetadataCall metadataCall;
+    private final AggregatedDataModule dataModule;
 
     @Inject
-    MetadataModuleImpl(MetadataCall metadataCall) {
-        this.metadataCall = metadataCall;
+    AggregatedModuleImpl(AggregatedDataModule dataModule) {
+        this.dataModule = dataModule;
     }
 
     @Override
-    public Observable<D2Progress> download() {
-        return metadataCall.download();
-    }
-
-    @Override
-    public void blockingDownload() {
-        metadataCall.blockingDownload();
+    public WithProgressDownloader data() {
+        return dataModule;
     }
 }

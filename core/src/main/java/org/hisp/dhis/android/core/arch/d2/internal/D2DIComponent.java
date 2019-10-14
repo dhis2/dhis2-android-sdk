@@ -49,7 +49,7 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementPackageDIModul
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.internal.DataSetPackageDIModule;
 import org.hisp.dhis.android.core.datavalue.internal.DataValuePackageDIModule;
-import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
+import org.hisp.dhis.android.core.domain.aggregated.AggregatedModuleImpl;
 import org.hisp.dhis.android.core.domain.metadata.MetadataModuleImpl;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentPackageDIModule;
 import org.hisp.dhis.android.core.event.internal.EventPackageDIModule;
@@ -125,7 +125,7 @@ public interface D2DIComponent {
 
     D2Modules modules();
     MetadataModuleImpl metadataModule();
-    AggregatedModule aggregatedModule();
+    AggregatedModuleImpl aggregatedModule();
     WipeModule wipeModule();
 
     @VisibleForTesting

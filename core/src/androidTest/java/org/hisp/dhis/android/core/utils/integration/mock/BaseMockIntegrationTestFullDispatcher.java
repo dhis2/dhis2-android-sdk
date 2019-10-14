@@ -70,7 +70,7 @@ public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockInte
     }
 
     private static void login() {
-        d2.userModule().logIn("android", "Android123", dhis2MockServer.getBaseEndpoint()).blockingGet();
+        d2.userModule().blockingLogIn("android", "Android123", dhis2MockServer.getBaseEndpoint());
     }
 
     private static void downloadMetadata() {

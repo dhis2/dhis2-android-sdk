@@ -25,30 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.domain.metadata;
+package org.hisp.dhis.android.core.arch.modules.internal;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
 import io.reactivex.Observable;
 
-@Reusable
-public final class MetadataModule {
-
-    private final MetadataCall metadataCall;
-
-    @Inject
-    MetadataModule(MetadataCall metadataCall) {
-        this.metadataCall = metadataCall;
-    }
-
-    public Observable<D2Progress> download() {
-        return metadataCall.download();
-    }
-
-    public void blockingDownload() {
-        metadataCall.blockingDownload();
-    }
+public interface WithProgressDownloader {
+    Observable<D2Progress> download();
+    void blockingDownload();
 }

@@ -25,11 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.repositories.object.internal;
+
+import android.util.Log;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.DeletableDataModel;
 import org.hisp.dhis.android.core.common.Model;
@@ -46,7 +50,7 @@ import io.reactivex.Completable;
 
 public class ReadWriteWithUidDataObjectRepositoryImpl
         <M extends Model & ObjectWithUidInterface & DeletableDataModel, R extends ReadOnlyObjectRepository<M>>
-        extends ReadWriteWithUidObjectRepositoryImpl<M, R> {
+        extends ReadWriteWithUidObjectRepositoryImpl<M, R> implements ReadWriteObjectRepository<M> {
 
     private final IdentifiableDeletableDataObjectStore<M> store;
 
@@ -58,10 +62,12 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
         this.store = store;
     }
 
+    @Override
     public Completable delete() {
         return Completable.fromAction(this::blockingDelete);
     }
 
+    @Override
     public void blockingDelete() throws D2Error {
         M object = blockingGet();
         if (object == null) {
@@ -79,6 +85,20 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
                 store.setState(object.uid(), State.TO_UPDATE);
                 propagateState(object);
             }
+        }
+    }
+
+    @Override
+    public Completable deleteIfExist() {
+        return Completable.fromAction(this::blockingDeleteIfExist);
+    }
+
+    @Override
+    public void blockingDeleteIfExist() {
+        try {
+            blockingDelete();
+        } catch (D2Error d2Error) {
+            Log.v(ReadWriteWithUidDataObjectRepositoryImpl.class.getCanonicalName(), d2Error.errorDescription());
         }
     }
 

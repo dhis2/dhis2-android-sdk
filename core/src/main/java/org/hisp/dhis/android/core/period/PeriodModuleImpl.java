@@ -37,8 +37,8 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Reusable
 public final class PeriodModuleImpl implements PeriodModule {
 
-    public final PeriodHelper periodHelper;
-    public final PeriodCollectionRepository periods;
+    private final PeriodHelper periodHelper;
+    private final PeriodCollectionRepository periods;
 
     @Inject
     PeriodModuleImpl(PeriodHelper periodHelper,

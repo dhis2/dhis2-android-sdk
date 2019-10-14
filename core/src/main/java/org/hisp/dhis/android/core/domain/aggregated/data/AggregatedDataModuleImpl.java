@@ -37,12 +37,12 @@ import dagger.Reusable;
 import io.reactivex.Observable;
 
 @Reusable
-public final class AggregatedDataModule implements WithProgressDownloader {
+public final class AggregatedDataModuleImpl implements WithProgressDownloader {
 
     private final AggregatedDataCall aggregatedDataCall;
 
     @Inject
-    AggregatedDataModule(AggregatedDataCall aggregatedDataCall) {
+    AggregatedDataModuleImpl(AggregatedDataCall aggregatedDataCall) {
         this.aggregatedDataCall = aggregatedDataCall;
     }
 

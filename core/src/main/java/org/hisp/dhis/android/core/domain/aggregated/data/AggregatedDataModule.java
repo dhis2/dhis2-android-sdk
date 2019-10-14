@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.domain.aggregated.data;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader;
 
 import javax.inject.Inject;
 
@@ -36,7 +37,7 @@ import dagger.Reusable;
 import io.reactivex.Observable;
 
 @Reusable
-public final class AggregatedDataModule {
+public final class AggregatedDataModule implements WithProgressDownloader {
 
     private final AggregatedDataCall aggregatedDataCall;
 
@@ -45,10 +46,12 @@ public final class AggregatedDataModule {
         this.aggregatedDataCall = aggregatedDataCall;
     }
 
+    @Override
     public Observable<D2Progress> download() {
         return aggregatedDataCall.download();
     }
 
+    @Override
     public void blockingDownload() {
         aggregatedDataCall.blockingDownload();
     }

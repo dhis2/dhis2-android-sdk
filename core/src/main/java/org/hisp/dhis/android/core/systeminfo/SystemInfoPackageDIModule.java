@@ -41,4 +41,10 @@ public final class SystemInfoPackageDIModule {
     SystemInfoService service(Retrofit retrofit) {
         return retrofit.create(SystemInfoService.class);
     }
+
+    @Provides
+    @Reusable
+    SystemInfoModule systemInfoModule(SystemInfoModuleImpl impl) {
+        return impl;
+    }
 }

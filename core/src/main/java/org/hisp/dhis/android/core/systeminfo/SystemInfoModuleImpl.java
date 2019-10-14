@@ -25,24 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import javax.inject.Inject;
 
-@RunWith(D2JunitRunner.class)
-public class SystemInfoModuleMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
+import dagger.Reusable;
 
-    @Test
-    public void allow_access_to_system_info_user() {
-        SystemInfo systemInfo = d2.systemInfoModule().systemInfo().blockingGet();
-        assertThat(systemInfo.version(), is("2.30"));
-        assertThat(systemInfo.systemName(), is("DHIS 2 Demo - Sierra Leone"));
+@Reusable
+public final class SystemInfoModuleImpl implements SystemInfoModule {
+
+    private final DHISVersionManager versionManager;
+    private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfo;
+
+    @Inject
+    SystemInfoModuleImpl(DHISVersionManager versionManager,
+                         ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository) {
+        this.versionManager = versionManager;
+        this.systemInfo = systemInfoRepository;
+    }
+
+    @Override
+    public DHISVersionManager versionManager() {
+        return versionManager;
+    }
+
+    @Override
+    public ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfo() {
+        return systemInfo;
     }
 }

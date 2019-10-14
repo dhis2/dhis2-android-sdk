@@ -198,7 +198,7 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Test
     public void succeed_when_endpoint_calls_succeed() {
-        metadataCall.download().blockingSubscribe();
+        metadataCall.blockingDownload();
     }
 
     @Test
@@ -263,7 +263,7 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Test
     public void delete_foreign_key_violations_before_calls() {
-        metadataCall.download().blockingSubscribe();
+        metadataCall.blockingDownload();
         verify(databaseAdapter).delete(ForeignKeyViolationTableInfo.TABLE_INFO.name());
     }
 }

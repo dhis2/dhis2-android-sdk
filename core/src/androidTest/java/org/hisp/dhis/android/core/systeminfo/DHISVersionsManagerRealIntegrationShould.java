@@ -52,7 +52,7 @@ public class DHISVersionsManagerRealIntegrationShould extends BaseRealIntegratio
         d2 = D2Factory.forNewDatabase();
         d2.wipeModule().wipeEverything();
 
-        DHISVersionManager versionManager = d2.systemInfoModule().versionManager;
+        DHISVersionManager versionManager = d2.systemInfoModule().versionManager();
 
         d2.userModule().logIn(username, password, RealServerMother.url2_29).blockingGet();
         assertThat(versionManager.getVersion()).isEqualTo(DHISVersion.V2_29);
@@ -66,7 +66,7 @@ public class DHISVersionsManagerRealIntegrationShould extends BaseRealIntegratio
         d2 = D2Factory.forNewDatabase();
         d2.wipeModule().wipeEverything();
 
-        DHISVersionManager versionManager = d2.systemInfoModule().versionManager;
+        DHISVersionManager versionManager = d2.systemInfoModule().versionManager();
 
         d2.userModule().logIn(username, password, RealServerMother.url2_30).blockingGet();
         assertThat(versionManager.getVersion()).isEqualTo(DHISVersion.V2_30);
@@ -80,7 +80,7 @@ public class DHISVersionsManagerRealIntegrationShould extends BaseRealIntegratio
         d2 = D2Factory.forNewDatabase();
         d2.wipeModule().wipeEverything();
 
-        DHISVersionManager versionManager = d2.systemInfoModule().versionManager;
+        DHISVersionManager versionManager = d2.systemInfoModule().versionManager();
 
         d2.userModule().logIn(username, password, RealServerMother.url2_31).blockingGet();
         assertThat(versionManager.getVersion()).isEqualTo(DHISVersion.V2_31);

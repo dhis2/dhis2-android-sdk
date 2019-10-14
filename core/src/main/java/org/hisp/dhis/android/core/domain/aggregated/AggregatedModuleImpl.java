@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.domain.aggregated;
 
 import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader;
-import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedDataModule;
+import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedDataModuleImpl;
 
 import javax.inject.Inject;
 
@@ -38,10 +38,10 @@ import dagger.Reusable;
 @Reusable
 public final class AggregatedModuleImpl implements AggregatedModule {
 
-    private final AggregatedDataModule dataModule;
+    private final AggregatedDataModuleImpl dataModule;
 
     @Inject
-    AggregatedModuleImpl(AggregatedDataModule dataModule) {
+    AggregatedModuleImpl(AggregatedDataModuleImpl dataModule) {
         this.dataModule = dataModule;
     }
 

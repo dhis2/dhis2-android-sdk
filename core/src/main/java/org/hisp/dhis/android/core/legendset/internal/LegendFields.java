@@ -32,19 +32,18 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.legendset.Legend;
 
+import static org.hisp.dhis.android.core.legendset.LegendTableInfo.Columns;
+
 public final class LegendFields {
-    public final static String START_VALUE = "startValue";
-    public final static String END_VALUE = "endValue";
-    public final static String COLOR = "color";
 
     private static final FieldsHelper<Legend> fh = new FieldsHelper<>();
 
     public static final Fields<Legend> allFields = Fields.<Legend>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<Double>field(START_VALUE),
-                    fh.<Double>field(END_VALUE),
-                    fh.<String>field(COLOR)
+                    fh.<Double>field(Columns.START_VALUE),
+                    fh.<Double>field(Columns.END_VALUE),
+                    fh.<String>field(Columns.COLOR)
             ).build();
 
     private LegendFields() {

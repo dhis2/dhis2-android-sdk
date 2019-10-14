@@ -26,28 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
-import org.hisp.dhis.android.core.settings.SystemSettingModuleImpl;
+import javax.inject.Inject;
 
-import dagger.Module;
-import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {SystemSettingEntityDIModule.class})
-public final class SystemSettingPackageDIModule {
+@Reusable
+public final class SystemSettingModuleImpl implements SystemSettingModule {
 
-    @Provides
-    @Reusable
-    SystemSettingService service(Retrofit retrofit) {
-        return retrofit.create(SystemSettingService.class);
+    private final SystemSettingCollectionRepository systemSetting;
+
+    @Inject
+    SystemSettingModuleImpl(SystemSettingCollectionRepository systemSettingRepository) {
+        this.systemSetting = systemSettingRepository;
     }
 
-    @Provides
-    @Reusable
-    SystemSettingModule module(SystemSettingModuleImpl impl) {
-        return impl;
+    @Override
+    public SystemSettingCollectionRepository systemSetting() {
+        return systemSetting;
     }
 }

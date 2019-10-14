@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.period.internal.PeriodHelper;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @Reusable
 public final class PeriodModuleImpl implements PeriodModule {

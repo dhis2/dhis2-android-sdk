@@ -28,19 +28,6 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class SystemSettingModule {
-
-    public final SystemSettingCollectionRepository systemSetting;
-
-    @Inject
-    SystemSettingModule(SystemSettingCollectionRepository systemSettingRepository) {
-        this.systemSetting = systemSettingRepository;
-    }
+public interface SystemSettingModule {
+    SystemSettingCollectionRepository systemSetting();
 }

@@ -219,14 +219,6 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
     }
 
     @Test
-    public void include_sections_as_children() {
-        DataSet dataSet = d2.dataSetModule().dataSets
-                .withSections()
-                .one().blockingGet();
-        assertThat(dataSet.sections().size(), is(1));
-    }
-
-    @Test
     public void include_compulsory_data_element_operands_as_children() {
         DataSet dataSet = d2.dataSetModule().dataSets
                 .withCompulsoryDataElementOperands()

@@ -85,7 +85,7 @@ public class NotePostCallRealIntegrationShould extends BaseRealIntegrationTest {
 
         addNote();
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
 
         d2.wipeModule().wipeEverything();
     }

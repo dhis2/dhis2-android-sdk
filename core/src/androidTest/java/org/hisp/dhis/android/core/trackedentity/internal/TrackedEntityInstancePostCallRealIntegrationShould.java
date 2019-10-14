@@ -156,7 +156,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, geometry,
                 event1Uid, enrollment1Uid, trackedEntityInstance1Uid, trackedEntityAttributeUid, dataElementUid);
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
     }
 
 
@@ -210,7 +210,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         insertATei(newUid, tei, geometry);
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
 
         d2.wipeModule().wipeEverything();
         downloadMetadata();
@@ -237,7 +237,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         insertATei(newUid1, tei, tei.geometry());
         insertATei(newUid2, tei, tei.geometry());
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
 
         d2.wipeModule().wipeEverything();
         downloadMetadata();
@@ -262,7 +262,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         insertATei(newUid1, tei, tei.geometry());
         insertATei(newUid2, tei, tei.geometry());
 
-        d2.trackedEntityModule().trackedEntityInstances.byUid().eq(newUid1).upload().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstances.byUid().eq(newUid1).blockingUpload();
 
         d2.wipeModule().wipeEverything();
         downloadMetadata();
@@ -296,7 +296,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         insertATei(newUid, tei, geometry);
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
         d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(newUid).download().blockingSubscribe();
 
         List<TrackedEntityInstance> response =  d2.trackedEntityModule().trackedEntityInstances.byUid().eq(newUid).blockingGet();
@@ -305,7 +305,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         d2.trackedEntityModule().trackedEntityInstances.uid(newUid).blockingDelete();
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
 
         TestObserver<D2Progress> testObserver =
                 d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(newUid).download().test();
@@ -336,7 +336,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 teiBUid, relationshipType.uid());
         d2.relationshipModule().relationships.blockingAdd(newRelationship);
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
 
         d2.wipeModule().wipeEverything();
         downloadMetadata();
@@ -384,7 +384,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         d2.relationshipModule().relationships.blockingAdd(RelationshipHelper.teiToTeiRelationship(t0.uid(), t1.uid(),
                 relationshipType.uid()));
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
     }
 
     //@Test
@@ -409,11 +409,11 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 relationshipType.uid());
         relationshipsRepository.blockingAdd(newRelationship);
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
 
         relationshipsRepository.uid(newRelationship.uid()).blockingDelete();
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
     }
 
     //@Test
@@ -432,7 +432,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         enrollmentStore.setState(enrollment.uid(), State.TO_UPDATE);
         d2.eventModule().events.uid(eventUid).blockingDelete();
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
 
         d2.wipeModule().wipeEverything();
         downloadMetadata();
@@ -561,7 +561,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     }
 
     private void postTrackedEntityInstances() throws Exception {
-        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
     }
 
     private void downloadMetadata() throws Exception {

@@ -87,6 +87,11 @@ public final class TrackedEntityInstanceCollectionRepository
     }
 
     @Override
+    public void blockingUpload() {
+        upload().blockingSubscribe();
+    }
+
+    @Override
     public TrackedEntityInstanceObjectRepository uid(String uid) {
         RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
         return new TrackedEntityInstanceObjectRepository(store, uid, childrenAppenders, updatedScope);

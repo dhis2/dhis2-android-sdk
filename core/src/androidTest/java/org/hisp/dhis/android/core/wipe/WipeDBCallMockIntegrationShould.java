@@ -62,6 +62,6 @@ public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmpt
     }
 
     private void givenAEventInDatabase() {
-        d2.eventModule().eventDownloader.limit(1).download().blockingSubscribe();
+        d2.eventModule().eventDownloader.limit(1).blockingDownload();
     }
 }

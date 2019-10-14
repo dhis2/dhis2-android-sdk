@@ -98,7 +98,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
         d2.trackedEntityModule().trackedEntityAttributeValues
                 .value(trackedEntityAttribute.uid(), trackedEntityInstance.uid()).blockingSet(valueUid);
 
-        d2.fileResourceModule().fileResources.upload().blockingSubscribe();
+        d2.fileResourceModule().fileResources.blockingUpload();
 
         List<FileResource> fileResources2 = d2.fileResourceModule().fileResources.blockingGet();
 
@@ -106,7 +106,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         assertThat(file2.exists(), is(true));
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
 
         TrackedEntityInstance trackedEntityInstance2 =
                 d2.trackedEntityModule().trackedEntityInstances.blockingGet().get(0);
@@ -135,7 +135,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         d2.trackedEntityModule().trackedEntityDataValues.value(event.uid(), dataElement.uid()).blockingSet(valueUid);
 
-        d2.fileResourceModule().fileResources.upload().blockingSubscribe();
+        d2.fileResourceModule().fileResources.blockingUpload();
 
         List<FileResource> fileResources2 = d2.fileResourceModule().fileResources.blockingGet();
 
@@ -168,6 +168,6 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
                 .byProgramUid("uy2gU8kT1jF").limit(20).download().blockingSubscribe();
 
         d2.eventModule().eventDownloader
-                .byProgramUid("VBqh0ynB2wv").limit(40).download().blockingSubscribe();
+                .byProgramUid("VBqh0ynB2wv").limit(40).blockingDownload();
     }
 }

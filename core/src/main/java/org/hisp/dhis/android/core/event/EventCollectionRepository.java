@@ -92,6 +92,11 @@ public final class EventCollectionRepository
     }
 
     @Override
+    public void blockingUpload() {
+        upload().blockingSubscribe();
+    }
+
+    @Override
     public EventObjectRepository uid(String uid) {
         RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
         return new EventObjectRepository(store, uid, childrenAppenders, updatedScope, dataStatePropagator);

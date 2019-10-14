@@ -70,6 +70,10 @@ public final class EventDownloader extends BaseRepositoryImpl<EventDownloader> {
         return this.callFactory.downloadSingleEvents(params);
     }
 
+    public void blockingDownload() {
+        download().blockingSubscribe();
+    }
+
     public EventDownloader byProgramUid(String programUid) {
         return cf.baseString(QueryParams.PROGRAM).eq(programUid);
     }

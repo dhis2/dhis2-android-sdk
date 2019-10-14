@@ -25,29 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.period;
 
-package org.hisp.dhis.android.core.period.internal;
+import org.hisp.dhis.android.core.period.internal.PeriodHelper;
 
-import org.hisp.dhis.android.core.period.PeriodEntityDIModule;
-import org.hisp.dhis.android.core.period.PeriodModule;
-import org.hisp.dhis.android.core.period.PeriodModuleImpl;
+import javax.inject.Inject;
 
-import dagger.Module;
-import dagger.Provides;
 import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@Module(includes = {PeriodEntityDIModule.class})
-public final class PeriodPackageDIModule {
+@Reusable
+public final class PeriodModuleImpl implements PeriodModule {
 
-    @Provides
-    @Reusable
-    ParentPeriodGenerator parentPeriodGenerator() {
-        return ParentPeriodGeneratorImpl.create();
+    public final PeriodHelper periodHelper;
+    public final PeriodCollectionRepository periods;
+
+    @Inject
+    PeriodModuleImpl(PeriodHelper periodHelper,
+                     PeriodCollectionRepository periods) {
+        this.periodHelper = periodHelper;
+        this.periods = periods;
     }
 
-    @Provides
-    @Reusable
-    PeriodModule periodModule(PeriodModuleImpl impl) {
-        return impl;
+    @Override
+    public PeriodHelper periodHelper() {
+        return periodHelper;
+    }
+
+    @Override
+    public PeriodCollectionRepository periods() {
+        return periods;
     }
 }

@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithUidDataObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.Geometry;
@@ -43,8 +42,7 @@ import java.util.Date;
 import java.util.Map;
 
 public final class EventObjectRepository
-        extends ReadWriteWithUidDataObjectRepositoryImpl<Event, EventObjectRepository>
-        implements ReadWriteObjectRepository<Event> {
+        extends ReadWriteWithUidDataObjectRepositoryImpl<Event, EventObjectRepository> {
 
     private final DataStatePropagator dataStatePropagator;
 

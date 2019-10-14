@@ -165,7 +165,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
         d2.metadataModule().blockingDownload();
 
         d2.trackedEntityModule().trackedEntityInstanceDownloader
-                .byProgramUid("uy2gU8kT1jF").limit(20).download().blockingSubscribe();
+                .byProgramUid("uy2gU8kT1jF").limit(20).blockingDownload();
 
         d2.eventModule().eventDownloader
                 .byProgramUid("VBqh0ynB2wv").limit(40).blockingDownload();

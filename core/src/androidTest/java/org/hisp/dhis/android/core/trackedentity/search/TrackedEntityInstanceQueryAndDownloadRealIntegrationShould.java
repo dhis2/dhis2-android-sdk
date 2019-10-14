@@ -77,7 +77,7 @@ public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends 
             uids.add(tei.uid());
         }
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().in(uids).download().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().in(uids).blockingDownload();
         List<TrackedEntityInstance> downloadedTeis = d2.trackedEntityModule().trackedEntityInstances.byUid().in(uids).blockingGet();
 
         assertThat(queriedTeis.size()).isEqualTo(downloadedTeis.size());

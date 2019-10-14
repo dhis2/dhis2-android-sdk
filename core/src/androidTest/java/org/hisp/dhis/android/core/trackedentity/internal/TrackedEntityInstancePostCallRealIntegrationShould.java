@@ -186,7 +186,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
 
         d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(trackedEntityInstanceUid)
-                .download().blockingSubscribe();
+                .blockingDownload();
 
         TrackedEntityInstance downloadedTrackedEntityInstance = getTrackedEntityInstanceFromDB(trackedEntityInstanceUid);
         Enrollment downloadedEnrollment = getEnrollmentsByTrackedEntityInstanceFromDb(trackedEntityInstanceUid);
@@ -200,7 +200,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     //@Test
     public void post_a_tei() throws Exception {
         downloadMetadata();
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(4).limitByOrgunit(true).download().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(4).limitByOrgunit(true).blockingDownload();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
@@ -215,7 +215,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         d2.wipeModule().wipeEverything();
         downloadMetadata();
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(newUid).download().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(newUid).blockingDownload();
 
         List<TrackedEntityInstance> response = d2.trackedEntityModule().trackedEntityInstances.byUid().eq(newUid).blockingGet();
 
@@ -227,7 +227,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     //@Test
     public void post_more_than_one_tei() throws Exception {
         downloadMetadata();
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(4).limitByOrgunit(true).download().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(4).limitByOrgunit(true).blockingDownload();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
@@ -242,7 +242,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         d2.wipeModule().wipeEverything();
         downloadMetadata();
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(newUid1).download().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(newUid1).blockingDownload();
 
         List<TrackedEntityInstance> teiList =  d2.trackedEntityModule().trackedEntityInstances.byUid().eq(newUid1).blockingGet();
 
@@ -252,7 +252,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     //@Test
     public void post_teis_filtering_what_to_post() throws Exception {
         downloadMetadata();
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(4).limitByOrgunit(true).download().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(4).limitByOrgunit(true).blockingDownload();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
@@ -267,7 +267,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         d2.wipeModule().wipeEverything();
         downloadMetadata();
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(newUid1).download().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(newUid1).blockingDownload();
 
         List<TrackedEntityInstance> teiList =  d2.trackedEntityModule().trackedEntityInstances.byUid().eq(newUid1).blockingGet();
 
@@ -275,7 +275,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         boolean teiDownloadedSuccessfully = true;
         try {
-            d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(newUid2).download().blockingSubscribe();
+            d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(newUid2).blockingDownload();
         } catch (Exception e) {
             teiDownloadedSuccessfully = false;
         }
@@ -286,7 +286,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     //@Test
     public void post_one_tei_and_delete_it() throws Exception {
         downloadMetadata();
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(1).limitByOrgunit(true).download().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(1).limitByOrgunit(true).blockingDownload();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
@@ -297,7 +297,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         insertATei(newUid, tei, geometry);
 
         d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(newUid).download().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(newUid).blockingDownload();
 
         List<TrackedEntityInstance> response =  d2.trackedEntityModule().trackedEntityInstances.byUid().eq(newUid).blockingGet();
 
@@ -320,7 +320,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     //@Test
     public void post_new_relationship_to_client_created_tei() throws Exception {
         downloadMetadata();
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(5).limitByOrgunit(true).download().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(5).limitByOrgunit(true).blockingDownload();
 
         TrackedEntityInstance teiA = trackedEntityInstanceStore.selectFirst();
         RelationshipType relationshipType = d2.relationshipModule().relationshipTypes.blockingGet().iterator().next();
@@ -341,12 +341,12 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         d2.wipeModule().wipeEverything();
         downloadMetadata();
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(teiA.uid()).download().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(teiA.uid()).blockingDownload();
         List<TrackedEntityInstance> responseTeiA = d2.trackedEntityModule().trackedEntityInstances.byUid().eq(teiA.uid()).blockingGet();
         assertThat(responseTeiA.size() == 1).isTrue();
 
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(teiBUid).download().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(teiBUid).blockingDownload();
         List<TrackedEntityInstance> responseTeiB = d2.trackedEntityModule().trackedEntityInstances.byUid().eq(teiBUid).blockingGet();
         assertThat(responseTeiB.size() == 1).isTrue();
 
@@ -372,7 +372,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     public void create_tei_to_tei_relationship() throws Exception {
         downloadMetadata();
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(5).download().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(5).blockingDownload();
         List<TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.selectAll();
         assertThat(trackedEntityInstances.size() >= 5).isTrue();
 
@@ -391,7 +391,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     public void create_and_delete_tei_to_tei_relationship() throws Exception {
         downloadMetadata();
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(10).download().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(10).blockingDownload();
         List<TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.selectAll();
 
         assertThat(trackedEntityInstances.size() == 10).isTrue();
@@ -419,7 +419,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     //@Test
     public void post_a_tei_and_delete_one_event() throws Exception {
         downloadMetadata();
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq("LxMVYhJm3Jp").download().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq("LxMVYhJm3Jp").blockingDownload();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
@@ -436,7 +436,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         d2.wipeModule().wipeEverything();
         downloadMetadata();
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq("LxMVYhJm3Jp").download().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq("LxMVYhJm3Jp").blockingDownload();
 
         Boolean deleted = true;
         for (Event eventToCheck : eventStore.selectAll()) {

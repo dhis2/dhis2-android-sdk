@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import androidx.annotation.NonNull;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -55,8 +57,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import androidx.annotation.NonNull;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -70,7 +70,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_payload.json");
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(teiUid).download().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(teiUid).blockingDownload();
 
         verifyDownloadedTrackedEntityInstancePayload("trackedentity/tracked_entity_instance_payload.json", teiUid);
     }
@@ -83,12 +83,12 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_payload.json");
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(teiUid).download().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(teiUid).blockingDownload();
 
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_with_removed_data_payload.json");
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(teiUid).download().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(teiUid).blockingDownload();
 
         verifyDownloadedTrackedEntityInstancePayload("trackedentity/tracked_entity_instance_with_removed_data_payload.json",
                 teiUid);

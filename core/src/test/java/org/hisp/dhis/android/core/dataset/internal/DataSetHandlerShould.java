@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
@@ -43,6 +42,7 @@ import org.hisp.dhis.android.core.dataset.DataInputPeriod;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLink;
 import org.hisp.dhis.android.core.dataset.DataSetElement;
+import org.hisp.dhis.android.core.dataset.DataSetInternalAccessor;
 import org.hisp.dhis.android.core.dataset.Section;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink;
 import org.hisp.dhis.android.core.indicator.Indicator;
@@ -50,16 +50,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyCollectionOf;
-import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
@@ -130,6 +128,9 @@ public class DataSetHandlerShould {
     @Mock
     private List<DataInputPeriod> dataInputPeriods;
 
+    @Mock
+    private DataSetInternalAccessor dataSetInternalAccessor;
+
     // object to test
     private DataSetHandler dataSetHandler;
 
@@ -147,7 +148,8 @@ public class DataSetHandlerShould {
                 dataInputPeriodHandler,
                 dataSetElementLinkHandler,
                 dataSetIndicatorLinkHandler,
-                collectionCleaner);
+                collectionCleaner,
+                dataSetInternalAccessor);
 
         when(dataSet.uid()).thenReturn("dataset_uid");
         when(dataSet.access()).thenReturn(access);
@@ -159,7 +161,7 @@ public class DataSetHandlerShould {
 
         sections = new ArrayList<>();
         sections.add(section);
-        when(dataSet.sections()).thenReturn(sections);
+        when(dataSetInternalAccessor.accessSections(dataSet)).thenReturn(sections);
 
         compulsoryDataElementOperands = new ArrayList<>();
         compulsoryDataElementOperands.add(compulsoryDataElementOperand);
@@ -179,13 +181,11 @@ public class DataSetHandlerShould {
         verify(dataSetStore, never()).update(any(DataSet.class));
         verify(dataSetStore, never()).insert(any(DataSet.class));
 
-        verify(sectionHandler, never()).handleMany(anyListOf(Section.class));
+        verify(sectionHandler, never()).handleMany(anyList());
 
-        verify(compulsoryDataElementOperandHandler, never()).handleMany(anyListOf(DataElementOperand.class));
+        verify(compulsoryDataElementOperandHandler, never()).handleMany(anyList());
 
-        verify(dataInputPeriodHandler, never()).handleMany(anyString(),
-                anyListOf(DataInputPeriod.class),
-                Matchers.any());
+        verify(dataInputPeriodHandler, never()).handleMany(anyString(), anyList(), any());
     }
 
     @Test
@@ -193,7 +193,7 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet);
 
-        verify(sectionHandler).handleMany(anyListOf(Section.class));
+        verify(sectionHandler).handleMany(anyList());
     }
 
     @Test
@@ -202,7 +202,7 @@ public class DataSetHandlerShould {
         when(dataSetStore.updateOrInsert(any(DataSet.class))).thenReturn(HandleAction.Update);
         dataSetHandler.handle(dataSet);
 
-        verify(sectionOrphanCleaner).deleteOrphan(dataSet, dataSet.sections());
+        verify(sectionOrphanCleaner).deleteOrphan(dataSet, sections);
     }
 
     @Test
@@ -211,7 +211,7 @@ public class DataSetHandlerShould {
         when(dataSetStore.updateOrInsert(any(DataSet.class))).thenReturn(HandleAction.Insert);
         dataSetHandler.handle(dataSet);
 
-        verify(sectionOrphanCleaner, never()).deleteOrphan(dataSet, dataSet.sections());
+        verify(sectionOrphanCleaner, never()).deleteOrphan(dataSet, sections);
     }
 
     @Test
@@ -219,7 +219,7 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet);
 
-        verify(compulsoryDataElementOperandHandler).handleMany(anyListOf(DataElementOperand.class));
+        verify(compulsoryDataElementOperandHandler).handleMany(anyList());
     }
 
     @Test
@@ -227,8 +227,7 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet);
 
-        verify(dataSetCompulsoryDataElementOperandLinkHandler).handleMany(eq(dataSet.uid()),
-                anyListOf(DataElementOperand.class), any(Transformer.class));
+        verify(dataSetCompulsoryDataElementOperandLinkHandler).handleMany(eq(dataSet.uid()), anyList(), any());
     }
 
     @Test
@@ -236,9 +235,7 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet);
 
-        verify(dataInputPeriodHandler).handleMany(anyString(),
-                anyCollectionOf(DataInputPeriod.class),
-                Matchers.any());
+        verify(dataInputPeriodHandler).handleMany(anyString(), anyList(), any());
     }
 
     @Test
@@ -254,8 +251,7 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet);
 
-        verify(dataSetElementLinkHandler).handleMany(anyString(), anyCollectionOf(DataSetElement.class),
-                any(Transformer.class));
+        verify(dataSetElementLinkHandler).handleMany(anyString(), anyList(), any());
     }
 
     @Test
@@ -263,7 +259,6 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet);
 
-        verify(dataSetIndicatorLinkHandler).handleMany(anyString(), anyCollectionOf(Indicator.class),
-                any(Transformer.class));
+        verify(dataSetIndicatorLinkHandler).handleMany(anyString(), anyList(), any());
     }
 }

@@ -25,36 +25,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset.internal;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.Section;
+package org.hisp.dhis.android.core.dataset;
 
-final class SectionChildrenAppender extends ChildrenAppender<DataSet> {
+import java.util.List;
 
-    private final SingleParentChildStore<DataSet, Section> childStore;
+import dagger.Reusable;
 
-    private SectionChildrenAppender(SingleParentChildStore<DataSet, Section> childStore) {
-        this.childStore = childStore;
-    }
+@Reusable
+public class DataSetInternalAccessor {
 
-    @Override
-    protected DataSet appendChildren(DataSet dataSet) {
-        DataSet.Builder builder = dataSet.toBuilder();
-        builder.sections(childStore.getChildren(dataSet));
-        return builder.build();
-    }
-
-    static ChildrenAppender<DataSet> create(DatabaseAdapter databaseAdapter) {
-        return new SectionChildrenAppender(
-                StoreFactory.singleParentChildStore(
-                        databaseAdapter,
-                        SectionStore.CHILD_PROJECTION,
-                        Section::create)
-        );
+    public List<Section> accessSections(DataSet dataSet) {
+        return dataSet.sections();
     }
 }

@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleChildrenAppender;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.dataset.DataSetInternalAccessor;
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.dataset.Section;
 import org.hisp.dhis.android.core.dataset.SectionTableInfo;
@@ -81,6 +82,12 @@ public final class DataSetEntityDIModule {
 
     @Provides
     @Reusable
+    DataSetInternalAccessor internalAccessor() {
+        return new DataSetInternalAccessor();
+    }
+
+    @Provides
+    @Reusable
     @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<DataSet>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         ChildrenAppender<DataSet> objectStyleChildrenAppender =
@@ -91,7 +98,6 @@ public final class DataSetEntityDIModule {
 
         return new HashMap<String, ChildrenAppender<DataSet>>() {{
             put(DataSetFields.STYLE, objectStyleChildrenAppender);
-            put(DataSetFields.SECTIONS, SectionChildrenAppender.create(databaseAdapter));
             put(DataSetFields.COMPULSORY_DATA_ELEMENT_OPERANDS,
                     DataSetCompulsoryDataElementOperandChildrenAppender.create(databaseAdapter));
             put(DataSetFields.DATA_INPUT_PERIODS, DataInputPeriodChildrenAppender.create(databaseAdapter));

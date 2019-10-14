@@ -59,7 +59,7 @@ import org.hisp.dhis.android.core.period.PeriodType;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DataSet.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_DataSet.Builder.class)
 @SuppressWarnings({"PMD.GodClass", "PMD.ExcessivePublicCount"})
 public abstract class DataSet extends BaseNameableObject implements Model, ObjectWithStyle<DataSet, DataSet.Builder> {
 
@@ -143,7 +143,7 @@ public abstract class DataSet extends BaseNameableObject implements Model, Objec
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreSectionListAdapter.class)
-    public abstract List<Section> sections();
+    abstract List<Section> sections();
 
     @Nullable
     @JsonProperty()
@@ -211,7 +211,7 @@ public abstract class DataSet extends BaseNameableObject implements Model, Objec
 
         public abstract Builder indicators(List<Indicator> indicators);
 
-        public abstract Builder sections(List<Section> sections);
+        abstract Builder sections(List<Section> sections);
 
         public abstract Builder compulsoryDataElementOperands(List<DataElementOperand> compulsoryDataElementOperands);
 

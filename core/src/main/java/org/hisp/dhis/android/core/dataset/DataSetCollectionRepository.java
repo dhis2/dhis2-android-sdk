@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
@@ -36,9 +37,12 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.dataset.internal.DataSetFields;
 import org.hisp.dhis.android.core.period.PeriodType;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -121,6 +125,18 @@ public final class DataSetCollectionRepository
 
     public BooleanFilterConnector<DataSetCollectionRepository> byAccessDataWrite() {
         return cf.bool(Columns.ACCESS_DATA_WRITE);
+    }
+
+    public DataSetCollectionRepository byOrganisationUnitUid(String uid) {
+        return byOrganisationUnitList(Collections.singletonList(uid));
+    }
+
+    public DataSetCollectionRepository byOrganisationUnitList(List<String> uids) {
+        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).inLinkTable(
+                DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
+                DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET,
+                DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
+                uids);
     }
 
     public DataSetCollectionRepository withStyle() {

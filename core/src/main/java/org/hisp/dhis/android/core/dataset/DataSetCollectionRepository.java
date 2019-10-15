@@ -127,10 +127,6 @@ public final class DataSetCollectionRepository
         return cf.withChild(DataSetFields.STYLE);
     }
 
-    public DataSetCollectionRepository withSections() {
-        return cf.withChild(DataSetFields.SECTIONS);
-    }
-
     public DataSetCollectionRepository withCompulsoryDataElementOperands() {
         return cf.withChild(DataSetFields.COMPULSORY_DATA_ELEMENT_OPERANDS);
     }

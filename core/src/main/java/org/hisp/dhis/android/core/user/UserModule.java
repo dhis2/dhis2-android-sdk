@@ -78,12 +78,27 @@ public final class UserModule {
     }
 
     @NonNull
+    public User blockingLogIn(String username, String password, String serverUrl) {
+        return logIn(username, password, serverUrl).blockingGet();
+    }
+
+    @NonNull
     public Completable logOut() {
         return logoutCallCallFactory.logOut();
     }
 
     @NonNull
+    public void blockingLogOut() {
+        logOut().blockingAwait();
+    }
+
+    @NonNull
     public Single<Boolean> isLogged() {
         return isUserLoggedInCallFactory.isLogged();
+    }
+
+    @NonNull
+    public boolean blockingIsLogged() {
+        return isLogged().blockingGet();
     }
 }

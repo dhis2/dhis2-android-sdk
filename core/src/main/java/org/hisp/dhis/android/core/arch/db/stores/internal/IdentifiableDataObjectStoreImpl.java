@@ -54,7 +54,8 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
         extends IdentifiableObjectStoreImpl<M> implements IdentifiableDataObjectStore<M> {
 
     private final static String EQ = " = ";
-    private final static String OR = " OR ";
+    private final static String NE = " != ";
+    private final static String AND = " AND ";
 
     private final String selectStateQuery;
     private final String existsQuery;
@@ -77,11 +78,8 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
         String setStateForUpdate = "UPDATE " + tableName + " SET " +
                 STATE + " = (case " +
                     "when " + STATE + EQ + "'" + State.TO_POST + "' then '" + State.TO_POST + "' " +
-                    "when " + STATE + EQ + "'" + State.TO_UPDATE + "'" + OR +
-                        STATE + EQ + "'" + State.SYNCED + "'" + OR +
-                        STATE + EQ + "'" + State.UPLOADING + "'" + OR +
-                        STATE + EQ + "'" + State.ERROR + "'" + OR +
-                        STATE + EQ + "'" + State.WARNING + "' then '" + State.TO_UPDATE + "'" +
+                    "when " + STATE + NE + "'" + State.TO_POST + "'" + AND +
+                        STATE + NE + "'" + State.RELATIONSHIP + "' then '" + State.TO_UPDATE + "'" +
                         " END)" +
                     " where "  +
                         UID + " =? ;";

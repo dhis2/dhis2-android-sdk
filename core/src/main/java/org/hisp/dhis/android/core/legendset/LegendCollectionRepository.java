@@ -25,41 +25,48 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.legendset;
 
-package org.hisp.dhis.android.core.legendset.internal;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.legendset.Legend;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DoubleFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.legendset.LegendTableInfo.Columns;
 
-import java.util.Collections;
 import java.util.Map;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module
-public final class LegendEntityDIModule {
+@Reusable
+public final class LegendCollectionRepository
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<Legend, LegendCollectionRepository> {
 
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<Legend> store(DatabaseAdapter databaseAdapter) {
-        return LegendStore.create(databaseAdapter);
+    @Inject
+    LegendCollectionRepository(final IdentifiableObjectStore<Legend> store,
+                               final Map<String, ChildrenAppender<Legend>> childrenAppenders,
+                               final RepositoryScope scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                s -> new LegendCollectionRepository(store, childrenAppenders, s)));
     }
 
-    @Provides
-    @Reusable
-    public HandlerWithTransformer<Legend> handler(IdentifiableObjectStore<Legend> store) {
-        return new IdentifiableHandlerImpl<>(store);
+    public DoubleFilterConnector<LegendCollectionRepository> byStartValue() {
+        return cf.doubleC(Columns.START_VALUE);
     }
 
-    @Provides
-    @Reusable
-    public Map<String, ChildrenAppender<Legend>> childrenAppenders() {
-        return Collections.emptyMap();
+    public DoubleFilterConnector<LegendCollectionRepository> byEndValue() {
+        return cf.doubleC(Columns.END_VALUE);
+    }
+
+    public StringFilterConnector<LegendCollectionRepository> byLegendSet() {
+        return cf.string(Columns.LEGEND_SET);
+    }
+
+    public StringFilterConnector<LegendCollectionRepository> byColor() {
+        return cf.string(Columns.COLOR);
     }
 }

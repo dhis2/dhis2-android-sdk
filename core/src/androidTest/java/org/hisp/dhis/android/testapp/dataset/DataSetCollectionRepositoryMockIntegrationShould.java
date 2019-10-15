@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -206,6 +207,22 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_access_data_write() {
         List<DataSet> dataSets = d2.dataSetModule().dataSets
                 .byAccessDataWrite().isTrue()
+                .blockingGet();
+        assertThat(dataSets.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_organisation_unit_uid() {
+        List<DataSet> dataSets = d2.dataSetModule().dataSets
+                .byOrganisationUnitUid("DiszpKrYNg8")
+                .blockingGet();
+        assertThat(dataSets.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_organisation_unit_uid_list() {
+        List<DataSet> dataSets = d2.dataSetModule().dataSets
+                .byOrganisationUnitList(Collections.singletonList("DiszpKrYNg8"))
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
     }

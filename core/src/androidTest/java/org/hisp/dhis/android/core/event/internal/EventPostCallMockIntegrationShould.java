@@ -91,7 +91,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts.json");
 
-        d2.eventModule().events.upload().blockingSubscribe();
+        d2.eventModule().events.blockingUpload();
 
         assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(3);
     }
@@ -102,7 +102,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
 
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts.json");
-        d2.eventModule().events.upload().blockingSubscribe();
+        d2.eventModule().events.blockingUpload();
         assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(3);
 
         eventStore.setState("event1Id", State.TO_POST);
@@ -111,7 +111,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
 
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts2.json");
-        d2.eventModule().events.upload().blockingSubscribe();
+        d2.eventModule().events.blockingUpload();
         assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(2);
     }
 
@@ -125,7 +125,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts2.json");
 
-        d2.eventModule().events.upload().blockingSubscribe();
+        d2.eventModule().events.blockingUpload();
 
         assertThat(d2.eventModule().events.blockingCount()).isEqualTo(3);
     }

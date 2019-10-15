@@ -98,6 +98,11 @@ public final class FileResourceCollectionRepository
     }
 
     @Override
+    public void blockingUpload() {
+        upload().blockingSubscribe();
+    }
+
+    @Override
     public Single<String> add(File file) {
         return Single.fromCallable(() -> blockingAdd(file));
     }

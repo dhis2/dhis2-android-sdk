@@ -36,4 +36,5 @@ import io.reactivex.Observable;
 public interface ReadWriteWithUploadWithUidCollectionRepository<M extends Model & ObjectWithUidInterface, C>
         extends ReadWriteWithUidCollectionRepository<M, C> {
     Observable<D2Progress> upload();
+    void blockingUpload();
 }

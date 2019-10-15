@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.domain.aggregated.data;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
@@ -46,5 +47,9 @@ public final class AggregatedDataModule {
 
     public Observable<D2Progress> download() {
         return aggregatedDataCall.download();
+    }
+
+    public void blockingDownload() {
+        aggregatedDataCall.blockingDownload();
     }
 }

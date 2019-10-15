@@ -156,7 +156,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
 
         assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(3);
     }
@@ -167,7 +167,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
-        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
         assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(3);
 
 
@@ -179,7 +179,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_3.json");
-        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
         assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(1);
     }
 
@@ -191,7 +191,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
 
-        d2.trackedEntityModule().trackedEntityInstances.upload().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
 
         assertThat(d2.trackedEntityModule().trackedEntityInstances.blockingCount()).isEqualTo(0);
         assertThat(d2.enrollmentModule().enrollments.blockingCount()).isEqualTo(0);

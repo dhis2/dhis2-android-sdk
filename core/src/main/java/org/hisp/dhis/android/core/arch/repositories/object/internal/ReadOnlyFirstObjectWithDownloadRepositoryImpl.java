@@ -57,4 +57,9 @@ public class ReadOnlyFirstObjectWithDownloadRepositoryImpl<M extends Model, R ex
     public Completable download(boolean storeError) {
         return downloadCompletableProvider.getCompletable(storeError);
     }
+
+    @Override
+    public void blockingDownload(boolean storeError) {
+        download(storeError).blockingAwait();
+    }
 }

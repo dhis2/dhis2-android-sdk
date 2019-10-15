@@ -25,7 +25,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.domain.aggregated.data;
+
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
@@ -61,7 +64,6 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
@@ -226,5 +228,9 @@ final class AggregatedDataCall {
             attributeOptionCombosUids.add(uid);
         }
         return attributeOptionCombosUids;
+    }
+
+    public void blockingDownload() {
+        download().blockingSubscribe();
     }
 }

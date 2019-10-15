@@ -51,7 +51,7 @@ public class EventWithLimitCallMockIntegrationShould extends BaseMockIntegration
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("event/events_1.json");
 
-        d2.eventModule().eventDownloader.limit(eventLimitByOrgUnit).download().blockingSubscribe();
+        d2.eventModule().eventDownloader.limit(eventLimitByOrgUnit).blockingDownload();
 
         EventStore eventStore = EventStoreImpl.create(databaseAdapter);
 

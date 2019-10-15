@@ -35,4 +35,5 @@ import io.reactivex.Observable;
 
 public interface ReadOnlyWithUploadCollectionRepository<M extends Model> extends ReadOnlyCollectionRepository<M> {
     Observable<D2Progress> upload();
+    void blockingUpload();
 }

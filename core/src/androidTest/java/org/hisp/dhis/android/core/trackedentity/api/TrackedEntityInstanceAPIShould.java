@@ -563,7 +563,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
         login();
         syncMetadata();
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(100).download().blockingSubscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(100).blockingDownload();
 
         TrackedEntityInstance instance = getInstanceWithOneEnrollmentAndOneEvent();
 

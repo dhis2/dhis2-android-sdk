@@ -70,6 +70,10 @@ public final class TrackedEntityInstanceDownloader extends BaseRepositoryImpl<Tr
         return this.callFactory.download(params);
     }
 
+    public void blockingDownload() {
+        download().blockingSubscribe();
+    }
+
     public UnwrappedEqInFilterConnector<TrackedEntityInstanceDownloader> byUid() {
         return cf.unwrappedEqIn(QueryParams.UID);
     }

@@ -95,4 +95,18 @@ public final class TrackedEntityModule {
                                                                                      String program) {
         return downloadAndPersistCallFactory.getCall(uids, program);
     }
+
+
+    /**
+     * Download and persists a list of TrackedEntityInstances for a specific program. This method is required to
+     * download glass-protected TrackedEntityInstances.
+     *
+     * @param uids List of TrackedEntityInstance uids
+     * @param program Program uid
+     * @return -
+     */
+    List<TrackedEntityInstance> blockingDownloadTrackedEntityInstancesByUid(Collection<String> uids,
+                                                                                     String program) {
+        return downloadTrackedEntityInstancesByUid(uids, program).blockingGet();
+    }
 }

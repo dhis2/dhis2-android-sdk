@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse;
@@ -78,7 +77,7 @@ public abstract class EventAPIRealShould extends BaseRealIntegrationTest {
     public void setUp() throws IOException {
         super.setUp();
 
-        d2 = D2Factory.create(this.serverUrl, databaseAdapter());
+        d2 = D2Factory.forNewDatabase();
         apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter());
 
         eventService = d2.retrofit().create(EventService.class);
@@ -303,6 +302,6 @@ public abstract class EventAPIRealShould extends BaseRealIntegrationTest {
     }
 
     private void login() {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
     }
 }

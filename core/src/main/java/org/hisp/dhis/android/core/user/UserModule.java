@@ -73,8 +73,8 @@ public final class UserModule {
     }
 
     @NonNull
-    public Single<User> logIn(String username, String password) {
-        return loginCallFactory.logIn(username, password);
+    public Single<User> logIn(String username, String password, String serverUrl) {
+        return loginCallFactory.logIn(username, password, serverUrl);
     }
 
     @NonNull

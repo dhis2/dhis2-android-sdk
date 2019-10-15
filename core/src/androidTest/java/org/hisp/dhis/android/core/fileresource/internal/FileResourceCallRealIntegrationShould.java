@@ -57,7 +57,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
     public void setUp() throws IOException {
         super.setUp();
 
-        d2 = D2Factory.create(RealServerMother.url2_33, databaseAdapter());
+        d2 = D2Factory.forNewDatabase();
     }
 
     //@Test
@@ -160,7 +160,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
     }
 
     private void syncDataAndMetadata() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, RealServerMother.url2_33).blockingGet();
 
         d2.metadataModule().blockingDownload();
 

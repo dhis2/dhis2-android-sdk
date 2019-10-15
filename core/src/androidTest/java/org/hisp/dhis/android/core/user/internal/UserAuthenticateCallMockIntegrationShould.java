@@ -57,7 +57,7 @@ public class UserAuthenticateCallMockIntegrationShould extends BaseMockIntegrati
         dhis2MockServer.enqueueMockResponse("user/user.json");
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
 
-        logInSingle = d2.userModule().logIn("test_user", "test_password");
+        logInSingle = d2.userModule().logIn("test_user", "test_password", dhis2MockServer.getBaseEndpoint());
     }
 
 

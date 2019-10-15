@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
@@ -101,7 +100,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 
         MockitoAnnotations.initMocks(this);
 
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2 = D2Factory.forNewDatabase();
 
         login();
 
@@ -329,7 +328,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
     private void login() {
         try {
             if (!d2.userModule().isLogged().blockingGet()) {
-                d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
+                d2.userModule().logIn(username, password, url).blockingGet();
             }
         } catch (Exception ignored) {
         }

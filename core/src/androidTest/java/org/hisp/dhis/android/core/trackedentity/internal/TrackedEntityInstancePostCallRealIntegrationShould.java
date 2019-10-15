@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
@@ -109,7 +108,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     public void setUp() throws IOException {
         super.setUp();
 
-        d2= D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2= D2Factory.forNewDatabase();
 
         trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter());
         enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter());
@@ -566,7 +565,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     }
 
     private void downloadMetadata() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
         d2.metadataModule().blockingDownload();
     }

@@ -26,24 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.internal;
+package org.hisp.dhis.android.core.configuration;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Reusable
-public class APIUrlProvider {
+@Module
+public final class ConfigurationPackageDIModule {
 
-    private final Retrofit retrofit;
-
-    @Inject
-    public APIUrlProvider(Retrofit retrofit) {
-        this.retrofit = retrofit;
-    }
-
-    public String getAPIUrl() {
-        return retrofit.baseUrl().toString();
+    @Provides
+    @Reusable
+    ConfigurationManager programCallFactory(DatabaseAdapter databaseAdapter) {
+        return ConfigurationManagerFactory.create(databaseAdapter);
     }
 }

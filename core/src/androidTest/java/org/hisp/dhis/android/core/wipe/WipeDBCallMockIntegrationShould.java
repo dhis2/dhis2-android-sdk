@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.wipe;
 
 import org.hisp.dhis.android.core.configuration.ConfigurationTableInfo;
 import org.hisp.dhis.android.core.data.database.DatabaseAssert;
+import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
 import org.junit.Test;
 
@@ -53,7 +54,7 @@ public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmpt
     }
 
     private void givenALoginInDatabase() {
-        d2.userModule().logIn("user", "password").blockingGet();
+        d2.userModule().logIn(RealServerMother.username, RealServerMother.password, dhis2MockServer.getBaseEndpoint()).blockingGet();
     }
 
     private void givenAMetadataInDatabase() {

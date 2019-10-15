@@ -37,34 +37,44 @@ dependencies {
 
 In order to start using the SDK, the first step is to initialize a `D2` object. The helper class `D2Manager` offers static methods to setup and initialize the `D2` instance. Also, it ensures that `D2` is a singleton across the application.
 
+The minimum configuration that needs to be passed to the `D2Manager` is the following: 
+
 ```java
 D2Configuration configuration = D2Configuration.builder()
-    .appName("app_name").appVersion("1.0.0")
     .context(context)
-    .readTimeoutInSeconds(30)
-    .connectTimeoutInSeconds(30)
-    .writeTimeoutInSeconds(30)
     .build();
+```
 
-Single<D2> d2Single = D2Manager.setUp(d2Configuration)
-                .andThen(D2Manager.setServerUrl(serverUrl))
-                .andThen(D2Manager.instantiateD2());
+Using the configuration you can instantiate `D2`.
+```java
+Single<D2> d2Single = D2Manager.instantiateD2(configuration);
+```
 
+Once the single is completed, you can access D2 with the following method: 
+
+```java
 D2 d2 = D2Manager.getD2();
 ```
 
-The object `D2Configuration` receives the following attributes:
+If you are not using RxJava, you can instantiate `D2` in a blocking way: 
 
-|  Attribute    |   Required    |   Description |
-|-|-|-|
-| context       | true          | Application context |
-| appName       | true          | Use to create the "user-agent" header |
-| appVersion    | true          | Use to create the "user-agent" header |
-| readTimeoutInSeconds | true   | Read timeout for http queries |
-| connectTimeoutInSeconds | true| Connect timeout for http queries |
-| writeTimeoutInSeconds | true  | Write timeout for http queries |
-| interceptors  | false         | Interceptors for OkHttpClient |
-| networkInterceptors | false   | NetworkInterceptors for OkHttpClient |
+```java
+D2 d2 = D2Manager.blockingInstantiateD2(configuration);
+```
+
+
+The object `D2Configuration` has a lot of fields to configure the behavior of the SDK.
+
+|  Attribute    |   Required    |   Description | Default
+|-|-|-|-|
+| context       | true          | Application context | -
+| appName       | false         | Use to create the "user-agent" header | From Android Manifest
+| appVersion    | false         | Use to create the "user-agent" header | From Android Manifest
+| readTimeoutInSeconds | false  | Read timeout for http queries | 30 seconds
+| connectTimeoutInSeconds | false | Connect timeout for http queries | 30 seconds
+| writeTimeoutInSeconds | false | Write timeout for http queries | 30 seconds
+| interceptors  | false         | Interceptors for OkHttpClient | None
+| networkInterceptors | false   | NetworkInterceptors for OkHttpClient | None
 
 ## Modules and repositories
 
@@ -222,7 +232,7 @@ A typical workflow would be like this:
 Before interacting with the server it is required to login into the DHIS 2 instance. Currently, the SDK does only support one pair "user - server" simultaneously. That means that only one user can be authenticated in only one server at the same time.
 
 ```java
-d2.userModule().logIn(username, password)
+d2.userModule().logIn(username, password, serverUrl)
 
 d2.userModule().logOut()
 ```

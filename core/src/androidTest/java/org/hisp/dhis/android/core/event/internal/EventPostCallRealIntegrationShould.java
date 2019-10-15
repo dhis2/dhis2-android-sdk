@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
@@ -75,7 +74,7 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2 = D2Factory.forNewDatabase();
 
         eventStore = EventStoreImpl.create(databaseAdapter());
         trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter());
@@ -206,7 +205,7 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
     }
 
     private void downloadMetadata() throws Exception {
-        d2.userModule().logIn(user, password).blockingGet();
+        d2.userModule().logIn(user, password, url).blockingGet();
         d2.metadataModule().blockingDownload();
     }
 

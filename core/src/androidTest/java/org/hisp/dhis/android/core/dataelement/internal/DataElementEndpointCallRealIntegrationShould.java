@@ -52,7 +52,7 @@ public class DataElementEndpointCallRealIntegrationShould extends BaseRealIntegr
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        d2 = D2Factory.create("https://play.dhis2.org/android-current/api/", databaseAdapter());
+        d2 = D2Factory.forNewDatabase();
         dataElementCall = createCall();
     }
 
@@ -68,7 +68,7 @@ public class DataElementEndpointCallRealIntegrationShould extends BaseRealIntegr
 
     // @Test
     public void download_data_elements() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
         /*  This test won't pass independently of DataElementEndpointCallFactory and
             CategoryComboEndpointCallFactory, as the foreign keys constraints won't be satisfied.

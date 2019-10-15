@@ -31,9 +31,6 @@ package org.hisp.dhis.android.core;
 import android.content.Context;
 import android.os.StrictMode;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.VisibleForTesting;
-
 import org.hisp.dhis.android.BuildConfig;
 import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory;
 import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory;
@@ -43,7 +40,7 @@ import org.hisp.dhis.android.core.arch.d2.internal.D2Modules;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
 import org.hisp.dhis.android.core.category.CategoryModule;
-import org.hisp.dhis.android.core.configuration.Configuration;
+import org.hisp.dhis.android.core.configuration.ServerUrlParser;
 import org.hisp.dhis.android.core.constant.ConstantModule;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetModule;
@@ -69,6 +66,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -81,7 +80,7 @@ public final class D2 {
     private final D2Modules modules;
     private final D2DIComponent d2DIComponent;
 
-    D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter, @NonNull Context context) {
+    private D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter, @NonNull Context context) {
 
         if (BuildConfig.DEBUG) {
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
@@ -215,19 +214,12 @@ public final class D2 {
     }
 
     public static class Builder {
-        private Configuration configuration;
         private DatabaseAdapter databaseAdapter;
         private OkHttpClient okHttpClient;
         private Context context;
 
         public Builder() {
             // empty constructor
-        }
-
-        @NonNull
-        public Builder configuration(@NonNull Configuration configuration) {
-            this.configuration = configuration;
-            return this;
         }
 
         @NonNull
@@ -248,13 +240,10 @@ public final class D2 {
             return this;
         }
 
+        @SuppressWarnings("PMD.AccessorClassGeneration")
         public D2 build() {
             if (databaseAdapter == null) {
                 throw new IllegalArgumentException("databaseAdapter == null");
-            }
-
-            if (configuration == null) {
-                throw new IllegalStateException("configuration must be set first");
             }
 
             if (okHttpClient == null) {
@@ -266,7 +255,10 @@ public final class D2 {
             }
 
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(configuration.serverUrl())
+                    // Actual baseUrl will be set later during logIn through ServerUrlInterceptor. But it's mandatory
+                    // to create Retrofit
+                    .baseUrl(ServerUrlParser.parse("https://temporary-dhis-url.org/"))
+
                     .client(okHttpClient)
                     .addConverterFactory(JacksonConverterFactory.create(ObjectMapperFactory.objectMapper()))
                     .addConverterFactory(FilterConverterFactory.create())

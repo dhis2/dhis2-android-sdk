@@ -40,6 +40,7 @@ public class RealServerMother {
     public static String android_previous2 = "https://play.dhis2.org/android-previous2/";
     public static String android_dev = "https://play.dhis2.org/android-dev/";
     public static String url = android_current;
-    public static String user = "android";
+
+    public static String username = "android";
     public static String password = "Android123";
 }

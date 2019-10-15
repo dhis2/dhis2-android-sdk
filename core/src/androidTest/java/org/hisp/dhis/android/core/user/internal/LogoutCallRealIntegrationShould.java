@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.user.internal;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.event.internal.EventCallFactory;
@@ -57,14 +56,14 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
     public void setUp() throws IOException {
         super.setUp();
 
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2 = D2Factory.forNewDatabase();
 
         authenticatedUserStore = AuthenticatedUserStore.create(databaseAdapter());
     }
 
     //@Test
     public void delete_credentials_when_log_out_after_sync_data() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
         d2.metadataModule().blockingDownload();
 
@@ -88,7 +87,7 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
     //@Test
     public void recreate_credentials_when_login_again()
             throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
         d2.metadataModule().blockingDownload();
 
@@ -103,7 +102,7 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
         assertThat(authenticatedUser).isNotNull();
         assertThat(authenticatedUser.credentials()).isNull();
 
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
         authenticatedUser = authenticatedUserStore.selectFirst();
 
@@ -113,8 +112,8 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void response_successful_on_login_logout_and_login() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
         d2.userModule().logOut().blockingAwait();
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
     }
 }

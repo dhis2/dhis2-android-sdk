@@ -62,18 +62,18 @@ public class NotePostCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void download_tei_add_one_note_and_sync_in_2_29() throws Exception {
-        d2 = D2Factory.create(RealServerMother.url2_29, databaseAdapter());
-        downloadUpdateAndSyncTei();
+        d2 = D2Factory.forNewDatabase();
+        downloadUpdateAndSyncTei(RealServerMother.url2_29);
     }
 
     //@Test
     public void download_tei_add_one_note_and_sync_in_2_30_or_more() throws Exception {
-        d2 = D2Factory.create(RealServerMother.url2_30, databaseAdapter());
-        downloadUpdateAndSyncTei();
+        d2 = D2Factory.forNewDatabase();
+        downloadUpdateAndSyncTei(RealServerMother.url2_30);
     }
 
-    private void downloadUpdateAndSyncTei() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
+    private void downloadUpdateAndSyncTei(String serverUrl) throws Exception {
+        d2.userModule().logIn(username, password, serverUrl).blockingGet();
 
         d2.metadataModule().blockingDownload();
 

@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.arch.d2.internal;
 
 import android.content.Context;
 
-import androidx.annotation.VisibleForTesting;
-
 import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule;
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
@@ -43,6 +41,7 @@ import org.hisp.dhis.android.core.arch.repositories.di.internal.RepositoriesDIMo
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.internal.CategoryPackageDIModule;
 import org.hisp.dhis.android.core.common.internal.CommonPackageDIModule;
+import org.hisp.dhis.android.core.configuration.ConfigurationPackageDIModule;
 import org.hisp.dhis.android.core.constant.internal.ConstantPackageDIModule;
 import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalPackageDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElement;
@@ -81,6 +80,7 @@ import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 
 import javax.inject.Singleton;
 
+import androidx.annotation.VisibleForTesting;
 import dagger.Component;
 import retrofit2.Retrofit;
 
@@ -95,6 +95,7 @@ import retrofit2.Retrofit;
 
         CategoryPackageDIModule.class,
         CommonPackageDIModule.class,
+        ConfigurationPackageDIModule.class,
         ConstantPackageDIModule.class,
         DataElementPackageDIModule.class,
         DataSetPackageDIModule.class,
@@ -158,6 +159,7 @@ public interface D2DIComponent {
 
         Builder categoryPackageDIModule(CategoryPackageDIModule categoryPackageDIModule);
         Builder commonPackageDIModule(CommonPackageDIModule commonPackageDIModule);
+        Builder configurationPackageDIModule(ConfigurationPackageDIModule configurationPackageDIModule);
         Builder constantPackageDIModule(ConstantPackageDIModule constantPackageDIModule);
         Builder dataElementPackageDIModule(DataElementPackageDIModule dataElementPackageDIModule);
         Builder dataSetPackageDIModule(DataSetPackageDIModule dataSetPackageDIModule);

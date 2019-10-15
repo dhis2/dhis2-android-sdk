@@ -47,18 +47,14 @@ public class ServerUrlInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
 
-        if (request.url().toString().startsWith("http://localhost")) {
-            return chain.proceed(request);
-        } else {
-            HttpUrl newUrl = HttpUrl.parse(baseUrlUpToAPI + "/api/" + extractAfterAPI(request.url().toString()));
-            Request newRequest = request.newBuilder().url(newUrl).build();
+        HttpUrl newUrl = HttpUrl.parse(baseUrlUpToAPI + "/api/" + extractAfterAPI(request.url().toString()));
+        Request newRequest = request.newBuilder().url(newUrl).build();
 
-            Response response = chain.proceed(newRequest);
-            if (response.code() == 302) {
-                setServerUrl(response.header("Location"));
-            }
-            return response;
+        Response response = chain.proceed(newRequest);
+        if (response.code() == 302) {
+            setServerUrl(response.header("Location"));
         }
+        return response;
     }
 
     private static String extractBeforeAPI(String url) {

@@ -26,10 +26,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.fileresource;
+package org.hisp.dhis.android.core.fileresource.internal;
 
-import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader;
+import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository;
+import org.hisp.dhis.android.core.fileresource.FileResourceModule;
 
-public interface FileResourceModule extends WithProgressDownloader {
-    FileResourceCollectionRepository fileResources();
+import javax.inject.Inject;
+
+import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.reactivex.Observable;
+
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+@Reusable
+public final class FileResourceModuleImpl implements FileResourceModule {
+
+    private final FileResourceCollectionRepository fileResources;
+    private final FileResourceCall fileResourceCall;
+
+    @Inject
+    FileResourceModuleImpl(FileResourceCollectionRepository fileResources,
+                           FileResourceCall fileResourceCall) {
+        this.fileResources = fileResources;
+        this.fileResourceCall = fileResourceCall;
+    }
+
+    @Override
+    public Observable<D2Progress> download() {
+        return fileResourceCall.download();
+    }
+
+    @Override
+    public void blockingDownload() {
+        fileResourceCall.blockingDownload();
+    }
+
+    @Override
+    public FileResourceCollectionRepository fileResources() {
+        return fileResources;
+    }
 }

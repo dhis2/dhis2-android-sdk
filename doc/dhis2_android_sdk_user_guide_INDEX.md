@@ -506,18 +506,18 @@ Through this repository it is possible to request files, save new ones and uploa
 
     - **Get**. It behaves in a similiar fashion to any other Sdk repository. It allows to get collections by applying different filters if desired.
         ```
-        d2.fileResourceModule().fileResources
+        d2.fileResourceModule().fileResources()
             .[ filters ]
             .get()
         ```
     - **Add**. To save a file you have to add it using the `add()` method of the repository by providing an object of type `File`. The `add()` method will return the uid that was generated when adding the file. This uid should be used to update the tracked entity attribute value or the tracked entity data value associated with the file resource.
         ```
-        d2.fileResourceModule().fileResources
+        d2.fileResourceModule().fileResources()
             .add(file);
         ```
     - **Upload**. Calling the `upload()` method will trigger a series of successive calls in which all non-synchronized files will be sent to the server. After each upload, the server response will be processed. The server will provide a new uid to the file resource and the Sdk will automatically rename the file and update the `FileResource` object and the tracked entity attribute values ​​or tracked entity data values ​​associated with it.
         ```
-        d2.fileResourceModule().fileResources
+        d2.fileResourceModule().fileResources()
             .upload()
         ```
 

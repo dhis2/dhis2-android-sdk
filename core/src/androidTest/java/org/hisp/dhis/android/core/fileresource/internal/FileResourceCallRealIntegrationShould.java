@@ -66,7 +66,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         d2.fileResourceModule().blockingDownload();
 
-        List<FileResource> fileResources = d2.fileResourceModule().fileResources.blockingGet();
+        List<FileResource> fileResources = d2.fileResourceModule().fileResources().blockingGet();
 
         assertThat(fileResources.size(), is(2));
 
@@ -81,13 +81,13 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         d2.fileResourceModule().blockingDownload();
 
-        List<FileResource> fileResources = d2.fileResourceModule().fileResources.blockingGet();
+        List<FileResource> fileResources = d2.fileResourceModule().fileResources().blockingGet();
 
         File file = new File(fileResources.get(0).path());
 
         assertThat(file.exists(), is(true));
 
-        String valueUid = d2.fileResourceModule().fileResources.blockingAdd(file);
+        String valueUid = d2.fileResourceModule().fileResources().blockingAdd(file);
 
         TrackedEntityAttribute trackedEntityAttribute =
                 d2.trackedEntityModule().trackedEntityAttributes.byValueType().eq(ValueType.IMAGE).one().blockingGet();
@@ -98,9 +98,9 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
         d2.trackedEntityModule().trackedEntityAttributeValues
                 .value(trackedEntityAttribute.uid(), trackedEntityInstance.uid()).blockingSet(valueUid);
 
-        d2.fileResourceModule().fileResources.blockingUpload();
+        d2.fileResourceModule().fileResources().blockingUpload();
 
-        List<FileResource> fileResources2 = d2.fileResourceModule().fileResources.blockingGet();
+        List<FileResource> fileResources2 = d2.fileResourceModule().fileResources().blockingGet();
 
         File file2 = new File(fileResources2.get(1).path());
 
@@ -120,13 +120,13 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         d2.fileResourceModule().blockingDownload();
 
-        List<FileResource> fileResources = d2.fileResourceModule().fileResources.blockingGet();
+        List<FileResource> fileResources = d2.fileResourceModule().fileResources().blockingGet();
 
         File file = new File(fileResources.get(0).path());
 
         assertThat(file.exists(), is(true));
 
-        String valueUid = d2.fileResourceModule().fileResources.blockingAdd(file);
+        String valueUid = d2.fileResourceModule().fileResources().blockingAdd(file);
 
         DataElement dataElement =
                 d2.dataElementModule().dataElements().byValueType().eq(ValueType.IMAGE).one().blockingGet();
@@ -135,9 +135,9 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         d2.trackedEntityModule().trackedEntityDataValues.value(event.uid(), dataElement.uid()).blockingSet(valueUid);
 
-        d2.fileResourceModule().fileResources.blockingUpload();
+        d2.fileResourceModule().fileResources().blockingUpload();
 
-        List<FileResource> fileResources2 = d2.fileResourceModule().fileResources.blockingGet();
+        List<FileResource> fileResources2 = d2.fileResourceModule().fileResources().blockingGet();
 
         File file2 = new File(fileResources2.get(1).path());
 
@@ -150,11 +150,11 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         d2.fileResourceModule().blockingDownload();
 
-        List<FileResource> fileResources = d2.fileResourceModule().fileResources.blockingGet();
+        List<FileResource> fileResources = d2.fileResourceModule().fileResources().blockingGet();
 
         d2.fileResourceModule().blockingDownload();
 
-        List<FileResource> fileResources2 = d2.fileResourceModule().fileResources.blockingGet();
+        List<FileResource> fileResources2 = d2.fileResourceModule().fileResources().blockingGet();
 
         assertThat(fileResources.size(), is(fileResources2.size()));
     }

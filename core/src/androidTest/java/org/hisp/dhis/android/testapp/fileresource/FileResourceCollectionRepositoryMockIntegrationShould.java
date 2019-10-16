@@ -63,9 +63,9 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
     @Test
     public void find_all() throws D2Error, IOException {
         cleanFileResources();
-        d2.fileResourceModule().fileResources.blockingAdd(getFile());
+        d2.fileResourceModule().fileResources().blockingAdd(getFile());
         List<FileResource> fileResources =
-                d2.fileResourceModule().fileResources
+                d2.fileResourceModule().fileResources()
                         .blockingGet();
 
         assertThat(fileResources.size(), is(1));
@@ -74,9 +74,9 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
     @Test
     public void filter_by_uid() throws D2Error, IOException {
         cleanFileResources();
-        String fileUid = d2.fileResourceModule().fileResources.blockingAdd(getFile());
+        String fileUid = d2.fileResourceModule().fileResources().blockingAdd(getFile());
         List<FileResource> fileResources =
-                d2.fileResourceModule().fileResources
+                d2.fileResourceModule().fileResources()
                         .byUid().eq(fileUid)
                         .blockingGet();
 
@@ -86,9 +86,9 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
     @Test
     public void filter_by_name() throws D2Error, IOException {
         cleanFileResources();
-        String fileUid = d2.fileResourceModule().fileResources.blockingAdd(getFile());
+        String fileUid = d2.fileResourceModule().fileResources().blockingAdd(getFile());
         List<FileResource> fileResources =
-                d2.fileResourceModule().fileResources
+                d2.fileResourceModule().fileResources()
                         .byName().eq(fileUid+ ".png")
                         .blockingGet();
 
@@ -100,9 +100,9 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
         String BEFORE_DATE = "2007-12-24T12:24:25.203";
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse(BEFORE_DATE);
 
-        d2.fileResourceModule().fileResources.blockingAdd(getFile());
+        d2.fileResourceModule().fileResources().blockingAdd(getFile());
         List<FileResource> fileResources =
-                d2.fileResourceModule().fileResources
+                d2.fileResourceModule().fileResources()
                         .byLastUpdated().after(created)
                         .blockingGet();
 
@@ -112,9 +112,9 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
     @Test
     public void filter_by_content_type() throws D2Error, IOException {
         cleanFileResources();
-        d2.fileResourceModule().fileResources.blockingAdd(getFile());
+        d2.fileResourceModule().fileResources().blockingAdd(getFile());
         List<FileResource> fileResources =
-                d2.fileResourceModule().fileResources
+                d2.fileResourceModule().fileResources()
                         .byContentType().eq("image/png")
                         .blockingGet();
 
@@ -124,9 +124,9 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
     @Test
     public void filter_by_path() throws D2Error, IOException {
         cleanFileResources();
-        d2.fileResourceModule().fileResources.blockingAdd(getFile());
+        d2.fileResourceModule().fileResources().blockingAdd(getFile());
         List<FileResource> fileResources =
-                d2.fileResourceModule().fileResources
+                d2.fileResourceModule().fileResources()
                         .byPath().like("files/sdk_resources")
                         .blockingGet();
 
@@ -136,9 +136,9 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
     @Test
     public void filter_by_state() throws D2Error, IOException {
         cleanFileResources();
-        d2.fileResourceModule().fileResources.blockingAdd(getFile());
+        d2.fileResourceModule().fileResources().blockingAdd(getFile());
         List<FileResource> fileResources =
-                d2.fileResourceModule().fileResources
+                d2.fileResourceModule().fileResources()
                         .byState().eq(State.TO_POST)
                         .blockingGet();
 
@@ -148,9 +148,9 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
     @Test
     public void filter_by_content_length() throws D2Error, IOException {
         cleanFileResources();
-        d2.fileResourceModule().fileResources.blockingAdd(getFile());
+        d2.fileResourceModule().fileResources().blockingAdd(getFile());
         List<FileResource> fileResources =
-                d2.fileResourceModule().fileResources
+                d2.fileResourceModule().fileResources()
                         .byContentLength().eq(1024L)
                         .blockingGet();
 
@@ -160,18 +160,18 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
     @Test
     public void add_fileResources_to_the_repository() throws D2Error, IOException {
         cleanFileResources();
-        List<FileResource> fileResources1 = d2.fileResourceModule().fileResources.blockingGet();
+        List<FileResource> fileResources1 = d2.fileResourceModule().fileResources().blockingGet();
         assertThat(fileResources1.size(), is(0));
 
         File file = getFile();
         assertThat(file.exists(), is(true));
 
-        String fileResourceUid = d2.fileResourceModule().fileResources.blockingAdd(file);
+        String fileResourceUid = d2.fileResourceModule().fileResources().blockingAdd(file);
 
-        List<FileResource> fileResources2 = d2.fileResourceModule().fileResources.blockingGet();
+        List<FileResource> fileResources2 = d2.fileResourceModule().fileResources().blockingGet();
         assertThat(fileResources2.size(), is(1));
 
-        FileResource fileResource = d2.fileResourceModule().fileResources.uid(fileResourceUid).blockingGet();
+        FileResource fileResource = d2.fileResourceModule().fileResources().uid(fileResourceUid).blockingGet();
         assertThat(fileResource.uid(), is(fileResourceUid));
 
         File savedFile = new File(fileResource.path());

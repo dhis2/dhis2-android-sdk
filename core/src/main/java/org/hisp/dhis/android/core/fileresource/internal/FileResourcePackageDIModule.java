@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.fileresource.internal;
 
+import org.hisp.dhis.android.core.fileresource.FileResourceModule;
+
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
@@ -42,5 +44,11 @@ public final class FileResourcePackageDIModule {
     @Reusable
     FileResourceService service(Retrofit retrofit) {
         return retrofit.create(FileResourceService.class);
+    }
+
+    @Provides
+    @Reusable
+    FileResourceModule module(FileResourceModuleImpl impl) {
+        return impl;
     }
 }

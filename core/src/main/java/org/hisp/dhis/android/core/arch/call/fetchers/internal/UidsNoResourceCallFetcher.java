@@ -66,9 +66,13 @@ public abstract class UidsNoResourceCallFetcher<P> implements CallFetcher<P> {
             for (Set<String> partitionUids : partitions) {
                 UidsQuery uidQuery = UidsQuery.create(partitionUids);
                 List<P> callObjects = apiCallExecutor.executePayloadCall(getCall(uidQuery));
-                objects.addAll(callObjects);
+                objects.addAll(transform(callObjects));
             }
         }
         return objects;
+    }
+
+    public List<P> transform(List<P> list) {
+        return list;
     }
 }

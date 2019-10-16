@@ -24,6 +24,14 @@
           "trackedEntityAttribute": {
             "id": "cejWyOfXge6"
           }
+        },
+        {
+          "displayInList": true,
+          "searchable": true,
+          "mandatory": false,
+          "trackedEntityType": {
+            "id": "nEenWmSyUEp"
+          }
         }
       ]
     }

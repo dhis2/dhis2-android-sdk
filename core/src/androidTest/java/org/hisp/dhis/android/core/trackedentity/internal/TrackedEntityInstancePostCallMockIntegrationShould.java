@@ -194,7 +194,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
 
         assertThat(d2.trackedEntityModule().trackedEntityInstances.blockingCount()).isEqualTo(0);
-        assertThat(d2.enrollmentModule().enrollments.blockingCount()).isEqualTo(0);
+        assertThat(d2.enrollmentModule().enrollments().blockingCount()).isEqualTo(0);
         assertThat(d2.eventModule().events.blockingCount()).isEqualTo(0);
         assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(0);
     }

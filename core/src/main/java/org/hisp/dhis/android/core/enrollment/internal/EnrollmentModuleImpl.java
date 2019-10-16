@@ -28,22 +28,25 @@
 
 package org.hisp.dhis.android.core.enrollment.internal;
 
+import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
-import org.hisp.dhis.android.core.enrollment.note.internal.NoteEntityDIModule;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module(includes = {
-        EnrollmentEntityDIModule.class,
-        NoteEntityDIModule.class
-})
-public final class EnrollmentPackageDIModule {
+@Reusable
+public final class EnrollmentModuleImpl implements EnrollmentModule {
 
-    @Provides
-    @Reusable
-    EnrollmentModule module(EnrollmentModuleImpl impl) {
-        return impl;
+    private final EnrollmentCollectionRepository enrollments;
+
+    @Inject
+    EnrollmentModuleImpl(EnrollmentCollectionRepository enrollments) {
+        this.enrollments = enrollments;
+    }
+
+    @Override
+    public EnrollmentCollectionRepository enrollments() {
+        return enrollments;
     }
 }

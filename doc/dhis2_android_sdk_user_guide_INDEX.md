@@ -657,7 +657,7 @@ For example, read the list of constants using repositories and interacting direc
 
 ```java
 // Using repositories
-d2.constantModule().constants.get() // Single<List<Constant>>
+d2.constantModule().constants().get() // Single<List<Constant>>
 
 // Direct database interaction
 String query = "SELECT * FROM " + ConstantTableInfo.TABLE_INFO.name();

@@ -28,6 +28,22 @@
 
 package org.hisp.dhis.android.core.constant;
 
-public interface ConstantModule {
-    ConstantCollectionRepository constants();
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+public final class ConstantModuleImpl implements ConstantModule {
+
+    private final ConstantCollectionRepository constants;
+
+    @Inject
+    ConstantModuleImpl(ConstantCollectionRepository constantsRepository) {
+        this.constants = constantsRepository;
+    }
+
+    @Override
+    public ConstantCollectionRepository constants() {
+        return constants;
+    }
 }

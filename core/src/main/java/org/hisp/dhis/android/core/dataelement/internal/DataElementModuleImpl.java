@@ -25,8 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.dataelement.internal;
 
-public interface DataElementModule {
-    DataElementCollectionRepository dataElements();
+import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository;
+import org.hisp.dhis.android.core.dataelement.DataElementModule;
+
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+public final class DataElementModuleImpl implements DataElementModule {
+
+    private final DataElementCollectionRepository dataElements;
+
+    @Inject
+    DataElementModuleImpl(DataElementCollectionRepository dataElementsRepository) {
+        this.dataElements = dataElementsRepository;
+    }
+
+    @Override
+    public DataElementCollectionRepository dataElements() {
+        return dataElements;
+    }
 }

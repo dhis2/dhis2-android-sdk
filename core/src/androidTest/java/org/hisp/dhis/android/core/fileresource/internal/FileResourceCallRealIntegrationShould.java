@@ -129,7 +129,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
         String valueUid = d2.fileResourceModule().fileResources.blockingAdd(file);
 
         DataElement dataElement =
-                d2.dataElementModule().dataElements.byValueType().eq(ValueType.IMAGE).one().blockingGet();
+                d2.dataElementModule().dataElements().byValueType().eq(ValueType.IMAGE).one().blockingGet();
 
         Event event = d2.eventModule().events.blockingGet().get(0);
 

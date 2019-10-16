@@ -28,21 +28,34 @@
 
 package org.hisp.dhis.android.core.legendset.internal;
 
+import org.hisp.dhis.android.core.legendset.LegendCollectionRepository;
+import org.hisp.dhis.android.core.legendset.LegendSetCollectionRepository;
 import org.hisp.dhis.android.core.legendset.LegendSetModule;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module(includes = {
-        LegendEntityDIModule.class,
-        LegendSetEntityDIModule.class
-})
-public final class LegendPackageDIModule {
+@Reusable
+public final class LegendSetModuleImpl implements LegendSetModule {
 
-    @Provides
-    @Reusable
-    LegendSetModule module(LegendSetModuleImpl impl) {
-        return impl;
+    private final LegendSetCollectionRepository legendSets;
+    private final LegendCollectionRepository legends;
+
+    @Inject
+    LegendSetModuleImpl(LegendSetCollectionRepository legendSets,
+                        LegendCollectionRepository legends) {
+        this.legendSets = legendSets;
+        this.legends = legends;
+    }
+
+    @Override
+    public LegendSetCollectionRepository legendSets() {
+        return legendSets;
+    }
+
+    @Override
+    public LegendCollectionRepository legends() {
+        return legends;
     }
 }

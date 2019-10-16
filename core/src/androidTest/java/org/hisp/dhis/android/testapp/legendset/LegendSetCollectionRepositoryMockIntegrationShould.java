@@ -44,14 +44,14 @@ public class LegendSetCollectionRepositoryMockIntegrationShould extends BaseMock
 
     @Test
     public void find_all() {
-        List<LegendSet> legendSets = d2.legendSetModule().legendSets
+        List<LegendSet> legendSets = d2.legendSetModule().legendSets()
                 .blockingGet();
         assertThat(legendSets.size(), is(1));
     }
 
     @Test
     public void filter_by_symbolizer() {
-        List<LegendSet> legendSets = d2.legendSetModule().legendSets
+        List<LegendSet> legendSets = d2.legendSetModule().legendSets()
                 .bySymbolizer().eq("color")
                 .blockingGet();
         assertThat(legendSets.size(), is(1));
@@ -59,7 +59,7 @@ public class LegendSetCollectionRepositoryMockIntegrationShould extends BaseMock
 
     @Test
     public void include_legends_as_children() {
-        LegendSet legendSet = d2.legendSetModule().legendSets
+        LegendSet legendSet = d2.legendSetModule().legendSets()
                 .withLegends()
                 .one()
                 .blockingGet();

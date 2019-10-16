@@ -145,6 +145,19 @@
               "read": true
             }
           }
+        },
+        {
+          "lastUpdated": "2016-04-12T15:34:04.920",
+          "created": "2016-04-12T15:34:04.920",
+          "id": "aD8pd21Dt4i",
+          "displayInReports": false,
+          "compulsory": true,
+          "allowProvidedElsewhere": false,
+          "sortOrder": 1,
+          "allowFutureDate": true,
+          "programStage": {
+            "id": "dBwrot7S420"
+          }
         }
       ],
       "programStageSections": [

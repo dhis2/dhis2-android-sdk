@@ -83,7 +83,7 @@ public final class TrackedEntityTypeCallFactory extends UidsCallFactoryImpl<Trac
             }
 
             @Override
-            public List<TrackedEntityType> transform(List<TrackedEntityType> list) {
+            protected List<TrackedEntityType> transform(List<TrackedEntityType> list) {
                 List<TrackedEntityType> types = new ArrayList<>();
                 for (TrackedEntityType type : list) {
                     if (type.trackedEntityTypeAttributes() != null) {

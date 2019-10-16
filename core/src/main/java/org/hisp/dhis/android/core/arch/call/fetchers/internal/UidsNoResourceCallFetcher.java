@@ -72,7 +72,7 @@ public abstract class UidsNoResourceCallFetcher<P> implements CallFetcher<P> {
         return objects;
     }
 
-    public List<P> transform(List<P> list) {
+    protected List<P> transform(List<P> list) {
         return list;
     }
 }

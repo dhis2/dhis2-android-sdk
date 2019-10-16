@@ -608,7 +608,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
             if (instance.enrollments() != null && instance.enrollments().size() == 1) {
                 Enrollment enrollment = instance.enrollments().get(0);
                 List<Event> events =
-                        d2.eventModule().events.byEnrollmentUid().eq(enrollment.uid()).blockingGet();
+                        d2.eventModule().events().byEnrollmentUid().eq(enrollment.uid()).blockingGet();
 
                 if (events.size() == 1) {
                     Enrollment enrollmentWithEvents = enrollment.toBuilder().events(events).build();

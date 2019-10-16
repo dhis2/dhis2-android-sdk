@@ -82,7 +82,7 @@ public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockInte
     }
 
     private static void downloadEvents() {
-        d2.eventModule().eventDownloader.limit(2).blockingDownload();
+        d2.eventModule().eventDownloader().limit(2).blockingDownload();
     }
 
     private static void downloadAggregatedData() {

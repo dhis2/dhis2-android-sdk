@@ -130,7 +130,7 @@ d2.<module>.<repository>
     .<action>;
 
 // An example for events
-d2.eventModule().events
+d2.eventModule().events()
     .byOrganisationUnitUid().eq("DiszpKrYNg8")
     .byEventDate().after(Date("2019-05-05"))
     .orderByEventDate(DESC)
@@ -145,7 +145,7 @@ Repositories expose the list of available filters prefixed by the keyword "by". 
 Several filters can be appended to the same query in any order. Filters are joined globally using the operator "AND". This means that a query like
 
 ```java
-d2.eventModule().events
+d2.eventModule().events()
     .byOrganisationUnitUid().eq("DiszpKrYNg8")
     .byEventDate().after(Date("2019-05-05"))
     ...
@@ -160,7 +160,7 @@ Ordering modifiers are prefixed by the keyword "orderBy".
 Several "orderBy" modifiers can be appended to the same query. The order of the "orderBy" modifiers within the query determines the order priority. This means that a query like
 
 ```java
-d2.eventModule().events
+d2.eventModule().events()
     .orderByEventDate(DESC)
     .orderByLastUpdated(DESC)
     ...
@@ -352,10 +352,10 @@ In general, there are two different cases to manage data creation/edition/deleti
 And in code this would look like:
 
 ```java
-String eventUid = d2.eventModule().events.add(
+String eventUid = d2.eventModule().events().add(
     EventCreateProjection.create("enrollent", "program", "programStage", "orgUnit", "attCombo"));
 
-d2.eventModule().events.uid(eventUid).setStatus(COMPLETED);
+d2.eventModule().events().uid(eventUid).setStatus(COMPLETED);
 ```
 
 **Non-identifiable objects** (TrackedEntityAttributeValue, TrackedEntityDataValue). These repositories have a `value()` method that gives you access to edition methods for a single object. The parameters accepted by this method are the parameters that unambiguously identify a value.

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import org.hisp.dhis.android.core.event.EventModule;
+
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
@@ -42,5 +44,11 @@ public final class EventPackageDIModule {
     @Reusable
     EventService service(Retrofit retrofit) {
         return retrofit.create(EventService.class);
+    }
+
+    @Provides
+    @Reusable
+    EventModule module(EventModuleImpl impl) {
+        return impl;
     }
 }

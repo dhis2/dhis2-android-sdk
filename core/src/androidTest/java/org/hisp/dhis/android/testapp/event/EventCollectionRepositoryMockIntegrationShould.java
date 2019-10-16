@@ -54,7 +54,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void find_all() {
         List<Event> events =
-                d2.eventModule().events
+                d2.eventModule().events()
                         .blockingGet();
 
         assertThat(events.size(), is(4));
@@ -63,7 +63,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void filter_by_uid() {
         List<Event> events =
-                d2.eventModule().events
+                d2.eventModule().events()
                         .byUid().eq("single1")
                         .blockingGet();
 
@@ -73,7 +73,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void filter_by_enrollment() {
         List<Event> events =
-                d2.eventModule().events
+                d2.eventModule().events()
                         .byEnrollmentUid().eq("enroll1")
                         .blockingGet();
 
@@ -83,7 +83,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void filter_by_created() throws ParseException {
         List<Event> events =
-                d2.eventModule().events
+                d2.eventModule().events()
                         .byCreated().eq(BaseNameableObject.DATE_FORMAT.parse("2017-08-07T15:47:25.959"))
                         .blockingGet();
 
@@ -93,7 +93,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void filter_by_last_updated() throws ParseException {
         List<Event> events =
-                d2.eventModule().events
+                d2.eventModule().events()
                         .byLastUpdated().eq(BaseNameableObject.DATE_FORMAT.parse("2019-01-01T22:26:39.094"))
                         .blockingGet();
 
@@ -103,7 +103,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void filter_by_created_at_client() {
         List<Event> events =
-                d2.eventModule().events
+                d2.eventModule().events()
                         .byCreatedAtClient().eq("2018-02-28T00:00:00.000")
                         .blockingGet();
 
@@ -113,7 +113,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void filter_by_last_updated_at_client() {
         List<Event> events =
-                d2.eventModule().events
+                d2.eventModule().events()
                         .byLastUpdatedAtClient().eq("2018-02-28T00:00:00.000")
                         .blockingGet();
 
@@ -123,7 +123,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void filter_by_status() {
         List<Event> events =
-                d2.eventModule().events
+                d2.eventModule().events()
                         .byStatus().eq(EventStatus.ACTIVE)
                         .blockingGet();
 
@@ -133,7 +133,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void filter_by_geometry_type() {
         List<Event> events =
-                d2.eventModule().events
+                d2.eventModule().events()
                 .byGeometryType().eq(FeatureType.POINT)
                 .blockingGet();
 
@@ -143,7 +143,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void filter_by_geometry_coordinates() {
         List<Event> events =
-                d2.eventModule().events
+                d2.eventModule().events()
                 .byGeometryCoordinates().eq("[21.0, 43.0]")
                 .blockingGet();
 
@@ -153,7 +153,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void filter_by_program() {
         List<Event> events =
-                d2.eventModule().events
+                d2.eventModule().events()
                         .byProgramUid().eq("lxAQ7Zs9VYR")
                         .blockingGet();
 
@@ -163,7 +163,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void filter_by_program_stage() {
         List<Event> events =
-                d2.eventModule().events
+                d2.eventModule().events()
                         .byProgramStageUid().eq("dBwrot7S420")
                         .blockingGet();
 
@@ -173,7 +173,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void filter_by_organization_unit() {
         List<Event> events =
-                d2.eventModule().events
+                d2.eventModule().events()
                         .byOrganisationUnitUid().eq("DiszpKrYNg8")
                         .blockingGet();
 
@@ -183,7 +183,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void filter_by_event_date() throws ParseException {
         List<Event> events =
-                d2.eventModule().events
+                d2.eventModule().events()
                         .byEventDate().eq(BaseNameableObject.DATE_FORMAT.parse("2017-02-27T00:00:00.000"))
                         .blockingGet();
 
@@ -193,7 +193,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void filter_by_complete_date() throws ParseException {
         List<Event> events =
-                d2.eventModule().events
+                d2.eventModule().events()
                         .byCompleteDate().eq(BaseNameableObject.DATE_FORMAT.parse("2016-02-27T00:00:00.000"))
                         .blockingGet();
 
@@ -203,7 +203,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void filter_by_due_date() throws ParseException {
         List<Event> events =
-                d2.eventModule().events
+                d2.eventModule().events()
                         .byDueDate().eq(BaseNameableObject.DATE_FORMAT.parse("2017-01-28T00:00:00.000"))
                         .blockingGet();
 
@@ -213,7 +213,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void filter_by_state() {
         List<Event> events =
-                d2.eventModule().events
+                d2.eventModule().events()
                         .byState().eq(State.SYNCED)
                         .blockingGet();
 
@@ -223,7 +223,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void filter_by_attribute_option_combo() {
         List<Event> events =
-                d2.eventModule().events
+                d2.eventModule().events()
                         .byAttributeOptionComboUid().eq("bRowv6yZOF2")
                         .blockingGet();
 
@@ -233,7 +233,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void filter_by_deleted() {
         List<Event> events =
-                d2.eventModule().events
+                d2.eventModule().events()
                         .byDeleted().isFalse()
                         .blockingGet();
 
@@ -243,7 +243,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     @Test
     public void filter_by_tracked_entity_instance() {
         List<Event> events =
-                d2.eventModule().events
+                d2.eventModule().events()
                         .byTrackedEntityInstanceUids(Collections.singletonList("nWrB0TfWlvh"))
                         .blockingGet();
 
@@ -252,28 +252,28 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
 
     @Test
     public void count_tracked_entity_instances_unrestricted() {
-        int count = d2.eventModule().events.countTrackedEntityInstances();
+        int count = d2.eventModule().events().countTrackedEntityInstances();
 
         assertThat(count, is(2));
     }
 
     @Test
     public void count_tracked_entity_instances_restricted() {
-        int count = d2.eventModule().events.byUid().eq("event1").countTrackedEntityInstances();
+        int count = d2.eventModule().events().byUid().eq("event1").countTrackedEntityInstances();
 
         assertThat(count, is(1));
     }
 
     @Test
     public void include_tracked_entity_data_values_as_children() {
-        Event event = d2.eventModule().events
+        Event event = d2.eventModule().events()
                 .withTrackedEntityDataValues().uid("single1").blockingGet();
         assertThat(event.trackedEntityDataValues().size(), is(6));
     }
 
     @Test
     public void order_by_due_date() {
-        List<Event> events = d2.eventModule().events
+        List<Event> events = d2.eventModule().events()
                 .orderByDueDate(RepositoryScope.OrderByDirection.ASC)
                 .blockingGet();
         assertThat(events.get(0).uid(), is("event1"));
@@ -284,7 +284,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
 
     @Test
     public void order_by_last_updated() {
-        List<Event> events = d2.eventModule().events
+        List<Event> events = d2.eventModule().events()
                 .orderByLastUpdated(RepositoryScope.OrderByDirection.ASC)
                 .blockingGet();
         assertThat(events.get(0).uid(), is("event1"));
@@ -295,7 +295,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
 
     @Test
     public void order_by_event_date_and_last_updated() {
-        List<Event> events = d2.eventModule().events
+        List<Event> events = d2.eventModule().events()
                 .orderByEventDate(RepositoryScope.OrderByDirection.ASC)
                 .orderByLastUpdated(RepositoryScope.OrderByDirection.ASC)
                 .blockingGet();
@@ -307,7 +307,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
 
     @Test
     public void order_by_complete_date() {
-        List<Event> events = d2.eventModule().events
+        List<Event> events = d2.eventModule().events()
                 .orderByCompleteDate(RepositoryScope.OrderByDirection.ASC)
                 .blockingGet();
         assertThat(events.get(0).uid(), is("event2"));
@@ -318,19 +318,19 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
 
     @Test
     public void add_events_to_the_repository() throws D2Error {
-        List<Event> events1 = d2.eventModule().events.blockingGet();
+        List<Event> events1 = d2.eventModule().events().blockingGet();
         assertThat(events1.size(), is(4));
 
-        String eventUid = d2.eventModule().events.blockingAdd(
+        String eventUid = d2.eventModule().events().blockingAdd(
                 EventCreateProjection.create("enroll1", "lxAQ7Zs9VYR", "dBwrot7S420",
                         "DiszpKrYNg8", "bRowv6yZOF2"));
 
-        List<Event> events2 = d2.eventModule().events.blockingGet();
+        List<Event> events2 = d2.eventModule().events().blockingGet();
         assertThat(events2.size(), is(5));
 
-        Event event = d2.eventModule().events.uid(eventUid).blockingGet();
+        Event event = d2.eventModule().events().uid(eventUid).blockingGet();
         assertThat(event.uid(), is(eventUid));
 
-        d2.eventModule().events.uid(eventUid).blockingDelete();
+        d2.eventModule().events().uid(eventUid).blockingDelete();
     }
 }

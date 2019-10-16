@@ -26,37 +26,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.internal.EventStore;
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.event.EventCollectionRepository;
+import org.hisp.dhis.android.core.event.EventDownloader;
+import org.hisp.dhis.android.core.event.EventModule;
 
-import java.util.List;
+import javax.inject.Inject;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import androidx.annotation.VisibleForTesting;
+import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@RunWith(D2JunitRunner.class)
-public class EventWithLimitCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
+@Reusable
+public final class EventModuleImpl implements EventModule {
 
-    @Test
-    public void download_events() {
-        int eventLimitByOrgUnit = 1;
+    private final EventCollectionRepository events;
+    private final EventDownloader eventDownloader;
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
-        dhis2MockServer.enqueueMockResponse("event/events_1.json");
+    @VisibleForTesting
+    @SuppressFBWarnings("URF_UNREAD_FIELD")
+    final EventPersistenceCallFactory eventPersistenceCallFactory;
 
-        d2.eventModule().eventDownloader().limit(eventLimitByOrgUnit).blockingDownload();
+    @Inject
+    EventModuleImpl(EventCollectionRepository events,
+                    EventPersistenceCallFactory eventPersistenceCallFactory,
+                    EventDownloader eventDownloader) {
+        this.events = events;
+        this.eventPersistenceCallFactory = eventPersistenceCallFactory;
+        this.eventDownloader = eventDownloader;
+    }
 
-        EventStore eventStore = EventStoreImpl.create(databaseAdapter);
+    @Override
+    public EventCollectionRepository events() {
+        return events;
+    }
 
-        List<Event> downloadedEvents = eventStore.querySingleEvents();
-
-        assertThat(downloadedEvents.size(), is(eventLimitByOrgUnit));
+    @Override
+    public EventDownloader eventDownloader() {
+        return eventDownloader;
     }
 }

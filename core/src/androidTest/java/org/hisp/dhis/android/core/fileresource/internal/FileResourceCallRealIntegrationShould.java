@@ -131,7 +131,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
         DataElement dataElement =
                 d2.dataElementModule().dataElements().byValueType().eq(ValueType.IMAGE).one().blockingGet();
 
-        Event event = d2.eventModule().events.blockingGet().get(0);
+        Event event = d2.eventModule().events().blockingGet().get(0);
 
         d2.trackedEntityModule().trackedEntityDataValues.value(event.uid(), dataElement.uid()).blockingSet(valueUid);
 
@@ -167,7 +167,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
         d2.trackedEntityModule().trackedEntityInstanceDownloader
                 .byProgramUid("uy2gU8kT1jF").limit(20).blockingDownload();
 
-        d2.eventModule().eventDownloader
+        d2.eventModule().eventDownloader()
                 .byProgramUid("VBqh0ynB2wv").limit(40).blockingDownload();
     }
 }

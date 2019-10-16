@@ -430,7 +430,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         trackedEntityInstanceStore.setState(tei.uid(), State.TO_UPDATE);
         enrollmentStore.setState(enrollment.uid(), State.TO_UPDATE);
-        d2.eventModule().events.uid(eventUid).blockingDelete();
+        d2.eventModule().events().uid(eventUid).blockingDelete();
 
         d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
 

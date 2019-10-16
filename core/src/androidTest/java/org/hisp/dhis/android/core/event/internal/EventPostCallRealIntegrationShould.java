@@ -98,7 +98,7 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
         createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid1,
                 dataElementUid, attributeOptionCombo);
 
-        d2.eventModule().events.blockingUpload();
+        d2.eventModule().events().blockingUpload();
     }
 
     // commented out since it is a flaky test that works against a real server.
@@ -201,7 +201,7 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
     }
 
     private void pushDummyEvent() throws Exception {
-        d2.eventModule().events.blockingUpload();
+        d2.eventModule().events().blockingUpload();
     }
 
     private void downloadMetadata() throws Exception {

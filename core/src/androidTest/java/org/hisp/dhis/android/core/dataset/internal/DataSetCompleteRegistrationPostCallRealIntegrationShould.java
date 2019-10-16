@@ -70,7 +70,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
                 = getTestDataSetCompleteRegistrationWith(State.TO_POST, "2018");
 
         DataSetCompleteRegistrationCollectionRepository repository
-                = d2.dataSetModule().dataSetCompleteRegistrations;
+                = d2.dataSetModule().dataSetCompleteRegistrations();
         repository.blockingAdd(dataSetCompleteRegistration);
 
         repository.blockingUpload();
@@ -94,7 +94,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
 
         assertThat(insertToPostDataSetCompleteRegistration(dataSetCompleteRegistration)).isTrue();
 
-        d2.dataSetModule().dataSetCompleteRegistrations.blockingUpload();
+        d2.dataSetModule().dataSetCompleteRegistrations().blockingUpload();
 
         /*int importCountTotal = dataValueImportSummary.importCount().updated() +
                 dataValueImportSummary.importCount().ignored();
@@ -115,7 +115,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
         DataSetCompleteRegistration dataSetCompleteRegistration
                 = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2018");
 
-        DataSetCompleteRegistrationCollectionRepository repository = d2.dataSetModule().dataSetCompleteRegistrations;
+        DataSetCompleteRegistrationCollectionRepository repository = d2.dataSetModule().dataSetCompleteRegistrations();
         repository.blockingAdd(toDeleteDataSetCompleteRegistration);
         repository.blockingAdd(dataSetCompleteRegistration);
         dataSetCompleteRegistrationStore.setDeleted(toDeleteDataSetCompleteRegistration);
@@ -140,7 +140,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
                 = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2018");
 
         DataSetCompleteRegistrationCollectionRepository repository
-                = d2.dataSetModule().dataSetCompleteRegistrations;
+                = d2.dataSetModule().dataSetCompleteRegistrations();
         repository.blockingAdd(dataSetCompleteRegistration);
         dataSetCompleteRegistrationStore.setDeleted(dataSetCompleteRegistration);
         dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, State.TO_UPDATE);

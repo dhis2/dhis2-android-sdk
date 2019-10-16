@@ -73,7 +73,7 @@ public class OptionCallShould extends BaseMockIntegrationTestEmptyEnqueable {
     public void persist_options_in_data_base_when_call() throws Exception {
         executeOptionCall();
 
-        OptionCollectionRepository options = d2.optionModule().options;
+        OptionCollectionRepository options = d2.optionModule().options();
         assertThat(options.blockingCount()).isEqualTo(3);
         assertThat(options.uid("Y1ILwhy5VDY").blockingExists()).isTrue();
         assertThat(options.uid("egT1YqFWsVk").blockingExists()).isTrue();

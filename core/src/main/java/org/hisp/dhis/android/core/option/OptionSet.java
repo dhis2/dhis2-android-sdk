@@ -60,7 +60,7 @@ public abstract class OptionSet extends BaseIdentifiableObject implements Model 
     public abstract ValueType valueType();
 
     /**
-     * @deprecated use d2.optionModule().options instead
+     * @deprecated use d2.optionModule().options() instead
      *
      * @return
      */

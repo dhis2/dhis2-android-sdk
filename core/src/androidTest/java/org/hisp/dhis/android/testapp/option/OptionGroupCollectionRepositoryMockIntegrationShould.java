@@ -45,7 +45,7 @@ public class OptionGroupCollectionRepositoryMockIntegrationShould extends BaseMo
     @Test
     public void find_all() {
         List<OptionGroup> optionGroups =
-                d2.optionModule().optionGroups
+                d2.optionModule().optionGroups()
                         .blockingGet();
 
         assertThat(optionGroups.size(), is(1));
@@ -54,7 +54,7 @@ public class OptionGroupCollectionRepositoryMockIntegrationShould extends BaseMo
     @Test
     public void filter_by_option_set() {
         List<OptionGroup> optionGroups =
-                d2.optionModule().optionGroups
+                d2.optionModule().optionGroups()
                         .byOptionSetUid()
                         .eq("VQ2lai3OfVG")
                         .blockingGet();
@@ -65,7 +65,7 @@ public class OptionGroupCollectionRepositoryMockIntegrationShould extends BaseMo
     @Test
     public void add_options_as_children() {
         OptionGroup optionGroup =
-                d2.optionModule().optionGroups
+                d2.optionModule().optionGroups()
                         .withOptions()
                         .one().blockingGet();
 

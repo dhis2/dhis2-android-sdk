@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -41,8 +43,6 @@ import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectW
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
 @JsonDeserialize(builder = $AutoValue_TrackedEntityTypeAttribute.Builder.class)
 public abstract class TrackedEntityTypeAttribute implements Model {
@@ -51,6 +51,7 @@ public abstract class TrackedEntityTypeAttribute implements Model {
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid trackedEntityType();
 
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid trackedEntityAttribute();

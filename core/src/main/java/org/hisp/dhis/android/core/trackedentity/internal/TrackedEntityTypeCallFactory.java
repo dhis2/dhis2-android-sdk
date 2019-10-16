@@ -38,7 +38,10 @@ import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoR
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -77,6 +80,25 @@ public final class TrackedEntityTypeCallFactory extends UidsCallFactoryImpl<Trac
                         TrackedEntityTypeFields.lastUpdated.gt(null),
                         Boolean.FALSE
                 );
+            }
+
+            @Override
+            public List<TrackedEntityType> transform(List<TrackedEntityType> list) {
+                List<TrackedEntityType> types = new ArrayList<>();
+                for (TrackedEntityType type : list) {
+                    if (type.trackedEntityTypeAttributes() != null) {
+                        List<TrackedEntityTypeAttribute> attributes = new ArrayList<>();
+                        for (TrackedEntityTypeAttribute attribute : type.trackedEntityTypeAttributes()) {
+                            if (attribute.trackedEntityAttribute() != null) {
+                                attributes.add(attribute);
+                            }
+                        }
+                        types.add(type.toBuilder().trackedEntityTypeAttributes(attributes).build());
+                    } else {
+                        types.add(type);
+                    }
+                }
+                return types;
             }
         };
     }

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.indicator.internal;
 
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.indicator.Indicator;
+import org.hisp.dhis.android.core.indicator.IndicatorModule;
 import org.hisp.dhis.android.core.indicator.IndicatorType;
 
 import dagger.Module;
@@ -66,5 +67,11 @@ public final class IndicatorPackageDIModule {
     @Reusable
     IndicatorTypeService indicatorTypeService(Retrofit retrofit) {
         return retrofit.create(IndicatorTypeService.class);
+    }
+
+    @Provides
+    @Reusable
+    IndicatorModule module(IndicatorModuleImpl impl) {
+        return impl;
     }
 }

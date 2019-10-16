@@ -26,42 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.testapp.indicator;
+package org.hisp.dhis.android.core.indicator.internal;
 
-import org.hisp.dhis.android.core.indicator.IndicatorType;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.indicator.IndicatorCollectionRepository;
+import org.hisp.dhis.android.core.indicator.IndicatorModule;
+import org.hisp.dhis.android.core.indicator.IndicatorTypeCollectionRepository;
 
-import java.util.List;
+import javax.inject.Inject;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import dagger.Reusable;
 
-@RunWith(D2JunitRunner.class)
-public class IndicatorTypeCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
+@Reusable
+public final class IndicatorModuleImpl implements IndicatorModule {
 
-    @Test
-    public void find_all() {
-        List<IndicatorType> indicatorTypes = d2.indicatorModule().indicatorTypes()
-                .blockingGet();
-        assertThat(indicatorTypes.size(), is(1));
+    private final IndicatorCollectionRepository indicators;
+    private final IndicatorTypeCollectionRepository indicatorTypes;
+
+    @Inject
+    IndicatorModuleImpl(IndicatorCollectionRepository indicators,
+                        IndicatorTypeCollectionRepository indicatorTypes) {
+        this.indicators = indicators;
+        this.indicatorTypes = indicatorTypes;
     }
 
-    @Test
-    public void filter_by_number() {
-        List<IndicatorType> indicatorTypes = d2.indicatorModule().indicatorTypes()
-                .byNumber().isFalse()
-                .blockingGet();
-        assertThat(indicatorTypes.size(), is(1));
+    @Override
+    public IndicatorCollectionRepository indicators() {
+        return indicators;
     }
 
-    @Test
-    public void filter_by_factor() {
-        List<IndicatorType> indicatorTypes = d2.indicatorModule().indicatorTypes()
-                .byFactor().eq(100)
-                .blockingGet();
-        assertThat(indicatorTypes.size(), is(1));
+    @Override
+    public IndicatorTypeCollectionRepository indicatorTypes() {
+        return indicatorTypes;
     }
 }

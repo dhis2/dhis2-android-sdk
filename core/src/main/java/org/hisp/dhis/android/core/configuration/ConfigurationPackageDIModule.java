@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.configuration;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.constant.ConstantModule;
+import org.hisp.dhis.android.core.constant.ConstantModuleImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -41,5 +43,11 @@ public final class ConfigurationPackageDIModule {
     @Reusable
     ConfigurationManager programCallFactory(DatabaseAdapter databaseAdapter) {
         return ConfigurationManagerFactory.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    ConstantModule module(ConstantModuleImpl impl) {
+        return impl;
     }
 }

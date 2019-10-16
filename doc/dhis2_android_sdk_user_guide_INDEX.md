@@ -381,7 +381,7 @@ d2.( trackedEntityModule() | eventModule() )
 Server response is parsed to ensure that data has been correctly uploaded to the server. In case the server response includes import conflicts, these conflicts are stored in the database, so the app can check them and take an action to solve them.
 
 ```java
-d2.importModule().trackerImportConflicts
+d2.importModule().trackerImportConflicts()
 ```
 
 Conflicts linked to a TrackedEntityInstance, Enrollment or Event are automatically removed after a successful upload of the object.

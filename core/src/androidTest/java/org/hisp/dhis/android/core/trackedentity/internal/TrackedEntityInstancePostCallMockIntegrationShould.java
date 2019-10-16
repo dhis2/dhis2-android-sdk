@@ -158,7 +158,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
 
-        assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(3);
+        assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(3);
     }
 
     @Test
@@ -168,7 +168,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
         d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
-        assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(3);
+        assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(3);
 
 
         TrackedEntityInstanceStoreImpl.create(databaseAdapter).setState("teiId", State.TO_POST);
@@ -180,7 +180,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_3.json");
         d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
-        assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(1);
+        assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(1);
     }
 
     @Test
@@ -196,7 +196,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         assertThat(d2.trackedEntityModule().trackedEntityInstances.blockingCount()).isEqualTo(0);
         assertThat(d2.enrollmentModule().enrollments().blockingCount()).isEqualTo(0);
         assertThat(d2.eventModule().events().blockingCount()).isEqualTo(0);
-        assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(0);
+        assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(0);
     }
 
     @Test

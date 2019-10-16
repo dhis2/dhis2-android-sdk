@@ -25,21 +25,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.imports.internal;
 
-import dagger.Module;
-import dagger.Provides;
+import org.hisp.dhis.android.core.imports.TrackerImportConflictCollectionRepository;
+
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module(includes = {
-        TrackerImportConflictEntityDIModule.class
-})
-public final class ImportPackageDIModule {
+@Reusable
+public final class ImportModuleImpl implements ImportModule {
 
-    @Provides
-    @Reusable
-    ImportModule module(ImportModuleImpl impl) {
-        return impl;
+    private final TrackerImportConflictCollectionRepository trackerImportConflicts;
+
+    @Inject
+    ImportModuleImpl(TrackerImportConflictCollectionRepository trackerImportConflicts) {
+        this.trackerImportConflicts = trackerImportConflicts;
+    }
+
+    @Override
+    public TrackerImportConflictCollectionRepository trackerImportConflicts() {
+        return trackerImportConflicts;
     }
 }

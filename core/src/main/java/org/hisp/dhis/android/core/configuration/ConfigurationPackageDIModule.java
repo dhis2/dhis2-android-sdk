@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.configuration;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.constant.ConstantModule;
-import org.hisp.dhis.android.core.constant.ConstantModuleImpl;
+import org.hisp.dhis.android.core.constant.internal.ConstantModuleImpl;
 
 import dagger.Module;
 import dagger.Provides;

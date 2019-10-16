@@ -26,7 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.constant;
+package org.hisp.dhis.android.core.constant.internal;
+
+import org.hisp.dhis.android.core.constant.ConstantCollectionRepository;
+import org.hisp.dhis.android.core.constant.ConstantModule;
 
 import javax.inject.Inject;
 

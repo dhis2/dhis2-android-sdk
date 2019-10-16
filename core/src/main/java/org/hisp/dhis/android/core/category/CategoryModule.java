@@ -27,29 +27,9 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class CategoryModule {
-
-    public final CategoryCollectionRepository categories;
-    public final CategoryOptionCollectionRepository categoryOptions;
-    public final CategoryOptionComboCollectionRepository categoryOptionCombos;
-    public final CategoryComboCollectionRepository categoryCombos;
-
-    @Inject
-    CategoryModule(
-            CategoryCollectionRepository categories,
-            CategoryOptionCollectionRepository categoryOptions,
-            CategoryOptionComboCollectionRepository categoryOptionCombos,
-            CategoryComboCollectionRepository categoryCombos) {
-        this.categories = categories;
-        this.categoryOptions = categoryOptions;
-        this.categoryOptionCombos = categoryOptionCombos;
-        this.categoryCombos = categoryCombos;
-    }
+public interface CategoryModule {
+    CategoryCollectionRepository categories();
+    CategoryOptionCollectionRepository categoryOptions();
+    CategoryOptionComboCollectionRepository categoryOptionCombos();
+    CategoryComboCollectionRepository categoryCombos();
 }

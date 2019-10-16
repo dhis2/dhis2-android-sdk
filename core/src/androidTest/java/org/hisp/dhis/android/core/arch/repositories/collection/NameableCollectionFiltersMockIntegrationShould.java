@@ -47,7 +47,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
 
     @Test
     public void allow_filter_by_short_uid() {
-        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions
+        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byUid().eq("as6ygGvUGNg")
                 .blockingGet();
         assertThat(categoryOptions.size(), is(1));
@@ -55,7 +55,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
 
     @Test
     public void allow_filter_by_code() {
-        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions
+        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byCode().eq("default code")
                 .blockingGet();
         assertThat(categoryOptions.size(), is(1));
@@ -63,7 +63,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
 
     @Test
     public void allow_filter_by_name() {
-        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions
+        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byName().eq("default name")
                 .blockingGet();
         assertThat(categoryOptions.size(), is(1));
@@ -71,7 +71,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
 
     @Test
     public void allow_filter_by_display_name() {
-        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions
+        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byDisplayName().eq("default display name")
                 .blockingGet();
         assertThat(categoryOptions.size(), is(1));
@@ -80,7 +80,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
     @Test
     public void allow_filter_by_created() throws ParseException {
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:24.777");
-        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions
+        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byCreated().eq(created)
                 .blockingGet();
         assertThat(categoryOptions.size(), is(1));
@@ -89,7 +89,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
     @Test
     public void allow_filter_by_last_updated() throws ParseException {
         Date lastUpdated = BaseIdentifiableObject.DATE_FORMAT.parse("2016-04-12T20:37:48.666");
-        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions
+        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byLastUpdated().eq(lastUpdated)
                 .blockingGet();
         assertThat(categoryOptions.size(), is(1));
@@ -97,7 +97,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
 
     @Test
     public void allow_filter_by_short_name() {
-        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions
+        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byShortName().eq("default short name")
                 .blockingGet();
         assertThat(categoryOptions.size(), is(1));
@@ -105,7 +105,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
 
     @Test
     public void allow_filter_by_display_short_name() {
-        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions
+        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byDisplayShortName().eq("default display short name")
                 .blockingGet();
         assertThat(categoryOptions.size(), is(1));
@@ -113,7 +113,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
 
     @Test
     public void allow_filter_by_description() {
-        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions
+        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byDescription().eq("default description")
                 .blockingGet();
         assertThat(categoryOptions.size(), is(1));
@@ -121,7 +121,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
 
     @Test
     public void allow_filter_by_display_description() {
-        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions
+        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byDisplayDescription().eq("default display description")
                 .blockingGet();
         assertThat(categoryOptions.size(), is(1));
@@ -129,7 +129,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
 
     @Test
     public void allow_combination_of_identifiable_and_nameable_filter() {
-        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions
+        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byName().eq("default name")
                 .byDisplayDescription().eq("default display description")
                 .blockingGet();
@@ -138,7 +138,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
 
     @Test
     public void allow_combination_of_nameable_and_identifiable_filter() {
-        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions
+        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byDisplayDescription().eq("default display description")
                 .byName().eq("default name")
                 .blockingGet();

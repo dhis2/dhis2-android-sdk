@@ -133,6 +133,12 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     @ColumnAdapter(DbProgramTypeColumnAdapter.class)
     public abstract ProgramType programType();
 
+    /**
+     * @deprecated use d2.programModule().programTrackedEntityAttributes instead
+     *
+     * @return
+    */
+    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramTrackedEntityAttributeListColumnAdapter.class)
@@ -162,6 +168,12 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
 
+    /**
+     * @deprecated use d2.programModule().programIndicators instead
+     *
+     * @return
+     */
+    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramIndicatorListColumnAdapter.class)
@@ -189,6 +201,12 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     @ColumnAdapter(IgnoreProgramRuleListColumnAdapter.class)
     public abstract List<ProgramRule> programRules();
 
+    /**
+     * @deprecated use d2.programModule().programRuleVariables instead
+     *
+     * @return
+     */
+    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramRuleVariableListColumnAdapter.class)
@@ -215,6 +233,12 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     @JsonProperty()
     public abstract Integer maxTeiCountToReturn();
 
+    /**
+     * @deprecated use d2.programModule().programSections instead
+     *
+     * @return
+     */
+    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramSectionListColumnAdapter.class)

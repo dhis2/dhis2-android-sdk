@@ -48,7 +48,7 @@ public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould
     @Test
     public void find_all() {
         List<ProgramStageDataElement> programStageDataElements =
-                d2.programModule().programStageDataElements
+                d2.programModule().programStageDataElements()
                         .blockingGet();
 
         assertThat(programStageDataElements.size(), is(6));
@@ -57,7 +57,7 @@ public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould
     @Test
     public void filter_by_display_in_reports() {
         List<ProgramStageDataElement> programStageDataElements =
-                d2.programModule().programStageDataElements
+                d2.programModule().programStageDataElements()
                         .byDisplayInReports()
                         .isFalse()
                         .blockingGet();
@@ -68,7 +68,7 @@ public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould
     @Test
     public void filter_by_compulsory() {
         List<ProgramStageDataElement> programStageDataElements =
-                d2.programModule().programStageDataElements
+                d2.programModule().programStageDataElements()
                         .byCompulsory()
                         .isTrue()
                         .blockingGet();
@@ -79,7 +79,7 @@ public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould
     @Test
     public void filter_by_allow_provided_elsewhere() {
         List<ProgramStageDataElement> programStageDataElements =
-                d2.programModule().programStageDataElements
+                d2.programModule().programStageDataElements()
                         .byAllowProvidedElsewhere()
                         .isTrue()
                         .blockingGet();
@@ -90,7 +90,7 @@ public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould
     @Test
     public void filter_by_sort_order() {
         List<ProgramStageDataElement> programStageDataElements =
-                d2.programModule().programStageDataElements
+                d2.programModule().programStageDataElements()
                         .bySortOrder()
                         .biggerThan(1)
                         .blockingGet();
@@ -101,7 +101,7 @@ public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould
     @Test
     public void filter_by_allow_future_date() {
         List<ProgramStageDataElement> programStageDataElements =
-                d2.programModule().programStageDataElements
+                d2.programModule().programStageDataElements()
                         .byAllowFutureDate()
                         .isTrue()
                         .blockingGet();
@@ -112,7 +112,7 @@ public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould
     @Test
     public void filter_by_data_element() {
         List<ProgramStageDataElement> programStageDataElements =
-                d2.programModule().programStageDataElements
+                d2.programModule().programStageDataElements()
                         .byDataElement()
                         .eq("Ok9OQpitjQr")
                         .blockingGet();
@@ -123,7 +123,7 @@ public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould
     @Test
     public void filter_by_program_stage() {
         List<ProgramStageDataElement> programStageDataElements =
-                d2.programModule().programStageDataElements
+                d2.programModule().programStageDataElements()
                         .byProgramStage()
                         .eq("dBwrot7S420")
                         .blockingGet();
@@ -134,7 +134,7 @@ public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould
     @Test
     public void include_render_type_as_children() {
         ProgramStageDataElement programStageDataElement =
-                d2.programModule().programStageDataElements
+                d2.programModule().programStageDataElements()
                         .byUid().eq("QgGD234oA8C")
                         .withRenderType()
                         .one().blockingGet();
@@ -148,7 +148,7 @@ public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould
     @Test
     public void order_by_sort_order() {
         List<ProgramStageDataElement> programStageDataElements =
-                d2.programModule().programStageDataElements
+                d2.programModule().programStageDataElements()
                         .byProgramStage().eq("dBwrot7S420")
                         .orderBySortOrder(RepositoryScope.OrderByDirection.DESC)
                 .blockingGet();

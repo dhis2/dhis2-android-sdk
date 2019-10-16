@@ -45,7 +45,7 @@ public class ProgramRuleCollectionRepositoryMockIntegrationShould extends BaseMo
     @Test
     public void find_all() {
         List<ProgramRule> rules =
-                d2.programModule().programRules
+                d2.programModule().programRules()
                         .blockingGet();
         
         assertThat(rules.size(), is(3));
@@ -54,7 +54,7 @@ public class ProgramRuleCollectionRepositoryMockIntegrationShould extends BaseMo
     @Test
     public void filter_by_priority() {
         List<ProgramRule> rules =
-                d2.programModule().programRules
+                d2.programModule().programRules()
                         .byPriority()
                         .eq(2)
                         .blockingGet();
@@ -65,7 +65,7 @@ public class ProgramRuleCollectionRepositoryMockIntegrationShould extends BaseMo
     @Test
     public void filter_by_condition() {
         List<ProgramRule> rules =
-                d2.programModule().programRules
+                d2.programModule().programRules()
                         .byCondition()
                         .eq("#{hemoglobin} < 9")
                         .blockingGet();
@@ -76,7 +76,7 @@ public class ProgramRuleCollectionRepositoryMockIntegrationShould extends BaseMo
     @Test
     public void filter_by_program() {
         List<ProgramRule> rules =
-                d2.programModule().programRules
+                d2.programModule().programRules()
                         .byProgramUid()
                         .eq("lxAQ7Zs9VYR")
                         .blockingGet();
@@ -87,7 +87,7 @@ public class ProgramRuleCollectionRepositoryMockIntegrationShould extends BaseMo
     @Test
     public void filter_by_program_stage() {
         List<ProgramRule> rules =
-                d2.programModule().programRules
+                d2.programModule().programRules()
                         .byProgramStageUid()
                         .eq("dBwrot7S420")
                         .blockingGet();
@@ -97,7 +97,7 @@ public class ProgramRuleCollectionRepositoryMockIntegrationShould extends BaseMo
 
     @Test
     public void include_program_rule_actions_as_children() {
-        ProgramRule programRule = d2.programModule().programRules
+        ProgramRule programRule = d2.programModule().programRules()
                 .withProgramRuleActions().one().blockingGet();
         assertThat(programRule.programRuleActions().size(), is(1));
         assertThat(programRule.programRuleActions().get(0).content(), is("The hemoglobin value cannot be above 99"));

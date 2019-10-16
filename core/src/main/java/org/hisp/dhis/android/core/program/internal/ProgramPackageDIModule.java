@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramStage;
 
@@ -92,5 +93,11 @@ public final class ProgramPackageDIModule {
     @Reusable
     ProgramStageService programStageService(Retrofit retrofit) {
         return retrofit.create(ProgramStageService.class);
+    }
+
+    @Provides
+    @Reusable
+    ProgramModule module(ProgramModuleImpl impl) {
+        return impl;
     }
 }

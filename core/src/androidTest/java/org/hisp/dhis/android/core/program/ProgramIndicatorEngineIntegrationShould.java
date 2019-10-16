@@ -105,7 +105,7 @@ public class ProgramIndicatorEngineIntegrationShould extends BaseMockIntegration
     public void setUp() throws Exception {
         BaseMockIntegrationTestEmptyDispatcher.setUpClass();
 
-        programIndicatorEngine = d2.programModule().programIndicatorEngine;
+        programIndicatorEngine = d2.programModule().programIndicatorEngine();
         
         OrganisationUnit orgunit = OrganisationUnit.builder().uid(orgunitUid).build();
         OrganisationUnitStore.create(databaseAdapter).insert(orgunit);

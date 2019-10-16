@@ -98,7 +98,7 @@ For example, the same query using RxJava and AsyncTask:
 *Using RxJava*
 
 ```java
-d2.programModule().programs
+d2.programModule().programs()
     .subscribeOn(Schedulers.io())
     .observeOn(AndroidSchedulers.mainThread())
     .get()
@@ -110,7 +110,7 @@ d2.programModule().programs
 ```java
 new AsyncTask<Void, Void, List<Program>>() {
     protected List<Program> doInBackground() {
-        return d2.programModule().programs.blockingGet();
+        return d2.programModule().programs().blockingGet();
     }
 
     protected void onPostExecute(List<Program> programs) {
@@ -177,7 +177,7 @@ Due to performance issues, this kind of properties are not included by default: 
 Several properties can be appended in the same query in any order. For example, a query like
 
 ```java
-d2.programModule().programs
+d2.programModule().programs()
     .withStyle()
     .withTrackedEntityType()
     ...

@@ -137,7 +137,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
         String event3 = "event3";
         String event4 = "event4";
 
-        Program program = d2.programModule().programs.one().blockingGet();
+        Program program = d2.programModule().programs().one().blockingGet();
 
         storeSingleEvent(event1, program, State.TO_POST, false);
         storeSingleEvent(event2, program, State.TO_UPDATE, false);
@@ -178,8 +178,8 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
         String event4Id = "event4Id";
 
         OrganisationUnit orgUnit = d2.organisationUnitModule().organisationUnits.one().blockingGet();
-        Program program = d2.programModule().programs.one().blockingGet();
-        ProgramStage programStage = d2.programModule().programStages.one().blockingGet();
+        Program program = d2.programModule().programs().one().blockingGet();
+        ProgramStage programStage = d2.programModule().programStages().one().blockingGet();
 
         TrackedEntityDataValue dataValue1 = TrackedEntityDataValueSamples.get().toBuilder().event(event1Id).build();
 
@@ -241,7 +241,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
 
     private void storeSingleEvent(String eventUid, Program program, State state, Boolean deleted) {
         OrganisationUnit orgUnit = d2.organisationUnitModule().organisationUnits.one().blockingGet();
-        ProgramStage programStage = d2.programModule().programStages.one().blockingGet();
+        ProgramStage programStage = d2.programModule().programStages().one().blockingGet();
 
         eventStore.insert(
                 Event.builder()

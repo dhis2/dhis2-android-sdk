@@ -25,34 +25,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+package org.hisp.dhis.android.core.settings.internal;
+
+import org.hisp.dhis.android.core.settings.SystemSettingCollectionRepository;
+import org.hisp.dhis.android.core.settings.SystemSettingModule;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class SystemInfoModuleImpl implements SystemInfoModule {
+public final class SystemSettingModuleImpl implements SystemSettingModule {
 
-    private final DHISVersionManager versionManager;
-    private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfo;
+    private final SystemSettingCollectionRepository systemSetting;
 
     @Inject
-    SystemInfoModuleImpl(DHISVersionManager versionManager,
-                         ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository) {
-        this.versionManager = versionManager;
-        this.systemInfo = systemInfoRepository;
+    SystemSettingModuleImpl(SystemSettingCollectionRepository systemSettingRepository) {
+        this.systemSetting = systemSettingRepository;
     }
 
     @Override
-    public DHISVersionManager versionManager() {
-        return versionManager;
-    }
-
-    @Override
-    public ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfo() {
-        return systemInfo;
+    public SystemSettingCollectionRepository systemSetting() {
+        return systemSetting;
     }
 }

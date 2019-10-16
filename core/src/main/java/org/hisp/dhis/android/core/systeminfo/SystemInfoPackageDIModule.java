@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleImpl;
+
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;

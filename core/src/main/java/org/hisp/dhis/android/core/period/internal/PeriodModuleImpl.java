@@ -25,25 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.period.internal;
 
-package org.hisp.dhis.android.core.settings;
+import org.hisp.dhis.android.core.period.PeriodCollectionRepository;
+import org.hisp.dhis.android.core.period.PeriodModule;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class SystemSettingModuleImpl implements SystemSettingModule {
+public final class PeriodModuleImpl implements PeriodModule {
 
-    private final SystemSettingCollectionRepository systemSetting;
+    private final PeriodHelper periodHelper;
+    private final PeriodCollectionRepository periods;
 
     @Inject
-    SystemSettingModuleImpl(SystemSettingCollectionRepository systemSettingRepository) {
-        this.systemSetting = systemSettingRepository;
+    PeriodModuleImpl(PeriodHelper periodHelper,
+                     PeriodCollectionRepository periods) {
+        this.periodHelper = periodHelper;
+        this.periods = periods;
     }
 
     @Override
-    public SystemSettingCollectionRepository systemSetting() {
-        return systemSetting;
+    public PeriodHelper periodHelper() {
+        return periodHelper;
+    }
+
+    @Override
+    public PeriodCollectionRepository periods() {
+        return periods;
     }
 }

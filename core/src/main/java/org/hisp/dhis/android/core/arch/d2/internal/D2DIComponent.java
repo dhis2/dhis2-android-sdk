@@ -49,8 +49,8 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementPackageDIModul
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.internal.DataSetPackageDIModule;
 import org.hisp.dhis.android.core.datavalue.internal.DataValuePackageDIModule;
-import org.hisp.dhis.android.core.domain.aggregated.AggregatedModuleImpl;
-import org.hisp.dhis.android.core.domain.metadata.MetadataModuleImpl;
+import org.hisp.dhis.android.core.domain.aggregated.internal.AggregatedModuleImpl;
+import org.hisp.dhis.android.core.domain.metadata.internal.MetadataModuleImpl;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentPackageDIModule;
 import org.hisp.dhis.android.core.event.internal.EventPackageDIModule;
 import org.hisp.dhis.android.core.event.internal.EventPostCall;

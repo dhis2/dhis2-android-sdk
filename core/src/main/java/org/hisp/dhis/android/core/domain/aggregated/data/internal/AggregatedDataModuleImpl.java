@@ -25,49 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category;
+
+package org.hisp.dhis.android.core.domain.aggregated.data.internal;
+
+import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Observable;
 
 @Reusable
-public final class CategoryModuleImpl implements CategoryModule {
+public final class AggregatedDataModuleImpl implements WithProgressDownloader {
 
-    private final CategoryCollectionRepository categories;
-    private final CategoryOptionCollectionRepository categoryOptions;
-    private final CategoryOptionComboCollectionRepository categoryOptionCombos;
-    private final CategoryComboCollectionRepository categoryCombos;
+    private final AggregatedDataCall aggregatedDataCall;
 
     @Inject
-    CategoryModuleImpl(
-            CategoryCollectionRepository categories,
-            CategoryOptionCollectionRepository categoryOptions,
-            CategoryOptionComboCollectionRepository categoryOptionCombos,
-            CategoryComboCollectionRepository categoryCombos) {
-        this.categories = categories;
-        this.categoryOptions = categoryOptions;
-        this.categoryOptionCombos = categoryOptionCombos;
-        this.categoryCombos = categoryCombos;
+    AggregatedDataModuleImpl(AggregatedDataCall aggregatedDataCall) {
+        this.aggregatedDataCall = aggregatedDataCall;
     }
 
     @Override
-    public CategoryCollectionRepository categories() {
-        return categories;
+    public Observable<D2Progress> download() {
+        return aggregatedDataCall.download();
     }
 
     @Override
-    public CategoryOptionCollectionRepository categoryOptions() {
-        return categoryOptions;
-    }
-
-    @Override
-    public CategoryOptionComboCollectionRepository categoryOptionCombos() {
-        return categoryOptionCombos;
-    }
-
-    @Override
-    public CategoryComboCollectionRepository categoryCombos() {
-        return categoryCombos;
+    public void blockingDownload() {
+        aggregatedDataCall.blockingDownload();
     }
 }

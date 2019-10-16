@@ -26,10 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.domain.aggregated;
+package org.hisp.dhis.android.core.domain.aggregated.internal;
 
 import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader;
-import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedDataModuleImpl;
+import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
+import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataModuleImpl;
 
 import javax.inject.Inject;
 

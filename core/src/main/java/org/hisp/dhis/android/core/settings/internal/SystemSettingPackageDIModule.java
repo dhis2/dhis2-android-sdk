@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.settings.internal;
 
 import org.hisp.dhis.android.core.settings.SystemSettingModule;
-import org.hisp.dhis.android.core.settings.SystemSettingModuleImpl;
 
 import dagger.Module;
 import dagger.Provides;

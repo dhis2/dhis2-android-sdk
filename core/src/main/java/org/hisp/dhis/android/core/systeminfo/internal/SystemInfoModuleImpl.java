@@ -25,34 +25,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo.internal;
 
-package org.hisp.dhis.android.core.domain.aggregated.data;
-
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import io.reactivex.Observable;
 
 @Reusable
-public final class AggregatedDataModuleImpl implements WithProgressDownloader {
+public final class SystemInfoModuleImpl implements SystemInfoModule {
 
-    private final AggregatedDataCall aggregatedDataCall;
+    private final DHISVersionManager versionManager;
+    private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfo;
 
     @Inject
-    AggregatedDataModuleImpl(AggregatedDataCall aggregatedDataCall) {
-        this.aggregatedDataCall = aggregatedDataCall;
+    SystemInfoModuleImpl(DHISVersionManager versionManager,
+                         ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository) {
+        this.versionManager = versionManager;
+        this.systemInfo = systemInfoRepository;
     }
 
     @Override
-    public Observable<D2Progress> download() {
-        return aggregatedDataCall.download();
+    public DHISVersionManager versionManager() {
+        return versionManager;
     }
 
     @Override
-    public void blockingDownload() {
-        aggregatedDataCall.blockingDownload();
+    public ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfo() {
+        return systemInfo;
     }
 }

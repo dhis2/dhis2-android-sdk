@@ -86,7 +86,9 @@ public final class TrackedEntityTypeCallFactory extends UidsCallFactoryImpl<Trac
             protected List<TrackedEntityType> transform(List<TrackedEntityType> list) {
                 List<TrackedEntityType> types = new ArrayList<>();
                 for (TrackedEntityType type : list) {
-                    if (type.trackedEntityTypeAttributes() != null) {
+                    if (type.trackedEntityTypeAttributes() == null) {
+                        types.add(type);
+                    } else {
                         List<TrackedEntityTypeAttribute> attributes = new ArrayList<>();
                         for (TrackedEntityTypeAttribute attribute : type.trackedEntityTypeAttributes()) {
                             if (attribute.trackedEntityAttribute() != null) {
@@ -94,8 +96,6 @@ public final class TrackedEntityTypeCallFactory extends UidsCallFactoryImpl<Trac
                             }
                         }
                         types.add(type.toBuilder().trackedEntityTypeAttributes(attributes).build());
-                    } else {
-                        types.add(type);
                     }
                 }
                 return types;

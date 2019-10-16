@@ -89,7 +89,9 @@ public final class ProgramStageEndpointCallFactory extends UidsCallFactoryImpl<P
             protected List<ProgramStage> transform(List<ProgramStage> list) {
                 List<ProgramStage> stages = new ArrayList<>();
                 for (ProgramStage stage : list) {
-                    if (stage.programStageDataElements() != null) {
+                    if (stage.programStageDataElements() == null) {
+                        stages.add(stage);
+                    } else {
                         List<ProgramStageDataElement> psdes = new ArrayList<>();
                         for (ProgramStageDataElement psde : stage.programStageDataElements()) {
                             if (psde.dataElement() != null) {
@@ -97,8 +99,6 @@ public final class ProgramStageEndpointCallFactory extends UidsCallFactoryImpl<P
                             }
                         }
                         stages.add(stage.toBuilder().programStageDataElements(psdes).build());
-                    } else {
-                        stages.add(stage);
                     }
                 }
                 return stages;

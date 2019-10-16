@@ -28,64 +28,43 @@
 
 package org.hisp.dhis.android.core.option.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
-import org.hisp.dhis.android.core.option.Option;
-import org.hisp.dhis.android.core.option.OptionGroup;
+import org.hisp.dhis.android.core.option.OptionCollectionRepository;
+import org.hisp.dhis.android.core.option.OptionGroupCollectionRepository;
 import org.hisp.dhis.android.core.option.OptionModule;
-import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.option.OptionSetCollectionRepository;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        OptionEntityDIModule.class,
-        OptionGroupEntityDIModule.class,
-        OptionGroupOptionEntityDIModule.class,
-        OptionSetEntityDIModule.class
-})
-public final class OptionPackageDIModule {
+@Reusable
+public final class OptionModuleImpl implements OptionModule {
 
-    @Provides
-    @Reusable
-    UidsCallFactory<OptionSet> optionSetCallFactory(OptionSetCallFactory impl) {
-        return impl;
+    private final OptionGroupCollectionRepository optionGroups;
+    private final OptionSetCollectionRepository optionSets;
+    private final OptionCollectionRepository options;
+
+    @Inject
+    OptionModuleImpl(OptionGroupCollectionRepository optionGroups,
+                     OptionSetCollectionRepository optionSets,
+                     OptionCollectionRepository options) {
+        this.optionGroups = optionGroups;
+        this.optionSets = optionSets;
+        this.options = options;
     }
 
-    @Provides
-    @Reusable
-    OptionSetService optionSetService(Retrofit retrofit) {
-        return retrofit.create(OptionSetService.class);
+    @Override
+    public OptionGroupCollectionRepository optionGroups() {
+        return optionGroups;
     }
 
-    @Provides
-    @Reusable
-    UidsCallFactory<Option> optionCallFactory(OptionEndpointCallFactory impl) {
-        return impl;
+    @Override
+    public OptionSetCollectionRepository optionSets() {
+        return optionSets;
     }
 
-    @Provides
-    @Reusable
-    OptionService optionService(Retrofit retrofit) {
-        return retrofit.create(OptionService.class);
-    }
-
-    @Provides
-    @Reusable
-    UidsCallFactory<OptionGroup> optionGroupCallFactory(OptionGroupCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    OptionGroupService optionGroupService(Retrofit retrofit) {
-        return retrofit.create(OptionGroupService.class);
-    }
-
-    @Provides
-    @Reusable
-    OptionModule module(OptionModuleImpl impl) {
-        return impl;
+    @Override
+    public OptionCollectionRepository options() {
+        return options;
     }
 }

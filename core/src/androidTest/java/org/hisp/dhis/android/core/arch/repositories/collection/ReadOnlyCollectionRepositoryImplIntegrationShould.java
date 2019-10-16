@@ -64,7 +64,7 @@ public class ReadOnlyCollectionRepositoryImplIntegrationShould extends BaseMockI
         handler.handle(RELATIONSHIP_TYPE_1);
         handler.handle(RELATIONSHIP_TYPE_2);
 
-        relationshipTypeCollectionRepository = d2.relationshipModule().relationshipTypes;
+        relationshipTypeCollectionRepository = d2.relationshipModule().relationshipTypes();
     }
 
     @Test

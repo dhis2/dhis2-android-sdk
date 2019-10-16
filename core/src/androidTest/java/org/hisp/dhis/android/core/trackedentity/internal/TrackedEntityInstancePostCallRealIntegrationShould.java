@@ -323,7 +323,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(5).limitByOrgunit(true).blockingDownload();
 
         TrackedEntityInstance teiA = trackedEntityInstanceStore.selectFirst();
-        RelationshipType relationshipType = d2.relationshipModule().relationshipTypes.blockingGet().iterator().next();
+        RelationshipType relationshipType = d2.relationshipModule().relationshipTypes().blockingGet().iterator().next();
         Geometry geometry = Geometry.builder().type(FeatureType.MULTI_POLYGON).coordinates("[98.54, 4.65]").build();
 
         // Create a TEI by copying an existing one
@@ -334,7 +334,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         Relationship newRelationship = RelationshipHelper.teiToTeiRelationship(teiA.uid(),
                 teiBUid, relationshipType.uid());
-        d2.relationshipModule().relationships.blockingAdd(newRelationship);
+        d2.relationshipModule().relationships().blockingAdd(newRelationship);
 
         d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
 
@@ -350,7 +350,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         List<TrackedEntityInstance> responseTeiB = d2.trackedEntityModule().trackedEntityInstances.byUid().eq(teiBUid).blockingGet();
         assertThat(responseTeiB.size() == 1).isTrue();
 
-        List<Relationship> relationships = d2.relationshipModule().relationships.getByItem(RelationshipHelper.teiItem(teiA.uid()));
+        List<Relationship> relationships = d2.relationshipModule().relationships().getByItem(RelationshipHelper.teiItem(teiA.uid()));
         assertThat(relationships.size() > 0).isTrue();
 
         Boolean relationshipFound = false;
@@ -379,9 +379,9 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         TrackedEntityInstance t0 = trackedEntityInstances.get(0);
         TrackedEntityInstance t1 = trackedEntityInstances.get(1);
 
-        RelationshipType relationshipType = d2.relationshipModule().relationshipTypes.blockingGet().iterator().next();
+        RelationshipType relationshipType = d2.relationshipModule().relationshipTypes().blockingGet().iterator().next();
 
-        d2.relationshipModule().relationships.blockingAdd(RelationshipHelper.teiToTeiRelationship(t0.uid(), t1.uid(),
+        d2.relationshipModule().relationships().blockingAdd(RelationshipHelper.teiToTeiRelationship(t0.uid(), t1.uid(),
                 relationshipType.uid()));
 
         d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
@@ -400,8 +400,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         TrackedEntityInstance t1 = trackedEntityInstances.get(1);
 
         RelationshipModule relationshipModule = d2.relationshipModule();
-        RelationshipTypeCollectionRepository typesRepository = relationshipModule.relationshipTypes;
-        RelationshipCollectionRepository relationshipsRepository = relationshipModule.relationships;
+        RelationshipTypeCollectionRepository typesRepository = relationshipModule.relationshipTypes();
+        RelationshipCollectionRepository relationshipsRepository = relationshipModule.relationships();
 
         RelationshipType relationshipType = typesRepository.blockingGet().iterator().next();
 

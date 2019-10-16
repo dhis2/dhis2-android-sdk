@@ -27,8 +27,31 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-public interface RelationshipModule {
-    RelationshipTypeCollectionRepository relationshipTypes();
+import javax.inject.Inject;
 
-    RelationshipCollectionRepository relationships();
+import dagger.Reusable;
+
+@Reusable
+public final class RelationshipModuleImpl implements RelationshipModule {
+
+    private final RelationshipTypeCollectionRepository relationshipTypes;
+
+    private final RelationshipCollectionRepository relationships;
+
+    @Inject
+    RelationshipModuleImpl(RelationshipTypeCollectionRepository relationshipTypeRepository,
+                           RelationshipCollectionRepository relationshipRepository) {
+        this.relationshipTypes = relationshipTypeRepository;
+        this.relationships = relationshipRepository;
+    }
+
+    @Override
+    public RelationshipTypeCollectionRepository relationshipTypes() {
+        return relationshipTypes;
+    }
+
+    @Override
+    public RelationshipCollectionRepository relationships() {
+        return relationships;
+    }
 }

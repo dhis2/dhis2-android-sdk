@@ -28,35 +28,25 @@
 
 package org.hisp.dhis.android.core.datavalue.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
-import org.hisp.dhis.android.core.datavalue.DataValue;
+import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        DataValueEntityDIModule.class
-})
-public final class DataValuePackageDIModule {
+@Reusable
+public final class DataValueModuleImpl implements DataValueModule {
 
-    @Provides
-    @Reusable
-    DataValueService service(Retrofit retrofit) {
-        return retrofit.create(DataValueService.class);
+    private final DataValueCollectionRepository dataValues;
+
+    @Inject
+    DataValueModuleImpl(DataValueCollectionRepository dataValueCollectionRepository) {
+        this.dataValues = dataValueCollectionRepository;
     }
 
-    @Provides
-    @Reusable
-    QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory(DataValueEndpointCallFactory callFactoryImpl) {
-        return callFactoryImpl;
-    }
-
-    @Provides
-    @Reusable
-    DataValueModule module(DataValueModuleImpl impl) {
-        return impl;
+    @Override
+    public DataValueCollectionRepository dataValues() {
+        return dataValues;
     }
 }

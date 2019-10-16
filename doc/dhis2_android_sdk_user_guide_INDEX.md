@@ -460,7 +460,7 @@ DataValueCollectionRepository has a `value()` method that gives access to editio
 
 ```java
 DataValueObjectRepository valueRepository =
-    d2.dataValueModule().dataValues.value("periodId", "orgunitId", "dataElementId", "categoryOptionComboId", "attributeOptionComboId");
+    d2.dataValueModule().dataValues().value("periodId", "orgunitId", "dataElementId", "categoryOptionComboId", "attributeOptionComboId");
 
 valueRepository.set("value")
 ```
@@ -470,7 +470,7 @@ valueRepository.set("value")
 DataValueCollectionRepository has an `uplaod()` method to upload aggregated data values.
 
 ```java
-d2.dataValueModule().dataValues.upload();
+d2.dataValueModule().dataValues().upload();
 ```
 
 #### DataSet reports

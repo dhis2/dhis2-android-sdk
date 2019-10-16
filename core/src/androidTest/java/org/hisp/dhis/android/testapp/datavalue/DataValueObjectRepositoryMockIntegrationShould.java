@@ -106,16 +106,16 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
 
     @Test
     public void return_that_a_value_exists_only_if_it_has_been_created() {
-        assertThat(d2.dataValueModule().dataValues
+        assertThat(d2.dataValueModule().dataValues()
                 .value("no_period", "no_org_unit", "no_data_element",
                         "no_category", "no_attribute").blockingExists(), is(Boolean.FALSE));
-        assertThat(d2.dataValueModule().dataValues
+        assertThat(d2.dataValueModule().dataValues()
                 .value("2018", "DiszpKrYNg8", "g9eOBujte1U",
                         "Gmbgme7z9BF", "bRowv6yZOF2").blockingExists(), is(Boolean.TRUE));
     }
 
     private DataValueObjectRepository objectRepository() {
-        return d2.dataValueModule().dataValues
+        return d2.dataValueModule().dataValues()
                 .value("201905", "DiszpKrYNg8", "g9eOBujte1U",
                         "Gmbgme7z9BF", "bRowv6yZOF2");
     }

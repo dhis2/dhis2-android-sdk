@@ -49,7 +49,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void find_all() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .blockingGet();
 
         assertThat(dataValues.size(), is(5));
@@ -58,7 +58,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void filter_by_data_element() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byDataElementUid()
                         .eq("g9eOBujte1U")
                         .blockingGet();
@@ -69,7 +69,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void filter_by_period() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byPeriod()
                         .eq("2018")
                         .blockingGet();
@@ -80,7 +80,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void filter_by_organisation_unit() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byOrganisationUnitUid()
                         .eq("DiszpKrYNg8")
                         .blockingGet();
@@ -91,7 +91,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void filter_by_category_option_combo() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byCategoryOptionComboUid()
                         .eq("Gmbgme7z9BF")
                         .blockingGet();
@@ -102,7 +102,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void filter_by_attribute_option_combo() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byAttributeOptionComboUid()
                         .eq("bRowv6yZOF2")
                         .blockingGet();
@@ -113,7 +113,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void filter_by_value() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byValue()
                         .eq("11")
                         .blockingGet();
@@ -124,7 +124,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void filter_by_stored_by() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byStoredBy()
                         .eq("android")
                         .blockingGet();
@@ -135,7 +135,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void filter_by_created() throws ParseException {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byCreated()
                         .eq(BaseIdentifiableObject.DATE_FORMAT.parse("2010-02-11T00:00:00.000+0100"))
                         .blockingGet();
@@ -146,7 +146,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void filter_by_last_updated() throws ParseException {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byLastUpdated()
                         .eq(BaseIdentifiableObject.DATE_FORMAT.parse("2011-01-11T00:00:00.000+0000"))
                         .blockingGet();
@@ -157,7 +157,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void filter_by_comment() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byComment()
                         .eq("Relevant comment")
                         .blockingGet();
@@ -168,7 +168,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void filter_by_follow_up() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byFollowUp()
                         .isFalse()
                         .blockingGet();
@@ -179,7 +179,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void filter_by_state() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byState().eq(State.SYNCED)
                         .blockingGet();
 
@@ -189,7 +189,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void filter_by_deleted() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byDeleted().isFalse()
                         .blockingGet();
 
@@ -198,7 +198,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
 
     @Test
     public void return_data_value_object_repository() {
-        DataValueObjectRepository objectRepository = d2.dataValueModule().dataValues
+        DataValueObjectRepository objectRepository = d2.dataValueModule().dataValues()
                 .value("2018", "DiszpKrYNg8", "g9eOBujte1U",
                         "Gmbgme7z9BF", "bRowv6yZOF2");
         assertThat(objectRepository.blockingExists(), is(Boolean.TRUE));

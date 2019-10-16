@@ -25,34 +25,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.relationship.internal;
 
-import org.hisp.dhis.android.core.period.internal.PeriodHelper;
+import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
+import org.hisp.dhis.android.core.relationship.RelationshipModule;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionRepository;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class PeriodModuleImpl implements PeriodModule {
+public final class RelationshipModuleImpl implements RelationshipModule {
 
-    private final PeriodHelper periodHelper;
-    private final PeriodCollectionRepository periods;
+    private final RelationshipTypeCollectionRepository relationshipTypes;
+
+    private final RelationshipCollectionRepository relationships;
 
     @Inject
-    PeriodModuleImpl(PeriodHelper periodHelper,
-                     PeriodCollectionRepository periods) {
-        this.periodHelper = periodHelper;
-        this.periods = periods;
+    RelationshipModuleImpl(RelationshipTypeCollectionRepository relationshipTypeRepository,
+                           RelationshipCollectionRepository relationshipRepository) {
+        this.relationshipTypes = relationshipTypeRepository;
+        this.relationships = relationshipRepository;
     }
 
     @Override
-    public PeriodHelper periodHelper() {
-        return periodHelper;
+    public RelationshipTypeCollectionRepository relationshipTypes() {
+        return relationshipTypes;
     }
 
     @Override
-    public PeriodCollectionRepository periods() {
-        return periods;
+    public RelationshipCollectionRepository relationships() {
+        return relationships;
     }
 }

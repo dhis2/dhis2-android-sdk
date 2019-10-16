@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryModule;
-import org.hisp.dhis.android.core.category.CategoryModuleImpl;
 
 import dagger.Module;
 import dagger.Provides;

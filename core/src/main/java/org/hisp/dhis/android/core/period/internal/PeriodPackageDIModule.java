@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.period.internal;
 
 import org.hisp.dhis.android.core.period.PeriodEntityDIModule;
 import org.hisp.dhis.android.core.period.PeriodModule;
-import org.hisp.dhis.android.core.period.PeriodModuleImpl;
 
 import dagger.Module;
 import dagger.Provides;

@@ -25,33 +25,55 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.category.internal;
+
+import org.hisp.dhis.android.core.category.CategoryCollectionRepository;
+import org.hisp.dhis.android.core.category.CategoryComboCollectionRepository;
+import org.hisp.dhis.android.core.category.CategoryModule;
+import org.hisp.dhis.android.core.category.CategoryOptionCollectionRepository;
+import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionRepository;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class RelationshipModuleImpl implements RelationshipModule {
+public final class CategoryModuleImpl implements CategoryModule {
 
-    private final RelationshipTypeCollectionRepository relationshipTypes;
-
-    private final RelationshipCollectionRepository relationships;
+    private final CategoryCollectionRepository categories;
+    private final CategoryOptionCollectionRepository categoryOptions;
+    private final CategoryOptionComboCollectionRepository categoryOptionCombos;
+    private final CategoryComboCollectionRepository categoryCombos;
 
     @Inject
-    RelationshipModuleImpl(RelationshipTypeCollectionRepository relationshipTypeRepository,
-                           RelationshipCollectionRepository relationshipRepository) {
-        this.relationshipTypes = relationshipTypeRepository;
-        this.relationships = relationshipRepository;
+    CategoryModuleImpl(
+            CategoryCollectionRepository categories,
+            CategoryOptionCollectionRepository categoryOptions,
+            CategoryOptionComboCollectionRepository categoryOptionCombos,
+            CategoryComboCollectionRepository categoryCombos) {
+        this.categories = categories;
+        this.categoryOptions = categoryOptions;
+        this.categoryOptionCombos = categoryOptionCombos;
+        this.categoryCombos = categoryCombos;
     }
 
     @Override
-    public RelationshipTypeCollectionRepository relationshipTypes() {
-        return relationshipTypes;
+    public CategoryCollectionRepository categories() {
+        return categories;
     }
 
     @Override
-    public RelationshipCollectionRepository relationships() {
-        return relationships;
+    public CategoryOptionCollectionRepository categoryOptions() {
+        return categoryOptions;
+    }
+
+    @Override
+    public CategoryOptionComboCollectionRepository categoryOptionCombos() {
+        return categoryOptionCombos;
+    }
+
+    @Override
+    public CategoryComboCollectionRepository categoryCombos() {
+        return categoryCombos;
     }
 }

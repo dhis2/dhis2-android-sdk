@@ -25,10 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.domain.metadata;
+package org.hisp.dhis.android.core.domain.metadata.internal;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader;
+import org.hisp.dhis.android.core.domain.metadata.MetadataCall;
 
 import javax.inject.Inject;
 

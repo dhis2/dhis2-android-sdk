@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.category.internal;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryModule;
+import org.hisp.dhis.android.core.category.CategoryModuleImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -69,6 +71,12 @@ public final class CategoryPackageDIModule {
     @Provides
     @Reusable
     UidsCallFactory<CategoryCombo> categoryComboCallFactory(CategoryComboEndpointCallFactory impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    CategoryModule module(CategoryModuleImpl impl) {
         return impl;
     }
 }

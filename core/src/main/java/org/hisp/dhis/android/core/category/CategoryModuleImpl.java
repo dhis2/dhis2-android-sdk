@@ -25,51 +25,49 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category;
 
-package org.hisp.dhis.android.testapp.category;
+import javax.inject.Inject;
 
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import dagger.Reusable;
 
-import java.util.List;
+@Reusable
+public final class CategoryModuleImpl implements CategoryModule {
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+    private final CategoryCollectionRepository categories;
+    private final CategoryOptionCollectionRepository categoryOptions;
+    private final CategoryOptionComboCollectionRepository categoryOptionCombos;
+    private final CategoryComboCollectionRepository categoryCombos;
 
-@RunWith(D2JunitRunner.class)
-public class CategoryCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
-    @Test
-    public void find_all() {
-        List<Category> categories = d2.categoryModule().categories().blockingGet();
-        assertThat(categories.size(), is(4));
+    @Inject
+    CategoryModuleImpl(
+            CategoryCollectionRepository categories,
+            CategoryOptionCollectionRepository categoryOptions,
+            CategoryOptionComboCollectionRepository categoryOptionCombos,
+            CategoryComboCollectionRepository categoryCombos) {
+        this.categories = categories;
+        this.categoryOptions = categoryOptions;
+        this.categoryOptionCombos = categoryOptionCombos;
+        this.categoryCombos = categoryCombos;
     }
 
-    @Test
-    public void filter_by_name() {
-        List<Category> categories = d2.categoryModule().categories()
-                .byName().like("e")
-                .blockingGet();
-        assertThat(categories.size(), is(3));
+    @Override
+    public CategoryCollectionRepository categories() {
+        return categories;
     }
 
-    @Test
-    public void filter_by_data_dimension_type() {
-        List<Category> categories = d2.categoryModule().categories()
-                .byDataDimensionType().eq("DISAGGREGATION")
-                .blockingGet();
-        assertThat(categories.size(), is(4));
+    @Override
+    public CategoryOptionCollectionRepository categoryOptions() {
+        return categoryOptions;
     }
 
-    @Test
-    public void include_category_options_as_children() {
-        Category category = d2.categoryModule().categories()
-                .withCategoryOptions()
-                .uid("vGs6omsRekv")
-                .blockingGet();
-        assertThat(category.categoryOptions().size(), is(1));
+    @Override
+    public CategoryOptionComboCollectionRepository categoryOptionCombos() {
+        return categoryOptionCombos;
+    }
+
+    @Override
+    public CategoryComboCollectionRepository categoryCombos() {
+        return categoryCombos;
     }
 }

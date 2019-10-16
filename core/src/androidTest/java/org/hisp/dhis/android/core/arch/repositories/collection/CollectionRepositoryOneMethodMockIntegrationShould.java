@@ -45,14 +45,14 @@ public class CollectionRepositoryOneMethodMockIntegrationShould extends BaseMock
 
     @Test
     public void get_first_object_without_filters() {
-        CategoryCombo combo = d2.categoryModule().categoryCombos
+        CategoryCombo combo = d2.categoryModule().categoryCombos()
                 .one().blockingGet();
         assertThat(combo.uid(), is(BIRTH_UID));
     }
 
     @Test
     public void get_first_when_filter_limits_to_one_object() {
-        CategoryCombo combo = d2.categoryModule().categoryCombos
+        CategoryCombo combo = d2.categoryModule().categoryCombos()
                 .byName().eq("Births")
                 .one().blockingGet();
         assertThat(combo.uid(), is(BIRTH_UID));
@@ -60,7 +60,7 @@ public class CollectionRepositoryOneMethodMockIntegrationShould extends BaseMock
 
     @Test
     public void get_first_when_filter_limits_to_other_object() {
-        CategoryCombo combo = d2.categoryModule().categoryCombos
+        CategoryCombo combo = d2.categoryModule().categoryCombos()
                 .byIsDefault().isTrue()
                 .one().blockingGet();
         assertThat(combo.uid(), is(DEFAULT_UID));
@@ -68,7 +68,7 @@ public class CollectionRepositoryOneMethodMockIntegrationShould extends BaseMock
 
     @Test
     public void get_first_when_filter_limits_to_no_objects() {
-        CategoryCombo combo = d2.categoryModule().categoryCombos
+        CategoryCombo combo = d2.categoryModule().categoryCombos()
                 .byName().eq("Wrong name")
                 .one().blockingGet();
         assertThat(combo == null, is(true));
@@ -76,7 +76,7 @@ public class CollectionRepositoryOneMethodMockIntegrationShould extends BaseMock
 
     @Test
     public void get_with_all_children_returns_object_children() {
-        CategoryCombo combo = d2.categoryModule().categoryCombos
+        CategoryCombo combo = d2.categoryModule().categoryCombos()
                 .withCategories().withCategoryOptionCombos().one().blockingGet();
         assertThat(combo.uid(), is(BIRTH_UID));
         assertThat(combo.categories().size(), is(2));

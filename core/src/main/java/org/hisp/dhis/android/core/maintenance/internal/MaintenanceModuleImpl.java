@@ -25,34 +25,48 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.maintenance.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
-import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCollectionRepository;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationCollectionRepository;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
+import org.hisp.dhis.android.core.maintenance.PerformanceHintsService;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module(includes = {
-        D2ErrorEntityDIModule.class,
-        ForeignKeyViolationEntityDIModule.class
-})
-public final class MaintenancePackageDIModule {
+@Reusable
+public final class MaintenanceModuleImpl implements MaintenanceModule {
 
-    @Provides
-    @Reusable
-    ForeignKeyCleaner cleaner(DatabaseAdapter databaseAdapter,
-                              ObjectStore<ForeignKeyViolation> foreignKeyViolationStore) {
-        return new ForeignKeyCleanerImpl(databaseAdapter, foreignKeyViolationStore);
+    private final DatabaseAdapter databaseAdapter;
+    private final ForeignKeyViolationCollectionRepository foreignKeyViolations;
+    private final D2ErrorCollectionRepository d2Errors;
+
+    @Inject
+    MaintenanceModuleImpl(DatabaseAdapter databaseAdapter,
+                          ForeignKeyViolationCollectionRepository foreignKeyViolations,
+                          D2ErrorCollectionRepository d2Errors) {
+        this.databaseAdapter = databaseAdapter;
+        this.foreignKeyViolations = foreignKeyViolations;
+        this.d2Errors = d2Errors;
     }
 
-    @Provides
-    @Reusable
-    MaintenanceModule module(MaintenanceModuleImpl impl) {
-        return impl;
+    @Override
+    public PerformanceHintsService getPerformanceHintsService(int organisationUnitThreshold,
+                                                              int programRulesPerProgramThreshold) {
+        return PerformanceHintsService.create(databaseAdapter, organisationUnitThreshold,
+                programRulesPerProgramThreshold);
+    }
+
+    @Override
+    public ForeignKeyViolationCollectionRepository foreignKeyViolations() {
+        return foreignKeyViolations;
+    }
+
+    @Override
+    public D2ErrorCollectionRepository d2Errors() {
+        return d2Errors;
     }
 }

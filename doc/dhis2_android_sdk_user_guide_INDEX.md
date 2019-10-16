@@ -289,7 +289,7 @@ This partial metadata synchronization may expose server-side misconfiguration is
 The SDK does not fail the synchronization, but it stores the errors in a table for inspection. They can be accessed by:
 
 ```java
-d2.maintenanceModule().foreignKeyViolations
+d2.maintenanceModule().foreignKeyViolations()
 ```
 
 ### Data states
@@ -577,7 +577,7 @@ d2.userModule().logIn(username, password)
 D2Errors are persisted in the Database when they ocurr, so they can be analized afterwards and diagnose possible problems. They can be accessed through it's own repository: 
 
 ```
-d2.maintenanceModule().d2Errors
+d2.maintenanceModule().d2Errors()
                 .byD2ErrorComponent().eq(D2ErrorComponent.Server)
                 .get();
 ```

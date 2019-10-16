@@ -94,9 +94,9 @@ public class PerformanceHintsService {
         return this.areThereExcessiveOrganisationUnits() || areThereProgramsWithExcessiveProgramRules();
     }
 
-    static PerformanceHintsService create(DatabaseAdapter databaseAdapter,
-                                          int organisationUnitThreshold,
-                                          int programRulesPerProgramThreshold) {
+    public static PerformanceHintsService create(DatabaseAdapter databaseAdapter,
+                                                 int organisationUnitThreshold,
+                                                 int programRulesPerProgramThreshold) {
         return new PerformanceHintsService(
                 OrganisationUnitStore.create(databaseAdapter),
                 ProgramStore.create(databaseAdapter),

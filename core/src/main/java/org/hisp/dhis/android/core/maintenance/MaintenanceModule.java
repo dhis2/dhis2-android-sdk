@@ -27,33 +27,9 @@
  */
 package org.hisp.dhis.android.core.maintenance;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class MaintenanceModule {
-
-    private final DatabaseAdapter databaseAdapter;
-    public final ForeignKeyViolationCollectionRepository foreignKeyViolations;
-    public final D2ErrorCollectionRepository d2Errors;
-
-    @Inject
-    MaintenanceModule(DatabaseAdapter databaseAdapter,
-                      ForeignKeyViolationCollectionRepository foreignKeyViolations,
-                      D2ErrorCollectionRepository d2Errors) {
-        this.databaseAdapter = databaseAdapter;
-        this.foreignKeyViolations = foreignKeyViolations;
-        this.d2Errors = d2Errors;
-    }
-
-    public PerformanceHintsService getPerformanceHintsService(int organisationUnitThreshold,
-                                                              int programRulesPerProgramThreshold) {
-        return PerformanceHintsService.create(databaseAdapter, organisationUnitThreshold,
-                programRulesPerProgramThreshold);
-    }
+public interface MaintenanceModule {
+    ForeignKeyViolationCollectionRepository foreignKeyViolations();
+    D2ErrorCollectionRepository d2Errors();
+    PerformanceHintsService getPerformanceHintsService(int organisationUnitThreshold,
+                                                       int programRulesPerProgramThreshold);
 }

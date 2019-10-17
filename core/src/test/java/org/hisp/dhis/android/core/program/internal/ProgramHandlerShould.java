@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramSection;
-import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -99,9 +98,6 @@ public class ProgramHandlerShould {
 
     @Mock
     private Access access;
-
-    @Mock
-    private List<ProgramStage> programStages;
 
     @Mock
     private ObjectWithUid relatedProgram;
@@ -167,7 +163,6 @@ public class ProgramHandlerShould {
 
         programRuleVariables = Collections.singletonList(programRuleVariable);
 
-        when(internalAccessor.accessProgramStages(program)).thenReturn(programStages);
         when(internalAccessor.accessProgramTrackedEntityAttributes(program)).thenReturn(programTrackedEntityAttributes);
         when(internalAccessor.accessProgramIndicators(program)).thenReturn(programIndicators);
         when(internalAccessor.accessProgramRuleVariables(program)).thenReturn(programRuleVariables);

@@ -191,7 +191,7 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     public abstract List<ProgramStage> programStages();
 
     /**
-     * @deprecated use d2.programModule().programRules instead
+     * @deprecated use d2.programModule().programRules instead. This will be removed in SDK 1.0
      *
      * @return
      */
@@ -303,6 +303,12 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
 
         public abstract Builder programType(ProgramType programType);
 
+        /**
+         * @deprecated will be package-private in SDK 1.0
+         *
+         * @return
+         */
+        @Deprecated
         public abstract Builder programTrackedEntityAttributes(List<ProgramTrackedEntityAttribute>
                                                                        programTrackedEntityAttributes);
 
@@ -314,12 +320,36 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
 
         public abstract Builder access(Access access);
 
+        /**
+         * @deprecated will be package-private in SDK 1.0
+         *
+         * @return
+         */
+        @Deprecated
         public abstract Builder programIndicators(List<ProgramIndicator> programIndicators);
 
+        /**
+         * @deprecated will be removed in SDK 1.0
+         *
+         * @return
+         */
+        @Deprecated
         public abstract Builder programStages(List<ProgramStage> programStages);
 
+        /**
+         * @deprecated will be removed in SDK 1.0
+         *
+         * @return
+         */
+        @Deprecated
         public abstract Builder programRules(List<ProgramRule> programRules);
 
+        /**
+         * @deprecated will be package-private in SDK 1.0
+         *
+         * @return
+         */
+        @Deprecated
         public abstract Builder programRuleVariables(List<ProgramRuleVariable> programRuleVariables);
 
         public abstract Builder expiryDays(Integer expiryDays);
@@ -332,6 +362,12 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
 
         public abstract Builder maxTeiCountToReturn(Integer maxTeiCountToReturn);
 
+        /**
+         * @deprecated will be package-private in SDK 1.0
+         *
+         * @return
+         */
+        @Deprecated
         public abstract Builder programSections(List<ProgramSection> programSections);
 
         public abstract Builder featureType(FeatureType featureType);

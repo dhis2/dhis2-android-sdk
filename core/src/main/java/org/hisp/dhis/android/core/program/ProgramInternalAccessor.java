@@ -50,8 +50,4 @@ public class ProgramInternalAccessor {
     public List<ProgramSection> accessProgramSections(Program program) {
         return program.programSections();
     }
-
-    public List<ProgramStage> accessProgramStages(Program program) {
-        return program.programStages();
-    }
 }

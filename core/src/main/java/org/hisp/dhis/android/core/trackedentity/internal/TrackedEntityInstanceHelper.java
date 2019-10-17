@@ -45,9 +45,9 @@ final class TrackedEntityInstanceHelper {
     static Set<ProgramOrganisationUnitLastUpdated> getProgramOrganisationUnitTuple(
             List<TrackedEntityInstance> trackedEntityInstances, Date lastSynced) {
         Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet = new HashSet<>();
+        TrackedEntityInstanceInternalAccessor internalAccessor = new TrackedEntityInstanceInternalAccessor();
         for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
-            List<Enrollment> enrollments = new TrackedEntityInstanceInternalAccessor()
-                    .accessEnrollments(trackedEntityInstance);
+            List<Enrollment> enrollments = internalAccessor.accessEnrollments(trackedEntityInstance);
             if (enrollments != null) {
                 for (Enrollment enrollment : enrollments) {
                     if (enrollment.organisationUnit() != null && enrollment.program() != null) {

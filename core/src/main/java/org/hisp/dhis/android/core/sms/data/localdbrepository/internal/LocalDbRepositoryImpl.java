@@ -79,7 +79,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     @Override
     public Single<String> getUserName() {
-        return Single.fromCallable(() -> userModule.authenticatedUser.blockingGet().user());
+        return Single.fromCallable(() -> userModule.authenticatedUser().blockingGet().user());
     }
 
     @Override

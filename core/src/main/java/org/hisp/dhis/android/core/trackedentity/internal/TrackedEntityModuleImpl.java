@@ -50,18 +50,18 @@ import io.reactivex.Single;
 @Reusable
 public final class TrackedEntityModuleImpl implements TrackedEntityModule {
 
-    public final TrackedEntityTypeCollectionRepository trackedEntityTypes;
-    public final TrackedEntityInstanceCollectionRepository trackedEntityInstances;
-    public final TrackedEntityDataValueCollectionRepository trackedEntityDataValues;
-    public final TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues;
-    public final TrackedEntityAttributeCollectionRepository trackedEntityAttributes;
-    public final TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes;
+    private final TrackedEntityTypeCollectionRepository trackedEntityTypes;
+    private final TrackedEntityInstanceCollectionRepository trackedEntityInstances;
+    private final TrackedEntityDataValueCollectionRepository trackedEntityDataValues;
+    private final TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues;
+    private final TrackedEntityAttributeCollectionRepository trackedEntityAttributes;
+    private final TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes;
 
-    public final TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery;
+    private final TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery;
 
-    public final TrackedEntityAttributeReservedValueManager reservedValueManager;
+    private final TrackedEntityAttributeReservedValueManager reservedValueManager;
 
-    public final TrackedEntityInstanceDownloader trackedEntityInstanceDownloader;
+    private final TrackedEntityInstanceDownloader trackedEntityInstanceDownloader;
     private final TrackedEntityInstanceListDownloadAndPersistCallFactory downloadAndPersistCallFactory;
 
     @Inject

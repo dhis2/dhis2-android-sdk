@@ -40,9 +40,9 @@ import dagger.Reusable;
 @Reusable
 public final class OrganisationUnitModuleImpl implements OrganisationUnitModule {
 
-    public final OrganisationUnitCollectionRepository organisationUnits;
-    public final OrganisationUnitGroupCollectionRepository organisationUnitGroups;
-    public final OrganisationUnitLevelCollectionRepository organisationUnitLevels;
+    private final OrganisationUnitCollectionRepository organisationUnits;
+    private final OrganisationUnitGroupCollectionRepository organisationUnitGroups;
+    private final OrganisationUnitLevelCollectionRepository organisationUnitLevels;
 
     @Inject
     OrganisationUnitModuleImpl(OrganisationUnitCollectionRepository organisationUnits,

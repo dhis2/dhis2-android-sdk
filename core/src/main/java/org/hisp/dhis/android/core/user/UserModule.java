@@ -27,78 +27,20 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.user.internal.IsUserLoggedInCallableFactory;
-import org.hisp.dhis.android.core.user.internal.LogOutCallFactory;
-import org.hisp.dhis.android.core.user.internal.UserAuthenticateCallFactory;
-
-import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class UserModule {
-
-    private final IsUserLoggedInCallableFactory isUserLoggedInCallFactory;
-    private final LogOutCallFactory logoutCallCallFactory;
-    private final UserAuthenticateCallFactory loginCallFactory;
-
-    public final AuthenticatedUserObjectRepository authenticatedUser;
-    public final UserRoleCollectionRepository userRoles;
-    public final AuthorityCollectionRepository authorities;
-    public final UserCredentialsObjectRepository userCredentials;
-    public final UserObjectRepository user;
-
-    @Inject
-    UserModule(IsUserLoggedInCallableFactory isUserLoggedInCallFactory,
-               LogOutCallFactory logoutCallCallFactory,
-               UserAuthenticateCallFactory loginCallFactory,
-               AuthenticatedUserObjectRepository authenticatedUser,
-               UserRoleCollectionRepository userRoles,
-               AuthorityCollectionRepository authorities,
-               UserCredentialsObjectRepository userCredentials,
-               UserObjectRepository user) {
-        this.isUserLoggedInCallFactory = isUserLoggedInCallFactory;
-        this.logoutCallCallFactory = logoutCallCallFactory;
-        this.loginCallFactory = loginCallFactory;
-        this.authenticatedUser = authenticatedUser;
-        this.userRoles = userRoles;
-        this.authorities = authorities;
-        this.userCredentials = userCredentials;
-        this.user = user;
-    }
-
-    @NonNull
-    public Single<User> logIn(String username, String password, String serverUrl) {
-        return loginCallFactory.logIn(username, password, serverUrl);
-    }
-
-    @NonNull
-    public User blockingLogIn(String username, String password, String serverUrl) {
-        return logIn(username, password, serverUrl).blockingGet();
-    }
-
-    @NonNull
-    public Completable logOut() {
-        return logoutCallCallFactory.logOut();
-    }
-
-    @NonNull
-    public void blockingLogOut() {
-        logOut().blockingAwait();
-    }
-
-    @NonNull
-    public Single<Boolean> isLogged() {
-        return isUserLoggedInCallFactory.isLogged();
-    }
-
-    @NonNull
-    public boolean blockingIsLogged() {
-        return isLogged().blockingGet();
-    }
+public interface UserModule {
+    AuthenticatedUserObjectRepository authenticatedUser();
+    UserRoleCollectionRepository userRoles();
+    AuthorityCollectionRepository authorities();
+    UserCredentialsObjectRepository userCredentials();
+    UserObjectRepository user();
+    
+    Single<User> logIn(String username, String password, String serverUrl);
+    User blockingLogIn(String username, String password, String serverUrl);
+    Completable logOut();
+    void blockingLogOut();
+    Single<Boolean> isLogged();
+    boolean blockingIsLogged();
 }

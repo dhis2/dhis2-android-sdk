@@ -43,14 +43,14 @@ public class UserModuleMockIntegrationShould extends BaseMockIntegrationTestFull
 
     @Test
     public void allow_access_to_authenticated_user() {
-        AuthenticatedUser authenticatedUser = d2.userModule().authenticatedUser.blockingGet();
+        AuthenticatedUser authenticatedUser = d2.userModule().authenticatedUser().blockingGet();
         assertThat(authenticatedUser.user(), is("DXyJmlo9rge"));
         assertThat(authenticatedUser.credentials(), is("YW5kcm9pZDpBbmRyb2lkMTIz"));
     }
 
     @Test
     public void allow_access_to_user_credentials() {
-        UserCredentials credentials = d2.userModule().userCredentials.blockingGet();
+        UserCredentials credentials = d2.userModule().userCredentials().blockingGet();
         assertThat(credentials.username(), is("android"));
         assertThat(credentials.code(), is("android"));
         assertThat(credentials.name(), is("John Barnes"));
@@ -58,7 +58,7 @@ public class UserModuleMockIntegrationShould extends BaseMockIntegrationTestFull
 
     @Test
     public void allow_access_to_user_role() {
-        List<UserRole> userRole = d2.userModule().userRoles.blockingGet();
+        List<UserRole> userRole = d2.userModule().userRoles().blockingGet();
         assertThat(userRole.get(0).uid(), is("Ufph3mGRmMo"));
         assertThat(userRole.get(0).name(), is("Superuser"));
         assertThat(userRole.get(0).displayName(), is("Superuser"));
@@ -66,7 +66,7 @@ public class UserModuleMockIntegrationShould extends BaseMockIntegrationTestFull
 
     @Test
     public void allow_access_to_user() {
-        User user = d2.userModule().user.blockingGet();
+        User user = d2.userModule().user().blockingGet();
         assertThat(user.uid(), is("DXyJmlo9rge"));
         assertThat(user.firstName(), is("John"));
         assertThat(user.email(), is("john@hmail.com"));

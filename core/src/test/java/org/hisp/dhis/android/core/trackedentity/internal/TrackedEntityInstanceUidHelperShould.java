@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -63,6 +64,9 @@ public class TrackedEntityInstanceUidHelperShould {
     @Mock
     private Event event;
 
+    @Mock
+    private TrackedEntityInstanceInternalAccessor internalAccessor;
+
     private TrackedEntityInstanceUidHelper uidHelper;
 
     @Before
@@ -71,7 +75,7 @@ public class TrackedEntityInstanceUidHelperShould {
         MockitoAnnotations.initMocks(this);
 
         when(organisationUnitStore.selectUids()).thenReturn(Lists.newArrayList("ou1", "ou2"));
-        uidHelper = new TrackedEntityInstanceUidHelperImpl(organisationUnitStore);
+        uidHelper = new TrackedEntityInstanceUidHelperImpl(organisationUnitStore, internalAccessor);
     }
 
     @Test
@@ -137,12 +141,12 @@ public class TrackedEntityInstanceUidHelperShould {
 
     private void addToEnrollment(String organisationUnitId) {
         when(enrollment.organisationUnit()).thenReturn(organisationUnitId);
-        when(tei1.enrollments()).thenReturn(Lists.newArrayList(enrollment));
+        when(internalAccessor.accessEnrollments(tei1)).thenReturn(Lists.newArrayList(enrollment));
     }
 
     private void addToEvent(String organisationUnitId) {
         when(event.organisationUnit()).thenReturn(organisationUnitId);
         when(enrollment.events()).thenReturn(Lists.newArrayList(event));
-        when(tei1.enrollments()).thenReturn(Lists.newArrayList(enrollment));
+        when(internalAccessor.accessEnrollments(tei1)).thenReturn(Lists.newArrayList(enrollment));
     }
 }

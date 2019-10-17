@@ -38,9 +38,9 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
+import org.hisp.dhis.android.core.program.ProgramInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramSection;
-import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -100,9 +100,6 @@ public class ProgramHandlerShould {
     private Access access;
 
     @Mock
-    private List<ProgramStage> programStages;
-
-    @Mock
     private ObjectWithUid relatedProgram;
 
     @Mock
@@ -123,6 +120,9 @@ public class ProgramHandlerShould {
     @Mock
     private List<ProgramSection> programSections;
 
+    @Mock
+    private ProgramInternalAccessor internalAccessor;
+
     // object to test
     private ProgramHandler programHandler;
 
@@ -133,7 +133,7 @@ public class ProgramHandlerShould {
         programHandler = new ProgramHandler(
                 programStore, programRuleVariableHandler, programIndicatorHandler,
                 programTrackedEntityAttributeHandler, programSectionHandler, styleHandler, orphanCleaner,
-                collectionCleaner);
+                collectionCleaner, internalAccessor);
 
         when(program.uid()).thenReturn("test_program_uid");
         when(program.code()).thenReturn("test_program_code");
@@ -163,11 +163,10 @@ public class ProgramHandlerShould {
 
         programRuleVariables = Collections.singletonList(programRuleVariable);
 
-        when(program.programStages()).thenReturn(programStages);
-        when(program.programTrackedEntityAttributes()).thenReturn(programTrackedEntityAttributes);
-        when(program.programIndicators()).thenReturn(programIndicators);
-        when(program.programRuleVariables()).thenReturn(programRuleVariables);
-        when(program.programSections()).thenReturn(programSections);
+        when(internalAccessor.accessProgramTrackedEntityAttributes(program)).thenReturn(programTrackedEntityAttributes);
+        when(internalAccessor.accessProgramIndicators(program)).thenReturn(programIndicators);
+        when(internalAccessor.accessProgramRuleVariables(program)).thenReturn(programRuleVariables);
+        when(internalAccessor.accessProgramSections(program)).thenReturn(programSections);
         when(program.access()).thenReturn(access);
         when(access.data()).thenReturn(dataAccess);
         when(dataAccess.read()).thenReturn(true);

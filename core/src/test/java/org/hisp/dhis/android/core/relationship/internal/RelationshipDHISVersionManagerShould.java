@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.relationship.BaseRelationship;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -56,7 +57,8 @@ public class RelationshipDHISVersionManagerShould extends RelationshipSamples {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        relationshipDHISVersionManager = new RelationshipDHISVersionManager(versionManager);
+        relationshipDHISVersionManager = new RelationshipDHISVersionManager(versionManager,
+                new TrackedEntityInstanceInternalAccessor());
     }
 
     private void assertCommonFields(BaseRelationship relationship) {
@@ -125,6 +127,7 @@ public class RelationshipDHISVersionManagerShould extends RelationshipSamples {
 
     @Test
     public void include_to_as_relative_when_passing_from_in_2_29() {
+        when(versionManager.is2_29()).thenReturn(true);
         when(versionManager.is2_29()).thenReturn(true);
         Relationship229Compatible compatible = relationshipDHISVersionManager.to229Compatible(get230(), FROM_UID);
         assertThat(compatible.relative().uid()).isEqualTo(TO_UID);

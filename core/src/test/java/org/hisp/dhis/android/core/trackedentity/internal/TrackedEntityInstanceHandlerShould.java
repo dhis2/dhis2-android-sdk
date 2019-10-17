@@ -115,7 +115,8 @@ public class TrackedEntityInstanceHandlerShould {
         when(trackedEntityInstance.uid()).thenReturn(TEI_UID);
         when(internalAccessor.accessEnrollments(trackedEntityInstance))
                 .thenReturn(Collections.singletonList(enrollment));
-        when(trackedEntityInstance.relationships()).thenReturn(Collections.singletonList(relationship229Compatible));
+        when(internalAccessor.accessRelationships(trackedEntityInstance))
+                .thenReturn(Collections.singletonList(relationship229Compatible));
         when(relationshipVersionManager.from229Compatible(relationship229Compatible)).thenReturn(relationship);
 
         when(relationship.relationshipType()).thenReturn(RELATIONSHIP_TYPE);

@@ -100,7 +100,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
     }
 
     private void handleRelationships(TrackedEntityInstance trackedEntityInstance) {
-        List<Relationship229Compatible> relationships = trackedEntityInstance.relationships();
+        List<Relationship229Compatible> relationships = internalAccessor.accessRelationships(trackedEntityInstance);
         if (relationships != null) {
             for (Relationship229Compatible relationship229 : relationships) {
                 TrackedEntityInstance relativeTEI =

@@ -319,9 +319,11 @@ public final class TrackedEntityInstancePostCall {
                 relationshipDHISVersionManager.to229Compatible(dbRelationships, trackedEntityInstance.uid());
 
         return new TrackedEntityInstanceInternalAccessor()
-                .insertEnrollments(trackedEntityInstance.toBuilder(), enrollmentsRecreated)
+                .insertEnrollments(
+                        new TrackedEntityInstanceInternalAccessor()
+                                .insertRelationships(trackedEntityInstance.toBuilder(), versionAwareRelationships),
+                        enrollmentsRecreated)
                 .trackedEntityAttributeValues(attributeValues == null ? emptyAttributeValueList : attributeValues)
-                .relationships(versionAwareRelationships)
                 .build();
     }
 

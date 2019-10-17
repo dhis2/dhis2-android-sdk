@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipChildrenAppender;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
@@ -92,13 +91,10 @@ public final class TrackedEntityInstanceEntityDIModule {
     @Provides
     @Reusable
     @SuppressWarnings("PMD.NonStaticInitializer")
-    Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders(
-            DatabaseAdapter databaseAdapter,
-            RelationshipChildrenAppender relationshipChildrenAppender) {
+    Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         return new HashMap<String, ChildrenAppender<TrackedEntityInstance>>() {{
             put(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES,
                     TrackedEntityAttributeValueChildrenAppender.create(databaseAdapter));
-            put(TrackedEntityInstanceFields.RELATIONSHIPS, relationshipChildrenAppender);
         }};
     }
 }

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.testapp.category;
 
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboCollectionRepository;
+import org.hisp.dhis.android.core.category.CategoryComboInternalAccessor;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -251,6 +252,6 @@ public class CategoryComboCollectionRepositoryMockIntegrationShould extends Base
                 .withCategoryOptionCombos()
                 .uid("m2jTvAj5kkm")
                 .blockingGet();
-        assertThat(categoryCombo.categoryOptionCombos().size(), is(2));
+        assertThat(new CategoryComboInternalAccessor().accessCategoryOptionCombos(categoryCombo).size(), is(2));
     }
 }

@@ -117,11 +117,11 @@ public final class OrganisationUnitCollectionRepository
                 dataSetUids);
     }
 
-    public OrganisationUnitCollectionRepository withPrograms() {
+    public OrganisationUnitCollectionRepository withProgramUids() {
         return cf.withChild(OrganisationUnitFields.PROGRAMS);
     }
 
-    public OrganisationUnitCollectionRepository withDataSets() {
+    public OrganisationUnitCollectionRepository withDataSetUids() {
         return cf.withChild(OrganisationUnitFields.DATA_SETS);
     }
 

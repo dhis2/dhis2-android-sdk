@@ -29,11 +29,10 @@
 package org.hisp.dhis.android.core.organisationunit.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -45,10 +44,10 @@ final class OrganisationUnitDataSetChildrenAppender extends ChildrenAppender<Org
             DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
             DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET);
 
-    private final LinkModelChildStore<OrganisationUnit, DataSet> linkModelChildStore;
+    private final ObjectWithUidChildStore<OrganisationUnit> linkModelChildStore;
 
     private OrganisationUnitDataSetChildrenAppender(
-            LinkModelChildStore<OrganisationUnit, DataSet> linkModelChildStore) {
+            ObjectWithUidChildStore<OrganisationUnit> linkModelChildStore) {
         this.linkModelChildStore = linkModelChildStore;
     }
 
@@ -61,11 +60,10 @@ final class OrganisationUnitDataSetChildrenAppender extends ChildrenAppender<Org
 
     static ChildrenAppender<OrganisationUnit> create(DatabaseAdapter databaseAdapter) {
         return new OrganisationUnitDataSetChildrenAppender(
-                StoreFactory.linkModelChildStore(
+                StoreFactory.objectWithUidChildStore(
                         databaseAdapter,
                         DataSetOrganisationUnitLinkTableInfo.TABLE_INFO,
-                        CHILD_PROJECTION,
-                        DataSet::create
+                        CHILD_PROJECTION
                 )
         );
     }

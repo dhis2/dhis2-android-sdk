@@ -80,23 +80,6 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
     }
 
     @Test
-    public void include_relationships_as_children() {
-        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances
-                .withRelationships().uid("nWrB0TfWlvh").blockingGet();
-        assertThat(tei.relationships().size(), is(2));
-        assertThat(tei.relationships().get(0).uid(), is("AJOytZW7OaI"));
-    }
-
-    @Test
-    public void include_relationship_items_in_relationships_as_children() {
-        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances
-                .withRelationships().uid("nWrB0TfWlvh").blockingGet();
-        assertThat(tei.relationships().size(), is(2));
-        assertThat(tei.relationships().get(0).from().elementUid(), is("nWrB0TfWlvh"));
-        assertThat(tei.relationships().get(0).to().elementUid(), is("nWrB0TfWlvh"));
-    }
-
-    @Test
     public void add_tracked_entity_instances_to_the_repository() throws D2Error {
         List<TrackedEntityInstance> trackedEntityInstances1 = d2.trackedEntityModule().trackedEntityInstances.blockingGet();
         assertThat(trackedEntityInstances1.size(), is(2));

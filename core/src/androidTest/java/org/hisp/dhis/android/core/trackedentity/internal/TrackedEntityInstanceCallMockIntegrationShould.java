@@ -63,6 +63,8 @@ import static org.hamcrest.core.Is.is;
 
 public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
 
+    private TrackedEntityInstanceInternalAccessor internalAccessor = new TrackedEntityInstanceInternalAccessor();
+
     @Test
     public void download_tracked_entity_instance_enrollments_and_events() throws Exception {
 
@@ -177,7 +179,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
             }
         }
 
-        trackedEntityInstance = new TrackedEntityInstanceInternalAccessor()
+        trackedEntityInstance = internalAccessor
                 .insertEnrollments(trackedEntityInstance.toBuilder(), expectedEnrollments)
                 .build();
 
@@ -270,25 +272,23 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
             downloadedEnrollments.add(enrollment);
         }
 
-        List<Relationship229Compatible> relationships = new ArrayList<>();
+        List<Relationship229Compatible> relationships = internalAccessor.accessRelationships(downloadedTei);
+        relationships = relationships == null ? new ArrayList<>() : relationships;
 
-        if (downloadedTei.relationships() != null) {
-            relationships = downloadedTei.relationships();
-        }
-
-        downloadedTei = new TrackedEntityInstanceInternalAccessor()
-                .insertEnrollments(downloadedTei.toBuilder(), downloadedEnrollments)
+        downloadedTei =
+                internalAccessor.insertEnrollments(
+                        internalAccessor.insertRelationships(downloadedTei.toBuilder(), relationships),
+                downloadedEnrollments)
                 .id(null)
                 .state(null)
                 .deleted(false)
                 .trackedEntityAttributeValues(attValuesWithoutIdAndTEI)
-                .relationships(relationships)
                 .build();
 
         return downloadedTei;
     }
 
     private List<Enrollment> getEnrollments(TrackedEntityInstance trackedEntityInstance) {
-        return new TrackedEntityInstanceInternalAccessor().accessEnrollments(trackedEntityInstance);
+        return internalAccessor.accessEnrollments(trackedEntityInstance);
     }
 }

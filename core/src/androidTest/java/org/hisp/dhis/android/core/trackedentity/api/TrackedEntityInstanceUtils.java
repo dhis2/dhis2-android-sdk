@@ -79,7 +79,10 @@ class TrackedEntityInstanceUtils {
         Date refDate = getValidDate();
 
         return new TrackedEntityInstanceInternalAccessor()
-                .insertEnrollments(TrackedEntityInstance.builder(), enrollments)
+                .insertEnrollments(
+                        new TrackedEntityInstanceInternalAccessor()
+                                .insertRelationships(TrackedEntityInstance.builder(), relationships),
+                        enrollments)
                 .uid(trackedEntityInstanceUid)
                 .created(refDate)
                 .lastUpdated(refDate)
@@ -88,7 +91,6 @@ class TrackedEntityInstanceUtils {
                 .geometry(geometry)
                 .deleted(false)
                 .trackedEntityAttributeValues(attributes)
-                .relationships(relationships)
                 .build();
     }
 

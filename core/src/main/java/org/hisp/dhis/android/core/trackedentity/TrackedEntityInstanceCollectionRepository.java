@@ -152,8 +152,4 @@ public final class TrackedEntityInstanceCollectionRepository
     public TrackedEntityInstanceCollectionRepository withTrackedEntityAttributeValues() {
         return cf.withChild(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES);
     }
-
-    public TrackedEntityInstanceCollectionRepository withRelationships() {
-        return cf.withChild(TrackedEntityInstanceFields.RELATIONSHIPS);
-    }
 }

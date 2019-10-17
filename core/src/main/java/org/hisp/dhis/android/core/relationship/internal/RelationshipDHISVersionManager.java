@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipHelper;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,10 +50,13 @@ import dagger.Reusable;
 public class RelationshipDHISVersionManager {
 
     private final DHISVersionManager versionManager;
+    private final TrackedEntityInstanceInternalAccessor trackedEntityInstanceInternalAccessor;
 
     @Inject
-    public RelationshipDHISVersionManager(DHISVersionManager versionManager) {
+    public RelationshipDHISVersionManager(DHISVersionManager versionManager,
+                                          TrackedEntityInstanceInternalAccessor trackedEntityInstanceInternalAccessor) {
         this.versionManager = versionManager;
+        this.trackedEntityInstanceInternalAccessor = trackedEntityInstanceInternalAccessor;
     }
 
     public List<Relationship229Compatible> to229Compatible(List<Relationship> storedRelationships, String teiUid) {
@@ -143,10 +147,10 @@ public class RelationshipDHISVersionManager {
 
         String relatedTEIUid = teiUid.equals(fromTEIUid) ? toTEIUid : fromTEIUid;
 
-        return TrackedEntityInstance.builder()
+        return trackedEntityInstanceInternalAccessor.insertRelationships(
+                TrackedEntityInstance.builder(), Collections.emptyList())
                 .uid(relatedTEIUid)
                 .deleted(false)
-                .relationships(Collections.emptyList())
                 .build();
     }
 }

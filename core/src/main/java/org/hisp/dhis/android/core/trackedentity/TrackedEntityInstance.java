@@ -114,7 +114,7 @@ public abstract class TrackedEntityInstance extends BaseDeletableDataModel imple
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreRelationship229CompatibleListColumnAdapter.class)
-    public abstract List<Relationship229Compatible> relationships();
+    abstract List<Relationship229Compatible> relationships();
 
     @Nullable
     @JsonProperty()
@@ -164,7 +164,7 @@ public abstract class TrackedEntityInstance extends BaseDeletableDataModel imple
         public abstract Builder trackedEntityAttributeValues(
                 List<TrackedEntityAttributeValue> trackedEntityAttributeValues);
 
-        public abstract Builder relationships(List<Relationship229Compatible> relationships);
+        abstract Builder relationships(List<Relationship229Compatible> relationships);
 
         abstract Builder enrollments(List<Enrollment> enrollments);
 

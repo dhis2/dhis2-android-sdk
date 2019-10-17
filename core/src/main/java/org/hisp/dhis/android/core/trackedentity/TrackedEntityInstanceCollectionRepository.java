@@ -149,10 +149,6 @@ public final class TrackedEntityInstanceCollectionRepository
                 programUids);
     }
 
-    public TrackedEntityInstanceCollectionRepository withEnrollments() {
-        return cf.withChild(TrackedEntityInstanceFields.ENROLLMENTS);
-    }
-
     public TrackedEntityInstanceCollectionRepository withTrackedEntityAttributeValues() {
         return cf.withChild(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES);
     }

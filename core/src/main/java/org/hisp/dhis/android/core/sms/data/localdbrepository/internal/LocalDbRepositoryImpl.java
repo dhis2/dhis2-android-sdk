@@ -18,6 +18,7 @@ import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.smscompression.models.SMSMetadata;
@@ -166,9 +167,12 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     public Single<TrackedEntityInstance> getTeiEnrollmentToSubmit(String enrollmentUid) {
         return Single.fromCallable(() -> {
             Enrollment enrollment = enrollmentModule.enrollments.byUid().eq(enrollmentUid).one().blockingGet();
-            return trackedEntityModule.trackedEntityInstances.withTrackedEntityAttributeValues()
-                    .byUid().eq(enrollment.trackedEntityInstance()).one().blockingGet().toBuilder()
-                    .enrollments(Collections.singletonList(enrollment))
+            TrackedEntityInstance trackedEntityInstance = trackedEntityModule.trackedEntityInstances
+                    .withTrackedEntityAttributeValues()
+                    .byUid().eq(enrollment.trackedEntityInstance())
+                    .one().blockingGet();
+            return new TrackedEntityInstanceInternalAccessor()
+                    .insertEnrollments(trackedEntityInstance.toBuilder(), Collections.singletonList(enrollment))
                     .build();
         });
     }

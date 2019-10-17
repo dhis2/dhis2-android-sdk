@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader;
@@ -41,7 +43,6 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable

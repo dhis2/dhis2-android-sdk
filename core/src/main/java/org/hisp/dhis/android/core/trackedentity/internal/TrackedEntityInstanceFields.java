@@ -53,7 +53,7 @@ public final class TrackedEntityInstanceFields {
     public final static String RELATIONSHIPS = "relationships";
     public final static String COORDINATES = "coordinates";
     public final static String DELETED = "deleted";
-    public final static String ENROLLMENTS = "enrollments";
+    private final static String ENROLLMENTS = "enrollments";
     public final static String GEOMETRY = "geometry";
 
     private static final FieldsHelper<TrackedEntityInstance> fh = new FieldsHelper<>();

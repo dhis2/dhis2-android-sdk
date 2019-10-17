@@ -10,6 +10,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInst
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,11 +46,11 @@ public class MockObjects {
     }
 
     public static TrackedEntityInstance getTEIEnrollment() {
-        return TrackedEntityInstance.builder()
+        return new TrackedEntityInstanceInternalAccessor()
+                .insertEnrollments(TrackedEntityInstance.builder(), Collections.singletonList(getTestEnrollment()))
                 .uid(teiUid)
                 .trackedEntityType(trackedEntityType)
                 .trackedEntityAttributeValues(getTestAttributeValues())
-                .enrollments(Collections.singletonList(getTestEnrollment()))
                 .build();
     }
 

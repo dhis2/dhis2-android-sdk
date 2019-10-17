@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.imports.internal.TEIImportSummary;
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePayload;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
@@ -95,6 +96,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
     private TrackedEntityInstanceService trackedEntityInstanceService;
 
     private CodeGenerator codeGenerator = new CodeGeneratorImpl();
+    private TrackedEntityInstanceInternalAccessor internalAccessor = new TrackedEntityInstanceInternalAccessor();
 
     @Before
     public void setUp() throws IOException {
@@ -170,7 +172,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
     //@Test
     public void tei_with_enrollment_in_search_scope_in_protected_program() throws Exception {
 
-        TrackedEntityInstance tei = teiWithEnollmentInSearchScope();
+        TrackedEntityInstance tei = teiWithEnrollmentInSearchScope();
 
         TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                         .postTrackedEntityInstances(wrapPayload(tei), this.strategy), Collections.singletonList(409),
@@ -200,7 +202,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
     // @Test
     public void tei_with_enrollment_in_search_scope_in_protected_program_breaking_glass() throws Exception {
 
-        TrackedEntityInstance tei = teiWithEnollmentInSearchScope();
+        TrackedEntityInstance tei = teiWithEnrollmentInSearchScope();
 
         TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                         .postTrackedEntityInstances(wrapPayload(tei), this.strategy), Collections.singletonList(409),
@@ -232,7 +234,8 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
     }
 
     private TrackedEntityInstance validTei() {
-        return TrackedEntityInstance.builder()
+        return internalAccessor
+                .insertEnrollments(TrackedEntityInstance.builder(), Arrays.asList(validEnrollment()))
                 .uid(codeGenerator.generate())
                 .organisationUnit(captureOrgunit)
                 .trackedEntityType(trackedEntityType)
@@ -246,7 +249,6 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
                                 .value("TrackedEntity")
                                 .build()
                 ))
-                .enrollments(Arrays.asList(validEnrollment()))
                 .build();
     }
 
@@ -275,21 +277,21 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
     }
 
     private TrackedEntityInstance teiWithEventInSearchScope() {
-        return validTei().toBuilder()
-                .enrollments(Arrays.asList(validEnrollment().toBuilder()
-                        .events(Arrays.asList(validEvent().toBuilder()
+
+        return internalAccessor.insertEnrollments(validTei().toBuilder(),
+                Collections.singletonList(validEnrollment().toBuilder()
+                        .events(Collections.singletonList(validEvent().toBuilder()
                                 .organisationUnit(searchOrgunit)
                                 .build()))
                         .build()))
                 .build();
     }
 
-    private TrackedEntityInstance teiWithEnollmentInSearchScope() {
-        return validTei().toBuilder()
-                .enrollments(Arrays.asList(validEnrollment().toBuilder()
-                        .organisationUnit(searchOrgunit)
-                        .events(Arrays.asList(validEvent()))
-                        .build()))
+    private TrackedEntityInstance teiWithEnrollmentInSearchScope() {
+        return internalAccessor.insertEnrollments(validTei().toBuilder(), Arrays.asList(validEnrollment().toBuilder()
+                .organisationUnit(searchOrgunit)
+                .events(Arrays.asList(validEvent()))
+                .build()))
                 .build();
     }
 

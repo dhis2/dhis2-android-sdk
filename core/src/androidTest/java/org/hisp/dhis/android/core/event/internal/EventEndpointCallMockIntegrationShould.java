@@ -90,7 +90,7 @@ public class EventEndpointCallMockIntegrationShould extends BaseMockIntegrationT
         eventEndpointCall.call();
 
         assertThat(d2.eventModule().events().blockingCount(), is(0));
-        assertThat(d2.trackedEntityModule().trackedEntityDataValues.blockingCount(), is(0));
+        assertThat(d2.trackedEntityModule().trackedEntityDataValues().blockingCount(), is(0));
     }
 
     @Test

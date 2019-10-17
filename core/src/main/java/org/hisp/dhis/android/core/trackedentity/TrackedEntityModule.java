@@ -29,84 +29,20 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceListDownloadAndPersistCallFactory;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
 
-import java.util.Collection;
-import java.util.List;
+public interface TrackedEntityModule {
 
-import javax.inject.Inject;
+    TrackedEntityTypeCollectionRepository trackedEntityTypes();
+    TrackedEntityInstanceCollectionRepository trackedEntityInstances();
+    TrackedEntityDataValueCollectionRepository trackedEntityDataValues();
+    TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues();
+    TrackedEntityAttributeCollectionRepository trackedEntityAttributes();
+    TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes();
 
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.reactivex.Single;
+    TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class TrackedEntityModule {
+    TrackedEntityAttributeReservedValueManager reservedValueManager();
 
-    public final TrackedEntityTypeCollectionRepository trackedEntityTypes;
-    public final TrackedEntityInstanceCollectionRepository trackedEntityInstances;
-    public final TrackedEntityDataValueCollectionRepository trackedEntityDataValues;
-    public final TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues;
-    public final TrackedEntityAttributeCollectionRepository trackedEntityAttributes;
-    public final TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes;
-
-    public final TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery;
-
-    public final TrackedEntityAttributeReservedValueManager reservedValueManager;
-
-    public final TrackedEntityInstanceDownloader trackedEntityInstanceDownloader;
-    private final TrackedEntityInstanceListDownloadAndPersistCallFactory downloadAndPersistCallFactory;
-
-    @Inject
-    TrackedEntityModule(
-            TrackedEntityTypeCollectionRepository trackedEntityTypes,
-            TrackedEntityInstanceCollectionRepository trackedEntityInstances,
-            TrackedEntityDataValueCollectionRepository trackedEntityDataValues,
-            TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues,
-            TrackedEntityAttributeCollectionRepository trackedEntityAttributes,
-            TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes,
-            TrackedEntityAttributeReservedValueManager reservedValueManager,
-            TrackedEntityInstanceDownloader trackedEntityInstanceDownloader,
-            TrackedEntityInstanceListDownloadAndPersistCallFactory downloadAndPersistCallFactory,
-            TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery) {
-        this.trackedEntityTypes = trackedEntityTypes;
-        this.trackedEntityInstances = trackedEntityInstances;
-        this.trackedEntityDataValues = trackedEntityDataValues;
-        this.trackedEntityAttributeValues = trackedEntityAttributeValues;
-        this.trackedEntityAttributes = trackedEntityAttributes;
-        this.trackedEntityTypeAttributes =trackedEntityTypeAttributes;
-        this.reservedValueManager = reservedValueManager;
-        this.trackedEntityInstanceDownloader = trackedEntityInstanceDownloader;
-        this.downloadAndPersistCallFactory = downloadAndPersistCallFactory;
-        this.trackedEntityInstanceQuery = trackedEntityInstanceQuery;
-    }
-
-    /**
-     * Download and persists a list of TrackedEntityInstances for a specific program. This method is required to
-     * download glass-protected TrackedEntityInstances.
-     *
-     * @param uids List of TrackedEntityInstance uids
-     * @param program Program uid
-     * @return -
-     */
-    Single<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids,
-                                                                                     String program) {
-        return downloadAndPersistCallFactory.getCall(uids, program);
-    }
-
-
-    /**
-     * Download and persists a list of TrackedEntityInstances for a specific program. This method is required to
-     * download glass-protected TrackedEntityInstances.
-     *
-     * @param uids List of TrackedEntityInstance uids
-     * @param program Program uid
-     * @return -
-     */
-    List<TrackedEntityInstance> blockingDownloadTrackedEntityInstancesByUid(Collection<String> uids,
-                                                                                     String program) {
-        return downloadTrackedEntityInstancesByUid(uids, program).blockingGet();
-    }
+    TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
 }

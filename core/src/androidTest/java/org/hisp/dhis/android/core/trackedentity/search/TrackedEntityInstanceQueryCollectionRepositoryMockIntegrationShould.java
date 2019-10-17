@@ -51,7 +51,7 @@ public class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould
 
     @Test
     public void get_offline_initial_objects() throws InterruptedException {
-        LiveData<PagedList<TrackedEntityInstance>> liveData = d2.trackedEntityModule().trackedEntityInstanceQuery
+        LiveData<PagedList<TrackedEntityInstance>> liveData = d2.trackedEntityModule().trackedEntityInstanceQuery()
                 .offlineOnly().getPaged(2);
 
         TestObserver.test(liveData)

@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeS
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueEntityDIModule;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueEntityDIModule;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceEntityDIModule;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityModuleImpl;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttributeEntityDIModule;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeCallFactory;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeEntityDIModule;
@@ -91,6 +92,12 @@ public final class TrackedEntityPackageDIModule {
     QueryCallFactory<TrackedEntityAttributeReservedValue,
             TrackedEntityAttributeReservedValueQuery> dataValueCallFactory(
             TrackedEntityAttributeReservedValueEndpointCallFactory impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    TrackedEntityModule module(TrackedEntityModuleImpl impl) {
         return impl;
     }
 }

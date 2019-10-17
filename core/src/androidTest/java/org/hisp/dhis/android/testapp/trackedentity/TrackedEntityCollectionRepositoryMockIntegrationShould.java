@@ -51,7 +51,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void find_all() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(2));
@@ -60,7 +60,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_uid() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .byUid().eq("nWrB0TfWlvD")
                         .blockingGet();
 
@@ -70,7 +70,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_created() throws ParseException {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .byCreated().eq(BaseNameableObject.DATE_FORMAT.parse("2019-01-10T13:40:27.987"))
                         .blockingGet();
 
@@ -80,7 +80,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_lastUpdated() throws ParseException {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .byLastUpdated().eq(BaseNameableObject.DATE_FORMAT.parse("2018-01-10T13:40:28.592"))
                         .blockingGet();
 
@@ -90,7 +90,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_created_at_client() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .byCreatedAtClient().eq("2019-01-22T18:38:15.845")
                         .blockingGet();
 
@@ -100,7 +100,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_last_updated_at_client() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .byLastUpdatedAtClient().eq("2019-01-22T18:38:15.845")
                         .blockingGet();
 
@@ -110,7 +110,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_organisation_unit() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .byOrganisationUnitUid().eq("DiszpKrYNg8")
                         .blockingGet();
 
@@ -120,7 +120,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_tracked_entity_type() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .byTrackedEntityType().eq("nEenWmSyUEp")
                         .blockingGet();
 
@@ -130,7 +130,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_geometry_type() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .byGeometryType().eq(FeatureType.POINT)
                         .blockingGet();
 
@@ -140,7 +140,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_geometry_coordinates() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .byGeometryCoordinates().eq("[9.0, 9.0]")
                         .blockingGet();
 
@@ -150,7 +150,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_state() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .byState().eq(State.SYNCED)
                         .blockingGet();
 
@@ -161,7 +161,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_deleted() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .byDeleted().isFalse()
                         .blockingGet();
 
@@ -171,7 +171,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_program_uids() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .byProgramUids(Lists.newArrayList("lxAQ7Zs9VYR"))
                         .blockingGet();
 

@@ -66,14 +66,14 @@ public class TrackedEntityAttributeValueObjectRepositoryMockIntegrationShould
 
     @Test
     public void return_that_a_value_exists_only_if_it_has_been_created() {
-        assertThat(d2.trackedEntityModule().trackedEntityAttributeValues
+        assertThat(d2.trackedEntityModule().trackedEntityAttributeValues()
                 .value("no_attribute", "no_instance").blockingExists(), is(Boolean.FALSE));
-        assertThat(d2.trackedEntityModule().trackedEntityAttributeValues
+        assertThat(d2.trackedEntityModule().trackedEntityAttributeValues()
                 .value("cejWyOfXge6", "nWrB0TfWlvh").blockingExists(), is(Boolean.TRUE));
     }
 
     private TrackedEntityAttributeValueObjectRepository objectRepository() {
-        return d2.trackedEntityModule().trackedEntityAttributeValues
+        return d2.trackedEntityModule().trackedEntityAttributeValues()
                 .value("aejWyOfXge6", "nWrB0TfWlvh");
     }
 }

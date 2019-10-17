@@ -78,7 +78,7 @@ public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockInte
     }
 
     private static void downloadTrackedEntityInstances() {
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(2).blockingDownload();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(2).blockingDownload();
     }
 
     private static void downloadEvents() {

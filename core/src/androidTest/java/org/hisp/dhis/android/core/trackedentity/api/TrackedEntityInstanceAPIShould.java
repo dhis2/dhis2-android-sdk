@@ -564,7 +564,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
         login();
         syncMetadata();
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(100).blockingDownload();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(100).blockingDownload();
 
         TrackedEntityInstance instance = getInstanceWithOneEnrollmentAndOneEvent();
 
@@ -603,7 +603,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
 
     private TrackedEntityInstance getInstanceWithOneEnrollmentAndOneEvent() {
         List<TrackedEntityInstance> instances =
-                d2.trackedEntityModule().trackedEntityInstances.blockingGet();
+                d2.trackedEntityModule().trackedEntityInstances().blockingGet();
 
         for (TrackedEntityInstance instance : instances) {
             List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
@@ -640,7 +640,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
                 .insertEnrollments(instance.toBuilder(), enrollments)
                 .build();
     }
-    
+
     private List<Enrollment> getEnrollments(TrackedEntityInstance trackedEntityInstance) {
         return new TrackedEntityInstanceInternalAccessor().accessEnrollments(trackedEntityInstance);
     }

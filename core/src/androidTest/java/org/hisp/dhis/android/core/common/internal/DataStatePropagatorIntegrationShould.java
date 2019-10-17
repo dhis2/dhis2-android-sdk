@@ -118,7 +118,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
 
     @Test
     public void reset_enrollment_and_event_states_if_uploading() throws D2Error {
-        String teiUid = d2.trackedEntityModule().trackedEntityInstances.blockingAdd(sampleTEIProjection());
+        String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(sampleTEIProjection());
         String enrolmentUid1 = d2.enrollmentModule().enrollments().blockingAdd(sampleEnrollmentProjection(teiUid));
         String enrolmentUid2 = d2.enrollmentModule().enrollments().blockingAdd(sampleEnrollmentProjection(teiUid));
 
@@ -142,7 +142,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
     }
 
     private void assertThatSetTeiToUpdateWhenEnrollmentPropagation(State state) throws D2Error {
-        String teiUid = d2.trackedEntityModule().trackedEntityInstances.blockingAdd(sampleTEIProjection());
+        String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(sampleTEIProjection());
         trackedEntityInstanceStore.setState(teiUid, state);
 
         propagator.propagateEnrollmentUpdate(Enrollment.builder().uid("uid").trackedEntityInstance(teiUid).build());
@@ -152,7 +152,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
     }
 
     private void assertThatDoNotSetTeiToUpdateWhenEnrollmentPropagation(State state) throws D2Error {
-        String teiUid = d2.trackedEntityModule().trackedEntityInstances.blockingAdd(sampleTEIProjection());
+        String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(sampleTEIProjection());
         trackedEntityInstanceStore.setState(teiUid, state);
 
         propagator.propagateEnrollmentUpdate(Enrollment.builder().uid("uid").trackedEntityInstance(teiUid).build());
@@ -162,7 +162,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
     }
 
     private void assertThatSetTeiToUpdateWhenEventPropagation(State state) throws D2Error {
-        String teiUid = d2.trackedEntityModule().trackedEntityInstances.blockingAdd(sampleTEIProjection());
+        String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(sampleTEIProjection());
         String enrolmentUid = d2.enrollmentModule().enrollments().blockingAdd(sampleEnrollmentProjection(teiUid));
 
         trackedEntityInstanceStore.setState(teiUid, state);
@@ -176,7 +176,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
     }
 
     private void assertThatDoNotSetTeiToUpdateWhenEventPropagation(State state) throws D2Error {
-        String teiUid = d2.trackedEntityModule().trackedEntityInstances.blockingAdd(sampleTEIProjection());
+        String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(sampleTEIProjection());
         String enrolmentUid = d2.enrollmentModule().enrollments().blockingAdd(sampleEnrollmentProjection(teiUid));
 
         trackedEntityInstanceStore.setState(teiUid, state);
@@ -190,7 +190,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
     }
 
     private void assertThatSetTeiToUpdateWhenTrackedEntityDataValuePropagation(State state) throws D2Error {
-        String teiUid = d2.trackedEntityModule().trackedEntityInstances.blockingAdd(sampleTEIProjection());
+        String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(sampleTEIProjection());
         String enrolmentUid = d2.enrollmentModule().enrollments().blockingAdd(sampleEnrollmentProjection(teiUid));
         String eventUid = d2.eventModule().events().blockingAdd(sampleEventProjection(enrolmentUid));
 
@@ -208,7 +208,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
     }
 
     private void assertThatDoNotSetTeiToUpdateWhenTrackedEntityDataValuePropagation(State state) throws D2Error {
-        String teiUid = d2.trackedEntityModule().trackedEntityInstances.blockingAdd(sampleTEIProjection());
+        String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(sampleTEIProjection());
         String enrolmentUid = d2.enrollmentModule().enrollments().blockingAdd(sampleEnrollmentProjection(teiUid));
         String eventUid = d2.eventModule().events().blockingAdd(sampleEventProjection(enrolmentUid));
 

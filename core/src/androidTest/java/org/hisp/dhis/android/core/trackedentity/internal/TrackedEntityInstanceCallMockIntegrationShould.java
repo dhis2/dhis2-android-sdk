@@ -73,7 +73,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_payload.json");
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(teiUid).blockingDownload();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(teiUid).blockingDownload();
 
         verifyDownloadedTrackedEntityInstancePayload("trackedentity/tracked_entity_instance_payload.json", teiUid);
     }
@@ -86,12 +86,12 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_payload.json");
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(teiUid).blockingDownload();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(teiUid).blockingDownload();
 
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_with_removed_data_payload.json");
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq(teiUid).blockingDownload();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(teiUid).blockingDownload();
 
         verifyDownloadedTrackedEntityInstancePayload("trackedentity/tracked_entity_instance_with_removed_data_payload.json",
                 teiUid);

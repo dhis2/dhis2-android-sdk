@@ -90,12 +90,12 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
         String valueUid = d2.fileResourceModule().fileResources().blockingAdd(file);
 
         TrackedEntityAttribute trackedEntityAttribute =
-                d2.trackedEntityModule().trackedEntityAttributes.byValueType().eq(ValueType.IMAGE).one().blockingGet();
+                d2.trackedEntityModule().trackedEntityAttributes().byValueType().eq(ValueType.IMAGE).one().blockingGet();
 
         TrackedEntityInstance trackedEntityInstance =
-                d2.trackedEntityModule().trackedEntityInstances.blockingGet().get(0);
+                d2.trackedEntityModule().trackedEntityInstances().blockingGet().get(0);
 
-        d2.trackedEntityModule().trackedEntityAttributeValues
+        d2.trackedEntityModule().trackedEntityAttributeValues()
                 .value(trackedEntityAttribute.uid(), trackedEntityInstance.uid()).blockingSet(valueUid);
 
         d2.fileResourceModule().fileResources().blockingUpload();
@@ -106,10 +106,10 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         assertThat(file2.exists(), is(true));
 
-        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
 
         TrackedEntityInstance trackedEntityInstance2 =
-                d2.trackedEntityModule().trackedEntityInstances.blockingGet().get(0);
+                d2.trackedEntityModule().trackedEntityInstances().blockingGet().get(0);
 
         assertThat(trackedEntityInstance2.state(), is(State.SYNCED));
     }
@@ -133,7 +133,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         Event event = d2.eventModule().events().blockingGet().get(0);
 
-        d2.trackedEntityModule().trackedEntityDataValues.value(event.uid(), dataElement.uid()).blockingSet(valueUid);
+        d2.trackedEntityModule().trackedEntityDataValues().value(event.uid(), dataElement.uid()).blockingSet(valueUid);
 
         d2.fileResourceModule().fileResources().blockingUpload();
 
@@ -164,7 +164,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         d2.metadataModule().blockingDownload();
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader
+        d2.trackedEntityModule().trackedEntityInstanceDownloader()
                 .byProgramUid("uy2gU8kT1jF").limit(20).blockingDownload();
 
         d2.eventModule().eventDownloader()

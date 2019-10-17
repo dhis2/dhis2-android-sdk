@@ -46,7 +46,7 @@ public class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould
     @Test
     public void find_by_program() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstanceQuery
+                d2.trackedEntityModule().trackedEntityInstanceQuery()
                         .byProgram().eq("lxAQ7Zs9VYR")
                         .blockingGet();
 

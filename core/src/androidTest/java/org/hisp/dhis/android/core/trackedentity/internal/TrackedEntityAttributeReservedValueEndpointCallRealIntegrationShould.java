@@ -56,11 +56,11 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
     }
 
     private void reserveValues() {
-        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues("xs8A6tQJY0s", numberToReserve);
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues("xs8A6tQJY0s", numberToReserve);
     }
 
     private String getValue() {
-        return d2.trackedEntityModule().reservedValueManager.blockingGetValue("xs8A6tQJY0s", orgunitUid);
+        return d2.trackedEntityModule().reservedValueManager().blockingGetValue("xs8A6tQJY0s", orgunitUid);
     }
 
     // @Test
@@ -87,12 +87,12 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
     public void download_and_persist_all_reserved_values() {
         login();
         syncMetadata();
-        d2.trackedEntityModule().reservedValueManager.blockingDownloadAllReservedValues(20);
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadAllReservedValues(20);
 
         List<TrackedEntityAttributeReservedValue> reservedValues = TrackedEntityAttributeReservedValueStore.create(
                 databaseAdapter()).selectAll();
 
-        String value = d2.trackedEntityModule().reservedValueManager.blockingGetValue("xs8A6tQJY0s", orgunitUid);
+        String value = d2.trackedEntityModule().reservedValueManager().blockingGetValue("xs8A6tQJY0s", orgunitUid);
     }
 
     private void login() {

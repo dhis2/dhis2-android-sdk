@@ -157,7 +157,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
 
-        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
 
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(3);
     }
@@ -168,7 +168,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
-        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(3);
 
 
@@ -180,7 +180,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_3.json");
-        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(1);
     }
 
@@ -188,13 +188,13 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
     public void handle_tei_deletions() throws D2Error {
         storeTrackedEntityInstance();
 
-        d2.trackedEntityModule().trackedEntityInstances.uid("teiId").blockingDelete();
+        d2.trackedEntityModule().trackedEntityInstances().uid("teiId").blockingDelete();
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
 
-        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
 
-        assertThat(d2.trackedEntityModule().trackedEntityInstances.blockingCount()).isEqualTo(0);
+        assertThat(d2.trackedEntityModule().trackedEntityInstances().blockingCount()).isEqualTo(0);
         assertThat(d2.enrollmentModule().enrollments().blockingCount()).isEqualTo(0);
         assertThat(d2.eventModule().events().blockingCount()).isEqualTo(0);
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(0);
@@ -220,7 +220,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         storeRelationship("relationship4", tei5, tei4);
 
         List<List<TrackedEntityInstance>> partitions = trackedEntityInstancePostCall.getPartitionsToSync(
-                d2.trackedEntityModule().trackedEntityInstances.byUid().eq(tei1)
+                d2.trackedEntityModule().trackedEntityInstances().byUid().eq(tei1)
                 .byState().in(State.TO_POST, State.TO_UPDATE).blockingGet());
 
         assertThat(partitions.size()).isEqualTo(1);

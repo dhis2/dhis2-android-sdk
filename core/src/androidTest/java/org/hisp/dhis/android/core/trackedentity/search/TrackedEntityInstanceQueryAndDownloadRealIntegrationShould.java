@@ -58,7 +58,7 @@ public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends 
         List<String> orgUnits = new ArrayList<>();
         orgUnits.add("O6uvpzGd5pu");
 
-        repository = d2.trackedEntityModule().trackedEntityInstanceQuery
+        repository = d2.trackedEntityModule().trackedEntityInstanceQuery()
                 .byOrgUnits().in(orgUnits).byOrgUnitMode().eq(OrganisationUnitMode.ACCESSIBLE);
     }
 
@@ -77,8 +77,8 @@ public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends 
             uids.add(tei.uid());
         }
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().in(uids).blockingDownload();
-        List<TrackedEntityInstance> downloadedTeis = d2.trackedEntityModule().trackedEntityInstances.byUid().in(uids).blockingGet();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().in(uids).blockingDownload();
+        List<TrackedEntityInstance> downloadedTeis = d2.trackedEntityModule().trackedEntityInstances().byUid().in(uids).blockingGet();
 
         assertThat(queriedTeis.size()).isEqualTo(downloadedTeis.size());
     }

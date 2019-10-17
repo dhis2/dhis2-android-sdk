@@ -47,7 +47,7 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
 
     @Test
     public void allow_access_to_all_teis_without_children() {
-        List<TrackedEntityInstance> trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstances.blockingGet();
+        List<TrackedEntityInstance> trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstances().blockingGet();
         assertThat(trackedEntityInstances.size(), is(2));
 
         TrackedEntityInstance trackedEntityInstance = trackedEntityInstances.get(0);
@@ -59,7 +59,7 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
 
     @Test
     public void allow_access_to_one_tei_without_children() {
-        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances.uid("nWrB0TfWlvh").blockingGet();
+        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances().uid("nWrB0TfWlvh").blockingGet();
         assertThat(tei.uid(), is("nWrB0TfWlvh"));
         assertThat(tei.organisationUnit(), is("DiszpKrYNg8"));
         assertThat(tei.trackedEntityAttributeValues() == null, is(true));
@@ -67,10 +67,10 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
 
     @Test
     public void include_tracked_entity_attribute_values_as_children() {
-        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances
+        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances()
                 .withTrackedEntityAttributeValues().uid("nWrB0TfWlvD").blockingGet();
 
-        List<TrackedEntityAttributeValue> tea = d2.trackedEntityModule().trackedEntityAttributeValues.blockingGet();
+        List<TrackedEntityAttributeValue> tea = d2.trackedEntityModule().trackedEntityAttributeValues().blockingGet();
 
         assertThat(tei.trackedEntityAttributeValues().size(), is(2));
 
@@ -81,18 +81,18 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
 
     @Test
     public void add_tracked_entity_instances_to_the_repository() throws D2Error {
-        List<TrackedEntityInstance> trackedEntityInstances1 = d2.trackedEntityModule().trackedEntityInstances.blockingGet();
+        List<TrackedEntityInstance> trackedEntityInstances1 = d2.trackedEntityModule().trackedEntityInstances().blockingGet();
         assertThat(trackedEntityInstances1.size(), is(2));
 
-        String teiUid = d2.trackedEntityModule().trackedEntityInstances.blockingAdd(
+        String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(
                 TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp"));
 
-        List<TrackedEntityInstance> trackedEntityInstances2 = d2.trackedEntityModule().trackedEntityInstances.blockingGet();
+        List<TrackedEntityInstance> trackedEntityInstances2 = d2.trackedEntityModule().trackedEntityInstances().blockingGet();
         assertThat(trackedEntityInstances2.size(), is(3));
 
-        TrackedEntityInstance trackedEntityInstance = d2.trackedEntityModule().trackedEntityInstances.uid(teiUid).blockingGet();
+        TrackedEntityInstance trackedEntityInstance = d2.trackedEntityModule().trackedEntityInstances().uid(teiUid).blockingGet();
         assertThat(trackedEntityInstance.uid(), is(teiUid));
 
-        d2.trackedEntityModule().trackedEntityInstances.uid(teiUid).blockingDelete();
+        d2.trackedEntityModule().trackedEntityInstances().uid(teiUid).blockingDelete();
     }
 }

@@ -363,7 +363,7 @@ d2.eventModule().events().uid(eventUid).setStatus(COMPLETED);
 For example, writing a TrackedEntityDataValue would be like:
 
 ```java
-d2.trackedEntityModule().trackedEntityDataValues.value(eventUid, dataElementid).set(“5”);
+d2.trackedEntityModule().trackedEntityDataValues().value(eventUid, dataElementid).set(“5”);
 ```
 
 #### Tracker data upload
@@ -400,7 +400,7 @@ This repository follows the same syntax as other repositories. Additionally it r
 Example:
 
 ```java
-d2.trackedEntityModule().trackedEntityInstanceQuery
+d2.trackedEntityModule().trackedEntityInstanceQuery()
                 .byOrgUnits().eq("orgunitUid")
                 .byOrgUnitMode().eq(OrganisationUnitMode.DESCENDANTS)
                 .byProgram().eq("programUid")
@@ -416,10 +416,10 @@ The app is responsible for reserving generated values before going offline. This
 
 ```java
 // Reserve values for all the unique and automatically generated trackedEntityAttributes.
-d2.trackedEntityModule().reservedValueManager.downloadAllReservedValues(numValuesToFillUp)
+d2.trackedEntityModule().reservedValueManager().downloadAllReservedValues(numValuesToFillUp)
 
 // Reserve values for a particular trackedEntityAttribute.
-d2.trackedEntityModule().reservedValueManager.downloadReservedValues("attributeUid", numValuesToFillUp)
+d2.trackedEntityModule().reservedValueManager().downloadReservedValues("attributeUid", numValuesToFillUp)
 ```
 
 Depending on the time the app expects to be offline, it can decide the quantity of values to reserve. In case the attribute pattern is dependant on the orgunit code, the SDK will reserve values for all the relevant orgunits. More details about the logic in Javadoc.
@@ -427,7 +427,7 @@ Depending on the time the app expects to be offline, it can decide the quantity 
 Reserved values can be obtained by:
 
 ```java
-d2.trackedEntityModule().reservedValueManager.getValue("attributeUid", "orgunitUid")
+d2.trackedEntityModule().reservedValueManager().getValue("attributeUid", "orgunitUid")
 ```
 
 ### Aggregated data

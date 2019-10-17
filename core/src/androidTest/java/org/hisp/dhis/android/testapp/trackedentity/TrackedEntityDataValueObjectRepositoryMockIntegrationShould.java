@@ -68,16 +68,16 @@ public class TrackedEntityDataValueObjectRepositoryMockIntegrationShould extends
 
     @Test
     public void return_that_a_value_exists_only_if_it_has_been_created() {
-        assertThat(d2.trackedEntityModule().trackedEntityDataValues
+        assertThat(d2.trackedEntityModule().trackedEntityDataValues()
                 .value("no_event", "no_data_element").blockingExists(), is(Boolean.FALSE));
 
-        List<TrackedEntityDataValue> d = d2.trackedEntityModule().trackedEntityDataValues.blockingGet();
+        List<TrackedEntityDataValue> d = d2.trackedEntityModule().trackedEntityDataValues().blockingGet();
 
-        assertThat(d2.trackedEntityModule().trackedEntityDataValues
+        assertThat(d2.trackedEntityModule().trackedEntityDataValues()
                 .value("single1", "jDx8LZlznYu").blockingExists(), is(Boolean.TRUE));
     }
 
     private TrackedEntityDataValueObjectRepository objectRepository() {
-        return d2.trackedEntityModule().trackedEntityDataValues.value("event1", "bx6fsa0t90x");
+        return d2.trackedEntityModule().trackedEntityDataValues().value("event1", "bx6fsa0t90x");
     }
 }

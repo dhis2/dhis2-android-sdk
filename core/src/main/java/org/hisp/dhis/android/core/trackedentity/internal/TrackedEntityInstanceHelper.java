@@ -25,11 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.trackedentity.internal;
 
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLastUpdated;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -44,8 +46,10 @@ final class TrackedEntityInstanceHelper {
             List<TrackedEntityInstance> trackedEntityInstances, Date lastSynced) {
         Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet = new HashSet<>();
         for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
-            if (trackedEntityInstance.enrollments() != null) {
-                for (Enrollment enrollment : trackedEntityInstance.enrollments()) {
+            List<Enrollment> enrollments = new TrackedEntityInstanceInternalAccessor()
+                    .accessEnrollments(trackedEntityInstance);
+            if (enrollments != null) {
+                for (Enrollment enrollment : enrollments) {
                     if (enrollment.organisationUnit() != null && enrollment.program() != null) {
                         programOrganisationUnitSet.add(
                                 ProgramOrganisationUnitLastUpdated.builder()

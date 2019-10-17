@@ -25,37 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.enrollment.internal;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+package org.hisp.dhis.android.core.trackedentity;
+
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
-public final class EnrollmentChildrenAppender extends ChildrenAppender<TrackedEntityInstance> {
+import java.util.List;
 
+import dagger.Reusable;
 
-    private final SingleParentChildStore<TrackedEntityInstance, Enrollment> childStore;
+@Reusable
+public class TrackedEntityInstanceInternalAccessor {
 
-    private EnrollmentChildrenAppender(SingleParentChildStore<TrackedEntityInstance, Enrollment> childStore) {
-        this.childStore = childStore;
+    public List<Enrollment> accessEnrollments(TrackedEntityInstance trackedEntityInstance) {
+        return trackedEntityInstance.enrollments();
     }
 
-    @Override
-    protected TrackedEntityInstance appendChildren(TrackedEntityInstance tei) {
-        TrackedEntityInstance.Builder builder = tei.toBuilder();
-        builder.enrollments(childStore.getChildren(tei));
-        return builder.build();
-    }
-
-    public static ChildrenAppender<TrackedEntityInstance> create(DatabaseAdapter databaseAdapter) {
-        return new EnrollmentChildrenAppender(
-                StoreFactory.singleParentChildStore(
-                        databaseAdapter,
-                        EnrollmentStoreImpl.CHILD_PROJECTION,
-                        Enrollment::create)
-        );
+    public TrackedEntityInstance.Builder insertEnrollments(
+            TrackedEntityInstance.Builder builder,
+            List<Enrollment> enrollments) {
+        return builder.enrollments(enrollments);
     }
 }

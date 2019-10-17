@@ -28,11 +28,14 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -41,18 +44,20 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
 class TrackedEntityInstanceUidHelperImpl implements TrackedEntityInstanceUidHelper {
 
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
+    private final TrackedEntityInstanceInternalAccessor internalAccessor;
 
     @Inject
     TrackedEntityInstanceUidHelperImpl(
-            @NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore) {
+            @NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
+            @NonNull TrackedEntityInstanceInternalAccessor internalAccessor) {
         this.organisationUnitStore = organisationUnitStore;
+        this.internalAccessor = internalAccessor;
     }
 
     @Override
@@ -62,7 +67,8 @@ class TrackedEntityInstanceUidHelperImpl implements TrackedEntityInstanceUidHelp
             if (tei.organisationUnit() != null) {
                 uids.add(tei.organisationUnit());
             }
-            addEnrollmentsUids(tei.enrollments(), uids);
+            List<Enrollment> enrollments = internalAccessor.accessEnrollments(tei);
+            addEnrollmentsUids(enrollments, uids);
         }
         uids.removeAll(organisationUnitStore.selectUids());
         return uids;

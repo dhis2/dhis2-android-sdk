@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable;
 import org.junit.Test;
 
@@ -121,8 +122,8 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
         assertThat(downloadedTei.uid(), is(expectedEnrollmentResponse.uid()));
         assertThat(downloadedTei.trackedEntityAttributeValues().size(),
                 is(expectedEnrollmentResponse.trackedEntityAttributeValues().size()));
-        assertThat(downloadedTei.enrollments().size(),
-                is(expectedEnrollmentResponse.enrollments().size()));
+        assertThat(getEnrollments(downloadedTei).size(),
+                is(getEnrollments(expectedEnrollmentResponse).size()));
     }
 
     private void verifyDownloadedTrackedEntityInstance(String file, String teiUid)
@@ -155,7 +156,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
         List<Enrollment> expectedEnrollments = new ArrayList<>();
 
 
-        for (Enrollment enrollment : trackedEntityInstance.enrollments()) {
+        for (Enrollment enrollment : getEnrollments(trackedEntityInstance)) {
             for (Event event : enrollment.events()) {
                 if (!event.deleted()) {
                     if (expectedEvents.get(event.enrollment()) == null) {
@@ -176,7 +177,9 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
             }
         }
 
-        trackedEntityInstance = trackedEntityInstance.toBuilder().enrollments(expectedEnrollments).build();
+        trackedEntityInstance = new TrackedEntityInstanceInternalAccessor()
+                .insertEnrollments(trackedEntityInstance.toBuilder(), expectedEnrollments)
+                .build();
 
         return trackedEntityInstance;
     }
@@ -273,15 +276,19 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
             relationships = downloadedTei.relationships();
         }
 
-        downloadedTei = downloadedTei.toBuilder()
+        downloadedTei = new TrackedEntityInstanceInternalAccessor()
+                .insertEnrollments(downloadedTei.toBuilder(), downloadedEnrollments)
                 .id(null)
                 .state(null)
                 .deleted(false)
                 .trackedEntityAttributeValues(attValuesWithoutIdAndTEI)
                 .relationships(relationships)
-                .enrollments(downloadedEnrollments)
                 .build();
 
         return downloadedTei;
+    }
+
+    private List<Enrollment> getEnrollments(TrackedEntityInstance trackedEntityInstance) {
+        return new TrackedEntityInstanceInternalAccessor().accessEnrollments(trackedEntityInstance);
     }
 }

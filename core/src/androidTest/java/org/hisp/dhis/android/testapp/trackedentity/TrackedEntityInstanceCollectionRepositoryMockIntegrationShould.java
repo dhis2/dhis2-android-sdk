@@ -26,9 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.testapp.trackedentity;
 
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
@@ -60,14 +63,6 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
         assertThat(tei.uid(), is("nWrB0TfWlvh"));
         assertThat(tei.organisationUnit(), is("DiszpKrYNg8"));
         assertThat(tei.trackedEntityAttributeValues() == null, is(true));
-    }
-
-    @Test
-    public void include_enrollments_as_children() {
-        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances
-                .withEnrollments().uid("nWrB0TfWlvh").blockingGet();
-        assertThat(tei.enrollments().size(), is(1));
-        assertThat(tei.enrollments().get(0).uid(), is("enroll1"));
     }
 
     @Test

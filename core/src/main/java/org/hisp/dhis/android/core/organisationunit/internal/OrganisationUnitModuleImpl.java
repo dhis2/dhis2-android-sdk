@@ -28,30 +28,43 @@
 
 package org.hisp.dhis.android.core.organisationunit.internal;
 
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupCollectionRepository;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelCollectionRepository;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        OrganisationUnitEntityDIModule.class,
-        OrganisationUnitLevelEntityDIModule.class,
-        OrganisationUnitGroupEntityDIModule.class,
-        OrganisationUnitProgramLinkEntityDIModule.class
-})
-public final class OrganisationUnitPackageDIModule {
+@Reusable
+public final class OrganisationUnitModuleImpl implements OrganisationUnitModule {
 
-    @Provides
-    @Reusable
-    OrganisationUnitService service(Retrofit retrofit) {
-        return retrofit.create(OrganisationUnitService.class);
+    public final OrganisationUnitCollectionRepository organisationUnits;
+    public final OrganisationUnitGroupCollectionRepository organisationUnitGroups;
+    public final OrganisationUnitLevelCollectionRepository organisationUnitLevels;
+
+    @Inject
+    OrganisationUnitModuleImpl(OrganisationUnitCollectionRepository organisationUnits,
+                               OrganisationUnitGroupCollectionRepository organisationUnitGroups,
+                               OrganisationUnitLevelCollectionRepository organisationUnitLevels) {
+        this.organisationUnits = organisationUnits;
+        this.organisationUnitGroups = organisationUnitGroups;
+        this.organisationUnitLevels = organisationUnitLevels;
     }
 
-    @Provides
-    @Reusable
-    OrganisationUnitModule module(OrganisationUnitModuleImpl impl) {
-        return impl;
+    @Override
+    public OrganisationUnitCollectionRepository organisationUnits() {
+        return organisationUnits;
+    }
+
+    @Override
+    public OrganisationUnitGroupCollectionRepository organisationUnitGroups() {
+        return organisationUnitGroups;
+    }
+
+    @Override
+    public OrganisationUnitLevelCollectionRepository organisationUnitLevels() {
+        return organisationUnitLevels;
     }
 }

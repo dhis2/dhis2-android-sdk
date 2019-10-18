@@ -31,6 +31,7 @@ package org.hisp.dhis.android.testapp.category;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryComboInternalAccessor;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
@@ -53,7 +54,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
         assertThat(combos.size(), is(2));
         for (CategoryCombo combo : combos) {
             assertThat(combo.categories() == null, is(true));
-            assertThat(combo.categoryOptionCombos() == null, is(true));
+            assertThat(accessCategoryOptionCombos(combo) == null, is(true));
         }
     }
 
@@ -62,7 +63,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
         List<CategoryCombo> combos = d2.categoryModule().categoryCombos().withCategoryOptionCombos().blockingGet();
         assertThat(combos.size(), is(2));
         for (CategoryCombo combo : combos) {
-            assertThat(combo.categoryOptionCombos() == null, is(false));
+            assertThat(accessCategoryOptionCombos(combo) == null, is(false));
         }
     }
 
@@ -82,7 +83,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
         assertThat(combo.code(), is("BIRTHS"));
         assertThat(combo.name(), is("Births"));
         assertThat(combo.categories() == null, is(true));
-        assertThat(combo.categoryOptionCombos() == null, is(true));
+        assertThat(accessCategoryOptionCombos(combo) == null, is(true));
     }
 
     @Test
@@ -91,7 +92,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
         assertThat(combo.uid(), is("m2jTvAj5kkm"));
         assertThat(combo.code(), is("BIRTHS"));
         assertThat(combo.name(), is("Births"));
-        List<CategoryOptionCombo> optionCombos = combo.categoryOptionCombos();
+        List<CategoryOptionCombo> optionCombos = accessCategoryOptionCombos(combo);
         assertThat(optionCombos == null, is(false));
         assertThat(optionCombos.size(), is(2));
         assertThat(optionCombos.iterator().next().name(), is("Trained TBA, At PHU"));
@@ -232,5 +233,9 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
         assertThat(categoryOption.uid(), is("apsOixVZlf1"));
         assertThat(categoryOption.name(), is("Female"));
         assertThat(categoryOption.code(), is("FMLE"));
+    }
+
+    private List<CategoryOptionCombo> accessCategoryOptionCombos(CategoryCombo categoryCombo) {
+        return new CategoryComboInternalAccessor().accessCategoryOptionCombos(categoryCombo);
     }
 }

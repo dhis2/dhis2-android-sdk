@@ -147,15 +147,15 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void include_programs_as_children() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .withPrograms().one().blockingGet();
-        assertThat(organisationUnit.programs().get(0).name(), is("Antenatal care visit"));
+                .withProgramUids().one().blockingGet();
+        assertThat(organisationUnit.programs().get(0).uid(), is("lxAQ7Zs9VYR"));
     }
 
     @Test
     public void include_data_sets_as_children() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .withDataSets().one().blockingGet();
-        assertThat(organisationUnit.dataSets().get(0).name(), is("ART monthly summary"));
+                .withDataSetUids().one().blockingGet();
+        assertThat(organisationUnit.dataSets().get(0).uid(), is("lyLU2wR22tC"));
     }
 
     @Test
@@ -168,15 +168,15 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void include_programs_as_children_in_collection_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .withPrograms().blockingGet().get(0);
-        assertThat(organisationUnit.programs().get(0).name(), is("Antenatal care visit"));
+                .withProgramUids().blockingGet().get(0);
+        assertThat(organisationUnit.programs().get(0).uid(), is("lxAQ7Zs9VYR"));
     }
 
     @Test
     public void include_data_sets_as_children_in_collection_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .withDataSets().blockingGet().get(0);
-        assertThat(organisationUnit.dataSets().get(0).name(), is("ART monthly summary"));
+                .withDataSetUids().blockingGet().get(0);
+        assertThat(organisationUnit.dataSets().get(0).uid(), is("lyLU2wR22tC"));
     }
 
     @Test
@@ -189,15 +189,15 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void include_programs_as_children_in_object_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .withPrograms().one().blockingGet();
-        assertThat(organisationUnit.programs().get(0).name(), is("Antenatal care visit"));
+                .withProgramUids().one().blockingGet();
+        assertThat(organisationUnit.programs().get(0).uid(), is("lxAQ7Zs9VYR"));
     }
 
     @Test
     public void include_data_sets_as_children_in_object_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .withDataSets().one().blockingGet();
-        assertThat(organisationUnit.dataSets().get(0).name(), is("ART monthly summary"));
+                .withDataSetUids().one().blockingGet();
+        assertThat(organisationUnit.dataSets().get(0).uid(), is("lyLU2wR22tC"));
     }
 
     @Test

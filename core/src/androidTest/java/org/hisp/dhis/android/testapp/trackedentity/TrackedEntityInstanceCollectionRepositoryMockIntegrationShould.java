@@ -26,9 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.testapp.trackedentity;
 
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
@@ -63,14 +66,6 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
     }
 
     @Test
-    public void include_enrollments_as_children() {
-        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances
-                .withEnrollments().uid("nWrB0TfWlvh").blockingGet();
-        assertThat(tei.enrollments().size(), is(1));
-        assertThat(tei.enrollments().get(0).uid(), is("enroll1"));
-    }
-
-    @Test
     public void include_tracked_entity_attribute_values_as_children() {
         TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances
                 .withTrackedEntityAttributeValues().uid("nWrB0TfWlvD").blockingGet();
@@ -82,23 +77,6 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
 
         assertThat(tei.trackedEntityAttributeValues().get(0).trackedEntityAttribute(), is("aejWyOfXge6"));
         assertThat(tei.trackedEntityAttributeValues().get(0).value(), is("123456"));
-    }
-
-    @Test
-    public void include_relationships_as_children() {
-        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances
-                .withRelationships().uid("nWrB0TfWlvh").blockingGet();
-        assertThat(tei.relationships().size(), is(2));
-        assertThat(tei.relationships().get(0).uid(), is("AJOytZW7OaI"));
-    }
-
-    @Test
-    public void include_relationship_items_in_relationships_as_children() {
-        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances
-                .withRelationships().uid("nWrB0TfWlvh").blockingGet();
-        assertThat(tei.relationships().size(), is(2));
-        assertThat(tei.relationships().get(0).from().elementUid(), is("nWrB0TfWlvh"));
-        assertThat(tei.relationships().get(0).to().elementUid(), is("nWrB0TfWlvh"));
     }
 
     @Test

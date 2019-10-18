@@ -25,37 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.enrollment.internal;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+package org.hisp.dhis.android.core.program;
 
-public final class EnrollmentChildrenAppender extends ChildrenAppender<TrackedEntityInstance> {
+import java.util.List;
 
+import dagger.Reusable;
 
-    private final SingleParentChildStore<TrackedEntityInstance, Enrollment> childStore;
+@Reusable
+public class ProgramInternalAccessor {
 
-    private EnrollmentChildrenAppender(SingleParentChildStore<TrackedEntityInstance, Enrollment> childStore) {
-        this.childStore = childStore;
+    public List<ProgramTrackedEntityAttribute> accessProgramTrackedEntityAttributes(Program program) {
+        return program.programTrackedEntityAttributes();
     }
 
-    @Override
-    protected TrackedEntityInstance appendChildren(TrackedEntityInstance tei) {
-        TrackedEntityInstance.Builder builder = tei.toBuilder();
-        builder.enrollments(childStore.getChildren(tei));
-        return builder.build();
+    public List<ProgramIndicator> accessProgramIndicators(Program program) {
+        return program.programIndicators();
     }
 
-    public static ChildrenAppender<TrackedEntityInstance> create(DatabaseAdapter databaseAdapter) {
-        return new EnrollmentChildrenAppender(
-                StoreFactory.singleParentChildStore(
-                        databaseAdapter,
-                        EnrollmentStoreImpl.CHILD_PROJECTION,
-                        Enrollment::create)
-        );
+    public List<ProgramRuleVariable> accessProgramRuleVariables(Program program) {
+        return program.programRuleVariables();
+    }
+
+    public List<ProgramSection> accessProgramSections(Program program) {
+        return program.programSections();
     }
 }

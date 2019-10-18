@@ -133,6 +133,12 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     @ColumnAdapter(DbProgramTypeColumnAdapter.class)
     public abstract ProgramType programType();
 
+    /**
+     * @deprecated use d2.programModule().programTrackedEntityAttributes instead
+     *
+     * @return
+    */
+    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramTrackedEntityAttributeListColumnAdapter.class)
@@ -162,6 +168,12 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
 
+    /**
+     * @deprecated use d2.programModule().programIndicators instead
+     *
+     * @return
+     */
+    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramIndicatorListColumnAdapter.class)
@@ -179,7 +191,7 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     public abstract List<ProgramStage> programStages();
 
     /**
-     * @deprecated use d2.programModule().programRules() instead
+     * @deprecated use d2.programModule().programRules() instead. This will be removed in SDK 1.0
      *
      * @return
      */
@@ -189,6 +201,12 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     @ColumnAdapter(IgnoreProgramRuleListColumnAdapter.class)
     public abstract List<ProgramRule> programRules();
 
+    /**
+     * @deprecated use d2.programModule().programRuleVariables instead
+     *
+     * @return
+     */
+    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramRuleVariableListColumnAdapter.class)
@@ -215,6 +233,12 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     @JsonProperty()
     public abstract Integer maxTeiCountToReturn();
 
+    /**
+     * @deprecated use d2.programModule().programSections instead
+     *
+     * @return
+     */
+    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramSectionListColumnAdapter.class)
@@ -279,6 +303,12 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
 
         public abstract Builder programType(ProgramType programType);
 
+        /**
+         * @deprecated will be package-private in SDK 1.0
+         *
+         * @return
+         */
+        @Deprecated
         public abstract Builder programTrackedEntityAttributes(List<ProgramTrackedEntityAttribute>
                                                                        programTrackedEntityAttributes);
 
@@ -290,12 +320,36 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
 
         public abstract Builder access(Access access);
 
+        /**
+         * @deprecated will be package-private in SDK 1.0
+         *
+         * @return
+         */
+        @Deprecated
         public abstract Builder programIndicators(List<ProgramIndicator> programIndicators);
 
+        /**
+         * @deprecated will be removed in SDK 1.0
+         *
+         * @return
+         */
+        @Deprecated
         public abstract Builder programStages(List<ProgramStage> programStages);
 
+        /**
+         * @deprecated will be removed in SDK 1.0
+         *
+         * @return
+         */
+        @Deprecated
         public abstract Builder programRules(List<ProgramRule> programRules);
 
+        /**
+         * @deprecated will be package-private in SDK 1.0
+         *
+         * @return
+         */
+        @Deprecated
         public abstract Builder programRuleVariables(List<ProgramRuleVariable> programRuleVariables);
 
         public abstract Builder expiryDays(Integer expiryDays);
@@ -308,6 +362,12 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
 
         public abstract Builder maxTeiCountToReturn(Integer maxTeiCountToReturn);
 
+        /**
+         * @deprecated will be package-private in SDK 1.0
+         *
+         * @return
+         */
+        @Deprecated
         public abstract Builder programSections(List<ProgramSection> programSections);
 
         public abstract Builder featureType(FeatureType featureType);

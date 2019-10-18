@@ -68,9 +68,6 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private Program program;
 
     @Mock
-    private ProgramStage programStageWithUid;
-
-    @Mock
     private TrackedEntityType trackedEntityType;
 
     @Mock
@@ -144,12 +141,6 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
         errorResponse = Response.error(
                 HttpsURLConnection.HTTP_CLIENT_TIMEOUT,
                 ResponseBody.create(MediaType.parse("application/json"), "{}"));
-
-        // Payload data
-        when(program.trackedEntityType()).thenReturn(trackedEntityType);
-        when(program.programStages()).thenReturn(Collections.singletonList(programStageWithUid));
-        when(programStageWithUid.uid()).thenReturn("program_stage_uid");
-        when(trackedEntityType.uid()).thenReturn("test_tracked_entity_uid");
 
         // Call factories
         when(programCallFactory.create())

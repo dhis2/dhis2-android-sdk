@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
@@ -57,6 +59,7 @@ import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,7 +69,6 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
 
@@ -316,10 +318,12 @@ public final class TrackedEntityInstancePostCall {
         List<Relationship229Compatible> versionAwareRelationships =
                 relationshipDHISVersionManager.to229Compatible(dbRelationships, trackedEntityInstance.uid());
 
-        return trackedEntityInstance.toBuilder()
+        return new TrackedEntityInstanceInternalAccessor()
+                .insertEnrollments(
+                        new TrackedEntityInstanceInternalAccessor()
+                                .insertRelationships(trackedEntityInstance.toBuilder(), versionAwareRelationships),
+                        enrollmentsRecreated)
                 .trackedEntityAttributeValues(attributeValues == null ? emptyAttributeValueList : attributeValues)
-                .relationships(versionAwareRelationships)
-                .enrollments(enrollmentsRecreated)
                 .build();
     }
 
@@ -331,7 +335,8 @@ public final class TrackedEntityInstancePostCall {
         for (List<TrackedEntityInstance> partition : partitions) {
             for (TrackedEntityInstance instance : partition) {
                 trackedEntityInstancesUids.add(instance.uid());
-                for (Enrollment enrollment : instance.enrollments()) {
+                List<Enrollment> enrollments = new TrackedEntityInstanceInternalAccessor().accessEnrollments(instance);
+                for (Enrollment enrollment : enrollments) {
                     enrollmentUids.add(enrollment.uid());
                     for (Event event : enrollment.events()) {
                         eventUids.add(event.uid());

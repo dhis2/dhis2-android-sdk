@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
+import org.hisp.dhis.android.core.program.ProgramInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramSection;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
@@ -60,6 +61,7 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
     private final ObjectStyleHandler styleHandler;
     private final ParentOrphanCleaner<Program> orphanCleaner;
     private final CollectionCleaner<Program> collectionCleaner;
+    private final ProgramInternalAccessor internalAccessor;
 
     @Inject
     ProgramHandler(ProgramStoreInterface programStore,
@@ -69,7 +71,8 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
                    Handler<ProgramSection> programSectionHandler,
                    ObjectStyleHandler styleHandler,
                    ParentOrphanCleaner<Program> orphanCleaner,
-                   CollectionCleaner<Program> collectionCleaner) {
+                   CollectionCleaner<Program> collectionCleaner,
+                   ProgramInternalAccessor internalAccessor) {
         super(programStore);
         this.programRuleVariableHandler = programRuleVariableHandler;
         this.programIndicatorHandler = programIndicatorHandler;
@@ -78,14 +81,15 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
         this.styleHandler = styleHandler;
         this.orphanCleaner = orphanCleaner;
         this.collectionCleaner = collectionCleaner;
+        this.internalAccessor = internalAccessor;
     }
 
     @Override
     protected void afterObjectHandled(Program program, HandleAction action) {
-        programTrackedEntityAttributeHandler.handleMany(program.programTrackedEntityAttributes());
-        programIndicatorHandler.handleMany(program.programIndicators());
-        programRuleVariableHandler.handleMany(program.programRuleVariables());
-        programSectionHandler.handleMany(program.programSections());
+        programTrackedEntityAttributeHandler.handleMany(internalAccessor.accessProgramTrackedEntityAttributes(program));
+        programIndicatorHandler.handleMany(internalAccessor.accessProgramIndicators(program));
+        programRuleVariableHandler.handleMany(internalAccessor.accessProgramRuleVariables(program));
+        programSectionHandler.handleMany(internalAccessor.accessProgramSections(program));
         styleHandler.handle(program.style(), program.uid(), ProgramTableInfo.TABLE_INFO.name());
 
         if (action == HandleAction.Update) {

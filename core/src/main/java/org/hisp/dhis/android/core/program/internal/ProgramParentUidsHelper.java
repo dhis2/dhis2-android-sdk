@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.ProgramInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
@@ -106,9 +107,12 @@ final class ProgramParentUidsHelper {
     static Set<String> getAssignedTrackedEntityAttributeUids(List<Program> programs, List<TrackedEntityType> types) {
         Set<String> attributeUids = new HashSet<>();
 
+        ProgramInternalAccessor internalAccessor = new ProgramInternalAccessor();
         for (Program program : programs) {
-            if (program.programTrackedEntityAttributes() != null) {
-                for (ProgramTrackedEntityAttribute programAttribute : program.programTrackedEntityAttributes()) {
+            List<ProgramTrackedEntityAttribute> attributes =
+                    internalAccessor.accessProgramTrackedEntityAttributes(program);
+            if (attributes != null) {
+                for (ProgramTrackedEntityAttribute programAttribute : attributes) {
                     attributeUids.add(programAttribute.trackedEntityAttribute().uid());
                 }
             }

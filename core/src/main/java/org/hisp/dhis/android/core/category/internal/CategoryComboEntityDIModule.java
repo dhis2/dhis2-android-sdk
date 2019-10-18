@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryComboInternalAccessor;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo;
 
@@ -60,6 +61,12 @@ public final class CategoryComboEntityDIModule implements IdentifiableStoreProvi
     @Reusable
     public Handler<CategoryCombo> handler(CategoryComboHandler impl) {
         return impl;
+    }
+
+    @Provides
+    @Reusable
+    CategoryComboInternalAccessor internalAccessor() {
+        return new CategoryComboInternalAccessor();
     }
 
     @Provides

@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -77,7 +78,11 @@ class TrackedEntityInstanceUtils {
                                                               List<Enrollment> enrollments) {
         Date refDate = getValidDate();
 
-        return TrackedEntityInstance.builder()
+        return new TrackedEntityInstanceInternalAccessor()
+                .insertEnrollments(
+                        new TrackedEntityInstanceInternalAccessor()
+                                .insertRelationships(TrackedEntityInstance.builder(), relationships),
+                        enrollments)
                 .uid(trackedEntityInstanceUid)
                 .created(refDate)
                 .lastUpdated(refDate)
@@ -86,8 +91,6 @@ class TrackedEntityInstanceUtils {
                 .geometry(geometry)
                 .deleted(false)
                 .trackedEntityAttributeValues(attributes)
-                .relationships(relationships)
-                .enrollments(enrollments)
                 .build();
     }
 

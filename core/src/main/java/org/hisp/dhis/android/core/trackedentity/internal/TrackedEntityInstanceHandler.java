@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
@@ -41,13 +43,13 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionM
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 
 import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
@@ -58,6 +60,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
     private final HandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler;
     private final HandlerWithTransformer<Enrollment> enrollmentHandler;
     private final OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner;
+    private final TrackedEntityInstanceInternalAccessor internalAccessor;
 
     @Inject
     TrackedEntityInstanceHandler(
@@ -66,7 +69,8 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
             @NonNull HandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler,
             @NonNull HandlerWithTransformer<Enrollment> enrollmentHandler,
-            @NonNull OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner) {
+            @NonNull OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner,
+            TrackedEntityInstanceInternalAccessor internalAccessor) {
         super(trackedEntityInstanceStore);
         this.relationshipVersionManager = relationshipVersionManager;
         this.relationshipHandler = relationshipHandler;
@@ -74,6 +78,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
         this.trackedEntityAttributeValueHandler = trackedEntityAttributeValueHandler;
         this.enrollmentHandler = enrollmentHandler;
         this.enrollmentOrphanCleaner = enrollmentOrphanCleaner;
+        this.internalAccessor = internalAccessor;
     }
 
     @Override
@@ -83,7 +88,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
                     trackedEntityInstance.trackedEntityAttributeValues(),
                     value -> value.toBuilder().trackedEntityInstance(trackedEntityInstance.uid()).build());
 
-            List<Enrollment> enrollments = trackedEntityInstance.enrollments();
+            List<Enrollment> enrollments = internalAccessor.accessEnrollments(trackedEntityInstance);
             if (enrollments != null) {
                 enrollmentHandler.handleMany(enrollments, enrollment -> enrollment.toBuilder()
                         .state(State.SYNCED)
@@ -95,7 +100,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
     }
 
     private void handleRelationships(TrackedEntityInstance trackedEntityInstance) {
-        List<Relationship229Compatible> relationships = trackedEntityInstance.relationships();
+        List<Relationship229Compatible> relationships = internalAccessor.accessRelationships(trackedEntityInstance);
         if (relationships != null) {
             for (Relationship229Compatible relationship229 : relationships) {
                 TrackedEntityInstance relativeTEI =
@@ -136,7 +141,9 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
             handle(trackedEntityInstance, transformer);
 
             if (isFullUpdate) {
-                enrollmentOrphanCleaner.deleteOrphan(trackedEntityInstance, trackedEntityInstance.enrollments());
+                enrollmentOrphanCleaner.deleteOrphan(
+                        trackedEntityInstance,
+                        internalAccessor.accessEnrollments(trackedEntityInstance));
             }
         }
 

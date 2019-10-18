@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryComboInternalAccessor;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
@@ -80,6 +81,6 @@ public class CollectionRepositoryOneMethodMockIntegrationShould extends BaseMock
                 .withCategories().withCategoryOptionCombos().one().blockingGet();
         assertThat(combo.uid(), is(BIRTH_UID));
         assertThat(combo.categories().size(), is(2));
-        assertThat(combo.categoryOptionCombos().size(), is(2));
+        assertThat(new CategoryComboInternalAccessor().accessCategoryOptionCombos(combo).size(), is(2));
     }
 }

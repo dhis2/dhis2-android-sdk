@@ -35,13 +35,12 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
-import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
 import org.junit.Before;
@@ -73,10 +72,10 @@ public class OrganisationUnitHandlerShould {
     private LinkModelStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
 
     @Mock
-    private LinkHandler<Program, OrganisationUnitProgramLink> organisationUnitProgramLinkHandler;
+    private LinkHandler<ObjectWithUid, OrganisationUnitProgramLink> organisationUnitProgramLinkHandler;
 
     @Mock
-    private LinkHandler<DataSet, DataSetOrganisationUnitLink> dataSetDataSetOrganisationUnitLinkHandler;
+    private LinkHandler<ObjectWithUid, DataSetOrganisationUnitLink> dataSetDataSetOrganisationUnitLinkHandler;
 
     @Mock
     private LinkHandler<OrganisationUnit, UserOrganisationUnitLink> userOrganisationUnitLinkHandler;
@@ -106,7 +105,7 @@ public class OrganisationUnitHandlerShould {
     private Set<String> dataSetUids;
 
     @Mock
-    private Program program;
+    private ObjectWithUid program;
 
     private OrganisationUnitHandler organisationUnitHandler;
 
@@ -157,7 +156,7 @@ public class OrganisationUnitHandlerShould {
     public void persist_program_organisation_unit_link_when_programs_uids() {
         organisationUnitHandler.setData(programUids, dataSetUids, user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
         organisationUnitHandler.handleMany(organisationUnits, pathTransformer);
-        verify(organisationUnitProgramLinkHandler).handleMany(anyString(), anyListOf(Program.class),
+        verify(organisationUnitProgramLinkHandler).handleMany(anyString(), anyListOf(ObjectWithUid.class),
                 any(Transformer.class));
     }
 

@@ -1,10 +1,13 @@
 package org.hisp.dhis.android.core.sms.domain.converter.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission;
 import org.hisp.dhis.smscompression.models.SMSAttributeValue;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
@@ -13,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import androidx.annotation.NonNull;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
@@ -28,7 +30,7 @@ public class EnrollmentConverter extends Converter<TrackedEntityInstance> {
 
     @Override
     public Single<? extends SMSSubmission> convert(@NonNull TrackedEntityInstance tei, String user, int submissionId) {
-        List<Enrollment> enrollments = tei.enrollments();
+        List<Enrollment> enrollments = new TrackedEntityInstanceInternalAccessor().accessEnrollments(tei);
         if (enrollments == null || enrollments.size() != 1) {
             return Single.error(
                     new IllegalArgumentException("Given instance should have single enrollment")

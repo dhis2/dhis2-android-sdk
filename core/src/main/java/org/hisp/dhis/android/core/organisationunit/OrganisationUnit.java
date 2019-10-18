@@ -42,16 +42,13 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataSetListAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitGroupListAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitListAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramListAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.program.Program;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -91,13 +88,13 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Mod
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreProgramListAdapter.class)
-    public abstract List<Program> programs();
+    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
+    public abstract List<ObjectWithUid> programs();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreDataSetListAdapter.class)
-    public abstract List<DataSet> dataSets();
+    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
+    public abstract List<ObjectWithUid> dataSets();
 
     @Nullable
     @JsonProperty()
@@ -147,9 +144,9 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Mod
 
         public abstract Builder level(Integer level);
 
-        public abstract Builder programs(List<Program> programs);
+        public abstract Builder programs(List<ObjectWithUid> programs);
 
-        public abstract Builder dataSets(List<DataSet> dataSets);
+        public abstract Builder dataSets(List<ObjectWithUid> dataSets);
 
         abstract Builder ancestors(List<OrganisationUnit> ancestors);
 

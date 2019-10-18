@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionM
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -96,6 +97,9 @@ public class TrackedEntityInstanceHandlerShould {
     @Mock
     private OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentCleaner;
 
+    @Mock
+    private TrackedEntityInstanceInternalAccessor internalAccessor;
+
     // Constants
     private String TEI_UID = "test_tei_uid";
     private String RELATIVE_UID = "relative_uid";
@@ -109,8 +113,10 @@ public class TrackedEntityInstanceHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         when(trackedEntityInstance.uid()).thenReturn(TEI_UID);
-        when(trackedEntityInstance.enrollments()).thenReturn(Collections.singletonList(enrollment));
-        when(trackedEntityInstance.relationships()).thenReturn(Collections.singletonList(relationship229Compatible));
+        when(internalAccessor.accessEnrollments(trackedEntityInstance))
+                .thenReturn(Collections.singletonList(enrollment));
+        when(internalAccessor.accessRelationships(trackedEntityInstance))
+                .thenReturn(Collections.singletonList(relationship229Compatible));
         when(relationshipVersionManager.from229Compatible(relationship229Compatible)).thenReturn(relationship);
 
         when(relationship.relationshipType()).thenReturn(RELATIONSHIP_TYPE);
@@ -120,8 +126,7 @@ public class TrackedEntityInstanceHandlerShould {
 
         trackedEntityInstanceHandler = new TrackedEntityInstanceHandler(
                 relationshipVersionManager, relationshipHandler, trackedEntityInstanceStore,
-                trackedEntityAttributeValueHandler, enrollmentHandler, enrollmentCleaner
-        );
+                trackedEntityAttributeValueHandler, enrollmentHandler, enrollmentCleaner, internalAccessor);
     }
 
     @Test

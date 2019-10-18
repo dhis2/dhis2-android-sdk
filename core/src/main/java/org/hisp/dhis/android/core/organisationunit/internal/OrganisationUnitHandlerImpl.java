@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
@@ -34,14 +36,13 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
-import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
 import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
-import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkHelper;
@@ -52,14 +53,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import androidx.annotation.NonNull;
-
 @SuppressWarnings({"PMD.ExcessiveImports"})
 class OrganisationUnitHandlerImpl extends IdentifiableHandlerImpl<OrganisationUnit>
         implements OrganisationUnitHandler {
     private final LinkHandler<OrganisationUnit, UserOrganisationUnitLink> userOrganisationUnitLinkHandler;
-    private final LinkHandler<Program, OrganisationUnitProgramLink> organisationUnitProgramLinkHandler;
-    private final LinkHandler<DataSet, DataSetOrganisationUnitLink> dataSetOrganisationUnitLinkHandler;
+    private final LinkHandler<ObjectWithUid, OrganisationUnitProgramLink> organisationUnitProgramLinkHandler;
+    private final LinkHandler<ObjectWithUid, DataSetOrganisationUnitLink> dataSetOrganisationUnitLinkHandler;
     private final Handler<OrganisationUnitGroup> organisationUnitGroupHandler;
     private final LinkHandler<OrganisationUnitGroup, OrganisationUnitOrganisationUnitGroupLink>
             organisationUnitGroupLinkHandler;
@@ -72,9 +71,9 @@ class OrganisationUnitHandlerImpl extends IdentifiableHandlerImpl<OrganisationUn
     OrganisationUnitHandlerImpl(@NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
                                 @NonNull LinkHandler<OrganisationUnit, UserOrganisationUnitLink>
                                         userOrganisationUnitLinkHandler,
-                                @NonNull LinkHandler<Program, OrganisationUnitProgramLink>
+                                @NonNull LinkHandler<ObjectWithUid, OrganisationUnitProgramLink>
                                     organisationUnitProgramLinkHandler,
-                                @NonNull LinkHandler<DataSet, DataSetOrganisationUnitLink>
+                                @NonNull LinkHandler<ObjectWithUid, DataSetOrganisationUnitLink>
                                     dataSetOrganisationUnitLinkHandler,
                                 @NonNull Handler<OrganisationUnitGroup> organisationUnitGroupHandler,
                                 @NonNull LinkHandler<OrganisationUnitGroup,
@@ -115,10 +114,10 @@ class OrganisationUnitHandlerImpl extends IdentifiableHandlerImpl<OrganisationUn
     }
 
     private void addOrganisationUnitProgramLink(@NonNull OrganisationUnit organisationUnit) {
-        List<Program> orgUnitPrograms = organisationUnit.programs();
+        List<ObjectWithUid> orgUnitPrograms = organisationUnit.programs();
         if (orgUnitPrograms != null && programUids != null) {
-            List<Program> programsToAdd = new ArrayList<>();
-            for (Program program : orgUnitPrograms) {
+            List<ObjectWithUid> programsToAdd = new ArrayList<>();
+            for (ObjectWithUid program : orgUnitPrograms) {
                 if (programUids.contains(program.uid())) {
                     programsToAdd.add(program);
                 }
@@ -131,10 +130,10 @@ class OrganisationUnitHandlerImpl extends IdentifiableHandlerImpl<OrganisationUn
     }
 
     private void addOrganisationUnitDataSetLink(@NonNull OrganisationUnit organisationUnit) {
-        List<DataSet> orgUnitDataSets = organisationUnit.dataSets();
+        List<ObjectWithUid> orgUnitDataSets = organisationUnit.dataSets();
         if (orgUnitDataSets != null && dataSetUids != null) {
-            List<DataSet> dataSetsToAdd = new ArrayList<>();
-            for (DataSet dataSet : orgUnitDataSets) {
+            List<ObjectWithUid> dataSetsToAdd = new ArrayList<>();
+            for (ObjectWithUid dataSet : orgUnitDataSets) {
                 if (dataSetUids.contains(dataSet.uid())) {
                     dataSetsToAdd.add(dataSet);
                 }

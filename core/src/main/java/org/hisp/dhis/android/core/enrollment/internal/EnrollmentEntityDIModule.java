@@ -37,10 +37,10 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
 import org.hisp.dhis.android.core.enrollment.note.internal.NoteChildrenAppender;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventTableInfo;
-import org.hisp.dhis.android.core.event.internal.EventChildrenAppender;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,6 +66,12 @@ public final class EnrollmentEntityDIModule {
 
     @Provides
     @Reusable
+    EnrollmentInternalAccessor internalAccessor() {
+        return new EnrollmentInternalAccessor();
+    }
+
+    @Provides
+    @Reusable
     Transformer<EnrollmentCreateProjection, Enrollment> transformer() {
         return new EnrollmentProjectionTransformer();
     }
@@ -76,7 +82,6 @@ public final class EnrollmentEntityDIModule {
     Map<String, ChildrenAppender<Enrollment>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         return new HashMap<String, ChildrenAppender<Enrollment>>() {{
             put(EnrollmentFields.NOTES, NoteChildrenAppender.create(databaseAdapter));
-            put(EnrollmentFields.EVENTS, EventChildrenAppender.create(databaseAdapter));
         }};
     }
 

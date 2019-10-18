@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.enrollment.note.internal.NoteToPostTransformer;
@@ -304,8 +305,8 @@ public final class TrackedEntityInstancePostCall {
                     }
                 }
 
-                enrollmentsRecreated.add(enrollment.toBuilder()
-                        .events(eventRecreated)
+                enrollmentsRecreated.add(
+                        new EnrollmentInternalAccessor().insertEvents(enrollment.toBuilder(), eventRecreated)
                         .notes(notesForEnrollment)
                         .build());
             }
@@ -331,14 +332,15 @@ public final class TrackedEntityInstancePostCall {
         List<String> trackedEntityInstancesUids = new ArrayList<>();
         List<String> enrollmentUids = new ArrayList<>();
         List<String> eventUids = new ArrayList<>();
+        TrackedEntityInstanceInternalAccessor teiInternalAccessor = new TrackedEntityInstanceInternalAccessor();
+        EnrollmentInternalAccessor enrollmentInternalAccessor = new EnrollmentInternalAccessor();
 
         for (List<TrackedEntityInstance> partition : partitions) {
             for (TrackedEntityInstance instance : partition) {
                 trackedEntityInstancesUids.add(instance.uid());
-                List<Enrollment> enrollments = new TrackedEntityInstanceInternalAccessor().accessEnrollments(instance);
-                for (Enrollment enrollment : enrollments) {
+                for (Enrollment enrollment : teiInternalAccessor.accessEnrollments(instance)) {
                     enrollmentUids.add(enrollment.uid());
-                    for (Event event : enrollment.events()) {
+                    for (Event event : enrollmentInternalAccessor.accessEvents(enrollment)) {
                         eventUids.add(event.uid());
                     }
                 }

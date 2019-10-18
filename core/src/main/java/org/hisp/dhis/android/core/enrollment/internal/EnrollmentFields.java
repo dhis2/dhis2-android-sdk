@@ -46,7 +46,7 @@ public final class EnrollmentFields {
     public static final String ORGANISATION_UNIT = "orgUnit";
     private static final String COORDINATE = "coordinate";
     public static final String DELETED = "deleted";
-    public static final String EVENTS = "events";
+    private static final String EVENTS = "events";
     public static final String NOTES = "notes";
     private final static String GEOMETRY = "geometry";
 

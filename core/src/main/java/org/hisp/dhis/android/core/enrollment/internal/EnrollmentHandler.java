@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.enrollment.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
@@ -35,6 +37,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.enrollment.note.internal.NoteDHISVersionManager;
 import org.hisp.dhis.android.core.enrollment.note.internal.NoteUniquenessManager;
@@ -46,7 +49,6 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
@@ -56,6 +58,7 @@ final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
     private final Handler<Note> noteHandler;
     private final NoteUniquenessManager noteUniquenessManager;
     private final OrphanCleaner<Enrollment, Event> eventOrphanCleaner;
+    private final EnrollmentInternalAccessor internalAccessor;
 
     @Inject
     EnrollmentHandler(@NonNull NoteDHISVersionManager noteVersionManager,
@@ -63,19 +66,21 @@ final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
                       @NonNull HandlerWithTransformer<Event> eventHandler,
                       @NonNull OrphanCleaner<Enrollment, Event> eventOrphanCleaner,
                       @NonNull Handler<Note> noteHandler,
-                      @NonNull NoteUniquenessManager noteUniquenessManager) {
+                      @NonNull NoteUniquenessManager noteUniquenessManager,
+                      @NonNull EnrollmentInternalAccessor internalAccessor) {
         super(enrollmentStore);
         this.noteVersionManager = noteVersionManager;
         this.eventHandler = eventHandler;
         this.noteHandler = noteHandler;
         this.noteUniquenessManager = noteUniquenessManager;
         this.eventOrphanCleaner = eventOrphanCleaner;
+        this.internalAccessor = internalAccessor;
     }
 
     @Override
     protected void afterObjectHandled(Enrollment enrollment, HandleAction action) {
         if (action != HandleAction.Delete) {
-            eventHandler.handleMany(enrollment.events(),
+            eventHandler.handleMany(internalAccessor.accessEvents(enrollment),
                     event -> event.toBuilder()
                             .state(State.SYNCED)
                             .build());
@@ -90,6 +95,6 @@ final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
             noteHandler.handleMany(notesToSync);
         }
 
-        eventOrphanCleaner.deleteOrphan(enrollment, enrollment.events());
+        eventOrphanCleaner.deleteOrphan(enrollment, internalAccessor.accessEvents(enrollment));
     }
 }

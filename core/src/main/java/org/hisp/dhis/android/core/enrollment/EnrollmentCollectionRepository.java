@@ -142,10 +142,6 @@ public final class EnrollmentCollectionRepository extends ReadWriteWithUidCollec
         return cf.bool(EnrollmentTableInfo.Columns.DELETED);
     }
 
-    public EnrollmentCollectionRepository withEvents() {
-        return cf.withChild(EnrollmentFields.EVENTS);
-    }
-
     public EnrollmentCollectionRepository withNotes() {
         return cf.withChild(EnrollmentFields.NOTES);
     }

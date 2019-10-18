@@ -167,7 +167,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     public Single<TrackedEntityInstance> getTeiEnrollmentToSubmit(String enrollmentUid) {
         return Single.fromCallable(() -> {
             Enrollment enrollment = enrollmentModule.enrollments().byUid().eq(enrollmentUid).one().blockingGet();
-            TrackedEntityInstance trackedEntityInstance = trackedEntityModule.trackedEntityInstances
+            TrackedEntityInstance trackedEntityInstance = trackedEntityModule.trackedEntityInstances()
                     .withTrackedEntityAttributeValues()
                     .byUid().eq(enrollment.trackedEntityInstance())
                     .one().blockingGet();

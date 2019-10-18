@@ -58,7 +58,6 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         Enrollment enrollment = enrollments.get(0);
         assertThat(enrollment.uid(), is("enroll1"));
         assertThat(enrollment.program(), is("lxAQ7Zs9VYR"));
-        assertThat(enrollment.events() == null, is(true));
     }
 
     @Test
@@ -66,17 +65,6 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         Enrollment enrollment = d2.enrollmentModule().enrollments.uid("enroll1").blockingGet();
         assertThat(enrollment.uid(), is("enroll1"));
         assertThat(enrollment.program(), is("lxAQ7Zs9VYR"));
-        assertThat(enrollment.events() == null, is(true));
-    }
-
-    @Test
-    public void include_events_as_children() {
-        Enrollment enrollment1 = d2.enrollmentModule().enrollments
-                .withEvents().uid("enroll1").blockingGet();
-        Enrollment enrollment2 = d2.enrollmentModule().enrollments
-                .withEvents().uid("enroll2").blockingGet();
-        assertThat(enrollment1.events().size(), is(1));
-        assertThat(enrollment2.events().size(), is(1));
     }
 
     @Test

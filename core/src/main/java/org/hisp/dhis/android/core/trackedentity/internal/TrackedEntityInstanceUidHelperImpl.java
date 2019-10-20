@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -50,14 +51,17 @@ import dagger.Reusable;
 class TrackedEntityInstanceUidHelperImpl implements TrackedEntityInstanceUidHelper {
 
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
-    private final TrackedEntityInstanceInternalAccessor internalAccessor;
+    private final TrackedEntityInstanceInternalAccessor trackedEntityInstanceInternalAccessor;
+    private final EnrollmentInternalAccessor enrollmentInternalAccessor;
 
     @Inject
     TrackedEntityInstanceUidHelperImpl(
             @NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
-            @NonNull TrackedEntityInstanceInternalAccessor internalAccessor) {
+            @NonNull TrackedEntityInstanceInternalAccessor internalAccessor,
+            @NonNull EnrollmentInternalAccessor enrollmentInternalAccessor) {
         this.organisationUnitStore = organisationUnitStore;
-        this.internalAccessor = internalAccessor;
+        this.trackedEntityInstanceInternalAccessor = internalAccessor;
+        this.enrollmentInternalAccessor = enrollmentInternalAccessor;
     }
 
     @Override
@@ -67,7 +71,7 @@ class TrackedEntityInstanceUidHelperImpl implements TrackedEntityInstanceUidHelp
             if (tei.organisationUnit() != null) {
                 uids.add(tei.organisationUnit());
             }
-            List<Enrollment> enrollments = internalAccessor.accessEnrollments(tei);
+            List<Enrollment> enrollments = trackedEntityInstanceInternalAccessor.accessEnrollments(tei);
             addEnrollmentsUids(enrollments, uids);
         }
         uids.removeAll(organisationUnitStore.selectUids());
@@ -80,7 +84,7 @@ class TrackedEntityInstanceUidHelperImpl implements TrackedEntityInstanceUidHelp
                 if (enrollment.organisationUnit() != null) {
                     uids.add(enrollment.organisationUnit());
                 }
-                addEventsUids(enrollment.events(), uids);
+                addEventsUids(enrollmentInternalAccessor.accessEvents(enrollment), uids);
             }
         }
     }

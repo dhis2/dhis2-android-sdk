@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -65,7 +66,10 @@ public class TrackedEntityInstanceUidHelperShould {
     private Event event;
 
     @Mock
-    private TrackedEntityInstanceInternalAccessor internalAccessor;
+    private TrackedEntityInstanceInternalAccessor teiInternalAccessor;
+
+    @Mock
+    private EnrollmentInternalAccessor enrollmentInternalAccessor;
 
     private TrackedEntityInstanceUidHelper uidHelper;
 
@@ -75,7 +79,8 @@ public class TrackedEntityInstanceUidHelperShould {
         MockitoAnnotations.initMocks(this);
 
         when(organisationUnitStore.selectUids()).thenReturn(Lists.newArrayList("ou1", "ou2"));
-        uidHelper = new TrackedEntityInstanceUidHelperImpl(organisationUnitStore, internalAccessor);
+        uidHelper = new TrackedEntityInstanceUidHelperImpl(organisationUnitStore, teiInternalAccessor,
+                enrollmentInternalAccessor);
     }
 
     @Test
@@ -141,12 +146,12 @@ public class TrackedEntityInstanceUidHelperShould {
 
     private void addToEnrollment(String organisationUnitId) {
         when(enrollment.organisationUnit()).thenReturn(organisationUnitId);
-        when(internalAccessor.accessEnrollments(tei1)).thenReturn(Lists.newArrayList(enrollment));
+        when(teiInternalAccessor.accessEnrollments(tei1)).thenReturn(Lists.newArrayList(enrollment));
     }
 
     private void addToEvent(String organisationUnitId) {
         when(event.organisationUnit()).thenReturn(organisationUnitId);
-        when(enrollment.events()).thenReturn(Lists.newArrayList(event));
-        when(internalAccessor.accessEnrollments(tei1)).thenReturn(Lists.newArrayList(enrollment));
+        when(enrollmentInternalAccessor.accessEvents(enrollment)).thenReturn(Lists.newArrayList(event));
+        when(teiInternalAccessor.accessEnrollments(tei1)).thenReturn(Lists.newArrayList(enrollment));
     }
 }

@@ -135,7 +135,7 @@ public abstract class Enrollment extends BaseDeletableDataModel implements Objec
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreEventListColumnAdapter.class)
-    public abstract List<Event> events();
+    abstract List<Event> events();
 
     @Nullable
     @JsonProperty()
@@ -191,7 +191,7 @@ public abstract class Enrollment extends BaseDeletableDataModel implements Objec
 
         public abstract Builder geometry(Geometry geometry);
 
-        public abstract Builder events(List<Event> events);
+        abstract Builder events(List<Event> events);
 
         public abstract Builder notes(List<Note> notes);
 

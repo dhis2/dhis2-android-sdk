@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImp
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
@@ -336,7 +337,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
         assertThat(getEnrollments(serverValidTEI1.items().get(0)).size()).isEqualTo(1);
 
         assertThat(getEnrollments(serverValidTEI2.items().get(0)).size()).isEqualTo(1);
-        assertThat(getEnrollments(serverValidTEI2.items().get(0)).get(0).events().size()).isEqualTo(1);
+        assertThat(getEvents(getEnrollments(serverValidTEI2.items().get(0)).get(0)).size()).isEqualTo(1);
 
     }
 
@@ -377,10 +378,10 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
                         true, true));
 
         assertThat(getEnrollments(serverValidTEI1.items().get(0)).size()).isEqualTo(1);
-        assertThat(getEnrollments(serverValidTEI1.items().get(0)).get(0).events()).isEmpty();
+        assertThat(getEvents(getEnrollments(serverValidTEI1.items().get(0)).get(0))).isEmpty();
 
         assertThat(getEnrollments(serverValidTEI2.items().get(0)).size()).isEqualTo(1);
-        assertThat(getEnrollments(serverValidTEI2.items().get(0)).get(0).events()).isEmpty();
+        assertThat(getEvents(getEnrollments(serverValidTEI2.items().get(0)).get(0))).isEmpty();
 
     }
 
@@ -421,10 +422,10 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
                         true, true));
 
         assertThat(getEnrollments(serverValidTEI1.items().get(0)).size()).isEqualTo(1);
-        assertThat(getEnrollments(serverValidTEI1.items().get(0)).get(0).events().size()).isEqualTo(1);
+        assertThat(getEvents(getEnrollments(serverValidTEI1.items().get(0)).get(0)).size()).isEqualTo(1);
 
         assertThat(getEnrollments(serverValidTEI2.items().get(0)).size()).isEqualTo(1);
-        assertThat(getEnrollments(serverValidTEI2.items().get(0)).get(0).events().size()).isEqualTo(1);
+        assertThat(getEvents(getEnrollments(serverValidTEI2.items().get(0)).get(0)).size()).isEqualTo(1);
 
     }
 
@@ -465,13 +466,13 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
                         true, true));
 
         assertThat(getEnrollments(serverValidTEI1.items().get(0)).size()).isEqualTo(1);
-        assertThat(getEnrollments(serverValidTEI1.items().get(0)).get(0).events().size()).isEqualTo(1);
-        assertThat(getEnrollments(serverValidTEI1.items().get(0)).get(0).events().get(0)
+        assertThat(getEvents(getEnrollments(serverValidTEI1.items().get(0)).get(0)).size()).isEqualTo(1);
+        assertThat(getEvents(getEnrollments(serverValidTEI1.items().get(0)).get(0)).get(0)
                 .trackedEntityDataValues().size()).isEqualTo(1);
 
         assertThat(getEnrollments(serverValidTEI2.items().get(0)).size()).isEqualTo(1);
-        assertThat(getEnrollments(serverValidTEI2.items().get(0)).get(0).events().size()).isEqualTo(1);
-        assertThat(getEnrollments(serverValidTEI2.items().get(0)).get(0).events().get(0)
+        assertThat(getEvents(getEnrollments(serverValidTEI2.items().get(0)).get(0)).size()).isEqualTo(1);
+        assertThat(getEvents(getEnrollments(serverValidTEI2.items().get(0)).get(0)).get(0)
                 .trackedEntityDataValues()).isEmpty();
     }
 
@@ -512,13 +513,13 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
                         true, true));
 
         assertThat(getEnrollments(serverValidTEI1.items().get(0)).size()).isEqualTo(1);
-        assertThat(getEnrollments(serverValidTEI1.items().get(0)).get(0).events().size()).isEqualTo(1);
-        assertThat(getEnrollments(serverValidTEI1.items().get(0)).get(0).events().get(0)
+        assertThat(getEvents(getEnrollments(serverValidTEI1.items().get(0)).get(0)).size()).isEqualTo(1);
+        assertThat(getEvents(getEnrollments(serverValidTEI1.items().get(0)).get(0)).get(0)
                 .trackedEntityDataValues().size()).isEqualTo(1);
 
         assertThat(getEnrollments(serverValidTEI2.items().get(0)).size()).isEqualTo(1);
-        assertThat(getEnrollments(serverValidTEI2.items().get(0)).get(0).events().size()).isEqualTo(1);
-        assertThat(getEnrollments(serverValidTEI2.items().get(0)).get(0).events().get(0)
+        assertThat(getEvents(getEnrollments(serverValidTEI2.items().get(0)).get(0)).size()).isEqualTo(1);
+        assertThat(getEvents(getEnrollments(serverValidTEI2.items().get(0)).get(0)).get(0)
                 .trackedEntityDataValues().size()).isEqualTo(1);
     }
 
@@ -552,11 +553,11 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
         assertThat(getEnrollments(serverValidTEI1.items().get(0)).size()).isEqualTo(1);
         assertThat(getEnrollments(serverValidTEI1.items().get(0)).get(0)
                 .status()).isEqualTo(EnrollmentStatus.COMPLETED);
-        assertThat(getEnrollments(serverValidTEI1.items().get(0)).get(0).events().size()).isEqualTo(1);
-        assertThat(getEnrollments(serverValidTEI1.items().get(0)).get(0).events().get(0)
+        assertThat(getEvents(getEnrollments(serverValidTEI1.items().get(0)).get(0)).size()).isEqualTo(1);
+        assertThat(getEvents(getEnrollments(serverValidTEI1.items().get(0)).get(0)).get(0)
                 .trackedEntityDataValues().size()).isEqualTo(1);
-        assertThat(getEnrollments(serverValidTEI1.items().get(0)).get(0)
-                .events().get(0).status()).isEqualTo(EventStatus.COMPLETED);
+        assertThat(getEvents(getEnrollments(serverValidTEI1.items().get(0)).get(0)
+                ).get(0).status()).isEqualTo(EventStatus.COMPLETED);
     }
 
     // @Test
@@ -615,7 +616,8 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
                         d2.eventModule().events().byEnrollmentUid().eq(enrollment.uid()).blockingGet();
 
                 if (events.size() == 1) {
-                    Enrollment enrollmentWithEvents = enrollment.toBuilder().events(events).build();
+                    Enrollment enrollmentWithEvents = new EnrollmentInternalAccessor()
+                            .insertEvents(enrollment.toBuilder(), events).build();
 
                     return new TrackedEntityInstanceInternalAccessor()
                             .insertEnrollments(instance.toBuilder(), Collections.singletonList(enrollmentWithEvents))
@@ -630,10 +632,10 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
         List<Enrollment> enrollments = new ArrayList<>();
         for (Enrollment enrollment : getEnrollments(instance)) {
             List<Event> events = new ArrayList<>();
-            for (Event event : enrollment.events()) {
+            for (Event event : getEvents(enrollment)) {
                 events.add(event.toBuilder().deleted(true).build());
             }
-            enrollments.add(enrollment.toBuilder().events(events).build());
+            enrollments.add(new EnrollmentInternalAccessor().insertEvents(enrollment.toBuilder(), events).build());
         }
 
         return new TrackedEntityInstanceInternalAccessor()
@@ -643,5 +645,9 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
 
     private List<Enrollment> getEnrollments(TrackedEntityInstance trackedEntityInstance) {
         return new TrackedEntityInstanceInternalAccessor().accessEnrollments(trackedEntityInstance);
+    }
+
+    private List<Event> getEvents(Enrollment enrollment) {
+        return new EnrollmentInternalAccessor().accessEvents(enrollment);
     }
 }

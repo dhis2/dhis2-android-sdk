@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl;
@@ -63,7 +64,8 @@ import static org.hamcrest.core.Is.is;
 
 public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
 
-    private TrackedEntityInstanceInternalAccessor internalAccessor = new TrackedEntityInstanceInternalAccessor();
+    private TrackedEntityInstanceInternalAccessor teiInternalAccessor = new TrackedEntityInstanceInternalAccessor();
+    private EnrollmentInternalAccessor enrollmentInternalAccessor = new EnrollmentInternalAccessor();
 
     @Test
     public void download_tracked_entity_instance_enrollments_and_events() throws Exception {
@@ -115,7 +117,8 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
     private void verifyDownloadedTrackedEntityInstancePayload(String file, String teiUid)
             throws IOException {
         Payload<TrackedEntityInstance> parsed = parseTrackedEntityInstanceResponse(file,
-                new TypeReference<Payload<TrackedEntityInstance>>() {});
+                new TypeReference<Payload<TrackedEntityInstance>>() {
+                });
 
         TrackedEntityInstance expectedEnrollmentResponse = removeDeletedData(parsed.items().get(0));
 
@@ -131,7 +134,8 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
     private void verifyDownloadedTrackedEntityInstance(String file, String teiUid)
             throws IOException {
         TrackedEntityInstance parsed = parseTrackedEntityInstanceResponse(file,
-                new TypeReference<TrackedEntityInstance>() {});
+                new TypeReference<TrackedEntityInstance>() {
+                });
 
         TrackedEntityInstance expectedEnrollmentResponse = removeDeletedData(parsed);
 
@@ -142,7 +146,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
                 is(expectedEnrollmentResponse.trackedEntityAttributeValues().size()));
     }
 
-    private<M> M parseTrackedEntityInstanceResponse(String file, TypeReference<M> reference)
+    private <M> M parseTrackedEntityInstanceResponse(String file, TypeReference<M> reference)
             throws IOException {
         String expectedEventsResponseJson = new ResourcesFileReader().getStringFromFile(file);
 
@@ -159,7 +163,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
 
 
         for (Enrollment enrollment : getEnrollments(trackedEntityInstance)) {
-            for (Event event : enrollment.events()) {
+            for (Event event : enrollmentInternalAccessor.accessEvents(enrollment)) {
                 if (!event.deleted()) {
                     if (expectedEvents.get(event.enrollment()) == null) {
                         expectedEvents.put(event.enrollment(), new ArrayList<>());
@@ -170,16 +174,16 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
                 }
             }
             if (!enrollment.deleted()) {
-                enrollment = enrollment.toBuilder()
+                enrollment = enrollmentInternalAccessor.insertEvents(enrollment.toBuilder(),
+                        expectedEvents.get(enrollment.uid()))
                         .trackedEntityInstance(trackedEntityInstance.uid())
-                        .events(expectedEvents.get(enrollment.uid()))
                         .build();
 
                 expectedEnrollments.add(enrollment);
             }
         }
 
-        trackedEntityInstance = internalAccessor
+        trackedEntityInstance = teiInternalAccessor
                 .insertEnrollments(trackedEntityInstance.toBuilder(), expectedEnrollments)
                 .build();
 
@@ -264,31 +268,31 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
         }
 
         for (Enrollment enrollment : downloadedEnrollmentsWithoutEvents) {
-            enrollment = enrollment.toBuilder()
+            enrollment = enrollmentInternalAccessor.insertEvents(enrollment.toBuilder(),
+                    downloadedEvents.get(enrollment.uid()))
                     .trackedEntityInstance(downloadedTei.uid())
-                    .events(downloadedEvents.get(enrollment.uid()))
                     .build();
 
             downloadedEnrollments.add(enrollment);
         }
 
-        List<Relationship229Compatible> relationships = internalAccessor.accessRelationships(downloadedTei);
+        List<Relationship229Compatible> relationships = teiInternalAccessor.accessRelationships(downloadedTei);
         relationships = relationships == null ? new ArrayList<>() : relationships;
 
         downloadedTei =
-                internalAccessor.insertEnrollments(
-                        internalAccessor.insertRelationships(downloadedTei.toBuilder(), relationships),
-                downloadedEnrollments)
-                .id(null)
-                .state(null)
-                .deleted(false)
-                .trackedEntityAttributeValues(attValuesWithoutIdAndTEI)
-                .build();
+                teiInternalAccessor.insertEnrollments(
+                        teiInternalAccessor.insertRelationships(downloadedTei.toBuilder(), relationships),
+                        downloadedEnrollments)
+                        .id(null)
+                        .state(null)
+                        .deleted(false)
+                        .trackedEntityAttributeValues(attValuesWithoutIdAndTEI)
+                        .build();
 
         return downloadedTei;
     }
 
     private List<Enrollment> getEnrollments(TrackedEntityInstance trackedEntityInstance) {
-        return internalAccessor.accessEnrollments(trackedEntityInstance);
+        return teiInternalAccessor.accessEnrollments(trackedEntityInstance);
     }
 }

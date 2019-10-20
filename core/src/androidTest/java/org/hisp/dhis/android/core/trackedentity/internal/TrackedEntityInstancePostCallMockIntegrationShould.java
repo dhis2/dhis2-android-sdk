@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityDataValueSamples;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceSamples;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
@@ -100,8 +101,8 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         for (TrackedEntityInstance instance : partitions.get(0)) {
             assertThat(getEnrollments(instance).size()).isEqualTo(2);
             for (Enrollment enrollment : getEnrollments(instance)) {
-                assertThat(enrollment.events().size()).isEqualTo(1);
-                for (Event event : enrollment.events()) {
+                assertThat(getEvents(enrollment).size()).isEqualTo(1);
+                for (Event event : getEvents(enrollment)) {
                     assertThat(event.trackedEntityDataValues().size()).isEqualTo(1);
                 }
             }
@@ -120,8 +121,8 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         for (TrackedEntityInstance instance : partitions.get(0)) {
             assertThat(getEnrollments(instance).size()).isEqualTo(2);
             for (Enrollment enrollment : getEnrollments(instance)) {
-                assertThat(enrollment.events().size()).isEqualTo(1);
-                for (Event event : enrollment.events()) {
+                assertThat(getEvents(enrollment).size()).isEqualTo(1);
+                for (Event event : getEvents(enrollment)) {
                     assertThat(event.trackedEntityDataValues().size()).isEqualTo(1);
                 }
             }
@@ -142,9 +143,9 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
             assertThat(getEnrollments(instance).size()).isEqualTo(3);
             for (Enrollment enrollment : getEnrollments(instance)) {
                 if (enrollment.uid().equals("enrollment3Id")) {
-                    assertThat(enrollment.events().size()).isEqualTo(0);
+                    assertThat(getEvents(enrollment).size()).isEqualTo(0);
                 } else {
-                    assertThat(enrollment.events().size()).isEqualTo(1);
+                    assertThat(getEvents(enrollment).size()).isEqualTo(1);
                 }
             }
         }
@@ -283,13 +284,13 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
                 .trackedEntityDataValues(Collections.singletonList(dataValue1))
                 .build();
 
-        Enrollment enrollment1 = Enrollment.builder()
+        Enrollment enrollment1 = new EnrollmentInternalAccessor().insertEvents(Enrollment.builder(),
+                Collections.singletonList(event1))
                 .uid(enrollment1Id)
                 .program(program.uid())
                 .organisationUnit(orgUnit.uid())
                 .state(State.TO_POST)
                 .trackedEntityInstance(teiId)
-                .events(Collections.singletonList(event1))
                 .build();
 
         TrackedEntityDataValue dataValue2 = TrackedEntityDataValueSamples.get().toBuilder().event(event2Id).build();
@@ -304,13 +305,13 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
                 .trackedEntityDataValues(Collections.singletonList(dataValue2))
                 .build();
 
-        Enrollment enrollment2 = Enrollment.builder()
+        Enrollment enrollment2 = new EnrollmentInternalAccessor().insertEvents(Enrollment.builder(),
+                Collections.singletonList(event2))
                 .uid(enrollment2Id)
                 .program(program.uid())
                 .organisationUnit(orgUnit.uid())
                 .state(State.TO_POST)
                 .trackedEntityInstance(teiId)
-                .events(Collections.singletonList(event2))
                 .build();
 
         TrackedEntityDataValue dataValue3 = TrackedEntityDataValueSamples.get().toBuilder().event(event3Id).build();
@@ -325,13 +326,13 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
                 .trackedEntityDataValues(Collections.singletonList(dataValue3))
                 .build();
 
-        Enrollment enrollment3 = Enrollment.builder()
+        Enrollment enrollment3 = new EnrollmentInternalAccessor().insertEvents(Enrollment.builder(),
+                Collections.singletonList(event3))
                 .uid(enrollment3Id)
                 .program(program.uid())
                 .organisationUnit(orgUnit.uid())
                 .state(State.SYNCED)
                 .trackedEntityInstance(teiId)
-                .events(Collections.singletonList(event3))
                 .build();
 
         TrackedEntityInstance tei  = new TrackedEntityInstanceInternalAccessor()
@@ -402,5 +403,9 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
     private List<Enrollment> getEnrollments(TrackedEntityInstance trackedEntityInstance) {
         return new TrackedEntityInstanceInternalAccessor().accessEnrollments(trackedEntityInstance);
+    }
+
+    private List<Event> getEvents(Enrollment enrollment) {
+        return new EnrollmentInternalAccessor().accessEvents(enrollment);
     }
 }

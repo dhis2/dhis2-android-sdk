@@ -30,7 +30,7 @@ public class EnrollmentConverter extends Converter<TrackedEntityInstance> {
 
     @Override
     public Single<? extends SMSSubmission> convert(@NonNull TrackedEntityInstance tei, String user, int submissionId) {
-        List<Enrollment> enrollments = new TrackedEntityInstanceInternalAccessor().accessEnrollments(tei);
+        List<Enrollment> enrollments = TrackedEntityInstanceInternalAccessor.accessEnrollments(tei);
         if (enrollments == null || enrollments.size() != 1) {
             return Single.error(
                     new IllegalArgumentException("Given instance should have single enrollment")

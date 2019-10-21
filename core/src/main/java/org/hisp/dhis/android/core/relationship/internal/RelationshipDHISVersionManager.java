@@ -50,13 +50,10 @@ import dagger.Reusable;
 public class RelationshipDHISVersionManager {
 
     private final DHISVersionManager versionManager;
-    private final TrackedEntityInstanceInternalAccessor trackedEntityInstanceInternalAccessor;
 
     @Inject
-    public RelationshipDHISVersionManager(DHISVersionManager versionManager,
-                                          TrackedEntityInstanceInternalAccessor trackedEntityInstanceInternalAccessor) {
+    public RelationshipDHISVersionManager(DHISVersionManager versionManager) {
         this.versionManager = versionManager;
-        this.trackedEntityInstanceInternalAccessor = trackedEntityInstanceInternalAccessor;
     }
 
     public List<Relationship229Compatible> to229Compatible(List<Relationship> storedRelationships, String teiUid) {
@@ -147,7 +144,7 @@ public class RelationshipDHISVersionManager {
 
         String relatedTEIUid = teiUid.equals(fromTEIUid) ? toTEIUid : fromTEIUid;
 
-        return trackedEntityInstanceInternalAccessor.insertRelationships(
+        return TrackedEntityInstanceInternalAccessor.insertRelationships(
                 TrackedEntityInstance.builder(), Collections.emptyList())
                 .uid(relatedTEIUid)
                 .deleted(false)

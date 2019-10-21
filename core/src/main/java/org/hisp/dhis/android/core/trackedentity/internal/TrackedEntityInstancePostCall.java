@@ -319,9 +319,9 @@ public final class TrackedEntityInstancePostCall {
         List<Relationship229Compatible> versionAwareRelationships =
                 relationshipDHISVersionManager.to229Compatible(dbRelationships, trackedEntityInstance.uid());
 
-        return new TrackedEntityInstanceInternalAccessor()
+        return TrackedEntityInstanceInternalAccessor
                 .insertEnrollments(
-                        new TrackedEntityInstanceInternalAccessor()
+                        TrackedEntityInstanceInternalAccessor
                                 .insertRelationships(trackedEntityInstance.toBuilder(), versionAwareRelationships),
                         enrollmentsRecreated)
                 .trackedEntityAttributeValues(attributeValues == null ? emptyAttributeValueList : attributeValues)
@@ -332,12 +332,11 @@ public final class TrackedEntityInstancePostCall {
         List<String> trackedEntityInstancesUids = new ArrayList<>();
         List<String> enrollmentUids = new ArrayList<>();
         List<String> eventUids = new ArrayList<>();
-        TrackedEntityInstanceInternalAccessor teiInternalAccessor = new TrackedEntityInstanceInternalAccessor();
 
         for (List<TrackedEntityInstance> partition : partitions) {
             for (TrackedEntityInstance instance : partition) {
                 trackedEntityInstancesUids.add(instance.uid());
-                for (Enrollment enrollment : teiInternalAccessor.accessEnrollments(instance)) {
+                for (Enrollment enrollment : TrackedEntityInstanceInternalAccessor.accessEnrollments(instance)) {
                     enrollmentUids.add(enrollment.uid());
                     for (Event event : EnrollmentInternalAccessor.accessEvents(enrollment)) {
                         eventUids.add(event.uid());

@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,12 +66,6 @@ public final class TrackedEntityInstanceEntityDIModule {
     @Reusable
     Transformer<TrackedEntityInstanceCreateProjection, TrackedEntityInstance> transformer() {
         return new TrackedEntityInstanceProjectionTransformer();
-    }
-
-    @Provides
-    @Reusable
-    TrackedEntityInstanceInternalAccessor internalAccessor() {
-        return new TrackedEntityInstanceInternalAccessor();
     }
 
     @Provides

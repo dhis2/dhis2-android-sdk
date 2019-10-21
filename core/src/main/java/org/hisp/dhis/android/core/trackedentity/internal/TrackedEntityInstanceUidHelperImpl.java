@@ -51,14 +51,10 @@ import dagger.Reusable;
 class TrackedEntityInstanceUidHelperImpl implements TrackedEntityInstanceUidHelper {
 
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
-    private final TrackedEntityInstanceInternalAccessor trackedEntityInstanceInternalAccessor;
 
     @Inject
-    TrackedEntityInstanceUidHelperImpl(
-            @NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
-            @NonNull TrackedEntityInstanceInternalAccessor internalAccessor) {
+    TrackedEntityInstanceUidHelperImpl(@NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore) {
         this.organisationUnitStore = organisationUnitStore;
-        this.trackedEntityInstanceInternalAccessor = internalAccessor;
     }
 
     @Override
@@ -68,7 +64,7 @@ class TrackedEntityInstanceUidHelperImpl implements TrackedEntityInstanceUidHelp
             if (tei.organisationUnit() != null) {
                 uids.add(tei.organisationUnit());
             }
-            List<Enrollment> enrollments = trackedEntityInstanceInternalAccessor.accessEnrollments(tei);
+            List<Enrollment> enrollments = TrackedEntityInstanceInternalAccessor.accessEnrollments(tei);
             addEnrollmentsUids(enrollments, uids);
         }
         uids.removeAll(organisationUnitStore.selectUids());

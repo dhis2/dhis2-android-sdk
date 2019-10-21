@@ -52,16 +52,13 @@ class TrackedEntityInstanceUidHelperImpl implements TrackedEntityInstanceUidHelp
 
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
     private final TrackedEntityInstanceInternalAccessor trackedEntityInstanceInternalAccessor;
-    private final EnrollmentInternalAccessor enrollmentInternalAccessor;
 
     @Inject
     TrackedEntityInstanceUidHelperImpl(
             @NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
-            @NonNull TrackedEntityInstanceInternalAccessor internalAccessor,
-            @NonNull EnrollmentInternalAccessor enrollmentInternalAccessor) {
+            @NonNull TrackedEntityInstanceInternalAccessor internalAccessor) {
         this.organisationUnitStore = organisationUnitStore;
         this.trackedEntityInstanceInternalAccessor = internalAccessor;
-        this.enrollmentInternalAccessor = enrollmentInternalAccessor;
     }
 
     @Override
@@ -84,7 +81,7 @@ class TrackedEntityInstanceUidHelperImpl implements TrackedEntityInstanceUidHelp
                 if (enrollment.organisationUnit() != null) {
                     uids.add(enrollment.organisationUnit());
                 }
-                addEventsUids(enrollmentInternalAccessor.accessEvents(enrollment), uids);
+                addEventsUids(EnrollmentInternalAccessor.accessEvents(enrollment), uids);
             }
         }
     }

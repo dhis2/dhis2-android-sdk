@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.relationship.BaseRelationship;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -57,8 +56,7 @@ public class RelationshipDHISVersionManagerShould extends RelationshipSamples {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        relationshipDHISVersionManager = new RelationshipDHISVersionManager(versionManager,
-                new TrackedEntityInstanceInternalAccessor());
+        relationshipDHISVersionManager = new RelationshipDHISVersionManager(versionManager);
     }
 
     private void assertCommonFields(BaseRelationship relationship) {

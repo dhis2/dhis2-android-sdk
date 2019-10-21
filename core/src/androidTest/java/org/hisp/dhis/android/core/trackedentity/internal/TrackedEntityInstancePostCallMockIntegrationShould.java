@@ -335,8 +335,8 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
                 .trackedEntityInstance(teiId)
                 .build();
 
-        TrackedEntityInstance tei  = new TrackedEntityInstanceInternalAccessor()
-                .insertEnrollments(TrackedEntityInstance.builder(), Arrays.asList(enrollment1, enrollment2, enrollment3))
+        TrackedEntityInstance tei  = TrackedEntityInstanceInternalAccessor.insertEnrollments(
+                TrackedEntityInstance.builder(), Arrays.asList(enrollment1, enrollment2, enrollment3))
                 .uid(teiId)
                 .trackedEntityType(teiType.uid())
                 .organisationUnit(orgUnit.uid())
@@ -402,7 +402,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
     }
 
     private List<Enrollment> getEnrollments(TrackedEntityInstance trackedEntityInstance) {
-        return new TrackedEntityInstanceInternalAccessor().accessEnrollments(trackedEntityInstance);
+        return TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance);
     }
 
     private List<Event> getEvents(Enrollment enrollment) {

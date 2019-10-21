@@ -46,7 +46,7 @@ public class MockObjects {
     }
 
     public static TrackedEntityInstance getTEIEnrollment() {
-        return new TrackedEntityInstanceInternalAccessor()
+        return TrackedEntityInstanceInternalAccessor
                 .insertEnrollments(TrackedEntityInstance.builder(), Collections.singletonList(getTestEnrollment()))
                 .uid(teiUid)
                 .trackedEntityType(trackedEntityType)

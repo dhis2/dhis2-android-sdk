@@ -97,9 +97,6 @@ public class TrackedEntityInstanceHandlerShould {
     @Mock
     private OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentCleaner;
 
-    @Mock
-    private TrackedEntityInstanceInternalAccessor internalAccessor;
-
     // Constants
     private String TEI_UID = "test_tei_uid";
     private String RELATIVE_UID = "relative_uid";
@@ -113,9 +110,9 @@ public class TrackedEntityInstanceHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         when(trackedEntityInstance.uid()).thenReturn(TEI_UID);
-        when(internalAccessor.accessEnrollments(trackedEntityInstance))
+        when(TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance))
                 .thenReturn(Collections.singletonList(enrollment));
-        when(internalAccessor.accessRelationships(trackedEntityInstance))
+        when(TrackedEntityInstanceInternalAccessor.accessRelationships(trackedEntityInstance))
                 .thenReturn(Collections.singletonList(relationship229Compatible));
         when(relationshipVersionManager.from229Compatible(relationship229Compatible)).thenReturn(relationship);
 
@@ -126,7 +123,7 @@ public class TrackedEntityInstanceHandlerShould {
 
         trackedEntityInstanceHandler = new TrackedEntityInstanceHandler(
                 relationshipVersionManager, relationshipHandler, trackedEntityInstanceStore,
-                trackedEntityAttributeValueHandler, enrollmentHandler, enrollmentCleaner, internalAccessor);
+                trackedEntityAttributeValueHandler, enrollmentHandler, enrollmentCleaner);
     }
 
     @Test

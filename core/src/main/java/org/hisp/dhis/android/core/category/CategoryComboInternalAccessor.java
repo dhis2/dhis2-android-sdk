@@ -30,7 +30,10 @@ package org.hisp.dhis.android.core.category;
 
 import java.util.List;
 
-public class CategoryComboInternalAccessor {
+public final class CategoryComboInternalAccessor {
+
+    private CategoryComboInternalAccessor() {
+    }
 
     public static List<CategoryOptionCombo> accessCategoryOptionCombos(CategoryCombo categoryCombo) {
         return categoryCombo.categoryOptionCombos();

@@ -61,7 +61,6 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
     private final ObjectStyleHandler styleHandler;
     private final ParentOrphanCleaner<Program> orphanCleaner;
     private final CollectionCleaner<Program> collectionCleaner;
-    private final ProgramInternalAccessor internalAccessor;
 
     @Inject
     ProgramHandler(ProgramStoreInterface programStore,
@@ -71,8 +70,7 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
                    Handler<ProgramSection> programSectionHandler,
                    ObjectStyleHandler styleHandler,
                    ParentOrphanCleaner<Program> orphanCleaner,
-                   CollectionCleaner<Program> collectionCleaner,
-                   ProgramInternalAccessor internalAccessor) {
+                   CollectionCleaner<Program> collectionCleaner) {
         super(programStore);
         this.programRuleVariableHandler = programRuleVariableHandler;
         this.programIndicatorHandler = programIndicatorHandler;
@@ -81,15 +79,15 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
         this.styleHandler = styleHandler;
         this.orphanCleaner = orphanCleaner;
         this.collectionCleaner = collectionCleaner;
-        this.internalAccessor = internalAccessor;
     }
 
     @Override
     protected void afterObjectHandled(Program program, HandleAction action) {
-        programTrackedEntityAttributeHandler.handleMany(internalAccessor.accessProgramTrackedEntityAttributes(program));
-        programIndicatorHandler.handleMany(internalAccessor.accessProgramIndicators(program));
-        programRuleVariableHandler.handleMany(internalAccessor.accessProgramRuleVariables(program));
-        programSectionHandler.handleMany(internalAccessor.accessProgramSections(program));
+        programTrackedEntityAttributeHandler.handleMany(ProgramInternalAccessor
+                .accessProgramTrackedEntityAttributes(program));
+        programIndicatorHandler.handleMany(ProgramInternalAccessor.accessProgramIndicators(program));
+        programRuleVariableHandler.handleMany(ProgramInternalAccessor.accessProgramRuleVariables(program));
+        programSectionHandler.handleMany(ProgramInternalAccessor.accessProgramSections(program));
         styleHandler.handle(program.style(), program.uid(), ProgramTableInfo.TABLE_INFO.name());
 
         if (action == HandleAction.Update) {

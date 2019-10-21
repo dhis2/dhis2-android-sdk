@@ -30,24 +30,24 @@ package org.hisp.dhis.android.core.program;
 
 import java.util.List;
 
-import dagger.Reusable;
+public final class ProgramInternalAccessor {
 
-@Reusable
-public class ProgramInternalAccessor {
+    public ProgramInternalAccessor() {
+    }
 
-    public List<ProgramTrackedEntityAttribute> accessProgramTrackedEntityAttributes(Program program) {
+    public static List<ProgramTrackedEntityAttribute> accessProgramTrackedEntityAttributes(Program program) {
         return program.programTrackedEntityAttributes();
     }
 
-    public List<ProgramIndicator> accessProgramIndicators(Program program) {
+    public static List<ProgramIndicator> accessProgramIndicators(Program program) {
         return program.programIndicators();
     }
 
-    public List<ProgramRuleVariable> accessProgramRuleVariables(Program program) {
+    public static List<ProgramRuleVariable> accessProgramRuleVariables(Program program) {
         return program.programRuleVariables();
     }
 
-    public List<ProgramSection> accessProgramSections(Program program) {
+    public static List<ProgramSection> accessProgramSections(Program program) {
         return program.programSections();
     }
 }

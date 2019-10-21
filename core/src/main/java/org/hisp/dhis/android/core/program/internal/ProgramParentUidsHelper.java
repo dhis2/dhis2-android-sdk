@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.program.Program;
@@ -107,10 +108,9 @@ final class ProgramParentUidsHelper {
     static Set<String> getAssignedTrackedEntityAttributeUids(List<Program> programs, List<TrackedEntityType> types) {
         Set<String> attributeUids = new HashSet<>();
 
-        ProgramInternalAccessor internalAccessor = new ProgramInternalAccessor();
         for (Program program : programs) {
             List<ProgramTrackedEntityAttribute> attributes =
-                    internalAccessor.accessProgramTrackedEntityAttributes(program);
+                    ProgramInternalAccessor.accessProgramTrackedEntityAttributes(program);
             if (attributes != null) {
                 for (ProgramTrackedEntityAttribute programAttribute : attributes) {
                     attributeUids.add(programAttribute.trackedEntityAttribute().uid());

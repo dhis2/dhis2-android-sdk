@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleChildrenAppender;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.DataSetInternalAccessor;
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.dataset.Section;
 import org.hisp.dhis.android.core.dataset.SectionTableInfo;
@@ -78,12 +77,6 @@ public final class DataSetEntityDIModule {
     @Reusable
     public CollectionCleaner<DataSet> collectionCleaner(DatabaseAdapter databaseAdapter) {
         return new CollectionCleanerImpl<>(DataSetTableInfo.TABLE_INFO.name(), databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    DataSetInternalAccessor internalAccessor() {
-        return new DataSetInternalAccessor();
     }
 
     @Provides

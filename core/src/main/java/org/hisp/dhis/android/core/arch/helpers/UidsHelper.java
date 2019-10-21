@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.helpers;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.common.IdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ public final class UidsHelper {
 
     private UidsHelper() {}
 
-    public static <O extends IdentifiableObject> Set<String> getUids(Collection<O> objects) {
+    public static <O extends ObjectWithUidInterface> Set<String> getUids(Collection<O> objects) {
         return addUids(new HashSet<>(), objects);
     }
 
@@ -51,8 +50,8 @@ public final class UidsHelper {
         return object == null ? null : object.uid();
     }
 
-    public static <O extends IdentifiableObject> Set<String> addUids(Set<String> uids, Collection<O> objects) {
-        for (IdentifiableObject object: objects) {
+    public static <O extends ObjectWithUidInterface> Set<String> addUids(Set<String> uids, Collection<O> objects) {
+        for (ObjectWithUidInterface object: objects) {
             uids.add(object.uid());
         }
         return uids;

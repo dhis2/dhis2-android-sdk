@@ -128,9 +128,6 @@ public class DataSetHandlerShould {
     @Mock
     private List<DataInputPeriod> dataInputPeriods;
 
-    @Mock
-    private DataSetInternalAccessor dataSetInternalAccessor;
-
     // object to test
     private DataSetHandler dataSetHandler;
 
@@ -148,8 +145,8 @@ public class DataSetHandlerShould {
                 dataInputPeriodHandler,
                 dataSetElementLinkHandler,
                 dataSetIndicatorLinkHandler,
-                collectionCleaner,
-                dataSetInternalAccessor);
+                collectionCleaner
+        );
 
         when(dataSet.uid()).thenReturn("dataset_uid");
         when(dataSet.access()).thenReturn(access);
@@ -161,7 +158,7 @@ public class DataSetHandlerShould {
 
         sections = new ArrayList<>();
         sections.add(section);
-        when(dataSetInternalAccessor.accessSections(dataSet)).thenReturn(sections);
+        when(DataSetInternalAccessor.accessSections(dataSet)).thenReturn(sections);
 
         compulsoryDataElementOperands = new ArrayList<>();
         compulsoryDataElementOperands.add(compulsoryDataElementOperand);

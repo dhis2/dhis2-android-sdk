@@ -32,7 +32,7 @@ import java.util.List;
 
 public final class ProgramInternalAccessor {
 
-    public ProgramInternalAccessor() {
+    private ProgramInternalAccessor() {
     }
 
     public static List<ProgramTrackedEntityAttribute> accessProgramTrackedEntityAttributes(Program program) {

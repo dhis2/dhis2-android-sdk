@@ -53,25 +53,22 @@ final class CategoryComboHandler extends IdentifiableHandlerImpl<CategoryCombo> 
     private final HandlerWithTransformer<CategoryOptionCombo> optionComboHandler;
     private final OrderedLinkHandler<Category, CategoryCategoryComboLink> categoryCategoryComboLinkHandler;
     private final OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner;
-    private final CategoryComboInternalAccessor internalAccessor;
 
     @Inject
     CategoryComboHandler(
             @NonNull IdentifiableObjectStore<CategoryCombo> store,
             @NonNull HandlerWithTransformer<CategoryOptionCombo> optionComboHandler,
             @NonNull OrderedLinkHandler<Category, CategoryCategoryComboLink> categoryCategoryComboLinkHandler,
-            @NonNull OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner,
-            @NonNull CategoryComboInternalAccessor internalAccessor) {
+            @NonNull OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner) {
         super(store);
         this.optionComboHandler = optionComboHandler;
         this.categoryCategoryComboLinkHandler = categoryCategoryComboLinkHandler;
         this.categoryOptionCleaner = categoryOptionCleaner;
-        this.internalAccessor = internalAccessor;
     }
 
     @Override
     protected void afterObjectHandled(final CategoryCombo combo, HandleAction action) {
-        optionComboHandler.handleMany(internalAccessor.accessCategoryOptionCombos(combo),
+        optionComboHandler.handleMany(CategoryComboInternalAccessor.accessCategoryOptionCombos(combo),
                 optionCombo -> optionCombo.toBuilder().categoryCombo(ObjectWithUid.create(combo.uid())).build());
 
         categoryCategoryComboLinkHandler.handleMany(combo.uid(), combo.categories(),
@@ -82,7 +79,7 @@ final class CategoryComboHandler extends IdentifiableHandlerImpl<CategoryCombo> 
                         .build());
 
         if (action == HandleAction.Update) {
-            categoryOptionCleaner.deleteOrphan(combo, internalAccessor.accessCategoryOptionCombos(combo));
+            categoryOptionCleaner.deleteOrphan(combo, CategoryComboInternalAccessor.accessCategoryOptionCombos(combo));
         }
     }
 }

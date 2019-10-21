@@ -236,6 +236,6 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
     }
 
     private List<CategoryOptionCombo> accessCategoryOptionCombos(CategoryCombo categoryCombo) {
-        return new CategoryComboInternalAccessor().accessCategoryOptionCombos(categoryCombo);
+        return CategoryComboInternalAccessor.accessCategoryOptionCombos(categoryCombo);
     }
 }

@@ -81,6 +81,6 @@ public class CollectionRepositoryOneMethodMockIntegrationShould extends BaseMock
                 .withCategories().withCategoryOptionCombos().one().blockingGet();
         assertThat(combo.uid(), is(BIRTH_UID));
         assertThat(combo.categories().size(), is(2));
-        assertThat(new CategoryComboInternalAccessor().accessCategoryOptionCombos(combo).size(), is(2));
+        assertThat(CategoryComboInternalAccessor.accessCategoryOptionCombos(combo).size(), is(2));
     }
 }

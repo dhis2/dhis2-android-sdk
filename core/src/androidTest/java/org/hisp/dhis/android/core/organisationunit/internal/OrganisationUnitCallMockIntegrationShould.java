@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
@@ -102,8 +101,7 @@ public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrati
 
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter);
 
-        OrganisationUnitDisplayPathTransformer pathTransformer = new OrganisationUnitDisplayPathTransformer(
-                new OrganisationUnitDisplayPathGenerator(new OrganisationUnitInternalAccessor()));
+        OrganisationUnitDisplayPathTransformer pathTransformer = new OrganisationUnitDisplayPathTransformer();
 
         organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService,
                 organisationUnitHandler, pathTransformer, apiCallExecutor, objects.resourceHandler).create(user, programUids, null);

@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
+import org.hisp.dhis.android.core.user.UserInternalAccessor;
 import org.hisp.dhis.android.core.user.UserRole;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,7 +74,7 @@ public class UserHandlerShould {
         MockitoAnnotations.initMocks(this);
         userHandler = new UserHandler(userStore, userCredentialsHandler, userRoleHandler, userRoleCollectionCleaner);
         userCredentials = UserCredentials.builder().uid("credentialsUid").build();
-        when(user.userCredentials()).thenReturn(userCredentials);
+        when(UserInternalAccessor.accessUserCredentials(user)).thenReturn(userCredentials);
         when(user.uid()).thenReturn("userUid");
     }
 

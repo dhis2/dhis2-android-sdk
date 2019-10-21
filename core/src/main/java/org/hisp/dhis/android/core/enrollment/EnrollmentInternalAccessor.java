@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.event.Event;
 
 import java.util.List;
 
-public class EnrollmentInternalAccessor {
+public final class EnrollmentInternalAccessor {
 
     private EnrollmentInternalAccessor() {
     }

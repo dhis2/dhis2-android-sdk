@@ -81,9 +81,6 @@ public class CategoryComboHandlerShould {
     @Mock
     private List<CategoryOptionCombo> optionCombos;
 
-    @Mock
-    private CategoryComboInternalAccessor internalAccessor;
-
     private Handler<CategoryCombo> categoryComboHandler;
 
     private List<Category> categories;
@@ -95,11 +92,11 @@ public class CategoryComboHandlerShould {
         categories = new ArrayList<>();
         categories.add(category);
         when(combo.uid()).thenReturn(comboUid);
-        when(internalAccessor.accessCategoryOptionCombos(combo)).thenReturn(optionCombos);
+        when(CategoryComboInternalAccessor.accessCategoryOptionCombos(combo)).thenReturn(optionCombos);
         when(combo.categories()).thenReturn(categories);
 
         categoryComboHandler = new CategoryComboHandler(categoryComboStore, optionComboHandler,
-                categoryCategoryComboLinkHandler, categoryOptionCleaner, internalAccessor);
+                categoryCategoryComboLinkHandler, categoryOptionCleaner);
     }
 
     @Test

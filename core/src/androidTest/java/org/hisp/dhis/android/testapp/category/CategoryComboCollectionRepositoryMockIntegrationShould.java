@@ -252,6 +252,6 @@ public class CategoryComboCollectionRepositoryMockIntegrationShould extends Base
                 .withCategoryOptionCombos()
                 .uid("m2jTvAj5kkm")
                 .blockingGet();
-        assertThat(new CategoryComboInternalAccessor().accessCategoryOptionCombos(categoryCombo).size(), is(2));
+        assertThat(CategoryComboInternalAccessor.accessCategoryOptionCombos(categoryCombo).size(), is(2));
     }
 }

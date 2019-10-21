@@ -70,7 +70,6 @@ final class DataSetHandler extends IdentifiableHandlerImpl<DataSet> {
     private final LinkHandler<DataSetElement, DataSetElement> dataSetElementLinkHandler;
     private final LinkHandler<Indicator, DataSetIndicatorLink> dataSetIndicatorLinkHandler;
     private final CollectionCleaner<DataSet> collectionCleaner;
-    private final DataSetInternalAccessor dataSetInternalAccessor;
 
     @Inject
     DataSetHandler(IdentifiableObjectStore<DataSet> dataSetStore,
@@ -83,8 +82,7 @@ final class DataSetHandler extends IdentifiableHandlerImpl<DataSet> {
                    LinkHandler<DataInputPeriod, DataInputPeriod> dataInputPeriodHandler,
                    LinkHandler<DataSetElement, DataSetElement> dataSetElementLinkHandler,
                    LinkHandler<Indicator, DataSetIndicatorLink> dataSetIndicatorLinkHandler,
-                   CollectionCleaner<DataSet> collectionCleaner,
-                   DataSetInternalAccessor dataSetInternalAccessor) {
+                   CollectionCleaner<DataSet> collectionCleaner) {
 
         super(dataSetStore);
         this.styleHandler = styleHandler;
@@ -96,7 +94,6 @@ final class DataSetHandler extends IdentifiableHandlerImpl<DataSet> {
         this.dataSetElementLinkHandler = dataSetElementLinkHandler;
         this.dataSetIndicatorLinkHandler = dataSetIndicatorLinkHandler;
         this.collectionCleaner = collectionCleaner;
-        this.dataSetInternalAccessor = dataSetInternalAccessor;
     }
 
     @Override
@@ -104,7 +101,7 @@ final class DataSetHandler extends IdentifiableHandlerImpl<DataSet> {
 
         styleHandler.handle(dataSet.style(), dataSet.uid(), DataSetTableInfo.TABLE_INFO.name());
 
-        List<Section> sections = dataSetInternalAccessor.accessSections(dataSet);
+        List<Section> sections = DataSetInternalAccessor.accessSections(dataSet);
 
         sectionHandler.handleMany(sections);
 

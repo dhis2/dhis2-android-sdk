@@ -120,9 +120,6 @@ public class ProgramHandlerShould {
     @Mock
     private List<ProgramSection> programSections;
 
-    @Mock
-    private ProgramInternalAccessor internalAccessor;
-
     // object to test
     private ProgramHandler programHandler;
 
@@ -133,7 +130,7 @@ public class ProgramHandlerShould {
         programHandler = new ProgramHandler(
                 programStore, programRuleVariableHandler, programIndicatorHandler,
                 programTrackedEntityAttributeHandler, programSectionHandler, styleHandler, orphanCleaner,
-                collectionCleaner, internalAccessor);
+                collectionCleaner);
 
         when(program.uid()).thenReturn("test_program_uid");
         when(program.code()).thenReturn("test_program_code");
@@ -163,10 +160,11 @@ public class ProgramHandlerShould {
 
         programRuleVariables = Collections.singletonList(programRuleVariable);
 
-        when(internalAccessor.accessProgramTrackedEntityAttributes(program)).thenReturn(programTrackedEntityAttributes);
-        when(internalAccessor.accessProgramIndicators(program)).thenReturn(programIndicators);
-        when(internalAccessor.accessProgramRuleVariables(program)).thenReturn(programRuleVariables);
-        when(internalAccessor.accessProgramSections(program)).thenReturn(programSections);
+        when(ProgramInternalAccessor.accessProgramTrackedEntityAttributes(program))
+                .thenReturn(programTrackedEntityAttributes);
+        when(ProgramInternalAccessor.accessProgramIndicators(program)).thenReturn(programIndicators);
+        when(ProgramInternalAccessor.accessProgramRuleVariables(program)).thenReturn(programRuleVariables);
+        when(ProgramInternalAccessor.accessProgramSections(program)).thenReturn(programSections);
         when(program.access()).thenReturn(access);
         when(access.data()).thenReturn(dataAccess);
         when(dataAccess.read()).thenReturn(true);

@@ -26,9 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.domain.aggregated.data;
-
-import androidx.annotation.NonNull;
+package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
@@ -64,6 +62,7 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 

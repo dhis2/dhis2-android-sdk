@@ -47,7 +47,7 @@ public class PeriodCollectionRepositoryMockIntegrationShould extends BaseMockInt
 
     @Test
     public void filter_by_period_id() {
-        List<Period> periods = d2.periodModule().periods
+        List<Period> periods = d2.periodModule().periods()
                 .byPeriodId()
                 .eq("2018").blockingGet();
         assertThat(periods.size(), is(1));
@@ -55,7 +55,7 @@ public class PeriodCollectionRepositoryMockIntegrationShould extends BaseMockInt
 
     @Test
     public void filter_by_period_type() {
-        List<Period> periods = d2.periodModule().periods
+        List<Period> periods = d2.periodModule().periods()
                 .byPeriodType()
                 .eq(PeriodType.Quarterly).blockingGet();
         assertThat(periods.size(), is(5));
@@ -63,7 +63,7 @@ public class PeriodCollectionRepositoryMockIntegrationShould extends BaseMockInt
 
     @Test
     public void filter_by_start_and_end_date() throws ParseException {
-        List<Period> periods = d2.periodModule().periods
+        List<Period> periods = d2.periodModule().periods()
                 .byStartDate()
                 .eq(BaseIdentifiableObject.parseDate("2017-10-01T00:00:00.000"))
                 .byEndDate()

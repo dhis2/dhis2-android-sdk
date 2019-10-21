@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.dataelement.internal;
 
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -52,5 +53,11 @@ public final class DataElementPackageDIModule {
     @Reusable
     DataElementService service(Retrofit retrofit) {
         return retrofit.create(DataElementService.class);
+    }
+
+    @Provides
+    @Reusable
+    DataElementModule module(DataElementModuleImpl impl) {
+        return impl;
     }
 }

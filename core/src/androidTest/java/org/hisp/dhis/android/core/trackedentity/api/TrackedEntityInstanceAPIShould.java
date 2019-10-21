@@ -565,7 +565,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
         login();
         syncMetadata();
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.limit(100).blockingDownload();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(100).blockingDownload();
 
         TrackedEntityInstance instance = getInstanceWithOneEnrollmentAndOneEvent();
 
@@ -604,16 +604,16 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
 
     private TrackedEntityInstance getInstanceWithOneEnrollmentAndOneEvent() {
         List<TrackedEntityInstance> instances =
-                d2.trackedEntityModule().trackedEntityInstances.blockingGet();
+                d2.trackedEntityModule().trackedEntityInstances().blockingGet();
 
         for (TrackedEntityInstance instance : instances) {
-            List<Enrollment> enrollments = d2.enrollmentModule().enrollments
+            List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
                     .byTrackedEntityInstance().eq(instance.uid())
                     .blockingGet();
             if (enrollments != null && enrollments.size() == 1) {
                 Enrollment enrollment = enrollments.get(0);
                 List<Event> events =
-                        d2.eventModule().events.byEnrollmentUid().eq(enrollment.uid()).blockingGet();
+                        d2.eventModule().events().byEnrollmentUid().eq(enrollment.uid()).blockingGet();
 
                 if (events.size() == 1) {
                     Enrollment enrollmentWithEvents = new EnrollmentInternalAccessor()
@@ -642,7 +642,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
                 .insertEnrollments(instance.toBuilder(), enrollments)
                 .build();
     }
-    
+
     private List<Enrollment> getEnrollments(TrackedEntityInstance trackedEntityInstance) {
         return new TrackedEntityInstanceInternalAccessor().accessEnrollments(trackedEntityInstance);
     }

@@ -176,7 +176,7 @@ public final class ProgramCollectionRepository
     }
 
     /**
-     * @deprecated use d2.programModule().programStages.byProgramUid() instead
+     * @deprecated use d2.programModule().programStages().byProgramUid() instead
      *
      * @return
      */
@@ -194,7 +194,7 @@ public final class ProgramCollectionRepository
     }
 
     /**
-     * @deprecated use d2.programModule().programRules.byProgramUid() instead
+     * @deprecated use d2.programModule().programRules().byProgramUid() instead
      *
      * @return
      */

@@ -45,7 +45,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
     @Test
     public void find_all() {
         List<ProgramSection> programSections =
-                d2.programModule().programSections
+                d2.programModule().programSections()
                         .blockingGet();
 
         assertThat(programSections.size(), is(2));
@@ -54,7 +54,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
     @Test
     public void include_object_style_as_children() {
         ProgramSection programSection =
-                d2.programModule().programSections
+                d2.programModule().programSections()
                         .withStyle()
                         .one().blockingGet();
 
@@ -65,7 +65,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
     @Test
     public void include_attributes_children() {
         ProgramSection programSection =
-                d2.programModule().programSections
+                d2.programModule().programSections()
                         .withAttributes()
                         .one().blockingGet();
 
@@ -75,7 +75,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
     @Test
     public void filter_by_description() {
         List<ProgramSection> programSections =
-                d2.programModule().programSections
+                d2.programModule().programSections()
                         .byDescription()
                         .eq("Description")
                         .blockingGet();
@@ -86,7 +86,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
     @Test
     public void filter_by_program() {
         List<ProgramSection> programSections =
-                d2.programModule().programSections
+                d2.programModule().programSections()
                         .byProgramUid()
                         .eq("lxAQ7Zs9VYR")
                         .blockingGet();
@@ -97,7 +97,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
     @Test
     public void filter_by_sort_order() {
         List<ProgramSection> programSections =
-                d2.programModule().programSections
+                d2.programModule().programSections()
                         .bySortOrder()
                         .eq(1)
                         .blockingGet();
@@ -108,7 +108,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
     @Test
     public void filter_by_form_name() {
         List<ProgramSection> programSections =
-                d2.programModule().programSections
+                d2.programModule().programSections()
                         .byFormName()
                         .eq("formName")
                         .blockingGet();

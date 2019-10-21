@@ -138,9 +138,9 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
     }
 
     private EnrollmentObjectRepository objectRepository() throws D2Error {
-        String enrollmentUid = d2.enrollmentModule().enrollments.blockingAdd(
+        String enrollmentUid = d2.enrollmentModule().enrollments().blockingAdd(
                 EnrollmentCreateProjection.create(
                         "DiszpKrYNg8", "lxAQ7Zs9VYR", "nWrB0TfWlvh"));
-        return d2.enrollmentModule().enrollments.uid(enrollmentUid);
+        return d2.enrollmentModule().enrollments().uid(enrollmentUid);
     }
 }

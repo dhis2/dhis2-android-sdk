@@ -45,27 +45,27 @@ public class OptionSetCollectionRepositoryMockIntegrationShould extends BaseMock
 
     @Test
     public void find_all() {
-        List<OptionSet> optionSets = d2.optionModule().optionSets.blockingGet();
+        List<OptionSet> optionSets = d2.optionModule().optionSets().blockingGet();
         assertThat(optionSets.size(), is(2));
     }
 
     @Test
     public void filter_by_version() {
-        List<OptionSet> optionSets = d2.optionModule().optionSets
+        List<OptionSet> optionSets = d2.optionModule().optionSets()
                 .byVersion().eq(1).blockingGet();
         assertThat(optionSets.size(), is(1));
     }
 
     @Test
     public void filter_by_value_type() {
-        List<OptionSet> optionSets = d2.optionModule().optionSets
+        List<OptionSet> optionSets = d2.optionModule().optionSets()
                 .byValueType().eq(ValueType.TEXT).blockingGet();
         assertThat(optionSets.size(), is(1));
     }
 
     @Test
     public void include_options_as_children() {
-        OptionSet optionSet = d2.optionModule().optionSets
+        OptionSet optionSet = d2.optionModule().optionSets()
                 .withOptions()
                 .uid("VQ2lai3OfVG")
                 .blockingGet();
@@ -74,7 +74,7 @@ public class OptionSetCollectionRepositoryMockIntegrationShould extends BaseMock
 
     @Test
     public void include_options_as_children_in_collection_repository_when_all_selected() {
-        OptionSet optionSet = d2.optionModule().optionSets
+        OptionSet optionSet = d2.optionModule().optionSets()
                 .withOptions()
                 .uid("VQ2lai3OfVG")
                 .blockingGet();
@@ -83,7 +83,7 @@ public class OptionSetCollectionRepositoryMockIntegrationShould extends BaseMock
 
     @Test
     public void include_options_as_children_in_object_repository_when_all_selected() {
-        OptionSet optionSet = d2.optionModule().optionSets
+        OptionSet optionSet = d2.optionModule().optionSets()
                 .withOptions()
                 .uid("VQ2lai3OfVG")
                 .blockingGet();

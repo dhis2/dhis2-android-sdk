@@ -158,9 +158,9 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
 
-        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
 
-        assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(3);
+        assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(3);
     }
 
     @Test
@@ -169,8 +169,8 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
-        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
-        assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(3);
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
+        assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(3);
 
 
         TrackedEntityInstanceStoreImpl.create(databaseAdapter).setState("teiId", State.TO_POST);
@@ -181,24 +181,24 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_3.json");
-        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
-        assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(1);
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
+        assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(1);
     }
 
     @Test
     public void handle_tei_deletions() throws D2Error {
         storeTrackedEntityInstance();
 
-        d2.trackedEntityModule().trackedEntityInstances.uid("teiId").blockingDelete();
+        d2.trackedEntityModule().trackedEntityInstances().uid("teiId").blockingDelete();
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
 
-        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
 
-        assertThat(d2.trackedEntityModule().trackedEntityInstances.blockingCount()).isEqualTo(0);
-        assertThat(d2.enrollmentModule().enrollments.blockingCount()).isEqualTo(0);
-        assertThat(d2.eventModule().events.blockingCount()).isEqualTo(0);
-        assertThat(d2.importModule().trackerImportConflicts.blockingCount()).isEqualTo(0);
+        assertThat(d2.trackedEntityModule().trackedEntityInstances().blockingCount()).isEqualTo(0);
+        assertThat(d2.enrollmentModule().enrollments().blockingCount()).isEqualTo(0);
+        assertThat(d2.eventModule().events().blockingCount()).isEqualTo(0);
+        assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(0);
     }
 
     @Test
@@ -221,7 +221,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         storeRelationship("relationship4", tei5, tei4);
 
         List<List<TrackedEntityInstance>> partitions = trackedEntityInstancePostCall.getPartitionsToSync(
-                d2.trackedEntityModule().trackedEntityInstances.byUid().eq(tei1)
+                d2.trackedEntityModule().trackedEntityInstances().byUid().eq(tei1)
                 .byState().in(State.TO_POST, State.TO_UPDATE).blockingGet());
 
         assertThat(partitions.size()).isEqualTo(1);
@@ -269,7 +269,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         OrganisationUnit orgUnit = OrganisationUnitStore.create(databaseAdapter).selectFirst();
         TrackedEntityType teiType = TrackedEntityTypeStore.create(databaseAdapter).selectFirst();
-        Program program = d2.programModule().programs.one().blockingGet();
+        Program program = d2.programModule().programs().one().blockingGet();
         ProgramStage programStage = ProgramStageStore.create(databaseAdapter).selectFirst();
 
         TrackedEntityDataValue dataValue1 = TrackedEntityDataValueSamples.get().toBuilder().event(event1Id).build();

@@ -46,7 +46,7 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
     @Test
     public void find_all() {
         List<ProgramRuleVariable> ruleVariables =
-                d2.programModule().programRuleVariables
+                d2.programModule().programRuleVariables()
                         .blockingGet();
 
         assertThat(ruleVariables.size(), is(2));
@@ -55,7 +55,7 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
     @Test
     public void filter_by_use_code_for_option_set() {
         List<ProgramRuleVariable> ruleVariables =
-                d2.programModule().programRuleVariables
+                d2.programModule().programRuleVariables()
                         .byUseCodeForOptionSet()
                         .isFalse()
                         .blockingGet();
@@ -66,7 +66,7 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
     @Test
     public void filter_by_program() {
         List<ProgramRuleVariable> ruleVariables =
-                d2.programModule().programRuleVariables
+                d2.programModule().programRuleVariables()
                         .byProgramUid()
                         .eq("lxAQ7Zs9VYR")
                         .blockingGet();
@@ -77,7 +77,7 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
     @Test
     public void filter_by_program_stage() {
         List<ProgramRuleVariable> ruleVariables =
-                d2.programModule().programRuleVariables
+                d2.programModule().programRuleVariables()
                         .byProgramStageUid()
                         .eq("dBwrot7S420")
                         .blockingGet();
@@ -88,7 +88,7 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
     @Test
     public void filter_by_data_element() {
         List<ProgramRuleVariable> ruleVariables =
-                d2.programModule().programRuleVariables
+                d2.programModule().programRuleVariables()
                         .byDataElementUid()
                         .eq("sWoqcoByYmD")
                         .blockingGet();
@@ -99,7 +99,7 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
     @Test
     public void filter_by_tracked_entity_attribute() {
         List<ProgramRuleVariable> ruleVariables =
-                d2.programModule().programRuleVariables
+                d2.programModule().programRuleVariables()
                         .byTrackedEntityAttributeUid()
                         .eq("cejWyOfXge6")
                         .blockingGet();
@@ -110,7 +110,7 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
     @Test
     public void filter_by_program_rule_variable_source_type() {
         List<ProgramRuleVariable> ruleVariables =
-                d2.programModule().programRuleVariables
+                d2.programModule().programRuleVariables()
                         .byProgramRuleVariableSourceType()
                         .eq(ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM)
                         .blockingGet();

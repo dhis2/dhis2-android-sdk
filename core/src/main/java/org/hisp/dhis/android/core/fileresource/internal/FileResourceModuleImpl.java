@@ -25,30 +25,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.domain.metadata;
+
+package org.hisp.dhis.android.core.fileresource.internal;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository;
+import org.hisp.dhis.android.core.fileresource.FileResourceModule;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.reactivex.Observable;
 
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 @Reusable
-public final class MetadataModule {
+public final class FileResourceModuleImpl implements FileResourceModule {
 
-    private final MetadataCall metadataCall;
+    private final FileResourceCollectionRepository fileResources;
+    private final FileResourceCall fileResourceCall;
 
     @Inject
-    MetadataModule(MetadataCall metadataCall) {
-        this.metadataCall = metadataCall;
+    FileResourceModuleImpl(FileResourceCollectionRepository fileResources,
+                           FileResourceCall fileResourceCall) {
+        this.fileResources = fileResources;
+        this.fileResourceCall = fileResourceCall;
     }
 
+    @Override
     public Observable<D2Progress> download() {
-        return metadataCall.download();
+        return fileResourceCall.download();
     }
 
+    @Override
     public void blockingDownload() {
-        metadataCall.blockingDownload();
+        fileResourceCall.blockingDownload();
+    }
+
+    @Override
+    public FileResourceCollectionRepository fileResources() {
+        return fileResources;
     }
 }

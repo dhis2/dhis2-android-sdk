@@ -29,22 +29,7 @@ package org.hisp.dhis.android.core.period;
 
 import org.hisp.dhis.android.core.period.internal.PeriodHelper;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class PeriodModule {
-
-    public final PeriodHelper periodHelper;
-    public final PeriodCollectionRepository periods;
-
-    @Inject
-    PeriodModule(PeriodHelper periodHelper,
-                 PeriodCollectionRepository periods) {
-        this.periodHelper = periodHelper;
-        this.periods = periods;
-    }
+public interface PeriodModule {
+    PeriodHelper periodHelper();
+    PeriodCollectionRepository periods();
 }

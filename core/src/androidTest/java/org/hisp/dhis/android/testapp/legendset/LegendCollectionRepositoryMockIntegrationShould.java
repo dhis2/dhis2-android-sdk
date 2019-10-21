@@ -44,14 +44,14 @@ public class LegendCollectionRepositoryMockIntegrationShould extends BaseMockInt
 
     @Test
     public void find_all() {
-        List<Legend> legends = d2.legendSetModule().legends
+        List<Legend> legends = d2.legendSetModule().legends()
                 .blockingGet();
         assertThat(legends.size(), is(2));
     }
 
     @Test
     public void find_by_start_value() {
-        List<Legend> legends = d2.legendSetModule().legends
+        List<Legend> legends = d2.legendSetModule().legends()
                 .byStartValue().eq(15.0)
                 .blockingGet();
         assertThat(legends.size(), is(1));
@@ -59,7 +59,7 @@ public class LegendCollectionRepositoryMockIntegrationShould extends BaseMockInt
 
     @Test
     public void find_by_end_value() {
-        List<Legend> legends = d2.legendSetModule().legends
+        List<Legend> legends = d2.legendSetModule().legends()
                 .byEndValue().eq(30.0)
                 .blockingGet();
         assertThat(legends.size(), is(1));
@@ -67,7 +67,7 @@ public class LegendCollectionRepositoryMockIntegrationShould extends BaseMockInt
 
     @Test
     public void find_by_value_between() {
-        List<Legend> legends = d2.legendSetModule().legends
+        List<Legend> legends = d2.legendSetModule().legends()
                 .byStartValue().smallerThan(20.0)
                 .byEndValue().biggerThan(20.0)
                 .blockingGet();
@@ -76,7 +76,7 @@ public class LegendCollectionRepositoryMockIntegrationShould extends BaseMockInt
 
     @Test
     public void find_by_color() {
-        List<Legend> legends = d2.legendSetModule().legends
+        List<Legend> legends = d2.legendSetModule().legends()
                 .byColor().eq("#E6AE5E")
                 .blockingGet();
         assertThat(legends.size(), is(1));
@@ -84,7 +84,7 @@ public class LegendCollectionRepositoryMockIntegrationShould extends BaseMockInt
 
     @Test
     public void find_by_legend_set() {
-        List<Legend> legends = d2.legendSetModule().legends
+        List<Legend> legends = d2.legendSetModule().legends()
                 .byLegendSet().eq("TiOkbpGEud4")
                 .blockingGet();
         assertThat(legends.size(), is(2));

@@ -98,7 +98,7 @@ For example, the same query using RxJava and AsyncTask:
 *Using RxJava*
 
 ```java
-d2.programModule().programs
+d2.programModule().programs()
     .subscribeOn(Schedulers.io())
     .observeOn(AndroidSchedulers.mainThread())
     .get()
@@ -110,7 +110,7 @@ d2.programModule().programs
 ```java
 new AsyncTask<Void, Void, List<Program>>() {
     protected List<Program> doInBackground() {
-        return d2.programModule().programs.blockingGet();
+        return d2.programModule().programs().blockingGet();
     }
 
     protected void onPostExecute(List<Program> programs) {
@@ -130,7 +130,7 @@ d2.<module>.<repository>
     .<action>;
 
 // An example for events
-d2.eventModule().events
+d2.eventModule().events()
     .byOrganisationUnitUid().eq("DiszpKrYNg8")
     .byEventDate().after(Date("2019-05-05"))
     .orderByEventDate(DESC)
@@ -145,7 +145,7 @@ Repositories expose the list of available filters prefixed by the keyword "by". 
 Several filters can be appended to the same query in any order. Filters are joined globally using the operator "AND". This means that a query like
 
 ```java
-d2.eventModule().events
+d2.eventModule().events()
     .byOrganisationUnitUid().eq("DiszpKrYNg8")
     .byEventDate().after(Date("2019-05-05"))
     ...
@@ -160,7 +160,7 @@ Ordering modifiers are prefixed by the keyword "orderBy".
 Several "orderBy" modifiers can be appended to the same query. The order of the "orderBy" modifiers within the query determines the order priority. This means that a query like
 
 ```java
-d2.eventModule().events
+d2.eventModule().events()
     .orderByEventDate(DESC)
     .orderByLastUpdated(DESC)
     ...
@@ -177,7 +177,7 @@ Due to performance issues, this kind of properties are not included by default: 
 Several properties can be appended in the same query in any order. For example, a query like
 
 ```java
-d2.programModule().programs
+d2.programModule().programs()
     .withStyle()
     .withTrackedEntityType()
     ...
@@ -289,7 +289,7 @@ This partial metadata synchronization may expose server-side misconfiguration is
 The SDK does not fail the synchronization, but it stores the errors in a table for inspection. They can be accessed by:
 
 ```java
-d2.maintenanceModule().foreignKeyViolations
+d2.maintenanceModule().foreignKeyViolations()
 ```
 
 ### Data states
@@ -352,10 +352,10 @@ In general, there are two different cases to manage data creation/edition/deleti
 And in code this would look like:
 
 ```java
-String eventUid = d2.eventModule().events.add(
+String eventUid = d2.eventModule().events().add(
     EventCreateProjection.create("enrollent", "program", "programStage", "orgUnit", "attCombo"));
 
-d2.eventModule().events.uid(eventUid).setStatus(COMPLETED);
+d2.eventModule().events().uid(eventUid).setStatus(COMPLETED);
 ```
 
 **Non-identifiable objects** (TrackedEntityAttributeValue, TrackedEntityDataValue). These repositories have a `value()` method that gives you access to edition methods for a single object. The parameters accepted by this method are the parameters that unambiguously identify a value.
@@ -363,7 +363,7 @@ d2.eventModule().events.uid(eventUid).setStatus(COMPLETED);
 For example, writing a TrackedEntityDataValue would be like:
 
 ```java
-d2.trackedEntityModule().trackedEntityDataValues.value(eventUid, dataElementid).set(“5”);
+d2.trackedEntityModule().trackedEntityDataValues().value(eventUid, dataElementid).set(“5”);
 ```
 
 #### Tracker data upload
@@ -381,7 +381,7 @@ d2.( trackedEntityModule() | eventModule() )
 Server response is parsed to ensure that data has been correctly uploaded to the server. In case the server response includes import conflicts, these conflicts are stored in the database, so the app can check them and take an action to solve them.
 
 ```java
-d2.importModule().trackerImportConflicts
+d2.importModule().trackerImportConflicts()
 ```
 
 Conflicts linked to a TrackedEntityInstance, Enrollment or Event are automatically removed after a successful upload of the object.
@@ -400,7 +400,7 @@ This repository follows the same syntax as other repositories. Additionally it r
 Example:
 
 ```java
-d2.trackedEntityModule().trackedEntityInstanceQuery
+d2.trackedEntityModule().trackedEntityInstanceQuery()
                 .byOrgUnits().eq("orgunitUid")
                 .byOrgUnitMode().eq(OrganisationUnitMode.DESCENDANTS)
                 .byProgram().eq("programUid")
@@ -416,10 +416,10 @@ The app is responsible for reserving generated values before going offline. This
 
 ```java
 // Reserve values for all the unique and automatically generated trackedEntityAttributes.
-d2.trackedEntityModule().reservedValueManager.downloadAllReservedValues(numValuesToFillUp)
+d2.trackedEntityModule().reservedValueManager().downloadAllReservedValues(numValuesToFillUp)
 
 // Reserve values for a particular trackedEntityAttribute.
-d2.trackedEntityModule().reservedValueManager.downloadReservedValues("attributeUid", numValuesToFillUp)
+d2.trackedEntityModule().reservedValueManager().downloadReservedValues("attributeUid", numValuesToFillUp)
 ```
 
 Depending on the time the app expects to be offline, it can decide the quantity of values to reserve. In case the attribute pattern is dependant on the orgunit code, the SDK will reserve values for all the relevant orgunits. More details about the logic in Javadoc.
@@ -427,7 +427,7 @@ Depending on the time the app expects to be offline, it can decide the quantity 
 Reserved values can be obtained by:
 
 ```java
-d2.trackedEntityModule().reservedValueManager.getValue("attributeUid", "orgunitUid")
+d2.trackedEntityModule().reservedValueManager().getValue("attributeUid", "orgunitUid")
 ```
 
 ### Aggregated data
@@ -460,7 +460,7 @@ DataValueCollectionRepository has a `value()` method that gives access to editio
 
 ```java
 DataValueObjectRepository valueRepository =
-    d2.dataValueModule().dataValues.value("periodId", "orgunitId", "dataElementId", "categoryOptionComboId", "attributeOptionComboId");
+    d2.dataValueModule().dataValues().value("periodId", "orgunitId", "dataElementId", "categoryOptionComboId", "attributeOptionComboId");
 
 valueRepository.set("value")
 ```
@@ -470,7 +470,7 @@ valueRepository.set("value")
 DataValueCollectionRepository has an `uplaod()` method to upload aggregated data values.
 
 ```java
-d2.dataValueModule().dataValues.upload();
+d2.dataValueModule().dataValues().upload();
 ```
 
 #### DataSet reports
@@ -506,18 +506,18 @@ Through this repository it is possible to request files, save new ones and uploa
 
     - **Get**. It behaves in a similiar fashion to any other Sdk repository. It allows to get collections by applying different filters if desired.
         ```
-        d2.fileResourceModule().fileResources
+        d2.fileResourceModule().fileResources()
             .[ filters ]
             .get()
         ```
     - **Add**. To save a file you have to add it using the `add()` method of the repository by providing an object of type `File`. The `add()` method will return the uid that was generated when adding the file. This uid should be used to update the tracked entity attribute value or the tracked entity data value associated with the file resource.
         ```
-        d2.fileResourceModule().fileResources
+        d2.fileResourceModule().fileResources()
             .add(file);
         ```
     - **Upload**. Calling the `upload()` method will trigger a series of successive calls in which all non-synchronized files will be sent to the server. After each upload, the server response will be processed. The server will provide a new uid to the file resource and the Sdk will automatically rename the file and update the `FileResource` object and the tracked entity attribute values ​​or tracked entity data values ​​associated with it.
         ```
-        d2.fileResourceModule().fileResources
+        d2.fileResourceModule().fileResources()
             .upload()
         ```
 
@@ -577,7 +577,7 @@ d2.userModule().logIn(username, password)
 D2Errors are persisted in the Database when they ocurr, so they can be analized afterwards and diagnose possible problems. They can be accessed through it's own repository: 
 
 ```
-d2.maintenanceModule().d2Errors
+d2.maintenanceModule().d2Errors()
                 .byD2ErrorComponent().eq(D2ErrorComponent.Server)
                 .get();
 ```
@@ -657,7 +657,7 @@ For example, read the list of constants using repositories and interacting direc
 
 ```java
 // Using repositories
-d2.constantModule().constants.get() // Single<List<Constant>>
+d2.constantModule().constants().get() // Single<List<Constant>>
 
 // Direct database interaction
 String query = "SELECT * FROM " + ConstantTableInfo.TABLE_INFO.name();

@@ -71,15 +71,15 @@ public class UserAuthenticateCallMockIntegrationShould extends BaseMockIntegrati
     public void persist_user_in_data_base_when_call() {
         logInSingle.blockingGet();
 
-        User user = d2.userModule().user.blockingGet();
+        User user = d2.userModule().user().blockingGet();
         assertThat(user.uid()).isEqualTo("DXyJmlo9rge");
         assertThat(user.name()).isEqualTo("John Barnes");
 
-        UserCredentials userCredentials = d2.userModule().userCredentials.blockingGet();
+        UserCredentials userCredentials = d2.userModule().userCredentials().blockingGet();
         assertThat(userCredentials.uid()).isEqualTo("M0fCOxtkURr");
         assertThat(userCredentials.username()).isEqualTo("android");
 
-        AuthenticatedUser authenticatedUser = d2.userModule().authenticatedUser.blockingGet();
+        AuthenticatedUser authenticatedUser = d2.userModule().authenticatedUser().blockingGet();
         assertThat(authenticatedUser.user()).isEqualTo("DXyJmlo9rge");
     }
 

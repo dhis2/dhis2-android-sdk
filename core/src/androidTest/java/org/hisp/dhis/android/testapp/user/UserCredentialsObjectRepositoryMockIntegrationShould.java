@@ -42,14 +42,14 @@ public class UserCredentialsObjectRepositoryMockIntegrationShould extends BaseMo
 
     @Test
     public void find_user() {
-        UserCredentials userCredentials = d2.userModule().userCredentials.blockingGet();
+        UserCredentials userCredentials = d2.userModule().userCredentials().blockingGet();
         assertThat(userCredentials.username(), is("android"));
         assertThat(userCredentials.name(), is("John Barnes"));
     }
 
     @Test
     public void return_user_roles_as_children() {
-        UserCredentials userCredentials = d2.userModule().userCredentials.withUserRoles().blockingGet();
+        UserCredentials userCredentials = d2.userModule().userCredentials().withUserRoles().blockingGet();
         assertThat(userCredentials.userRoles().size(), is(1));
         assertThat(userCredentials.userRoles().get(0).name(), is("Superuser"));
     }

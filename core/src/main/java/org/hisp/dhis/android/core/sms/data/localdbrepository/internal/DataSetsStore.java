@@ -34,7 +34,7 @@ class DataSetsStore {
     }
 
     Single<List<DataValue>> getDataValues(String orgUnit, String period, String attributeOptionComboUid) {
-        return Single.fromCallable(() -> dataValueModule.dataValues
+        return Single.fromCallable(() -> dataValueModule.dataValues()
                 .byOrganisationUnitUid().eq(orgUnit)
                 .byPeriod().eq(period)
                 .byAttributeOptionComboUid().eq(attributeOptionComboUid)

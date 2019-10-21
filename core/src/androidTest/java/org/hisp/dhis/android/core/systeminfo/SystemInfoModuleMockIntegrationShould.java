@@ -41,7 +41,7 @@ public class SystemInfoModuleMockIntegrationShould extends BaseMockIntegrationTe
 
     @Test
     public void allow_access_to_system_info_user() {
-        SystemInfo systemInfo = d2.systemInfoModule().systemInfo.blockingGet();
+        SystemInfo systemInfo = d2.systemInfoModule().systemInfo().blockingGet();
         assertThat(systemInfo.version(), is("2.30"));
         assertThat(systemInfo.systemName(), is("DHIS 2 Demo - Sierra Leone"));
     }

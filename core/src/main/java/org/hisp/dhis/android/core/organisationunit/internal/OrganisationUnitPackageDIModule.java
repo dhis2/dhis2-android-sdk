@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.organisationunit.internal;
 
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule;
+
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
@@ -45,5 +47,11 @@ public final class OrganisationUnitPackageDIModule {
     @Reusable
     OrganisationUnitService service(Retrofit retrofit) {
         return retrofit.create(OrganisationUnitService.class);
+    }
+
+    @Provides
+    @Reusable
+    OrganisationUnitModule module(OrganisationUnitModuleImpl impl) {
+        return impl;
     }
 }

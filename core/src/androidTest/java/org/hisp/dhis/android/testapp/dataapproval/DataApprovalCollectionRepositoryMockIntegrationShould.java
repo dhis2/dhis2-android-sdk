@@ -45,14 +45,14 @@ public class DataApprovalCollectionRepositoryMockIntegrationShould extends BaseM
 
     @Test
     public void find_all() {
-        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals
+        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals()
                 .blockingGet();
         assertThat(dataApprovals.size(), is(1));
     }
 
     @Test
     public void filter_by_workflow() {
-        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals
+        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals()
                 .byWorkflowUid().eq("rIUL3hYOjJc")
                 .blockingGet();
         assertThat(dataApprovals.size(), is(1));
@@ -60,7 +60,7 @@ public class DataApprovalCollectionRepositoryMockIntegrationShould extends BaseM
 
     @Test
     public void filter_by_organisation_unit() {
-        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals
+        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals()
                 .byOrganisationUnitUid().eq("DiszpKrYNg8")
                 .blockingGet();
         assertThat(dataApprovals.size(), is(1));
@@ -68,7 +68,7 @@ public class DataApprovalCollectionRepositoryMockIntegrationShould extends BaseM
 
     @Test
     public void filter_by_period() {
-        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals
+        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals()
                 .byPeriodId().eq("2018")
                 .blockingGet();
         assertThat(dataApprovals.size(), is(1));
@@ -76,7 +76,7 @@ public class DataApprovalCollectionRepositoryMockIntegrationShould extends BaseM
 
     @Test
     public void filter_by_attribute_option_combo() {
-        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals
+        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals()
                 .byAttributeOptionComboUid().eq("Gmbgme7z9BF")
                 .blockingGet();
         assertThat(dataApprovals.size(), is(1));
@@ -84,7 +84,7 @@ public class DataApprovalCollectionRepositoryMockIntegrationShould extends BaseM
 
     @Test
     public void filter_by_state() {
-        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals
+        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals()
                 .byState().eq(DataApprovalState.UNAPPROVED_ABOVE)
                 .blockingGet();
         assertThat(dataApprovals.size(), is(1));

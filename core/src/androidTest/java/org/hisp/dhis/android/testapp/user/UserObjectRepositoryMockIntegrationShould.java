@@ -45,14 +45,14 @@ public class UserObjectRepositoryMockIntegrationShould extends BaseMockIntegrati
 
     @Test
     public void find_user() {
-        User user = d2.userModule().user.blockingGet();
+        User user = d2.userModule().user().blockingGet();
         assertThat(user.uid(), is("DXyJmlo9rge"));
         assertThat(user.firstName(), is("John"));
     }
 
     @Test
     public void return_user_credentials_as_children() {
-        User user = d2.userModule().user.withUserCredentials().blockingGet();
+        User user = d2.userModule().user().withUserCredentials().blockingGet();
         assertThat(user.userCredentials().user().uid(), is(user.uid()));
         assertThat(user.userCredentials().username(), is("android"));
         assertThat(user.userCredentials().name(), is("John Barnes"));
@@ -60,7 +60,7 @@ public class UserObjectRepositoryMockIntegrationShould extends BaseMockIntegrati
 
     @Test
     public void return_organisation_units_as_children() {
-        User user = d2.userModule().user.withOrganisationUnits().blockingGet();
+        User user = d2.userModule().user().withOrganisationUnits().blockingGet();
         List<OrganisationUnit> organisationUnits = user.organisationUnits();
         assertThat(organisationUnits.size(), is(1));
         assertThat(organisationUnits.get(0).name(), is("Ngelehun CHC"));

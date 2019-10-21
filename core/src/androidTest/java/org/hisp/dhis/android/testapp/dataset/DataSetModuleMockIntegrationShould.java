@@ -49,7 +49,7 @@ public class DataSetModuleMockIntegrationShould extends BaseMockIntegrationTestF
 
     @Test
     public void allow_access_to_all_data_sets_without_children() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets.blockingGet();
+        List<DataSet> dataSets = d2.dataSetModule().dataSets().blockingGet();
         assertThat(dataSets.size(), is(1));
         for (DataSet dataSet : dataSets) {
             assertThat(dataSet.style() == null, is(true));
@@ -58,13 +58,13 @@ public class DataSetModuleMockIntegrationShould extends BaseMockIntegrationTestF
 
     @Test
     public void allow_access_to_one_data_set_without_children() {
-        DataSet dataSet = d2.dataSetModule().dataSets.uid("lyLU2wR22tC").blockingGet();
+        DataSet dataSet = d2.dataSetModule().dataSets().uid("lyLU2wR22tC").blockingGet();
         assertThat(dataSet.style() == null, is(true));
     }
 
     @Test
     public void allow_access_to_all_data_sets_with_children() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets.withStyle().blockingGet();
+        List<DataSet> dataSets = d2.dataSetModule().dataSets().withStyle().blockingGet();
         assertThat(dataSets.size(), is(1));
         for (DataSet dataSet : dataSets) {
             assertThat(dataSet.style() == null, is(false));
@@ -73,20 +73,20 @@ public class DataSetModuleMockIntegrationShould extends BaseMockIntegrationTestF
 
     @Test
     public void allow_access_to_one_data_set_with_children() {
-        DataSet dataSet = d2.dataSetModule().dataSets.withStyle().uid("lyLU2wR22tC").blockingGet();
+        DataSet dataSet = d2.dataSetModule().dataSets().withStyle().uid("lyLU2wR22tC").blockingGet();
         assertThat(dataSet.style() == null, is(false));
     }
 
     @Test
     public void allow_access_to_object_style() {
-        DataSet dataSet = d2.dataSetModule().dataSets.withStyle().uid("lyLU2wR22tC").blockingGet();
+        DataSet dataSet = d2.dataSetModule().dataSets().withStyle().uid("lyLU2wR22tC").blockingGet();
         assertThat(dataSet.style().color(), is("#000"));
         assertThat(dataSet.style().icon(), is("my-icon-name"));
     }
 
     @Test
     public void allow_access_to_compulsory_data_element_operands() {
-        DataSet dataSet = d2.dataSetModule().dataSets.withCompulsoryDataElementOperands().uid("lyLU2wR22tC").blockingGet();
+        DataSet dataSet = d2.dataSetModule().dataSets().withCompulsoryDataElementOperands().uid("lyLU2wR22tC").blockingGet();
         List<DataElementOperand> dataElementOperands = dataSet.compulsoryDataElementOperands();
         assertThat(dataElementOperands.size(), is(1));
 
@@ -98,7 +98,7 @@ public class DataSetModuleMockIntegrationShould extends BaseMockIntegrationTestF
 
     @Test
     public void allow_access_data_input_periods() {
-        DataSet dataSet = d2.dataSetModule().dataSets.withDataInputPeriods().uid("lyLU2wR22tC").blockingGet();
+        DataSet dataSet = d2.dataSetModule().dataSets().withDataInputPeriods().uid("lyLU2wR22tC").blockingGet();
         List<DataInputPeriod> dataInputPeriods = dataSet.dataInputPeriods();
         assertThat(dataInputPeriods.size(), is(1));
 
@@ -110,7 +110,7 @@ public class DataSetModuleMockIntegrationShould extends BaseMockIntegrationTestF
 
     @Test
     public void allow_access_data_set_elements() {
-        DataSet dataSet = d2.dataSetModule().dataSets.withDataSetElements().uid("lyLU2wR22tC").blockingGet();
+        DataSet dataSet = d2.dataSetModule().dataSets().withDataSetElements().uid("lyLU2wR22tC").blockingGet();
         List<DataSetElement> dataSetElements = dataSet.dataSetElements();
         assertThat(dataSetElements.size(), is(1));
 
@@ -122,7 +122,7 @@ public class DataSetModuleMockIntegrationShould extends BaseMockIntegrationTestF
 
     @Test
     public void allow_access_indicators() {
-        DataSet dataSet = d2.dataSetModule().dataSets.withIndicators().uid("lyLU2wR22tC").blockingGet();
+        DataSet dataSet = d2.dataSetModule().dataSets().withIndicators().uid("lyLU2wR22tC").blockingGet();
         List<Indicator> indicators = dataSet.indicators();
         assertThat(indicators.size(), is(1));
 

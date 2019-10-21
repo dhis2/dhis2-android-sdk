@@ -48,69 +48,69 @@ public class TrackerImportConflictCollectionRepositoryMockIntegrationShould
 
     @Test
     public void find_all() {
-        List<TrackerImportConflict> trackerImportConflicts = d2.importModule().trackerImportConflicts.blockingGet();
+        List<TrackerImportConflict> trackerImportConflicts = d2.importModule().trackerImportConflicts().blockingGet();
         assertThat(trackerImportConflicts.size(), is(2));
     }
 
     @Test
     public void filter_by_conflict() {
-        List<TrackerImportConflict> trackerImportConflicts = d2.importModule().trackerImportConflicts
+        List<TrackerImportConflict> trackerImportConflicts = d2.importModule().trackerImportConflicts()
                 .byConflict().eq("conflict").blockingGet();
         assertThat(trackerImportConflicts.size(), is(1));
     }
 
     @Test
     public void filter_by_value() {
-        List<TrackerImportConflict> trackerImportConflicts = d2.importModule().trackerImportConflicts
+        List<TrackerImportConflict> trackerImportConflicts = d2.importModule().trackerImportConflicts()
                 .byValue().eq("value").blockingGet();
         assertThat(trackerImportConflicts.size(), is(1));
     }
 
     @Test
     public void filter_by_tracked_entity_instance() {
-        List<TrackerImportConflict> trackerImportConflicts = d2.importModule().trackerImportConflicts
+        List<TrackerImportConflict> trackerImportConflicts = d2.importModule().trackerImportConflicts()
                 .byTrackedEntityInstanceUid().eq("nWrB0TfWlvh").blockingGet();
         assertThat(trackerImportConflicts.size(), is(1));
     }
 
     @Test
     public void filter_by_enrollment() {
-        List<TrackerImportConflict> trackerImportConflicts = d2.importModule().trackerImportConflicts
+        List<TrackerImportConflict> trackerImportConflicts = d2.importModule().trackerImportConflicts()
                 .byEnrollmentUid().eq("enroll2").blockingGet();
         assertThat(trackerImportConflicts.size(), is(1));
     }
 
     @Test
     public void filter_by_event() {
-        List<TrackerImportConflict> trackerImportConflicts = d2.importModule().trackerImportConflicts
+        List<TrackerImportConflict> trackerImportConflicts = d2.importModule().trackerImportConflicts()
                 .byEventUid().eq("event2").blockingGet();
         assertThat(trackerImportConflicts.size(), is(1));
     }
 
     @Test
     public void filter_by_tale_reference() {
-        List<TrackerImportConflict> trackerImportConflicts = d2.importModule().trackerImportConflicts
+        List<TrackerImportConflict> trackerImportConflicts = d2.importModule().trackerImportConflicts()
                 .byTableReference().eq("table_reference").blockingGet();
         assertThat(trackerImportConflicts.size(), is(1));
     }
 
     @Test
     public void filter_by_error_code() {
-        List<TrackerImportConflict> trackerImportConflicts = d2.importModule().trackerImportConflicts
+        List<TrackerImportConflict> trackerImportConflicts = d2.importModule().trackerImportConflicts()
                 .byErrorCode().eq("error_code").blockingGet();
         assertThat(trackerImportConflicts.size(), is(1));
     }
 
     @Test
     public void filter_by_status() {
-        List<TrackerImportConflict> trackerImportConflicts = d2.importModule().trackerImportConflicts
+        List<TrackerImportConflict> trackerImportConflicts = d2.importModule().trackerImportConflicts()
                 .byStatus().eq(ImportStatus.SUCCESS).blockingGet();
         assertThat(trackerImportConflicts.size(), is(1));
     }
 
     @Test
     public void filter_by_created() throws ParseException {
-        List<TrackerImportConflict> trackerImportConflicts = d2.importModule().trackerImportConflicts
+        List<TrackerImportConflict> trackerImportConflicts = d2.importModule().trackerImportConflicts()
                 .byCreated().eq(BaseIdentifiableObject.parseDate("2017-11-29T11:27:46.935")).blockingGet();
         assertThat(trackerImportConflicts.size(), is(2));
     }

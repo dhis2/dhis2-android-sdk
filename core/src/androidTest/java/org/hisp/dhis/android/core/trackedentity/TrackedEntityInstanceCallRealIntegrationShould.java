@@ -61,9 +61,9 @@ public class TrackedEntityInstanceCallRealIntegrationShould extends BaseRealInte
         d2.metadataModule().blockingDownload();
 
         d2.trackedEntityModule()
-                .trackedEntityInstanceDownloader.byUid().eq("IaxoagO9899").blockingDownload();
+                .trackedEntityInstanceDownloader().byUid().eq("IaxoagO9899").blockingDownload();
 
-        List<TrackedEntityInstance> teiResponse = d2.trackedEntityModule().trackedEntityInstances.byUid().eq("IaxoagO9899")
+        List<TrackedEntityInstance> teiResponse = d2.trackedEntityModule().trackedEntityInstances().byUid().eq("IaxoagO9899")
                 .blockingGet();
 
         Truth.assertThat(teiResponse.isEmpty()).isFalse();

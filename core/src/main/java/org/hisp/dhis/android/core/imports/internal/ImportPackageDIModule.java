@@ -29,9 +29,17 @@
 package org.hisp.dhis.android.core.imports.internal;
 
 import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
 @Module(includes = {
         TrackerImportConflictEntityDIModule.class
 })
 public final class ImportPackageDIModule {
+
+    @Provides
+    @Reusable
+    ImportModule module(ImportModuleImpl impl) {
+        return impl;
+    }
 }

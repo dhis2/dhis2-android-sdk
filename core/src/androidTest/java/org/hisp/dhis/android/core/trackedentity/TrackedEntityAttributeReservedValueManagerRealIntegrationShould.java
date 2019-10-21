@@ -112,7 +112,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
         IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore =
                 TrackedEntityAttributeStore.create(databaseAdapter());
 
-        manager = d2.trackedEntityModule().reservedValueManager;
+        manager = d2.trackedEntityModule().reservedValueManager();
 
         Handler<TrackedEntityAttributeReservedValue> handler = new ObjectWithoutUidHandlerImpl<>(store);
 
@@ -175,16 +175,16 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 
         assertThat(selectAll().size(), is(3));
 
-        String value1 = d2.trackedEntityModule().reservedValueManager.blockingGetValue(ownerUid, organisationUnitUid);
+        String value1 = d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
 
         assertThat(value1, is("value1"));
     }
 
 //    @Test
     public void get_more_than_one_reserved_value() throws D2Error {
-        String value1 = d2.trackedEntityModule().reservedValueManager.blockingGetValue(ownerUid, organisationUnitUid);
-        String value2 = d2.trackedEntityModule().reservedValueManager.blockingGetValue(ownerUid, organisationUnitUid);
-        String value3 = d2.trackedEntityModule().reservedValueManager.blockingGetValue(ownerUid, organisationUnitUid);
+        String value1 = d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
+        String value2 = d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
+        String value3 = d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
 
         assertThat(value1, is("value1"));
         assertThat(value2, is("value2"));
@@ -193,67 +193,67 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 
 //    @Test
     public void sync_reserved_values_for_one_tracked_entity_attribute() {
-        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(ownerUid, 100);
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, 100);
         assertThat(selectAll().size(), is(100));
     }
 
 //    @Test
     public void sync_20_reserved_values_for_one_tracked_entity_attribute() {
-        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(ownerUid, 20);
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, 20);
         assertThat(selectAll().size(), is(20));
     }
 
 //    @Test
     public void sync_100_reserved_values_when_not_number_of_values_to_reserve_is_specified() {
-        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(ownerUid, null);
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, null);
         assertThat(selectAll().size(), is(100));
     }
 
 //    @Test
     public void sync_pop_sync_again_and_have_99_reserved_values_when_not_number_of_values_to_reserve_is_specified()
             throws D2Error {
-        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(ownerUid, null);
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, null);
         assertThat(selectAll().size(), is(100));
-        d2.trackedEntityModule().reservedValueManager.blockingGetValue(ownerUid, organisationUnitUid);
+        d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
         assertThat(selectAll().size(), is(99));
-        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(ownerUid, null);
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, null);
         assertThat(selectAll().size(), is(99));
     }
 
 //    @Test
     public void fill_up_to_100_values_if_db_does_not_have_at_least_50_values_when_not_number_of_values_to_reserve_is_specified()
             throws D2Error {
-        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(ownerUid, 50);
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, 50);
         assertThat(selectAll().size(), is(50));
-        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(ownerUid, null);
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, null);
         assertThat(selectAll().size(), is(50));
-        d2.trackedEntityModule().reservedValueManager.blockingGetValue(ownerUid, organisationUnitUid);
+        d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
         assertThat(selectAll().size(), is(49));
-        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(ownerUid, null);
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, null);
         assertThat(selectAll().size(), is(100));
     }
 
 //    @Test
     public void sync_pop_sync_again_and_have_99_reserved_values_if_less_than_existing_values_are_requested()
             throws D2Error {
-        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(ownerUid, 100);
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, 100);
         assertThat(selectAll().size(), is(100));
-        d2.trackedEntityModule().reservedValueManager.blockingGetValue(ownerUid, organisationUnitUid);
+        d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
         assertThat(selectAll().size(), is(99));
-        d2.trackedEntityModule().reservedValueManager.blockingDownloadReservedValues(ownerUid, 20);
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, 20);
         assertThat(selectAll().size(), is(99));
     }
 
 //    @Test
     public void reserve_100_new_values_and_take_one() throws D2Error {
-        d2.trackedEntityModule().reservedValueManager.blockingGetValue(ownerUid, organisationUnitUid);
+        d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
         assertThat(selectAll().size(), is(99));
     }
 
 //    @Test
     public void have_98_values_after_sync_and_take_two() throws D2Error {
-        d2.trackedEntityModule().reservedValueManager.blockingGetValue(ownerUid, organisationUnitUid);
-        d2.trackedEntityModule().reservedValueManager.blockingGetValue(ownerUid, organisationUnitUid);
+        d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
+        d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
         assertThat(selectAll().size(), is(98));
     }
 
@@ -261,7 +261,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
     public void sync_all_tracked_entity_instances() throws Exception {
         assertThat(selectAll().size(), is(3));
         d2.metadataModule().blockingDownload();
-        d2.trackedEntityModule().reservedValueManager.blockingDownloadAllReservedValues(null);
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadAllReservedValues(null);
 
         /* 100 Reserved values by default * 2 TEA with generated property true on server = 200 */
         assertThat(selectAll().size(), is(200));
@@ -318,7 +318,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 
 //    @Test (expected = D2Error.class)
     public void return_d2_call_exception_if_no_valid_org_unit() throws D2Error {
-        d2.trackedEntityModule().reservedValueManager.blockingGetValue(ownerUid, "not_stored_organisation_unit_uid");
+        d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, "not_stored_organisation_unit_uid");
     }
 
     private List<TrackedEntityAttributeReservedValue> selectAll() {

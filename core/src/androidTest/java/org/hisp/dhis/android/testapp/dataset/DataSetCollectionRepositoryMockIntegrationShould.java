@@ -46,14 +46,14 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void find_all() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
     }
 
     @Test
     public void filter_by_period_type() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byPeriodType().eq(PeriodType.Monthly)
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
@@ -61,7 +61,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_category_combo() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byCategoryComboUid().eq("m2jTvAj5kkm")
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
@@ -69,7 +69,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_mobile() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byMobile().isFalse()
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
@@ -77,7 +77,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_version_eq() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byVersion().eq(22)
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
@@ -85,7 +85,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_version_bigger_1() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byVersion().biggerThan(21)
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
@@ -93,7 +93,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_version_bigger_0() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byVersion().biggerThan(22)
                 .blockingGet();
         assertThat(dataSets.size(), is(0));
@@ -101,7 +101,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_version_smaller_0() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byVersion().smallerThan(21)
                 .blockingGet();
         assertThat(dataSets.size(), is(0));
@@ -109,7 +109,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_version_smaller_1() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byVersion().smallerThan(23)
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
@@ -117,7 +117,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_expiry_days() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byExpiryDays().eq(1)
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
@@ -125,7 +125,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_timely_days() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byTimelyDays().eq(3)
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
@@ -133,7 +133,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_notify_completing_user() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byNotifyCompletingUser().isFalse()
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
@@ -141,7 +141,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_open_future_periods() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byOpenFuturePeriods().eq(3)
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
@@ -149,7 +149,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_field_combination_required() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byFieldCombinationRequired().isFalse()
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
@@ -157,7 +157,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_valid_complete_only() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byValidCompleteOnly().isFalse()
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
@@ -165,7 +165,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_no_value_requires_comment() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byNoValueRequiresComment().isTrue()
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
@@ -173,7 +173,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_skip_offline() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .bySkipOffline().isFalse()
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
@@ -181,7 +181,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_data_element_decoration() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byDataElementDecoration().isTrue()
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
@@ -189,7 +189,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_render_as_tabs() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byRenderAsTabs().isTrue()
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
@@ -197,7 +197,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_render_horizontally() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byRenderHorizontally().isFalse()
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
@@ -205,7 +205,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_access_data_write() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byAccessDataWrite().isTrue()
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
@@ -213,7 +213,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_organisation_unit_uid() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byOrganisationUnitUid("DiszpKrYNg8")
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
@@ -221,7 +221,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_organisation_unit_uid_list() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byOrganisationUnitList(Collections.singletonList("DiszpKrYNg8"))
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
@@ -229,7 +229,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void include_style_as_children() {
-        DataSet dataSet = d2.dataSetModule().dataSets
+        DataSet dataSet = d2.dataSetModule().dataSets()
                 .withStyle()
                 .one().blockingGet();
         assertThat(dataSet.style().icon(), is("my-icon-name"));
@@ -237,7 +237,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void include_compulsory_data_element_operands_as_children() {
-        DataSet dataSet = d2.dataSetModule().dataSets
+        DataSet dataSet = d2.dataSetModule().dataSets()
                 .withCompulsoryDataElementOperands()
                 .one().blockingGet();
         assertThat(dataSet.compulsoryDataElementOperands().size(), is(1));
@@ -245,7 +245,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void include_data_input_periods_as_children() {
-        DataSet dataSet = d2.dataSetModule().dataSets
+        DataSet dataSet = d2.dataSetModule().dataSets()
                 .withDataInputPeriods()
                 .one().blockingGet();
         assertThat(dataSet.dataInputPeriods().size(), is(1));
@@ -253,7 +253,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void include_data_set_elements_as_children() {
-        DataSet dataSet = d2.dataSetModule().dataSets
+        DataSet dataSet = d2.dataSetModule().dataSets()
                 .withDataSetElements()
                 .one().blockingGet();
         assertThat(dataSet.dataSetElements().size(), is(1));
@@ -261,7 +261,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void include_indicators_as_children() {
-        DataSet dataSet = d2.dataSetModule().dataSets
+        DataSet dataSet = d2.dataSetModule().dataSets()
                 .withIndicators()
                 .one().blockingGet();
         assertThat(dataSet.indicators().size(), is(1));

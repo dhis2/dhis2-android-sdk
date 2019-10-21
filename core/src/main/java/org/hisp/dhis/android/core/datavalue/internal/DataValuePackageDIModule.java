@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.datavalue.internal;
 
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
 import org.hisp.dhis.android.core.datavalue.DataValue;
+import org.hisp.dhis.android.core.datavalue.DataValueModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -51,5 +52,11 @@ public final class DataValuePackageDIModule {
     @Reusable
     QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory(DataValueEndpointCallFactory callFactoryImpl) {
         return callFactoryImpl;
+    }
+
+    @Provides
+    @Reusable
+    DataValueModule module(DataValueModuleImpl impl) {
+        return impl;
     }
 }

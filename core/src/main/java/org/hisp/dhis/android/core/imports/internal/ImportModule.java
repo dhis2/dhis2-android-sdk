@@ -29,19 +29,6 @@ package org.hisp.dhis.android.core.imports.internal;
 
 import org.hisp.dhis.android.core.imports.TrackerImportConflictCollectionRepository;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class ImportModule {
-
-    public final TrackerImportConflictCollectionRepository trackerImportConflicts;
-
-    @Inject
-    ImportModule(TrackerImportConflictCollectionRepository trackerImportConflicts) {
-        this.trackerImportConflicts = trackerImportConflicts;
-    }
+public interface ImportModule {
+    TrackerImportConflictCollectionRepository trackerImportConflicts();
 }

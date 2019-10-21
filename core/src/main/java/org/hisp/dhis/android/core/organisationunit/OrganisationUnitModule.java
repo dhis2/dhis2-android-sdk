@@ -28,25 +28,8 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class OrganisationUnitModule {
-
-    public final OrganisationUnitCollectionRepository organisationUnits;
-    public final OrganisationUnitGroupCollectionRepository organisationUnitGroups;
-    public final OrganisationUnitLevelCollectionRepository organisationUnitLevels;
-
-    @Inject
-    OrganisationUnitModule(OrganisationUnitCollectionRepository organisationUnits,
-                           OrganisationUnitGroupCollectionRepository organisationUnitGroups,
-                           OrganisationUnitLevelCollectionRepository organisationUnitLevels) {
-        this.organisationUnits = organisationUnits;
-        this.organisationUnitGroups = organisationUnitGroups;
-        this.organisationUnitLevels = organisationUnitLevels;
-    }
+public interface OrganisationUnitModule {
+    OrganisationUnitCollectionRepository organisationUnits();
+    OrganisationUnitGroupCollectionRepository organisationUnitGroups();
+    OrganisationUnitLevelCollectionRepository organisationUnitLevels();
 }

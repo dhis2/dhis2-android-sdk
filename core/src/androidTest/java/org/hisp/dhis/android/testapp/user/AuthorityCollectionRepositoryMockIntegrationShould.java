@@ -44,13 +44,13 @@ public class AuthorityCollectionRepositoryMockIntegrationShould extends BaseMock
 
     @Test
     public void find_all() {
-        List<Authority> authorities = d2.userModule().authorities.blockingGet();
+        List<Authority> authorities = d2.userModule().authorities().blockingGet();
         assertThat(authorities.size(), is(2));
     }
 
     @Test
     public void filter_by_name() {
-        List<Authority> authorities = d2.userModule().authorities
+        List<Authority> authorities = d2.userModule().authorities()
                 .byName().eq("F_ENROLLMENT_CASCADE_DELETE").blockingGet();
         assertThat(authorities.size(), is(1));
     }

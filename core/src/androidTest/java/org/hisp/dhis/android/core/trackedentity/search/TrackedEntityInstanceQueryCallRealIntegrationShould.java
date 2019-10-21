@@ -60,7 +60,7 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends BaseRea
         List<String> orgUnits = new ArrayList<>();
         orgUnits.add("DiszpKrYNg8");
 
-        repository = d2.trackedEntityModule().trackedEntityInstanceQuery
+        repository = d2.trackedEntityModule().trackedEntityInstanceQuery()
                 .byOrgUnits().in(orgUnits)
                 .byOrgUnitMode().eq(OrganisationUnitMode.ACCESSIBLE)
                 .byProgram().eq("IpHINAT79UW");

@@ -48,7 +48,7 @@ public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationSho
     @Test
     public void find_all() {
         List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                d2.programModule().programTrackedEntityAttributes
+                d2.programModule().programTrackedEntityAttributes()
                         .blockingGet();
 
         assertThat(programTrackedEntityAttributes.size(), is(2));
@@ -57,7 +57,7 @@ public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationSho
     @Test
     public void filter_by_mandatory() {
         List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                d2.programModule().programTrackedEntityAttributes
+                d2.programModule().programTrackedEntityAttributes()
                         .byMandatory()
                         .isFalse()
                         .blockingGet();
@@ -68,7 +68,7 @@ public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationSho
     @Test
     public void filter_by_tracked_entity_attribute() {
         List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                d2.programModule().programTrackedEntityAttributes
+                d2.programModule().programTrackedEntityAttributes()
                         .byTrackedEntityAttribute()
                         .eq("cejWyOfXge6")
                         .blockingGet();
@@ -79,7 +79,7 @@ public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationSho
     @Test
     public void filter_by_allow_future_date() {
         List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                d2.programModule().programTrackedEntityAttributes
+                d2.programModule().programTrackedEntityAttributes()
                         .byAllowFutureDate()
                         .isTrue()
                         .blockingGet();
@@ -90,7 +90,7 @@ public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationSho
     @Test
     public void filter_by_display_in_list() {
         List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                d2.programModule().programTrackedEntityAttributes
+                d2.programModule().programTrackedEntityAttributes()
                         .byDisplayInList()
                         .isTrue()
                         .blockingGet();
@@ -101,7 +101,7 @@ public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationSho
     @Test
     public void filter_by_program() {
         List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                d2.programModule().programTrackedEntityAttributes
+                d2.programModule().programTrackedEntityAttributes()
                         .byProgram()
                         .eq("lxAQ7Zs9VYR")
                         .blockingGet();
@@ -112,7 +112,7 @@ public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationSho
     @Test
     public void filter_by_sort_order() {
         List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                d2.programModule().programTrackedEntityAttributes
+                d2.programModule().programTrackedEntityAttributes()
                         .bySortOrder()
                         .biggerThan(1)
                         .blockingGet();
@@ -123,7 +123,7 @@ public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationSho
     @Test
     public void filter_by_searchable() {
         List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                d2.programModule().programTrackedEntityAttributes
+                d2.programModule().programTrackedEntityAttributes()
                         .bySearchable()
                         .isTrue()
                         .blockingGet();
@@ -134,7 +134,7 @@ public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationSho
     @Test
     public void include_render_type_as_children() {
         ProgramTrackedEntityAttribute programTrackedEntityAttribute =
-                d2.programModule().programTrackedEntityAttributes
+                d2.programModule().programTrackedEntityAttributes()
                         .byUid().eq("YhqgQ6Iy4c4")
                         .withRenderType()
                         .one().blockingGet();
@@ -148,7 +148,7 @@ public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationSho
     @Test
     public void order_by_sort_order() {
         List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                d2.programModule().programTrackedEntityAttributes
+                d2.programModule().programTrackedEntityAttributes()
                         .orderBySortOrder(RepositoryScope.OrderByDirection.DESC)
                 .blockingGet();
 

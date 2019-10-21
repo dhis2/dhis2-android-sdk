@@ -49,7 +49,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
     @Test
     public void find_all() {
         List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
-                d2.dataSetModule().dataSetCompleteRegistrations
+                d2.dataSetModule().dataSetCompleteRegistrations()
                         .blockingGet();
 
         assertThat(dataSetCompleteRegistrations.size(), is(3));
@@ -58,7 +58,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
     @Test
     public void filter_by_period() {
         List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
-                d2.dataSetModule().dataSetCompleteRegistrations
+                d2.dataSetModule().dataSetCompleteRegistrations()
                         .byPeriod()
                         .eq("2018")
                         .blockingGet();
@@ -69,7 +69,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
     @Test
     public void filter_by_data_set() {
         List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
-                d2.dataSetModule().dataSetCompleteRegistrations
+                d2.dataSetModule().dataSetCompleteRegistrations()
                         .byDataSetUid()
                         .eq("lyLU2wR22tC")
                         .blockingGet();
@@ -80,7 +80,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
     @Test
     public void filter_by_organisation_unit() {
         List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
-                d2.dataSetModule().dataSetCompleteRegistrations
+                d2.dataSetModule().dataSetCompleteRegistrations()
                         .byOrganisationUnitUid()
                         .eq("DiszpKrYNg8")
                         .blockingGet();
@@ -91,7 +91,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
     @Test
     public void filter_by_attribute_option_combo() {
         List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
-                d2.dataSetModule().dataSetCompleteRegistrations
+                d2.dataSetModule().dataSetCompleteRegistrations()
                         .byAttributeOptionComboUid()
                         .eq("bRowv6yZOF2").blockingGet();
 
@@ -101,7 +101,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
     @Test
     public void filter_by_date_after() throws ParseException {
         List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
-                d2.dataSetModule().dataSetCompleteRegistrations
+                d2.dataSetModule().dataSetCompleteRegistrations()
                         .byDate()
                         .after(simpleDateFormat.parse("2010-08-03"))
                         .blockingGet();
@@ -112,7 +112,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
     @Test
     public void filter_by_date_before() throws ParseException {
         List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
-                d2.dataSetModule().dataSetCompleteRegistrations
+                d2.dataSetModule().dataSetCompleteRegistrations()
                         .byDate()
                         .before(simpleDateFormat.parse("2010-08-03"))
                         .blockingGet();
@@ -123,7 +123,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
     @Test
     public void filter_by_stored_by() {
         List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
-                d2.dataSetModule().dataSetCompleteRegistrations
+                d2.dataSetModule().dataSetCompleteRegistrations()
                         .byStoredBy()
                         .eq("imported")
                         .blockingGet();
@@ -134,7 +134,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
     @Test
     public void filter_by_deleted() {
         List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
-                d2.dataSetModule().dataSetCompleteRegistrations
+                d2.dataSetModule().dataSetCompleteRegistrations()
                         .byDeleted().isFalse()
                         .blockingGet();
 

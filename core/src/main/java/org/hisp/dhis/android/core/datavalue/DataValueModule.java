@@ -28,19 +28,6 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class DataValueModule {
-
-    public final DataValueCollectionRepository dataValues;
-
-    @Inject
-    DataValueModule(DataValueCollectionRepository dataValueCollectionRepository) {
-        this.dataValues = dataValueCollectionRepository;
-    }
+public interface DataValueModule {
+    DataValueCollectionRepository dataValues();
 }

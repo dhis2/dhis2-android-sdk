@@ -28,34 +28,7 @@
 
 package org.hisp.dhis.android.core.event;
 
-import androidx.annotation.VisibleForTesting;
-
-import org.hisp.dhis.android.core.event.internal.EventPersistenceCallFactory;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class EventModule {
-
-    public final EventCollectionRepository events;
-
-    public final EventDownloader eventDownloader;
-
-    @VisibleForTesting
-    @SuppressFBWarnings("URF_UNREAD_FIELD")
-    final EventPersistenceCallFactory eventPersistenceCallFactory;
-
-    @Inject
-    EventModule(EventCollectionRepository events,
-                EventPersistenceCallFactory eventPersistenceCallFactory,
-                EventDownloader eventDownloader) {
-        this.events = events;
-        this.eventPersistenceCallFactory = eventPersistenceCallFactory;
-        this.eventDownloader = eventDownloader;
-    }
-
+public interface EventModule {
+    EventCollectionRepository events();
+    EventDownloader eventDownloader();
 }

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleImpl;
+
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
@@ -40,5 +42,11 @@ public final class SystemInfoPackageDIModule {
     @Reusable
     SystemInfoService service(Retrofit retrofit) {
         return retrofit.create(SystemInfoService.class);
+    }
+
+    @Provides
+    @Reusable
+    SystemInfoModule systemInfoModule(SystemInfoModuleImpl impl) {
+        return impl;
     }
 }

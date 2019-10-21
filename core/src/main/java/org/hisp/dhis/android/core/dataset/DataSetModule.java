@@ -30,31 +30,11 @@ package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.dataapproval.DataApprovalCollectionRepository;
 
-import javax.inject.Inject;
+public interface DataSetModule {
 
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class DataSetModule {
-
-    public final DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations;
-    public final DataSetCollectionRepository dataSets;
-    public final SectionCollectionRepository sections;
-    public final DataApprovalCollectionRepository dataApprovals;
-    public final DataSetInstanceCollectionRepository dataSetInstances;
-
-    @Inject
-    DataSetModule(DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations,
-                  DataSetCollectionRepository dataSets,
-                  SectionCollectionRepository sections,
-                  DataApprovalCollectionRepository dataApprovalCollectionRepository,
-                  DataSetInstanceCollectionRepository dataSetInstanceCollectionRepository) {
-        this.dataSetCompleteRegistrations = dataSetCompleteRegistrations;
-        this.dataSets = dataSets;
-        this.sections = sections;
-        this.dataApprovals = dataApprovalCollectionRepository;
-        this.dataSetInstances = dataSetInstanceCollectionRepository;
-    }
+    DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations();
+    DataSetCollectionRepository dataSets();
+    SectionCollectionRepository sections();
+    DataApprovalCollectionRepository dataApprovals();
+    DataSetInstanceCollectionRepository dataSetInstances();
 }

@@ -180,7 +180,7 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     public abstract List<ProgramIndicator> programIndicators();
 
     /**
-     * @deprecated use d2.programModule().programStages instead
+     * @deprecated use d2.programModule().programStages() instead
      *
      * @return
      */
@@ -191,7 +191,7 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     public abstract List<ProgramStage> programStages();
 
     /**
-     * @deprecated use d2.programModule().programRules instead. This will be removed in SDK 1.0
+     * @deprecated use d2.programModule().programRules() instead. This will be removed in SDK 1.0
      *
      * @return
      */

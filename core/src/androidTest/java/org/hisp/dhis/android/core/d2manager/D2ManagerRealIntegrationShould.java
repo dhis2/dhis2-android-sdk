@@ -72,7 +72,7 @@ public class D2ManagerRealIntegrationShould {
         configureD2();
         persistCredentialsInDb();
 
-        UserCredentials userCredentials = D2Manager.getD2().userModule().userCredentials.blockingGet();
+        UserCredentials userCredentials = D2Manager.getD2().userModule().userCredentials().blockingGet();
         assertThat(userCredentials.user().uid().equals("user")).isTrue();
     }
 
@@ -86,7 +86,7 @@ public class D2ManagerRealIntegrationShould {
 
         D2Manager.getD2().userModule().logIn(RealServerMother.username, RealServerMother.password, RealServerMother.url).blockingGet();
 
-        assertThat(D2Manager.getD2().userModule().authenticatedUser.blockingGet().user() != null).isTrue();
+        assertThat(D2Manager.getD2().userModule().authenticatedUser().blockingGet().user() != null).isTrue();
     }
 
     private void configureD2() {

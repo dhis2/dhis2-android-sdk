@@ -48,13 +48,13 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
 
     @Test
     public void allow_access_to_all_tracked_entity_data_values() {
-        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues.blockingGet();
+        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues().blockingGet();
         assertThat(trackedEntityDataValues.size(), is(13));
     }
 
     @Test
     public void filter_by_event() {
-        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues
+        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
                 .byEvent().eq("single1")
                 .blockingGet();
         assertThat(trackedEntityDataValues.size(), is(6));
@@ -63,7 +63,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
     @Test
     public void filter_by_created() throws ParseException {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse("2015-02-28T12:05:00.333");
-        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues
+        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
                 .byCreated().eq(date)
                 .blockingGet();
         assertThat(trackedEntityDataValues.size(), is(1));
@@ -72,7 +72,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
     @Test
     public void filter_by_last_updated() throws ParseException {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse("2015-02-28T12:05:00.222");
-        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues
+        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
                 .byLastUpdated().eq(date)
                 .blockingGet();
         assertThat(trackedEntityDataValues.size(), is(1));
@@ -80,7 +80,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
 
     @Test
     public void filter_by_data_element() {
-        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues
+        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
                 .byDataElement().eq("bx6fsa0t90x")
                 .blockingGet();
         assertThat(trackedEntityDataValues.size(), is(2));
@@ -88,7 +88,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
 
     @Test
     public void filter_by_stored_by() {
-        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues
+        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
                 .byStoredBy().eq("storer")
                 .blockingGet();
         assertThat(trackedEntityDataValues.size(), is(2));
@@ -96,7 +96,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
 
     @Test
     public void filter_by_value() {
-        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues
+        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
                 .byValue().eq("11")
                 .blockingGet();
         assertThat(trackedEntityDataValues.size(), is(2));
@@ -104,7 +104,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
 
     @Test
     public void filter_by_provided_elsewhere() {
-        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues
+        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
                 .byProvidedElsewhere().eq(true)
                 .blockingGet();
         assertThat(trackedEntityDataValues.size(), is(2));
@@ -112,7 +112,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
 
     @Test
     public void return_tracked_entity_data_value_object_repository() {
-        TrackedEntityDataValueObjectRepository objectRepository = d2.trackedEntityModule().trackedEntityDataValues
+        TrackedEntityDataValueObjectRepository objectRepository = d2.trackedEntityModule().trackedEntityDataValues()
                 .value("single1", "g9eOBujte1U");
         assertThat(objectRepository.blockingExists(), is(Boolean.TRUE));
         assertThat(objectRepository.blockingGet().value(), is("1"));

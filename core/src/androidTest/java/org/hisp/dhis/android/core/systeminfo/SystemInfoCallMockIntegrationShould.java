@@ -53,7 +53,7 @@ public class SystemInfoCallMockIntegrationShould extends BaseMockIntegrationTest
     @BeforeClass
     public static void setUpClass() throws Exception {
         BaseMockIntegrationTestEmptyEnqueable.setUpClass();
-        systemInfoRepository = d2.systemInfoModule().systemInfo;
+        systemInfoRepository = d2.systemInfoModule().systemInfo();
     }
 
     @Before

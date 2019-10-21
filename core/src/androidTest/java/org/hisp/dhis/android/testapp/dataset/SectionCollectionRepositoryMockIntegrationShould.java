@@ -44,14 +44,14 @@ public class SectionCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void find_all_objects() {
-        List<Section> sections = d2.dataSetModule().sections.blockingGet();
+        List<Section> sections = d2.dataSetModule().sections().blockingGet();
         assertThat(sections.size(), is(1));
         assertThat(sections.get(0).name(), is("Immunization"));
     }
 
     @Test
     public void filter_by_description() {
-        List<Section> sections = d2.dataSetModule().sections
+        List<Section> sections = d2.dataSetModule().sections()
                 .byDescription().eq("Immunization dose administration")
                 .blockingGet();
         assertThat(sections.size(), is(1));
@@ -59,7 +59,7 @@ public class SectionCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_sort_order() {
-        List<Section> sections = d2.dataSetModule().sections
+        List<Section> sections = d2.dataSetModule().sections()
                 .bySortOrder().eq(1)
                 .blockingGet();
         assertThat(sections.size(), is(1));
@@ -67,7 +67,7 @@ public class SectionCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_show_row_totals() {
-        List<Section> sections = d2.dataSetModule().sections
+        List<Section> sections = d2.dataSetModule().sections()
                 .byShowRowTotals().isTrue()
                 .blockingGet();
         assertThat(sections.size(), is(1));
@@ -75,7 +75,7 @@ public class SectionCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_show_column_totals() {
-        List<Section> sections = d2.dataSetModule().sections
+        List<Section> sections = d2.dataSetModule().sections()
                 .byShowColumnTotals().isFalse()
                 .blockingGet();
         assertThat(sections.size(), is(1));
@@ -83,7 +83,7 @@ public class SectionCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_data_set_uid() {
-        List<Section> sections = d2.dataSetModule().sections
+        List<Section> sections = d2.dataSetModule().sections()
                 .byDataSetUid().eq("lyLU2wR22tC")
                 .blockingGet();
         assertThat(sections.size(), is(1));
@@ -91,7 +91,7 @@ public class SectionCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void return_greyed_fields_as_children() {
-        Section section = d2.dataSetModule().sections
+        Section section = d2.dataSetModule().sections()
                 .withGreyedFields().one().blockingGet();
         assertThat(section.greyedFields().size(), is(1));
         assertThat(section.greyedFields().get(0).uid(), is("ca8lfO062zg.Prlt0C1RF0s"));
@@ -99,7 +99,7 @@ public class SectionCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void return_data_element_as_children() {
-        Section section = d2.dataSetModule().sections
+        Section section = d2.dataSetModule().sections()
                 .withDataElements().one().blockingGet();
         assertThat(section.dataElements().size(), is(1));
         assertThat(section.dataElements().get(0).uid(), is("g9eOBujte1U"));

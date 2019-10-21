@@ -45,7 +45,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void find_all() {
         List<ProgramIndicator> indicators =
-                d2.programModule().programIndicators
+                d2.programModule().programIndicators()
                         .blockingGet();
 
         assertThat(indicators.size(), is(2));
@@ -54,7 +54,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void filter_by_display_in_form() {
         List<ProgramIndicator> indicators =
-                d2.programModule().programIndicators
+                d2.programModule().programIndicators()
                         .byDisplayInForm()
                         .isTrue()
                         .blockingGet();
@@ -65,7 +65,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void filter_by_expression() {
         List<ProgramIndicator> indicators =
-                d2.programModule().programIndicators
+                d2.programModule().programIndicators()
                         .byExpression()
                         .eq("d2:yearsBetween(A{iESIqZ0R0R0},V{event_date})")
                         .blockingGet();
@@ -76,7 +76,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void filter_by_dimension_item() {
         List<ProgramIndicator> indicators =
-                d2.programModule().programIndicators
+                d2.programModule().programIndicators()
                         .byDimensionItem()
                         .eq("rXoaHGAXWy9")
                         .blockingGet();
@@ -87,7 +87,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void filter_by_filter() {
         List<ProgramIndicator> indicators =
-                d2.programModule().programIndicators
+                d2.programModule().programIndicators()
                         .byFilter()
                         .eq("#{edqlbukwRfQ.vANAXwtLwcT} < 11")
                         .blockingGet();
@@ -98,7 +98,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void filter_by_decimals() {
         List<ProgramIndicator> indicators =
-                d2.programModule().programIndicators
+                d2.programModule().programIndicators()
                         .byDecimals()
                         .eq(2)
                         .blockingGet();
@@ -109,7 +109,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void filter_by_aggregation_type() {
         List<ProgramIndicator> indicators =
-                d2.programModule().programIndicators
+                d2.programModule().programIndicators()
                         .byAggregationType()
                         .eq("AVERAGE")
                         .blockingGet();
@@ -120,7 +120,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void filter_by_program() {
         List<ProgramIndicator> indicators =
-                d2.programModule().programIndicators
+                d2.programModule().programIndicators()
                         .byProgramUid()
                         .eq("lxAQ7Zs9VYR")
                         .blockingGet();
@@ -130,7 +130,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
 
     @Test
     public void include_legend_sets_as_children() {
-        ProgramIndicator programIndicators = d2.programModule().programIndicators
+        ProgramIndicator programIndicators = d2.programModule().programIndicators()
                 .withLegendSets().one().blockingGet();
         assertThat(programIndicators.legendSets().size(), is(1));
         assertThat(programIndicators.legendSets().get(0).name(), is("Age 15y interval"));

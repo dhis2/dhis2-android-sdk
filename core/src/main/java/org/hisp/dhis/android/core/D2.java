@@ -46,7 +46,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetModule;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
-import org.hisp.dhis.android.core.domain.metadata.MetadataModule;
+import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.fileresource.FileResourceModule;
@@ -112,7 +112,7 @@ public final class D2 {
         return databaseAdapter;
     }
 
-    public MetadataModule metadataModule() {
+    public WithProgressDownloader metadataModule() {
         return d2DIComponent.metadataModule();
     }
 

@@ -27,23 +27,8 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import javax.inject.Inject;
+public interface RelationshipModule {
+    RelationshipTypeCollectionRepository relationshipTypes();
 
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class RelationshipModule {
-
-    public final RelationshipTypeCollectionRepository relationshipTypes;
-
-    public final RelationshipCollectionRepository relationships;
-
-    @Inject
-    RelationshipModule(RelationshipTypeCollectionRepository relationshipTypeRepository,
-                       RelationshipCollectionRepository relationshipRepository) {
-        this.relationshipTypes = relationshipTypeRepository;
-        this.relationships = relationshipRepository;
-    }
+    RelationshipCollectionRepository relationships();
 }

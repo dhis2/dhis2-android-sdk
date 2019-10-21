@@ -44,13 +44,13 @@ public class OrganisationUnitLevelCollectionRepositoryMockIntegrationShould exte
 
     @Test
     public void find_all() {
-        List<OrganisationUnitLevel> organisationUnitLevels = d2.organisationUnitModule().organisationUnitLevels.blockingGet();
+        List<OrganisationUnitLevel> organisationUnitLevels = d2.organisationUnitModule().organisationUnitLevels().blockingGet();
         assertThat(organisationUnitLevels.size(), is(4));
     }
 
     @Test
     public void filter_by_short_name() {
-        List<OrganisationUnitLevel> organisationUnitLevels = d2.organisationUnitModule().organisationUnitLevels
+        List<OrganisationUnitLevel> organisationUnitLevels = d2.organisationUnitModule().organisationUnitLevels()
                 .byLevel().eq(4).blockingGet();
         assertThat(organisationUnitLevels.size(), is(1));
     }

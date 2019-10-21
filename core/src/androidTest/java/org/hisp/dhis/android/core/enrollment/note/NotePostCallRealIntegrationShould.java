@@ -77,7 +77,7 @@ public class NotePostCallRealIntegrationShould extends BaseRealIntegrationTest {
 
         d2.metadataModule().blockingDownload();
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader.byUid().eq("AlvUHPP2Mes").blockingDownload();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq("AlvUHPP2Mes").blockingDownload();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
@@ -85,7 +85,7 @@ public class NotePostCallRealIntegrationShould extends BaseRealIntegrationTest {
 
         addNote();
 
-        d2.trackedEntityModule().trackedEntityInstances.blockingUpload();
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
 
         d2.wipeModule().wipeEverything();
     }

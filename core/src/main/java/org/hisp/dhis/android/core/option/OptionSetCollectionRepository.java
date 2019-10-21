@@ -65,7 +65,7 @@ public final class OptionSetCollectionRepository
     }
 
     /**
-     * @deprecated use d2.optionModule().options.byOptionSetUid() instead
+     * @deprecated use d2.optionModule().options().byOptionSetUid() instead
      *
      * @return
      */

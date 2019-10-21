@@ -30,50 +30,18 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine;
 
-import javax.inject.Inject;
+public interface ProgramModule {
 
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+    ProgramCollectionRepository programs();
+    ProgramIndicatorCollectionRepository programIndicators();
+    ProgramRuleCollectionRepository programRules();
+    ProgramRuleActionCollectionRepository programRuleActions();
+    ProgramRuleVariableCollectionRepository programRuleVariables();
+    ProgramSectionCollectionRepository programSections();
+    ProgramStageCollectionRepository programStages();
+    ProgramStageSectionsCollectionRepository programStageSections();
+    ProgramStageDataElementCollectionRepository programStageDataElements();
+    ProgramTrackedEntityAttributeCollectionRepository programTrackedEntityAttributes();
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class ProgramModule {
-
-    public final ProgramCollectionRepository programs;
-    public final ProgramIndicatorCollectionRepository programIndicators;
-    public final ProgramRuleCollectionRepository programRules;
-    public final ProgramRuleActionCollectionRepository programRuleActions;
-    public final ProgramRuleVariableCollectionRepository programRuleVariables;
-    public final ProgramSectionCollectionRepository programSections;
-    public final ProgramStageCollectionRepository programStages;
-    public final ProgramStageSectionsCollectionRepository programStageSections;
-    public final ProgramStageDataElementCollectionRepository programStageDataElements;
-    public final ProgramTrackedEntityAttributeCollectionRepository programTrackedEntityAttributes;
-
-    public final ProgramIndicatorEngine programIndicatorEngine;
-
-    @Inject
-    ProgramModule(ProgramCollectionRepository programs,
-                  ProgramIndicatorCollectionRepository programIndicators,
-                  ProgramRuleCollectionRepository programRules,
-                  ProgramRuleActionCollectionRepository programRuleActions,
-                  ProgramRuleVariableCollectionRepository programRuleVariables,
-                  ProgramSectionCollectionRepository programSections,
-                  ProgramStageCollectionRepository programStages,
-                  ProgramStageSectionsCollectionRepository programStageSections,
-                  ProgramStageDataElementCollectionRepository programStageDataElements,
-                  ProgramTrackedEntityAttributeCollectionRepository programTrackedEntityAttributes,
-                  ProgramIndicatorEngine programIndicatorEngine) {
-        this.programs = programs;
-        this.programIndicators = programIndicators;
-        this.programRules = programRules;
-        this.programRuleActions = programRuleActions;
-        this.programRuleVariables = programRuleVariables;
-        this.programSections = programSections;
-        this.programStages = programStages;
-        this.programStageSections = programStageSections;
-        this.programStageDataElements = programStageDataElements;
-        this.programTrackedEntityAttributes = programTrackedEntityAttributes;
-        this.programIndicatorEngine = programIndicatorEngine;
-    }
+    ProgramIndicatorEngine programIndicatorEngine();
 }

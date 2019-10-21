@@ -28,19 +28,6 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class EnrollmentModule {
-
-    public final EnrollmentCollectionRepository enrollments;
-
-    @Inject
-    EnrollmentModule(EnrollmentCollectionRepository enrollments) {
-        this.enrollments = enrollments;
-    }
+public interface EnrollmentModule {
+    EnrollmentCollectionRepository enrollments();
 }

@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.sms.internal;
 
 import android.content.Context;
 
+import org.hisp.dhis.android.core.sms.SmsModule;
 import org.hisp.dhis.android.core.sms.data.internal.DeviceStateRepositoryImpl;
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.LocalDbRepositoryImpl;
 import org.hisp.dhis.android.core.sms.data.smsrepository.internal.SmsRepositoryImpl;
@@ -13,6 +14,7 @@ import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbReposito
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module
@@ -36,5 +38,11 @@ public class SmsDIModule {
     @Provides
     WebApiRepository webApiRepository(Retrofit retrofit) {
         return new WebApiRepositoryImpl(retrofit);
+    }
+
+    @Provides
+    @Reusable
+    SmsModule module(SmsModuleImpl impl) {
+        return impl;
     }
 }

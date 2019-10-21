@@ -25,31 +25,48 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.maintenance.internal;
 
-package org.hisp.dhis.android.core.domain.aggregated.data;
-
-import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCollectionRepository;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationCollectionRepository;
+import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
+import org.hisp.dhis.android.core.maintenance.PerformanceHintsService;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import io.reactivex.Observable;
 
 @Reusable
-public final class AggregatedDataModule {
+public final class MaintenanceModuleImpl implements MaintenanceModule {
 
-    private final AggregatedDataCall aggregatedDataCall;
+    private final DatabaseAdapter databaseAdapter;
+    private final ForeignKeyViolationCollectionRepository foreignKeyViolations;
+    private final D2ErrorCollectionRepository d2Errors;
 
     @Inject
-    AggregatedDataModule(AggregatedDataCall aggregatedDataCall) {
-        this.aggregatedDataCall = aggregatedDataCall;
+    MaintenanceModuleImpl(DatabaseAdapter databaseAdapter,
+                          ForeignKeyViolationCollectionRepository foreignKeyViolations,
+                          D2ErrorCollectionRepository d2Errors) {
+        this.databaseAdapter = databaseAdapter;
+        this.foreignKeyViolations = foreignKeyViolations;
+        this.d2Errors = d2Errors;
     }
 
-    public Observable<D2Progress> download() {
-        return aggregatedDataCall.download();
+    @Override
+    public PerformanceHintsService getPerformanceHintsService(int organisationUnitThreshold,
+                                                              int programRulesPerProgramThreshold) {
+        return PerformanceHintsService.create(databaseAdapter, organisationUnitThreshold,
+                programRulesPerProgramThreshold);
     }
 
-    public void blockingDownload() {
-        aggregatedDataCall.blockingDownload();
+    @Override
+    public ForeignKeyViolationCollectionRepository foreignKeyViolations() {
+        return foreignKeyViolations;
+    }
+
+    @Override
+    public D2ErrorCollectionRepository d2Errors() {
+        return d2Errors;
     }
 }

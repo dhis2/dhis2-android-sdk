@@ -67,7 +67,7 @@ public class DataValuePostCallRealIntegrationShould extends BaseRealIntegrationT
 
         assertThat(insertToPostDataValue(dataValue)).isTrue();
 
-        d2.dataValueModule().dataValues.blockingUpload();
+        d2.dataValueModule().dataValues().blockingUpload();
 
         /*int importCountTotal = dataValueImportSummary.importCount().imported() +
                 dataValueImportSummary.importCount().updated() +
@@ -87,7 +87,7 @@ public class DataValuePostCallRealIntegrationShould extends BaseRealIntegrationT
 
         assertThat(insertToPostDataValue(dataValue)).isTrue();
 
-        d2.dataValueModule().dataValues.blockingUpload();
+        d2.dataValueModule().dataValues().blockingUpload();
 
         /*int importCountTotal = dataValueImportSummary.importCount().updated() +
                 dataValueImportSummary.importCount().ignored();

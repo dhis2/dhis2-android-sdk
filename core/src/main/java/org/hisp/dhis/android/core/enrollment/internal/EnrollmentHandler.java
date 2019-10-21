@@ -58,7 +58,6 @@ final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
     private final Handler<Note> noteHandler;
     private final NoteUniquenessManager noteUniquenessManager;
     private final OrphanCleaner<Enrollment, Event> eventOrphanCleaner;
-    private final EnrollmentInternalAccessor internalAccessor;
 
     @Inject
     EnrollmentHandler(@NonNull NoteDHISVersionManager noteVersionManager,
@@ -66,21 +65,19 @@ final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
                       @NonNull HandlerWithTransformer<Event> eventHandler,
                       @NonNull OrphanCleaner<Enrollment, Event> eventOrphanCleaner,
                       @NonNull Handler<Note> noteHandler,
-                      @NonNull NoteUniquenessManager noteUniquenessManager,
-                      @NonNull EnrollmentInternalAccessor internalAccessor) {
+                      @NonNull NoteUniquenessManager noteUniquenessManager) {
         super(enrollmentStore);
         this.noteVersionManager = noteVersionManager;
         this.eventHandler = eventHandler;
         this.noteHandler = noteHandler;
         this.noteUniquenessManager = noteUniquenessManager;
         this.eventOrphanCleaner = eventOrphanCleaner;
-        this.internalAccessor = internalAccessor;
     }
 
     @Override
     protected void afterObjectHandled(Enrollment enrollment, HandleAction action) {
         if (action != HandleAction.Delete) {
-            eventHandler.handleMany(internalAccessor.accessEvents(enrollment),
+            eventHandler.handleMany(EnrollmentInternalAccessor.accessEvents(enrollment),
                     event -> event.toBuilder()
                             .state(State.SYNCED)
                             .build());
@@ -95,6 +92,6 @@ final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
             noteHandler.handleMany(notesToSync);
         }
 
-        eventOrphanCleaner.deleteOrphan(enrollment, internalAccessor.accessEvents(enrollment));
+        eventOrphanCleaner.deleteOrphan(enrollment, EnrollmentInternalAccessor.accessEvents(enrollment));
     }
 }

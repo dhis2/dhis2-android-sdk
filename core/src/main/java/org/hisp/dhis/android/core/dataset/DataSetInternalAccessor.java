@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.dataset;
 
 import java.util.List;
 
-import dagger.Reusable;
+public final class DataSetInternalAccessor {
 
-@Reusable
-public class DataSetInternalAccessor {
+    private DataSetInternalAccessor() {
+    }
 
-    public List<Section> accessSections(DataSet dataSet) {
+    public static List<Section> accessSections(DataSet dataSet) {
         return dataSet.sections();
     }
 }

@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.category;
 
 import java.util.List;
 
-import dagger.Reusable;
+public final class CategoryComboInternalAccessor {
 
-@Reusable
-public class CategoryComboInternalAccessor {
+    private CategoryComboInternalAccessor() {
+    }
 
-    public List<CategoryOptionCombo> accessCategoryOptionCombos(CategoryCombo categoryCombo) {
+    public static List<CategoryOptionCombo> accessCategoryOptionCombos(CategoryCombo categoryCombo) {
         return categoryCombo.categoryOptionCombos();
     }
 }

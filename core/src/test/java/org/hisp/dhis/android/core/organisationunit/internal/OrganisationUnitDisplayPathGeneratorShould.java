@@ -55,9 +55,6 @@ public class OrganisationUnitDisplayPathGeneratorShould {
     @Mock
     private OrganisationUnit organisationUnit;
 
-    @Mock
-    private OrganisationUnitInternalAccessor organisationUnitInternalAccessor;
-
     private static final String GRANDPARENT_DISPLAY_NAME = "grandparentDisplayName";
     private static final String PARENT_DISPLAY_NAME = "parentDisplayName";
     private static final String ORG_UNIT_DISPLAY_NAME = "orgUnitDisplayName";
@@ -66,7 +63,7 @@ public class OrganisationUnitDisplayPathGeneratorShould {
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
 
-        when(organisationUnitInternalAccessor.accessAncestors(organisationUnit))
+        when(OrganisationUnitInternalAccessor.accessAncestors(organisationUnit))
                 .thenReturn(Lists.newArrayList(grandparent, parent));
         when(parent.uid()).thenReturn("parentUid");
 
@@ -80,7 +77,7 @@ public class OrganisationUnitDisplayPathGeneratorShould {
         String expectedDisplayNamePath = "/" + GRANDPARENT_DISPLAY_NAME + "/" + PARENT_DISPLAY_NAME
                 + "/" + ORG_UNIT_DISPLAY_NAME;
 
-        assertThat(new OrganisationUnitDisplayPathGenerator(organisationUnitInternalAccessor)
-                .generateDisplayPath(organisationUnit)).isEqualTo(expectedDisplayNamePath);
+        assertThat(OrganisationUnitDisplayPathGenerator.generateDisplayPath(organisationUnit))
+                .isEqualTo(expectedDisplayNamePath);
     }
 }

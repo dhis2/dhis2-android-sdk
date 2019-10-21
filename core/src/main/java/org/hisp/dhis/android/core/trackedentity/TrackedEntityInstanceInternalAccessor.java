@@ -33,26 +33,26 @@ import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 
 import java.util.List;
 
-import dagger.Reusable;
+public final class TrackedEntityInstanceInternalAccessor {
 
-@Reusable
-public class TrackedEntityInstanceInternalAccessor {
+    private TrackedEntityInstanceInternalAccessor() {
+    }
 
-    public List<Enrollment> accessEnrollments(TrackedEntityInstance trackedEntityInstance) {
+    public static List<Enrollment> accessEnrollments(TrackedEntityInstance trackedEntityInstance) {
         return trackedEntityInstance.enrollments();
     }
 
-    public TrackedEntityInstance.Builder insertEnrollments(
+    public static TrackedEntityInstance.Builder insertEnrollments(
             TrackedEntityInstance.Builder builder,
             List<Enrollment> enrollments) {
         return builder.enrollments(enrollments);
     }
 
-    public List<Relationship229Compatible> accessRelationships(TrackedEntityInstance trackedEntityInstance) {
+    public static List<Relationship229Compatible> accessRelationships(TrackedEntityInstance trackedEntityInstance) {
         return trackedEntityInstance.relationships();
     }
 
-    public TrackedEntityInstance.Builder insertRelationships(
+    public static TrackedEntityInstance.Builder insertRelationships(
             TrackedEntityInstance.Builder builder,
             List<Relationship229Compatible> relationships) {
         return builder.relationships(relationships);

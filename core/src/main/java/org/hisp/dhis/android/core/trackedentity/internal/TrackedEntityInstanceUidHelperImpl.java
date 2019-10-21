@@ -51,17 +51,10 @@ import dagger.Reusable;
 class TrackedEntityInstanceUidHelperImpl implements TrackedEntityInstanceUidHelper {
 
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
-    private final TrackedEntityInstanceInternalAccessor trackedEntityInstanceInternalAccessor;
-    private final EnrollmentInternalAccessor enrollmentInternalAccessor;
 
     @Inject
-    TrackedEntityInstanceUidHelperImpl(
-            @NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
-            @NonNull TrackedEntityInstanceInternalAccessor internalAccessor,
-            @NonNull EnrollmentInternalAccessor enrollmentInternalAccessor) {
+    TrackedEntityInstanceUidHelperImpl(@NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore) {
         this.organisationUnitStore = organisationUnitStore;
-        this.trackedEntityInstanceInternalAccessor = internalAccessor;
-        this.enrollmentInternalAccessor = enrollmentInternalAccessor;
     }
 
     @Override
@@ -71,7 +64,7 @@ class TrackedEntityInstanceUidHelperImpl implements TrackedEntityInstanceUidHelp
             if (tei.organisationUnit() != null) {
                 uids.add(tei.organisationUnit());
             }
-            List<Enrollment> enrollments = trackedEntityInstanceInternalAccessor.accessEnrollments(tei);
+            List<Enrollment> enrollments = TrackedEntityInstanceInternalAccessor.accessEnrollments(tei);
             addEnrollmentsUids(enrollments, uids);
         }
         uids.removeAll(organisationUnitStore.selectUids());
@@ -84,7 +77,7 @@ class TrackedEntityInstanceUidHelperImpl implements TrackedEntityInstanceUidHelp
                 if (enrollment.organisationUnit() != null) {
                     uids.add(enrollment.organisationUnit());
                 }
-                addEventsUids(enrollmentInternalAccessor.accessEvents(enrollment), uids);
+                addEventsUids(EnrollmentInternalAccessor.accessEvents(enrollment), uids);
             }
         }
     }

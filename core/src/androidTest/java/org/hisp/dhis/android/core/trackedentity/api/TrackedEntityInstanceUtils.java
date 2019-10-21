@@ -79,9 +79,9 @@ class TrackedEntityInstanceUtils {
                                                               List<Enrollment> enrollments) {
         Date refDate = getValidDate();
 
-        return new TrackedEntityInstanceInternalAccessor()
+        return TrackedEntityInstanceInternalAccessor
                 .insertEnrollments(
-                        new TrackedEntityInstanceInternalAccessor()
+                        TrackedEntityInstanceInternalAccessor
                                 .insertRelationships(TrackedEntityInstance.builder(), relationships),
                         enrollments)
                 .uid(trackedEntityInstanceUid)
@@ -226,7 +226,7 @@ class TrackedEntityInstanceUtils {
         String enrollmentUid = codeGenerator.generate();
         Event event = createValidEvent(enrollmentUid);
 
-        return new EnrollmentInternalAccessor().insertEvents(getEnrollment(enrollmentUid, teiUid, refDate).toBuilder(),
+        return EnrollmentInternalAccessor.insertEvents(getEnrollment(enrollmentUid, teiUid, refDate).toBuilder(),
                 Collections.singletonList(event))
                 .build();
     }
@@ -236,7 +236,7 @@ class TrackedEntityInstanceUtils {
         String enrollmentUid = codeGenerator.generate();
         Event event = createFutureEvent(enrollmentUid);
 
-        return new EnrollmentInternalAccessor().insertEvents(getEnrollment(enrollmentUid, teiUid, refDate).toBuilder(),
+        return EnrollmentInternalAccessor.insertEvents(getEnrollment(enrollmentUid, teiUid, refDate).toBuilder(),
                 Collections.singletonList(event))
                 .build();
     }
@@ -246,7 +246,7 @@ class TrackedEntityInstanceUtils {
         String enrollmentUid = codeGenerator.generate();
         Event event = createEventWithInvalidDataElement(enrollmentUid);
 
-        return new EnrollmentInternalAccessor().insertEvents(getEnrollment(enrollmentUid, teiUid, refDate).toBuilder(),
+        return EnrollmentInternalAccessor.insertEvents(getEnrollment(enrollmentUid, teiUid, refDate).toBuilder(),
                 Collections.singletonList(event))
                 .build();
     }
@@ -256,7 +256,7 @@ class TrackedEntityInstanceUtils {
         String enrollmentUid = codeGenerator.generate();
         Event event = createEventWithValidAndInvalidDataValue(enrollmentUid);
 
-        return new EnrollmentInternalAccessor().insertEvents(getEnrollment(enrollmentUid, teiUid, refDate).toBuilder(),
+        return EnrollmentInternalAccessor.insertEvents(getEnrollment(enrollmentUid, teiUid, refDate).toBuilder(),
                 Collections.singletonList(event))
                 .build();
     }
@@ -266,7 +266,7 @@ class TrackedEntityInstanceUtils {
         String enrollmentUid = codeGenerator.generate();
         Event event = createValidCompletedEvent(enrollmentUid);
 
-        return new EnrollmentInternalAccessor().insertEvents(getEnrollment(enrollmentUid, teiUid, refDate).toBuilder(),
+        return EnrollmentInternalAccessor.insertEvents(getEnrollment(enrollmentUid, teiUid, refDate).toBuilder(),
                 Collections.singletonList(event))
                 .status(EnrollmentStatus.COMPLETED)
                 .build();
@@ -274,7 +274,7 @@ class TrackedEntityInstanceUtils {
 
     private static Enrollment getEnrollment(String enrollmentUid, String teiUid, Date refDate) {
 
-        return new EnrollmentInternalAccessor().insertEvents(Enrollment.builder(), Collections.emptyList())
+        return EnrollmentInternalAccessor.insertEvents(Enrollment.builder(), Collections.emptyList())
                 .uid(enrollmentUid)
                 .created(refDate)
                 .lastUpdated(refDate)

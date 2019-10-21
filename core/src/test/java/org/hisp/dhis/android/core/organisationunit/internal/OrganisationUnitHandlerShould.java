@@ -95,9 +95,6 @@ public class OrganisationUnitHandlerShould {
     @Mock
     private User user;
 
-    @Mock
-    private OrganisationUnitDisplayPathGenerator pathGenerator;
-
     private OrganisationUnitDisplayPathTransformer pathTransformer;
 
     private Set<String> programUids;
@@ -119,7 +116,7 @@ public class OrganisationUnitHandlerShould {
         String dataSetUid = "test_data_set_uid";
         dataSetUids = Sets.newHashSet(Lists.newArrayList(dataSetUid));
 
-        pathTransformer = new OrganisationUnitDisplayPathTransformer(pathGenerator);
+        pathTransformer = new OrganisationUnitDisplayPathTransformer();
 
         organisationUnitHandler = new OrganisationUnitHandlerImpl(
                 organisationUnitStore, userOrganisationUnitLinkHandler, organisationUnitProgramLinkHandler,

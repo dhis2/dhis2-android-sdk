@@ -171,7 +171,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
                     .withTrackedEntityAttributeValues()
                     .byUid().eq(enrollment.trackedEntityInstance())
                     .one().blockingGet();
-            return new TrackedEntityInstanceInternalAccessor()
+            return TrackedEntityInstanceInternalAccessor
                     .insertEnrollments(trackedEntityInstance.toBuilder(), Collections.singletonList(enrollment))
                     .build();
         });

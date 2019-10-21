@@ -25,43 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyOneObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
-import org.hisp.dhis.android.core.user.internal.UserFields;
+public final class UserInternalAccessor {
 
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-public final class UserObjectRepository extends ReadOnlyOneObjectRepositoryImpl<User, UserObjectRepository> {
-
-    @Inject
-    UserObjectRepository(IdentifiableObjectStore<User> store,
-                         Map<String, ChildrenAppender<User>> childrenAppenders,
-                         RepositoryScope scope) {
-        super(store, childrenAppenders, scope,
-                s -> new UserObjectRepository(store, childrenAppenders, s));
+    private UserInternalAccessor() {
     }
 
-    /**
-     * @deprecated use d2.userModule().userCredentials() instead
-     *
-     * @return
-     */
-    @Deprecated
-    public UserObjectRepository withUserCredentials() {
-        return repositoryFactory.updated(RepositoryScopeHelper.withChild(scope, UserFields.USER_CREDENTIALS));
-    }
-
-    public UserObjectRepository withOrganisationUnits() {
-        return repositoryFactory.updated(RepositoryScopeHelper.withChild(scope, UserFields.ORGANISATION_UNITS));
+    public static UserCredentials accessUserCredentials(User user) {
+        return user.userCredentials();
     }
 }

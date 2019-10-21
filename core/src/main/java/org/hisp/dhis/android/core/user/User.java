@@ -89,6 +89,12 @@ public abstract class User extends BaseIdentifiableObject implements Model {
     @Nullable
     public abstract String nationality();
 
+    /**
+     * @deprecated use d2.userModule().userCredentials() instead
+     *
+     * @return
+     */
+    @Deprecated
     @Nullable
     @ColumnAdapter(IgnoreUserCredentialsAdapter.class)
     public abstract UserCredentials userCredentials();
@@ -148,6 +154,12 @@ public abstract class User extends BaseIdentifiableObject implements Model {
 
         public abstract Builder nationality(String nationality);
 
+        /**
+         * @deprecated will be package-private in SDK 1.0
+         *
+         * @return
+         */
+        @Deprecated
         public abstract Builder userCredentials(UserCredentials userCredentials);
 
         public abstract Builder organisationUnits(List<OrganisationUnit> organisationUnits);

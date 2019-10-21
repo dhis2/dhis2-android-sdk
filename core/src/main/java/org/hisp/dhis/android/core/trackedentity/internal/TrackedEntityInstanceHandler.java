@@ -60,7 +60,6 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
     private final HandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler;
     private final HandlerWithTransformer<Enrollment> enrollmentHandler;
     private final OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner;
-    private final TrackedEntityInstanceInternalAccessor internalAccessor;
 
     @Inject
     TrackedEntityInstanceHandler(
@@ -69,8 +68,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
             @NonNull HandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler,
             @NonNull HandlerWithTransformer<Enrollment> enrollmentHandler,
-            @NonNull OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner,
-            TrackedEntityInstanceInternalAccessor internalAccessor) {
+            @NonNull OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner) {
         super(trackedEntityInstanceStore);
         this.relationshipVersionManager = relationshipVersionManager;
         this.relationshipHandler = relationshipHandler;
@@ -78,7 +76,6 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
         this.trackedEntityAttributeValueHandler = trackedEntityAttributeValueHandler;
         this.enrollmentHandler = enrollmentHandler;
         this.enrollmentOrphanCleaner = enrollmentOrphanCleaner;
-        this.internalAccessor = internalAccessor;
     }
 
     @Override
@@ -88,7 +85,8 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
                     trackedEntityInstance.trackedEntityAttributeValues(),
                     value -> value.toBuilder().trackedEntityInstance(trackedEntityInstance.uid()).build());
 
-            List<Enrollment> enrollments = internalAccessor.accessEnrollments(trackedEntityInstance);
+            List<Enrollment> enrollments =
+                    TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance);
             if (enrollments != null) {
                 enrollmentHandler.handleMany(enrollments, enrollment -> enrollment.toBuilder()
                         .state(State.SYNCED)
@@ -100,7 +98,8 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
     }
 
     private void handleRelationships(TrackedEntityInstance trackedEntityInstance) {
-        List<Relationship229Compatible> relationships = internalAccessor.accessRelationships(trackedEntityInstance);
+        List<Relationship229Compatible> relationships =
+                TrackedEntityInstanceInternalAccessor.accessRelationships(trackedEntityInstance);
         if (relationships != null) {
             for (Relationship229Compatible relationship229 : relationships) {
                 TrackedEntityInstance relativeTEI =
@@ -143,7 +142,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
             if (isFullUpdate) {
                 enrollmentOrphanCleaner.deleteOrphan(
                         trackedEntityInstance,
-                        internalAccessor.accessEnrollments(trackedEntityInstance));
+                        TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance));
             }
         }
 

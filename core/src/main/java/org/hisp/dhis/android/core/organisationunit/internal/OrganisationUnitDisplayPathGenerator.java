@@ -33,22 +33,13 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitInternalAcces
 
 import java.util.List;
 
-import javax.inject.Inject;
+final class OrganisationUnitDisplayPathGenerator {
 
-import dagger.Reusable;
-
-@Reusable
-class OrganisationUnitDisplayPathGenerator {
-
-    private final OrganisationUnitInternalAccessor organisationUnitInternalAccessor;
-
-    @Inject
-    OrganisationUnitDisplayPathGenerator(OrganisationUnitInternalAccessor organisationUnitInternalAccessor) {
-        this.organisationUnitInternalAccessor = organisationUnitInternalAccessor;
+    private OrganisationUnitDisplayPathGenerator() {
     }
 
-    String generateDisplayPath(OrganisationUnit organisationUnit) {
-        List<OrganisationUnit> ancestors = organisationUnitInternalAccessor.accessAncestors(organisationUnit);
+    static String generateDisplayPath(OrganisationUnit organisationUnit) {
+        List<OrganisationUnit> ancestors = OrganisationUnitInternalAccessor.accessAncestors(organisationUnit);
         if (ancestors == null) {
             return "";
         } else {

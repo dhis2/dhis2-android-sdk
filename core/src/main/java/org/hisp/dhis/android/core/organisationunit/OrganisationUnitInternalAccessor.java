@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import java.util.List;
 
-import dagger.Reusable;
+public final class OrganisationUnitInternalAccessor {
 
-@Reusable
-public class OrganisationUnitInternalAccessor {
+    private OrganisationUnitInternalAccessor() {
+    }
 
-    public List<OrganisationUnit> accessAncestors(OrganisationUnit organisationUnit) {
+    public static List<OrganisationUnit> accessAncestors(OrganisationUnit organisationUnit) {
         return organisationUnit.ancestors();
     }
 }

@@ -64,8 +64,6 @@ import static org.hamcrest.core.Is.is;
 
 public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
 
-    private TrackedEntityInstanceInternalAccessor teiInternalAccessor = new TrackedEntityInstanceInternalAccessor();
-
     @Test
     public void download_tracked_entity_instance_enrollments_and_events() throws Exception {
 
@@ -182,7 +180,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
             }
         }
 
-        trackedEntityInstance = teiInternalAccessor
+        trackedEntityInstance = TrackedEntityInstanceInternalAccessor
                 .insertEnrollments(trackedEntityInstance.toBuilder(), expectedEnrollments)
                 .build();
 
@@ -275,12 +273,14 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
             downloadedEnrollments.add(enrollment);
         }
 
-        List<Relationship229Compatible> relationships = teiInternalAccessor.accessRelationships(downloadedTei);
+        List<Relationship229Compatible> relationships =
+                TrackedEntityInstanceInternalAccessor.accessRelationships(downloadedTei);
         relationships = relationships == null ? new ArrayList<>() : relationships;
 
         downloadedTei =
-                teiInternalAccessor.insertEnrollments(
-                        teiInternalAccessor.insertRelationships(downloadedTei.toBuilder(), relationships),
+                TrackedEntityInstanceInternalAccessor.insertEnrollments(
+                        TrackedEntityInstanceInternalAccessor.insertRelationships(
+                                downloadedTei.toBuilder(), relationships),
                         downloadedEnrollments)
                         .id(null)
                         .state(null)
@@ -292,6 +292,6 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
     }
 
     private List<Enrollment> getEnrollments(TrackedEntityInstance trackedEntityInstance) {
-        return teiInternalAccessor.accessEnrollments(trackedEntityInstance);
+        return TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance);
     }
 }

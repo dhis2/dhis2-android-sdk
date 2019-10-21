@@ -619,7 +619,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
                     Enrollment enrollmentWithEvents = EnrollmentInternalAccessor
                             .insertEvents(enrollment.toBuilder(), events).build();
 
-                    return new TrackedEntityInstanceInternalAccessor()
+                    return TrackedEntityInstanceInternalAccessor
                             .insertEnrollments(instance.toBuilder(), Collections.singletonList(enrollmentWithEvents))
                             .build();
                 }
@@ -638,13 +638,13 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
             enrollments.add(EnrollmentInternalAccessor.insertEvents(enrollment.toBuilder(), events).build());
         }
 
-        return new TrackedEntityInstanceInternalAccessor()
+        return TrackedEntityInstanceInternalAccessor
                 .insertEnrollments(instance.toBuilder(), enrollments)
                 .build();
     }
 
     private List<Enrollment> getEnrollments(TrackedEntityInstance trackedEntityInstance) {
-        return new TrackedEntityInstanceInternalAccessor().accessEnrollments(trackedEntityInstance);
+        return TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance);
     }
 
     private List<Event> getEvents(Enrollment enrollment) {

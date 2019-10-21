@@ -79,9 +79,9 @@ class TrackedEntityInstanceUtils {
                                                               List<Enrollment> enrollments) {
         Date refDate = getValidDate();
 
-        return new TrackedEntityInstanceInternalAccessor()
+        return TrackedEntityInstanceInternalAccessor
                 .insertEnrollments(
-                        new TrackedEntityInstanceInternalAccessor()
+                        TrackedEntityInstanceInternalAccessor
                                 .insertRelationships(TrackedEntityInstance.builder(), relationships),
                         enrollments)
                 .uid(trackedEntityInstanceUid)

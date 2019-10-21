@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleChildrenAppender;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns;
 
@@ -61,12 +60,6 @@ public final class ProgramEntityDIModule {
     @Reusable
     public Handler<Program> handler(ProgramHandler impl) {
         return impl;
-    }
-
-    @Provides
-    @Reusable
-    public ProgramInternalAccessor internalAccessor() {
-        return new ProgramInternalAccessor();
     }
 
     @Provides

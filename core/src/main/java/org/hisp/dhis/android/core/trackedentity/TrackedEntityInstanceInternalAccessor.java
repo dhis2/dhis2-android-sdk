@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 
 import java.util.List;
 
-public class TrackedEntityInstanceInternalAccessor {
+public final class TrackedEntityInstanceInternalAccessor {
 
     private TrackedEntityInstanceInternalAccessor() {
     }

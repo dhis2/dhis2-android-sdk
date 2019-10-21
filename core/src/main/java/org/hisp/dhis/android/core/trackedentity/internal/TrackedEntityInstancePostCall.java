@@ -306,7 +306,7 @@ public final class TrackedEntityInstancePostCall {
                 }
 
                 enrollmentsRecreated.add(
-                        new EnrollmentInternalAccessor().insertEvents(enrollment.toBuilder(), eventRecreated)
+                        EnrollmentInternalAccessor.insertEvents(enrollment.toBuilder(), eventRecreated)
                         .notes(notesForEnrollment)
                         .build());
             }
@@ -333,14 +333,13 @@ public final class TrackedEntityInstancePostCall {
         List<String> enrollmentUids = new ArrayList<>();
         List<String> eventUids = new ArrayList<>();
         TrackedEntityInstanceInternalAccessor teiInternalAccessor = new TrackedEntityInstanceInternalAccessor();
-        EnrollmentInternalAccessor enrollmentInternalAccessor = new EnrollmentInternalAccessor();
 
         for (List<TrackedEntityInstance> partition : partitions) {
             for (TrackedEntityInstance instance : partition) {
                 trackedEntityInstancesUids.add(instance.uid());
                 for (Enrollment enrollment : teiInternalAccessor.accessEnrollments(instance)) {
                     enrollmentUids.add(enrollment.uid());
-                    for (Event event : enrollmentInternalAccessor.accessEvents(enrollment)) {
+                    for (Event event : EnrollmentInternalAccessor.accessEvents(enrollment)) {
                         eventUids.add(event.uid());
                     }
                 }

@@ -32,16 +32,16 @@ import org.hisp.dhis.android.core.event.Event;
 
 import java.util.List;
 
-import dagger.Reusable;
-
-@Reusable
 public class EnrollmentInternalAccessor {
 
-    public List<Event> accessEvents(Enrollment enrollment) {
+    private EnrollmentInternalAccessor() {
+    }
+
+    public static List<Event> accessEvents(Enrollment enrollment) {
         return enrollment.events();
     }
 
-    public Enrollment.Builder insertEvents(
+    public static Enrollment.Builder insertEvents(
             Enrollment.Builder builder,
             List<Event> events) {
         return builder.events(events);

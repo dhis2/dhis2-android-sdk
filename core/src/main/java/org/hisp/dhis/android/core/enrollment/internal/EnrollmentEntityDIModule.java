@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
 import org.hisp.dhis.android.core.enrollment.note.internal.NoteChildrenAppender;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventTableInfo;
@@ -62,12 +61,6 @@ public final class EnrollmentEntityDIModule {
     @Reusable
     public HandlerWithTransformer<Enrollment> handler(EnrollmentHandler impl) {
         return impl;
-    }
-
-    @Provides
-    @Reusable
-    EnrollmentInternalAccessor internalAccessor() {
-        return new EnrollmentInternalAccessor();
     }
 
     @Provides

@@ -98,7 +98,6 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
 
     private CodeGenerator codeGenerator = new CodeGeneratorImpl();
     private TrackedEntityInstanceInternalAccessor teiInternalAccessor = new TrackedEntityInstanceInternalAccessor();
-    private EnrollmentInternalAccessor enrollmentInternalAccessor = new EnrollmentInternalAccessor();
 
     @Before
     public void setUp() throws IOException {
@@ -255,7 +254,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
     }
 
     private Enrollment validEnrollment() {
-        return enrollmentInternalAccessor.insertEvents(Enrollment.builder(), Arrays.asList(validEvent()))
+        return EnrollmentInternalAccessor.insertEvents(Enrollment.builder(), Arrays.asList(validEvent()))
                 .uid(codeGenerator.generate())
                 .organisationUnit(captureOrgunit)
                 .program(program)
@@ -281,7 +280,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
 
         return teiInternalAccessor.insertEnrollments(validTei().toBuilder(),
                 Collections.singletonList(
-                        enrollmentInternalAccessor.insertEvents(validEnrollment().toBuilder(),
+                        EnrollmentInternalAccessor.insertEvents(validEnrollment().toBuilder(),
                                 Collections.singletonList(validEvent().toBuilder()
                                         .organisationUnit(searchOrgunit)
                                         .build()))
@@ -291,7 +290,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
 
     private TrackedEntityInstance teiWithEnrollmentInSearchScope() {
         return teiInternalAccessor.insertEnrollments(validTei().toBuilder(), Collections.singletonList(
-                enrollmentInternalAccessor.insertEvents(validEnrollment().toBuilder(),
+                EnrollmentInternalAccessor.insertEvents(validEnrollment().toBuilder(),
                         Collections.singletonList(validEvent()))
                         .organisationUnit(searchOrgunit).build()))
                 .build();

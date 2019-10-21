@@ -88,9 +88,6 @@ public class EnrollmentHandlerShould {
     @Mock
     private OrphanCleaner<Enrollment, Event> eventCleaner;
 
-    @Mock
-    private EnrollmentInternalAccessor internalAccessor;
-
     // object to test
     private EnrollmentHandler enrollmentHandler;
 
@@ -98,7 +95,7 @@ public class EnrollmentHandlerShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         when(enrollment.uid()).thenReturn("test_enrollment_uid");
-        when(internalAccessor.accessEvents(enrollment)).thenReturn(Collections.singletonList(event));
+        when(EnrollmentInternalAccessor.accessEvents(enrollment)).thenReturn(Collections.singletonList(event));
         when(enrollment.notes()).thenReturn(Collections.singletonList(note));
         when(note.storedDate()).thenReturn(FillPropertiesTestUtils.LAST_UPDATED_STR);
 
@@ -106,7 +103,7 @@ public class EnrollmentHandlerShould {
         when(enrollmentStore.selectUidsWhere(anyString())).thenReturn(emptyList);
 
         enrollmentHandler = new EnrollmentHandler(noteVersionManager, enrollmentStore, eventHandler,
-                eventCleaner, noteHandler, noteUniquenessManager, internalAccessor);
+                eventCleaner, noteHandler, noteUniquenessManager);
     }
 
     @Test

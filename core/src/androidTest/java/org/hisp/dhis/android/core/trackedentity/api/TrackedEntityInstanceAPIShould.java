@@ -616,7 +616,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
                         d2.eventModule().events().byEnrollmentUid().eq(enrollment.uid()).blockingGet();
 
                 if (events.size() == 1) {
-                    Enrollment enrollmentWithEvents = new EnrollmentInternalAccessor()
+                    Enrollment enrollmentWithEvents = EnrollmentInternalAccessor
                             .insertEvents(enrollment.toBuilder(), events).build();
 
                     return new TrackedEntityInstanceInternalAccessor()
@@ -635,7 +635,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
             for (Event event : getEvents(enrollment)) {
                 events.add(event.toBuilder().deleted(true).build());
             }
-            enrollments.add(new EnrollmentInternalAccessor().insertEvents(enrollment.toBuilder(), events).build());
+            enrollments.add(EnrollmentInternalAccessor.insertEvents(enrollment.toBuilder(), events).build());
         }
 
         return new TrackedEntityInstanceInternalAccessor()
@@ -648,6 +648,6 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
     }
 
     private List<Event> getEvents(Enrollment enrollment) {
-        return new EnrollmentInternalAccessor().accessEvents(enrollment);
+        return EnrollmentInternalAccessor.accessEvents(enrollment);
     }
 }

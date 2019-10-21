@@ -68,9 +68,6 @@ public class TrackedEntityInstanceUidHelperShould {
     @Mock
     private TrackedEntityInstanceInternalAccessor teiInternalAccessor;
 
-    @Mock
-    private EnrollmentInternalAccessor enrollmentInternalAccessor;
-
     private TrackedEntityInstanceUidHelper uidHelper;
 
     @Before
@@ -79,8 +76,8 @@ public class TrackedEntityInstanceUidHelperShould {
         MockitoAnnotations.initMocks(this);
 
         when(organisationUnitStore.selectUids()).thenReturn(Lists.newArrayList("ou1", "ou2"));
-        uidHelper = new TrackedEntityInstanceUidHelperImpl(organisationUnitStore, teiInternalAccessor,
-                enrollmentInternalAccessor);
+        uidHelper = new TrackedEntityInstanceUidHelperImpl(organisationUnitStore, teiInternalAccessor
+        );
     }
 
     @Test
@@ -151,7 +148,7 @@ public class TrackedEntityInstanceUidHelperShould {
 
     private void addToEvent(String organisationUnitId) {
         when(event.organisationUnit()).thenReturn(organisationUnitId);
-        when(enrollmentInternalAccessor.accessEvents(enrollment)).thenReturn(Lists.newArrayList(event));
+        when(EnrollmentInternalAccessor.accessEvents(enrollment)).thenReturn(Lists.newArrayList(event));
         when(teiInternalAccessor.accessEnrollments(tei1)).thenReturn(Lists.newArrayList(enrollment));
     }
 }

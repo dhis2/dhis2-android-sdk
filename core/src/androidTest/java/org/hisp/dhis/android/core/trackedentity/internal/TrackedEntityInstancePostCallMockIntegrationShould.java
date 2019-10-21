@@ -284,7 +284,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
                 .trackedEntityDataValues(Collections.singletonList(dataValue1))
                 .build();
 
-        Enrollment enrollment1 = new EnrollmentInternalAccessor().insertEvents(Enrollment.builder(),
+        Enrollment enrollment1 = EnrollmentInternalAccessor.insertEvents(Enrollment.builder(),
                 Collections.singletonList(event1))
                 .uid(enrollment1Id)
                 .program(program.uid())
@@ -305,7 +305,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
                 .trackedEntityDataValues(Collections.singletonList(dataValue2))
                 .build();
 
-        Enrollment enrollment2 = new EnrollmentInternalAccessor().insertEvents(Enrollment.builder(),
+        Enrollment enrollment2 = EnrollmentInternalAccessor.insertEvents(Enrollment.builder(),
                 Collections.singletonList(event2))
                 .uid(enrollment2Id)
                 .program(program.uid())
@@ -326,7 +326,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
                 .trackedEntityDataValues(Collections.singletonList(dataValue3))
                 .build();
 
-        Enrollment enrollment3 = new EnrollmentInternalAccessor().insertEvents(Enrollment.builder(),
+        Enrollment enrollment3 = EnrollmentInternalAccessor.insertEvents(Enrollment.builder(),
                 Collections.singletonList(event3))
                 .uid(enrollment3Id)
                 .program(program.uid())
@@ -406,6 +406,6 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
     }
 
     private List<Event> getEvents(Enrollment enrollment) {
-        return new EnrollmentInternalAccessor().accessEvents(enrollment);
+        return EnrollmentInternalAccessor.accessEvents(enrollment);
     }
 }

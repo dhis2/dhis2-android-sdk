@@ -28,13 +28,14 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.user.UserInternalAccessor;
 
 import java.util.List;
 import java.util.Set;
-
-import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
 
@@ -52,11 +53,11 @@ public final class UserOrganisationUnitLinkHelper {
         switch (scope) {
 
             case SCOPE_TEI_SEARCH:
-                selectedScopeOrganisationUnits = user.teiSearchOrganisationUnits();
+                selectedScopeOrganisationUnits = UserInternalAccessor.accessTeiSearchOrganisationUnits(user);
                 break;
 
             case SCOPE_DATA_CAPTURE:
-                selectedScopeOrganisationUnits = user.organisationUnits();
+                selectedScopeOrganisationUnits = UserInternalAccessor.accessOrganisationUnits(user);
                 break;
 
             default:

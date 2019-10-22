@@ -101,15 +101,11 @@ public abstract class User extends BaseIdentifiableObject implements Model {
 
     @Nullable
     @ColumnAdapter(IgnoreOrganisationUnitListAdapter.class)
-    public abstract List<OrganisationUnit> organisationUnits();
+    abstract List<OrganisationUnit> organisationUnits();
 
     @Nullable
     @ColumnAdapter(IgnoreOrganisationUnitListAdapter.class)
-    public abstract List<OrganisationUnit> teiSearchOrganisationUnits();
-
-    @Nullable
-    @ColumnAdapter(IgnoreOrganisationUnitListAdapter.class)
-    public abstract List<OrganisationUnit> dataViewOrganisationUnits();
+    abstract List<OrganisationUnit> teiSearchOrganisationUnits();
 
     public abstract Builder toBuilder();
 
@@ -162,11 +158,9 @@ public abstract class User extends BaseIdentifiableObject implements Model {
         @Deprecated
         public abstract Builder userCredentials(UserCredentials userCredentials);
 
-        public abstract Builder organisationUnits(List<OrganisationUnit> organisationUnits);
+        abstract Builder organisationUnits(List<OrganisationUnit> organisationUnits);
 
-        public abstract Builder teiSearchOrganisationUnits(List<OrganisationUnit> teiSearchOrganisationUnits);
-
-        public abstract Builder dataViewOrganisationUnits(List<OrganisationUnit> dataViewOrganisationUnits);
+        abstract Builder teiSearchOrganisationUnits(List<OrganisationUnit> teiSearchOrganisationUnits);
 
         public abstract User build();
     }

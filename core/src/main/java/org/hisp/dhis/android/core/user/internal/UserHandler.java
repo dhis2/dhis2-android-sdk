@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
+import org.hisp.dhis.android.core.user.UserInternalAccessor;
 import org.hisp.dhis.android.core.user.UserRole;
 
 import javax.inject.Inject;
@@ -60,7 +61,7 @@ final class UserHandler extends IdentifiableHandlerImpl<User> {
 
     @Override
     protected void afterObjectHandled(User user, HandleAction action) {
-        UserCredentials credentials = user.userCredentials();
+        UserCredentials credentials = UserInternalAccessor.accessUserCredentials(user);
         if (credentials != null) {
             UserCredentials credentialsWithUser = credentials.toBuilder()
                     .user(ObjectWithUid.create(user.uid())).build();

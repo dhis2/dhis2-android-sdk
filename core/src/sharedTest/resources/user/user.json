@@ -34,23 +34,7 @@
   "organisationUnits": [
     {
       "id": "DiszpKrYNg8",
-      "path": "/ImspTQPwCqd/O6uvpzGd5pu/YuQRtpLP10I/DiszpKrYNg8",
-      "programs": [
-        {
-          "id": "lxAQ7Zs9VYR"
-        }
-      ],
-      "dataSets": [
-        {
-          "id": "lyLU2wR22tC"
-        }
-      ],
-      "ancestors": []
-    }
-  ],
-  "dataViewOrganisationUnits": [
-    {
-      "id": "YuQRtpLP10I"
+      "path": "/ImspTQPwCqd/O6uvpzGd5pu/YuQRtpLP10I/DiszpKrYNg8"
     }
   ]
 }

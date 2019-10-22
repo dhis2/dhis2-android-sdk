@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
+import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 

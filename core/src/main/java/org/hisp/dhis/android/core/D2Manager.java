@@ -26,12 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.d2manager;
+package org.hisp.dhis.android.core;
 
+import android.os.StrictMode;
 import android.util.Log;
 
-import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.BuildConfig;
 import org.hisp.dhis.android.core.arch.api.internal.ServerUrlInterceptor;
+import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
 import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
@@ -76,11 +78,24 @@ public final class D2Manager {
 
             long startTime = System.currentTimeMillis();
 
-            d2 = new D2.Builder()
-                    .databaseAdapter(databaseAdapter)
-                    .okHttpClient(OkHttpClientFactory.okHttpClient(d2Configuration, databaseAdapter))
-                    .context(d2Configuration.context())
-                    .build();
+            if (BuildConfig.DEBUG) {
+                StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                        .detectLeakedSqlLiteObjects()
+                        .detectLeakedClosableObjects()
+                        .penaltyLog()
+                        .penaltyDeath()
+                        .build());
+            } else {
+            /* SSLContextInitializer, necessary to ensure everything works in Android 4.4 crashes
+            when running the StrictMode above. That's why it's in the else clause */
+                SSLContextInitializer.initializeSSLContext(d2Configuration.context());
+            }
+
+            d2 = new D2(
+                    RetrofitFactory.retrofit(OkHttpClientFactory.okHttpClient(d2Configuration, databaseAdapter)),
+                    databaseAdapter,
+                    d2Configuration.context()
+            );
 
             long setUpTime = System.currentTimeMillis() - startTime;
             Log.i(D2Manager.class.getName(), "D2 instantiation took " + setUpTime + "ms");

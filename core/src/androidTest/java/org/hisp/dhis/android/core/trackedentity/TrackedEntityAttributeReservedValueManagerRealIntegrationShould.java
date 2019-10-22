@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
+import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;

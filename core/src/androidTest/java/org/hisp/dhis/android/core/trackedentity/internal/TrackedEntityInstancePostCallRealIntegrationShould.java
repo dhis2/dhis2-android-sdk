@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
+import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;

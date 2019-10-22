@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
+import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;

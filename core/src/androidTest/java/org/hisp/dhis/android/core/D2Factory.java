@@ -26,13 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.d2manager;
+package org.hisp.dhis.android.core;
 
 import android.content.Context;
 
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
-import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 
 import java.util.Collections;
@@ -77,10 +76,10 @@ public class D2Factory {
 
     public static D2 forDatabaseAdapter(DatabaseAdapter databaseAdapter) {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        return new D2.Builder()
-                .databaseAdapter(databaseAdapter)
-                .okHttpClient(OkHttpClientFactory.okHttpClient(d2Configuration(context), databaseAdapter))
-                .context(context)
-                .build();
+        return new D2(
+                RetrofitFactory.retrofit(OkHttpClientFactory.okHttpClient(d2Configuration(context), databaseAdapter)),
+                databaseAdapter,
+                context
+        );
     }
 }

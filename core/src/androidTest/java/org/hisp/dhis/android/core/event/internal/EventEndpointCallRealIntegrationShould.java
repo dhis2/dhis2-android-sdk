@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.event.internal;
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
+import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl;

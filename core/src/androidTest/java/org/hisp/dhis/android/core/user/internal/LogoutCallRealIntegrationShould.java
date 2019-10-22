@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.user.internal;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
+import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.event.internal.EventCallFactory;

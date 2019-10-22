@@ -29,24 +29,17 @@
 package org.hisp.dhis.android.core;
 
 import android.content.Context;
-import android.os.StrictMode;
 
-import org.hisp.dhis.android.BuildConfig;
-import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory;
-import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory;
-import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
 import org.hisp.dhis.android.core.arch.d2.internal.D2Modules;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
+import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader;
 import org.hisp.dhis.android.core.category.CategoryModule;
-import org.hisp.dhis.android.core.configuration.ServerUrlParser;
 import org.hisp.dhis.android.core.constant.ConstantModule;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetModule;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
-import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.fileresource.FileResourceModule;
@@ -68,10 +61,7 @@ import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
-import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.CouplingBetweenObjects"})
 public final class D2 {
@@ -80,21 +70,7 @@ public final class D2 {
     private final D2Modules modules;
     private final D2DIComponent d2DIComponent;
 
-    private D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter, @NonNull Context context) {
-
-        if (BuildConfig.DEBUG) {
-            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                    .detectLeakedSqlLiteObjects()
-                    .detectLeakedClosableObjects()
-                    .penaltyLog()
-                    .penaltyDeath()
-                    .build());
-        } else {
-            /* SSLContextInitializer, necessary to ensure everything works in Android 4.4 crashes
-            when running the StrictMode above. That's why it's in the else clause */
-            SSLContextInitializer.initializeSSLContext(context);
-        }
-
+    D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter, @NonNull Context context) {
         this.retrofit = retrofit;
         this.databaseAdapter = databaseAdapter;
         this.d2DIComponent = D2DIComponent.create(context, retrofit, databaseAdapter);
@@ -211,63 +187,5 @@ public final class D2 {
 
     public SmsModule smsModule() {
         return modules.sms;
-    }
-
-    public static class Builder {
-        private DatabaseAdapter databaseAdapter;
-        private OkHttpClient okHttpClient;
-        private Context context;
-
-        public Builder() {
-            // empty constructor
-        }
-
-        @NonNull
-        public Builder databaseAdapter(@NonNull DatabaseAdapter databaseAdapter) {
-            this.databaseAdapter = databaseAdapter;
-            return this;
-        }
-
-        @NonNull
-        public Builder okHttpClient(@NonNull OkHttpClient okHttpClient) {
-            this.okHttpClient = okHttpClient;
-            return this;
-        }
-
-        @NonNull
-        public Builder context(@NonNull Context context) {
-            this.context = context;
-            return this;
-        }
-
-        @SuppressWarnings("PMD.AccessorClassGeneration")
-        public D2 build() {
-            if (databaseAdapter == null) {
-                throw new IllegalArgumentException("databaseAdapter == null");
-            }
-
-            if (okHttpClient == null) {
-                throw new IllegalArgumentException("okHttpClient == null");
-            }
-
-            if (context == null) {
-                throw new IllegalArgumentException("context == null");
-            }
-
-            Retrofit retrofit = new Retrofit.Builder()
-                    // Actual baseUrl will be set later during logIn through ServerUrlInterceptor. But it's mandatory
-                    // to create Retrofit
-                    .baseUrl(ServerUrlParser.parse("https://temporary-dhis-url.org/"))
-
-                    .client(okHttpClient)
-                    .addConverterFactory(JacksonConverterFactory.create(ObjectMapperFactory.objectMapper()))
-                    .addConverterFactory(FilterConverterFactory.create())
-                    .addConverterFactory(FieldsConverterFactory.create())
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .validateEagerly(true)
-                    .build();
-
-            return new D2(retrofit, databaseAdapter, context);
-        }
     }
 }

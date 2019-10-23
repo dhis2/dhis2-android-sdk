@@ -26,31 +26,45 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitInternalAccessor;
+import android.content.ContentValues;
+import android.database.Cursor;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+
+import java.io.IOException;
 import java.util.List;
 
-final class OrganisationUnitDisplayPathGenerator {
+public class StringArrayColumnAdapter implements ColumnTypeAdapter<List<String>> {
 
-    private OrganisationUnitDisplayPathGenerator() {
+    @Override
+    public List<String> fromCursor(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String sourceValue = cursor.getString(columnIndex);
+
+        ObjectMapper objectMapper  = new ObjectMapper();
+        TypeFactory typeFactory = objectMapper.getTypeFactory();
+        try {
+            return objectMapper.readValue(sourceValue, typeFactory.constructCollectionType(List.class, String.class));
+        } catch (IOException e) {
+            throw new RuntimeException("Couldn't deserialize string array");
+        }
     }
 
-    static List<String> generateDisplayPath(OrganisationUnit organisationUnit) {
-        List<OrganisationUnit> ancestors = OrganisationUnitInternalAccessor.accessAncestors(organisationUnit);
-        if (ancestors == null) {
-            return Collections.emptyList();
-        } else {
-            List<String> list = new ArrayList<>(ancestors.size());
-            for (OrganisationUnit ancestor: ancestors) {
-                list.add(ancestor.displayName());
-            }
-            list.add(organisationUnit.displayName());
-            return list;
+    @Override
+    public void toContentValues(ContentValues values, String columnName, List<String> value) {
+        values.put(columnName, serialize(value));
+    }
+
+    public static String serialize(List<String> value) {
+        try {
+            return new ObjectMapper().writeValueAsString(value);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Couldn't serialize string array");
         }
     }
 }

@@ -74,10 +74,7 @@ public class OrganisationUnitDisplayPathGeneratorShould {
 
     @Test
     public void build_display_name_path_from_ancestors() {
-        String expectedDisplayNamePath = "/" + GRANDPARENT_DISPLAY_NAME + "/" + PARENT_DISPLAY_NAME
-                + "/" + ORG_UNIT_DISPLAY_NAME;
-
         assertThat(OrganisationUnitDisplayPathGenerator.generateDisplayPath(organisationUnit))
-                .isEqualTo(expectedDisplayNamePath);
+                .isEqualTo(Lists.newArrayList(GRANDPARENT_DISPLAY_NAME, PARENT_DISPLAY_NAME, ORG_UNIT_DISPLAY_NAME));
     }
 }

@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.arch.helpers;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 
 import java.util.ArrayList;
@@ -37,9 +40,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * A collection of utility abstractions
@@ -113,6 +113,10 @@ public final class CollectionsHelper {
 
     public static String commaSeparatedCollectionValues(Collection<String> values) {
         return commaSeparatedArrayValues(values.toArray(new String[values.size()]));
+    }
+
+    public static String semicolonSeparatedCollectionValues(Collection<String> values) {
+        return joinCollectionWithSeparator(values, ";");
     }
 
     public static String joinCollectionWithSeparator(Collection<String> values, String separator) {

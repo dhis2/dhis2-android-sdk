@@ -62,5 +62,7 @@ interface DataSetCompleteRegistrationService {
             @Query("ds") String dataSet,
             @Query("pe") String periodId,
             @Query("ou") String orgUnit,
+            @Query("cc") String categoryComboUid,
+            @Query("cp") String categoryOptionUids,
             @Query("multiOu") Boolean multiOrganisationUnit);
 }

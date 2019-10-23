@@ -28,9 +28,14 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
+import org.hisp.dhis.android.core.category.CategoryOptionCombo;
+import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionRepository;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -42,10 +47,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
+
+import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.semicolonSeparatedCollectionValues;
 
 @Reusable
 public final class DataSetCompleteRegistrationPostCall {
@@ -54,18 +60,21 @@ public final class DataSetCompleteRegistrationPostCall {
     private final DataSetCompleteRegistrationImportHandler dataSetCompleteRegistrationImportHandler;
     private final APICallExecutor apiCallExecutor;
     private final SystemInfoModuleDownloader systemInfoDownloader;
+    private final CategoryOptionComboCollectionRepository categoryOptionComboCollectionRepository;
 
     @Inject
     DataSetCompleteRegistrationPostCall(
             @NonNull DataSetCompleteRegistrationService dataSetCompleteRegistrationService,
             @NonNull DataSetCompleteRegistrationImportHandler dataSetCompleteRegistrationImportHandler,
             @NonNull APICallExecutor apiCallExecutor,
-            @NonNull SystemInfoModuleDownloader systemInfoDownloader) {
+            @NonNull SystemInfoModuleDownloader systemInfoDownloader,
+            @NonNull CategoryOptionComboCollectionRepository categoryOptionCollectionRepository) {
 
         this.dataSetCompleteRegistrationService = dataSetCompleteRegistrationService;
         this.dataSetCompleteRegistrationImportHandler = dataSetCompleteRegistrationImportHandler;
         this.apiCallExecutor = apiCallExecutor;
         this.systemInfoDownloader = systemInfoDownloader;
+        this.categoryOptionComboCollectionRepository = categoryOptionCollectionRepository;
     }
 
     public Observable<D2Progress> uploadDataSetCompleteRegistrations(
@@ -117,11 +126,17 @@ public final class DataSetCompleteRegistrationPostCall {
             for (DataSetCompleteRegistration dataSetCompleteRegistration
                     : toDeleteDataSetCompleteRegistrations) {
                 try {
+                    CategoryOptionCombo coc = categoryOptionComboCollectionRepository
+                            .withCategoryOptions()
+                            .uid(dataSetCompleteRegistration.attributeOptionCombo())
+                            .blockingGet();
                     apiCallExecutor.executeObjectCallWithEmptyResponse(
                             dataSetCompleteRegistrationService.deleteDataSetCompleteRegistration(
                                     dataSetCompleteRegistration.dataSet(),
                                     dataSetCompleteRegistration.period(),
                                     dataSetCompleteRegistration.organisationUnit(),
+                                    coc.categoryCombo().uid(),
+                                    semicolonSeparatedCollectionValues(UidsHelper.getUids(coc.categoryOptions())),
                                     false));
                     deletedDataSetCompleteRegistrations.add(dataSetCompleteRegistration);
                 } catch (D2Error d2Error) {

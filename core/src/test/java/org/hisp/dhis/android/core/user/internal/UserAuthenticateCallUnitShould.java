@@ -138,7 +138,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private static final String PASSWORD = "test_password";
 
     private static final String baseEndpoint = "https://dhis-instance.org";
-    private static final String serverUrl = baseEndpoint + "/api/";
+    private static final String serverUrl = baseEndpoint;
 
     @Before
     @SuppressWarnings("unchecked")

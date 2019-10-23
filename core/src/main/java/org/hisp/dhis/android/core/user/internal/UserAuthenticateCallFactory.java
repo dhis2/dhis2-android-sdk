@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.internal.ServerUrlInterceptor;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
@@ -51,7 +53,6 @@ import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Single;
 import okhttp3.HttpUrl;
@@ -244,7 +245,7 @@ public final class UserAuthenticateCallFactory {
 
     private boolean wasLoggedAndServerIsNew(String serverUrl) {
         SystemInfo lastSystemInfo = systemInfoRepository.blockingGet();
-        return lastSystemInfo != null && !(lastSystemInfo.contextPath() + "/api/").equals(serverUrl);
+        return lastSystemInfo != null && !serverUrl.equals(lastSystemInfo.contextPath());
     }
 
     private void handleUser(User user) {

@@ -53,7 +53,8 @@ public class StringArrayColumnAdapter implements ColumnTypeAdapter<List<String>>
             ObjectMapper objectMapper  = new ObjectMapper();
             TypeFactory typeFactory = objectMapper.getTypeFactory();
             try {
-                return objectMapper.readValue(sourceValue, typeFactory.constructCollectionType(List.class, String.class));
+                return objectMapper.readValue(sourceValue, typeFactory.constructCollectionType(List.class,
+                        String.class));
             } catch (IOException e) {
                 throw new RuntimeException("Couldn't deserialize string array");
             }

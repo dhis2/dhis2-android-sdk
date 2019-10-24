@@ -58,8 +58,6 @@ public abstract class BaseRealIntegrationTest {
     protected Date serverDate = new Date();
     protected ResourceHandler resourceHandler;
 
-    private String dbName = null;
-
     protected String username = RealServerMother.username;
     protected String password = RealServerMother.password;
     protected String url = RealServerMother.url;
@@ -67,7 +65,7 @@ public abstract class BaseRealIntegrationTest {
     @Before
     public void setUp() throws IOException {
         DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , dbName);
+                , null);
         sqLiteDatabase = dbOpenHelper.getWritableDatabase();
         databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
         resourceHandler = ResourceHandler.create(databaseAdapter);

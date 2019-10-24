@@ -26,14 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.d2manager;
+package org.hisp.dhis.android.core;
 
 import android.util.Log;
 
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Configuration;
-import org.hisp.dhis.android.core.D2ConfigurationValidator;
-import org.hisp.dhis.android.core.OkHttpClientFactory;
 import org.hisp.dhis.android.core.arch.api.internal.ServerUrlInterceptor;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
@@ -54,9 +50,7 @@ public final class D2Manager {
 
     private static D2 d2;
     private static D2Configuration d2Configuration;
-
-    @VisibleForTesting
-    static DatabaseAdapter databaseAdapter;
+    private static DatabaseAdapter databaseAdapter;
 
     private D2Manager() {
     }
@@ -118,12 +112,12 @@ public final class D2Manager {
     }
 
     @VisibleForTesting
-    static void setDatabaseName(String dbName) {
+    public static void setDatabaseName(String dbName) {
         databaseName = dbName;
     }
 
     @VisibleForTesting
-    static void clear() {
+    public static void clear() {
         d2Configuration = null;
         d2 = null;
         databaseAdapter =  null;

@@ -55,9 +55,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.TlsVersion;
 
-public final class OkHttpClientFactory {
+final class OkHttpClientFactory {
 
-    public static OkHttpClient okHttpClient(D2Configuration d2Configuration, DatabaseAdapter databaseAdapter) {
+    static OkHttpClient okHttpClient(D2Configuration d2Configuration, DatabaseAdapter databaseAdapter) {
 
         OkHttpClient.Builder client = new OkHttpClient.Builder()
                 .addInterceptor(BasicAuthenticatorFactory.create(databaseAdapter))

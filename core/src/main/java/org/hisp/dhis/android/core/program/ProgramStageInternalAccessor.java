@@ -26,36 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.program.ProgramStage;
-import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor;
-import org.hisp.dhis.android.core.program.ProgramStageSection;
+import java.util.List;
 
-final class ProgramStageSectionChildrenAppender extends ChildrenAppender<ProgramStage> {
+public final class ProgramStageInternalAccessor {
 
-    private final SingleParentChildStore<ProgramStage, ProgramStageSection> childStore;
-
-    private ProgramStageSectionChildrenAppender(SingleParentChildStore<ProgramStage, ProgramStageSection> childStore) {
-        this.childStore = childStore;
+    private ProgramStageInternalAccessor() {
     }
 
-    @Override
-    protected ProgramStage appendChildren(ProgramStage programStage) {
-        return ProgramStageInternalAccessor.insertProgramStageSections(programStage.toBuilder(),
-                childStore.getChildren(programStage)).build();
+    public static List<ProgramStageSection> accessProgramStageSections(ProgramStage programStage) {
+        return programStage.programStageSections();
     }
 
-    static ChildrenAppender<ProgramStage> create(DatabaseAdapter databaseAdapter) {
-        return new ProgramStageSectionChildrenAppender(
-                StoreFactory.singleParentChildStore(
-                        databaseAdapter,
-                        ProgramStageSectionStore.CHILD_PROJECTION,
-                        ProgramStageSection::create)
-        );
+    public static List<ProgramStageDataElement> accessProgramStageDataElements(ProgramStage programStage) {
+        return programStage.programStageDataElements();
+    }
+
+    public static ProgramStage.Builder insertProgramStageSections(
+            ProgramStage.Builder builder,
+            List<ProgramStageSection> programStageSections) {
+        return builder.programStageSections(programStageSections);
+    }
+
+    public static ProgramStage.Builder insertProgramStageDataElements(
+            ProgramStage.Builder builder,
+            List<ProgramStageDataElement> programStageDataElements) {
+        return builder.programStageDataElements(programStageDataElements);
     }
 }

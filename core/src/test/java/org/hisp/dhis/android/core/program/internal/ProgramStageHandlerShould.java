@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
+import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
 import org.junit.Before;
 import org.junit.Test;
@@ -132,8 +133,9 @@ public class ProgramStageHandlerShould {
 
         when(programStage.uid()).thenReturn("test_program_stage_uid");
         when(programStage.style()).thenReturn(objectStyle);
-        when(programStage.programStageDataElements()).thenReturn(programStageDataElements);
-        when(programStage.programStageSections()).thenReturn(programStageSections);
+        when(ProgramStageInternalAccessor.accessProgramStageDataElements(programStage))
+                .thenReturn(programStageDataElements);
+        when(ProgramStageInternalAccessor.accessProgramStageSections(programStage)).thenReturn(programStageSections);
         when(dataAccess.read()).thenReturn(true);
         when(access.data()).thenReturn(dataAccess);
         when(programStage.access()).thenReturn(access);

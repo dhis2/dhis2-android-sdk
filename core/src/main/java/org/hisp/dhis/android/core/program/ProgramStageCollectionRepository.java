@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
@@ -153,10 +154,22 @@ public final class ProgramStageCollectionRepository
         return cf.withChild(ProgramStageFields.STYLE);
     }
 
+    /**
+     * @deprecated use d2.programModule().programStageDataElements().byProgramStage() instead
+     *
+     * @return
+     */
+    @Deprecated
     public ProgramStageCollectionRepository withProgramStageDataElements() {
         return cf.withChild(ProgramStageFields.PROGRAM_STAGE_DATA_ELEMENTS);
     }
 
+    /**
+     * @deprecated use d2.programModule().programStageSections().byProgramStageUid() instead
+     *
+     * @return
+     */
+    @Deprecated
     public ProgramStageCollectionRepository withProgramStageSections() {
         return cf.withChild(ProgramStageFields.PROGRAM_STAGE_SECTIONS);
     }

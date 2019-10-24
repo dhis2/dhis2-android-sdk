@@ -30,9 +30,6 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import android.database.Cursor;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -41,6 +38,7 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringArrayColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitGroupListAdapter;
@@ -53,6 +51,9 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_OrganisationUnit.Builder.class)
@@ -108,7 +109,8 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Mod
 
     @Nullable
     @JsonIgnore()
-    public abstract String displayNamePath();
+    @ColumnAdapter(StringArrayColumnAdapter.class)
+    public abstract List<String> displayNamePath();
 
     @NonNull
     public static OrganisationUnit create(Cursor cursor) {
@@ -152,7 +154,7 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Mod
 
         public abstract Builder organisationUnitGroups(List<OrganisationUnitGroup> organisationUnitGroups);
 
-        public abstract Builder displayNamePath(String displayNamePath);
+        public abstract Builder displayNamePath(List<String> displayNamePath);
 
         public abstract OrganisationUnit build();
     }

@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
+import java.util.List;
+
 import dagger.Reusable;
 
 @Reusable
@@ -38,7 +40,7 @@ class OrganisationUnitDisplayPathTransformer implements Transformer<Organisation
 
     @Override
     public OrganisationUnit transform(OrganisationUnit organisationUnit) {
-        String path = OrganisationUnitDisplayPathGenerator.generateDisplayPath(organisationUnit);
+        List<String> path = OrganisationUnitDisplayPathGenerator.generateDisplayPath(organisationUnit);
         OrganisationUnit.Builder builder = organisationUnit.toBuilder();
         builder.displayNamePath(path);
         return builder.build();

@@ -87,13 +87,6 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     }
 
     @Test
-    public void filter_by_display_name_path() {
-        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
-                .byDisplayNamePath().eq("/Ngelehun CHC").blockingGet();
-        assertThat(organisationUnits.size(), is(1));
-    }
-
-    @Test
     public void filter_by_organisation_unit_scope() {
         List<OrganisationUnit> captureOrganisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)

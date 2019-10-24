@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 import android.database.sqlite.SQLiteStatement;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringArrayColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
@@ -56,7 +57,7 @@ public final class OrganisationUnitStore {
             sqLiteBind(sqLiteStatement, 13, o.closedDate());
             sqLiteBind(sqLiteStatement, 14, o.level());
             sqLiteBind(sqLiteStatement, 15, UidsHelper.getUidOrNull(o.parent()));
-            sqLiteBind(sqLiteStatement, 16, o.displayNamePath());
+            sqLiteBind(sqLiteStatement, 16, StringArrayColumnAdapter.serialize(o.displayNamePath()));
         }
     };
 

@@ -81,10 +81,6 @@ public final class OrganisationUnitCollectionRepository
         return cf.integer(Columns.LEVEL);
     }
 
-    public StringFilterConnector<OrganisationUnitCollectionRepository> byDisplayNamePath() {
-        return cf.string(OrganisationUnitTableInfo.Columns.DISPLAY_NAME_PATH);
-    }
-
     public OrganisationUnitCollectionRepository byOrganisationUnitScope(OrganisationUnit.Scope scope) {
         return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).inLinkTable(
                 UserOrganisationUnitLinkTableInfo.TABLE_INFO.name(),

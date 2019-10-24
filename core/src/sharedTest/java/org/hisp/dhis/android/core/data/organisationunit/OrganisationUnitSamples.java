@@ -33,6 +33,9 @@ import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
 
@@ -40,6 +43,11 @@ public class OrganisationUnitSamples {
 
     public static OrganisationUnit getOrganisationUnit(Long id, String uid) {
         OrganisationUnit.Builder builder = OrganisationUnit.builder();
+
+        List<String> displayNamePathArray = new ArrayList<>(3);
+        displayNamePathArray.add("grandpa");
+        displayNamePathArray.add("dad");
+        displayNamePathArray.add("me");
 
         fillNameableProperties(builder);
         return builder
@@ -50,7 +58,7 @@ public class OrganisationUnitSamples {
                 .closedDate(FillPropertiesTestUtils.LAST_UPDATED)
                 .level(100)
                 .parent(null)
-                .displayNamePath("/grandpa/dad/me/")
+                .displayNamePath(displayNamePathArray)
                 .build();
     }
 
@@ -78,7 +86,7 @@ public class OrganisationUnitSamples {
                 .openingDate("2008-01-01T00:00:00.000")
                 .level(4)
                 .parent(ObjectWithUid.create("qtr8GGlm4gg"))
-                .displayNamePath("/Afro Arab Clinic")
+                .displayNamePath(Collections.singletonList("Afro Arab Clinic"))
                 .build();
     }
 
@@ -99,7 +107,7 @@ public class OrganisationUnitSamples {
                 .openingDate("2010-01-01T00:00:00.000")
                 .level(4)
                 .parent(ObjectWithUid.create("qtr8GGlm4gg"))
-                .displayNamePath("/Adonkia CHP")
+                .displayNamePath(Collections.singletonList("Adonkia CHP"))
                 .build();
     }
 }

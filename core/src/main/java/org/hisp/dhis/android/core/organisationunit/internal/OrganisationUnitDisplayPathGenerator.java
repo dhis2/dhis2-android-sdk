@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitInternalAccessor;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 final class OrganisationUnitDisplayPathGenerator {
@@ -38,18 +40,17 @@ final class OrganisationUnitDisplayPathGenerator {
     private OrganisationUnitDisplayPathGenerator() {
     }
 
-    static String generateDisplayPath(OrganisationUnit organisationUnit) {
+    static List<String> generateDisplayPath(OrganisationUnit organisationUnit) {
         List<OrganisationUnit> ancestors = OrganisationUnitInternalAccessor.accessAncestors(organisationUnit);
         if (ancestors == null) {
-            return "";
+            return Collections.emptyList();
         } else {
-            String separator = "/";
-            StringBuilder sb = new StringBuilder();
+            List<String> list = new ArrayList<>(ancestors.size());
             for (OrganisationUnit ancestor: ancestors) {
-                sb.append(separator).append(ancestor.displayName());
+                list.add(ancestor.displayName());
             }
-            sb.append(separator).append(organisationUnit.displayName());
-            return sb.toString();
+            list.add(organisationUnit.displayName());
+            return list;
         }
     }
 }

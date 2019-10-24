@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.user.UserInternalAccessor;
 
 import java.util.List;
 import java.util.Set;
@@ -93,7 +94,7 @@ class OrganisationUnitCallFactory {
     private void downloadCaptureOrgunits(final User user,
                                          final Set<String> programUids,
                                          final Set<String> dataSetUids) throws D2Error {
-        Set<String> captureOrgunitsUids = findRoots(user.organisationUnits());
+        Set<String> captureOrgunitsUids = findRoots(UserInternalAccessor.accessOrganisationUnits(user));
         downloadOrgunits(captureOrgunitsUids, user,
                 OrganisationUnit.Scope.SCOPE_DATA_CAPTURE, programUids, dataSetUids);
     }
@@ -101,7 +102,7 @@ class OrganisationUnitCallFactory {
     private void downloadSearchOrgunits(final User user,
                                         final Set<String> programUids,
                                         final Set<String> dataSetUids) throws D2Error {
-        Set<String> searchOrgunitsUids = findRoots(user.teiSearchOrganisationUnits());
+        Set<String> searchOrgunitsUids = findRoots(UserInternalAccessor.accessTeiSearchOrganisationUnits(user));
         downloadOrgunits(searchOrgunitsUids, user,
                 OrganisationUnit.Scope.SCOPE_TEI_SEARCH, programUids, dataSetUids);
     }

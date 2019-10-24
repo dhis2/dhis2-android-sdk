@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
@@ -59,9 +60,5 @@ public final class UserObjectRepository extends ReadOnlyOneObjectRepositoryImpl<
     @Deprecated
     public UserObjectRepository withUserCredentials() {
         return repositoryFactory.updated(RepositoryScopeHelper.withChild(scope, UserFields.USER_CREDENTIALS));
-    }
-
-    public UserObjectRepository withOrganisationUnits() {
-        return repositoryFactory.updated(RepositoryScopeHelper.withChild(scope, UserFields.ORGANISATION_UNITS));
     }
 }

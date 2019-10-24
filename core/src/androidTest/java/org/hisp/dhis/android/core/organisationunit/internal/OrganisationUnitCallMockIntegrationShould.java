@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.user.UserInternalAccessor;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
 import org.hisp.dhis.android.core.user.UserTableInfo;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
@@ -84,7 +85,10 @@ public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrati
         OrganisationUnitService organisationUnitService = d2.retrofit().create(OrganisationUnitService.class);
 
         // Create a user with the root as assigned organisation unit (for the test):
-        User user = User.builder().uid("user_uid").organisationUnits(organisationUnits).build();
+
+        User user = UserInternalAccessor.insertOrganisationUnits(User.builder(), organisationUnits)
+                .uid("user_uid").build();
+
         database.insert(UserTableInfo.TABLE_INFO.name(), null, user.toContentValues());
 
         ContentValues userContentValues = new ContentValues();

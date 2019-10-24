@@ -66,16 +66,6 @@ public final class OrganisationUnitFields {
             ).build();
 
     public static final Fields<OrganisationUnit> fieldsInUserCall = Fields.<OrganisationUnit>builder()
-            .fields(fh.getNameableFields())
-            .fields(
-                    uid,
-                    path,
-                    openingDate,
-                    closedDate
-            ).build();
-
-    public static final Fields<OrganisationUnit> teiSearchFieldsInUserCall = Fields.<OrganisationUnit>builder()
-            .fields(fh.getNameableFields())
             .fields(
                     uid,
                     path

@@ -63,12 +63,10 @@ public final class UserEntityDIModule implements IdentifiableStoreProvider<User>
     @Reusable
     @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<User>> childrenAppenders(
-            DatabaseAdapter databaseAdapter,
             UserCredentialsChildrenAppender userCredentialsChildrenAppender) {
 
         return new HashMap<String, ChildrenAppender<User>>() {{
             put(UserFields.USER_CREDENTIALS, userCredentialsChildrenAppender);
-            put(UserFields.ORGANISATION_UNITS, UserOrganisationUnitChildrenAppender.create(databaseAdapter));
         }};
     }
 }

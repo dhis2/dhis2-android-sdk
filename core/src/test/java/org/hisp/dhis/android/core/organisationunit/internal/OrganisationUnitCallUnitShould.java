@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.user.UserInternalAccessor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -176,7 +177,7 @@ public class OrganisationUnitCallUnitShould {
 
         //Return only one organisationUnit.
         organisationUnits = Collections.singletonList(organisationUnit);
-        when(user.organisationUnits()).thenReturn(new ArrayList<>(organisationUnits));
+        when(UserInternalAccessor.accessOrganisationUnits(user)).thenReturn(new ArrayList<>(organisationUnits));
 
         when(organisationUnitService.getOrganisationUnits(
                 fieldsCaptor.capture(), filtersCaptor.capture(), pagingCaptor.capture(),

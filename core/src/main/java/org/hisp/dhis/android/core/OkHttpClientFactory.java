@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.d2manager;
+package org.hisp.dhis.android.core;
 
 import android.os.Build;
 import android.util.Log;
@@ -55,9 +55,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.TlsVersion;
 
-final class OkHttpClientFactory {
+public final class OkHttpClientFactory {
 
-    static OkHttpClient okHttpClient(D2Configuration d2Configuration, DatabaseAdapter databaseAdapter) {
+    public static OkHttpClient okHttpClient(D2Configuration d2Configuration, DatabaseAdapter databaseAdapter) {
 
         OkHttpClient.Builder client = new OkHttpClient.Builder()
                 .addInterceptor(BasicAuthenticatorFactory.create(databaseAdapter))

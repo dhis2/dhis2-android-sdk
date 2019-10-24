@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.d2manager;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.common.collect.Lists;
 
+import org.hisp.dhis.android.core.D2Configuration;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.user.UserCredentials;

@@ -31,6 +31,9 @@ package org.hisp.dhis.android.core.d2manager;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.D2Configuration;
+import org.hisp.dhis.android.core.D2ConfigurationValidator;
+import org.hisp.dhis.android.core.OkHttpClientFactory;
 import org.hisp.dhis.android.core.arch.api.internal.ServerUrlInterceptor;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;

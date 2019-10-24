@@ -33,6 +33,8 @@ import android.content.Context;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.D2Configuration;
+import org.hisp.dhis.android.core.OkHttpClientFactory;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 
 import java.util.Collections;

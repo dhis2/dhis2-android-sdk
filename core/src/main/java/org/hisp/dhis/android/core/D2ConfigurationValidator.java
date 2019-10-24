@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.d2manager;
+package org.hisp.dhis.android.core;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -37,12 +37,12 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
-final class D2ConfigurationValidator {
+public final class D2ConfigurationValidator {
 
     private D2ConfigurationValidator() {
     }
 
-    static D2Configuration validateAndSetDefaultValues(D2Configuration input) throws D2Error {
+    public static D2Configuration validateAndSetDefaultValues(D2Configuration input) throws D2Error {
         return input.toBuilder()
                 .appName(mergeAppName(input.appName(), input.context()))
                 .appVersion(mergeAppVersion(input.appVersion(), input.context()))

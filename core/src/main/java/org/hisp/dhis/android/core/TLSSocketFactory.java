@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.d2manager;
+package org.hisp.dhis.android.core;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -35,13 +35,13 @@ import java.net.Socket;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
-class TLSSocketFactory extends SSLSocketFactory {
+public class TLSSocketFactory extends SSLSocketFactory {
 
     private static final String[] TLS_V12_ONLY = {"TLSv1.2"};
 
     private final SSLSocketFactory delegate;
 
-    TLSSocketFactory(SSLSocketFactory base) {
+    public TLSSocketFactory(SSLSocketFactory base) {
         this.delegate = base;
     }
 

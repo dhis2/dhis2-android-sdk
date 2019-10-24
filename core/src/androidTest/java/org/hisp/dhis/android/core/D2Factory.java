@@ -76,10 +76,11 @@ public class D2Factory {
 
     public static D2 forDatabaseAdapter(DatabaseAdapter databaseAdapter) {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        return new D2.Builder()
-                .databaseAdapter(databaseAdapter)
-                .okHttpClient(OkHttpClientFactory.okHttpClient(d2Configuration(context), databaseAdapter))
-                .context(context)
-                .build();
+        BuildConfigInitializer.initialize(context);
+        return new D2(
+                RetrofitFactory.retrofit(OkHttpClientFactory.okHttpClient(d2Configuration(context), databaseAdapter)),
+                databaseAdapter,
+                context
+        );
     }
 }

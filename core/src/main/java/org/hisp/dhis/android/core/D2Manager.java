@@ -73,11 +73,12 @@ public final class D2Manager {
 
             long startTime = System.currentTimeMillis();
 
-            d2 = new D2.Builder()
-                    .databaseAdapter(databaseAdapter)
-                    .okHttpClient(OkHttpClientFactory.okHttpClient(d2Configuration, databaseAdapter))
-                    .context(d2Configuration.context())
-                    .build();
+            BuildConfigInitializer.initialize(d2Configuration.context());
+            d2 = new D2(
+                    RetrofitFactory.retrofit(OkHttpClientFactory.okHttpClient(d2Configuration, databaseAdapter)),
+                    databaseAdapter,
+                    d2Configuration.context()
+            );
 
             long setUpTime = System.currentTimeMillis() - startTime;
             Log.i(D2Manager.class.getName(), "D2 instantiation took " + setUpTime + "ms");
@@ -112,12 +113,12 @@ public final class D2Manager {
     }
 
     @VisibleForTesting
-    public static void setDatabaseName(String dbName) {
+    static void setDatabaseName(String dbName) {
         databaseName = dbName;
     }
 
     @VisibleForTesting
-    public static void clear() {
+    static void clear() {
         d2Configuration = null;
         d2 = null;
         databaseAdapter =  null;

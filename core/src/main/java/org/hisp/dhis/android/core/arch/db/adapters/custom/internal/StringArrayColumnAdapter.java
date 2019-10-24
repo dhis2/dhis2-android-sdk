@@ -38,8 +38,10 @@ import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings({"PMD.PreserveStackTrace"})
 public class StringArrayColumnAdapter implements ColumnTypeAdapter<List<String>> {
 
     @Override
@@ -47,7 +49,9 @@ public class StringArrayColumnAdapter implements ColumnTypeAdapter<List<String>>
         int columnIndex = cursor.getColumnIndex(columnName);
         String sourceValue = cursor.getString(columnIndex);
 
-        if (sourceValue.startsWith("/")) {
+        if (sourceValue == null || sourceValue.equals("")) {
+            return Collections.emptyList();
+        } else if (sourceValue.charAt(0) == '/') {
             return Arrays.asList(sourceValue.substring(1).split("/"));
         } else {
             ObjectMapper objectMapper  = new ObjectMapper();

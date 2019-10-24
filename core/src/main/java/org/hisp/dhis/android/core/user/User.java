@@ -38,11 +38,11 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitListAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnorePathWithUidListAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserCredentialsAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.PathWithUid;
 
 import java.util.List;
 
@@ -100,12 +100,12 @@ public abstract class User extends BaseIdentifiableObject implements Model {
     public abstract UserCredentials userCredentials();
 
     @Nullable
-    @ColumnAdapter(IgnoreOrganisationUnitListAdapter.class)
-    abstract List<OrganisationUnit> organisationUnits();
+    @ColumnAdapter(IgnorePathWithUidListAdapter.class)
+    abstract List<PathWithUid> organisationUnits();
 
     @Nullable
-    @ColumnAdapter(IgnoreOrganisationUnitListAdapter.class)
-    abstract List<OrganisationUnit> teiSearchOrganisationUnits();
+    @ColumnAdapter(IgnorePathWithUidListAdapter.class)
+    abstract List<PathWithUid> teiSearchOrganisationUnits();
 
     public abstract Builder toBuilder();
 
@@ -158,9 +158,9 @@ public abstract class User extends BaseIdentifiableObject implements Model {
         @Deprecated
         public abstract Builder userCredentials(UserCredentials userCredentials);
 
-        abstract Builder organisationUnits(List<OrganisationUnit> organisationUnits);
+        abstract Builder organisationUnits(List<PathWithUid> organisationUnits);
 
-        abstract Builder teiSearchOrganisationUnits(List<OrganisationUnit> teiSearchOrganisationUnits);
+        abstract Builder teiSearchOrganisationUnits(List<PathWithUid> teiSearchOrganisationUnits);
 
         public abstract User build();
     }

@@ -46,14 +46,14 @@ public final class OrganisationUnitTree {
      * @param organisationUnits
      * @return set of root uid's
      */
-    public static Set<String> findRoots(List<OrganisationUnit> organisationUnits) throws IllegalArgumentException {
+    public static Set<String> findRoots(List<PathWithUid> organisationUnits) throws IllegalArgumentException {
         Set<String> rootNodes = new HashSet<>();
         if (organisationUnits == null || organisationUnits.isEmpty()) {
             return rootNodes; //no assigned uid's, so don't waste time & quit early
         }
         //extract a list of the uid's:
         List<String> organisationUnitUids = new ArrayList<>(organisationUnits.size());
-        for (OrganisationUnit orgUnit : organisationUnits) {
+        for (PathWithUid orgUnit : organisationUnits) {
             organisationUnitUids.add(orgUnit.uid());
         }
 

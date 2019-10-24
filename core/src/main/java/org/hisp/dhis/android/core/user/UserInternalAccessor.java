@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.PathWithUid;
 
 import java.util.List;
 
@@ -41,21 +41,21 @@ public final class UserInternalAccessor {
         return user.userCredentials();
     }
 
-    public static List<OrganisationUnit> accessOrganisationUnits(User user) {
+    public static List<PathWithUid> accessOrganisationUnits(User user) {
         return user.organisationUnits();
     }
 
     public static User.Builder insertOrganisationUnits(User.Builder builder,
-                                                       List<OrganisationUnit> organisationUnits) {
+                                                       List<PathWithUid> organisationUnits) {
         return builder.organisationUnits(organisationUnits);
     }
 
-    public static List<OrganisationUnit> accessTeiSearchOrganisationUnits(User user) {
+    public static List<PathWithUid> accessTeiSearchOrganisationUnits(User user) {
         return user.teiSearchOrganisationUnits();
     }
 
     public static User.Builder insertTeiSearchOrganisationUnits(User.Builder builder,
-                                                                List<OrganisationUnit> teiSearchOrganisationUnits) {
+                                                                List<PathWithUid> teiSearchOrganisationUnits) {
         return builder.teiSearchOrganisationUnits(teiSearchOrganisationUnits);
     }
 }

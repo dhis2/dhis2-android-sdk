@@ -26,50 +26,46 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user.internal;
+package org.hisp.dhis.android.core.organisationunit;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.PathWithUid;
-import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserInternalAccessor;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import java.util.List;
-import java.util.Set;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
 
-public final class UserOrganisationUnitLinkHelper {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_PathWithUid.Builder.class)
+public abstract class PathWithUid implements ObjectWithUidInterface {
 
-    private UserOrganisationUnitLinkHelper(){
+    @Override
+    @JsonProperty(UID)
+    public abstract String uid();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String path();
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_PathWithUid.Builder();
     }
 
-    public static boolean isRoot(@NonNull OrganisationUnit.Scope scope,
-                           @NonNull User user,
-                           @NonNull OrganisationUnit organisationUnit) {
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
 
-        List<PathWithUid> selectedScopeOrganisationUnits = null;
+        @JsonProperty(UID)
+        public abstract Builder uid(String uid);
 
-        switch (scope) {
+        public abstract Builder path(String path);
 
-            case SCOPE_TEI_SEARCH:
-                selectedScopeOrganisationUnits = UserInternalAccessor.accessTeiSearchOrganisationUnits(user);
-                break;
-
-            case SCOPE_DATA_CAPTURE:
-                selectedScopeOrganisationUnits = UserInternalAccessor.accessOrganisationUnits(user);
-                break;
-
-            default:
-                break;
-        }
-
-        if (selectedScopeOrganisationUnits == null) {
-            return false;
-        } else {
-            Set<String> rootOrgUnitUids = findRoots(selectedScopeOrganisationUnits);
-            return rootOrgUnitUids.contains(organisationUnit.uid());
-        }
+        public abstract PathWithUid build();
     }
 }

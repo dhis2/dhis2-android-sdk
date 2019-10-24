@@ -57,9 +57,9 @@ public class OrganisationUnitTreeShould {
     @Test
     public void return_all_root_uids_when_find_roots() {
         //create a bunch of dummy Organisation units from the strings:
-        List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
+        List<PathWithUid> orgUnits = new ArrayList<>(uids.length);
         for (int i = 0, size = uids.length; i < size; i++) {
-            OrganisationUnit orgUnit = OrganisationUnit.builder().uid(uids[i]).path(paths[i]).build();
+            PathWithUid orgUnit = PathWithUid.builder().uid(uids[i]).path(paths[i]).build();
             orgUnits.add(orgUnit);
         }
         Set<String> rootUids = OrganisationUnitTree.findRoots(orgUnits);
@@ -75,8 +75,8 @@ public class OrganisationUnitTreeShould {
 
     @Test
     public void return_all_root_uids_missing_slashes_when_find_roots() {
-        List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
-        OrganisationUnit orgUnit = OrganisationUnit.builder().uid(uids[0]).path("RootOrgUnit/Level11").build();
+        List<PathWithUid> orgUnits = new ArrayList<>(uids.length);
+        PathWithUid orgUnit = PathWithUid.builder().uid(uids[0]).path("RootOrgUnit/Level11").build();
         orgUnits.add(orgUnit);
 
         Set<String> rootUids = OrganisationUnitTree.findRoots(orgUnits);
@@ -90,8 +90,8 @@ public class OrganisationUnitTreeShould {
 
     @Test
     public void return_all_root_uids_double_slashes_when_find_roots() {
-        List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
-        OrganisationUnit orgUnit = OrganisationUnit.builder().uid(uids[0]).path("//RootOrgUnit//Level11//").build();
+        List<PathWithUid> orgUnits = new ArrayList<>(uids.length);
+        PathWithUid orgUnit = PathWithUid.builder().uid(uids[0]).path("//RootOrgUnit//Level11//").build();
         orgUnits.add(orgUnit);
 
         Set<String> rootUids = OrganisationUnitTree.findRoots(orgUnits);
@@ -105,8 +105,8 @@ public class OrganisationUnitTreeShould {
 
     @Test(expected = IllegalArgumentException.class)
     public void return_all_root_uids_null_paths_when_find_roots() {
-        List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
-        OrganisationUnit orgUnit = OrganisationUnit.builder().uid(uids[0]).path(null).build();
+        List<PathWithUid> orgUnits = new ArrayList<>(uids.length);
+        PathWithUid orgUnit = PathWithUid.builder().uid(uids[0]).path(null).build();
         orgUnits.add(orgUnit);
 
         OrganisationUnitTree.findRoots(orgUnits);
@@ -120,8 +120,8 @@ public class OrganisationUnitTreeShould {
 
     @Test(expected = IllegalArgumentException.class)
     public void thrown_illegal_argument_exception_when_find_roots_uids_with_empty_paths() {
-        List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
-        OrganisationUnit orgUnit = OrganisationUnit.builder().uid(uids[0]).path("").build();
+        List<PathWithUid> orgUnits = new ArrayList<>(uids.length);
+        PathWithUid orgUnit = PathWithUid.builder().uid(uids[0]).path("").build();
         orgUnits.add(orgUnit);
 
         OrganisationUnitTree.findRoots(orgUnits);
@@ -133,6 +133,7 @@ public class OrganisationUnitTreeShould {
         OrganisationUnit orgUnit = OrganisationUnit.builder().uid(uids[0]).path("/RootOrgUnit//Level11/").build();
         orgUnits.add(orgUnit);
     }
+
     @Test
     public void findRoots_shouldReturnRootUids_NullList() {
         Set<String> rootUids = OrganisationUnitTree.findRoots(null);

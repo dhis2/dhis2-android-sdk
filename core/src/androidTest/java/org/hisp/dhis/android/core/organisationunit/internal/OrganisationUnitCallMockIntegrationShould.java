@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.PathWithUid;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserInternalAccessor;
@@ -79,8 +80,8 @@ public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrati
     public void setUp() throws IOException {
         dhis2MockServer.enqueueMockResponse("organisationunit/admin_organisation_units.json");
 
-        OrganisationUnit orgUnit = OrganisationUnit.builder().uid("O6uvpzGd5pu").path("/ImspTQPwCqd/O6uvpzGd5pu").build();
-        List<OrganisationUnit> organisationUnits = Collections.singletonList(orgUnit);
+        PathWithUid orgUnit = PathWithUid.builder().uid("O6uvpzGd5pu").path("/ImspTQPwCqd/O6uvpzGd5pu").build();
+        List<PathWithUid> organisationUnits = Collections.singletonList(orgUnit);
         //dependencies for the OrganisationUnitCall:
         OrganisationUnitService organisationUnitService = d2.retrofit().create(OrganisationUnitService.class);
 

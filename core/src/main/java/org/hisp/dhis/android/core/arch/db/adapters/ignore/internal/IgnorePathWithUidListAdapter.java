@@ -26,50 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.PathWithUid;
-import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserInternalAccessor;
 
 import java.util.List;
-import java.util.Set;
 
-import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
-
-public final class UserOrganisationUnitLinkHelper {
-
-    private UserOrganisationUnitLinkHelper(){
-    }
-
-    public static boolean isRoot(@NonNull OrganisationUnit.Scope scope,
-                           @NonNull User user,
-                           @NonNull OrganisationUnit organisationUnit) {
-
-        List<PathWithUid> selectedScopeOrganisationUnits = null;
-
-        switch (scope) {
-
-            case SCOPE_TEI_SEARCH:
-                selectedScopeOrganisationUnits = UserInternalAccessor.accessTeiSearchOrganisationUnits(user);
-                break;
-
-            case SCOPE_DATA_CAPTURE:
-                selectedScopeOrganisationUnits = UserInternalAccessor.accessOrganisationUnits(user);
-                break;
-
-            default:
-                break;
-        }
-
-        if (selectedScopeOrganisationUnits == null) {
-            return false;
-        } else {
-            Set<String> rootOrgUnitUids = findRoots(selectedScopeOrganisationUnits);
-            return rootOrgUnitUids.contains(organisationUnit.uid());
-        }
-    }
+public final class IgnorePathWithUidListAdapter extends IgnoreColumnAdapter<List<PathWithUid>> {
 }

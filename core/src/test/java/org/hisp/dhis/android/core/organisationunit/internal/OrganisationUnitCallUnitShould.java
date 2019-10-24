@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.PathWithUid;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.user.User;
@@ -104,6 +105,9 @@ public class OrganisationUnitCallUnitShould {
     private List<OrganisationUnit> organisationUnits;
 
     @Mock
+    private PathWithUid pathWithUid;
+
+    @Mock
     private User user;
 
     @Mock
@@ -135,6 +139,7 @@ public class OrganisationUnitCallUnitShould {
         //TODO: evaluate if only one org unit would suffice for the testing:
         String orgUnitUid = "orgUnitUid1";
         when(organisationUnit.uid()).thenReturn(orgUnitUid);
+        when(pathWithUid.uid()).thenReturn(orgUnitUid);
         when(organisationUnit.code()).thenReturn("organisation_unit_code");
         when(organisationUnit.name()).thenReturn("organisation_unit_name");
         when(organisationUnit.displayName()).thenReturn("organisation_unit_display_name");
@@ -146,6 +151,7 @@ public class OrganisationUnitCallUnitShould {
         when(organisationUnit.description()).thenReturn("organisation_unit_description");
         when(organisationUnit.displayDescription()).thenReturn("organisation_unit_display_description");
         when(organisationUnit.path()).thenReturn("/root/orgUnitUid1");
+        when(pathWithUid.path()).thenReturn("/root/orgUnitUid1");
         when(organisationUnit.openingDate()).thenReturn(created);
         when(organisationUnit.closedDate()).thenReturn(lastUpdated);
         when(organisationUnit.level()).thenReturn(4);
@@ -177,7 +183,8 @@ public class OrganisationUnitCallUnitShould {
 
         //Return only one organisationUnit.
         organisationUnits = Collections.singletonList(organisationUnit);
-        when(UserInternalAccessor.accessOrganisationUnits(user)).thenReturn(new ArrayList<>(organisationUnits));
+        List<PathWithUid> pathWithUids = Collections.singletonList(pathWithUid);
+        when(UserInternalAccessor.accessOrganisationUnits(user)).thenReturn(new ArrayList<>(pathWithUids));
 
         when(organisationUnitService.getOrganisationUnits(
                 fieldsCaptor.capture(), filtersCaptor.capture(), pagingCaptor.capture(),

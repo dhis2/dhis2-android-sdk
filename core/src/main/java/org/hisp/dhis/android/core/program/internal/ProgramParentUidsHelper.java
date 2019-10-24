@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
+import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -65,7 +66,7 @@ final class ProgramParentUidsHelper {
         for (int j = 0; j < programStagesSize; j++) {
             ProgramStage programStage = programStages.get(j);
             List<ProgramStageDataElement> programStageDataElements =
-                    programStage.programStageDataElements();
+                    ProgramStageInternalAccessor.accessProgramStageDataElements(programStage);
             int programStageDataElementSize = programStageDataElements.size();
 
             for (int k = 0; k < programStageDataElementSize; k++) {

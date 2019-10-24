@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
@@ -32,6 +33,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.program.ProgramStage;
+import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
 
 final class ProgramStageSectionChildrenAppender extends ChildrenAppender<ProgramStage> {
@@ -44,9 +46,8 @@ final class ProgramStageSectionChildrenAppender extends ChildrenAppender<Program
 
     @Override
     protected ProgramStage appendChildren(ProgramStage programStage) {
-        ProgramStage.Builder builder = programStage.toBuilder();
-        builder.programStageSections(childStore.getChildren(programStage));
-        return builder.build();
+        return ProgramStageInternalAccessor.insertProgramStageSections(programStage.toBuilder(),
+                childStore.getChildren(programStage)).build();
     }
 
     static ChildrenAppender<ProgramStage> create(DatabaseAdapter databaseAdapter) {

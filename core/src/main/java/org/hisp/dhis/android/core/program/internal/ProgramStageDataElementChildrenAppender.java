@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo;
+import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor;
 
 final class ProgramStageDataElementChildrenAppender extends ChildrenAppender<ProgramStage> {
 
@@ -51,9 +52,8 @@ final class ProgramStageDataElementChildrenAppender extends ChildrenAppender<Pro
 
     @Override
     protected ProgramStage appendChildren(ProgramStage programStage) {
-        ProgramStage.Builder builder = programStage.toBuilder();
-        builder.programStageDataElements(childStore.getChildren(programStage));
-        return builder.build();
+        return ProgramStageInternalAccessor.insertProgramStageDataElements(programStage.toBuilder(),
+                childStore.getChildren(programStage)).build();
     }
 
     static ChildrenAppender<ProgramStage> create(DatabaseAdapter databaseAdapter) {

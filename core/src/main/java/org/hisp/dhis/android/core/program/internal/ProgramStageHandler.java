@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
+import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
 import org.hisp.dhis.android.core.program.ProgramStageTableInfo;
 
@@ -76,9 +77,10 @@ final class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage> {
     @Override
     protected void afterObjectHandled(final ProgramStage programStage, HandleAction action) {
 
-        programStageDataElementHandler.handleMany(programStage.programStageDataElements());
+        programStageDataElementHandler.handleMany(
+                ProgramStageInternalAccessor.accessProgramStageDataElements(programStage));
 
-        programStageSectionHandler.handleMany(programStage.programStageSections(),
+        programStageSectionHandler.handleMany(ProgramStageInternalAccessor.accessProgramStageSections(programStage),
                 programStageSection -> programStageSection.toBuilder()
                         .programStage(ObjectWithUid.create(programStage.uid()))
                         .build());
@@ -86,8 +88,10 @@ final class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage> {
         styleHandler.handle(programStage.style(), programStage.uid(), ProgramStageTableInfo.TABLE_INFO.name());
 
         if (action == HandleAction.Update) {
-            programStageDataElementCleaner.deleteOrphan(programStage, programStage.programStageDataElements());
-            programStageSectionCleaner.deleteOrphan(programStage, programStage.programStageSections());
+            programStageDataElementCleaner.deleteOrphan(programStage,
+                    ProgramStageInternalAccessor.accessProgramStageDataElements(programStage));
+            programStageSectionCleaner.deleteOrphan(programStage,
+                    ProgramStageInternalAccessor.accessProgramStageSections(programStage));
         }
     }
 

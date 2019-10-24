@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
+import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,16 +90,18 @@ public final class ProgramStageEndpointCallFactory extends UidsCallFactoryImpl<P
             protected List<ProgramStage> transform(List<ProgramStage> list) {
                 List<ProgramStage> stages = new ArrayList<>();
                 for (ProgramStage stage : list) {
-                    if (stage.programStageDataElements() == null) {
+                    if (ProgramStageInternalAccessor.accessProgramStageDataElements(stage) == null) {
                         stages.add(stage);
                     } else {
                         List<ProgramStageDataElement> psdes = new ArrayList<>();
-                        for (ProgramStageDataElement psde : stage.programStageDataElements()) {
+                        for (ProgramStageDataElement psde : ProgramStageInternalAccessor
+                                .accessProgramStageDataElements(stage)) {
                             if (psde.dataElement() != null) {
                                 psdes.add(psde);
                             }
                         }
-                        stages.add(stage.toBuilder().programStageDataElements(psdes).build());
+                        stages.add(ProgramStageInternalAccessor.insertProgramStageDataElements(stage.toBuilder(), psdes)
+                                .build());
                     }
                 }
                 return stages;

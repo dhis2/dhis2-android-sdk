@@ -37,6 +37,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public class StringArrayColumnAdapter implements ColumnTypeAdapter<List<String>> {
@@ -46,12 +47,16 @@ public class StringArrayColumnAdapter implements ColumnTypeAdapter<List<String>>
         int columnIndex = cursor.getColumnIndex(columnName);
         String sourceValue = cursor.getString(columnIndex);
 
-        ObjectMapper objectMapper  = new ObjectMapper();
-        TypeFactory typeFactory = objectMapper.getTypeFactory();
-        try {
-            return objectMapper.readValue(sourceValue, typeFactory.constructCollectionType(List.class, String.class));
-        } catch (IOException e) {
-            throw new RuntimeException("Couldn't deserialize string array");
+        if (sourceValue.startsWith("/")) {
+            return Arrays.asList(sourceValue.substring(1).split("/"));
+        } else {
+            ObjectMapper objectMapper  = new ObjectMapper();
+            TypeFactory typeFactory = objectMapper.getTypeFactory();
+            try {
+                return objectMapper.readValue(sourceValue, typeFactory.constructCollectionType(List.class, String.class));
+            } catch (IOException e) {
+                throw new RuntimeException("Couldn't deserialize string array");
+            }
         }
     }
 

@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.arch.api.internal.ServerUrlInterceptor;
+import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
 import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
@@ -51,6 +52,7 @@ public final class D2Manager {
     private static D2 d2;
     private static D2Configuration d2Configuration;
     private static DatabaseAdapter databaseAdapter;
+    private static boolean isTestMode;
 
     private D2Manager() {
     }
@@ -73,7 +75,14 @@ public final class D2Manager {
 
             long startTime = System.currentTimeMillis();
 
-            BuildConfigInitializer.initialize(d2Configuration.context());
+            if (isTestMode) {
+                NotClosedObjectsDetector.enableNotClosedObjectsDetection();
+            } else {
+                /* SSLContextInitializer, necessary to ensure everything works in Android 4.4 crashes
+                 when running the StrictMode above. That's why it's in the else clause */
+                SSLContextInitializer.initializeSSLContext(d2Configuration.context());
+            }
+
             d2 = new D2(
                     RetrofitFactory.retrofit(OkHttpClientFactory.okHttpClient(d2Configuration, databaseAdapter)),
                     databaseAdapter,
@@ -115,6 +124,11 @@ public final class D2Manager {
     @VisibleForTesting
     static void setDatabaseName(String dbName) {
         databaseName = dbName;
+    }
+
+    @VisibleForTesting
+    static void setTestMode(boolean testMode) {
+        isTestMode = testMode;
     }
 
     @VisibleForTesting

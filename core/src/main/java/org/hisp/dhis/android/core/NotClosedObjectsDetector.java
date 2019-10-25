@@ -28,29 +28,19 @@
 
 package org.hisp.dhis.android.core;
 
-import android.content.Context;
 import android.os.StrictMode;
 
-import org.hisp.dhis.android.BuildConfig;
-import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
+final class NotClosedObjectsDetector {
 
-final class BuildConfigInitializer {
-
-    static void initialize(Context context) {
-        if (BuildConfig.DEBUG) {
-            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                    .detectLeakedSqlLiteObjects()
-                    .detectLeakedClosableObjects()
-                    .penaltyLog()
-                    .penaltyDeath()
-                    .build());
-        } else {
-            /* SSLContextInitializer, necessary to ensure everything works in Android 4.4 crashes
-            when running the StrictMode above. That's why it's in the else clause */
-            SSLContextInitializer.initializeSSLContext(context);
-        }
+    static void enableNotClosedObjectsDetection() {
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                .detectLeakedSqlLiteObjects()
+                .detectLeakedClosableObjects()
+                .penaltyLog()
+                .penaltyDeath()
+                .build());
     }
 
-    private BuildConfigInitializer() {
+    private NotClosedObjectsDetector() {
     }
 }

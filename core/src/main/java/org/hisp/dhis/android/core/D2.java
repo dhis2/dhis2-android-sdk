@@ -71,7 +71,6 @@ public final class D2 {
     private final D2DIComponent d2DIComponent;
 
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter, @NonNull Context context) {
-        BuildConfigInitializer.initialize(context);
         this.retrofit = retrofit;
         this.databaseAdapter = databaseAdapter;
         this.d2DIComponent = D2DIComponent.create(context, retrofit, databaseAdapter);

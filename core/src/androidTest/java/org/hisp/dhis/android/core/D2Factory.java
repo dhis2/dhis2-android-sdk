@@ -48,6 +48,7 @@ public class D2Factory {
 
         D2Manager.setDatabaseName(databaseName);
 
+        D2Manager.setTestMode(true);
         D2 d2 = D2Manager.blockingInstantiateD2(d2Configuration);
 
         D2Manager.clear();
@@ -76,7 +77,7 @@ public class D2Factory {
 
     public static D2 forDatabaseAdapter(DatabaseAdapter databaseAdapter) {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        BuildConfigInitializer.initialize(context);
+        NotClosedObjectsDetector.enableNotClosedObjectsDetection();
         return new D2(
                 RetrofitFactory.retrofit(OkHttpClientFactory.okHttpClient(d2Configuration(context), databaseAdapter)),
                 databaseAdapter,

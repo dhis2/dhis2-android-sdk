@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.core.trackedentity.api;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.helpers.CodeGenerator;
 import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;

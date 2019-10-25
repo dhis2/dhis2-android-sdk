@@ -26,46 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core;
 
-import com.google.common.truth.Truth;
+import android.content.Context;
+import android.os.StrictMode;
 
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
-import org.junit.Before;
+import org.hisp.dhis.android.BuildConfig;
+import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
 
-import java.io.IOException;
-import java.util.List;
+final class BuildConfigInitializer {
 
-public class TrackedEntityInstanceCallRealIntegrationShould extends BaseRealIntegrationTest {
-
-    private D2 d2;
-
-    @Override
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
-
-        d2 = D2Factory.forNewDatabase();
+    static void initialize(Context context) {
+        if (BuildConfig.DEBUG) {
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                    .detectLeakedSqlLiteObjects()
+                    .detectLeakedClosableObjects()
+                    .penaltyLog()
+                    .penaltyDeath()
+                    .build());
+        } else {
+            /* SSLContextInitializer, necessary to ensure everything works in Android 4.4 crashes
+            when running the StrictMode above. That's why it's in the else clause */
+            SSLContextInitializer.initializeSSLContext(context);
+        }
     }
 
-    //This test is commented because technically it is flaky.
-    //It depends on a live server to operate and the login is hardcoded here.
-    //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-
-    //@Test
-    public void download_tei_enrollments_and_events() {
-        d2.userModule().logIn(username, password, url).blockingGet();
-
-        d2.metadataModule().blockingDownload();
-
-        d2.trackedEntityModule()
-                .trackedEntityInstanceDownloader().byUid().eq("IaxoagO9899").blockingDownload();
-
-        List<TrackedEntityInstance> teiResponse = d2.trackedEntityModule().trackedEntityInstances().byUid().eq("IaxoagO9899")
-                .blockingGet();
-
-        Truth.assertThat(teiResponse.isEmpty()).isFalse();
+    private BuildConfigInitializer() {
     }
 }

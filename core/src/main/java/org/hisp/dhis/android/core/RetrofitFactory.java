@@ -26,46 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core;
 
-import com.google.common.truth.Truth;
+import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory;
+import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory;
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
+import org.hisp.dhis.android.core.configuration.ServerUrlParser;
 
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
-import org.junit.Before;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
-import java.io.IOException;
-import java.util.List;
+final class RetrofitFactory {
 
-public class TrackedEntityInstanceCallRealIntegrationShould extends BaseRealIntegrationTest {
+    static Retrofit retrofit(OkHttpClient okHttpClient) {
+        return new Retrofit.Builder()
+                // Actual baseUrl will be set later during logIn through ServerUrlInterceptor. But it's mandatory
+                // to create Retrofit
+                .baseUrl(ServerUrlParser.parse("https://temporary-dhis-url.org/"))
 
-    private D2 d2;
-
-    @Override
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
-
-        d2 = D2Factory.forNewDatabase();
+                .client(okHttpClient)
+                .addConverterFactory(JacksonConverterFactory.create(ObjectMapperFactory.objectMapper()))
+                .addConverterFactory(FilterConverterFactory.create())
+                .addConverterFactory(FieldsConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .validateEagerly(true)
+                .build();
     }
 
-    //This test is commented because technically it is flaky.
-    //It depends on a live server to operate and the login is hardcoded here.
-    //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-
-    //@Test
-    public void download_tei_enrollments_and_events() {
-        d2.userModule().logIn(username, password, url).blockingGet();
-
-        d2.metadataModule().blockingDownload();
-
-        d2.trackedEntityModule()
-                .trackedEntityInstanceDownloader().byUid().eq("IaxoagO9899").blockingDownload();
-
-        List<TrackedEntityInstance> teiResponse = d2.trackedEntityModule().trackedEntityInstances().byUid().eq("IaxoagO9899")
-                .blockingGet();
-
-        Truth.assertThat(teiResponse.isEmpty()).isFalse();
+    private RetrofitFactory() {
     }
 }

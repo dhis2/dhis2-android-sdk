@@ -26,11 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.d2manager;
+package org.hisp.dhis.android.core;
 
 import android.util.Log;
 
-import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.internal.ServerUrlInterceptor;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
@@ -51,9 +50,7 @@ public final class D2Manager {
 
     private static D2 d2;
     private static D2Configuration d2Configuration;
-
-    @VisibleForTesting
-    static DatabaseAdapter databaseAdapter;
+    private static DatabaseAdapter databaseAdapter;
 
     private D2Manager() {
     }
@@ -76,11 +73,12 @@ public final class D2Manager {
 
             long startTime = System.currentTimeMillis();
 
-            d2 = new D2.Builder()
-                    .databaseAdapter(databaseAdapter)
-                    .okHttpClient(OkHttpClientFactory.okHttpClient(d2Configuration, databaseAdapter))
-                    .context(d2Configuration.context())
-                    .build();
+            BuildConfigInitializer.initialize(d2Configuration.context());
+            d2 = new D2(
+                    RetrofitFactory.retrofit(OkHttpClientFactory.okHttpClient(d2Configuration, databaseAdapter)),
+                    databaseAdapter,
+                    d2Configuration.context()
+            );
 
             long setUpTime = System.currentTimeMillis() - startTime;
             Log.i(D2Manager.class.getName(), "D2 instantiation took " + setUpTime + "ms");

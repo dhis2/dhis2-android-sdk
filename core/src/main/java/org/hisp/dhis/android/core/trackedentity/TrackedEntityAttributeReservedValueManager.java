@@ -27,6 +27,9 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
@@ -56,7 +59,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -205,6 +207,29 @@ public final class TrackedEntityAttributeReservedValueManager {
         }
 
         return Observable.merge(observables);
+    }
+
+    /**
+     * Get the count of the reserved values by attribute. If a organisation unit uid is inserted as param the method
+     * will return the count of the reserved values by attribute and organisation unit.
+     *
+     * @param attribute           Attribute uid
+     * @param organisationUnitUid Organisation unit uid
+     * @return The reserved value count by attribute or by attribute and organisation unit.
+     */
+    public Single<Integer> count(@NonNull String attribute, @Nullable String organisationUnitUid) {
+        return Single.fromCallable(() -> blockingCount(attribute, organisationUnitUid));
+    }
+
+    /**
+     * @see #count(String, String)
+     *
+     * @param attribute           Attribute uid
+     * @param organisationUnitUid Organisation unit uid
+     * @return The reserved value count by attribute or by attribute and organisation unit.
+     */
+    public int blockingCount(@NonNull String attribute, @Nullable String organisationUnitUid) {
+        return organisationUnitUid == null ? store.count(attribute) : store.count(attribute, organisationUnitUid);
     }
 
     private D2Progress increaseProgress() {

@@ -52,7 +52,7 @@ import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
-import org.hisp.dhis.android.core.enrollment.note.Note;
+import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.event.Event;
 
 import java.util.Date;

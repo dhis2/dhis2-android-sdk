@@ -26,30 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.note.internal;
+package org.hisp.dhis.android.core.note;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
-import org.hisp.dhis.android.core.enrollment.note.Note;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import java.io.IOException;
+import java.text.ParseException;
 
-@Module
-public final class NoteEntityDIModule {
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-    @Provides
-    @Reusable
-    public ObjectWithoutUidStore<Note> store(DatabaseAdapter databaseAdapter) {
-        return NoteStore.create(databaseAdapter);
+public class Note30Should extends BaseObjectShould implements ObjectShould {
+
+    public Note30Should() {
+        super("enrollment/note/note_30.json");
     }
 
-    @Provides
-    @Reusable
-    public Handler<Note> handler(ObjectWithoutUidStore<Note> store) {
-        return new ObjectWithoutUidHandlerImpl<>(store);
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        Note note = objectMapper.readValue(jsonStream, Note.class);
+
+        assertThat(note.uid()).isEqualTo("noteUid");
+        assertThat(note.value()).isEqualTo("Note");
+        assertThat(note.storedBy()).isEqualTo("android");
+        assertThat(note.storedDate()).isEqualTo("2018-03-19T15:20:55.058");
     }
 }

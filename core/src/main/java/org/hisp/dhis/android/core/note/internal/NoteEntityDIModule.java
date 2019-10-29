@@ -26,56 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.note;
+package org.hisp.dhis.android.core.note.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
-import org.hisp.dhis.android.core.common.DataColumns;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
-import org.hisp.dhis.android.core.enrollment.note.internal.NoteFields;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.note.Note;
 
-public final class NoteTableInfo {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    private NoteTableInfo() {
+@Module
+public final class NoteEntityDIModule {
+
+    @Provides
+    @Reusable
+    public ObjectWithoutUidStore<Note> store(DatabaseAdapter databaseAdapter) {
+        return NoteStore.create(databaseAdapter);
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "Note";
-        }
-
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends CoreColumns {
-        public final static String ENROLLMENT = "enrollment";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    ENROLLMENT,
-                    NoteFields.VALUE,
-                    NoteFields.STORED_BY,
-                    NoteFields.STORED_DATE,
-                    IdentifiableColumns.UID,
-                    DataColumns.STATE
-            );
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{
-                    ENROLLMENT,
-                    NoteFields.VALUE,
-                    NoteFields.STORED_BY,
-                    NoteFields.STORED_DATE
-            };
-        }
+    @Provides
+    @Reusable
+    public Handler<Note> handler(ObjectWithoutUidStore<Note> store) {
+        return new ObjectWithoutUidHandlerImpl<>(store);
     }
 }

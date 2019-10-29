@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-import org.hisp.dhis.android.core.enrollment.note.Note;
+import org.hisp.dhis.android.core.note.Note;
 
 import java.util.List;
 

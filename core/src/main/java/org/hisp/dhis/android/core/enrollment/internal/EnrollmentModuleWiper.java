@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.enrollment.internal;
 
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
-import org.hisp.dhis.android.core.enrollment.note.NoteTableInfo;
+import org.hisp.dhis.android.core.note.NoteTableInfo;
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
 import org.hisp.dhis.android.core.wipe.internal.TableWiper;
 

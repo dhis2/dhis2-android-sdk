@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.enrollment.internal;
 
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
-import org.hisp.dhis.android.core.enrollment.note.internal.NoteEntityDIModule;
+import org.hisp.dhis.android.core.note.internal.NoteEntityDIModule;
 
 import dagger.Module;
 import dagger.Provides;

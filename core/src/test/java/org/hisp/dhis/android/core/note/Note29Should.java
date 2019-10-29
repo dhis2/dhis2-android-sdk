@@ -26,53 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.note.internal;
+package org.hisp.dhis.android.core.note;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.note.Note;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
+import java.io.IOException;
 import java.text.ParseException;
 
-import javax.inject.Inject;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-import dagger.Reusable;
+public class Note29Should extends BaseObjectShould implements ObjectShould {
 
-@Reusable
-public class NoteDHISVersionManager {
-
-    private final DHISVersionManager versionManager;
-
-    @Inject
-    public NoteDHISVersionManager(DHISVersionManager versionManager) {
-        this.versionManager = versionManager;
+    public Note29Should() {
+        super("enrollment/note/note_29.json");
     }
 
-    public Note transform(Enrollment enrollment, Note note) {
-        Note.Builder builder = Note.builder().enrollment(enrollment.uid());
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        Note note = objectMapper.readValue(jsonStream, Note.class);
 
-        try {
-            if (this.versionManager.is2_29()) {
-                builder
-                        .storedDate(BaseIdentifiableObject.dateToDateStr(
-                        BaseIdentifiableObject.parseSpaceDate(note.storedDate())))
-                        .uid(null);
-            } else {
-                builder
-                        .storedDate(BaseIdentifiableObject.dateToDateStr(
-                        BaseIdentifiableObject.parseDate(note.storedDate())))
-                        .uid(note.uid());
-            }
-        } catch (ParseException ignored) {
-            builder
-                    .storedDate(null)
-                    .uid(null);
-        }
-
-        return builder
-                .value(note.value())
-                .storedBy(note.storedBy())
-                .build();
+        assertThat(note.uid()).isEqualTo(null);
+        assertThat(note.value()).isEqualTo("Note");
+        assertThat(note.storedBy()).isEqualTo("android");
+        assertThat(note.storedDate()).isEqualTo("2018-03-19 15:20:55.058");
     }
 }

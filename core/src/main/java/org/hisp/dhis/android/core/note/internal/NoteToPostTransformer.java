@@ -25,37 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.enrollment.note.internal;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.note.Note;
+package org.hisp.dhis.android.core.note.internal;
 
-public final class NoteChildrenAppender extends ChildrenAppender<Enrollment> {
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
+import java.text.ParseException;
 
-    private final SingleParentChildStore<Enrollment, Note> childStore;
+public class NoteToPostTransformer implements Transformer<Note, Note> {
 
-    private NoteChildrenAppender(SingleParentChildStore<Enrollment, Note> childStore) {
-        this.childStore = childStore;
+    private final DHISVersionManager versionManager;
+
+    public NoteToPostTransformer(DHISVersionManager versionManager) {
+        this.versionManager = versionManager;
     }
 
     @Override
-    protected Enrollment appendChildren(Enrollment enrollment) {
-        Enrollment.Builder builder = enrollment.toBuilder();
-        builder.notes(childStore.getChildren(enrollment));
-        return builder.build();
-    }
+    public Note transform(Note note) {
 
-    public static ChildrenAppender<Enrollment> create(DatabaseAdapter databaseAdapter) {
-        return new NoteChildrenAppender(
-                StoreFactory.singleParentChildStore(
-                        databaseAdapter,
-                        NoteStore.CHILD_PROJECTION,
-                        Note::create)
-        );
+        Note.Builder noteBuilder = note.toBuilder();
+
+        try {
+            if (this.versionManager.is2_29()) {
+                noteBuilder.storedDate(BaseIdentifiableObject.dateToSpaceDateStr(
+                        BaseIdentifiableObject.parseDate(note.storedDate())))
+                .uid(null);
+            }
+        } catch (ParseException ignored) {
+            noteBuilder
+                    .storedDate(null)
+                    .uid(null);
+        }
+
+        return noteBuilder.build();
     }
 }

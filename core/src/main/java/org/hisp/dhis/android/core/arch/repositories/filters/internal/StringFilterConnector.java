@@ -47,6 +47,6 @@ public final class StringFilterConnector<R extends BaseRepository>
     }
 
     String wrapValue(String value) {
-        return "'" + value + "'";
+        return "'" + escapeQuotes(value) + "'";
     }
 }

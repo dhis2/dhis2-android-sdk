@@ -94,7 +94,7 @@ public class CategoryComboCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void find_objects_with_equal_display_name() {
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
-                .byDisplayName().eq("Births Display");
+                .byDisplayName().eq("Display name with' 'single quo'tes'");
         List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));

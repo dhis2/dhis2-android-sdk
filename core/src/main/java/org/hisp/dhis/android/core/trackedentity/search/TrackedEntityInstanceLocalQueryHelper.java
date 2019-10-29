@@ -94,7 +94,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
 
         if (scope.trackedEntityType() != null) {
             where.appendKeyStringValue(dot(TEI_ALIAS, TrackedEntityInstanceTableInfo.Columns.TRACKED_ENTITY_TYPE),
-                    scope.trackedEntityType());
+                    escapeQuotes(scope.trackedEntityType()));
         }
 
         if (scope.states() != null) {
@@ -133,7 +133,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
 
     private static void appendProgramWhere(WhereClauseBuilder where, TrackedEntityInstanceQueryRepositoryScope scope) {
         if (scope.program() != null) {
-            where.appendKeyStringValue(dot(ENROLLMENT_ALIAS, PROGRAM), scope.program());
+            where.appendKeyStringValue(dot(ENROLLMENT_ALIAS, PROGRAM), escapeQuotes(scope.program()));
         }
         if (scope.programStartDate() != null) {
             where.appendKeyGreaterOrEqStringValue(dot(ENROLLMENT_ALIAS, ENROLLMENT_DATE),
@@ -161,20 +161,21 @@ final class TrackedEntityInstanceLocalQueryHelper {
         switch (ouMode) {
             case DESCENDANTS:
                 for (String orgunit : scope.orgUnits()) {
-                    inner.appendOrKeyLikeStringValue(dot(ORGUNIT_ALIAS, Columns.PATH), "%" + orgunit + "%");
+                    inner.appendOrKeyLikeStringValue(dot(ORGUNIT_ALIAS, Columns.PATH), "%" +
+                            escapeQuotes(orgunit) + "%");
                 }
                 break;
             case CHILDREN:
                 for (String orgunit : scope.orgUnits()) {
-                    inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, Columns.PARENT), orgunit);
+                    inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, Columns.PARENT), escapeQuotes(orgunit));
                     // TODO Include orgunit?
-                    inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, UID), orgunit);
+                    inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, UID), escapeQuotes(orgunit));
                 }
                 break;
             // SELECTED mode
             default:
                 for (String orgunit : scope.orgUnits()) {
-                    inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, UID), orgunit);
+                    inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, UID), escapeQuotes(orgunit));
                 }
                 break;
         }
@@ -188,7 +189,8 @@ final class TrackedEntityInstanceLocalQueryHelper {
         if (scope.query() != null) {
             String[] tokens = scope.query().value().split(" ");
             for (String token : tokens) {
-                String valueStr = scope.query().operator().equals(FilterItemOperator.LIKE) ? "%" + token + "%" : token;
+                String valueStr = scope.query().operator().equals(FilterItemOperator.LIKE) ? "%" + escapeQuotes(token)
+                        + "%" : escapeQuotes(token);
                 String sub = String.format("SELECT 1 FROM %s %s WHERE %s = %s AND %s %s '%s'",
                         TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), TEAV_ALIAS,
                         dot(TEAV_ALIAS, TRACKED_ENTITY_INSTANCE), dot(TEI_ALIAS, UID),
@@ -208,11 +210,12 @@ final class TrackedEntityInstanceLocalQueryHelper {
 
     private static void appendFilterWhere(WhereClauseBuilder where, List<RepositoryScopeFilterItem> items) {
         for (RepositoryScopeFilterItem item : items) {
-            String valueStr = item.operator().equals(FilterItemOperator.LIKE) ? "%" + item.value() + "%" : item.value();
+            String valueStr = item.operator().equals(FilterItemOperator.LIKE) ? "%" + escapeQuotes(item.value())
+                    + "%" : escapeQuotes(item.value());
             String sub = String.format("SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s %s '%s'",
                     TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), TEAV_ALIAS,
                     dot(TEAV_ALIAS, TRACKED_ENTITY_INSTANCE), dot(TEI_ALIAS, UID),
-                    dot(TEAV_ALIAS, TRACKED_ENTITY_ATTRIBUTE), item.key(),
+                    dot(TEAV_ALIAS, TRACKED_ENTITY_ATTRIBUTE), escapeQuotes(item.key()),
                     dot(TEAV_ALIAS, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
                     item.operator().getSqlOperator(), valueStr);
             where.appendExistsSubQuery(sub);
@@ -227,5 +230,9 @@ final class TrackedEntityInstanceLocalQueryHelper {
 
     private static String dot(String item1, String item2) {
         return item1 + "." + item2;
+    }
+
+    private static String escapeQuotes(String value) {
+        return value.replaceAll("'", "''");
     }
 }

@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.CoreColumns;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
-import org.hisp.dhis.android.core.note.internal.NoteFields;
 
 public final class NoteTableInfo {
 
@@ -55,14 +54,17 @@ public final class NoteTableInfo {
 
     public static class Columns extends CoreColumns {
         public final static String ENROLLMENT = "enrollment";
+        public final static String VALUE = "value";
+        public final static String STORED_BY = "storedBy";
+        public final static String STORED_DATE = "storedDate";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
                     ENROLLMENT,
-                    NoteFields.VALUE,
-                    NoteFields.STORED_BY,
-                    NoteFields.STORED_DATE,
+                    VALUE,
+                    STORED_BY,
+                    STORED_DATE,
                     IdentifiableColumns.UID,
                     DataColumns.STATE
             );
@@ -72,9 +74,9 @@ public final class NoteTableInfo {
         public String[] whereUpdate() {
             return new String[]{
                     ENROLLMENT,
-                    NoteFields.VALUE,
-                    NoteFields.STORED_BY,
-                    NoteFields.STORED_DATE
+                    VALUE,
+                    STORED_BY,
+                    STORED_DATE
             };
         }
     }

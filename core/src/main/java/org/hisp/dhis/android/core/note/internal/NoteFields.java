@@ -32,13 +32,10 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.note.NoteTableInfo.Columns;
 
 public final class NoteFields {
-
     public final static String UID = "note";
-    public final static String VALUE = "value";
-    public final static String STORED_BY = "storedBy";
-    public final static String STORED_DATE = "storedDate";
 
     private static final FieldsHelper<Note> fh = new FieldsHelper<>();
 
@@ -47,9 +44,9 @@ public final class NoteFields {
     public static final Fields<Note> all = Fields.<Note>builder()
             .fields(
                     fh.<String>field(UID),
-                    fh.<String>field(VALUE),
-                    fh.<String>field(STORED_BY),
-                    fh.<String>field(STORED_DATE)
+                    fh.<String>field(Columns.VALUE),
+                    fh.<String>field(Columns.STORED_BY),
+                    fh.<String>field(Columns.STORED_DATE)
             ).build();
 
     private NoteFields() {

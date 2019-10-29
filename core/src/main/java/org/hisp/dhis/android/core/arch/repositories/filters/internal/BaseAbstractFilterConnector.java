@@ -79,6 +79,6 @@ abstract class BaseAbstractFilterConnector<R extends BaseRepository, V> extends 
     }
 
     static String escapeQuotes(String value) {
-        return value.replaceAll("'","''");
+        return value.replaceAll("'", "''");
     }
 }

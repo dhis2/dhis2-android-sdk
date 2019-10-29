@@ -233,6 +233,6 @@ final class TrackedEntityInstanceLocalQueryHelper {
     }
 
     private static String escapeQuotes(String value) {
-        return value.replaceAll("'","''");
+        return value.replaceAll("'", "''");
     }
 }

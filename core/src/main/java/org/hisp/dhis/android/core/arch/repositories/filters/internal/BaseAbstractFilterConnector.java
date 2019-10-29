@@ -78,4 +78,7 @@ abstract class BaseAbstractFilterConnector<R extends BaseRepository, V> extends 
         return newWithUnwrappedScope(FilterItemOperator.VOID, "IS NOT NULL");
     }
 
+    static String escapeQuotes(String value) {
+        return value.replaceAll("'","''");
+    }
 }

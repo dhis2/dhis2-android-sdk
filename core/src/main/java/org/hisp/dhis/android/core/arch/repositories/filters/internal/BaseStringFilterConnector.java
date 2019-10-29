@@ -42,6 +42,6 @@ public final class BaseStringFilterConnector<R extends BaseRepository>
     }
 
     String wrapValue(String value) {
-        return value;
+        return escapeQuotes(value);
     }
 }

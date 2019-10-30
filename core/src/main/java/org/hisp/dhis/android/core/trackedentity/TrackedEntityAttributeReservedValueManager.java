@@ -110,33 +110,33 @@ public final class TrackedEntityAttributeReservedValueManager {
     /**
      * @see #getValue(String, String)
      *
-     * @param attribute           Attribute uid
-     * @param organisationUnitUid Organisation unit uid
+     * @param attributeUid          Attribute uid
+     * @param organisationUnitUid   Organisation unit uid
      * @return Value of tracked entity attribute
      */
-    public String blockingGetValue(@NonNull String attribute, @NonNull String organisationUnitUid) {
-        return getValue(attribute, organisationUnitUid).blockingGet();
+    public String blockingGetValue(@NonNull String attributeUid, @NonNull String organisationUnitUid) {
+        return getValue(attributeUid, organisationUnitUid).blockingGet();
     }
 
     /**
      * Get a reserved value and remove it from database. If the number of available values is below a threshold
      * (default {@link #MIN_TO_TRY_FILL}) it tries to download before returning a value.
      *
-     * @param attribute           Attribute uid
-     * @param organisationUnitUid Organisation unit uid
+     * @param attributeUid          Attribute uid
+     * @param organisationUnitUid   Organisation unit uid
      * @return Single with value of tracked entity attribute
      */
-    public Single<String> getValue(@NonNull String attribute, @NonNull String organisationUnitUid) {
+    public Single<String> getValue(@NonNull String attributeUid, @NonNull String organisationUnitUid) {
         Completable optionalDownload = downloadValuesIfBelowThreshold(
-                attribute, getOrganisationUnit(organisationUnitUid), null, new BooleanWrapper(false),
+                attributeUid, getOrganisationUnit(organisationUnitUid), null, new BooleanWrapper(false),
                 false
         ).onErrorComplete();
 
         return optionalDownload.andThen(Single.create(emitter -> {
-            String pattern = trackedEntityAttributeStore.selectByUid(attribute).pattern();
+            String pattern = trackedEntityAttributeStore.selectByUid(attributeUid).pattern();
             String attributeOrgunit = isOrgunitDependent(pattern) ? organisationUnitUid : null;
 
-            TrackedEntityAttributeReservedValue reservedValue = store.popOne(attribute, attributeOrgunit);
+            TrackedEntityAttributeReservedValue reservedValue = store.popOne(attributeUid, attributeOrgunit);
 
             if (reservedValue == null) {
                 emitter.onError(D2Error.builder()
@@ -152,13 +152,13 @@ public final class TrackedEntityAttributeReservedValueManager {
     /**
      * @see #downloadReservedValues(String, Integer)
      *
-     * @param attribute              An optional attribute uid
-     * @param numberOfValuesToFillUp An optional maximum number of values to reserve
+     * @param attributeUid              Attribute uid
+     * @param numberOfValuesToFillUp    An optional maximum number of values to reserve
      */
-    public void blockingDownloadReservedValues(@NonNull String attribute,
+    public void blockingDownloadReservedValues(@NonNull String attributeUid,
                                                Integer numberOfValuesToFillUp) {
 
-        downloadReservedValues(attribute, numberOfValuesToFillUp).blockingSubscribe();
+        downloadReservedValues(attributeUid, numberOfValuesToFillUp).blockingSubscribe();
     }
 
     /**
@@ -171,14 +171,14 @@ public final class TrackedEntityAttributeReservedValueManager {
      * reserves values for each orgunit assigned to the programs with this attribute. It applies the limit
      * per orgunit. Otherwise the limit is applied per attribute.
      *
-     * @param attribute              An optional attribute uid
-     * @param numberOfValuesToFillUp An optional maximum number of values to reserve
-     * @return Single with value of tracked entity attribute
+     * @param attributeUid              Attribute uid
+     * @param numberOfValuesToFillUp    An optional maximum number of values to reserve
+     * @return An Observable that notifies about the progress.
      */
-    public Observable<D2Progress> downloadReservedValues(@NonNull String attribute,
+    public Observable<D2Progress> downloadReservedValues(@NonNull String attributeUid,
                                                          Integer numberOfValuesToFillUp) {
 
-        return downloadValuesForOrgUnits(attribute, numberOfValuesToFillUp, new BooleanWrapper(false));
+        return downloadValuesForOrgUnits(attributeUid, numberOfValuesToFillUp, new BooleanWrapper(false));
     }
 
     /**
@@ -191,10 +191,11 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     /**
-     * Downloads reserved values for all the trackedEntityAttributeValues of type "generated",that is, it applies
+     * Downloads reserved values for all the trackedEntityAttributeValues of type "generated", that is, it applies
      * {@link #downloadReservedValues(String, Integer)} for every generated attribute.
      *
      * @param numberOfValuesToFillUp An optional maximum number of values to reserve
+     * @return An Observable that notifies about the progress.
      */
     public Observable<D2Progress> downloadAllReservedValues(Integer numberOfValuesToFillUp) {
         List<Observable<D2Progress>> observables = new ArrayList<>();
@@ -210,26 +211,26 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     /**
-     * Get the count of the reserved values by attribute. If a organisation unit uid is inserted as param the method
+     * Get the count of the reserved values by attribute. If a organisation unit uid is inserted as parameter the method
      * will return the count of the reserved values by attribute and organisation unit.
      *
-     * @param attribute           Attribute uid
-     * @param organisationUnitUid Organisation unit uid
-     * @return The reserved value count by attribute or by attribute and organisation unit.
+     * @param attributeUid          Attribute uid
+     * @param organisationUnitUid   An optional organisation unit uid
+     * @return Single with the reserved value count by attribute or by attribute and organisation unit.
      */
-    public Single<Integer> count(@NonNull String attribute, @Nullable String organisationUnitUid) {
-        return Single.fromCallable(() -> blockingCount(attribute, organisationUnitUid));
+    public Single<Integer> count(@NonNull String attributeUid, @Nullable String organisationUnitUid) {
+        return Single.fromCallable(() -> blockingCount(attributeUid, organisationUnitUid));
     }
 
     /**
      * @see #count(String, String)
      *
-     * @param attribute           Attribute uid
-     * @param organisationUnitUid Organisation unit uid
+     * @param attributeUid          Attribute uid
+     * @param organisationUnitUid   An optional organisation unit uid
      * @return The reserved value count by attribute or by attribute and organisation unit.
      */
-    public int blockingCount(@NonNull String attribute, @Nullable String organisationUnitUid) {
-        return organisationUnitUid == null ? store.count(attribute) : store.count(attribute, organisationUnitUid);
+    public int blockingCount(@NonNull String attributeUid, @Nullable String organisationUnitUid) {
+        return organisationUnitUid == null ? store.count(attributeUid) : store.count(attributeUid, organisationUnitUid);
     }
 
     private D2Progress increaseProgress() {

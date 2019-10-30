@@ -28,40 +28,20 @@
 
 package org.hisp.dhis.android.core.arch.storage.internal;
 
-public class CredentialsSecureStore {
+import androidx.annotation.NonNull;
 
-    private static String USERNAME_KEY = "username";
-    private static String PASSWORD_KEY = "password";
+import com.google.auto.value.AutoValue;
 
-    private SecureStore secureStore;
+@AutoValue
+public abstract class Credentials {
 
-    private Credentials credentials;
+    @NonNull
+    public abstract String username();
 
-    CredentialsSecureStore(SecureStore secureStore) {
-        this.secureStore = secureStore;
-    }
+    @NonNull
+    public abstract String password();
 
-    void setCredentials(Credentials credentials) {
-        this.credentials = credentials;
-        this.secureStore.setData(USERNAME_KEY, credentials.username());
-        this.secureStore.setData(PASSWORD_KEY, credentials.password());
-    }
-
-    Credentials getCredentials() {
-        if (this.credentials == null) {
-            String password = this.secureStore.getData(PASSWORD_KEY);
-            String username = this.secureStore.getData(USERNAME_KEY);
-
-            if (password != null && username != null) {
-                this.credentials = Credentials.create(username, password);
-            }
-        }
-        return this.credentials;
-    }
-
-    void removeCredentials() {
-        this.credentials = null;
-        this.secureStore.setData(USERNAME_KEY, null);
-        this.secureStore.setData(PASSWORD_KEY, null);
+    public static Credentials create(@NonNull String username, @NonNull String password) {
+        return new AutoValue_Credentials(username, password);
     }
 }

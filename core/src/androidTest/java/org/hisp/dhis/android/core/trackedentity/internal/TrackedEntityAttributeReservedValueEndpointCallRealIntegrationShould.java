@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
@@ -93,6 +94,23 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
                 databaseAdapter()).selectAll();
 
         String value = d2.trackedEntityModule().reservedValueManager().blockingGetValue("xs8A6tQJY0s", orgunitUid);
+    }
+
+    // @Test
+    public void reserve_and_count() {
+        login();
+        syncMetadata();
+        TrackedEntityAttribute trackedEntityAttribute =
+        d2.trackedEntityModule().trackedEntityAttributes().byGenerated().isTrue().one().blockingGet();
+        d2.trackedEntityModule().reservedValueManager()
+                .blockingDownloadReservedValues(trackedEntityAttribute.uid(), numberToReserve);
+        int attributeCount = d2.trackedEntityModule().reservedValueManager()
+                        .blockingCount(trackedEntityAttribute.uid(), null);
+        int attributeAndOrgUnitCount = d2.trackedEntityModule().reservedValueManager()
+                .blockingCount(trackedEntityAttribute.uid(), orgunitUid);
+
+        assertThat(attributeCount).isEqualTo(numberToReserve);
+        assertThat(attributeAndOrgUnitCount).isEqualTo(numberToReserve);
     }
 
     private void login() {

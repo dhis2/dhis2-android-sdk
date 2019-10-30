@@ -26,17 +26,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.user;
+package org.hisp.dhis.android.core.arch.storage.internal;
 
-import org.hisp.dhis.android.core.user.AuthenticatedUser;
+import android.content.Context;
 
-public class AuthenticatedUserSamples {
+public class CredentialsSecureStoreImpl implements CredentialsSecureStore {
 
-    public static AuthenticatedUser getAuthenticatedUser() {
-        return AuthenticatedUser.builder()
-                .id(1L)
-                .user("user")
-                .hash("hash")
-                .build();
+    private static String USERNAME_KEY = "username";
+    private static String PASSWORD_KEY = "password";
+
+    private SecureStore secureStore;
+
+    private Credentials credentials;
+
+    public CredentialsSecureStoreImpl(Context context) {
+        this.secureStore = new AndroidSecureStore(context);
+    }
+
+    public void setCredentials(Credentials credentials) {
+        this.credentials = credentials;
+        this.secureStore.setData(USERNAME_KEY, credentials.username());
+        this.secureStore.setData(PASSWORD_KEY, credentials.password());
+    }
+
+    public Credentials getCredentials() {
+        if (this.credentials == null) {
+            String password = this.secureStore.getData(PASSWORD_KEY);
+            String username = this.secureStore.getData(USERNAME_KEY);
+
+            if (password != null && username != null) {
+                this.credentials = Credentials.create(username, password);
+            }
+        }
+        return this.credentials;
+    }
+
+    public void removeCredentials() {
+        this.credentials = null;
+        this.secureStore.setData(USERNAME_KEY, null);
+        this.secureStore.setData(PASSWORD_KEY, null);
     }
 }

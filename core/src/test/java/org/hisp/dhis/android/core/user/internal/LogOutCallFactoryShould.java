@@ -28,16 +28,14 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -45,6 +43,7 @@ import io.reactivex.Completable;
 import io.reactivex.observers.TestObserver;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -52,46 +51,35 @@ import static org.mockito.Mockito.when;
 public class LogOutCallFactoryShould {
 
     @Mock
-    private ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
+    private CredentialsSecureStore credentialsSecureStore;
 
     @Mock
-    private AuthenticatedUser authenticatedUser;
-
-    @Captor
-    private ArgumentCaptor<AuthenticatedUser> loggedOutUser;
+    private Credentials credentials;
 
     private Completable logOutCompletable;
-
-    static final String USER = "user";
-    static final String HASH = "hash";
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        when(authenticatedUser.user()).thenReturn(USER);
-        when(authenticatedUser.credentials()).thenReturn("credentials");
-        when(authenticatedUser.hash()).thenReturn(HASH);
+        when(credentials.username()).thenReturn("user");
+        when(credentials.password()).thenReturn("password");
 
-        logOutCompletable = new LogOutCallFactory(authenticatedUserStore).logOut();
+        logOutCompletable = new LogOutCallFactory(credentialsSecureStore).logOut();
     }
 
     @Test
     public void clear_user_credentials() {
-        when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
+        when(credentialsSecureStore.getCredentials()).thenReturn(credentials);
 
         logOutCompletable.blockingAwait();
 
-        verify(authenticatedUserStore).updateOrInsertWhere(loggedOutUser.capture());
-
-        assertThat(loggedOutUser.getValue().user()).isEqualTo(USER);
-        assertThat(loggedOutUser.getValue().credentials()).isNull();
-        assertThat(loggedOutUser.getValue().hash()).isEqualTo(HASH);
+        verify(credentialsSecureStore, times(1)).removeCredentials();
     }
 
     @Test
     public void throw_d2_exception_if_no_authenticated_user() {
-        when(authenticatedUserStore.selectFirst()).thenReturn(null);
+        when(credentialsSecureStore.getCredentials()).thenReturn(null);
 
         TestObserver<Void> testObserver = logOutCompletable.test();
         testObserver.awaitTerminalEvent();

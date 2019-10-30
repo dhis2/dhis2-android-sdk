@@ -52,12 +52,11 @@ public final class AuthenticatedUserTableInfo {
 
     public static class Columns extends BaseModel.Columns {
         public static final String USER = "user";
-        public static final String CREDENTIALS = "credentials";
         public static final String HASH = "hash";
 
         @Override
         public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(), USER, CREDENTIALS, HASH);
+            return CollectionsHelper.appendInNewArray(super.all(), USER, HASH);
         }
 
         @Override

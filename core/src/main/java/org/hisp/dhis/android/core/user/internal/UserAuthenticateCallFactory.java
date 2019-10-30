@@ -61,7 +61,6 @@ import okhttp3.HttpUrl;
 import retrofit2.Call;
 
 import static okhttp3.Credentials.basic;
-import static org.hisp.dhis.android.core.arch.helpers.UserHelper.base64;
 import static org.hisp.dhis.android.core.arch.helpers.UserHelper.md5;
 
 @Reusable
@@ -237,11 +236,11 @@ public final class UserAuthenticateCallFactory {
     }
 
     private void throwExceptionIfAlreadyAuthenticated() throws D2Error {
-        AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
-        if (authenticatedUser != null && authenticatedUser.credentials() != null) {
+        Credentials credentials = credentialsSecureStore.getCredentials();
+        if (credentials != null) {
             throw D2Error.builder()
                     .errorCode(D2ErrorCode.ALREADY_AUTHENTICATED)
-                    .errorDescription("A user is already authenticated: " + authenticatedUser.user())
+                    .errorDescription("A user is already authenticated: " + credentials.username())
                     .errorComponent(D2ErrorComponent.SDK)
                     .build();
         }
@@ -267,7 +266,6 @@ public final class UserAuthenticateCallFactory {
     private AuthenticatedUser buildAuthenticatedUser(String uid, String username, String password) {
         return AuthenticatedUser.builder()
                 .user(uid)
-                .credentials(base64(username, password))
                 .hash(md5(username, password))
                 .build();
     }

@@ -26,40 +26,55 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.note.internal;
+package org.hisp.dhis.android.testapp.note;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.List;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
-@Module
-public final class NoteEntityDIModule {
+@RunWith(D2JunitRunner.class)
+public class NoteCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
-    @Provides
-    @Reusable
-    public ObjectWithoutUidStore<Note> store(DatabaseAdapter databaseAdapter) {
-        return NoteStore.create(databaseAdapter);
+    @Test
+    public void find_all() {
+        List<Note> notes = d2.noteModule().notes().blockingGet();
+        assertThat(notes.size(), is(4));
     }
 
-    @Provides
-    @Reusable
-    public Handler<Note> handler(ObjectWithoutUidStore<Note> store) {
-        return new ObjectWithoutUidHandlerImpl<>(store);
+    @Test
+    public void filter_by_uid() {
+        List<Note> notes = d2.noteModule().notes().byUid().eq("noteUid1").blockingGet();
+        assertThat(notes.size(), is(1));
     }
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Note>> childrenAppenders() {
-        return Collections.emptyMap();
+    @Test
+    public void filter_by_enrollment_uid() {
+        List<Note> notes = d2.noteModule().notes().byEnrollmentUid().eq("enroll1").blockingGet();
+        assertThat(notes.size(), is(2));
+    }
+
+    @Test
+    public void filter_by_value() {
+        List<Note> notes = d2.noteModule().notes().byValue().eq("Note 3").blockingGet();
+        assertThat(notes.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_stored_by() {
+        List<Note> notes = d2.noteModule().notes().byStoredBy().eq("android").blockingGet();
+        assertThat(notes.size(), is(4));
+    }
+
+    @Test
+    public void filter_by_stored_date() {
+        List<Note> notes = d2.noteModule().notes().byStoredDate().eq("2018-03-19T15:20:55.058").blockingGet();
+        assertThat(notes.size(), is(4));
     }
 }

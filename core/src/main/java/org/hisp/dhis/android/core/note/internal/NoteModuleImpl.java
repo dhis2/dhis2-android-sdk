@@ -25,23 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.note.internal;
 
-package org.hisp.dhis.android.core.enrollment.internal;
+import org.hisp.dhis.android.core.note.NoteCollectionRepository;
+import org.hisp.dhis.android.core.note.NoteModule;
 
-import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
+import javax.inject.Inject;
 
-import dagger.Module;
-import dagger.Provides;
 import dagger.Reusable;
 
-@Module(includes = {
-        EnrollmentEntityDIModule.class
-})
-public final class EnrollmentPackageDIModule {
+@Reusable
+public final class NoteModuleImpl implements NoteModule {
 
-    @Provides
-    @Reusable
-    EnrollmentModule module(EnrollmentModuleImpl impl) {
-        return impl;
+    private final NoteCollectionRepository notes;
+
+    @Inject
+    NoteModuleImpl(NoteCollectionRepository notes) {
+        this.notes = notes;
+    }
+
+    @Override
+    public NoteCollectionRepository notes() {
+        return notes;
     }
 }

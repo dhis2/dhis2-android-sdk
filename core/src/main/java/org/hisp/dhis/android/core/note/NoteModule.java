@@ -25,23 +25,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.note;
 
-package org.hisp.dhis.android.core.enrollment.internal;
-
-import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module(includes = {
-        EnrollmentEntityDIModule.class
-})
-public final class EnrollmentPackageDIModule {
-
-    @Provides
-    @Reusable
-    EnrollmentModule module(EnrollmentModuleImpl impl) {
-        return impl;
-    }
+public interface NoteModule {
+    NoteCollectionRepository notes();
 }

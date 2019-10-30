@@ -26,22 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.internal;
+package org.hisp.dhis.android.core.note.internal;
 
-import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
+import org.hisp.dhis.android.core.note.NoteModule;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
 
 @Module(includes = {
-        EnrollmentEntityDIModule.class
+        NoteEntityDIModule.class
 })
-public final class EnrollmentPackageDIModule {
+public final class NotePackageDIModule {
 
     @Provides
     @Reusable
-    EnrollmentModule module(EnrollmentModuleImpl impl) {
+    NoteModule module(NoteModuleImpl impl) {
         return impl;
     }
 }

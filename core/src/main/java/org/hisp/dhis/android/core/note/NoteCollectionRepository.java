@@ -26,40 +26,52 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.note.internal;
+package org.hisp.dhis.android.core.note;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.note.NoteTableInfo.Columns;
 
-import java.util.Collections;
 import java.util.Map;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module
-public final class NoteEntityDIModule {
+@Reusable
+public final class NoteCollectionRepository
+        extends ReadOnlyCollectionRepositoryImpl<Note, NoteCollectionRepository> {
 
-    @Provides
-    @Reusable
-    public ObjectWithoutUidStore<Note> store(DatabaseAdapter databaseAdapter) {
-        return NoteStore.create(databaseAdapter);
+    @Inject
+    NoteCollectionRepository(final ObjectWithoutUidStore<Note> store,
+                             final Map<String, ChildrenAppender<Note>> childrenAppenders,
+                             final RepositoryScope scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                s -> new NoteCollectionRepository(store, childrenAppenders, s)));
     }
 
-    @Provides
-    @Reusable
-    public Handler<Note> handler(ObjectWithoutUidStore<Note> store) {
-        return new ObjectWithoutUidHandlerImpl<>(store);
+    public StringFilterConnector<NoteCollectionRepository> byUid() {
+        return cf.string(BaseIdentifiableObjectModel.Columns.UID);
     }
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Note>> childrenAppenders() {
-        return Collections.emptyMap();
+    public StringFilterConnector<NoteCollectionRepository> byEnrollmentUid() {
+        return cf.string(Columns.ENROLLMENT);
+    }
+
+    public StringFilterConnector<NoteCollectionRepository> byValue() {
+        return cf.string(Columns.VALUE);
+    }
+
+    public StringFilterConnector<NoteCollectionRepository> byStoredBy() {
+        return cf.string(Columns.STORED_BY);
+    }
+
+    public StringFilterConnector<NoteCollectionRepository> byStoredDate() {
+        return cf.string(Columns.STORED_DATE);
     }
 }

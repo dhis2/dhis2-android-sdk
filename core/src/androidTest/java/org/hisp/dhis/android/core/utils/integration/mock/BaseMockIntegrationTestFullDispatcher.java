@@ -54,7 +54,7 @@ public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockInte
         if (isNewInstance) {
             dhis2MockServer.setRequestDispatcher();
 
-            login();
+            freshLogin();
             downloadMetadata();
             downloadTrackedEntityInstances();
             downloadEvents();
@@ -69,8 +69,14 @@ public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockInte
         dhis2MockServer.shutdown();
     }
 
-    private static void login() {
-        d2.userModule().blockingLogIn("android", "Android123", dhis2MockServer.getBaseEndpoint());
+    private static void freshLogin() {
+        try {
+            d2.userModule().logOut().blockingAwait();
+        } catch (RuntimeException e) {
+            // Do nothing
+        } finally {
+            d2.userModule().blockingLogIn("android", "Android123", dhis2MockServer.getBaseEndpoint());
+        }
     }
 
     private static void downloadMetadata() {

@@ -177,7 +177,10 @@ final class AndroidSecureStore implements SecureStore {
             ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
             ks.load(null);
             PrivateKey privateKey = (PrivateKey) ks.getKey(alias, null);
-            return new String(decrypt(privateKey, preferences.getString(key, null)), CHARSET);
+            String value = preferences.getString(key, null);
+
+            return value == null ? null :
+                    new String(decrypt(privateKey, preferences.getString(key, null)), CHARSET);
         } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException
                 | UnrecoverableEntryException | InvalidKeyException | NoSuchPaddingException
                 | IllegalBlockSizeException | BadPaddingException e) {
@@ -189,6 +192,12 @@ final class AndroidSecureStore implements SecureStore {
             }
         }
         return null;
+    }
+
+    public void removeData(String key) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove(key);
+        editor.apply();
     }
 
     private static String encrypt(PublicKey encryptionKey, byte[] data) throws NoSuchAlgorithmException,

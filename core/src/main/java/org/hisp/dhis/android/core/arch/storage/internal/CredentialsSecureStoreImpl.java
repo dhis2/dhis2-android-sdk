@@ -63,7 +63,7 @@ public class CredentialsSecureStoreImpl implements CredentialsSecureStore {
 
     public void removeCredentials() {
         this.credentials = null;
-        this.secureStore.setData(USERNAME_KEY, null);
-        this.secureStore.setData(PASSWORD_KEY, null);
+        this.secureStore.removeData(USERNAME_KEY);
+        this.secureStore.removeData(PASSWORD_KEY);
     }
 }

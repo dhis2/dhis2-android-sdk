@@ -33,4 +33,6 @@ interface SecureStore {
     void setData(String key, String data);
 
     String getData(String key);
+
+    void removeData(String key);
 }

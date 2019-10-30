@@ -69,12 +69,24 @@ public final class D2 {
     private final DatabaseAdapter databaseAdapter;
     private final D2Modules modules;
     private final D2DIComponent d2DIComponent;
+    private final KeyStoreFactory keyStoreFactory;
 
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter, @NonNull Context context) {
         this.retrofit = retrofit;
         this.databaseAdapter = databaseAdapter;
         this.d2DIComponent = D2DIComponent.create(context, retrofit, databaseAdapter);
         this.modules = d2DIComponent.modules();
+
+        this.keyStoreFactory = new KeyStoreFactory(context);
+        try {
+            this.keyStoreFactory.setData("key", "ab".getBytes("UTF-8"));
+
+            byte[] val = this.keyStoreFactory.getData("key");
+            String valstr = new String(val, "UTF-8");
+            String str = valstr;
+        } catch (Exception e) {
+
+        }
     }
 
     @VisibleForTesting

@@ -30,6 +30,9 @@ package org.hisp.dhis.android.core;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
+
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
 import org.hisp.dhis.android.core.arch.d2.internal.D2Modules;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
@@ -59,8 +62,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.VisibleForTesting;
 import retrofit2.Retrofit;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.CouplingBetweenObjects"})
@@ -69,24 +70,12 @@ public final class D2 {
     private final DatabaseAdapter databaseAdapter;
     private final D2Modules modules;
     private final D2DIComponent d2DIComponent;
-    private final KeyStoreFactory keyStoreFactory;
 
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter, @NonNull Context context) {
         this.retrofit = retrofit;
         this.databaseAdapter = databaseAdapter;
         this.d2DIComponent = D2DIComponent.create(context, retrofit, databaseAdapter);
         this.modules = d2DIComponent.modules();
-
-        this.keyStoreFactory = new KeyStoreFactory(context);
-        try {
-            this.keyStoreFactory.setData("key", "ab".getBytes("UTF-8"));
-
-            byte[] val = this.keyStoreFactory.getData("key");
-            String valstr = new String(val, "UTF-8");
-            String str = valstr;
-        } catch (Exception e) {
-
-        }
     }
 
     @VisibleForTesting

@@ -76,7 +76,7 @@ public final class D2Manager {
 
             long startTime = System.currentTimeMillis();
 
-            if (!isTestMode) {
+            if (isTestMode) {
                 NotClosedObjectsDetector.enableNotClosedObjectsDetection();
             } else {
                 /* SSLContextInitializer, necessary to ensure everything works in Android 4.4 crashes

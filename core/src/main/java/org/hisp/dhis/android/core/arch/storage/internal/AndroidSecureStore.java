@@ -26,17 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.arch.storage.internal;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
-import android.util.Log;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyPairGenerator;
@@ -49,7 +50,6 @@ import java.security.PublicKey;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
 import java.security.spec.AlgorithmParameterSpec;
-import java.security.spec.InvalidKeySpecException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -59,19 +59,20 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.security.auth.x500.X500Principal;
 
-final class KeyStoreFactory {
+final class AndroidSecureStore implements SecureStore {
 
     private static final String KEY_ALGORITHM_RSA = "RSA";
 
     private static final String KEYSTORE_PROVIDER_ANDROID_KEYSTORE = "AndroidKeyStore";
     private static final String RSA_ECB_PKCS1_PADDING = "RSA/ECB/PKCS1Padding";
+    private static final Charset CHARSET = StandardCharsets.UTF_8;
 
     private static final String PREFERENCES_FILE = "preferences";
 
     private SharedPreferences preferences;
     private String alias = "sdk";
 
-    KeyStoreFactory(Context context) {
+    AndroidSecureStore(Context context) {
         preferences = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
 
         KeyStore ks;
@@ -139,7 +140,7 @@ final class KeyStoreFactory {
         }
     }
 
-    public void setData(String key, byte[] data) {
+    public void setData(String key, String data) {
         KeyStore ks = null;
         try {
             ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
@@ -153,7 +154,7 @@ final class KeyStoreFactory {
                 return;
             }
 
-            String value = encrypt(publicKey, data);
+            String value = encrypt(publicKey, data.getBytes(CHARSET));
 
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString(key, value);
@@ -170,13 +171,13 @@ final class KeyStoreFactory {
         }
     }
 
-    public byte[] getData(String key) {
+    public String getData(String key) {
         KeyStore ks = null;
         try {
             ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
             ks.load(null);
             PrivateKey privateKey = (PrivateKey) ks.getKey(alias, null);
-            return decrypt(privateKey, preferences.getString(key, null));
+            return new String(decrypt(privateKey, preferences.getString(key, null)), CHARSET);
         } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException
                 | UnrecoverableEntryException | InvalidKeyException | NoSuchPaddingException
                 | IllegalBlockSizeException | BadPaddingException e) {

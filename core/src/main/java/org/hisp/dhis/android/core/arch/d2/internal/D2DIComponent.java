@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseDIModule;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.di.internal.RepositoriesDIModule;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStorageDIModule;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.internal.CategoryPackageDIModule;
@@ -188,12 +189,13 @@ public interface D2DIComponent {
         D2DIComponent build();
     }
 
-    static D2DIComponent create(Context context, Retrofit retrofit, DatabaseAdapter databaseAdapter) {
+    static D2DIComponent create(Context context, Retrofit retrofit, DatabaseAdapter databaseAdapter,
+                                CredentialsSecureStore credentialsSecureStore) {
         return DaggerD2DIComponent.builder()
                 .appContextDIModule(new AppContextDIModule(context))
                 .databaseDIModule(new DatabaseDIModule(databaseAdapter))
                 .apiClientDIModule(new APIClientDIModule(retrofit))
-                .secureStoregeDIModule(new SecureStorageDIModule(context))
+                .secureStoregeDIModule(new SecureStorageDIModule(credentialsSecureStore))
                 .build();
     }
 }

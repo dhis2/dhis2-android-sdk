@@ -38,6 +38,8 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.configuration.Configuration;
 import org.hisp.dhis.android.core.configuration.ConfigurationManager;
 import org.hisp.dhis.android.core.configuration.ServerUrlParser;
@@ -70,6 +72,8 @@ public final class UserAuthenticateCallFactory {
 
     private final UserService userService;
 
+    private final CredentialsSecureStore credentialsSecureStore;
+
     private final Handler<User> userHandler;
     private final ResourceHandler resourceHandler;
     private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
@@ -83,6 +87,7 @@ public final class UserAuthenticateCallFactory {
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull APICallExecutor apiCallExecutor,
             @NonNull UserService userService,
+            @NonNull CredentialsSecureStore credentialsSecureStore,
             @NonNull Handler<User> userHandler,
             @NonNull ResourceHandler resourceHandler,
             @NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore,
@@ -94,6 +99,8 @@ public final class UserAuthenticateCallFactory {
         this.apiCallExecutor = apiCallExecutor;
 
         this.userService = userService;
+
+        this.credentialsSecureStore = credentialsSecureStore;
 
         this.userHandler = userHandler;
         this.resourceHandler = resourceHandler;
@@ -156,6 +163,7 @@ public final class UserAuthenticateCallFactory {
             AuthenticatedUser authenticatedUserToStore = buildAuthenticatedUser(authenticatedUser.uid(),
                     username, password);
             authenticatedUserStore.updateOrInsertWhere(authenticatedUserToStore);
+            credentialsSecureStore.setCredentials(Credentials.create(username, password));
 
             systemInfoRepository.download(true).blockingAwait();
 
@@ -199,6 +207,7 @@ public final class UserAuthenticateCallFactory {
             AuthenticatedUser authenticatedUser = buildAuthenticatedUser(existingUser.user(),
                     username, password);
             authenticatedUserStore.updateOrInsertWhere(authenticatedUser);
+            credentialsSecureStore.setCredentials(Credentials.create(username, password));
             transaction.setSuccessful();
         } finally {
             transaction.end();

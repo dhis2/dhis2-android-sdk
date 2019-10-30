@@ -28,32 +28,33 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import androidx.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
-import org.hisp.dhis.android.core.user.AuthenticatedUser;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import io.reactivex.Completable;
 
 public final class LogOutCallFactory {
 
     @NonNull
-    private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
+    private final CredentialsSecureStore credentialsSecureStore;
 
     @Inject
-    LogOutCallFactory(@NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore) {
-        this.authenticatedUserStore = authenticatedUserStore;
+    LogOutCallFactory(@NonNull CredentialsSecureStore credentialsSecureStore) {
+        this.credentialsSecureStore = credentialsSecureStore;
     }
 
     public Completable logOut() {
         return Completable.create(emitter -> {
-            AuthenticatedUser existingUser = this.authenticatedUserStore.selectFirst();
+            Credentials credentials = this.credentialsSecureStore.getCredentials();
 
-            if (existingUser == null) {
+            if (credentials == null) {
                 throw D2Error.builder()
                         .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER)
                         .errorDescription("There is not any authenticated user")
@@ -61,13 +62,7 @@ public final class LogOutCallFactory {
                         .build();
             }
 
-            AuthenticatedUser loggedOutUser =
-                    AuthenticatedUser.builder()
-                            .user(existingUser.user())
-                            .hash(existingUser.hash())
-                            .build();
-
-            authenticatedUserStore.updateOrInsertWhere(loggedOutUser);
+            this.credentialsSecureStore.removeCredentials();
             emitter.onComplete();
         });
     }

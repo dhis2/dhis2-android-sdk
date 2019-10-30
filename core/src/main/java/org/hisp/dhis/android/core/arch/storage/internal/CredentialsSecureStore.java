@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.storage.internal;
 
+import android.content.Context;
+
 public class CredentialsSecureStore {
 
     private static String USERNAME_KEY = "username";
@@ -37,17 +39,17 @@ public class CredentialsSecureStore {
 
     private Credentials credentials;
 
-    CredentialsSecureStore(SecureStore secureStore) {
-        this.secureStore = secureStore;
+    public CredentialsSecureStore(Context context) {
+        this.secureStore = new AndroidSecureStore(context);
     }
 
-    void setCredentials(Credentials credentials) {
+    public void setCredentials(Credentials credentials) {
         this.credentials = credentials;
         this.secureStore.setData(USERNAME_KEY, credentials.username());
         this.secureStore.setData(PASSWORD_KEY, credentials.password());
     }
 
-    Credentials getCredentials() {
+    public Credentials getCredentials() {
         if (this.credentials == null) {
             String password = this.secureStore.getData(PASSWORD_KEY);
             String username = this.secureStore.getData(USERNAME_KEY);
@@ -59,7 +61,7 @@ public class CredentialsSecureStore {
         return this.credentials;
     }
 
-    void removeCredentials() {
+    public void removeCredentials() {
         this.credentials = null;
         this.secureStore.setData(USERNAME_KEY, null);
         this.secureStore.setData(PASSWORD_KEY, null);

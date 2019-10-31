@@ -30,11 +30,9 @@ package org.hisp.dhis.android.core.note;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.note.internal.NoteStore;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl;
@@ -95,14 +93,10 @@ public class NotePostCallRealIntegrationShould extends BaseRealIntegrationTest {
     }
 
     private void addNote() {
-        ObjectWithoutUidStore<Note> noteStore = NoteStore.create(databaseAdapter());
-        Note note = noteStore.selectFirst();
-        if (note == null) {
-            throw new RuntimeException("There is no stored notes.");
-        } else {
-            noteStore.updateOrInsertWhere(note.toBuilder()
-                    .uid(new CodeGeneratorImpl().generate())
-                    .value("New note").state(State.TO_POST).build());
+        Enrollment enrollment = d2.enrollmentModule().enrollments().byTrackedEntityInstance().eq("AlvUHPP2Mes").one().blockingGet();
+        try {
+            String uid = d2.noteModule().notes().blockingAdd(NoteCreateProjection.create(enrollment.uid(), "New note", "android"));
+        } catch (Exception ignored) {
         }
     }
 }

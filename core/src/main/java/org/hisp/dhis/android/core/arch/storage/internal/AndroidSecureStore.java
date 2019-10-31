@@ -190,8 +190,9 @@ final class AndroidSecureStore implements SecureStore {
         return Base64.encodeToString(encrypted, Base64.DEFAULT);
     }
 
-    private static byte[] decrypt(PrivateKey decryptionKey, @NonNull String encryptedData) throws NoSuchAlgorithmException,
-            NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+    private static byte[] decrypt(PrivateKey decryptionKey, @NonNull String encryptedData)
+            throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
+            IllegalBlockSizeException, BadPaddingException {
 
         byte[] encryptedBuffer = Base64.decode(encryptedData, Base64.DEFAULT);
         Cipher cipher = Cipher.getInstance(RSA_ECB_PKCS1_PADDING);

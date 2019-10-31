@@ -63,7 +63,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.security.auth.x500.X500Principal;
 
-@SuppressWarnings("PMD.EmptyCatchBlock")
+@SuppressWarnings({"PMD.EmptyCatchBlock", "PMD.ExcessiveImports"})
 final class AndroidSecureStore implements SecureStore {
 
     private static final String KEY_ALGORITHM_RSA = "RSA";

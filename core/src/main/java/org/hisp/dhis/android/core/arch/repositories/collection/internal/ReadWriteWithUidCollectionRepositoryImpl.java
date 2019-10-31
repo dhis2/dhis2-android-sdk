@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
 import android.database.sqlite.SQLiteConstraintException;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
@@ -52,10 +52,10 @@ public abstract class ReadWriteWithUidCollectionRepositoryImpl
         extends ReadOnlyCollectionRepositoryImpl<M, R>
         implements ReadWriteWithUidCollectionRepository<M, P> {
 
-    protected final IdentifiableObjectStore<M> store;
+    protected final ObjectStore<M> store;
     protected final Transformer<P, M> transformer;
 
-    public ReadWriteWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
+    public ReadWriteWithUidCollectionRepositoryImpl(ObjectStore<M> store,
                                                     Map<String, ChildrenAppender<M>> childrenAppenders,
                                                     RepositoryScope scope,
                                                     Transformer<P, M> transformer,

@@ -29,11 +29,15 @@
 package org.hisp.dhis.android.core.note;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.note.NoteTableInfo.Columns;
 
@@ -45,14 +49,15 @@ import dagger.Reusable;
 
 @Reusable
 public final class NoteCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl<Note, NoteCollectionRepository> {
+        extends ReadWriteWithUidCollectionRepositoryImpl<Note, NoteCreateProjection, NoteCollectionRepository> {
 
     @Inject
     NoteCollectionRepository(final ObjectWithoutUidStore<Note> store,
                              final Map<String, ChildrenAppender<Note>> childrenAppenders,
-                             final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new NoteCollectionRepository(store, childrenAppenders, s)));
+                             final RepositoryScope scope,
+                             final Transformer<NoteCreateProjection, Note> transformer) {
+        super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope,
+                s -> new NoteCollectionRepository(store, childrenAppenders, s, transformer)));
     }
 
     public StringFilterConnector<NoteCollectionRepository> byUid() {
@@ -73,5 +78,11 @@ public final class NoteCollectionRepository
 
     public StringFilterConnector<NoteCollectionRepository> byStoredDate() {
         return cf.string(Columns.STORED_DATE);
+    }
+
+    @Override
+    public ReadOnlyObjectRepository<Note> uid(String uid) {
+        RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
+        return new ReadOnlyOneObjectRepositoryFinalImpl<>(store, childrenAppenders, updatedScope);
     }
 }

@@ -26,48 +26,55 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.note.internal;
+package org.hisp.dhis.android.core.note;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.note.Note;
-import org.hisp.dhis.android.core.note.NoteCreateProjection;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import java.util.Collections;
-import java.util.Map;
+import androidx.annotation.Nullable;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_Note.Builder.class)
+public abstract class NoteCreateProjection {
 
-@Module
-public final class NoteEntityDIModule {
+    @Nullable
+    @JsonIgnore()
+    public abstract String enrollment();
 
-    @Provides
-    @Reusable
-    public ObjectWithoutUidStore<Note> store(DatabaseAdapter databaseAdapter) {
-        return NoteStore.create(databaseAdapter);
+    @Nullable
+    @JsonProperty()
+    public abstract String value();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String storedBy();
+
+    public static NoteCreateProjection create(String enrollment, String value, String storedBy) {
+        return builder()
+                .enrollment(enrollment)
+                .value(value)
+                .storedBy(storedBy)
+                .build();
     }
 
-    @Provides
-    @Reusable
-    public Handler<Note> handler(ObjectWithoutUidStore<Note> store) {
-        return new ObjectWithoutUidHandlerImpl<>(store);
+    public static Builder builder() {
+        return new AutoValue_NoteCreateProjection.Builder();
     }
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Note>> childrenAppenders() {
-        return Collections.emptyMap();
-    }
+    public abstract Builder toBuilder();
 
-    @Provides
-    @Reusable
-    Transformer<NoteCreateProjection, Note> transformer(NoteProjectionTransformer impl) {
-        return impl;
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder {
+        public abstract Builder enrollment(String enrollment);
+
+        public abstract Builder value(String value);
+
+        public abstract Builder storedBy(String storedBy);
+
+        public abstract NoteCreateProjection build();
     }
 }

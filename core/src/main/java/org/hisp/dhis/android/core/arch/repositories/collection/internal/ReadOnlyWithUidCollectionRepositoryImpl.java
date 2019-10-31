@@ -47,10 +47,10 @@ public class ReadOnlyWithUidCollectionRepositoryImpl<M extends CoreObject & Obje
 
     protected final IdentifiableObjectStore<M> store;
 
-    public ReadOnlyWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
-                                                   Map<String, ChildrenAppender<M>> childrenAppenders,
-                                                   RepositoryScope scope,
-                                                   FilterConnectorFactory<R> cf) {
+    ReadOnlyWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
+                                            Map<String, ChildrenAppender<M>> childrenAppenders,
+                                            RepositoryScope scope,
+                                            FilterConnectorFactory<R> cf) {
         super(store, childrenAppenders, scope, cf);
         this.store = store;
     }

@@ -28,13 +28,11 @@
 
 package org.hisp.dhis.android.core.note.internal;
 
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.note.Note;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.note.NoteCreateProjection;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -42,47 +40,24 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public class NoteDHISVersionManager {
+final class NoteProjectionTransformer implements Transformer<NoteCreateProjection, Note> {
 
-    private final DHISVersionManager versionManager;
+    private final NoteDHISVersionManager versionManager;
 
     @Inject
-    NoteDHISVersionManager(DHISVersionManager versionManager) {
+    NoteProjectionTransformer(NoteDHISVersionManager versionManager) {
         this.versionManager = versionManager;
     }
 
-    public Note transform(Enrollment enrollment, Note note) {
-        Note.Builder builder = Note.builder().enrollment(enrollment.uid());
-
-        try {
-            if (this.versionManager.is2_29()) {
-                builder
-                        .storedDate(BaseIdentifiableObject.dateToDateStr(
-                        BaseIdentifiableObject.parseSpaceDate(note.storedDate())))
-                        .uid(new CodeGeneratorImpl().generate());
-            } else {
-                builder
-                        .storedDate(BaseIdentifiableObject.dateToDateStr(
-                        BaseIdentifiableObject.parseDate(note.storedDate())))
-                        .uid(note.uid());
-            }
-        } catch (ParseException ignored) {
-            builder
-                    .storedDate(null)
-                    .uid(new CodeGeneratorImpl().generate());
-        }
-
-        return builder
-                .value(note.value())
-                .storedBy(note.storedBy())
+    @Override
+    public Note transform(NoteCreateProjection projection) {
+        return Note.builder()
+                .uid(new CodeGeneratorImpl().generate())
+                .enrollment(projection.enrollment())
+                .value(projection.value())
+                .storedBy(projection.storedBy())
+                .storedBy(versionManager.serializeStoredDate(new Date()))
+                .deleted(false)
                 .build();
-    }
-
-    String serializeStoredDate(Date date) {
-        if (this.versionManager.is2_29()) {
-            return BaseIdentifiableObject.dateToSpaceDateStr(date);
-        } else {
-            return BaseIdentifiableObject.dateToDateStr(date);
-        }
     }
 }

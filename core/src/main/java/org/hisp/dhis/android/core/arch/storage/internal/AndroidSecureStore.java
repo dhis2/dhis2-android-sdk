@@ -33,6 +33,9 @@ import android.content.SharedPreferences;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -48,6 +51,7 @@ import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.UnrecoverableEntryException;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.Calendar;
@@ -59,6 +63,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.security.auth.x500.X500Principal;
 
+@SuppressWarnings("PMD.EmptyCatchBlock")
 final class AndroidSecureStore implements SecureStore {
 
     private static final String KEY_ALGORITHM_RSA = "RSA";
@@ -68,9 +73,9 @@ final class AndroidSecureStore implements SecureStore {
     private static final Charset CHARSET = StandardCharsets.UTF_8;
 
     private static final String PREFERENCES_FILE = "preferences";
+    private static final String ALIAS = "dhis_sdk_key";
 
-    private SharedPreferences preferences;
-    private String alias = "sdk";
+    private final SharedPreferences preferences;
 
     AndroidSecureStore(Context context) {
         preferences = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
@@ -79,20 +84,17 @@ final class AndroidSecureStore implements SecureStore {
 
         try {
             ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
-
-            //Use null to load Keystore with default parameters.
             ks.load(null);
+            PrivateKey privateKey = (PrivateKey) ks.getKey(ALIAS, null);
 
-            // Check if Private and Public already keys exists. If so we don't need to generate them again
-            PrivateKey privateKey = (PrivateKey) ks.getKey(alias, null);
-            if (privateKey != null && ks.getCertificate(alias) != null) {
-                PublicKey publicKey = ks.getCertificate(alias).getPublicKey();
+            if (privateKey != null && ks.getCertificate(ALIAS) != null) {
+                PublicKey publicKey = ks.getCertificate(ALIAS).getPublicKey();
                 if (publicKey != null) {
-                    // All keys are available.
                     return;
                 }
             }
-        } catch (Exception ex) {
+        } catch (KeyStoreException | CertificateException | IOException |
+                NoSuchAlgorithmException | UnrecoverableKeyException ex) {
             return;
         }
 
@@ -102,53 +104,42 @@ final class AndroidSecureStore implements SecureStore {
         Calendar end = new GregorianCalendar();
         end.add(Calendar.YEAR, 10);
 
-        // Specify the parameters object which will be passed to KeyPairGenerator
         AlgorithmParameterSpec spec;
         if (android.os.Build.VERSION.SDK_INT < 23) {
             spec = new android.security.KeyPairGeneratorSpec.Builder(context)
-                    // Alias - is a key for your KeyPair, to obtain it from Keystore in future.
-                    .setAlias(alias)
-                    // The subject used for the self-signed certificate of the generated pair
-                    .setSubject(new X500Principal("CN=" + alias))
-                    // The serial number used for the self-signed certificate of the generated pair.
+                    .setAlias(ALIAS)
+                    .setSubject(new X500Principal("CN=" + ALIAS))
                     .setSerialNumber(BigInteger.valueOf(1337))
-                    // Date range of validity for the generated pair.
                     .setStartDate(start.getTime()).setEndDate(end.getTime())
                     .build();
         } else {
-            spec = new KeyGenParameterSpec.Builder(alias, KeyProperties.PURPOSE_DECRYPT)
+            spec = new KeyGenParameterSpec.Builder(ALIAS, KeyProperties.PURPOSE_DECRYPT)
                     .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
                     .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
                     .build();
         }
 
-        // Initialize a KeyPair generator using the the intended algorithm (in this example, RSA
-        // and the KeyStore. This example uses the AndroidKeyStore.
         KeyPairGenerator kpGenerator;
         try {
             kpGenerator = KeyPairGenerator.getInstance(KEY_ALGORITHM_RSA, KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
             kpGenerator.initialize(spec);
-            // Generate private/public keys
             kpGenerator.generateKeyPair();
         } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException | NoSuchProviderException e) {
-            try {
-                if (ks != null)
-                    ks.deleteEntry(alias);
-            } catch (Exception e1) {
-                // Just ignore any errors here
-            }
+            deleteKeyStoreEntry(ks, ALIAS);
         }
     }
 
-    public void setData(String key, String data) {
+    public void setData(@NonNull String key, @NonNull String data) {
         KeyStore ks = null;
         try {
             ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
 
             ks.load(null);
-            if (ks.getCertificate(alias) == null) return;
+            if (ks.getCertificate(ALIAS) == null) {
+                return;
+            }
 
-            PublicKey publicKey = ks.getCertificate(alias).getPublicKey();
+            PublicKey publicKey = ks.getCertificate(ALIAS).getPublicKey();
 
             if (publicKey == null) {
                 return;
@@ -162,34 +153,24 @@ final class AndroidSecureStore implements SecureStore {
         } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException
                 | IllegalBlockSizeException | BadPaddingException | KeyStoreException |
                 CertificateException | IOException e) {
-            try {
-                if (ks != null)
-                    ks.deleteEntry(alias);
-            } catch (Exception e1) {
-                // Just ignore any errors here
-            }
+            deleteKeyStoreEntry(ks, ALIAS);
         }
     }
 
-    public String getData(String key) {
+    public String getData(@NonNull String key) {
         KeyStore ks = null;
         try {
             ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
             ks.load(null);
-            PrivateKey privateKey = (PrivateKey) ks.getKey(alias, null);
+            PrivateKey privateKey = (PrivateKey) ks.getKey(ALIAS, null);
             String value = preferences.getString(key, null);
 
             return value == null ? null :
-                    new String(decrypt(privateKey, preferences.getString(key, null)), CHARSET);
+                    new String(decrypt(privateKey, value), CHARSET);
         } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException
                 | UnrecoverableEntryException | InvalidKeyException | NoSuchPaddingException
                 | IllegalBlockSizeException | BadPaddingException e) {
-            try {
-                if (ks != null)
-                    ks.deleteEntry(alias);
-            } catch (Exception e1) {
-                // Just ignore any errors here
-            }
+            deleteKeyStoreEntry(ks, ALIAS);
         }
         return null;
     }
@@ -209,13 +190,22 @@ final class AndroidSecureStore implements SecureStore {
         return Base64.encodeToString(encrypted, Base64.DEFAULT);
     }
 
-    private static byte[] decrypt(PrivateKey decryptionKey, String encryptedData) throws NoSuchAlgorithmException,
+    private static byte[] decrypt(PrivateKey decryptionKey, @NonNull String encryptedData) throws NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-        if (encryptedData == null)
-            return null;
+
         byte[] encryptedBuffer = Base64.decode(encryptedData, Base64.DEFAULT);
         Cipher cipher = Cipher.getInstance(RSA_ECB_PKCS1_PADDING);
         cipher.init(Cipher.DECRYPT_MODE, decryptionKey);
         return cipher.doFinal(encryptedBuffer);
+    }
+
+    private void deleteKeyStoreEntry(KeyStore ks, String entry) {
+        try {
+            if (ks != null) {
+                ks.deleteEntry(entry);
+            }
+        } catch (Exception e1) {
+            Log.w("SECURE_STORE", "Cannot deleted entry " + entry);
+        }
     }
 }

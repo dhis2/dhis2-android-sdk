@@ -32,10 +32,10 @@ import android.content.Context;
 
 public class CredentialsSecureStoreImpl implements CredentialsSecureStore {
 
-    private static String USERNAME_KEY = "username";
-    private static String PASSWORD_KEY = "password";
+    private static final String USERNAME_KEY = "username";
+    private static final String PASSWORD_KEY = "password";
 
-    private SecureStore secureStore;
+    private final SecureStore secureStore;
 
     private Credentials credentials;
 

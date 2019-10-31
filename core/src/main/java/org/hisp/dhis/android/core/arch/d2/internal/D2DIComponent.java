@@ -86,7 +86,7 @@ import androidx.annotation.VisibleForTesting;
 import dagger.Component;
 import retrofit2.Retrofit;
 
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.ExcessivePublicCount"})
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.ExcessivePublicCount", "PMD.GodClass"})
 @Singleton
 @Component(modules = {
         AppContextDIModule.class,

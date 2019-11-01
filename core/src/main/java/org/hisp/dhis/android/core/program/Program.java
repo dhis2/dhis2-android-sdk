@@ -57,8 +57,8 @@ import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -69,7 +69,8 @@ import java.util.List;
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_Program.Builder.class)
 @SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.ExcessiveImports", "PMD.CouplingBetweenObjects", "PMD.GodClass"})
-public abstract class Program extends BaseNameableObject implements Model, ObjectWithStyle<Program, Program.Builder> {
+public abstract class Program extends BaseNameableObject
+        implements CoreObject, ObjectWithStyle<Program, Program.Builder> {
 
     @Nullable
     @JsonProperty()

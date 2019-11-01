@@ -43,11 +43,11 @@ import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStringC
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_RelationshipType.Builder.class)
-public abstract class RelationshipType extends BaseIdentifiableObject implements Model {
+public abstract class RelationshipType extends BaseIdentifiableObject implements CoreObject {
 
     /**
      * @deprecated since 2.30, replaced by {@link #fromConstraint()}

@@ -35,7 +35,7 @@ import androidx.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
-public interface Model {
+public interface CoreObject {
     @Nullable
     @ColumnName(CoreColumns.ID)
     @JsonIgnore()

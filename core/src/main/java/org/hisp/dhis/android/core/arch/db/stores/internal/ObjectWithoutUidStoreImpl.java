@@ -38,11 +38,11 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBui
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isNull;
 
-public class ObjectWithoutUidStoreImpl<M extends Model>
+public class ObjectWithoutUidStoreImpl<M extends CoreObject>
         extends ObjectStoreImpl<M> implements ObjectWithoutUidStore<M> {
     private final SQLiteStatement updateWhereStatement;
     private final SQLiteStatement deleteWhereStatement;

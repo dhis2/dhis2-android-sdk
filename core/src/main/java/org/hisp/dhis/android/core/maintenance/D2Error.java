@@ -41,12 +41,12 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.D2ErrorCodeCol
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.D2ErrorComponentColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreExceptionAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class D2Error extends Exception implements Model {
+public abstract class D2Error extends Exception implements CoreObject {
 
     @Nullable
     public abstract String url();

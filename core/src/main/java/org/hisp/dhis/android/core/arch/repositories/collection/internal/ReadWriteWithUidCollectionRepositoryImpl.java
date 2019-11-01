@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -48,7 +48,7 @@ import java.util.Map;
 import io.reactivex.Single;
 
 public abstract class ReadWriteWithUidCollectionRepositoryImpl
-        <M extends Model & ObjectWithUidInterface, P, R extends ReadOnlyCollectionRepository<M>>
+        <M extends CoreObject & ObjectWithUidInterface, P, R extends ReadOnlyCollectionRepository<M>>
         extends ReadOnlyCollectionRepositoryImpl<M, R>
         implements ReadWriteWithUidCollectionRepository<M, P> {
 

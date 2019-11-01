@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.arch.handlers.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
-public class ObjectWithoutUidHandlerImpl<O extends Model> extends HandlerBaseImpl<O> {
+public class ObjectWithoutUidHandlerImpl<O extends CoreObject> extends HandlerBaseImpl<O> {
 
     private final ObjectWithoutUidStore<O> store;
 

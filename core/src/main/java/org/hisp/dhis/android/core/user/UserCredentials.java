@@ -42,14 +42,14 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserRoleListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_UserCredentials.Builder.class)
-public abstract class UserCredentials extends BaseIdentifiableObject implements Model {
+public abstract class UserCredentials extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
     @JsonProperty()

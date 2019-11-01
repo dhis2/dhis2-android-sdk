@@ -38,12 +38,12 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class Period implements Model {
+public abstract class Period implements CoreObject {
 
     @Nullable
     public abstract String periodId();

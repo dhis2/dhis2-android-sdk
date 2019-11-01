@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.arch.handlers.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Collection;
 
-public class LinkHandlerImpl<S, O extends Model> implements LinkHandler<S, O> {
+public class LinkHandlerImpl<S, O extends CoreObject> implements LinkHandler<S, O> {
 
     private final LinkStore<O> store;
 

@@ -35,13 +35,13 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyNameableC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.NameableColumns;
 import org.hisp.dhis.android.core.common.NameableObject;
 
 import java.util.Map;
 
-public class ReadOnlyNameableCollectionRepositoryImpl<M extends Model & NameableObject,
+public class ReadOnlyNameableCollectionRepositoryImpl<M extends CoreObject & NameableObject,
         R extends ReadOnlyCollectionRepository<M>>
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<M, R>
         implements ReadOnlyNameableCollectionRepository<M, R> {

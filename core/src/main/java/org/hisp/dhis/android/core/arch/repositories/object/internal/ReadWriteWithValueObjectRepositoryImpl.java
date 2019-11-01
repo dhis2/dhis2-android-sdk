@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -45,7 +45,7 @@ import java.util.Map;
 
 import io.reactivex.Completable;
 
-public class ReadWriteWithValueObjectRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
+public class ReadWriteWithValueObjectRepositoryImpl<M extends CoreObject, R extends ReadOnlyObjectRepository<M>>
         extends ReadOnlyOneObjectRepositoryImpl<M, R> implements ReadWriteObjectRepository<M> {
 
     private final ObjectWithoutUidStore<M> store;

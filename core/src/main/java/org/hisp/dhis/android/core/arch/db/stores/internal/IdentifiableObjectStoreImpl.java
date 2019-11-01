@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBui
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.List;
@@ -46,7 +46,7 @@ import java.util.List;
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isNull;
 
-public class IdentifiableObjectStoreImpl<M extends Model & ObjectWithUidInterface>
+public class IdentifiableObjectStoreImpl<M extends CoreObject & ObjectWithUidInterface>
         extends ObjectStoreImpl<M> implements IdentifiableObjectStore<M> {
 
     private final SQLStatementWrapper statements;

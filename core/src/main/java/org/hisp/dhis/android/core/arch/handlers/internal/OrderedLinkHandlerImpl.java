@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.arch.handlers.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.List;
 
-public class OrderedLinkHandlerImpl<S, M extends Model> implements OrderedLinkHandler<S, M> {
+public class OrderedLinkHandlerImpl<S, M extends CoreObject> implements OrderedLinkHandler<S, M> {
 
     private final LinkStore<M> store;
 

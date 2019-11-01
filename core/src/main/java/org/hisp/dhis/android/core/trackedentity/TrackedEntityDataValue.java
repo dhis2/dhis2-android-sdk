@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -37,16 +39,14 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
 @JsonDeserialize(builder = AutoValue_TrackedEntityDataValue.Builder.class)
-public abstract class TrackedEntityDataValue implements Model {
+public abstract class TrackedEntityDataValue implements CoreObject {
 
     @Nullable
     @JsonIgnore()

@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -41,17 +43,15 @@ import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectW
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreLegendSetListColumnAdapter;
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.legendset.LegendSet;
 
 import java.util.List;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_ProgramIndicator.Builder.class)
-public abstract class ProgramIndicator extends BaseNameableObject implements Model {
+public abstract class ProgramIndicator extends BaseNameableObject implements CoreObject {
 
     @Nullable
     @JsonProperty()

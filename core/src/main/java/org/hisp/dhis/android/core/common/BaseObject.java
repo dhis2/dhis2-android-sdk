@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.common;
 
 @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-public abstract class BaseObject implements Model {
+public abstract class BaseObject implements CoreObject {
 
     public static abstract class Builder<T extends Builder> {
         public abstract T id(Long id);

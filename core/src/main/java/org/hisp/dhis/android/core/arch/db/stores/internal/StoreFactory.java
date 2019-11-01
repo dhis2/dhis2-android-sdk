@@ -39,14 +39,14 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatement
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 public final class StoreFactory {
 
     private StoreFactory() {}
 
-    public static <I extends Model & ObjectWithUidInterface> IdentifiableObjectStore<I> objectWithUidStore(
+    public static <I extends CoreObject & ObjectWithUidInterface> IdentifiableObjectStore<I> objectWithUidStore(
             DatabaseAdapter databaseAdapter, TableInfo tableInfo, StatementBinder<I> binder,
             ObjectFactory<I> objectFactory) {
         SQLStatementBuilder statementBuilder =
@@ -55,17 +55,17 @@ public final class StoreFactory {
         return new IdentifiableObjectStoreImpl<>(databaseAdapter, statements, statementBuilder, binder, objectFactory);
     }
 
-    public static <I extends Model> ObjectStore<I> objectStore(DatabaseAdapter databaseAdapter,
-                                                               TableInfo tableInfo,
-                                                               StatementBinder<I> binder,
-                                                               ObjectFactory<I> objectFactory) {
+    public static <I extends CoreObject> ObjectStore<I> objectStore(DatabaseAdapter databaseAdapter,
+                                                                    TableInfo tableInfo,
+                                                                    StatementBinder<I> binder,
+                                                                    ObjectFactory<I> objectFactory) {
         SQLStatementBuilder statementBuilder =
                 new SQLStatementBuilderImpl(tableInfo.name(), tableInfo.columns().all(), new String[]{});
         return new ObjectStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(statementBuilder.insert()),
                 statementBuilder, binder, objectFactory);
     }
 
-    public static <I extends Model> ObjectWithoutUidStore<I> objectWithoutUidStore(
+    public static <I extends CoreObject> ObjectWithoutUidStore<I> objectWithoutUidStore(
             DatabaseAdapter databaseAdapter, TableInfo tableInfo, StatementBinder<I> binder,
             WhereStatementBinder<I> whereUpdateBinder,
             WhereStatementBinder<I> whereDeleteBinder, ObjectFactory<I> objectFactory) {
@@ -76,7 +76,7 @@ public final class StoreFactory {
                 whereDeleteBinder, objectFactory);
     }
 
-    public static <I extends Model> LinkStore<I> linkStore(
+    public static <I extends CoreObject> LinkStore<I> linkStore(
             DatabaseAdapter databaseAdapter, TableInfo tableInfo, String masterColumn, StatementBinder<I> binder,
             ObjectFactory<I> objectFactory) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilderImpl(tableInfo.name(), tableInfo.columns().all(),

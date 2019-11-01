@@ -41,12 +41,12 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_DataSetElement.Builder.class)
-public abstract class DataSetElement implements Model {
+public abstract class DataSetElement implements CoreObject {
 
     @NonNull
     @JsonProperty()

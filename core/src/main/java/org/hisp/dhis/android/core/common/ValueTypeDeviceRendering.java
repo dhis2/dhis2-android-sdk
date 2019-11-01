@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ValueTypeRende
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ValueTypeDeviceRendering.Builder.class)
-public abstract class ValueTypeDeviceRendering implements Model {
+public abstract class ValueTypeDeviceRendering implements CoreObject {
 
     @Nullable
     public abstract String uid();

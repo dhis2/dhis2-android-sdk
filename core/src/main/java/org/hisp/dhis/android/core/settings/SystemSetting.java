@@ -37,10 +37,10 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.SystemSettingKeyColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-public abstract class SystemSetting implements Model {
+public abstract class SystemSetting implements CoreObject {
 
     public enum SystemSettingKey {
         FLAG,

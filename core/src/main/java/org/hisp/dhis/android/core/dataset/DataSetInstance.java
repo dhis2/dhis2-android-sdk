@@ -42,14 +42,14 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.IsColumnNotNu
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class DataSetInstance implements Model {
+public abstract class DataSetInstance implements CoreObject {
 
     @NonNull
     public abstract String dataSetUid();

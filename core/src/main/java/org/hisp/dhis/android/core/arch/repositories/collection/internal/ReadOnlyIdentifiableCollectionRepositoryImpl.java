@@ -36,13 +36,13 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.IdentifiableObject;
-import org.hisp.dhis.android.core.common.Model;
 
 import java.util.Map;
 
-public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & IdentifiableObject,
+public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends CoreObject & IdentifiableObject,
         R extends ReadOnlyCollectionRepository<M>>
         extends ReadOnlyWithUidCollectionRepositoryImpl<M, R>
         implements ReadOnlyIdentifiableCollectionRepository<M, R> {

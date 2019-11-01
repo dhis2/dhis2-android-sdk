@@ -45,7 +45,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectW
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -55,7 +55,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeF
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_TrackedEntityAttribute.Builder.class)
 public abstract class TrackedEntityAttribute extends BaseNameableObject
-        implements Model, ObjectWithStyle<TrackedEntityAttribute, TrackedEntityAttribute.Builder>  {
+        implements CoreObject, ObjectWithStyle<TrackedEntityAttribute, TrackedEntityAttribute.Builder>  {
 
     @Nullable
     @JsonProperty()

@@ -31,13 +31,13 @@ import androidx.lifecycle.LiveData;
 import androidx.paging.PagedList;
 
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.List;
 
 import io.reactivex.Single;
 
-public interface ReadOnlyCollectionRepository<M extends Model> extends BaseRepository {
+public interface ReadOnlyCollectionRepository<M extends CoreObject> extends BaseRepository {
 
     /**
      * Query returning a Single object. As querying might be a

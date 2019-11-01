@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -39,7 +41,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityAttributeListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.program.internal.ProgramSectionFields;
@@ -47,12 +49,10 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 import java.util.List;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramSection.Builder.class)
 public abstract class ProgramSection extends BaseIdentifiableObject
-        implements Model, ObjectWithStyle<ProgramSection, ProgramSection.Builder> {
+        implements CoreObject, ObjectWithStyle<ProgramSection, ProgramSection.Builder> {
 
     @Nullable
     @JsonProperty()

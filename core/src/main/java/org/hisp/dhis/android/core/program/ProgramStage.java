@@ -49,9 +49,9 @@ import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgram
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.FormType;
-import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -62,7 +62,7 @@ import java.util.List;
 @JsonDeserialize(builder = AutoValue_ProgramStage.Builder.class)
 @SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.GodClass"})
 public abstract class ProgramStage extends BaseIdentifiableObject
-        implements ObjectWithStyle<ProgramStage, ProgramStage.Builder>, Model {
+        implements ObjectWithStyle<ProgramStage, ProgramStage.Builder>, CoreObject {
 
     @Nullable
     @JsonProperty()

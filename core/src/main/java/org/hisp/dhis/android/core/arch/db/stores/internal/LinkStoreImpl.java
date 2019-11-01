@@ -36,9 +36,9 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
-public class LinkStoreImpl<M extends Model> extends ObjectStoreImpl<M> implements LinkStore<M> {
+public class LinkStoreImpl<M extends CoreObject> extends ObjectStoreImpl<M> implements LinkStore<M> {
 
     private final String masterColumn;
 

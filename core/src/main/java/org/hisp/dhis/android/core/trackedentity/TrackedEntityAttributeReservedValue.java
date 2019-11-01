@@ -41,13 +41,13 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_TrackedEntityAttributeReservedValue.Builder.class)
-public abstract class TrackedEntityAttributeReservedValue implements Model {
+public abstract class TrackedEntityAttributeReservedValue implements CoreObject {
 
     @Nullable
     @JsonProperty()

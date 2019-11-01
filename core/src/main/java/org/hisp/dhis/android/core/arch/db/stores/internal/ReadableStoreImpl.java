@@ -36,13 +36,13 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ReadableStoreImpl<M extends Model> implements ReadableStore<M> {
+public class ReadableStoreImpl<M extends CoreObject> implements ReadableStore<M> {
     protected final DatabaseAdapter databaseAdapter;
     protected final ReadOnlySQLStatementBuilder builder;
     final ObjectFactory<M> objectFactory;

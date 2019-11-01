@@ -28,6 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-public interface DataObject extends Model {
+public interface DataObject extends CoreObject {
     State state();
 }

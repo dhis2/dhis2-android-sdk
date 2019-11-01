@@ -36,12 +36,12 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import okhttp3.HttpUrl;
 
 @AutoValue
-public abstract class Configuration implements Model {
+public abstract class Configuration implements CoreObject {
 
     @NonNull
     @ColumnAdapter(HttpUrlColumnAdapter.class)

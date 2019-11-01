@@ -44,9 +44,9 @@ import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class ProgramModelPayloadShould extends BaseObjectShould implements ObjectShould {
+public class ProgramPayloadShould extends BaseObjectShould implements ObjectShould {
 
-    public ProgramModelPayloadShould() {
+    public ProgramPayloadShould() {
         super("program/program_payload.json");
     }
 

@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseDeletableDataModel;
 import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.DeletableDataColumns;
 
 public class DataValueTableInfo {
 
@@ -50,7 +50,7 @@ public class DataValueTableInfo {
         }
     };
 
-    public static class Columns extends BaseDeletableDataModel.Columns {
+    public static class Columns extends DeletableDataColumns {
 
         public static final String DATA_ELEMENT = "dataElement";
         public static final String PERIOD = "period";

@@ -29,6 +29,6 @@
 package org.hisp.dhis.android.core.common;
 
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class DataColumns extends CoreColumns {
-    public static final String STATE = "state";
+public abstract class DeletableDataColumns extends DataColumns {
+    public static final String DELETED = "deleted";
 }

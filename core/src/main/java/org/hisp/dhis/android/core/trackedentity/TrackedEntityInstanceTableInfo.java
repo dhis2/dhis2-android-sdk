@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseDeletableDataModel;
+import org.hisp.dhis.android.core.common.DeletableDataColumns;
 
 public final class TrackedEntityInstanceTableInfo {
 
@@ -50,7 +50,7 @@ public final class TrackedEntityInstanceTableInfo {
         }
     };
 
-    public static class Columns extends BaseDeletableDataModel.Columns {
+    public static class Columns extends DeletableDataColumns {
         public static final String UID = "uid";
         public static final String CREATED = "created";
         public static final String LAST_UPDATED = "lastUpdated";

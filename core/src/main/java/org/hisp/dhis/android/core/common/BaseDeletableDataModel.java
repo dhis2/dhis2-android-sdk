@@ -36,14 +36,10 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 
 public abstract class BaseDeletableDataModel extends BaseDataModel implements DeletableDataModel {
 
-    public static class Columns extends DataColumns {
-        public static final String DELETED = "deleted";
-    }
-
     @Override
     @Nullable
     @JsonProperty
-    @ColumnName(Columns.DELETED)
+    @ColumnName(DeletableDataColumns.DELETED)
     public abstract Boolean deleted();
 
     @JsonPOJOBuilder(withPrefix = "")

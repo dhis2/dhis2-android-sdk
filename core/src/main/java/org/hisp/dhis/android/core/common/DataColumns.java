@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class DataColumns extends CoreColumns {
+public class DataColumns extends CoreColumns {
     public static final String STATE = "state";
 }

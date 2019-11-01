@@ -28,8 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
-@SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
-public abstract class CoreColumns {
+public class CoreColumns {
     public static final String ID = android.provider.BaseColumns._ID;
 
     public String[] all() {

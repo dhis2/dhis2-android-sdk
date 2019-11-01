@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 
-public abstract class IdentifiableColumns extends CoreColumns {
+public class IdentifiableColumns extends CoreColumns {
     public static final String UID = "uid";
     public static final String CODE = "code";
     public static final String NAME = "name";
@@ -40,7 +40,6 @@ public abstract class IdentifiableColumns extends CoreColumns {
 
     @Override
     public String[] all() {
-        return CollectionsHelper.appendInNewArray(super.all(), UID, CODE, NAME, DISPLAY_NAME, CREATED,
-                LAST_UPDATED);
+        return CollectionsHelper.appendInNewArray(super.all(), UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED);
     }
 }

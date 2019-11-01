@@ -9,7 +9,7 @@ interface ApiService {
 
     @SuppressWarnings("PMD") // That's an API call and looks like an API endpoint
     @GET("metadata")
-    Call<MetadataResponseModel> getMetadataIds(
+    Call<MetadataResponse> getMetadataIds(
             @Query("dataElements:fields") String dataElements,
             @Query("categoryOptionCombos:fields") String categoryOptionCombos,
             @Query("organisationUnits:fields") String organisationUnits,

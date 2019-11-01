@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.domain.metadata;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
@@ -55,7 +57,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
 
@@ -69,7 +70,7 @@ public class MetadataCall {
     private final UserModuleDownloader userModuleDownloader;
     private final CategoryModuleDownloader categoryDownloader;
     private final ProgramModuleDownloader programDownloader;
-    private final OrganisationUnitModuleDownloader organisationUnitDownloadModule;
+    private final OrganisationUnitModuleDownloader organisationUnitModuleDownloader;
     private final DataSetModuleDownloader dataSetDownloader;
     private final ConstantModuleDownloader constantModuleDownloader;
     private final SmsModule smsModule;
@@ -82,7 +83,7 @@ public class MetadataCall {
                  @NonNull UserModuleDownloader userModuleDownloader,
                  @NonNull CategoryModuleDownloader categoryDownloader,
                  @NonNull ProgramModuleDownloader programDownloader,
-                 @NonNull OrganisationUnitModuleDownloader organisationUnitDownloadModule,
+                 @NonNull OrganisationUnitModuleDownloader organisationUnitModuleDownloader,
                  @NonNull DataSetModuleDownloader dataSetDownloader,
                  @NonNull ConstantModuleDownloader constantModuleDownloader,
                  @NonNull SmsModule smsModule,
@@ -93,7 +94,7 @@ public class MetadataCall {
         this.userModuleDownloader = userModuleDownloader;
         this.categoryDownloader = categoryDownloader;
         this.programDownloader = programDownloader;
-        this.organisationUnitDownloadModule = organisationUnitDownloadModule;
+        this.organisationUnitModuleDownloader = organisationUnitModuleDownloader;
         this.dataSetDownloader = dataSetDownloader;
         this.constantModuleDownloader = constantModuleDownloader;
         this.smsModule = smsModule;
@@ -130,7 +131,7 @@ public class MetadataCall {
                     emitter.onNext(progressManager.increaseProgress(Category.class, false));
 
 
-                    organisationUnitDownloadModule.downloadMetadata(user, programs, dataSets).call();
+                    organisationUnitModuleDownloader.downloadMetadata(user, programs, dataSets).call();
                     emitter.onNext(progressManager.increaseProgress(OrganisationUnit.class, false));
 
 

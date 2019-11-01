@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.utils;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.NameableColumns;
 
 import java.util.Arrays;
@@ -42,12 +42,12 @@ import static com.google.common.truth.Truth.assertThat;
 public class ColumnsAsserts {
 
     private static void testIdentifiableModelColumns(List<String> columnsList) {
-        assertThat(columnsList.contains(BaseIdentifiableObjectModel.Columns.UID)).isEqualTo(true);
-        assertThat(columnsList.contains(BaseIdentifiableObjectModel.Columns.CODE)).isEqualTo(true);
-        assertThat(columnsList.contains(BaseIdentifiableObjectModel.Columns.NAME)).isEqualTo(true);
-        assertThat(columnsList.contains(BaseIdentifiableObjectModel.Columns.DISPLAY_NAME)).isEqualTo(true);
-        assertThat(columnsList.contains(BaseIdentifiableObjectModel.Columns.CREATED)).isEqualTo(true);
-        assertThat(columnsList.contains(BaseIdentifiableObjectModel.Columns.LAST_UPDATED)).isEqualTo(true);
+        assertThat(columnsList.contains(IdentifiableColumns.UID)).isEqualTo(true);
+        assertThat(columnsList.contains(IdentifiableColumns.CODE)).isEqualTo(true);
+        assertThat(columnsList.contains(IdentifiableColumns.NAME)).isEqualTo(true);
+        assertThat(columnsList.contains(IdentifiableColumns.DISPLAY_NAME)).isEqualTo(true);
+        assertThat(columnsList.contains(IdentifiableColumns.CREATED)).isEqualTo(true);
+        assertThat(columnsList.contains(IdentifiableColumns.LAST_UPDATED)).isEqualTo(true);
     }
 
     public static void testIdentifiableModelColumns(String[] columns) {

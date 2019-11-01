@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 
 import java.util.List;
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
+import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 
 final class TrackedEntityInstanceLocalQueryHelper {
 

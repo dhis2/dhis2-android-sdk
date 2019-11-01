@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.enrollment.note;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.enrollment.note.internal.NoteFields;
 
 public final class NoteTableInfo {
@@ -63,7 +63,7 @@ public final class NoteTableInfo {
                     NoteFields.VALUE,
                     NoteFields.STORED_BY,
                     NoteFields.STORED_DATE,
-                    BaseIdentifiableObjectModel.Columns.UID,
+                    IdentifiableColumns.UID,
                     BaseDataModel.Columns.STATE
             );
         }

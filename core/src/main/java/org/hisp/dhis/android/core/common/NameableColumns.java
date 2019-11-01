@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 
-public abstract class NameableColumns extends BaseIdentifiableObjectModel.Columns {
+public abstract class NameableColumns extends IdentifiableColumns {
     public static final String SHORT_NAME = "shortName";
     public static final String DISPLAY_SHORT_NAME = "displayShortName";
     public static final String DESCRIPTION = "description";

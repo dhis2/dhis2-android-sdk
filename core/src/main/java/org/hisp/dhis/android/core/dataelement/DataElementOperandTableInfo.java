@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public final class DataElementOperandTableInfo {
 
@@ -59,7 +59,7 @@ public final class DataElementOperandTableInfo {
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    BaseIdentifiableObjectModel.Columns.UID,
+                    IdentifiableColumns.UID,
                     DATA_ELEMENT,
                     CATEGORY_OPTION_COMBO
             );

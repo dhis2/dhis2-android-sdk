@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.dataset.internal.DataSetFields;
 import org.hisp.dhis.android.core.period.PeriodType;
 
@@ -132,7 +132,7 @@ public final class DataSetCollectionRepository
     }
 
     public DataSetCollectionRepository byOrganisationUnitList(List<String> uids) {
-        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).inLinkTable(
+        return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
                 DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
                 DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET,
                 DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,

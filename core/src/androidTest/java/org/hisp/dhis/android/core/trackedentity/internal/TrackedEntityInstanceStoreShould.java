@@ -35,9 +35,9 @@ import android.database.sqlite.SQLiteConstraintException;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -121,7 +121,7 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
         trackedEntityInstanceStore.insert(trackedEntityInstance);
 
         database().delete(OrganisationUnitTableInfo.TABLE_INFO.name(),
-                BaseIdentifiableObjectModel.Columns.UID + "=?",
+                IdentifiableColumns.UID + "=?",
                 new String[]{ ORGANISATION_UNIT });
 
         Cursor cursor = database().query(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), PROJECTION, null, null,

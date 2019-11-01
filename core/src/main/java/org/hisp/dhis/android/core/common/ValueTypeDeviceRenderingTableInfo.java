@@ -61,7 +61,7 @@ public final class ValueTypeDeviceRenderingTableInfo {
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    BaseIdentifiableObjectModel.Columns.UID,
+                    IdentifiableColumns.UID,
                     OBJECT_TABLE,
                     DEVICE_TYPE,
                     TYPE,
@@ -75,7 +75,7 @@ public final class ValueTypeDeviceRenderingTableInfo {
         @Override
         public String[] whereUpdate() {
             return CollectionsHelper.appendInNewArray(super.whereUpdate(),
-                    BaseIdentifiableObjectModel.Columns.UID,
+                    IdentifiableColumns.UID,
                     DEVICE_TYPE
             );
         }

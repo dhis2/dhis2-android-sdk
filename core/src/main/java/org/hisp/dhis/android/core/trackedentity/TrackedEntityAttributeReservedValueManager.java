@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.helpers.internal.BooleanWrapper;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -331,7 +331,7 @@ public final class TrackedEntityAttributeReservedValueManager {
         linkedOrgunitUids.retainAll(captureOrgunits);
 
         return organisationUnitStore.selectWhere(new WhereClauseBuilder().appendInKeyStringValues(
-                BaseIdentifiableObjectModel.Columns.UID,
+                IdentifiableColumns.UID,
                 linkedOrgunitUids
         ).build());
     }

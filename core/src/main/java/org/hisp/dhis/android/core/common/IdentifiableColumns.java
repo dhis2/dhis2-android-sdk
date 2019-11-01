@@ -30,20 +30,17 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 
-public abstract class BaseIdentifiableObjectModel extends BaseModel {
+public abstract class IdentifiableColumns extends BaseModel.Columns {
+    public static final String UID = "uid";
+    public static final String CODE = "code";
+    public static final String NAME = "name";
+    public static final String DISPLAY_NAME = "displayName";
+    public static final String CREATED = "created";
+    public static final String LAST_UPDATED = "lastUpdated";
 
-    public abstract static class Columns extends BaseModel.Columns {
-        public static final String UID = "uid";
-        public static final String CODE = "code";
-        public static final String NAME = "name";
-        public static final String DISPLAY_NAME = "displayName";
-        public static final String CREATED = "created";
-        public static final String LAST_UPDATED = "lastUpdated";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(), UID, CODE, NAME, DISPLAY_NAME, CREATED,
-                    LAST_UPDATED);
-        }
+    @Override
+    public String[] all() {
+        return CollectionsHelper.appendInNewArray(super.all(), UID, CODE, NAME, DISPLAY_NAME, CREATED,
+                LAST_UPDATED);
     }
 }

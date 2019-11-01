@@ -32,10 +32,12 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
@@ -56,8 +58,6 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-
-import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -244,7 +244,7 @@ public class TrackedEntityAttributeValueStoreShould extends BaseRealIntegrationT
         insert_nullable_tracked_entity_attribute_value_in_data_base_when_insert_nullable_tracked_entity_attribute_value();
 
         database().delete(TrackedEntityAttributeTableInfo.TABLE_INFO.name(),
-                BaseIdentifiableObjectModel.Columns.UID + "=?",
+                IdentifiableColumns.UID + "=?",
                 new String[]{TRACKED_ENTITY_ATTRIBUTE});
 
         Cursor cursor = database().query(TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),

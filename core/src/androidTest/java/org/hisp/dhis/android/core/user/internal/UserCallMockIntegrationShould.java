@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.user.internal;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.user.User;
@@ -109,12 +109,12 @@ public class UserCallMockIntegrationShould extends BaseMockIntegrationTestEmptyE
         userCall.call();
 
         String[] projection = {
-                BaseIdentifiableObjectModel.Columns.UID,
-                BaseIdentifiableObjectModel.Columns.CODE,
-                BaseIdentifiableObjectModel.Columns.NAME,
-                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
-                BaseIdentifiableObjectModel.Columns.CREATED,
-                BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
+                IdentifiableColumns.UID,
+                IdentifiableColumns.CODE,
+                IdentifiableColumns.NAME,
+                IdentifiableColumns.DISPLAY_NAME,
+                IdentifiableColumns.CREATED,
+                IdentifiableColumns.LAST_UPDATED,
                 UserCredentialsFields.USERNAME,
                 UserCredentialsTableInfo.Columns.USER,
         };

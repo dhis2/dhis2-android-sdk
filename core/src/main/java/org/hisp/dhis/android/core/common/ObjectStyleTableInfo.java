@@ -51,7 +51,7 @@ public final class ObjectStyleTableInfo {
 
     public static class Columns extends BaseModel.Columns {
 
-        public static final String UID = BaseIdentifiableObjectModel.Columns.UID;
+        public static final String UID = IdentifiableColumns.UID;
         public static final String OBJECT_TABLE = "objectTable";
         public static final String COLOR = "color";
         public static final String ICON = "icon";

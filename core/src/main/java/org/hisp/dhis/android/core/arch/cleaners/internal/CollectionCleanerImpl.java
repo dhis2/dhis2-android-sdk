@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.cleaners.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.Collection;
@@ -52,7 +52,7 @@ public class CollectionCleanerImpl<P extends ObjectWithUidInterface> implements 
         }
 
         String objectUids = UidsHelper.commaSeparatedUidsWithSingleQuotationMarks(objects);
-        String clause = BaseIdentifiableObjectModel.Columns.UID + " NOT IN (" + objectUids + ");";
+        String clause = IdentifiableColumns.UID + " NOT IN (" + objectUids + ");";
         return databaseAdapter.database().delete(tableName, clause, null) > 0;
     }
 }

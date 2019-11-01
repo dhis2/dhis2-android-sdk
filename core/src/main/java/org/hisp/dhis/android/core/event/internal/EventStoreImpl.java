@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatement
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.event.Event;
@@ -146,7 +146,7 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
                 "INNER JOIN " +
                 "(SELECT DISTINCT " + Columns.ENROLLMENT +
                     " FROM " + EventTableInfo.TABLE_INFO.name() + whereStatement + ") b " +
-                "ON a." + BaseIdentifiableObjectModel.Columns.UID + " = b." + Columns.ENROLLMENT;
+                "ON a." + IdentifiableColumns.UID + " = b." + Columns.ENROLLMENT;
 
         return processCount(databaseAdapter.query(query));
     }

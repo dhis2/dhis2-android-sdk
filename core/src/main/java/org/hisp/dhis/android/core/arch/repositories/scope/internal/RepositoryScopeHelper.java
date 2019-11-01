@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.arch.repositories.scope.internal;
 
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +47,7 @@ public final class RepositoryScopeHelper {
 
     public static RepositoryScope withUidFilterItem(RepositoryScope scope, String uid) {
         RepositoryScopeFilterItem filterItem = RepositoryScopeFilterItem.builder()
-                .key(BaseIdentifiableObjectModel.Columns.UID)
+                .key(IdentifiableColumns.UID)
                 .operator(FilterItemOperator.EQ)
                 .value("'" + uid + "'")
                 .build();

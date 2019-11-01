@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.NameableColumns;
 
 public class CreateTrackedEntityUtils {
@@ -47,13 +47,13 @@ public class CreateTrackedEntityUtils {
 
     public static ContentValues create(long id, String uid) {
         ContentValues trackedEntityType = new ContentValues();
-        trackedEntityType.put(BaseIdentifiableObjectModel.Columns.ID, id);
-        trackedEntityType.put(BaseIdentifiableObjectModel.Columns.UID, uid);
-        trackedEntityType.put(BaseIdentifiableObjectModel.Columns.CODE, TEST_CODE);
-        trackedEntityType.put(BaseIdentifiableObjectModel.Columns.NAME, TEST_NAME);
-        trackedEntityType.put(BaseIdentifiableObjectModel.Columns.DISPLAY_NAME, TEST_DISPLAY_NAME);
-        trackedEntityType.put(BaseIdentifiableObjectModel.Columns.CREATED, TEST_CREATED);
-        trackedEntityType.put(BaseIdentifiableObjectModel.Columns.LAST_UPDATED, TEST_LAST_UPDATED);
+        trackedEntityType.put(IdentifiableColumns.ID, id);
+        trackedEntityType.put(IdentifiableColumns.UID, uid);
+        trackedEntityType.put(IdentifiableColumns.CODE, TEST_CODE);
+        trackedEntityType.put(IdentifiableColumns.NAME, TEST_NAME);
+        trackedEntityType.put(IdentifiableColumns.DISPLAY_NAME, TEST_DISPLAY_NAME);
+        trackedEntityType.put(IdentifiableColumns.CREATED, TEST_CREATED);
+        trackedEntityType.put(IdentifiableColumns.LAST_UPDATED, TEST_LAST_UPDATED);
         trackedEntityType.put(NameableColumns.SHORT_NAME, TEST_SHORT_NAME);
         trackedEntityType.put(NameableColumns.DISPLAY_SHORT_NAME, TEST_DISPLAY_SHORT_NAME);
         trackedEntityType.put(NameableColumns.DESCRIPTION, TEST_DESCRIPTION);

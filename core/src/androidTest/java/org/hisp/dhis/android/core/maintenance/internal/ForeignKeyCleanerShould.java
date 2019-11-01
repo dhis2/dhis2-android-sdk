@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.maintenance.internal;
 
 import android.database.Cursor;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
@@ -39,7 +41,7 @@ import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -65,8 +67,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -81,10 +81,10 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
             UserCredentialsTableInfo.Columns.USER
     };
     private final String[] PROGRAM_RULE_PROJECTION = {
-            BaseIdentifiableObjectModel.Columns.UID
+            IdentifiableColumns.UID
     };
     private final String[] PROGRAM_RULE_ACTION_PROJECTION = {
-            BaseIdentifiableObjectModel.Columns.UID
+            IdentifiableColumns.UID
     };
 
     @Override
@@ -159,7 +159,7 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
 
         ForeignKeyViolation categoryOptionComboViolation = ForeignKeyViolation.builder()
                 .toTable(UserTableInfo.TABLE_INFO.name())
-                .toColumn(BaseIdentifiableObjectModel.Columns.UID)
+                .toColumn(IdentifiableColumns.UID)
                 .fromTable(UserCredentialsTableInfo.TABLE_INFO.name())
                 .fromColumn(UserCredentialsTableInfo.Columns.USER)
                 .notFoundValue("no_user_uid")

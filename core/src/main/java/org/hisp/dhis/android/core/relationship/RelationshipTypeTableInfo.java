@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public final class RelationshipTypeTableInfo {
 
@@ -51,7 +51,7 @@ public final class RelationshipTypeTableInfo {
         }
     };
 
-    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends IdentifiableColumns {
 
         public static final String FROM_TO_NAME = "fromToName";
         public static final String TO_FROM_NAME = "toFromName";

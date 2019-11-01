@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public final class OptionTableInfo {
 
@@ -51,7 +51,7 @@ public final class OptionTableInfo {
         }
     };
 
-    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends IdentifiableColumns {
 
         public final static String SORT_ORDER = "sortOrder";
         public final static String OPTION_SET = "optionSet";

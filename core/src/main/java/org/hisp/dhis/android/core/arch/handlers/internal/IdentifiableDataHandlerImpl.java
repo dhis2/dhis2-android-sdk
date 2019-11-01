@@ -32,8 +32,8 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.DeletableDataModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 
@@ -71,14 +71,14 @@ public class IdentifiableDataHandlerImpl<O extends DeletableDataModel & ObjectWi
         List<String> objectUids = UidsHelper.getUidsList(os);
 
         String storedObjectUidsWhereClause = new WhereClauseBuilder()
-                .appendInKeyStringValues(BaseIdentifiableObjectModel.Columns.UID, objectUids).build();
+                .appendInKeyStringValues(IdentifiableColumns.UID, objectUids).build();
         return store.selectUidsWhere(storedObjectUidsWhereClause);
     }
 
     private List<String> syncedObjectUids(List<String> storedObjectUids) {
         if (!storedObjectUids.isEmpty()) {
             String syncedObjectUidsWhereClause2 = new WhereClauseBuilder()
-                    .appendInKeyStringValues(BaseIdentifiableObjectModel.Columns.UID, storedObjectUids)
+                    .appendInKeyStringValues(IdentifiableColumns.UID, storedObjectUids)
                     .appendInKeyStringValues(BaseDataModel.Columns.STATE,
                             Arrays.asList(State.SYNCED.name(), State.RELATIONSHIP.name()))
                     .build();

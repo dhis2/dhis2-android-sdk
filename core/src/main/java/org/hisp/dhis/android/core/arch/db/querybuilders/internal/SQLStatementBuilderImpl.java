@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.common.BaseModel;
 
 import static org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo.SORT_ORDER;
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaAndSpaceSeparatedArrayValues;
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
+import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 
 public class SQLStatementBuilderImpl implements SQLStatementBuilder {
     // TODO save TableInfo instead of separate files when architecture 1.0 is ready

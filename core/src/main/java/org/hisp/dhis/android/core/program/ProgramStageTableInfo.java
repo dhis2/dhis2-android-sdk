@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public final class ProgramStageTableInfo {
 
@@ -51,7 +51,7 @@ public final class ProgramStageTableInfo {
         }
     };
 
-    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends IdentifiableColumns {
         public static final String DESCRIPTION = "description";
         public static final String DISPLAY_DESCRIPTION = "displayDescription";
         public static final String EXECUTION_DATE_LABEL = "executionDateLabel";

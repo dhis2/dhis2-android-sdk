@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.arch.cleaners.internal;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.Collection;
@@ -69,7 +69,7 @@ public class SubCollectionCleanerImpl<P extends ObjectWithUidInterface> implemen
             String clause =
                     parentColumn + "='" + entry.getKey() + "'"
                             + " AND "
-                            + BaseIdentifiableObjectModel.Columns.UID + " NOT IN (" + childrenUids + ");";
+                            + IdentifiableColumns.UID + " NOT IN (" + childrenUids + ");";
 
             result = result || databaseAdapter.database().delete(tableName, clause, null) > 0;
         }

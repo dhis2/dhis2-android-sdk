@@ -39,8 +39,8 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
@@ -177,7 +177,7 @@ public final class EventCollectionRepository
     public EventCollectionRepository byTrackedEntityInstanceUids(List<String> uids) {
         return cf.subQuery(Columns.ENROLLMENT).inLinkTable(
                 EnrollmentTableInfo.TABLE_INFO.name(),
-                BaseIdentifiableObjectModel.Columns.UID,
+                IdentifiableColumns.UID,
                 EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
                 uids
         );

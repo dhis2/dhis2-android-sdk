@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.cleaners.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 
@@ -63,7 +63,7 @@ public class DataOrphanCleanerImpl<P extends ObjectWithUidInterface, C extends O
                         + " AND "
                         + stateColumn + "!='" + State.TO_POST + "'"
                         + " AND "
-                        + BaseIdentifiableObjectModel.Columns.UID + " NOT IN (" + childrenUids + ");";
+                        + IdentifiableColumns.UID + " NOT IN (" + childrenUids + ");";
         return databaseAdapter.database().delete(tableName, clause, null) > 0;
     }
 }

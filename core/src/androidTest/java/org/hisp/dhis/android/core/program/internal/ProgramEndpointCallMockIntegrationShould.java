@@ -33,13 +33,11 @@ import android.database.Cursor;
 
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;
 import org.hisp.dhis.android.core.legendset.LegendTableInfo;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo;
-import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo;
-import org.hisp.dhis.android.core.program.ProgramRuleTableInfo;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns;
@@ -60,7 +58,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
+import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(D2JunitRunner.class)
@@ -177,11 +175,11 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
         programEndpointCall.call();
         String[] projection = {
                 UID,
-                BaseIdentifiableObjectModel.Columns.CODE,
-                BaseIdentifiableObjectModel.Columns.NAME,
-                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
-                BaseIdentifiableObjectModel.Columns.CREATED,
-                BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
+                IdentifiableColumns.CODE,
+                IdentifiableColumns.NAME,
+                IdentifiableColumns.DISPLAY_NAME,
+                IdentifiableColumns.CREATED,
+                IdentifiableColumns.LAST_UPDATED,
                 ProgramRuleVariableTableInfo.Columns.USE_CODE_FOR_OPTION_SET,
                 ProgramRuleVariableTableInfo.Columns.PROGRAM,
                 ProgramRuleVariableTableInfo.Columns.PROGRAM_STAGE,

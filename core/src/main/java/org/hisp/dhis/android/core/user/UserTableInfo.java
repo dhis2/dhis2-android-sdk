@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.user.internal.UserFields;
 
 public final class UserTableInfo {
@@ -51,7 +51,7 @@ public final class UserTableInfo {
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    static class Columns extends IdentifiableColumns {
 
         @Override
         public String[] all() {

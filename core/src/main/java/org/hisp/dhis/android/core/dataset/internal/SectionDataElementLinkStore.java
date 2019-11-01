@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.dataset.SectionDataElementLink;
 import org.hisp.dhis.android.core.dataset.SectionDataElementLinkTableInfo;
@@ -48,8 +48,8 @@ final class SectionDataElementLinkStore {
 
     private SectionDataElementLinkStore() {}
 
-    public static LinkModelStore<SectionDataElementLink> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter,
+    public static LinkStore<SectionDataElementLink> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkStore(databaseAdapter,
                 SectionDataElementLinkTableInfo.TABLE_INFO,
                 SectionDataElementLinkTableInfo.Columns.SECTION,
                 BINDER,

@@ -25,41 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
-import android.database.sqlite.SQLiteStatement;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.common.Model;
+import java.util.List;
 
-import androidx.annotation.NonNull;
-
-public class LinkModelStoreImpl<M extends Model>
-        extends ObjectStoreImpl<M> implements LinkModelStore<M> {
-
-    private final String masterColumn;
-
-    protected LinkModelStoreImpl(DatabaseAdapter databaseAdapter,
-                       SQLiteStatement insertStatement,
-                       SQLStatementBuilder builder,
-                       String masterColumn,
-                       StatementBinder<M> binder,
-                       CursorModelFactory<M> modelFactory) {
-        super(databaseAdapter, insertStatement, builder, binder, modelFactory);
-        this.masterColumn = masterColumn;
-    }
-
-    @Override
-    public void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException {
-        deleteWhere(masterColumn + "='" + masterUid + "';");
-    }
-
-    @Override
-    public int deleteAllLinks() {
-        return delete();
-    }
+public interface LinkChildStore<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface> {
+    List<C> getChildren(P p);
+    List<C> getChildrenWhere(P p, String whereClause);
 }

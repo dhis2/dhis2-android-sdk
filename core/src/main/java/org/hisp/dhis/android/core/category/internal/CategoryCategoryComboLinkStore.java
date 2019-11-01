@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.category.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo;
@@ -49,8 +49,8 @@ final class CategoryCategoryComboLinkStore {
 
     private CategoryCategoryComboLinkStore() {}
 
-    public static LinkModelStore<CategoryCategoryComboLink> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, CategoryCategoryComboLinkTableInfo.TABLE_INFO,
+    public static LinkStore<CategoryCategoryComboLink> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkStore(databaseAdapter, CategoryCategoryComboLinkTableInfo.TABLE_INFO,
                 CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO, BINDER,
                 CategoryCategoryComboLink::create);
     }

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.program.ProgramSectionAttributeLinkSamples;
 import org.hisp.dhis.android.core.program.ProgramSectionAttributeLink;
 import org.hisp.dhis.android.core.program.ProgramSectionAttributeLinkTableInfo;
@@ -38,7 +38,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
 public class ProgramSectionAttributeLinkStoreIntegrationShould
-        extends LinkModelStoreAbstractIntegrationShould<ProgramSectionAttributeLink> {
+        extends LinkStoreAbstractIntegrationShould<ProgramSectionAttributeLink> {
 
     public ProgramSectionAttributeLinkStoreIntegrationShould() {
         super(ProgramSectionAttributeLinkStore.create(DatabaseAdapterFactory.get()),

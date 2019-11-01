@@ -35,8 +35,8 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.List;
 
-class LinkModelChildStoreImpl<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface>
-        implements LinkModelChildStore<P, C> {
+class LinkChildStoreImpl<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface>
+        implements LinkChildStore<P, C> {
 
     private final LinkTableChildProjection linkTableChildProjection;
 
@@ -45,10 +45,10 @@ class LinkModelChildStoreImpl<P extends ObjectWithUidInterface, C extends Object
 
     private final CursorExecutor<C> cursorExecutor;
 
-    LinkModelChildStoreImpl(LinkTableChildProjection linkTableChildProjection,
-                                   DatabaseAdapter databaseAdapter,
-                                   SQLStatementBuilder statementBuilder,
-                                   CursorExecutor<C> cursorExecutor) {
+    LinkChildStoreImpl(LinkTableChildProjection linkTableChildProjection,
+                       DatabaseAdapter databaseAdapter,
+                       SQLStatementBuilder statementBuilder,
+                       CursorExecutor<C> cursorExecutor) {
         this.linkTableChildProjection = linkTableChildProjection;
         this.databaseAdapter = databaseAdapter;
         this.statementBuilder = statementBuilder;

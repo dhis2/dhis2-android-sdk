@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
@@ -44,22 +44,22 @@ final class SectionDataElementChildrenAppender extends ChildrenAppender<Section>
             SectionDataElementLinkTableInfo.Columns.SECTION,
             SectionDataElementLinkTableInfo.Columns.DATA_ELEMENT);
 
-    private final LinkModelChildStore<Section, DataElement> linkModelChildStore;
+    private final LinkChildStore<Section, DataElement> linkChildStore;
 
-    private SectionDataElementChildrenAppender(LinkModelChildStore<Section, DataElement> linkModelChildStore) {
-        this.linkModelChildStore = linkModelChildStore;
+    private SectionDataElementChildrenAppender(LinkChildStore<Section, DataElement> linkChildStore) {
+        this.linkChildStore = linkChildStore;
     }
 
     @Override
     protected Section appendChildren(Section section) {
         Section.Builder builder = section.toBuilder();
-        builder.dataElements(linkModelChildStore.getChildren(section));
+        builder.dataElements(linkChildStore.getChildren(section));
         return builder.build();
     }
 
     static ChildrenAppender<Section> create(DatabaseAdapter databaseAdapter) {
         return new SectionDataElementChildrenAppender(
-                StoreFactory.linkModelChildStore(
+                StoreFactory.linkChildStore(
                         databaseAdapter,
                         SectionDataElementLinkTableInfo.TABLE_INFO,
                         CHILD_PROJECTION,

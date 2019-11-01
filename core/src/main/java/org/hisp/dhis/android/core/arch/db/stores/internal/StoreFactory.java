@@ -76,22 +76,22 @@ public final class StoreFactory {
                 whereDeleteBinder, modelFactory);
     }
 
-    public static <I extends Model> LinkModelStore<I> linkModelStore(
+    public static <I extends Model> LinkStore<I> linkStore(
             DatabaseAdapter databaseAdapter, TableInfo tableInfo, String masterColumn, StatementBinder<I> binder,
             CursorModelFactory<I> modelFactory) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilderImpl(tableInfo.name(), tableInfo.columns().all(),
                 tableInfo.columns().whereUpdate());
-        return new LinkModelStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(statementBuilder.insert()),
+        return new LinkStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(statementBuilder.insert()),
                 statementBuilder, masterColumn, binder, modelFactory);
     }
 
     public static <P extends ObjectWithUidInterface,
-            C extends ObjectWithUidInterface> LinkModelChildStore<P, C> linkModelChildStore(
+            C extends ObjectWithUidInterface> LinkChildStore<P, C> linkChildStore(
                     DatabaseAdapter databaseAdapter,
                     TableInfo linkTableInfo,
                     LinkTableChildProjection linkTableChildProjection,
                     CursorModelFactory<C> childFactory) {
-        return new LinkModelChildStoreImpl<>(
+        return new LinkChildStoreImpl<>(
                 linkTableChildProjection,
                 databaseAdapter,
                 new SQLStatementBuilderImpl(linkTableInfo),

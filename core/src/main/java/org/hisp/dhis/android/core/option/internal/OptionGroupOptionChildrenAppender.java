@@ -43,16 +43,16 @@ final class OptionGroupOptionChildrenAppender extends ChildrenAppender<OptionGro
             OptionGroupOptionLinkTableInfo.Columns.OPTION_GROUP,
             OptionGroupOptionLinkTableInfo.Columns.OPTION);
 
-    private final ObjectWithUidChildStore<OptionGroup> linkModelChildStore;
+    private final ObjectWithUidChildStore<OptionGroup> childStore;
 
-    private OptionGroupOptionChildrenAppender(ObjectWithUidChildStore<OptionGroup> linkModelChildStore) {
-        this.linkModelChildStore = linkModelChildStore;
+    private OptionGroupOptionChildrenAppender(ObjectWithUidChildStore<OptionGroup> childStore) {
+        this.childStore = childStore;
     }
 
     @Override
     protected OptionGroup appendChildren(OptionGroup optionGroup) {
         OptionGroup.Builder builder = optionGroup.toBuilder();
-        builder.options(linkModelChildStore.getChildren(optionGroup));
+        builder.options(childStore.getChildren(optionGroup));
         return builder.build();
     }
 

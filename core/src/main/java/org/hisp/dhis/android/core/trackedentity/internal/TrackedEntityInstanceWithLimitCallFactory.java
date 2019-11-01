@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.api.paging.internal.Paging;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.helpers.internal.BooleanWrapper;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
@@ -74,7 +74,7 @@ class TrackedEntityInstanceWithLimitCallFactory {
     private final ResourceHandler resourceHandler;
     private final Handler<ProgramOrganisationUnitLastUpdated> programOrganisationUnitLastUpdatedHandler;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
-    private final LinkModelStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
+    private final LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final DHISVersionManager versionManager;
 
@@ -92,7 +92,7 @@ class TrackedEntityInstanceWithLimitCallFactory {
             ResourceHandler resourceHandler,
             Handler<ProgramOrganisationUnitLastUpdated> programOrganisationUnitLastUpdatedHandler,
             UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
-            LinkModelStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore,
+            LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore,
             ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipDownloadCallFactory,
             TrackedEntityInstancePersistenceCallFactory persistenceCallFactory,

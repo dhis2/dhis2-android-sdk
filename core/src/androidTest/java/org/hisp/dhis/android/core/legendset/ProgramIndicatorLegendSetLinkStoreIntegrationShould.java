@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.legendset.ProgramIndicatorLegendSetLinkSamples;
 import org.hisp.dhis.android.core.legendset.internal.ProgramIndicatorLegendSetLinkStore;
 import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
@@ -37,7 +37,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
 public class ProgramIndicatorLegendSetLinkStoreIntegrationShould
-        extends LinkModelStoreAbstractIntegrationShould<ProgramIndicatorLegendSetLink> {
+        extends LinkStoreAbstractIntegrationShould<ProgramIndicatorLegendSetLink> {
 
     public ProgramIndicatorLegendSetLinkStoreIntegrationShould() {
         super(ProgramIndicatorLegendSetLinkStore.create(DatabaseAdapterFactory.get()),

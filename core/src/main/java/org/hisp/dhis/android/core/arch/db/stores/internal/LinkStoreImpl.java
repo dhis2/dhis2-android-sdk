@@ -28,11 +28,37 @@
 
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
+import android.database.sqlite.SQLiteStatement;
+
 import androidx.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.common.Model;
 
-public interface LinkModelStore<M extends Model> extends ObjectStore<M> {
-    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
-    int deleteAllLinks();
+public class LinkStoreImpl<M extends Model> extends ObjectStoreImpl<M> implements LinkStore<M> {
+
+    private final String masterColumn;
+
+    protected LinkStoreImpl(DatabaseAdapter databaseAdapter,
+                            SQLiteStatement insertStatement,
+                            SQLStatementBuilder builder,
+                            String masterColumn,
+                            StatementBinder<M> binder,
+                            CursorModelFactory<M> modelFactory) {
+        super(databaseAdapter, insertStatement, builder, binder, modelFactory);
+        this.masterColumn = masterColumn;
+    }
+
+    @Override
+    public void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException {
+        deleteWhere(masterColumn + "='" + masterUid + "';");
+    }
+
+    @Override
+    public int deleteAllLinks() {
+        return delete();
+    }
 }

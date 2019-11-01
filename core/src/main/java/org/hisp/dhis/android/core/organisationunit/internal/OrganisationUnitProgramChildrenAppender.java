@@ -44,17 +44,17 @@ final class OrganisationUnitProgramChildrenAppender extends ChildrenAppender<Org
             OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
             OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM);
 
-    private final ObjectWithUidChildStore<OrganisationUnit> linkModelChildStore;
+    private final ObjectWithUidChildStore<OrganisationUnit> childStore;
 
     private OrganisationUnitProgramChildrenAppender(
-            ObjectWithUidChildStore<OrganisationUnit> linkModelChildStore) {
-        this.linkModelChildStore = linkModelChildStore;
+            ObjectWithUidChildStore<OrganisationUnit> childStore) {
+        this.childStore = childStore;
     }
 
     @Override
     protected OrganisationUnit appendChildren(OrganisationUnit organisationUnit) {
         OrganisationUnit.Builder builder = organisationUnit.toBuilder();
-        builder.programs(linkModelChildStore.getChildren(organisationUnit));
+        builder.programs(childStore.getChildren(organisationUnit));
         return builder.build();
     }
 

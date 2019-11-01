@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.dataset.DataSetElementSamples;
 import org.hisp.dhis.android.core.dataset.DataSetElement;
 import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo;
@@ -39,7 +39,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
 public class DataSetDataElementLinkStoreIntegrationShould
-        extends LinkModelStoreAbstractIntegrationShould<DataSetElement> {
+        extends LinkStoreAbstractIntegrationShould<DataSetElement> {
 
     public DataSetDataElementLinkStoreIntegrationShould() {
         super(DataSetDataElementLinkStore.create(DatabaseAdapterFactory.get()), DataSetElementLinkTableInfo.TABLE_INFO,

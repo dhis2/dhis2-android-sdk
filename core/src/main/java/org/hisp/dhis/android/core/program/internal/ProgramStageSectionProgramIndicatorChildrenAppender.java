@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
@@ -44,23 +44,23 @@ final class ProgramStageSectionProgramIndicatorChildrenAppender extends Children
             ProgramStageSectionProgramIndicatorLinkTableInfo.Columns.PROGRAM_STAGE_SECTION,
             ProgramStageSectionProgramIndicatorLinkTableInfo.Columns.PROGRAM_INDICATOR);
 
-    private final LinkModelChildStore<ProgramStageSection, ProgramIndicator> linkModelChildStore;
+    private final LinkChildStore<ProgramStageSection, ProgramIndicator> linkChildStore;
 
     private ProgramStageSectionProgramIndicatorChildrenAppender(
-            LinkModelChildStore<ProgramStageSection, ProgramIndicator> linkModelChildStore) {
-        this.linkModelChildStore = linkModelChildStore;
+            LinkChildStore<ProgramStageSection, ProgramIndicator> linkChildStore) {
+        this.linkChildStore = linkChildStore;
     }
 
     @Override
     protected ProgramStageSection appendChildren(ProgramStageSection programStageSection) {
         ProgramStageSection.Builder builder = programStageSection.toBuilder();
-        builder.programIndicators(linkModelChildStore.getChildren(programStageSection));
+        builder.programIndicators(linkChildStore.getChildren(programStageSection));
         return builder.build();
     }
 
     static ChildrenAppender<ProgramStageSection> create(DatabaseAdapter databaseAdapter) {
         return new ProgramStageSectionProgramIndicatorChildrenAppender(
-                StoreFactory.linkModelChildStore(
+                StoreFactory.linkChildStore(
                         databaseAdapter,
                         ProgramStageSectionProgramIndicatorLinkTableInfo.TABLE_INFO,
                         CHILD_PROJECTION,

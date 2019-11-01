@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
 
 import java.util.List;
 
-public interface UserOrganisationUnitLinkStore extends LinkModelStore<UserOrganisationUnitLink> {
+public interface UserOrganisationUnitLinkStore extends LinkStore<UserOrganisationUnitLink> {
 
     List<String> queryRootCaptureOrganisationUnitUids() throws RuntimeException;
 

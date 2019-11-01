@@ -27,16 +27,16 @@
  */
 package org.hisp.dhis.android.core.arch.handlers.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.common.Model;
 
 import java.util.List;
 
 public class OrderedLinkHandlerImpl<S, M extends Model> implements OrderedLinkHandler<S, M> {
 
-    private final LinkModelStore<M> store;
+    private final LinkStore<M> store;
 
-    public OrderedLinkHandlerImpl(LinkModelStore<M> store) {
+    public OrderedLinkHandlerImpl(LinkStore<M> store) {
         this.store = store;
     }
 

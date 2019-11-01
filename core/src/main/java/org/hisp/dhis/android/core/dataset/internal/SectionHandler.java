@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
@@ -53,14 +53,14 @@ final class SectionHandler extends IdentifiableHandlerImpl<Section> {
     private final OrderedLinkHandler<DataElement, SectionDataElementLink> sectionDataElementLinkHandler;
     private final Handler<DataElementOperand> greyedFieldsHandler;
     private final LinkHandler<DataElementOperand, SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler;
-    private final LinkModelStore<SectionGreyedFieldsLink> sectionGreyedFieldsStore;
+    private final LinkStore<SectionGreyedFieldsLink> sectionGreyedFieldsStore;
 
     @Inject
     SectionHandler(IdentifiableObjectStore<Section> sectionStore,
                    OrderedLinkHandler<DataElement, SectionDataElementLink> sectionDataElementLinkHandler,
                    Handler<DataElementOperand> greyedFieldsHandler,
                    LinkHandler<DataElementOperand, SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler,
-                   LinkModelStore<SectionGreyedFieldsLink> sectionGreyedFieldsStore) {
+                   LinkStore<SectionGreyedFieldsLink> sectionGreyedFieldsStore) {
 
         super(sectionStore);
         this.sectionDataElementLinkHandler = sectionDataElementLinkHandler;

@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Sets;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
@@ -69,7 +69,7 @@ public class OrganisationUnitHandlerShould {
     private IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
 
     @Mock
-    private LinkModelStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
+    private LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
 
     @Mock
     private LinkHandler<ObjectWithUid, OrganisationUnitProgramLink> organisationUnitProgramLinkHandler;

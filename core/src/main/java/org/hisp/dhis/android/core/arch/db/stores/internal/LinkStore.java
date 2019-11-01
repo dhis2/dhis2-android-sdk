@@ -25,13 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import androidx.annotation.NonNull;
 
-import java.util.List;
+import org.hisp.dhis.android.core.common.Model;
 
-public interface LinkModelChildStore<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface> {
-    List<C> getChildren(P p);
-    List<C> getChildrenWhere(P p, String whereClause);
+public interface LinkStore<M extends Model> extends ObjectStore<M> {
+    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
+    int deleteAllLinks();
 }

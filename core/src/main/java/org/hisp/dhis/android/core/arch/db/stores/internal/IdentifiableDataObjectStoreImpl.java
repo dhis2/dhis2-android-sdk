@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBui
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.common.DataModel;
+import org.hisp.dhis.android.core.common.DataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 
@@ -50,7 +50,7 @@ import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLi
 import static org.hisp.dhis.android.core.common.DataColumns.STATE;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 
-public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & DataModel>
+public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & DataObject>
         extends IdentifiableObjectStoreImpl<M> implements IdentifiableDataObjectStore<M> {
 
     private final static String EQ = " = ";

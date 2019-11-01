@@ -40,7 +40,7 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseDeletableDataModel;
+import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueFields;
 
@@ -48,7 +48,7 @@ import java.util.Date;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_DataValue.Builder.class)
-public abstract class DataValue extends BaseDeletableDataModel {
+public abstract class DataValue extends BaseDeletableDataObject {
 
     @Nullable
     @JsonProperty
@@ -110,7 +110,7 @@ public abstract class DataValue extends BaseDeletableDataModel {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseDeletableDataModel.Builder<DataValue.Builder> {
+    public abstract static class Builder extends BaseDeletableDataObject.Builder<DataValue.Builder> {
 
         public Builder() {
             state(State.SYNCED);

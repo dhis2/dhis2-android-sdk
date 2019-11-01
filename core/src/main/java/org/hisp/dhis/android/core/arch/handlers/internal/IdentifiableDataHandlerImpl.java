@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.common.DataColumns;
-import org.hisp.dhis.android.core.common.DeletableDataModel;
+import org.hisp.dhis.android.core.common.DeletableDataObject;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
@@ -44,7 +44,7 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isDeleted;
 
-public class IdentifiableDataHandlerImpl<O extends DeletableDataModel & ObjectWithUidInterface>
+public class IdentifiableDataHandlerImpl<O extends DeletableDataObject & ObjectWithUidInterface>
         extends IdentifiableHandlerImpl<O> {
 
     public IdentifiableDataHandlerImpl(IdentifiableObjectStore<O> store) {

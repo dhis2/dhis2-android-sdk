@@ -28,22 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-import androidx.annotation.Nullable;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.gabrielittner.auto.value.cursor.ColumnName;
-
-public abstract class BaseDeletableDataModel extends BaseDataModel implements DeletableDataModel {
-
-    @Override
-    @Nullable
-    @JsonProperty
-    @ColumnName(DeletableDataColumns.DELETED)
-    public abstract Boolean deleted();
-
-    @JsonPOJOBuilder(withPrefix = "")
-    protected static abstract class Builder<T extends Builder> extends BaseDataModel.Builder<T> {
-        public abstract T deleted(@Nullable Boolean deleted);
-    }
+public interface DeletableDataObject extends DataObject, ObjectWithDeleteInterface {
+    Boolean deleted();
 }

@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.DeletableDataModel;
+import org.hisp.dhis.android.core.common.DeletableDataObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
@@ -49,7 +49,7 @@ import java.util.Map;
 import io.reactivex.Completable;
 
 public class ReadWriteWithUidDataObjectRepositoryImpl
-        <M extends Model & ObjectWithUidInterface & DeletableDataModel, R extends ReadOnlyObjectRepository<M>>
+        <M extends Model & ObjectWithUidInterface & DeletableDataObject, R extends ReadOnlyObjectRepository<M>>
         extends ReadWriteWithUidObjectRepositoryImpl<M, R> implements ReadWriteObjectRepository<M> {
 
     private final IdentifiableDeletableDataObjectStore<M> store;

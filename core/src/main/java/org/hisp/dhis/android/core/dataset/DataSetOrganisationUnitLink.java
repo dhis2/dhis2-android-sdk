@@ -29,12 +29,12 @@ package org.hisp.dhis.android.core.dataset;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.Model;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 public abstract class DataSetOrganisationUnitLink implements Model {
@@ -56,7 +56,7 @@ public abstract class DataSetOrganisationUnitLink implements Model {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
+    public static abstract class Builder extends BaseObject.Builder<Builder> {
 
         public abstract Builder id(Long id);
 

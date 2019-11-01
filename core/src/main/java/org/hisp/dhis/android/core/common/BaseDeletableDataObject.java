@@ -30,22 +30,20 @@ package org.hisp.dhis.android.core.common;
 
 import androidx.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
-
-public abstract class BaseDataModel extends BaseModel implements DataModel {
+public abstract class BaseDeletableDataObject extends BaseDataObject implements DeletableDataObject {
 
     @Override
     @Nullable
-    @ColumnName(DataColumns.STATE)
-    @ColumnAdapter(StateColumnAdapter.class)
-    public abstract State state();
+    @JsonProperty
+    @ColumnName(DeletableDataColumns.DELETED)
+    public abstract Boolean deleted();
 
     @JsonPOJOBuilder(withPrefix = "")
-    protected static abstract class Builder<T extends Builder> extends BaseModel.Builder<T> {
-        public abstract T state(@Nullable State state);
+    protected static abstract class Builder<T extends Builder> extends BaseDataObject.Builder<T> {
+        public abstract T deleted(@Nullable Boolean deleted);
     }
 }

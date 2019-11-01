@@ -47,7 +47,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCoordin
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEventListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNoteListColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
-import org.hisp.dhis.android.core.common.BaseDeletableDataModel;
+import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
@@ -60,7 +60,7 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Enrollment.Builder.class)
-public abstract class Enrollment extends BaseDeletableDataModel implements ObjectWithUidInterface {
+public abstract class Enrollment extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Override
     @JsonProperty(EnrollmentFields.UID)
@@ -154,7 +154,7 @@ public abstract class Enrollment extends BaseDeletableDataModel implements Objec
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseDeletableDataModel.Builder<Builder> {
+    public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         @JsonProperty(EnrollmentFields.UID)

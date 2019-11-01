@@ -30,14 +30,14 @@ package org.hisp.dhis.android.core.settings;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.SystemSettingKeyColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.Model;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 public abstract class SystemSetting implements Model {
@@ -65,7 +65,7 @@ public abstract class SystemSetting implements Model {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseModel.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         public abstract Builder key(SystemSettingKey key);

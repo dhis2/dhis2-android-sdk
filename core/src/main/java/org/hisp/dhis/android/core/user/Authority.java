@@ -30,15 +30,15 @@ package org.hisp.dhis.android.core.user;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.Model;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Authority.Builder.class)
@@ -61,7 +61,7 @@ public abstract class Authority implements Model {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
+    public static abstract class Builder extends BaseObject.Builder<Builder> {
 
         public abstract Builder id(Long id);
 

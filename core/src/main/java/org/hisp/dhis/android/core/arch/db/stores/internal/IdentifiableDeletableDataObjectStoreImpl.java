@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.common.DeletableDataModel;
+import org.hisp.dhis.android.core.common.DeletableDataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 
@@ -48,7 +48,7 @@ import static org.hisp.dhis.android.core.common.DataColumns.STATE;
 import static org.hisp.dhis.android.core.common.DeletableDataColumns.DELETED;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 
-public class IdentifiableDeletableDataObjectStoreImpl<M extends ObjectWithUidInterface & DeletableDataModel>
+public class IdentifiableDeletableDataObjectStoreImpl<M extends ObjectWithUidInterface & DeletableDataObject>
         extends IdentifiableDataObjectStoreImpl<M> implements IdentifiableDeletableDataObjectStore<M> {
 
     private final static String EQ = " = ";

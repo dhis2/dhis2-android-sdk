@@ -28,10 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-@SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-public abstract class BaseModel implements Model {
-
-    public static abstract class Builder<T extends Builder> {
-        public abstract T id(Long id);
-    }
+public interface DataObject extends Model {
+    State state();
 }

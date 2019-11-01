@@ -38,7 +38,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreBooleanColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
@@ -49,7 +49,7 @@ import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_DataElementOperand.Builder.class)
-public abstract class DataElementOperand extends BaseModel
+public abstract class DataElementOperand extends BaseObject
         implements ObjectWithUidInterface, ObjectWithDeleteInterface {
 
     @Override
@@ -84,7 +84,7 @@ public abstract class DataElementOperand extends BaseModel
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
+    public static abstract class Builder extends BaseObject.Builder<Builder> {
 
         @JsonProperty(UID)
         public abstract Builder uid(String uid);

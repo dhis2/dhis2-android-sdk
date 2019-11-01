@@ -28,6 +28,24 @@
 
 package org.hisp.dhis.android.core.common;
 
-public interface DataModel extends Model {
-    State state();
+import androidx.annotation.Nullable;
+
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
+
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
+
+public abstract class BaseDataObject extends BaseObject implements DataObject {
+
+    @Override
+    @Nullable
+    @ColumnName(DataColumns.STATE)
+    @ColumnAdapter(StateColumnAdapter.class)
+    public abstract State state();
+
+    @JsonPOJOBuilder(withPrefix = "")
+    protected static abstract class Builder<T extends Builder> extends BaseObject.Builder<T> {
+        public abstract T state(@Nullable State state);
+    }
 }

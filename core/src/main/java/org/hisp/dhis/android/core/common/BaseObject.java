@@ -28,6 +28,10 @@
 
 package org.hisp.dhis.android.core.common;
 
-public interface DeletableDataModel extends DataModel, ObjectWithDeleteInterface {
-    Boolean deleted();
+@SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+public abstract class BaseObject implements Model {
+
+    public static abstract class Builder<T extends Builder> {
+        public abstract T id(Long id);
+    }
 }

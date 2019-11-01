@@ -28,6 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-public interface DeletableDataModel extends DataModel, ObjectWithDeleteInterface{
+public interface DeletableDataModel extends DataModel, ObjectWithDeleteInterface {
     Boolean deleted();
 }

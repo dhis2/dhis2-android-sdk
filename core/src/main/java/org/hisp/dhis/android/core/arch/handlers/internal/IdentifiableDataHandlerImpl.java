@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.arch.handlers.internal;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.DeletableDataModel;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
@@ -79,7 +79,7 @@ public class IdentifiableDataHandlerImpl<O extends DeletableDataModel & ObjectWi
         if (!storedObjectUids.isEmpty()) {
             String syncedObjectUidsWhereClause2 = new WhereClauseBuilder()
                     .appendInKeyStringValues(IdentifiableColumns.UID, storedObjectUids)
-                    .appendInKeyStringValues(BaseDataModel.Columns.STATE,
+                    .appendInKeyStringValues(DataColumns.STATE,
                             Arrays.asList(State.SYNCED.name(), State.RELATIONSHIP.name()))
                     .build();
             return store.selectUidsWhere(syncedObjectUidsWhereClause2);

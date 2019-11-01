@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.trackedentity.search;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
@@ -53,7 +53,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
 
     private static String TEI_UID = dot(TEI_ALIAS, "uid");
     private static String TEI_ALL = dot(TEI_ALIAS, "*");
-    private static String TEI_STATE = dot(TEI_ALIAS, BaseDataModel.Columns.STATE);
+    private static String TEI_STATE = dot(TEI_ALIAS, DataColumns.STATE);
     private static String TEI_LAST_UPDATED = dot(TEI_ALIAS, "lastUpdated");
 
     private static String ENROLLMENT_DATE = EnrollmentTableInfo.Columns.ENROLLMENT_DATE;
@@ -98,7 +98,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
         }
 
         if (scope.states() != null) {
-            where.appendInKeyEnumValues(dot(TEI_ALIAS, BaseDataModel.Columns.STATE), scope.states());
+            where.appendInKeyEnumValues(dot(TEI_ALIAS, DataColumns.STATE), scope.states());
         }
 
         if (scope.includeDeleted() == null || !scope.includeDeleted()) {

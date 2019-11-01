@@ -44,8 +44,8 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.common.BaseDataModel.Columns.STATE;
 import static org.hisp.dhis.android.core.common.BaseDeletableDataModel.Columns.DELETED;
+import static org.hisp.dhis.android.core.common.DataColumns.STATE;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 
 public class IdentifiableDeletableDataObjectStoreImpl<M extends ObjectWithUidInterface & DeletableDataModel>

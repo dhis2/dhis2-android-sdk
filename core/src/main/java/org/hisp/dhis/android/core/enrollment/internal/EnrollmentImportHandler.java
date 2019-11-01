@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
@@ -141,7 +141,7 @@ public class EnrollmentImportHandler {
 
     private void handleNoteImportSummary(String enrollmentUid, State state) {
         String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST)
+                .appendKeyStringValue(DataColumns.STATE, State.TO_POST)
                 .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build();
         List<Note> notes = noteStore.selectWhere(whereClause);
         for (Note note : notes) {

@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
 import org.hisp.dhis.android.core.enrollment.note.internal.NoteChildrenAppender;
@@ -82,6 +82,6 @@ public final class EnrollmentEntityDIModule {
     @Reusable
     OrphanCleaner<Enrollment, Event> eventOrphanCleaner(DatabaseAdapter databaseAdapter) {
         return new DataOrphanCleanerImpl<>(EventTableInfo.TABLE_INFO.name(), EventTableInfo.Columns.ENROLLMENT,
-                BaseDataModel.Columns.STATE, databaseAdapter);
+                DataColumns.STATE, databaseAdapter);
     }
 }

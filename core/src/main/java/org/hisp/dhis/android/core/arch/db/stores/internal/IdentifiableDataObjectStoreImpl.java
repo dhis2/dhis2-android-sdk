@@ -47,7 +47,7 @@ import org.hisp.dhis.android.core.common.State;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.common.BaseDataModel.Columns.STATE;
+import static org.hisp.dhis.android.core.common.DataColumns.STATE;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 
 public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & DataModel>

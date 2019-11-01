@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.dataset.internal;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo;
-import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseDeletableDataModel;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
@@ -97,7 +97,7 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
     private static final String DSE_CATEGORY_COMBO =
             DATASETELEMENT_TABLE_ALIAS + "." + DataSetElementLinkTableInfo.Columns.CATEGORY_COMBO;
 
-    private static final String STATE = DATAVALUE_TABLE_ALIAS + "." + BaseDataModel.Columns.STATE;
+    private static final String STATE = DATAVALUE_TABLE_ALIAS + "." + DataColumns.STATE;
 
     private static final String SELECT_STATE_ORDERING = " MAX(CASE " +
             "WHEN " + STATE + " = '" + State.SYNCED + "' THEN 1 " +

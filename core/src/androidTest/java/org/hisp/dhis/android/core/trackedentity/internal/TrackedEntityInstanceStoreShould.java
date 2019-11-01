@@ -34,7 +34,7 @@ import android.database.sqlite.SQLiteConstraintException;
 
 import androidx.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
@@ -90,7 +90,7 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
             Columns.TRACKED_ENTITY_TYPE,
             Columns.GEOMETRY_TYPE,
             Columns.GEOMETRY_COORDINATES,
-            BaseDataModel.Columns.STATE
+            DataColumns.STATE
     };
 
     @Before
@@ -148,7 +148,7 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
         trackedEntityInstance.put(Columns.UID, UID);
         trackedEntityInstance.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
         trackedEntityInstance.put(Columns.TRACKED_ENTITY_TYPE, TRACKED_ENTITY);
-        trackedEntityInstance.put(BaseDataModel.Columns.STATE, STATE.name());
+        trackedEntityInstance.put(DataColumns.STATE, STATE.name());
 
         database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstance);
 
@@ -156,7 +156,7 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
                 Columns.UID,
                 Columns.ORGANISATION_UNIT,
                 Columns.TRACKED_ENTITY_TYPE,
-                BaseDataModel.Columns.STATE
+                DataColumns.STATE
         };
 
         Cursor cursor = database().query(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), projection, null, null, null, null, null);
@@ -177,7 +177,7 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
         trackedEntityInstanceContentValues.put(Columns.UID, UID);
         trackedEntityInstanceContentValues.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
         trackedEntityInstanceContentValues.put(Columns.TRACKED_ENTITY_TYPE, TRACKED_ENTITY);
-        trackedEntityInstanceContentValues.put(BaseDataModel.Columns.STATE, State.TO_POST.name());
+        trackedEntityInstanceContentValues.put(DataColumns.STATE, State.TO_POST.name());
         database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstanceContentValues);
 
         String[] projection = {Columns.UID};

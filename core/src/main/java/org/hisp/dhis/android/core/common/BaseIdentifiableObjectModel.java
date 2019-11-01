@@ -28,17 +28,9 @@
 
 package org.hisp.dhis.android.core.common;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
-
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 
-import java.util.Date;
-
-import androidx.annotation.Nullable;
-
-public abstract class BaseIdentifiableObjectModel extends BaseModel implements IdentifiableObject {
+public abstract class BaseIdentifiableObjectModel extends BaseModel {
 
     public abstract static class Columns extends BaseModel.Columns {
         public static final String UID = "uid";
@@ -53,54 +45,5 @@ public abstract class BaseIdentifiableObjectModel extends BaseModel implements I
             return CollectionsHelper.appendInNewArray(super.all(), UID, CODE, NAME, DISPLAY_NAME, CREATED,
                     LAST_UPDATED);
         }
-    }
-
-    @Override
-    @Nullable
-    @ColumnName(Columns.UID)
-    public abstract String uid();
-
-    @Override
-    @Nullable
-    public abstract String code();
-
-    @Override
-    @Nullable
-    public abstract String name();
-
-    @Override
-    @Nullable
-    public abstract String displayName();
-
-    @Override
-    @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date created();
-
-    public String createdStr() {
-        return BaseIdentifiableObject.DATE_FORMAT.format(created());
-    }
-
-    @Override
-    @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date lastUpdated();
-
-    public String lastUpdatedStr() {
-        return BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated());
-    }
-
-    public static abstract class Builder<T extends Builder> extends BaseModel.Builder<T> {
-        public abstract T uid(String uid);
-
-        public abstract T code(@Nullable String code);
-
-        public abstract T name(@Nullable String name);
-
-        public abstract T displayName(@Nullable String displayName);
-
-        public abstract T created(@Nullable Date created);
-
-        public abstract T lastUpdated(@Nullable Date lastUpdated);
     }
 }

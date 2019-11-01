@@ -28,13 +28,9 @@
 
 package org.hisp.dhis.android.core.common;
 
-import com.gabrielittner.auto.value.cursor.ColumnName;
-
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 
-import androidx.annotation.Nullable;
-
-public abstract class BaseNameableObjectModel extends BaseIdentifiableObjectModel implements NameableObject {
+public abstract class BaseNameableObjectModel extends BaseIdentifiableObjectModel {
 
     public abstract static class Columns extends BaseIdentifiableObjectModel.Columns {
         public static final String SHORT_NAME = "shortName";
@@ -47,35 +43,5 @@ public abstract class BaseNameableObjectModel extends BaseIdentifiableObjectMode
             return CollectionsHelper.appendInNewArray(super.all(),
                     SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION);
         }
-    }
-
-    @Nullable
-    @Override
-    @ColumnName(Columns.SHORT_NAME)
-    public abstract String shortName();
-
-    @Nullable
-    @Override
-    @ColumnName(Columns.DISPLAY_SHORT_NAME)
-    public abstract String displayShortName();
-
-    @Nullable
-    @Override
-    @ColumnName(Columns.DESCRIPTION)
-    public abstract String description();
-
-    @Nullable
-    @Override
-    @ColumnName(Columns.DISPLAY_DESCRIPTION)
-    public abstract String displayDescription();
-
-    public static abstract class Builder<T extends Builder> extends BaseIdentifiableObjectModel.Builder<T> {
-        public abstract T shortName(@Nullable String shortName);
-
-        public abstract T displayShortName(@Nullable String displayShortName);
-
-        public abstract T description(@Nullable String description);
-
-        public abstract T displayDescription(@Nullable String displayDescription);
     }
 }

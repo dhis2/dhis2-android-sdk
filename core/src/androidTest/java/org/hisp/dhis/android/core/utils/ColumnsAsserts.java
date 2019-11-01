@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.utils;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.common.NameableColumns;
 
 import java.util.Arrays;
 import java.util.List;
@@ -55,10 +55,10 @@ public class ColumnsAsserts {
     }
 
     private static void testNameableModelColumns(List<String> columnsList) {
-        assertThat(columnsList.contains(BaseNameableObjectModel.Columns.SHORT_NAME)).isEqualTo(true);
-        assertThat(columnsList.contains(BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME)).isEqualTo(true);
-        assertThat(columnsList.contains(BaseNameableObjectModel.Columns.DESCRIPTION)).isEqualTo(true);
-        assertThat(columnsList.contains(BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION)).isEqualTo(true);
+        assertThat(columnsList.contains(NameableColumns.SHORT_NAME)).isEqualTo(true);
+        assertThat(columnsList.contains(NameableColumns.DISPLAY_SHORT_NAME)).isEqualTo(true);
+        assertThat(columnsList.contains(NameableColumns.DESCRIPTION)).isEqualTo(true);
+        assertThat(columnsList.contains(NameableColumns.DISPLAY_DESCRIPTION)).isEqualTo(true);
     }
 
     public static void testNameableModelColumns(String[] columns) {

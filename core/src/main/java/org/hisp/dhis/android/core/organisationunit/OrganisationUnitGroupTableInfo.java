@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.common.NameableColumns;
 
 public final class OrganisationUnitGroupTableInfo {
 
@@ -54,8 +54,8 @@ public final class OrganisationUnitGroupTableInfo {
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
 
-        public static final String SHORT_NAME = BaseNameableObjectModel.Columns.SHORT_NAME;
-        public static final String DISPLAY_SHORT_NAME = BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME;
+        public static final String SHORT_NAME = NameableColumns.SHORT_NAME;
+        public static final String DISPLAY_SHORT_NAME = NameableColumns.DISPLAY_SHORT_NAME;
 
         @Override
         public String[] all() {

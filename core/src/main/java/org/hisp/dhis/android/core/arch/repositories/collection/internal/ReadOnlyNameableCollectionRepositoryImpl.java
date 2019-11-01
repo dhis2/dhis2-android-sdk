@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
@@ -34,8 +35,8 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyNameableC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel.Columns;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.NameableColumns;
 import org.hisp.dhis.android.core.common.NameableObject;
 
 import java.util.Map;
@@ -55,37 +56,37 @@ public class ReadOnlyNameableCollectionRepositoryImpl<M extends Model & Nameable
 
     @Override
     public StringFilterConnector<R> byShortName() {
-        return cf.string(Columns.SHORT_NAME);
+        return cf.string(NameableColumns.SHORT_NAME);
     }
 
     @Override
     public StringFilterConnector<R> byDisplayShortName() {
-        return cf.string(Columns.DISPLAY_SHORT_NAME);
+        return cf.string(NameableColumns.DISPLAY_SHORT_NAME);
     }
 
     @Override
     public StringFilterConnector<R> byDescription() {
-        return cf.string(Columns.DESCRIPTION);
+        return cf.string(NameableColumns.DESCRIPTION);
     }
 
     @Override
     public StringFilterConnector<R> byDisplayDescription() {
-        return cf.string(Columns.DISPLAY_DESCRIPTION);
+        return cf.string(NameableColumns.DISPLAY_DESCRIPTION);
     }
 
     public R orderByShortName(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.SHORT_NAME, direction);
+        return cf.withOrderBy(NameableColumns.SHORT_NAME, direction);
     }
 
     public R orderByShortDisplayName(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.DISPLAY_SHORT_NAME, direction);
+        return cf.withOrderBy(NameableColumns.DISPLAY_SHORT_NAME, direction);
     }
 
     public R orderByDescription(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.DESCRIPTION, direction);
+        return cf.withOrderBy(NameableColumns.DESCRIPTION, direction);
     }
 
     public R orderByDisplayDescription(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.DISPLAY_DESCRIPTION, direction);
+        return cf.withOrderBy(NameableColumns.DISPLAY_DESCRIPTION, direction);
     }
 }

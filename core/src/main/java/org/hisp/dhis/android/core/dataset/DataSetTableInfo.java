@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.common.NameableColumns;
 
 public final class DataSetTableInfo {
 
@@ -51,7 +51,7 @@ public final class DataSetTableInfo {
         }
     };
 
-    public static class Columns extends BaseNameableObjectModel.Columns {
+    public static class Columns extends NameableColumns {
 
         public static final String PERIOD_TYPE = "periodType";
         public static final String CATEGORY_COMBO = "categoryCombo";

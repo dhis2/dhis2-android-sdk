@@ -30,18 +30,15 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 
-public abstract class BaseNameableObjectModel extends BaseIdentifiableObjectModel {
+public abstract class NameableColumns extends BaseIdentifiableObjectModel.Columns {
+    public static final String SHORT_NAME = "shortName";
+    public static final String DISPLAY_SHORT_NAME = "displayShortName";
+    public static final String DESCRIPTION = "description";
+    public static final String DISPLAY_DESCRIPTION = "displayDescription";
 
-    public abstract static class Columns extends BaseIdentifiableObjectModel.Columns {
-        public static final String SHORT_NAME = "shortName";
-        public static final String DISPLAY_SHORT_NAME = "displayShortName";
-        public static final String DESCRIPTION = "description";
-        public static final String DISPLAY_DESCRIPTION = "displayDescription";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION);
-        }
+    @Override
+    public String[] all() {
+        return CollectionsHelper.appendInNewArray(super.all(),
+                SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION);
     }
 }

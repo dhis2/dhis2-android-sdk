@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.common.NameableColumns;
 
 public final class ProgramIndicatorTableInfo {
 
@@ -51,7 +51,7 @@ public final class ProgramIndicatorTableInfo {
         }
     };
 
-    public static class Columns extends BaseNameableObjectModel.Columns {
+    public static class Columns extends NameableColumns {
         public static final String DISPLAY_IN_FORM = "displayInForm";
         public static final String EXPRESSION = "expression";
         public static final String DIMENSION_ITEM = "dimensionItem";

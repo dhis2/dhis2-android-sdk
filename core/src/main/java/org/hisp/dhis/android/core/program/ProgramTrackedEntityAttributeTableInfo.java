@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.common.NameableColumns;
 
 public final class ProgramTrackedEntityAttributeTableInfo {
 
@@ -50,7 +50,7 @@ public final class ProgramTrackedEntityAttributeTableInfo {
         }
     };
 
-    public static class Columns extends BaseNameableObjectModel.Columns {
+    public static class Columns extends NameableColumns {
         public static final String MANDATORY = "mandatory";
         public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
         public static final String ALLOW_FUTURE_DATE = "allowFutureDate";

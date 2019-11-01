@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.common.NameableColumns;
 
 public final class ProgramTableInfo {
 
@@ -50,7 +50,7 @@ public final class ProgramTableInfo {
         }
     };
 
-    public static class Columns extends BaseNameableObjectModel.Columns {
+    public static class Columns extends NameableColumns {
         public static final String ACCESS_DATA_WRITE = "accessDataWrite";
         public static final String VERSION = "version";
         public static final String ONLY_ENROLL_ONCE = "onlyEnrollOnce";

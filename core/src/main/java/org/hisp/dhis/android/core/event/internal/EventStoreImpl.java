@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.event.internal;
 import android.database.Cursor;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
@@ -85,8 +85,8 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
                            SQLStatementWrapper statementWrapper,
                            SQLStatementBuilderImpl builder,
                            StatementBinder<Event> binder,
-                           CursorModelFactory<Event> modelFactory) {
-        super(databaseAdapter, statementWrapper, builder, binder, modelFactory);
+                           ObjectFactory<Event> objectFactory) {
+        super(databaseAdapter, statementWrapper, builder, binder, objectFactory);
     }
 
     @Override

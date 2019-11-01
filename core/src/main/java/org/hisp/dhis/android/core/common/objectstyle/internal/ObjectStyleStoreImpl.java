@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.common.objectstyle.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
@@ -65,8 +65,8 @@ public final class ObjectStyleStoreImpl extends ObjectWithoutUidStoreImpl<Object
                                  StatementBinder<ObjectStyle> binder,
                                  WhereStatementBinder<ObjectStyle> whereUpdateBinder,
                                  WhereStatementBinder<ObjectStyle> whereDeleteBinder,
-                                 CursorModelFactory<ObjectStyle> modelFactory) {
-        super(databaseAdapter, builder, binder, whereUpdateBinder, whereDeleteBinder, modelFactory);
+                                 ObjectFactory<ObjectStyle> objectFactory) {
+        super(databaseAdapter, builder, binder, whereUpdateBinder, whereDeleteBinder, objectFactory);
     }
 
     @Override

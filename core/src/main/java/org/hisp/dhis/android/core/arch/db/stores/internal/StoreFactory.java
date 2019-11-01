@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.db.stores.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorExecutorImpl;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
@@ -48,41 +48,41 @@ public final class StoreFactory {
 
     public static <I extends Model & ObjectWithUidInterface> IdentifiableObjectStore<I> objectWithUidStore(
             DatabaseAdapter databaseAdapter, TableInfo tableInfo, StatementBinder<I> binder,
-            CursorModelFactory<I> modelFactory) {
+            ObjectFactory<I> objectFactory) {
         SQLStatementBuilder statementBuilder =
                 new SQLStatementBuilderImpl(tableInfo.name(), tableInfo.columns().all(), new String[]{});
         SQLStatementWrapper statements = new SQLStatementWrapper(statementBuilder, databaseAdapter);
-        return new IdentifiableObjectStoreImpl<>(databaseAdapter, statements, statementBuilder, binder, modelFactory);
+        return new IdentifiableObjectStoreImpl<>(databaseAdapter, statements, statementBuilder, binder, objectFactory);
     }
 
     public static <I extends Model> ObjectStore<I> objectStore(DatabaseAdapter databaseAdapter,
                                                                TableInfo tableInfo,
                                                                StatementBinder<I> binder,
-                                                               CursorModelFactory<I> modelFactory) {
+                                                               ObjectFactory<I> objectFactory) {
         SQLStatementBuilder statementBuilder =
                 new SQLStatementBuilderImpl(tableInfo.name(), tableInfo.columns().all(), new String[]{});
         return new ObjectStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(statementBuilder.insert()),
-                statementBuilder, binder, modelFactory);
+                statementBuilder, binder, objectFactory);
     }
 
     public static <I extends Model> ObjectWithoutUidStore<I> objectWithoutUidStore(
             DatabaseAdapter databaseAdapter, TableInfo tableInfo, StatementBinder<I> binder,
             WhereStatementBinder<I> whereUpdateBinder,
-            WhereStatementBinder<I> whereDeleteBinder, CursorModelFactory<I> modelFactory) {
+            WhereStatementBinder<I> whereDeleteBinder, ObjectFactory<I> objectFactory) {
         SQLStatementBuilder statementBuilder =
                 new SQLStatementBuilderImpl(tableInfo.name(), tableInfo.columns().all(),
                         tableInfo.columns().whereUpdate());
         return new ObjectWithoutUidStoreImpl<>(databaseAdapter, statementBuilder, binder, whereUpdateBinder,
-                whereDeleteBinder, modelFactory);
+                whereDeleteBinder, objectFactory);
     }
 
     public static <I extends Model> LinkStore<I> linkStore(
             DatabaseAdapter databaseAdapter, TableInfo tableInfo, String masterColumn, StatementBinder<I> binder,
-            CursorModelFactory<I> modelFactory) {
+            ObjectFactory<I> objectFactory) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilderImpl(tableInfo.name(), tableInfo.columns().all(),
                 tableInfo.columns().whereUpdate());
         return new LinkStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(statementBuilder.insert()),
-                statementBuilder, masterColumn, binder, modelFactory);
+                statementBuilder, masterColumn, binder, objectFactory);
     }
 
     public static <P extends ObjectWithUidInterface,
@@ -90,7 +90,7 @@ public final class StoreFactory {
                     DatabaseAdapter databaseAdapter,
                     TableInfo linkTableInfo,
                     LinkTableChildProjection linkTableChildProjection,
-                    CursorModelFactory<C> childFactory) {
+                    ObjectFactory<C> childFactory) {
         return new LinkChildStoreImpl<>(
                 linkTableChildProjection,
                 databaseAdapter,
@@ -101,7 +101,7 @@ public final class StoreFactory {
     public static <P extends ObjectWithUidInterface, C> SingleParentChildStore<P, C> singleParentChildStore(
                     DatabaseAdapter databaseAdapter,
                     SingleParentChildProjection childProjection,
-                    CursorModelFactory<C> childFactory) {
+                    ObjectFactory<C> childFactory) {
         return new SingleParentChildStoreImpl<>(
                 childProjection,
                 databaseAdapter,

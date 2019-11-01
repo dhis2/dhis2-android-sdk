@@ -33,7 +33,7 @@ import android.database.sqlite.SQLiteStatement;
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.common.Model;
@@ -47,8 +47,8 @@ public class LinkStoreImpl<M extends Model> extends ObjectStoreImpl<M> implement
                             SQLStatementBuilder builder,
                             String masterColumn,
                             StatementBinder<M> binder,
-                            CursorModelFactory<M> modelFactory) {
-        super(databaseAdapter, insertStatement, builder, binder, modelFactory);
+                            ObjectFactory<M> objectFactory) {
+        super(databaseAdapter, insertStatement, builder, binder, objectFactory);
         this.masterColumn = masterColumn;
     }
 

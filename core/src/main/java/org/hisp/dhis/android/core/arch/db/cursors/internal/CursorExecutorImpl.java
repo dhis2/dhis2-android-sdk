@@ -35,10 +35,10 @@ import java.util.List;
 
 public class CursorExecutorImpl<M> implements CursorExecutor<M> {
 
-    private final CursorModelFactory<M> modelFactory;
+    private final ObjectFactory<M> objectFactory;
 
-    public CursorExecutorImpl(CursorModelFactory<M> modelFactory) {
-        this.modelFactory = modelFactory;
+    public CursorExecutorImpl(ObjectFactory<M> objectFactory) {
+        this.objectFactory = objectFactory;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class CursorExecutorImpl<M> implements CursorExecutor<M> {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 do {
-                    collection.add(modelFactory.fromCursor(cursor));
+                    collection.add(objectFactory.fromCursor(cursor));
                 }
                 while (cursor.moveToNext());
             }

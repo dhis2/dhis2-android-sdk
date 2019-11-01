@@ -35,7 +35,7 @@ import android.database.sqlite.SQLiteStatement;
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
@@ -66,8 +66,8 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
     public IdentifiableDataObjectStoreImpl(DatabaseAdapter databaseAdapter,
                                            SQLStatementWrapper statements,
                                            SQLStatementBuilder builder, StatementBinder<M> binder,
-                                           CursorModelFactory<M> modelFactory) {
-        super(databaseAdapter, statements, builder, binder, modelFactory);
+                                           ObjectFactory<M> objectFactory) {
+        super(databaseAdapter, statements, builder, binder, objectFactory);
         this.tableName = builder.getTableName();
         String whereUid =  " WHERE " + UID + " =?";
 

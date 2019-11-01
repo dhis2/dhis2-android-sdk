@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.fileresource.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
@@ -56,8 +56,8 @@ public final class FileResourceStoreImpl extends IdentifiableDataObjectStoreImpl
                                   SQLStatementWrapper statementWrapper,
                                   SQLStatementBuilderImpl builder,
                                   StatementBinder<FileResource> binder,
-                                  CursorModelFactory<FileResource> modelFactory) {
-        super(databaseAdapter, statementWrapper, builder, binder, modelFactory);
+                                  ObjectFactory<FileResource> objectFactory) {
+        super(databaseAdapter, statementWrapper, builder, binder, objectFactory);
     }
 
     public static FileResourceStoreImpl create(DatabaseAdapter databaseAdapter) {

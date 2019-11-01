@@ -30,6 +30,6 @@ package org.hisp.dhis.android.core.arch.db.cursors.internal;
 
 import android.database.Cursor;
 
-public interface CursorModelFactory<M> {
+public interface ObjectFactory<M> {
     M fromCursor(Cursor cursor);
 }

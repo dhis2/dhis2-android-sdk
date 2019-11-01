@@ -30,8 +30,10 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
@@ -46,8 +48,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
@@ -85,8 +85,8 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
                                             StatementBinder<TrackedEntityDataValue> binder,
                                             WhereStatementBinder<TrackedEntityDataValue> whereUpdateBinder,
                                             WhereStatementBinder<TrackedEntityDataValue> whereDeleteBinder,
-                                            CursorModelFactory<TrackedEntityDataValue> modelFactory) {
-        super(databaseAdapter, builder, binder, whereUpdateBinder, whereDeleteBinder, modelFactory);
+                                            ObjectFactory<TrackedEntityDataValue> objectFactory) {
+        super(databaseAdapter, builder, binder, whereUpdateBinder, whereDeleteBinder, objectFactory);
     }
 
     @Override

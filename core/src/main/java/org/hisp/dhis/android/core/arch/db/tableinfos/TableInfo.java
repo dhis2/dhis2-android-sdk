@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.db.tableinfos;
 
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 import java.util.Arrays;
 
@@ -37,7 +37,7 @@ public abstract class TableInfo {
 
     public abstract String name();
 
-    public abstract BaseModel.Columns columns();
+    public abstract CoreColumns columns();
 
     public boolean hasSortOrder() {
         return Arrays.asList(columns().all()).contains(SORT_ORDER);

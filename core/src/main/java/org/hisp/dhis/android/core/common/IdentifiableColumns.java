@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 
-public abstract class IdentifiableColumns extends BaseModel.Columns {
+public abstract class IdentifiableColumns extends CoreColumns {
     public static final String UID = "uid";
     public static final String CODE = "code";
     public static final String NAME = "name";

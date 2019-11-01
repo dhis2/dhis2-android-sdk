@@ -44,12 +44,12 @@ public final class ObjectStyleTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
 
         public static final String UID = IdentifiableColumns.UID;
         public static final String OBJECT_TABLE = "objectTable";

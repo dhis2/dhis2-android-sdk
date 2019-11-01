@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class RelationshipItemTableInfo {
 
@@ -45,12 +45,12 @@ public final class RelationshipItemTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
         public static final String RELATIONSHIP = "relationship";
         public static final String RELATIONSHIP_ITEM_TYPE = "relationshipItemType";
         public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";

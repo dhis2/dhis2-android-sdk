@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
 import org.hisp.dhis.android.core.common.Model;
 
 import java.util.List;
@@ -94,7 +94,7 @@ public class ObjectStoreImpl<M extends Model> extends ReadableStoreImpl<M> imple
 
     @Override
     public boolean deleteById(@NonNull M m) {
-        return deleteWhere(BaseModel.Columns.ID + "='" + m.id() + "';");
+        return deleteWhere(CoreColumns.ID + "='" + m.id() + "';");
     }
 
     protected M popOneWhere(@NonNull String whereClause) {

@@ -26,51 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.maintenance;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
+@SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
+public abstract class CoreColumns {
+    public static final String ID = android.provider.BaseColumns._ID;
 
-public final class ForeignKeyViolationTableInfo {
-
-    private ForeignKeyViolationTableInfo() {
+    public String[] all() {
+        return new String[] {};
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "ForeignKeyViolation";
-        }
-
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends CoreColumns {
-        public final static String FROM_TABLE = "fromTable";
-        public final static String FROM_COLUMN = "fromColumn";
-        public final static String TO_TABLE = "toTable";
-        public final static String TO_COLUMN = "toColumn";
-        public final static String NOT_FOUND_VALUE = "notFoundValue";
-        public final static String FROM_OBJECT_UID = "fromObjectUid";
-        public final static String FROM_OBJECT_ROW = "fromObjectRow";
-        public final static String CREATED = "created";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    FROM_TABLE,
-                    FROM_COLUMN,
-                    TO_TABLE,
-                    TO_COLUMN,
-                    NOT_FOUND_VALUE,
-                    FROM_OBJECT_UID,
-                    FROM_OBJECT_ROW,
-                    CREATED);
-        }
+    public String[] whereUpdate() {
+        return new String[] {};
     }
 }

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.content.ContentValues;
 
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public class CreateRelationshipTypeUtils {
@@ -57,7 +57,7 @@ public class CreateRelationshipTypeUtils {
 
         ContentValues relationshipType = new ContentValues();
 
-        relationshipType.put(BaseModel.Columns.ID, id);
+        relationshipType.put(CoreColumns.ID, id);
         relationshipType.put(IdentifiableColumns.UID, uid);
         relationshipType.put(IdentifiableColumns.CODE, CODE);
         relationshipType.put(IdentifiableColumns.NAME, NAME);

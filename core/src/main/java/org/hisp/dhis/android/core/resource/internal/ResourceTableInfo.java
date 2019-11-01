@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.resource.internal;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class ResourceTableInfo {
 
@@ -45,12 +45,12 @@ public final class ResourceTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
         public static final String RESOURCE_TYPE = "resourceType";
         public static final String LAST_SYNCED = "lastSynced";
 

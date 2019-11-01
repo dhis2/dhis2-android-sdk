@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.dataapproval;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public class DataApprovalTableInfo {
 
@@ -44,12 +44,12 @@ public class DataApprovalTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new DataApprovalTableInfo.Columns();
         }
     };
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
 
         public static final String WORKFLOW = "workflow";
         public static final String ORGANISATION_UNIT = "organisationUnit";

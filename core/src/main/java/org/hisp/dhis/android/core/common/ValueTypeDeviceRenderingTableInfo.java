@@ -44,12 +44,12 @@ public final class ValueTypeDeviceRenderingTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
         static final String OBJECT_TABLE = "objectTable";
         public static final String DEVICE_TYPE = "deviceType";
         static final String TYPE = "type";

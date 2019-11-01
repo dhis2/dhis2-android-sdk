@@ -28,18 +28,18 @@
 
 package org.hisp.dhis.android.core.arch.repositories.scope;
 
+import androidx.annotation.NonNull;
+
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeComplexFilterItem;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 import java.util.Collections;
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 @AutoValue
 public abstract class RepositoryScope {
@@ -73,7 +73,7 @@ public abstract class RepositoryScope {
                 .filters(Collections.emptyList())
                 .complexFilters(Collections.emptyList())
                 .orderBy(Collections.emptyList())
-                .pagingKey(BaseModel.Columns.ID)
+                .pagingKey(CoreColumns.ID)
                 .build();
     }
 

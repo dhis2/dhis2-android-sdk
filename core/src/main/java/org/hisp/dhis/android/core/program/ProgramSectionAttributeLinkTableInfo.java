@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class ProgramSectionAttributeLinkTableInfo {
 
@@ -50,7 +50,7 @@ public final class ProgramSectionAttributeLinkTableInfo {
     private ProgramSectionAttributeLinkTableInfo() {
     }
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
 
         public static final String PROGRAM_SECTION = "programSection";
         public static final String ATTRIBUTE = "attribute";

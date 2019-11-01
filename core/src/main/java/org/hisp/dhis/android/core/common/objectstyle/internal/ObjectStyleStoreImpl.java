@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleTableInfo;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
@@ -81,7 +81,7 @@ public final class ObjectStyleStoreImpl extends ObjectWithoutUidStoreImpl<Object
 
     public static ObjectStyleStore create(DatabaseAdapter databaseAdapter) {
 
-        BaseModel.Columns columns = ObjectStyleTableInfo.TABLE_INFO.columns();
+        CoreColumns columns = ObjectStyleTableInfo.TABLE_INFO.columns();
 
         SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(
                 ObjectStyleTableInfo.TABLE_INFO.name(), columns);

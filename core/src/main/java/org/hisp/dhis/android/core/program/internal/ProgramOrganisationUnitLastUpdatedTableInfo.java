@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class ProgramOrganisationUnitLastUpdatedTableInfo {
 
@@ -45,12 +45,12 @@ public final class ProgramOrganisationUnitLastUpdatedTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
         public static final String PROGRAM = "program";
         public static final String ORGANISATION_UNIT = "organisationUnit";
         public static final String LAST_SYNCED = "lastSynced";

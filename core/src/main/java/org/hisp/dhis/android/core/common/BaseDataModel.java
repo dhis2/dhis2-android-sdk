@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAda
 
 public abstract class BaseDataModel extends BaseModel implements DataModel {
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
         public static final String STATE = "state";
     }
 

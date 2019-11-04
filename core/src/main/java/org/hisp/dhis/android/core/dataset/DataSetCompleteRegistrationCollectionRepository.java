@@ -62,6 +62,7 @@ public final class DataSetCompleteRegistrationCollectionRepository
 
     private final Handler<DataSetCompleteRegistration> handler;
     private final DataSetCompleteRegistrationPostCall postCall;
+    private final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
 
     @Inject
     DataSetCompleteRegistrationCollectionRepository(
@@ -70,11 +71,14 @@ public final class DataSetCompleteRegistrationCollectionRepository
             final RepositoryScope scope,
             final Handler<DataSetCompleteRegistration> handler,
             final DataSetCompleteRegistrationPostCall postCall) {
+
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new DataSetCompleteRegistrationCollectionRepository(store, childrenAppenders,
                         s, handler, postCall)));
+
         this.handler = handler;
         this.postCall = postCall;
+        this.dataSetCompleteRegistrationStore = store;
     }
 
     @Override
@@ -97,6 +101,22 @@ public final class DataSetCompleteRegistrationCollectionRepository
     @Override
     public void blockingUpload() {
         upload().blockingSubscribe();
+    }
+
+    public DataSetCompleteRegistrationObjectRepository value(final String period,
+                                             final String organisationUnit,
+                                             final String dataSet,
+                                             final String attributeOptionCombo) {
+
+        RepositoryScope updatedScope = byPeriod().eq(period)
+                .byOrganisationUnitUid().eq(organisationUnit)
+                .byDataSetUid().eq(dataSet)
+                .byAttributeOptionComboUid().eq(attributeOptionCombo)
+                .scope;
+
+        return new DataSetCompleteRegistrationObjectRepository(
+                dataSetCompleteRegistrationStore, childrenAppenders,
+                updatedScope, period, organisationUnit, dataSet, attributeOptionCombo);
     }
 
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byPeriod() {

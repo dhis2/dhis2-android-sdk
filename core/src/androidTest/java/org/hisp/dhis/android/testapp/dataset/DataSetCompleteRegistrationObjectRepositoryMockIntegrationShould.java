@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.testapp.dataset;
 
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationObjectRepository;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -56,6 +57,7 @@ public class DataSetCompleteRegistrationObjectRepositoryMockIntegrationShould ex
         DataSetCompleteRegistration dataSetCompleteRegistration = objectRepository().blockingGet();
 
         assertThat(dataSetCompleteRegistration.deleted(), is(true));
+        assertThat(dataSetCompleteRegistration.state(), is(State.TO_UPDATE));
 
     }
 

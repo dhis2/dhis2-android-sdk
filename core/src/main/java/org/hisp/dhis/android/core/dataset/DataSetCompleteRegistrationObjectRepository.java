@@ -89,7 +89,9 @@ public final class DataSetCompleteRegistrationObjectRepository
             if (dataSetCompleteRegistration.state() == State.TO_POST) {
                 dataSetCompleteRegistrationStore.delete();
             } else {
-                dataSetCompleteRegistrationStore.setDeleted(dataSetCompleteRegistration);
+
+                dataSetCompleteRegistrationStore.setState(
+                        dataSetCompleteRegistration.toBuilder().deleted(true).build(), State.TO_UPDATE);
             }
         }
     }

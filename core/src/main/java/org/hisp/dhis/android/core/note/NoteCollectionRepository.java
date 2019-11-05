@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepo
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.note.NoteTableInfo.Columns;
 
 import java.util.Map;
@@ -51,13 +52,16 @@ import dagger.Reusable;
 public final class NoteCollectionRepository
         extends ReadWriteWithUidCollectionRepositoryImpl<Note, NoteCreateProjection, NoteCollectionRepository> {
 
+    private final DataStatePropagator dataStatePropagator;
+
     @Inject
     NoteCollectionRepository(final ObjectWithoutUidStore<Note> store,
                              final Map<String, ChildrenAppender<Note>> childrenAppenders,
                              final RepositoryScope scope,
-                             final Transformer<NoteCreateProjection, Note> transformer) {
+                             final Transformer<NoteCreateProjection, Note> transformer, DataStatePropagator dataStatePropagator) {
         super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope,
-                s -> new NoteCollectionRepository(store, childrenAppenders, s, transformer)));
+                s -> new NoteCollectionRepository(store, childrenAppenders, s, transformer, dataStatePropagator)));
+        this.dataStatePropagator = dataStatePropagator;
     }
 
     public StringFilterConnector<NoteCollectionRepository> byUid() {
@@ -84,5 +88,10 @@ public final class NoteCollectionRepository
     public ReadOnlyObjectRepository<Note> uid(String uid) {
         RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
         return new ReadOnlyOneObjectRepositoryFinalImpl<>(store, childrenAppenders, updatedScope);
+    }
+
+    @Override
+    protected void propagateState(Note note) {
+        dataStatePropagator.propagateNoteCreation(note);
     }
 }

@@ -78,6 +78,7 @@ public abstract class ReadWriteWithUidCollectionRepositoryImpl
         M object = transformer.transform(projection);
         try {
             store.insert(object);
+            propagateState(object);
             return object.uid();
         } catch (SQLiteConstraintException e) {
             throw D2Error
@@ -96,5 +97,9 @@ public abstract class ReadWriteWithUidCollectionRepositoryImpl
                     .originalException(e)
                     .build();
         }
+    }
+
+    protected void propagateState(M m) {
+        // Method is empty because is the default action.
     }
 }

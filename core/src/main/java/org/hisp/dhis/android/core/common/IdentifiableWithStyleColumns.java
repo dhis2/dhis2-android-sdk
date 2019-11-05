@@ -26,12 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common.objectstyle.internal;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
-import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 
-public interface ObjectStyleHandler extends HandlerWithTransformer<ObjectStyle> {
+public class IdentifiableWithStyleColumns extends IdentifiableColumns {
+    public static final String COLOR = "color";
+    public static final String ICON = "icon";
 
-    void handle(ObjectStyle objectStyle, String uid, String objectTable);
+    @Override
+    public String[] all() {
+        return CollectionsHelper.appendInNewArray(super.all(), COLOR, ICON);
+    }
 }

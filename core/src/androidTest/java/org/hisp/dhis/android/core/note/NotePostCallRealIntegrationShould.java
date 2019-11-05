@@ -30,12 +30,8 @@ package org.hisp.dhis.android.core.note;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
-import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
@@ -48,14 +44,10 @@ public class NotePostCallRealIntegrationShould extends BaseRealIntegrationTest {
      */
     private D2 d2;
 
-    private TrackedEntityInstanceStore trackedEntityInstanceStore;
-
-
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter());
     }
 
     //@Test
@@ -67,19 +59,19 @@ public class NotePostCallRealIntegrationShould extends BaseRealIntegrationTest {
     //@Test
     public void download_tei_add_one_note_and_sync_in_2_30_or_more() throws Exception {
         d2 = D2Factory.forNewDatabase();
-        downloadUpdateAndSyncTei(RealServerMother.url2_30);
+        downloadUpdateAndSyncTei(RealServerMother.url2_31);
     }
 
     private void downloadUpdateAndSyncTei(String serverUrl) throws Exception {
-        d2.userModule().logIn(username, password, serverUrl).blockingGet();
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut();
+        }
+
+        d2.userModule().blockingLogIn(username, password, serverUrl);
 
         d2.metadataModule().blockingDownload();
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq("AlvUHPP2Mes").blockingDownload();
-
-        TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
-
-        setTeiToPost(tei);
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(100).blockingDownload();
 
         addNote();
 
@@ -88,14 +80,10 @@ public class NotePostCallRealIntegrationShould extends BaseRealIntegrationTest {
         d2.wipeModule().wipeEverything();
     }
 
-    private void setTeiToPost(TrackedEntityInstance tei) {
-        trackedEntityInstanceStore.update(tei.toBuilder().state(State.TO_POST).build());
-    }
-
     private void addNote() {
-        Enrollment enrollment = d2.enrollmentModule().enrollments().byTrackedEntityInstance().eq("AlvUHPP2Mes").one().blockingGet();
+        Enrollment enrollment = d2.enrollmentModule().enrollments().one().blockingGet();
         try {
-            String uid = d2.noteModule().notes().blockingAdd(NoteCreateProjection.create(enrollment.uid(), "New note", "android"));
+            d2.noteModule().notes().blockingAdd(NoteCreateProjection.create(enrollment.uid(), "New note"));
         } catch (Exception ignored) {
         }
     }

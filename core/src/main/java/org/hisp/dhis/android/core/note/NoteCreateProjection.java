@@ -48,15 +48,10 @@ public abstract class NoteCreateProjection {
     @JsonProperty()
     public abstract String value();
 
-    @Nullable
-    @JsonProperty()
-    public abstract String storedBy();
-
-    public static NoteCreateProjection create(String enrollment, String value, String storedBy) {
+    public static NoteCreateProjection create(String enrollment, String value) {
         return builder()
                 .enrollment(enrollment)
                 .value(value)
-                .storedBy(storedBy)
                 .build();
     }
 
@@ -72,8 +67,6 @@ public abstract class NoteCreateProjection {
         public abstract Builder enrollment(String enrollment);
 
         public abstract Builder value(String value);
-
-        public abstract Builder storedBy(String storedBy);
 
         public abstract NoteCreateProjection build();
     }

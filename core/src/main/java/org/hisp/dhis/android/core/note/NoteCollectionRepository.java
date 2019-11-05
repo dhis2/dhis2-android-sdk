@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectReposit
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.note.NoteTableInfo.Columns;
 
 import java.util.Map;
@@ -61,7 +61,7 @@ public final class NoteCollectionRepository
     }
 
     public StringFilterConnector<NoteCollectionRepository> byUid() {
-        return cf.string(BaseIdentifiableObjectModel.Columns.UID);
+        return cf.string(IdentifiableColumns.UID);
     }
 
     public StringFilterConnector<NoteCollectionRepository> byEnrollmentUid() {

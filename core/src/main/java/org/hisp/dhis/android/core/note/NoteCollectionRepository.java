@@ -58,7 +58,8 @@ public final class NoteCollectionRepository
     NoteCollectionRepository(final ObjectWithoutUidStore<Note> store,
                              final Map<String, ChildrenAppender<Note>> childrenAppenders,
                              final RepositoryScope scope,
-                             final Transformer<NoteCreateProjection, Note> transformer, DataStatePropagator dataStatePropagator) {
+                             final Transformer<NoteCreateProjection, Note> transformer,
+                             final DataStatePropagator dataStatePropagator) {
         super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope,
                 s -> new NoteCollectionRepository(store, childrenAppenders, s, transformer, dataStatePropagator)));
         this.dataStatePropagator = dataStatePropagator;

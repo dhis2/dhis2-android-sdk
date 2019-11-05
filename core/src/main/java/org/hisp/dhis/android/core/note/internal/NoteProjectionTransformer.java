@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.note.internal;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.note.NoteCreateProjection;
 
@@ -53,10 +54,11 @@ final class NoteProjectionTransformer implements Transformer<NoteCreateProjectio
     public Note transform(NoteCreateProjection projection) {
         return Note.builder()
                 .uid(new CodeGeneratorImpl().generate())
+                .state(State.TO_POST)
                 .enrollment(projection.enrollment())
                 .value(projection.value())
                 .storedBy(projection.storedBy())
-                .storedBy(versionManager.serializeStoredDate(new Date()))
+                .storedDate(versionManager.serializeStoredDate(new Date()))
                 .deleted(false)
                 .build();
     }

@@ -33,7 +33,6 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -50,14 +49,6 @@ public abstract class ObjectStyle extends BaseObject {
     @Nullable
     @JsonProperty()
     public abstract String icon();
-
-    @Nullable
-    @JsonIgnore()
-    public abstract String uid();
-
-    @Nullable
-    @JsonIgnore()
-    public abstract String objectTable();
 
     @NonNull
     public static ObjectStyle create(Cursor cursor) {
@@ -76,10 +67,6 @@ public abstract class ObjectStyle extends BaseObject {
         public abstract Builder color(String color);
 
         public abstract Builder icon(String icon);
-
-        public abstract Builder uid(String uid);
-
-        public abstract Builder objectTable(String objectTable);
 
         public abstract ObjectStyle build();
     }

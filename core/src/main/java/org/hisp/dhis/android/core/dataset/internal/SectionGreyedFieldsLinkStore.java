@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink;
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo;
@@ -48,9 +48,9 @@ final class SectionGreyedFieldsLinkStore {
 
     private SectionGreyedFieldsLinkStore() {}
 
-    public static LinkModelStore<SectionGreyedFieldsLink> create(DatabaseAdapter databaseAdapter) {
+    public static LinkStore<SectionGreyedFieldsLink> create(DatabaseAdapter databaseAdapter) {
 
-        return StoreFactory.linkModelStore(databaseAdapter,
+        return StoreFactory.linkStore(databaseAdapter,
                 SectionGreyedFieldsLinkTableInfo.TABLE_INFO,
                 SectionGreyedFieldsLinkTableInfo.Columns.SECTION,
                 BINDER,

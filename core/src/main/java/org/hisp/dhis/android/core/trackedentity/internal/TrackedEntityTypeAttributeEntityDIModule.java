@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
@@ -47,14 +47,14 @@ public final class TrackedEntityTypeAttributeEntityDIModule {
 
     @Provides
     @Reusable
-    public LinkModelStore<TrackedEntityTypeAttribute> store(DatabaseAdapter databaseAdapter) {
+    public LinkStore<TrackedEntityTypeAttribute> store(DatabaseAdapter databaseAdapter) {
         return TrackedEntityTypeAttributeStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
     public OrderedLinkHandler<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute> handler(
-            LinkModelStore<TrackedEntityTypeAttribute> store) {
+            LinkStore<TrackedEntityTypeAttribute> store) {
         return new OrderedLinkHandlerImpl<>(store);
     }
 

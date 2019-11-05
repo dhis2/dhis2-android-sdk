@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import io.reactivex.Single;
 
-public interface ReadWriteWithUidCollectionRepository<M extends Model & ObjectWithUidInterface, C>
+public interface ReadWriteWithUidCollectionRepository<M extends CoreObject & ObjectWithUidInterface, C>
         extends ReadOnlyCollectionRepository<M> {
 
     ReadOnlyObjectRepository<M> uid(String uid);

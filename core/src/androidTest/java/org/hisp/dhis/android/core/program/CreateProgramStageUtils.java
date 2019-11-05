@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.FormType;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public class CreateProgramStageUtils {
 
@@ -61,13 +61,13 @@ public class CreateProgramStageUtils {
 
     public static ContentValues create(long id, String uid, String programId) {
         ContentValues programStage = new ContentValues();
-        programStage.put(BaseIdentifiableObjectModel.Columns.ID, id);
-        programStage.put(BaseIdentifiableObjectModel.Columns.UID, uid);
-        programStage.put(BaseIdentifiableObjectModel.Columns.CODE, CODE);
-        programStage.put(BaseIdentifiableObjectModel.Columns.NAME, NAME);
-        programStage.put(BaseIdentifiableObjectModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
-        programStage.put(BaseIdentifiableObjectModel.Columns.CREATED, DATE);
-        programStage.put(BaseIdentifiableObjectModel.Columns.LAST_UPDATED, DATE);
+        programStage.put(IdentifiableColumns.ID, id);
+        programStage.put(IdentifiableColumns.UID, uid);
+        programStage.put(IdentifiableColumns.CODE, CODE);
+        programStage.put(IdentifiableColumns.NAME, NAME);
+        programStage.put(IdentifiableColumns.DISPLAY_NAME, DISPLAY_NAME);
+        programStage.put(IdentifiableColumns.CREATED, DATE);
+        programStage.put(IdentifiableColumns.LAST_UPDATED, DATE);
         programStage.put(ProgramStageTableInfo.Columns.EXECUTION_DATE_LABEL, EXECUTION_DATE_LABEL);
         programStage.put(ProgramStageTableInfo.Columns.ALLOW_GENERATE_NEXT_VISIT, ALLOW_GENERATE_NEXT_VISIT);
         programStage.put(ProgramStageTableInfo.Columns.VALID_COMPLETE_ONLY, VALID_COMPLETE_ONLY);

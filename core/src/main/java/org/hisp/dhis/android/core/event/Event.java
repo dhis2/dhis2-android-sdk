@@ -45,7 +45,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EventStatusCol
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCoordinatesColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityDataValueListColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
-import org.hisp.dhis.android.core.common.BaseDeletableDataModel;
+import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
@@ -57,7 +57,7 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Event.Builder.class)
-public abstract class Event extends BaseDeletableDataModel implements ObjectWithUidInterface {
+public abstract class Event extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Override
     @JsonProperty(EventFields.UID)
@@ -154,7 +154,7 @@ public abstract class Event extends BaseDeletableDataModel implements ObjectWith
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseDeletableDataModel.Builder<Builder> {
+    public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         @JsonProperty(EventFields.UID)

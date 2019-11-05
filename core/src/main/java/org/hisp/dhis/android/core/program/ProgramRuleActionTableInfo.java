@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public final class ProgramRuleActionTableInfo {
 
@@ -50,7 +50,7 @@ public final class ProgramRuleActionTableInfo {
         }
     };
 
-    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends IdentifiableColumns {
         public static final String DATA = "data";
         public static final String CONTENT = "content";
         public static final String LOCATION = "location";

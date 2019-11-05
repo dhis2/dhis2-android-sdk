@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,7 +40,7 @@ import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public abstract class ObjectWithoutUidStoreAbstractIntegrationShould<M extends Model>
+public abstract class ObjectWithoutUidStoreAbstractIntegrationShould<M extends CoreObject>
         extends ObjectStoreAbstractIntegrationShould<M> {
 
     private M objectToUpdate;

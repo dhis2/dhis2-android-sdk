@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class TrackedEntityTypeAttributeTableInfo {
 
@@ -50,7 +50,7 @@ public final class TrackedEntityTypeAttributeTableInfo {
         }
     };
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
         public final static String TRACKED_ENTITY_TYPE = "trackedEntityType";
         public final static String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
         public final static String DISPLAY_IN_LIST = "displayInList";

@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseDeletableDataModel;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.DeletableDataColumns;
 
 public final class DataSetCompleteRegistrationTableInfo {
 
@@ -45,12 +45,12 @@ public final class DataSetCompleteRegistrationTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new DataSetCompleteRegistrationTableInfo.Columns();
         }
     };
 
-    public static class Columns extends BaseDeletableDataModel.Columns {
+    public static class Columns extends DeletableDataColumns {
 
         public static final String PERIOD = "period";
         public static final String DATA_SET = "dataSet";

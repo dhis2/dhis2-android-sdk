@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.category.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
@@ -44,23 +44,23 @@ final class CategoryOptionComboCategoryOptionChildrenAppender extends ChildrenAp
             CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO,
             CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION);
 
-    private final LinkModelChildStore<CategoryOptionCombo, CategoryOption> linkModelChildStore;
+    private final LinkChildStore<CategoryOptionCombo, CategoryOption> linkChildStore;
 
     private CategoryOptionComboCategoryOptionChildrenAppender(
-            LinkModelChildStore<CategoryOptionCombo, CategoryOption> linkModelChildStore) {
-        this.linkModelChildStore = linkModelChildStore;
+            LinkChildStore<CategoryOptionCombo, CategoryOption> linkChildStore) {
+        this.linkChildStore = linkChildStore;
     }
 
     @Override
     protected CategoryOptionCombo appendChildren(CategoryOptionCombo optionCombo) {
         CategoryOptionCombo.Builder builder = optionCombo.toBuilder();
-        builder.categoryOptions(linkModelChildStore.getChildren(optionCombo));
+        builder.categoryOptions(linkChildStore.getChildren(optionCombo));
         return builder.build();
     }
 
     static ChildrenAppender<CategoryOptionCombo> create(DatabaseAdapter databaseAdapter) {
         return new CategoryOptionComboCategoryOptionChildrenAppender(
-                StoreFactory.linkModelChildStore(
+                StoreFactory.linkChildStore(
                         databaseAdapter,
                         CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO,
                         CHILD_PROJECTION,

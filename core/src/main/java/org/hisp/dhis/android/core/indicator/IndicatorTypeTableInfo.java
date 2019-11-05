@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.indicator;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public final class IndicatorTypeTableInfo {
 
@@ -46,12 +46,12 @@ public final class IndicatorTypeTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends IdentifiableColumns {
         public final static String NUMBER = "number";
         public final static String FACTOR = "factor";
 

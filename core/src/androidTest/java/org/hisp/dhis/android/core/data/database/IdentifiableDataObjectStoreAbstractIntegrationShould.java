@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.data.database;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.DataModel;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.DataObject;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.junit.Before;
@@ -42,8 +42,8 @@ import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public abstract class IdentifiableDataObjectStoreAbstractIntegrationShould<M extends ObjectWithUidInterface & Model
-        & DataModel & ObjectWithDeleteInterface> extends IdentifiableObjectStoreAbstractIntegrationShould<M> {
+public abstract class IdentifiableDataObjectStoreAbstractIntegrationShould<M extends ObjectWithUidInterface & CoreObject
+        & DataObject & ObjectWithDeleteInterface> extends IdentifiableObjectStoreAbstractIntegrationShould<M> {
 
     private M objectWithToDeleteState;
     private M objectWithSyncedState;

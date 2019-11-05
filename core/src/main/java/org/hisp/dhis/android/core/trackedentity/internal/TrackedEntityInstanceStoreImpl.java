@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
@@ -71,7 +71,7 @@ public final class TrackedEntityInstanceStoreImpl
     @Override
     public List<TrackedEntityInstance> queryTrackedEntityInstancesToSync() {
         String whereToSyncClause = new WhereClauseBuilder()
-                .appendInKeyStringValues(BaseDataModel.Columns.STATE, Arrays.asList(
+                .appendInKeyStringValues(DataColumns.STATE, Arrays.asList(
                         State.TO_POST.name(),
                         State.TO_UPDATE.name()))
                 .build();
@@ -82,7 +82,7 @@ public final class TrackedEntityInstanceStoreImpl
     @Override
     public List<TrackedEntityInstance> queryTrackedEntityInstancesToPost() {
         String whereToPostClause = new WhereClauseBuilder()
-                .appendKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST.name())
+                .appendKeyStringValue(DataColumns.STATE, State.TO_POST.name())
                 .build();
 
         return selectWhere(whereToPostClause);
@@ -91,7 +91,7 @@ public final class TrackedEntityInstanceStoreImpl
     @Override
     public List<String> querySyncedTrackedEntityInstanceUids() {
         String whereSyncedClause = new WhereClauseBuilder()
-                .appendKeyStringValue(BaseDataModel.Columns.STATE, State.SYNCED)
+                .appendKeyStringValue(DataColumns.STATE, State.SYNCED)
                 .build();
 
         return selectUidsWhere(whereSyncedClause);
@@ -100,7 +100,7 @@ public final class TrackedEntityInstanceStoreImpl
     @Override
     public List<String> queryMissingRelationshipsUids() {
         String whereRelationshipsClause = new WhereClauseBuilder()
-                .appendKeyStringValue(BaseDataModel.Columns.STATE, State.RELATIONSHIP)
+                .appendKeyStringValue(DataColumns.STATE, State.RELATIONSHIP)
                 .appendIsNullValue(TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT)
                 .build();
 

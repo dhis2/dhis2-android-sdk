@@ -141,7 +141,7 @@ public class ProgramHandlerShould {
         when(program.description()).thenReturn("A test program for the integration tests.");
         when(program.displayDescription()).thenReturn("A test program for the integration tests.");
 
-        //ProgramModel attributes:
+        //Program attributes:
         when(program.version()).thenReturn(1);
         when(program.onlyEnrollOnce()).thenReturn(true);
         when(program.enrollmentDateLabel()).thenReturn("enrollment date");

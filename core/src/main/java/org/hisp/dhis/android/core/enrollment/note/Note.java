@@ -38,13 +38,13 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseDeletableDataModel;
+import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.enrollment.note.internal.NoteFields;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Note.Builder.class)
-public abstract class Note extends BaseDeletableDataModel implements ObjectWithUidInterface {
+public abstract class Note extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Nullable
     @JsonProperty(NoteFields.UID)
@@ -78,7 +78,7 @@ public abstract class Note extends BaseDeletableDataModel implements ObjectWithU
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseDeletableDataModel.Builder<Builder> {
+    public static abstract class Builder extends BaseDeletableDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         @JsonProperty(NoteFields.UID)

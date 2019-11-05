@@ -30,20 +30,20 @@ package org.hisp.dhis.android.core.resource.internal;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ResourceTypeColumnAdapter;
+import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
-public abstract class Resource implements Model {
+public abstract class Resource implements CoreObject {
 
     public enum Type {
         EVENT,
@@ -86,7 +86,7 @@ public abstract class Resource implements Model {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseModel.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         public abstract Builder resourceType(Resource.Type resourceType);

@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.data.database;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,16 +39,16 @@ import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public abstract class LinkModelStoreAbstractIntegrationShould<M extends Model>
+public abstract class LinkStoreAbstractIntegrationShould<M extends CoreObject>
         extends ObjectStoreAbstractIntegrationShould<M> {
 
     private M objectWithOtherMasterUid;
     private String masterUid;
-    protected LinkModelStore<M> store;
+    protected LinkStore<M> store;
 
-    public LinkModelStoreAbstractIntegrationShould(LinkModelStore<M> store,
-                                                   TableInfo tableInfo,
-                                                   DatabaseAdapter databaseAdapter) {
+    public LinkStoreAbstractIntegrationShould(LinkStore<M> store,
+                                              TableInfo tableInfo,
+                                              DatabaseAdapter databaseAdapter) {
         super(store, tableInfo, databaseAdapter);
         this.store = store;
         this.objectWithOtherMasterUid = buildObjectWithOtherMasterUid();

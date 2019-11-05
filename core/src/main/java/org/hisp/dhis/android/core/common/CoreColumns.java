@@ -28,6 +28,14 @@
 
 package org.hisp.dhis.android.core.common;
 
-public interface DeletableDataModel extends DataModel, ObjectWithDeleteInterface{
-    Boolean deleted();
+public class CoreColumns {
+    public static final String ID = android.provider.BaseColumns._ID;
+
+    public String[] all() {
+        return new String[] {};
+    }
+
+    public String[] whereUpdate() {
+        return new String[] {};
+    }
 }

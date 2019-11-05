@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.organisationunit.internal;
 
-import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitOrganisationUnitGroupLinkSamples;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo;
@@ -38,7 +38,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
 public class OrganisationUnitOrganisationUnitGroupLinkStoreIntegrationShould
-        extends LinkModelStoreAbstractIntegrationShould<OrganisationUnitOrganisationUnitGroupLink> {
+        extends LinkStoreAbstractIntegrationShould<OrganisationUnitOrganisationUnitGroupLink> {
 
     public OrganisationUnitOrganisationUnitGroupLinkStoreIntegrationShould() {
         super(OrganisationUnitOrganisationUnitGroupLinkStore.create(DatabaseAdapterFactory.get()),

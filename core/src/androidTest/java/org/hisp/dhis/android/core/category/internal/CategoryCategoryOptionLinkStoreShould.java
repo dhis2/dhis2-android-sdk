@@ -28,14 +28,13 @@
 
 package org.hisp.dhis.android.core.category.internal;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink;
 import org.hisp.dhis.android.core.category.CategoryOption;
-import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionLinkStore;
-import org.hisp.dhis.android.core.category.internal.CategoryOptionStore;
-import org.hisp.dhis.android.core.category.internal.CategoryStore;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,14 +44,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
 public class CategoryCategoryOptionLinkStoreShould extends BaseRealIntegrationTest {
 
-    private LinkModelStore<CategoryCategoryOptionLink> store;
+    private LinkStore<CategoryCategoryOptionLink> store;
     private Category newCategory;
     private CategoryOption newCategoryOption;
     private CategoryCategoryOptionLink newCategoryCategoryOptionLink;
@@ -70,7 +67,7 @@ public class CategoryCategoryOptionLinkStoreShould extends BaseRealIntegrationTe
     public void insert_a_category_option_link() throws Exception {
         givenACategory();
         givenACategoryOption();
-        givenACategoryOptionLinkModel();
+        givenACategoryOptionLink();
 
         whenInsertNewCategory();
         whenInsertNewOption();
@@ -105,7 +102,7 @@ public class CategoryCategoryOptionLinkStoreShould extends BaseRealIntegrationTe
                 .build();
     }
 
-    private void givenACategoryOptionLinkModel() {
+    private void givenACategoryOptionLink() {
         newCategoryCategoryOptionLink = CategoryCategoryOptionLink.builder()
                 .categoryOption("TNYQzTHdoxL")
                 .category("KfdsGBcoiCa")

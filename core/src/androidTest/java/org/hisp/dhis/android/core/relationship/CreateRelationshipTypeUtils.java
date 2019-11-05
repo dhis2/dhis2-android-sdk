@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.content.ContentValues;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public class CreateRelationshipTypeUtils {
     private static final String CODE = "test_code";
@@ -57,13 +57,13 @@ public class CreateRelationshipTypeUtils {
 
         ContentValues relationshipType = new ContentValues();
 
-        relationshipType.put(BaseModel.Columns.ID, id);
-        relationshipType.put(BaseIdentifiableObjectModel.Columns.UID, uid);
-        relationshipType.put(BaseIdentifiableObjectModel.Columns.CODE, CODE);
-        relationshipType.put(BaseIdentifiableObjectModel.Columns.NAME, NAME);
-        relationshipType.put(BaseIdentifiableObjectModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
-        relationshipType.put(BaseIdentifiableObjectModel.Columns.CREATED, DATE);
-        relationshipType.put(BaseIdentifiableObjectModel.Columns.LAST_UPDATED, DATE);
+        relationshipType.put(CoreColumns.ID, id);
+        relationshipType.put(IdentifiableColumns.UID, uid);
+        relationshipType.put(IdentifiableColumns.CODE, CODE);
+        relationshipType.put(IdentifiableColumns.NAME, NAME);
+        relationshipType.put(IdentifiableColumns.DISPLAY_NAME, DISPLAY_NAME);
+        relationshipType.put(IdentifiableColumns.CREATED, DATE);
+        relationshipType.put(IdentifiableColumns.LAST_UPDATED, DATE);
         relationshipType.put(RelationshipTypeTableInfo.Columns.TO_FROM_NAME, TO_FROM_NAME);
         relationshipType.put(RelationshipTypeTableInfo.Columns.FROM_TO_NAME, FROM_TO_NAME);
         relationshipType.put(RelationshipTypeTableInfo.Columns.BIDIRECTIONAL, 0);

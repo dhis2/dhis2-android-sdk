@@ -30,17 +30,18 @@ package org.hisp.dhis.android.core.configuration;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 
-import androidx.annotation.NonNull;
 import okhttp3.HttpUrl;
 
 @AutoValue
-public abstract class Configuration implements Model {
+public abstract class Configuration implements CoreObject {
 
     @NonNull
     @ColumnAdapter(HttpUrlColumnAdapter.class)
@@ -57,7 +58,7 @@ public abstract class Configuration implements Model {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseModel.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         public abstract Builder serverUrl(HttpUrl serverUrl);

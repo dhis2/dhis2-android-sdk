@@ -34,7 +34,7 @@ import android.util.Log;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
 
 import java.util.ArrayList;
@@ -148,7 +148,7 @@ public final class ForeignKeyCleanerImpl implements ForeignKeyCleaner {
 
                 String uid = null;
                 int uidColumnIndex = objectCursor.getColumnIndex(
-                        BaseIdentifiableObjectModel.Columns.UID);
+                        IdentifiableColumns.UID);
                 if (uidColumnIndex != -1) {
                     uid = objectCursor.getString(uidColumnIndex);
                 }

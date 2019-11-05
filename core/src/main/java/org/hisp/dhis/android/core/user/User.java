@@ -41,14 +41,14 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitListAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserCredentialsAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_User.Builder.class)
-public abstract class User extends BaseIdentifiableObject implements Model {
+public abstract class User extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
     public abstract String birthday();

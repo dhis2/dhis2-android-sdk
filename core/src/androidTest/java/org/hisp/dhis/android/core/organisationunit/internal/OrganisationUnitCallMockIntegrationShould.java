@@ -36,7 +36,7 @@ import com.google.common.collect.Sets;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -92,7 +92,7 @@ public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrati
         database.insert(UserTableInfo.TABLE_INFO.name(), null, user.toContentValues());
 
         ContentValues userContentValues = new ContentValues();
-        userContentValues.put(BaseIdentifiableObjectModel.Columns.UID, "user_uid");
+        userContentValues.put(IdentifiableColumns.UID, "user_uid");
         database.insert(UserTableInfo.TABLE_INFO.name(), null, userContentValues);
 
         // inserting programs for creating OrgUnitProgramLinks
@@ -113,7 +113,7 @@ public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrati
 
     private void insertProgramWithUid(String uid) {
         ContentValues program = new ContentValues();
-        program.put(BaseIdentifiableObjectModel.Columns.UID, uid);
+        program.put(IdentifiableColumns.UID, uid);
         database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program);
     }
 

@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.paging.internal;
 
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class RepositoryPagingConfig {
-    public static final String PAGING_KEY = BaseModel.Columns.ID;
+    public static final String PAGING_KEY = CoreColumns.ID;
 
     private RepositoryPagingConfig() {
     }

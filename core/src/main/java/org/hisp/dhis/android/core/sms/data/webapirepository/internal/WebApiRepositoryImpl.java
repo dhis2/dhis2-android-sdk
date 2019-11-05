@@ -35,12 +35,12 @@ public class WebApiRepositoryImpl implements WebApiRepository {
         });
     }
 
-    private List<SMSMetadata.ID> mapIds(List<MetadataResponseModel.MetadataId> ids) {
+    private List<SMSMetadata.ID> mapIds(List<MetadataResponse.MetadataId> ids) {
         if (ids == null) {
             return null;
         }
         ArrayList<SMSMetadata.ID> newList = new ArrayList<>();
-        for (MetadataResponseModel.MetadataId item : ids) {
+        for (MetadataResponse.MetadataId item : ids) {
             newList.add(makeID(item.id()));
         }
         return newList;
@@ -50,7 +50,7 @@ public class WebApiRepositoryImpl implements WebApiRepository {
         return new SMSMetadata.ID(id);
     }
 
-    private Call<MetadataResponseModel> metadataCall(final GetMetadataIdsConfig c) {
+    private Call<MetadataResponse> metadataCall(final GetMetadataIdsConfig c) {
         return apiService.getMetadataIds(
                 val(c.dataElements),
                 val(c.categoryOptionCombos),

@@ -41,13 +41,13 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCategoryListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCategoryOptionComboListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_CategoryCombo.Builder.class)
-public abstract class CategoryCombo extends BaseIdentifiableObject implements Model {
+public abstract class CategoryCombo extends BaseIdentifiableObject implements CoreObject {
 
     public static final String DEFAULT_UID = "p0KPaWEg3cf";
 

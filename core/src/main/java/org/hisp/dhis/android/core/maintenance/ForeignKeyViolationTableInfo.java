@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.maintenance;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class ForeignKeyViolationTableInfo {
 
@@ -45,12 +45,12 @@ public final class ForeignKeyViolationTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
         public final static String FROM_TABLE = "fromTable";
         public final static String FROM_COLUMN = "fromColumn";
         public final static String TO_TABLE = "toTable";

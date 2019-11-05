@@ -26,11 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.dataset.DataSet;
-
-import java.util.List;
-
-public final class IgnoreDataSetListAdapter extends IgnoreColumnAdapter<List<DataSet>> {
+public interface DataObject extends CoreObject {
+    State state();
 }

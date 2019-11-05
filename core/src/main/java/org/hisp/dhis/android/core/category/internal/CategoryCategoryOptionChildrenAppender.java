@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.category.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
@@ -45,22 +45,22 @@ final class CategoryCategoryOptionChildrenAppender extends ChildrenAppender<Cate
             CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY,
             CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION);
 
-    private final LinkModelChildStore<Category, CategoryOption> linkModelChildStore;
+    private final LinkChildStore<Category, CategoryOption> linkChildStore;
 
-    private CategoryCategoryOptionChildrenAppender(LinkModelChildStore<Category, CategoryOption> linkModelChildStore) {
-        this.linkModelChildStore = linkModelChildStore;
+    private CategoryCategoryOptionChildrenAppender(LinkChildStore<Category, CategoryOption> linkChildStore) {
+        this.linkChildStore = linkChildStore;
     }
 
     @Override
     protected Category appendChildren(Category category) {
         Category.Builder builder = category.toBuilder();
-        builder.categoryOptions(linkModelChildStore.getChildren(category));
+        builder.categoryOptions(linkChildStore.getChildren(category));
         return builder.build();
     }
 
     static ChildrenAppender<Category> create(DatabaseAdapter databaseAdapter) {
         return new CategoryCategoryOptionChildrenAppender(
-                StoreFactory.linkModelChildStore(
+                StoreFactory.linkChildStore(
                         databaseAdapter,
                         CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
                         CHILD_PROJECTION,

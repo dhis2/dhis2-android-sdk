@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo.Columns;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields;
@@ -82,7 +82,7 @@ public final class OrganisationUnitCollectionRepository
     }
 
     public OrganisationUnitCollectionRepository byOrganisationUnitScope(OrganisationUnit.Scope scope) {
-        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).inLinkTable(
+        return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
                 UserOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
                 UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
                 UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
@@ -90,7 +90,7 @@ public final class OrganisationUnitCollectionRepository
     }
 
     public OrganisationUnitCollectionRepository byRootOrganisationUnit(Boolean isRoot) {
-        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).inLinkTable(
+        return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
                 UserOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
                 UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
                 UserOrganisationUnitLinkTableInfo.Columns.ROOT,
@@ -98,7 +98,7 @@ public final class OrganisationUnitCollectionRepository
     }
 
     public OrganisationUnitCollectionRepository byProgramUids(List<String> programUids) {
-        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).inLinkTable(
+        return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
                 OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
                 OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
                 OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
@@ -106,7 +106,7 @@ public final class OrganisationUnitCollectionRepository
     }
 
     public OrganisationUnitCollectionRepository byDataSetUids(List<String> dataSetUids) {
-        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).inLinkTable(
+        return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
                 DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
                 DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
                 DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET,

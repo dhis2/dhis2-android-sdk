@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -39,16 +41,14 @@ import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.DataEle
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreValueTypeRenderingAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_ProgramStageDataElement.Builder.class)
-public abstract class ProgramStageDataElement extends BaseIdentifiableObject implements Model {
+public abstract class ProgramStageDataElement extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
     public abstract Boolean displayInReports();

@@ -30,29 +30,29 @@ package org.hisp.dhis.android.core.arch.db.stores.internal;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-
-public class ReadableStoreImpl<M extends Model> implements ReadableStore<M> {
+public class ReadableStoreImpl<M extends CoreObject> implements ReadableStore<M> {
     protected final DatabaseAdapter databaseAdapter;
     protected final ReadOnlySQLStatementBuilder builder;
-    final CursorModelFactory<M> modelFactory;
+    final ObjectFactory<M> objectFactory;
 
     public ReadableStoreImpl(DatabaseAdapter databaseAdapter,
                              ReadOnlySQLStatementBuilder builder,
-                             CursorModelFactory<M> modelFactory) {
+                             ObjectFactory<M> objectFactory) {
         this.databaseAdapter = databaseAdapter;
         this.builder = builder;
-        this.modelFactory = modelFactory;
+        this.objectFactory = objectFactory;
     }
 
     @Override
@@ -111,7 +111,7 @@ public class ReadableStoreImpl<M extends Model> implements ReadableStore<M> {
         try {
             if (cursor.getCount() >= 1) {
                 cursor.moveToFirst();
-                return modelFactory.fromCursor(cursor);
+                return objectFactory.fromCursor(cursor);
             } else {
                 return null;
             }
@@ -144,7 +144,7 @@ public class ReadableStoreImpl<M extends Model> implements ReadableStore<M> {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 do {
-                    collection.add(modelFactory.fromCursor(cursor));
+                    collection.add(objectFactory.fromCursor(cursor));
                 }
                 while (cursor.moveToNext());
             }

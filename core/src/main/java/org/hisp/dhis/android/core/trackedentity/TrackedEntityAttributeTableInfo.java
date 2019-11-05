@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.common.NameableColumns;
 
 public final class TrackedEntityAttributeTableInfo {
 
@@ -50,7 +50,7 @@ public final class TrackedEntityAttributeTableInfo {
         }
     };
 
-    public static class Columns extends BaseNameableObjectModel.Columns {
+    public static class Columns extends NameableColumns {
         public static final String UNIQUE = "uniqueProperty";
         public static final String PATTERN = "pattern";
         public static final String SORT_ORDER_IN_LIST_NO_PROGRAM = "sortOrderInListNoProgram";

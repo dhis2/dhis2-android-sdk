@@ -44,17 +44,16 @@ final class OrganisationUnitDataSetChildrenAppender extends ChildrenAppender<Org
             DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
             DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET);
 
-    private final ObjectWithUidChildStore<OrganisationUnit> linkModelChildStore;
+    private final ObjectWithUidChildStore<OrganisationUnit> childStore;
 
-    private OrganisationUnitDataSetChildrenAppender(
-            ObjectWithUidChildStore<OrganisationUnit> linkModelChildStore) {
-        this.linkModelChildStore = linkModelChildStore;
+    private OrganisationUnitDataSetChildrenAppender(ObjectWithUidChildStore<OrganisationUnit> childStore) {
+        this.childStore = childStore;
     }
 
     @Override
     protected OrganisationUnit appendChildren(OrganisationUnit organisationUnit) {
         OrganisationUnit.Builder builder = organisationUnit.toBuilder();
-        builder.dataSets(linkModelChildStore.getChildren(organisationUnit));
+        builder.dataSets(childStore.getChildren(organisationUnit));
         return builder.build();
     }
 

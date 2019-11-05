@@ -29,14 +29,14 @@
 package org.hisp.dhis.android.core.common.objectstyle.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleTableInfo;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
@@ -65,8 +65,8 @@ public final class ObjectStyleStoreImpl extends ObjectWithoutUidStoreImpl<Object
                                  StatementBinder<ObjectStyle> binder,
                                  WhereStatementBinder<ObjectStyle> whereUpdateBinder,
                                  WhereStatementBinder<ObjectStyle> whereDeleteBinder,
-                                 CursorModelFactory<ObjectStyle> modelFactory) {
-        super(databaseAdapter, builder, binder, whereUpdateBinder, whereDeleteBinder, modelFactory);
+                                 ObjectFactory<ObjectStyle> objectFactory) {
+        super(databaseAdapter, builder, binder, whereUpdateBinder, whereDeleteBinder, objectFactory);
     }
 
     @Override
@@ -81,7 +81,7 @@ public final class ObjectStyleStoreImpl extends ObjectWithoutUidStoreImpl<Object
 
     public static ObjectStyleStore create(DatabaseAdapter databaseAdapter) {
 
-        BaseModel.Columns columns = ObjectStyleTableInfo.TABLE_INFO.columns();
+        CoreColumns columns = ObjectStyleTableInfo.TABLE_INFO.columns();
 
         SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(
                 ObjectStyleTableInfo.TABLE_INFO.name(), columns);

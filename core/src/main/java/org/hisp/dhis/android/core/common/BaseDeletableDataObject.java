@@ -26,41 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import androidx.annotation.Nullable;
 
-/**
- * A collection of convenience functions/abstractions to be used by the tests.
- */
-public class ColumnsArrayUtils {
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 
-    public static Object[] getModelAsObjectArray(BaseModel m) {
-        return new Object[] {
-                m.id()
-        };
-    }
+public abstract class BaseDeletableDataObject extends BaseDataObject implements DeletableDataObject {
 
-    public static Object[] getIdentifiableModelAsObjectArray(BaseIdentifiableObjectModel m) {
-        return CollectionsHelper.appendInNewArray(getModelAsObjectArray(m),
-                m.uid(), m.code(), m.name(), m.displayName(),
-                m.createdStr(), m.lastUpdatedStr()
-        );
-    }
+    @Override
+    @Nullable
+    @JsonProperty
+    @ColumnName(DeletableDataColumns.DELETED)
+    public abstract Boolean deleted();
 
-    public static Object[] getNameableModelAsObjectArray(BaseNameableObjectModel m) {
-        return CollectionsHelper.appendInNewArray(getIdentifiableModelAsObjectArray(m),
-                m.shortName(), m.displayShortName(),
-                m.description(), m.displayDescription()
-        );
-    }
-
-    public static String[] getColumnsWithId(String[] columns) {
-        return CollectionsHelper.appendInNewArray(new String[] {BaseModel.Columns.ID},
-                columns
-        );
+    @JsonPOJOBuilder(withPrefix = "")
+    protected static abstract class Builder<T extends Builder> extends BaseDataObject.Builder<T> {
+        public abstract T deleted(@Nullable Boolean deleted);
     }
 }

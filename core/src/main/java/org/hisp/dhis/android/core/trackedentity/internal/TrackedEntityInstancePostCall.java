@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
@@ -180,7 +180,7 @@ public final class TrackedEntityInstancePostCall {
         Map<String, List<TrackedEntityAttributeValue>> attributeValueMap =
                 trackedEntityAttributeValueStore.queryTrackedEntityAttributeValueToPost();
         String whereNotesClause = new WhereClauseBuilder()
-                .appendKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST).build();
+                .appendKeyStringValue(DataColumns.STATE, State.TO_POST).build();
         List<Note> notes = noteStore.selectWhere(whereNotesClause);
 
         List<TrackedEntityInstance> targetTrackedEntityInstances;

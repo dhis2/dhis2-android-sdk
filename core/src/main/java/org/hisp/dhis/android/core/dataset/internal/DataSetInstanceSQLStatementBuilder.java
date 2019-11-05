@@ -31,9 +31,9 @@ package org.hisp.dhis.android.core.dataset.internal;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo;
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.BaseDeletableDataModel;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.DataColumns;
+import org.hisp.dhis.android.core.common.DeletableDataColumns;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo;
@@ -76,28 +76,28 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
     private static final String ATTRIBUTE_OPTION_COMBO_NAME_ALIAS = "attributeOptionComboDisplayName";
     private static final String COMPLETION_DATE_ALIAS = "completionDate";
 
-    public static final String DATAVALUE_ID = DATAVALUE_TABLE_ALIAS + "." + BaseDeletableDataModel.Columns.ID;
-    private static final String DATASET_UID = DATASET_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
+    public static final String DATAVALUE_ID = DATAVALUE_TABLE_ALIAS + "." + DeletableDataColumns.ID;
+    private static final String DATASET_UID = DATASET_TABLE_ALIAS + "." + IdentifiableColumns.UID;
     private static final String DATASET_NAME =
-            DATASET_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.DISPLAY_NAME;
+            DATASET_TABLE_ALIAS + "." + IdentifiableColumns.DISPLAY_NAME;
     private static final String PERIOD = DATAVALUE_TABLE_ALIAS + "." + DataValueTableInfo.Columns.PERIOD;
     private static final String PERIOD_TYPE = PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.PERIOD_TYPE;
     private static final String PERIOD_START_DATE = PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.START_DATE;
     private static final String PERIOD_END_DATE = PERIOD_TABLE_ALIAS + "." + PeriodTableInfo.Columns.END_DATE;
     private static final String ORGANISATION_UNIT_UID = ORGUNIT_TABLE_ALIAS + "." +
-            BaseIdentifiableObjectModel.Columns.UID;
+            IdentifiableColumns.UID;
     private static final String ORGANISATION_UNIT_NAME =
-            ORGUNIT_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.DISPLAY_NAME;
+            ORGUNIT_TABLE_ALIAS + "." + IdentifiableColumns.DISPLAY_NAME;
     private static final String ATTRIBUTE_OPTION_COMBO_UID = AOC_TABLE_ALIAS + "." +
-            BaseIdentifiableObjectModel.Columns.UID;
+            IdentifiableColumns.UID;
     private static final String ATTRIBUTE_OPTION_COMBO_NAME =
-            AOC_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.DISPLAY_NAME;
+            AOC_TABLE_ALIAS + "." + IdentifiableColumns.DISPLAY_NAME;
     private static final String COMPLETION_DATE =
             COMPLETE_TABLE_ALIAS + "." + DataSetCompleteRegistrationTableInfo.Columns.DATE;
     private static final String DSE_CATEGORY_COMBO =
             DATASETELEMENT_TABLE_ALIAS + "." + DataSetElementLinkTableInfo.Columns.CATEGORY_COMBO;
 
-    private static final String STATE = DATAVALUE_TABLE_ALIAS + "." + BaseDataModel.Columns.STATE;
+    private static final String STATE = DATAVALUE_TABLE_ALIAS + "." + DataColumns.STATE;
 
     private static final String SELECT_STATE_ORDERING = " MAX(CASE " +
             "WHEN " + STATE + " = '" + State.SYNCED + "' THEN 1 " +
@@ -116,7 +116,7 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
                     getJoinDataSetCompleteRegistration();
 
     private static final String INNER_SELECT_CLAUSE = "SELECT " +
-            DATAVALUE_ID + AS + BaseDeletableDataModel.Columns.ID + "," +
+            DATAVALUE_ID + AS + DeletableDataColumns.ID + "," +
             DATASET_UID + AS + DATASET_UID_ALIAS + "," +
             DATASET_NAME + AS + DATASET_NAME_ALIAS + "," +
             PERIOD + AS + PERIOD_ALIAS + "," +
@@ -202,31 +202,31 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
     private static String getJoinDataelement() {
         return INNER_JOIN + DataElementTableInfo.TABLE_INFO.name() + AS + DATAELEMENT_TABLE_ALIAS +
                 ON + DATAVALUE_TABLE_ALIAS + "." + DataValueTableInfo.Columns.DATA_ELEMENT + EQ +
-                DATAELEMENT_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
+                DATAELEMENT_TABLE_ALIAS + "." + IdentifiableColumns.UID;
     }
 
     private static String getJoinOrganisationUnit() {
         return INNER_JOIN + OrganisationUnitTableInfo.TABLE_INFO.name() + AS + ORGUNIT_TABLE_ALIAS +
                 ON + DATAVALUE_TABLE_ALIAS + "." + DataValueTableInfo.Columns.ORGANISATION_UNIT + EQ +
-                ORGUNIT_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
+                ORGUNIT_TABLE_ALIAS + "." + IdentifiableColumns.UID;
     }
 
     private static String getJoinDataSet() {
         return INNER_JOIN + DataSetTableInfo.TABLE_INFO.name() + AS + DATASET_TABLE_ALIAS +
                 ON + DATASETELEMENT_TABLE_ALIAS + "." + DataSetDataElementLinkTableInfo.Columns.DATA_SET + EQ +
-                DATASET_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
+                DATASET_TABLE_ALIAS + "." + IdentifiableColumns.UID;
     }
 
     private static String getJoinCategoryOptionCombo() {
         return INNER_JOIN + CategoryOptionComboTableInfo.TABLE_INFO.name() + AS + COC_TABLE_ALIAS +
                 ON + DATAVALUE_TABLE_ALIAS + "." + DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO + EQ +
-                COC_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
+                COC_TABLE_ALIAS + "." + IdentifiableColumns.UID;
     }
 
     private static String getJoinAttributeOptionCombo() {
         return INNER_JOIN + CategoryOptionComboTableInfo.TABLE_INFO.name() + AS + AOC_TABLE_ALIAS +
                 ON + DATAVALUE_TABLE_ALIAS + "." + DataValueTableInfo.Columns.ATTRIBUTE_OPTION_COMBO + EQ +
-                AOC_TABLE_ALIAS + "." + BaseIdentifiableObjectModel.Columns.UID;
+                AOC_TABLE_ALIAS + "." + IdentifiableColumns.UID;
     }
 
     private static String getJoinDataSetCompleteRegistration() {

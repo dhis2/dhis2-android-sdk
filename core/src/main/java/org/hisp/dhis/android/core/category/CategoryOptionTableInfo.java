@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.NameableColumns;
 
 public final class CategoryOptionTableInfo {
 
@@ -46,12 +46,12 @@ public final class CategoryOptionTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    public static class Columns extends BaseNameableObjectModel.Columns {
+    public static class Columns extends NameableColumns {
         public static final String START_DATE = "startDate";
         public static final String END_DATE = "endDate";
         public static final String ACCESS_DATA_WRITE = "accessDataWrite";

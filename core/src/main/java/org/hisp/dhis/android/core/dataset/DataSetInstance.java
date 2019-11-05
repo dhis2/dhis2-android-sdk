@@ -37,19 +37,19 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.IsColumnNotNullColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.IsColumnNotNullColumnAdapter;
+import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class DataSetInstance implements Model {
+public abstract class DataSetInstance implements CoreObject {
 
     @NonNull
     public abstract String dataSetUid();
@@ -104,7 +104,7 @@ public abstract class DataSetInstance implements Model {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseModel.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         public abstract Builder dataSetUid(String dataSetUid);

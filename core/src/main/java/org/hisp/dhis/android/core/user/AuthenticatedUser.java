@@ -34,11 +34,11 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-public abstract class AuthenticatedUser implements Model {
+public abstract class AuthenticatedUser implements CoreObject {
 
     @Nullable
     public abstract String user();
@@ -58,7 +58,7 @@ public abstract class AuthenticatedUser implements Model {
 
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
+    public static abstract class Builder extends BaseObject.Builder<Builder> {
 
         public abstract Builder id(Long id);
 

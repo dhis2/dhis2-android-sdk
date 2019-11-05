@@ -27,11 +27,43 @@
  */
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorExecutor;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.List;
 
-public interface LinkModelChildStore<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface> {
-    List<C> getChildren(P p);
-    List<C> getChildrenWhere(P p, String whereClause);
+class LinkChildStoreImpl<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface>
+        implements LinkChildStore<P, C> {
+
+    private final LinkTableChildProjection linkTableChildProjection;
+
+    private final DatabaseAdapter databaseAdapter;
+    private final SQLStatementBuilder statementBuilder;
+
+    private final CursorExecutor<C> cursorExecutor;
+
+    LinkChildStoreImpl(LinkTableChildProjection linkTableChildProjection,
+                       DatabaseAdapter databaseAdapter,
+                       SQLStatementBuilder statementBuilder,
+                       CursorExecutor<C> cursorExecutor) {
+        this.linkTableChildProjection = linkTableChildProjection;
+        this.databaseAdapter = databaseAdapter;
+        this.statementBuilder = statementBuilder;
+        this.cursorExecutor = cursorExecutor;
+    }
+
+    @Override
+    public List<C> getChildren(P p) {
+        return this.getChildrenWhere(p, null);
+    }
+
+    @Override
+    public List<C> getChildrenWhere(P p, String whereClause) {
+        String selectStatement = statementBuilder.selectChildrenWithLinkTable(
+                linkTableChildProjection, p.uid(), whereClause);
+        return cursorExecutor.getObjects(databaseAdapter.query(selectStatement));
+    }
 }

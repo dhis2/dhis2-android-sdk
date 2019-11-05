@@ -33,7 +33,7 @@ import com.google.common.collect.Lists;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryOption;
@@ -67,7 +67,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends BaseRealInte
         d2.databaseAdapter().database().setForeignKeyConstraintsEnabled(false);
 
         assertNotCombosInDB();
-        assertTrue(getCategoryCategoryComboLinkModels().isEmpty());
+        assertTrue(getCategoryCategoryComboLinks().isEmpty());
 
         Callable<List<CategoryCombo>> categoryComboEndpointCall =
                 getD2DIComponent(d2).internalModules().category.categoryComboCallFactory.create(
@@ -83,7 +83,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends BaseRealInte
 
     private void assertDataIsProperlyParsedAndInsertedInTheDB() {
         assertThereAreCombosInDB();
-        assertFalse(getCategoryCategoryComboLinkModels().isEmpty());
+        assertFalse(getCategoryCategoryComboLinks().isEmpty());
         assertThereAreCategoryOptionCombosInDB();
         assertThereAreCategoriesInDB();
     }
@@ -105,8 +105,8 @@ public class CategoryComboEndpointCallRealIntegrationShould extends BaseRealInte
         assertTrue(categoryCombos.size() > 0);
     }
 
-    private List<CategoryCategoryComboLink> getCategoryCategoryComboLinkModels() {
-        LinkModelStore<CategoryCategoryComboLink>
+    private List<CategoryCategoryComboLink> getCategoryCategoryComboLinks() {
+        LinkStore<CategoryCategoryComboLink>
                 categoryCategoryComboLinkStore = CategoryCategoryComboLinkStore.create(databaseAdapter());
         return categoryCategoryComboLinkStore.selectAll();
     }

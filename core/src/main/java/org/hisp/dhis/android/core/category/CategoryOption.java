@@ -43,13 +43,13 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnA
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_CategoryOption.Builder.class)
-public abstract class CategoryOption extends BaseNameableObject implements Model {
+public abstract class CategoryOption extends BaseNameableObject implements CoreObject {
 
     @Nullable
     @JsonProperty()

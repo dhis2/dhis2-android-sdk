@@ -35,14 +35,14 @@ import androidx.annotation.Nullable;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class ProgramOrganisationUnitLastUpdated implements Model {
+public abstract class ProgramOrganisationUnitLastUpdated implements CoreObject {
 
     @Nullable
     public abstract String program();
@@ -65,7 +65,7 @@ public abstract class ProgramOrganisationUnitLastUpdated implements Model {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseModel.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         public abstract Builder program(String program);

@@ -45,7 +45,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEnrollm
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationship229CompatibleListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStringColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityAttributeValueListColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseDeletableDataModel;
+import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
@@ -58,7 +58,7 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_TrackedEntityInstance.Builder.class)
-public abstract class TrackedEntityInstance extends BaseDeletableDataModel implements ObjectWithUidInterface {
+public abstract class TrackedEntityInstance extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Override
     @JsonProperty(TrackedEntityInstanceFields.UID)
@@ -133,7 +133,7 @@ public abstract class TrackedEntityInstance extends BaseDeletableDataModel imple
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseDeletableDataModel.Builder<Builder> {
+    public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         @JsonProperty(TrackedEntityInstanceFields.UID)

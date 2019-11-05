@@ -31,14 +31,14 @@ package org.hisp.dhis.android.core.category.internal;
 import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink;
 import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkTableInfo;
 import org.hisp.dhis.android.core.data.category.CategoryCategoryOptionLinkSamples;
-import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
 public class CategoryCategoryOptionLinkStoreIntegrationShould
-        extends LinkModelStoreAbstractIntegrationShould<CategoryCategoryOptionLink> {
+        extends LinkStoreAbstractIntegrationShould<CategoryCategoryOptionLink> {
 
     public CategoryCategoryOptionLinkStoreIntegrationShould() {
         super(CategoryCategoryOptionLinkStore.create(DatabaseAdapterFactory.get()),

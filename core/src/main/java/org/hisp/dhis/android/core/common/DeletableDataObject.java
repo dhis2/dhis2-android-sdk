@@ -26,20 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit.internal;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.Unit;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.user.User;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
-
-public interface OrganisationUnitDownloadModule {
-    Callable<Unit> download(User user, Collection<Program> programs, Collection<DataSet> dataSets);
-    Callable<List<OrganisationUnit>> downloadSearchOrganisationUnits(Set<String> uids, User user);
+public interface DeletableDataObject extends DataObject, ObjectWithDeleteInterface {
+    Boolean deleted();
 }

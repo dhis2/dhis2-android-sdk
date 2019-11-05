@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public final class ProgramSectionTableInfo {
 
@@ -50,7 +50,7 @@ public final class ProgramSectionTableInfo {
         }
     };
 
-    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends IdentifiableColumns {
         public static final String DESCRIPTION = "description";
         public static final String PROGRAM = "program";
         public static final String SORT_ORDER = "sortOrder";

@@ -44,12 +44,12 @@ public final class ValueTypeDeviceRenderingTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
         static final String OBJECT_TABLE = "objectTable";
         public static final String DEVICE_TYPE = "deviceType";
         static final String TYPE = "type";
@@ -61,7 +61,7 @@ public final class ValueTypeDeviceRenderingTableInfo {
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    BaseIdentifiableObjectModel.Columns.UID,
+                    IdentifiableColumns.UID,
                     OBJECT_TABLE,
                     DEVICE_TYPE,
                     TYPE,
@@ -75,7 +75,7 @@ public final class ValueTypeDeviceRenderingTableInfo {
         @Override
         public String[] whereUpdate() {
             return CollectionsHelper.appendInNewArray(super.whereUpdate(),
-                    BaseIdentifiableObjectModel.Columns.UID,
+                    IdentifiableColumns.UID,
                     DEVICE_TYPE
             );
         }

@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatem
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.program.ProgramType;
@@ -102,6 +102,6 @@ public final class ProgramStore extends IdentifiableObjectStoreImpl<Program> imp
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(ProgramTableInfo.Columns.PROGRAM_TYPE,
                         ProgramType.WITHOUT_REGISTRATION.toString()).build();
-        return selectStringColumnsWhereClause(BaseIdentifiableObjectModel.Columns.UID, whereClause);
+        return selectStringColumnsWhereClause(IdentifiableColumns.UID, whereClause);
     }
 }

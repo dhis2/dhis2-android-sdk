@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
@@ -54,9 +54,9 @@ final class DataInputPeriodLinkStore {
 
     private DataInputPeriodLinkStore() {}
 
-    public static LinkModelStore<DataInputPeriod> create(DatabaseAdapter databaseAdapter) {
+    public static LinkStore<DataInputPeriod> create(DatabaseAdapter databaseAdapter) {
 
-        return StoreFactory.linkModelStore(
+        return StoreFactory.linkStore(
                 databaseAdapter,
                 DataInputPeriodTableInfo.TABLE_INFO,
                 DataInputPeriodTableInfo.Columns.DATA_SET,

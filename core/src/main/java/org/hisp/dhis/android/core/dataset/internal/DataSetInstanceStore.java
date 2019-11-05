@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStoreImpl;
 import org.hisp.dhis.android.core.dataset.DataSetInstance;
@@ -38,8 +38,8 @@ public final class DataSetInstanceStore extends ReadableStoreImpl<DataSetInstanc
 
     private DataSetInstanceStore(DatabaseAdapter databaseAdapter,
                                  ReadOnlySQLStatementBuilder builder,
-                                 CursorModelFactory<DataSetInstance> modelFactory) {
-        super(databaseAdapter, builder, modelFactory);
+                                 ObjectFactory<DataSetInstance> objectFactory) {
+        super(databaseAdapter, builder, objectFactory);
     }
 
     static DataSetInstanceStore create(DatabaseAdapter databaseAdapter) {

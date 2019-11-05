@@ -25,9 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.stores.internal;
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-public interface DataModel extends Model {
-    State state();
+import java.util.List;
+
+public interface LinkChildStore<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface> {
+    List<C> getChildren(P p);
+    List<C> getChildrenWhere(P p, String whereClause);
 }

@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
 import org.hisp.dhis.android.core.legendset.LegendSet;
@@ -45,14 +45,14 @@ public final class ProgramIndicatorLegendSetEntityDIModule {
 
     @Provides
     @Reusable
-    public LinkModelStore<ProgramIndicatorLegendSetLink> store(DatabaseAdapter databaseAdapter) {
+    public LinkStore<ProgramIndicatorLegendSetLink> store(DatabaseAdapter databaseAdapter) {
         return ProgramIndicatorLegendSetLinkStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
     public LinkHandler<LegendSet, ProgramIndicatorLegendSetLink> handler(
-            LinkModelStore<ProgramIndicatorLegendSetLink> store) {
+            LinkStore<ProgramIndicatorLegendSetLink> store) {
         return new LinkHandlerImpl<>(store);
     }
 }

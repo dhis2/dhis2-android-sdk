@@ -26,10 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.cursors.internal;
+package org.hisp.dhis.android.core.common;
 
-import android.database.Cursor;
+@SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+public abstract class BaseObject implements CoreObject {
 
-public interface CursorModelFactory<M> {
-    M fromCursor(Cursor cursor);
+    public static abstract class Builder<T extends Builder> {
+        public abstract T id(Long id);
+    }
 }

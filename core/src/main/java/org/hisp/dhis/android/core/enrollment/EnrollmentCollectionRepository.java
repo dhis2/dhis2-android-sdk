@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
@@ -135,7 +135,7 @@ public final class EnrollmentCollectionRepository extends ReadWriteWithUidCollec
     }
 
     public EnumFilterConnector<EnrollmentCollectionRepository, State> byState() {
-        return cf.enumC(BaseDataModel.Columns.STATE);
+        return cf.enumC(DataColumns.STATE);
     }
 
     public BooleanFilterConnector<EnrollmentCollectionRepository> byDeleted() {

@@ -28,26 +28,18 @@
 
 package org.hisp.dhis.android.core.common;
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.gabrielittner.auto.value.cursor.ColumnName;
-
-public abstract class BaseDeletableDataModel extends BaseDataModel implements DeletableDataModel {
-
-    public static class Columns extends BaseDataModel.Columns {
-        public static final String DELETED = "deleted";
-    }
+public class IdentifiableColumns extends CoreColumns {
+    public static final String UID = "uid";
+    public static final String CODE = "code";
+    public static final String NAME = "name";
+    public static final String DISPLAY_NAME = "displayName";
+    public static final String CREATED = "created";
+    public static final String LAST_UPDATED = "lastUpdated";
 
     @Override
-    @Nullable
-    @JsonProperty
-    @ColumnName(Columns.DELETED)
-    public abstract Boolean deleted();
-
-    @JsonPOJOBuilder(withPrefix = "")
-    protected static abstract class Builder<T extends Builder> extends BaseDataModel.Builder<T> {
-        public abstract T deleted(@Nullable Boolean deleted);
+    public String[] all() {
+        return CollectionsHelper.appendInNewArray(super.all(), UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED);
     }
 }

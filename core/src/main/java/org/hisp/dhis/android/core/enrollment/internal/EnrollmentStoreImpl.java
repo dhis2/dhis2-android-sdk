@@ -29,14 +29,14 @@
 package org.hisp.dhis.android.core.enrollment.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
@@ -78,14 +78,14 @@ public final class EnrollmentStoreImpl
                                 SQLStatementWrapper statementWrapper,
                                 SQLStatementBuilderImpl builder,
                                 StatementBinder<Enrollment> binder,
-                                CursorModelFactory<Enrollment> modelFactory) {
-        super(databaseAdapter, statementWrapper, builder, binder, modelFactory);
+                                ObjectFactory<Enrollment> objectFactory) {
+        super(databaseAdapter, statementWrapper, builder, binder, objectFactory);
     }
 
     @Override
     public Map<String, List<Enrollment>> queryEnrollmentsToPost() {
         String enrollmentsToPostQuery = new WhereClauseBuilder()
-                .appendInKeyStringValues(BaseDataModel.Columns.STATE, Arrays.asList(
+                .appendInKeyStringValues(DataColumns.STATE, Arrays.asList(
                         State.TO_POST.name(),
                         State.TO_UPDATE.name())).build();
 

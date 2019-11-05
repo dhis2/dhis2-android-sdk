@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal;
 
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityTypeAttributeSamples;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeTableInfo;
@@ -39,7 +39,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
 public class TrackedEntityTypeAttributeStoreIntegrationShould
-        extends LinkModelStoreAbstractIntegrationShould<TrackedEntityTypeAttribute> {
+        extends LinkStoreAbstractIntegrationShould<TrackedEntityTypeAttribute> {
 
     public TrackedEntityTypeAttributeStoreIntegrationShould() {
         super(TrackedEntityTypeAttributeStore.create(DatabaseAdapterFactory.get()),

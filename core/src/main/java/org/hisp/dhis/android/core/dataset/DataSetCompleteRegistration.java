@@ -41,14 +41,14 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseDeletableDataModel;
+import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.State;
 
 import java.util.Date;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_DataSetCompleteRegistration.Builder.class)
-public abstract class DataSetCompleteRegistration extends BaseDeletableDataModel {
+public abstract class DataSetCompleteRegistration extends BaseDeletableDataObject {
 
     @JsonProperty
     public abstract String period();
@@ -85,7 +85,7 @@ public abstract class DataSetCompleteRegistration extends BaseDeletableDataModel
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseDeletableDataModel.Builder<DataSetCompleteRegistration.Builder> {
+    public abstract static class Builder extends BaseDeletableDataObject.Builder<DataSetCompleteRegistration.Builder> {
 
         public Builder() {
             state(State.SYNCED);

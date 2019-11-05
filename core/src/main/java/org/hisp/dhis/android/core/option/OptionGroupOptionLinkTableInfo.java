@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class OptionGroupOptionLinkTableInfo {
 
@@ -42,7 +42,7 @@ public final class OptionGroupOptionLinkTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
@@ -50,7 +50,7 @@ public final class OptionGroupOptionLinkTableInfo {
     private OptionGroupOptionLinkTableInfo() {
     }
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
 
         public static final String OPTION_GROUP = "optionGroup";
         public static final String OPTION = "option";

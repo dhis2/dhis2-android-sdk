@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.legendset.LegendSet;
@@ -37,23 +37,23 @@ import org.hisp.dhis.android.core.program.ProgramIndicator;
 
 final class ProgramIndicatorLegendSetChildrenAppender extends ChildrenAppender<ProgramIndicator> {
 
-    private final LinkModelChildStore<ProgramIndicator, LegendSet> linkModelChildStore;
+    private final LinkChildStore<ProgramIndicator, LegendSet> linkChildStore;
 
     private ProgramIndicatorLegendSetChildrenAppender(
-            LinkModelChildStore<ProgramIndicator, LegendSet> linkModelChildStore) {
-        this.linkModelChildStore = linkModelChildStore;
+            LinkChildStore<ProgramIndicator, LegendSet> linkChildStore) {
+        this.linkChildStore = linkChildStore;
     }
 
     @Override
     protected ProgramIndicator appendChildren(ProgramIndicator programIndicator) {
         ProgramIndicator.Builder builder = programIndicator.toBuilder();
-        builder.legendSets(linkModelChildStore.getChildren(programIndicator));
+        builder.legendSets(linkChildStore.getChildren(programIndicator));
         return builder.build();
     }
 
     static ChildrenAppender<ProgramIndicator> create(DatabaseAdapter databaseAdapter) {
         return new ProgramIndicatorLegendSetChildrenAppender(
-                StoreFactory.linkModelChildStore(
+                StoreFactory.linkChildStore(
                         databaseAdapter,
                         ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO,
                         ProgramIndicatorLegendSetLinkTableInfo.CHILD_PROJECTION,

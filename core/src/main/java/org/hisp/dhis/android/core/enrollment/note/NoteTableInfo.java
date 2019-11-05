@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.enrollment.note;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.DataColumns;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.enrollment.note.internal.NoteFields;
 
 public final class NoteTableInfo {
@@ -48,12 +48,12 @@ public final class NoteTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
         public final static String ENROLLMENT = "enrollment";
 
         @Override
@@ -63,8 +63,8 @@ public final class NoteTableInfo {
                     NoteFields.VALUE,
                     NoteFields.STORED_BY,
                     NoteFields.STORED_DATE,
-                    BaseIdentifiableObjectModel.Columns.UID,
-                    BaseDataModel.Columns.STATE
+                    IdentifiableColumns.UID,
+                    DataColumns.STATE
             );
         }
 

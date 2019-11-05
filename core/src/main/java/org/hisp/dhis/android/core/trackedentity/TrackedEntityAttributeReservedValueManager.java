@@ -36,10 +36,10 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.helpers.internal.BooleanWrapper;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -75,7 +75,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
     private final IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
     private final IdentifiableObjectStore<ProgramTrackedEntityAttribute> programTrackedEntityAttributeStore;
-    private final LinkModelStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
+    private final LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final D2CallExecutor executor;
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
@@ -92,7 +92,7 @@ public final class TrackedEntityAttributeReservedValueManager {
             IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
             IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore,
             IdentifiableObjectStore<ProgramTrackedEntityAttribute> programTrackedEntityAttributeStore,
-            LinkModelStore<OrganisationUnitProgramLink> organisationUnitProgramLinkLinkModelStore,
+            LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore,
             UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             QueryCallFactory<TrackedEntityAttributeReservedValue,
                     TrackedEntityAttributeReservedValueQuery> reservedValueQueryCallFactory) {
@@ -102,7 +102,7 @@ public final class TrackedEntityAttributeReservedValueManager {
         this.organisationUnitStore = organisationUnitStore;
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
         this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
-        this.organisationUnitProgramLinkStore = organisationUnitProgramLinkLinkModelStore;
+        this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.reservedValueQueryCallFactory = reservedValueQueryCallFactory;
     }
@@ -331,7 +331,7 @@ public final class TrackedEntityAttributeReservedValueManager {
         linkedOrgunitUids.retainAll(captureOrgunits);
 
         return organisationUnitStore.selectWhere(new WhereClauseBuilder().appendInKeyStringValues(
-                BaseIdentifiableObjectModel.Columns.UID,
+                IdentifiableColumns.UID,
                 linkedOrgunitUids
         ).build());
     }

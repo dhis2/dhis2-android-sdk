@@ -30,7 +30,7 @@ package org.hisp.dhis.android.testapp.maintenance;
 
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo;
 import org.hisp.dhis.android.core.category.CategoryOptionTableInfo;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
 import org.hisp.dhis.android.core.option.OptionSetTableInfo;
@@ -56,7 +56,7 @@ public class MaintenanceMockIntegrationShould extends BaseMockIntegrationTestFul
 
         ForeignKeyViolation categoryOptionComboViolation = ForeignKeyViolation.builder()
                 .toTable(CategoryOptionTableInfo.TABLE_INFO.name())
-                .toColumn(BaseIdentifiableObjectModel.Columns.UID)
+                .toColumn(IdentifiableColumns.UID)
                 .fromTable(CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name())
                 .fromColumn(CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION)
                 .notFoundValue("non_existent_category_option_uid")
@@ -64,7 +64,7 @@ public class MaintenanceMockIntegrationShould extends BaseMockIntegrationTestFul
 
         ForeignKeyViolation optionViolation = ForeignKeyViolation.builder()
                 .toTable(OptionSetTableInfo.TABLE_INFO.name())
-                .toColumn(BaseIdentifiableObjectModel.Columns.UID)
+                .toColumn(IdentifiableColumns.UID)
                 .fromTable(OptionTableInfo.TABLE_INFO.name())
                 .fromColumn(OptionTableInfo.Columns.OPTION_SET)
                 .notFoundValue("non_existent_option_set_uid")

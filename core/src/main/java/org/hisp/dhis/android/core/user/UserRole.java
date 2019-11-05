@@ -35,11 +35,11 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_UserRole.Builder.class)
-public abstract class UserRole extends BaseIdentifiableObject implements Model {
+public abstract class UserRole extends BaseIdentifiableObject implements CoreObject {
 
     public static Builder builder() {
         return new $$AutoValue_UserRole.Builder();

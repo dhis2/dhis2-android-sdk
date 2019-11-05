@@ -28,25 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.provider.BaseColumns;
-
-@SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-public abstract class BaseModel implements Model {
-
-    @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
-    public abstract static class Columns {
-        public static final String ID = BaseColumns._ID;
-
-        public String[] all() {
-            return new String[] {};
-        }
-
-        public String[] whereUpdate() {
-            return new String[] {};
-        }
-    }
-
-    public static abstract class Builder<T extends Builder> {
-        public abstract T id(Long id);
-    }
+public class DataColumns extends CoreColumns {
+    public static final String STATE = "state";
 }

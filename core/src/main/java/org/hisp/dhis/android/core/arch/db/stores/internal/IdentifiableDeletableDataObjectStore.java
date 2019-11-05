@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
-import org.hisp.dhis.android.core.common.DeletableDataModel;
+import org.hisp.dhis.android.core.common.DeletableDataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-public interface IdentifiableDeletableDataObjectStore<O extends ObjectWithUidInterface & DeletableDataModel>
+public interface IdentifiableDeletableDataObjectStore<O extends ObjectWithUidInterface & DeletableDataObject>
         extends IdentifiableDataObjectStore<O>, DeletableStoreWithState {
 }

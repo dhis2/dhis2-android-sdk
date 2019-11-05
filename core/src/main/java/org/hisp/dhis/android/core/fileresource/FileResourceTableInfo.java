@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.fileresource;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.DataColumns;
 
 public class FileResourceTableInfo {
 
@@ -45,12 +45,12 @@ public class FileResourceTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new FileResourceTableInfo.Columns();
         }
     };
 
-    public static class Columns extends BaseDataModel.Columns {
+    public static class Columns extends DataColumns {
 
         public static final String UID = "uid";
         public static final String NAME = "name";

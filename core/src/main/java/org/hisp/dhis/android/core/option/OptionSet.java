@@ -41,14 +41,14 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbValueTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOptionListAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ValueType;
 
 import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_OptionSet.Builder.class)
-public abstract class OptionSet extends BaseIdentifiableObject implements Model {
+public abstract class OptionSet extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
     @JsonProperty()

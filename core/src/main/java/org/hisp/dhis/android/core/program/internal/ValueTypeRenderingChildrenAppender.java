@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingTableInfo;
@@ -47,13 +47,13 @@ abstract class ValueTypeRenderingChildrenAppender<M extends ObjectWithUidInterfa
 
     ValueTypeRendering getValueTypeDeviceRendering(M model) {
         String desktopWhereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(BaseIdentifiableObjectModel.Columns.UID, model.uid())
+                .appendKeyStringValue(IdentifiableColumns.UID, model.uid())
                 .appendKeyStringValue(ValueTypeDeviceRenderingTableInfo.Columns.DEVICE_TYPE, ValueTypeRendering.DESKTOP)
                 .build();
         ValueTypeDeviceRendering desktop = store.selectOneWhere(desktopWhereClause);
 
         String mobileWhereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(BaseIdentifiableObjectModel.Columns.UID, model.uid())
+                .appendKeyStringValue(IdentifiableColumns.UID, model.uid())
                 .appendKeyStringValue(ValueTypeDeviceRenderingTableInfo.Columns.DEVICE_TYPE, ValueTypeRendering.MOBILE)
                 .build();
         ValueTypeDeviceRendering mobile = store.selectOneWhere(mobileWhereClause);

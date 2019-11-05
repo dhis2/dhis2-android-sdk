@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.core.sms.data.webapirepository.internal;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
@@ -7,11 +9,9 @@ import com.google.auto.value.AutoValue;
 import java.util.Date;
 import java.util.List;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
-@JsonDeserialize(builder = AutoValue_MetadataResponseModel.Builder.class)
-public abstract class MetadataResponseModel {
+@JsonDeserialize(builder = AutoValue_MetadataResponse.Builder.class)
+public abstract class MetadataResponse {
     public abstract MetadataSystemInfo system();
 
     @Nullable
@@ -36,7 +36,7 @@ public abstract class MetadataResponseModel {
     public abstract List<MetadataId> programs();
 
     @AutoValue
-    @JsonDeserialize(builder = AutoValue_MetadataResponseModel_MetadataSystemInfo.Builder.class)
+    @JsonDeserialize(builder = AutoValue_MetadataResponse_MetadataSystemInfo.Builder.class)
     public abstract static class MetadataSystemInfo {
         public abstract Date date();
 
@@ -51,7 +51,7 @@ public abstract class MetadataResponseModel {
     }
 
     @AutoValue
-    @JsonDeserialize(builder = AutoValue_MetadataResponseModel_MetadataId.Builder.class)
+    @JsonDeserialize(builder = AutoValue_MetadataResponse_MetadataId.Builder.class)
     public abstract static class MetadataId {
         public abstract String id();
 
@@ -69,22 +69,22 @@ public abstract class MetadataResponseModel {
     @JsonPOJOBuilder(withPrefix = "")
     public static abstract class Builder {
 
-        public abstract MetadataResponseModel.Builder system(MetadataSystemInfo systemInfo);
+        public abstract MetadataResponse.Builder system(MetadataSystemInfo systemInfo);
 
-        public abstract MetadataResponseModel.Builder categoryOptionCombos(List<MetadataId> ids);
+        public abstract MetadataResponse.Builder categoryOptionCombos(List<MetadataId> ids);
 
-        public abstract MetadataResponseModel.Builder organisationUnits(List<MetadataId> ids);
+        public abstract MetadataResponse.Builder organisationUnits(List<MetadataId> ids);
 
-        public abstract MetadataResponseModel.Builder dataElements(List<MetadataId> ids);
+        public abstract MetadataResponse.Builder dataElements(List<MetadataId> ids);
 
-        public abstract MetadataResponseModel.Builder users(List<MetadataId> ids);
+        public abstract MetadataResponse.Builder users(List<MetadataId> ids);
 
-        public abstract MetadataResponseModel.Builder trackedEntityTypes(List<MetadataId> ids);
+        public abstract MetadataResponse.Builder trackedEntityTypes(List<MetadataId> ids);
 
-        public abstract MetadataResponseModel.Builder trackedEntityAttributes(List<MetadataId> ids);
+        public abstract MetadataResponse.Builder trackedEntityAttributes(List<MetadataId> ids);
 
-        public abstract MetadataResponseModel.Builder programs(List<MetadataId> ids);
+        public abstract MetadataResponse.Builder programs(List<MetadataId> ids);
 
-        public abstract MetadataResponseModel build();
+        public abstract MetadataResponse build();
     }
 }

@@ -33,22 +33,22 @@ import android.database.sqlite.SQLiteStatement;
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.common.DeletableDataModel;
+import org.hisp.dhis.android.core.common.DeletableDataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.common.BaseDataModel.Columns.STATE;
-import static org.hisp.dhis.android.core.common.BaseDeletableDataModel.Columns.DELETED;
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
+import static org.hisp.dhis.android.core.common.DataColumns.STATE;
+import static org.hisp.dhis.android.core.common.DeletableDataColumns.DELETED;
+import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 
-public class IdentifiableDeletableDataObjectStoreImpl<M extends ObjectWithUidInterface & DeletableDataModel>
+public class IdentifiableDeletableDataObjectStoreImpl<M extends ObjectWithUidInterface & DeletableDataObject>
         extends IdentifiableDataObjectStoreImpl<M> implements IdentifiableDeletableDataObjectStore<M> {
 
     private final static String EQ = " = ";
@@ -59,8 +59,8 @@ public class IdentifiableDeletableDataObjectStoreImpl<M extends ObjectWithUidInt
     public IdentifiableDeletableDataObjectStoreImpl(DatabaseAdapter databaseAdapter,
                                                     SQLStatementWrapper statements,
                                                     SQLStatementBuilder builder, StatementBinder<M> binder,
-                                                    CursorModelFactory<M> modelFactory) {
-        super(databaseAdapter, statements, builder, binder, modelFactory);
+                                                    ObjectFactory<M> objectFactory) {
+        super(databaseAdapter, statements, builder, binder, objectFactory);
         String whereUid =  " WHERE " + UID + " =?";
 
         String setState = "UPDATE " + tableName + " SET " +

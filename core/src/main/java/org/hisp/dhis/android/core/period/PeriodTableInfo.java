@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.period;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class PeriodTableInfo {
 
@@ -45,12 +45,12 @@ public final class PeriodTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
         public static final String PERIOD_ID = "periodId";
         public static final String PERIOD_TYPE = "periodType";
         public static final String START_DATE = "startDate";

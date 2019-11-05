@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class UserOrganisationUnitLinkTableInfo {
 
@@ -50,7 +50,7 @@ public final class UserOrganisationUnitLinkTableInfo {
     private UserOrganisationUnitLinkTableInfo() {
     }
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
 
         public static final String USER = "user";
         public static final String ORGANISATION_UNIT = "organisationUnit";

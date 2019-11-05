@@ -49,7 +49,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreSection
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
@@ -61,7 +61,8 @@ import java.util.List;
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_DataSet.Builder.class)
 @SuppressWarnings({"PMD.GodClass", "PMD.ExcessivePublicCount"})
-public abstract class DataSet extends BaseNameableObject implements Model, ObjectWithStyle<DataSet, DataSet.Builder> {
+public abstract class DataSet extends BaseNameableObject
+        implements CoreObject, ObjectWithStyle<DataSet, DataSet.Builder> {
 
     @Nullable
     @JsonProperty()

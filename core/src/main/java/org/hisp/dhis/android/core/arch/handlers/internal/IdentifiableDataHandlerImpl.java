@@ -31,9 +31,9 @@ package org.hisp.dhis.android.core.arch.handlers.internal;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.DeletableDataModel;
+import org.hisp.dhis.android.core.common.DataColumns;
+import org.hisp.dhis.android.core.common.DeletableDataObject;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 
@@ -44,7 +44,7 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isDeleted;
 
-public class IdentifiableDataHandlerImpl<O extends DeletableDataModel & ObjectWithUidInterface>
+public class IdentifiableDataHandlerImpl<O extends DeletableDataObject & ObjectWithUidInterface>
         extends IdentifiableHandlerImpl<O> {
 
     public IdentifiableDataHandlerImpl(IdentifiableObjectStore<O> store) {
@@ -71,15 +71,15 @@ public class IdentifiableDataHandlerImpl<O extends DeletableDataModel & ObjectWi
         List<String> objectUids = UidsHelper.getUidsList(os);
 
         String storedObjectUidsWhereClause = new WhereClauseBuilder()
-                .appendInKeyStringValues(BaseIdentifiableObjectModel.Columns.UID, objectUids).build();
+                .appendInKeyStringValues(IdentifiableColumns.UID, objectUids).build();
         return store.selectUidsWhere(storedObjectUidsWhereClause);
     }
 
     private List<String> syncedObjectUids(List<String> storedObjectUids) {
         if (!storedObjectUids.isEmpty()) {
             String syncedObjectUidsWhereClause2 = new WhereClauseBuilder()
-                    .appendInKeyStringValues(BaseIdentifiableObjectModel.Columns.UID, storedObjectUids)
-                    .appendInKeyStringValues(BaseDataModel.Columns.STATE,
+                    .appendInKeyStringValues(IdentifiableColumns.UID, storedObjectUids)
+                    .appendInKeyStringValues(DataColumns.STATE,
                             Arrays.asList(State.SYNCED.name(), State.RELATIONSHIP.name()))
                     .build();
             return store.selectUidsWhere(syncedObjectUidsWhereClause2);

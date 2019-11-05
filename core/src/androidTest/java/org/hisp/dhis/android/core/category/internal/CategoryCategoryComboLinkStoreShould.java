@@ -28,8 +28,10 @@
 
 package org.hisp.dhis.android.core.category.internal;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
 import org.hisp.dhis.android.core.category.CategoryCombo;
@@ -43,14 +45,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
 public class CategoryCategoryComboLinkStoreShould extends BaseRealIntegrationTest {
 
-    private LinkModelStore<CategoryCategoryComboLink> store;
+    private LinkStore<CategoryCategoryComboLink> store;
     private Category newCategory;
     private CategoryCombo newCategoryCombo;
     private CategoryCategoryComboLink newCategoryCategoryComboLink;
@@ -68,7 +68,7 @@ public class CategoryCategoryComboLinkStoreShould extends BaseRealIntegrationTes
     public void insert_a_category_combo_link() throws Exception {
         givenACategory();
         givenACategoryCombo();
-        givenACategoryComboLinkModel();
+        givenACategoryComboLink();
 
         whenInsertNewCategory();
         whenInsertNewCategoryCombo();
@@ -105,7 +105,7 @@ public class CategoryCategoryComboLinkStoreShould extends BaseRealIntegrationTes
                 .build();
     }
 
-    private void givenACategoryComboLinkModel(){
+    private void givenACategoryComboLink(){
         newCategoryCategoryComboLink = CategoryCategoryComboLink.builder()
                 .category("KfdsGBcoiCa")
                 .categoryCombo("m2jTvAj5kkm")

@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.common;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -38,11 +40,9 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ValueTypeRenderingTypeColumnAdapter;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ValueTypeDeviceRendering.Builder.class)
-public abstract class ValueTypeDeviceRendering implements Model {
+public abstract class ValueTypeDeviceRendering implements CoreObject {
 
     @Nullable
     public abstract String uid();
@@ -86,7 +86,7 @@ public abstract class ValueTypeDeviceRendering implements Model {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseModel.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder<Builder> {
 
         public abstract Builder id(Long id);
 

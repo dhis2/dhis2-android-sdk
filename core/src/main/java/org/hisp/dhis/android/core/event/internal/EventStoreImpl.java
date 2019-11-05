@@ -31,14 +31,14 @@ package org.hisp.dhis.android.core.event.internal;
 import android.database.Cursor;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.event.Event;
@@ -85,8 +85,8 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
                            SQLStatementWrapper statementWrapper,
                            SQLStatementBuilderImpl builder,
                            StatementBinder<Event> binder,
-                           CursorModelFactory<Event> modelFactory) {
-        super(databaseAdapter, statementWrapper, builder, binder, modelFactory);
+                           ObjectFactory<Event> objectFactory) {
+        super(databaseAdapter, statementWrapper, builder, binder, objectFactory);
     }
 
     @Override
@@ -146,7 +146,7 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
                 "INNER JOIN " +
                 "(SELECT DISTINCT " + Columns.ENROLLMENT +
                     " FROM " + EventTableInfo.TABLE_INFO.name() + whereStatement + ") b " +
-                "ON a." + BaseIdentifiableObjectModel.Columns.UID + " = b." + Columns.ENROLLMENT;
+                "ON a." + IdentifiableColumns.UID + " = b." + Columns.ENROLLMENT;
 
         return processCount(databaseAdapter.query(query));
     }

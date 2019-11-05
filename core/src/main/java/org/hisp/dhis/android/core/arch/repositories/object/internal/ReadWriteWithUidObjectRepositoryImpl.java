@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import java.util.Map;
 
 public class ReadWriteWithUidObjectRepositoryImpl
-        <M extends Model & ObjectWithUidInterface, R extends ReadOnlyObjectRepository<M>>
+        <M extends CoreObject & ObjectWithUidInterface, R extends ReadOnlyObjectRepository<M>>
         extends ReadOnlyOneObjectRepositoryImpl<M, R> {
 
     private final IdentifiableObjectStore<M> store;

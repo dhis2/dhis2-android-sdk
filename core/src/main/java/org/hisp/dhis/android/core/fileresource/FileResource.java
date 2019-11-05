@@ -40,7 +40,7 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.BaseDataObject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
@@ -48,7 +48,7 @@ import java.util.Date;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_FileResource.Builder.class)
-public abstract class FileResource extends BaseDataModel implements ObjectWithUidInterface {
+public abstract class FileResource extends BaseDataObject implements ObjectWithUidInterface {
 
     @Nullable
     @JsonProperty(BaseIdentifiableObject.UID)
@@ -93,7 +93,7 @@ public abstract class FileResource extends BaseDataModel implements ObjectWithUi
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseDataModel.Builder<Builder> {
+    public abstract static class Builder extends BaseDataObject.Builder<Builder> {
 
         @JsonProperty(BaseIdentifiableObject.UID)
         public abstract Builder uid(@NonNull String uid);

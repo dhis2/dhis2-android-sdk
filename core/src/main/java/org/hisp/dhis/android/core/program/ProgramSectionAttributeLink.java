@@ -29,15 +29,15 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.Model;
-
 import androidx.annotation.Nullable;
 
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
+
 @AutoValue
-public abstract class ProgramSectionAttributeLink implements Model {
+public abstract class ProgramSectionAttributeLink implements CoreObject {
 
     @Nullable
     public abstract String programSection();
@@ -56,7 +56,7 @@ public abstract class ProgramSectionAttributeLink implements Model {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
+    public static abstract class Builder extends BaseObject.Builder<Builder> {
 
         public abstract Builder id(Long id);
 

@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.indicator;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.NameableColumns;
 
 public final class IndicatorTableInfo {
 
@@ -46,12 +46,12 @@ public final class IndicatorTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    public static class Columns extends BaseNameableObjectModel.Columns {
+    public static class Columns extends NameableColumns {
 
         public final static String ANNUALIZED = "annualized";
         public final static String INDICATOR_TYPE = "indicatorType";

@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -42,15 +44,13 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RelationshipI
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RelationshipItemTrackedEntityInstanceColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.RelationshipConstraintTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo.Columns;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
 @JsonDeserialize(builder = AutoValue_RelationshipItem.Builder.class)
-public abstract class RelationshipItem implements Model {
+public abstract class RelationshipItem implements CoreObject {
 
     @Nullable
     @JsonIgnore()

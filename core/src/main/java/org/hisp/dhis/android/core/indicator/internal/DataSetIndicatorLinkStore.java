@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.indicator.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo;
@@ -47,8 +47,8 @@ public final class DataSetIndicatorLinkStore {
 
     private DataSetIndicatorLinkStore() {}
 
-    public static LinkModelStore<DataSetIndicatorLink> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, DataSetIndicatorLinkTableInfo.TABLE_INFO,
+    public static LinkStore<DataSetIndicatorLink> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkStore(databaseAdapter, DataSetIndicatorLinkTableInfo.TABLE_INFO,
                 DataSetIndicatorLinkTableInfo.Columns.DATA_SET, BINDER, DataSetIndicatorLink::create);
     }
 }

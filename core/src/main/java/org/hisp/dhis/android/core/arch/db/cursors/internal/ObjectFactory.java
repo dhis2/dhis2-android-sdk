@@ -25,45 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
+
+package org.hisp.dhis.android.core.arch.db.cursors.internal;
 
 import android.database.Cursor;
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-public abstract class DataSetOrganisationUnitLink implements CoreObject {
-
-    @Nullable
-    public abstract String dataSet();
-
-    @Nullable
-    public abstract String organisationUnit();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetOrganisationUnitLink.Builder();
-    }
-
-    public static DataSetOrganisationUnitLink create(Cursor cursor) {
-        return AutoValue_DataSetOrganisationUnitLink.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseObject.Builder<Builder> {
-
-        public abstract Builder id(Long id);
-
-        public abstract Builder dataSet(String dataSet);
-
-        public abstract Builder organisationUnit(String organisationUnit);
-
-        public abstract DataSetOrganisationUnitLink build();
-    }
+public interface ObjectFactory<M> {
+    M fromCursor(Cursor cursor);
 }

@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import io.reactivex.Observable;
 
-public interface ReadOnlyWithUploadCollectionRepository<M extends Model> extends ReadOnlyCollectionRepository<M> {
+public interface ReadOnlyWithUploadCollectionRepository<M extends CoreObject> extends ReadOnlyCollectionRepository<M> {
     Observable<D2Progress> upload();
     void blockingUpload();
 }

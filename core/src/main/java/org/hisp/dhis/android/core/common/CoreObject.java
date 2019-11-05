@@ -26,40 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+package org.hisp.dhis.android.core.common;
 
-import android.database.sqlite.SQLiteStatement;
+import android.content.ContentValues;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.common.Model;
+import androidx.annotation.Nullable;
 
-import androidx.annotation.NonNull;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 
-public class LinkModelStoreImpl<M extends Model>
-        extends ObjectStoreImpl<M> implements LinkModelStore<M> {
+public interface CoreObject {
+    @Nullable
+    @ColumnName(CoreColumns.ID)
+    @JsonIgnore()
+    Long id();
 
-    private final String masterColumn;
-
-    protected LinkModelStoreImpl(DatabaseAdapter databaseAdapter,
-                       SQLiteStatement insertStatement,
-                       SQLStatementBuilder builder,
-                       String masterColumn,
-                       StatementBinder<M> binder,
-                       CursorModelFactory<M> modelFactory) {
-        super(databaseAdapter, insertStatement, builder, binder, modelFactory);
-        this.masterColumn = masterColumn;
-    }
-
-    @Override
-    public void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException {
-        deleteWhere(masterColumn + "='" + masterUid + "';");
-    }
-
-    @Override
-    public int deleteAllLinks() {
-        return delete();
-    }
+    ContentValues toContentValues();
 }

@@ -26,30 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common.objectstyle.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.di.internal.ObjectWithoutUidStoreProvider;
+import android.content.ContentValues;
+import android.database.Cursor;
+
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+
 import org.hisp.dhis.android.core.common.ObjectStyle;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+public class ObjectStyleColumnAdapter implements ColumnTypeAdapter<ObjectStyle> {
 
-@Module
-public final class ObjectStyleEntityDIModule implements ObjectWithoutUidStoreProvider<ObjectStyle> {
-
+    public static final String COLOR = "color";
+    public static final String ICON = "icon";
+    
     @Override
-    @Provides
-    @Reusable
-    public ObjectWithoutUidStore<ObjectStyle> store(DatabaseAdapter databaseAdapter) {
-        return ObjectStyleStoreImpl.create(databaseAdapter);
+    public ObjectStyle fromCursor(Cursor cursor, String columnName) {
+        int colorColumnIndex = cursor.getColumnIndex(COLOR);
+        int iconColumnIndex = cursor.getColumnIndex(ICON);
+        String color = cursor.getString(colorColumnIndex);
+        String icon = cursor.getString(iconColumnIndex);
+        return ObjectStyle.builder().color(color).icon(icon).build();
     }
 
-    @Provides
-    @Reusable
-    public ObjectStyleHandler handler(ObjectWithoutUidStore<ObjectStyle> store) {
-        return new ObjectStyleHandlerImpl(store);
+    @Override
+    public void toContentValues(ContentValues values, String columnName, ObjectStyle value) {
+        values.put(COLOR, value.color());
+        values.put(ICON, value.icon());
     }
 }

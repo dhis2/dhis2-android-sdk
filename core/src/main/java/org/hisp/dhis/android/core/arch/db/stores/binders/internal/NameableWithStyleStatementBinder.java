@@ -26,15 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common.objectstyle.internal;
+package org.hisp.dhis.android.core.arch.db.stores.binders.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.ObjectStyle;
+import android.database.sqlite.SQLiteStatement;
+
+import androidx.annotation.NonNull;
+
+import org.hisp.dhis.android.core.common.NameableObject;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-interface ObjectStyleStore extends ObjectWithoutUidStore<ObjectStyle> {
-    <O extends ObjectWithStyle<?, ?> & ObjectWithUidInterface> ObjectStyle getStyle(O objectWithStyle,
-                                                                                    TableInfo tableInfo);
+import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
+
+public abstract class NameableWithStyleStatementBinder<O extends NameableObject & ObjectWithStyle>
+        extends IdentifiableStatementBinder<O> {
+
+    @Override
+    public void bindToStatement(@NonNull O o, @NonNull SQLiteStatement sqLiteStatement) {
+        super.bindToStatement(o, sqLiteStatement);
+        sqLiteBind(sqLiteStatement, 11, o.style().color());
+        sqLiteBind(sqLiteStatement, 12, o.style().icon());
+    }
 }

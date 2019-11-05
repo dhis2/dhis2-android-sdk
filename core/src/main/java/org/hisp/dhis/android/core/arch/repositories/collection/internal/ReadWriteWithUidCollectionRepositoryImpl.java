@@ -99,6 +99,7 @@ public abstract class ReadWriteWithUidCollectionRepositoryImpl
         }
     }
 
+    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
     protected void propagateState(M m) {
         // Method is empty because is the default action.
     }

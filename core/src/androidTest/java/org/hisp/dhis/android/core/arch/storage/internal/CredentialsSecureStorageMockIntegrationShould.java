@@ -26,42 +26,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.arch.storage.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseModel;
+import androidx.test.InstrumentationRegistry;
 
-public final class AuthenticatedUserTableInfo {
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-    private AuthenticatedUserTableInfo() {
+import static com.google.common.truth.Truth.assertThat;
+
+@RunWith(D2JunitRunner.class)
+public class CredentialsSecureStorageMockIntegrationShould {
+
+    private CredentialsSecureStore credentialsSecureStore;
+
+    @Before
+    public void setUp() {
+        credentialsSecureStore =
+                new CredentialsSecureStoreImpl(InstrumentationRegistry.getContext().getApplicationContext());
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    @Test
+    public void credentials_are_correctly_stored() {
+        Credentials credentials = Credentials.create("username", "password");
+        credentialsSecureStore.setCredentials(credentials);
 
-        @Override
-        public String name() {
-            return "AuthenticatedUser";
-        }
+        Credentials retrievedCredentials = credentialsSecureStore.getCredentials();
 
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends BaseModel.Columns {
-        public static final String USER = "user";
-        public static final String HASH = "hash";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(), USER, HASH);
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{USER};
-        }
+        assertThat(retrievedCredentials.username()).isEqualTo(credentials.username());
+        assertThat(retrievedCredentials.password()).isEqualTo(credentials.password());
     }
+
+    @Test
+    public void credentials_are_correctly_removed() {
+        Credentials credentials = Credentials.create("username", "password");
+        credentialsSecureStore.setCredentials(credentials);
+
+        credentialsSecureStore.removeCredentials();
+
+        Credentials retrievedCredentials = credentialsSecureStore.getCredentials();
+
+        assertThat(retrievedCredentials).isNull();
+    }
+
 }

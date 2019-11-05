@@ -26,42 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.arch.storage.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseModel;
+public interface CredentialsSecureStore {
 
-public final class AuthenticatedUserTableInfo {
+    void setCredentials(Credentials credentials);
 
-    private AuthenticatedUserTableInfo() {
-    }
+    Credentials getCredentials();
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "AuthenticatedUser";
-        }
-
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends BaseModel.Columns {
-        public static final String USER = "user";
-        public static final String HASH = "hash";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(), USER, HASH);
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{USER};
-        }
-    }
+    void removeCredentials();
 }

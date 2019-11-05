@@ -26,42 +26,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.arch.storage.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseModel;
+import android.content.Context;
 
-public final class AuthenticatedUserTableInfo {
+public class CredentialsSecureStoreImpl implements CredentialsSecureStore {
 
-    private AuthenticatedUserTableInfo() {
+    private static final String USERNAME_KEY = "username";
+    private static final String PASSWORD_KEY = "password";
+
+    private final SecureStore secureStore;
+
+    private Credentials credentials;
+
+    public CredentialsSecureStoreImpl(Context context) {
+        this.secureStore = new AndroidSecureStore(context);
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    public void setCredentials(Credentials credentials) {
+        this.credentials = credentials;
+        this.secureStore.setData(USERNAME_KEY, credentials.username());
+        this.secureStore.setData(PASSWORD_KEY, credentials.password());
+    }
 
-        @Override
-        public String name() {
-            return "AuthenticatedUser";
+    public Credentials getCredentials() {
+        if (this.credentials == null) {
+            String password = this.secureStore.getData(PASSWORD_KEY);
+            String username = this.secureStore.getData(USERNAME_KEY);
+
+            if (password != null && username != null) {
+                this.credentials = Credentials.create(username, password);
+            }
         }
+        return this.credentials;
+    }
 
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends BaseModel.Columns {
-        public static final String USER = "user";
-        public static final String HASH = "hash";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(), USER, HASH);
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{USER};
-        }
+    public void removeCredentials() {
+        this.credentials = null;
+        this.secureStore.removeData(USERNAME_KEY);
+        this.secureStore.removeData(PASSWORD_KEY);
     }
 }

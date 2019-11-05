@@ -43,12 +43,11 @@ public final class AuthenticatedUserStore {
     private static final StatementBinder<AuthenticatedUser> BINDER
             = (o, sqLiteStatement) -> {
         sqLiteBind(sqLiteStatement, 1, o.user());
-        sqLiteBind(sqLiteStatement, 2, o.credentials());
-        sqLiteBind(sqLiteStatement, 3, o.hash());
+        sqLiteBind(sqLiteStatement, 2, o.hash());
     };
 
     private static final WhereStatementBinder<AuthenticatedUser> WHERE_UPDATE_BINDER
-            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 4, o.user());
+            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 3, o.user());
 
     private static final WhereStatementBinder<AuthenticatedUser> WHERE_DELETE_BINDER
             = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.user());

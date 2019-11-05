@@ -38,6 +38,8 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.configuration.Configuration;
 import org.hisp.dhis.android.core.configuration.ConfigurationManager;
 import org.hisp.dhis.android.core.configuration.ServerUrlParser;
@@ -59,16 +61,18 @@ import okhttp3.HttpUrl;
 import retrofit2.Call;
 
 import static okhttp3.Credentials.basic;
-import static org.hisp.dhis.android.core.arch.helpers.UserHelper.base64;
 import static org.hisp.dhis.android.core.arch.helpers.UserHelper.md5;
 
 @Reusable
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class UserAuthenticateCallFactory {
 
     private final DatabaseAdapter databaseAdapter;
     private final APICallExecutor apiCallExecutor;
 
     private final UserService userService;
+
+    private final CredentialsSecureStore credentialsSecureStore;
 
     private final Handler<User> userHandler;
     private final ResourceHandler resourceHandler;
@@ -83,6 +87,7 @@ public final class UserAuthenticateCallFactory {
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull APICallExecutor apiCallExecutor,
             @NonNull UserService userService,
+            @NonNull CredentialsSecureStore credentialsSecureStore,
             @NonNull Handler<User> userHandler,
             @NonNull ResourceHandler resourceHandler,
             @NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore,
@@ -94,6 +99,8 @@ public final class UserAuthenticateCallFactory {
         this.apiCallExecutor = apiCallExecutor;
 
         this.userService = userService;
+
+        this.credentialsSecureStore = credentialsSecureStore;
 
         this.userHandler = userHandler;
         this.resourceHandler = resourceHandler;
@@ -156,6 +163,7 @@ public final class UserAuthenticateCallFactory {
             AuthenticatedUser authenticatedUserToStore = buildAuthenticatedUser(authenticatedUser.uid(),
                     username, password);
             authenticatedUserStore.updateOrInsertWhere(authenticatedUserToStore);
+            credentialsSecureStore.setCredentials(Credentials.create(username, password));
 
             systemInfoRepository.download(true).blockingAwait();
 
@@ -199,6 +207,7 @@ public final class UserAuthenticateCallFactory {
             AuthenticatedUser authenticatedUser = buildAuthenticatedUser(existingUser.user(),
                     username, password);
             authenticatedUserStore.updateOrInsertWhere(authenticatedUser);
+            credentialsSecureStore.setCredentials(Credentials.create(username, password));
             transaction.setSuccessful();
         } finally {
             transaction.end();
@@ -228,11 +237,11 @@ public final class UserAuthenticateCallFactory {
     }
 
     private void throwExceptionIfAlreadyAuthenticated() throws D2Error {
-        AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
-        if (authenticatedUser != null && authenticatedUser.credentials() != null) {
+        Credentials credentials = credentialsSecureStore.getCredentials();
+        if (credentials != null) {
             throw D2Error.builder()
                     .errorCode(D2ErrorCode.ALREADY_AUTHENTICATED)
-                    .errorDescription("A user is already authenticated: " + authenticatedUser.user())
+                    .errorDescription("A user is already authenticated: " + credentials.username())
                     .errorComponent(D2ErrorComponent.SDK)
                     .build();
         }
@@ -258,7 +267,6 @@ public final class UserAuthenticateCallFactory {
     private AuthenticatedUser buildAuthenticatedUser(String uid, String username, String password) {
         return AuthenticatedUser.builder()
                 .user(uid)
-                .credentials(base64(username, password))
                 .hash(md5(username, password))
                 .build();
     }

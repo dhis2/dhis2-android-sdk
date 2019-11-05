@@ -26,42 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.arch.storage.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseModel;
+import androidx.annotation.NonNull;
 
-public final class AuthenticatedUserTableInfo {
+import com.google.auto.value.AutoValue;
 
-    private AuthenticatedUserTableInfo() {
-    }
+@AutoValue
+public abstract class Credentials {
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    @NonNull
+    public abstract String username();
 
-        @Override
-        public String name() {
-            return "AuthenticatedUser";
-        }
+    @NonNull
+    public abstract String password();
 
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends BaseModel.Columns {
-        public static final String USER = "user";
-        public static final String HASH = "hash";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(), USER, HASH);
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{USER};
-        }
+    public static Credentials create(@NonNull String username, @NonNull String password) {
+        return new AutoValue_Credentials(username, password);
     }
 }

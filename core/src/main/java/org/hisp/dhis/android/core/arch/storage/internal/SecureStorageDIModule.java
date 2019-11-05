@@ -26,42 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.arch.storage.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.BaseModel;
+import javax.inject.Singleton;
 
-public final class AuthenticatedUserTableInfo {
+import dagger.Module;
+import dagger.Provides;
 
-    private AuthenticatedUserTableInfo() {
+@Module
+public class SecureStorageDIModule {
+    private final CredentialsSecureStore credentialsSecureStore;
+
+    public SecureStorageDIModule(CredentialsSecureStore credentialsSecureStore) {
+        this.credentialsSecureStore = credentialsSecureStore;
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "AuthenticatedUser";
-        }
-
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends BaseModel.Columns {
-        public static final String USER = "user";
-        public static final String HASH = "hash";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(), USER, HASH);
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{USER};
-        }
+    @Provides
+    @Singleton
+    CredentialsSecureStore credentialsSecureStore() {
+        return credentialsSecureStore;
     }
 }

@@ -30,21 +30,18 @@ package org.hisp.dhis.android.core.user;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 public abstract class AuthenticatedUser implements Model {
 
     @Nullable
     public abstract String user();
-
-    @Nullable
-    public abstract String credentials();
 
     @Nullable
     public abstract String hash();
@@ -66,8 +63,6 @@ public abstract class AuthenticatedUser implements Model {
         public abstract Builder id(Long id);
 
         public abstract Builder user(@Nullable String user);
-
-        public abstract Builder credentials(@Nullable String credentials);
 
         public abstract Builder hash(@Nullable String hash);
 

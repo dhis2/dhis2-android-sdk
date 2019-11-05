@@ -30,17 +30,20 @@ package org.hisp.dhis.android.core;
 
 import android.util.Log;
 
+import androidx.annotation.VisibleForTesting;
+
 import org.hisp.dhis.android.core.arch.api.internal.ServerUrlInterceptor;
 import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
 import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
 import org.hisp.dhis.android.core.configuration.Configuration;
 import org.hisp.dhis.android.core.configuration.ConfigurationManager;
 import org.hisp.dhis.android.core.configuration.ConfigurationManagerFactory;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
-import androidx.annotation.VisibleForTesting;
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
@@ -83,10 +86,14 @@ public final class D2Manager {
                 SSLContextInitializer.initializeSSLContext(d2Configuration.context());
             }
 
+            CredentialsSecureStore credentialsSecureStore = new CredentialsSecureStoreImpl(d2Configuration.context());
+
             d2 = new D2(
-                    RetrofitFactory.retrofit(OkHttpClientFactory.okHttpClient(d2Configuration, databaseAdapter)),
+                    RetrofitFactory.retrofit(
+                            OkHttpClientFactory.okHttpClient(d2Configuration, databaseAdapter, credentialsSecureStore)),
                     databaseAdapter,
-                    d2Configuration.context()
+                    d2Configuration.context(),
+                    credentialsSecureStore
             );
 
             long setUpTime = System.currentTimeMillis() - startTime;

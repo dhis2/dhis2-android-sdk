@@ -45,7 +45,6 @@ public class UserModuleMockIntegrationShould extends BaseMockIntegrationTestFull
     public void allow_access_to_authenticated_user() {
         AuthenticatedUser authenticatedUser = d2.userModule().authenticatedUser().blockingGet();
         assertThat(authenticatedUser.user(), is("DXyJmlo9rge"));
-        assertThat(authenticatedUser.credentials(), is("YW5kcm9pZDpBbmRyb2lkMTIz"));
     }
 
     @Test

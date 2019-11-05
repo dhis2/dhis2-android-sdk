@@ -38,6 +38,8 @@ import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseDIModule;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.di.internal.RepositoriesDIModule;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStorageDIModule;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.internal.CategoryPackageDIModule;
 import org.hisp.dhis.android.core.common.internal.CommonPackageDIModule;
@@ -84,12 +86,13 @@ import androidx.annotation.VisibleForTesting;
 import dagger.Component;
 import retrofit2.Retrofit;
 
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.ExcessivePublicCount"})
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.ExcessivePublicCount", "PMD.GodClass"})
 @Singleton
 @Component(modules = {
         AppContextDIModule.class,
         APIClientDIModule.class,
         DatabaseDIModule.class,
+        SecureStorageDIModule.class,
         WipeDIModule.class,
         RepositoriesDIModule.class,
 
@@ -154,6 +157,7 @@ public interface D2DIComponent {
         Builder appContextDIModule(AppContextDIModule appContextDIModule);
         Builder apiClientDIModule(APIClientDIModule apiClientDIModule);
         Builder databaseDIModule(DatabaseDIModule databaseDIModule);
+        Builder secureStoregeDIModule(SecureStorageDIModule secureStoregeDIModule);
         Builder wipeDIModule(WipeDIModule wipeDIModule);
         Builder repositoriesDIModule(RepositoriesDIModule repositoriesDIModule);
 
@@ -185,11 +189,13 @@ public interface D2DIComponent {
         D2DIComponent build();
     }
 
-    static D2DIComponent create(Context context, Retrofit retrofit, DatabaseAdapter databaseAdapter) {
+    static D2DIComponent create(Context context, Retrofit retrofit, DatabaseAdapter databaseAdapter,
+                                CredentialsSecureStore credentialsSecureStore) {
         return DaggerD2DIComponent.builder()
                 .appContextDIModule(new AppContextDIModule(context))
                 .databaseDIModule(new DatabaseDIModule(databaseAdapter))
                 .apiClientDIModule(new APIClientDIModule(retrofit))
+                .secureStoregeDIModule(new SecureStorageDIModule(credentialsSecureStore))
                 .build();
     }
 }

@@ -28,24 +28,27 @@
 
 package org.hisp.dhis.android.core.arch.api.authentication.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.user.AuthenticatedUser;
+import androidx.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 
 import java.io.IOException;
 import java.util.Locale;
 
-import androidx.annotation.NonNull;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import static org.hisp.dhis.android.core.arch.helpers.UserHelper.base64;
 
 final class BasicAuthenticator implements Authenticator {
     private static final String AUTHORIZATION = "Authorization";
     private static final String BASIC_CREDENTIALS = "Basic %s";
 
-    private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
+    private final CredentialsSecureStore credentialsSecureStore;
 
-    BasicAuthenticator(@NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore) {
-        this.authenticatedUserStore = authenticatedUserStore;
+    BasicAuthenticator(@NonNull CredentialsSecureStore credentialsSecureStore) {
+        this.credentialsSecureStore = credentialsSecureStore;
     }
 
     @Override
@@ -56,17 +59,18 @@ final class BasicAuthenticator implements Authenticator {
             return chain.proceed(chain.request());
         }
 
-        AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
-        if (authenticatedUser == null || authenticatedUser.credentials() == null) {
+        Credentials credentials = credentialsSecureStore.getCredentials();
+        if (credentials == null) {
             // proceed request if we do not
             // have any users authenticated
             return chain.proceed(chain.request());
         }
 
         // retrieve first user and pass in his / her credentials
+        String base64Credentials = base64(credentials.username(), credentials.password());
         Request request = chain.request().newBuilder()
                 .addHeader(AUTHORIZATION, String.format(Locale.US,
-                        BASIC_CREDENTIALS, authenticatedUser.credentials()))
+                        BASIC_CREDENTIALS, base64Credentials))
                 .build();
         return chain.proceed(request);
     }

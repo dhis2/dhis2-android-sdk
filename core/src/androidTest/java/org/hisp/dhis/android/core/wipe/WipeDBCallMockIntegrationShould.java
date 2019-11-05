@@ -38,7 +38,7 @@ public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmpt
 
     @Test
     public void have_empty_database_when_wipe_db_after_sync_data() throws Exception {
-        givenALoginInDatabase();
+        givenAFreshLoginInDatabase();
 
         givenAMetadataInDatabase();
 
@@ -53,8 +53,14 @@ public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmpt
         DatabaseAssert.assertThatDatabase(databaseAdapter).isEmpty();
     }
 
-    private void givenALoginInDatabase() {
-        d2.userModule().logIn(RealServerMother.username, RealServerMother.password, dhis2MockServer.getBaseEndpoint()).blockingGet();
+    private void givenAFreshLoginInDatabase() {
+        try {
+            d2.userModule().logOut().blockingAwait();
+        } catch (RuntimeException e) {
+            // Do nothing
+        } finally {
+            d2.userModule().blockingLogIn("android", "Android123", dhis2MockServer.getBaseEndpoint());
+        }
     }
 
     private void givenAMetadataInDatabase() {

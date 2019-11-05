@@ -36,6 +36,8 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.configuration.ConfigurationManager;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -62,7 +64,6 @@ import io.reactivex.observers.TestObserver;
 
 import static okhttp3.Credentials.basic;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.hisp.dhis.android.core.arch.helpers.UserHelper.base64;
 import static org.hisp.dhis.android.core.arch.helpers.UserHelper.md5;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -91,6 +92,9 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Mock
     private ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
 
+    @Mock
+    private CredentialsSecureStore credentialsSecureStore;
+
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<User> authenticateAPICall;
 
@@ -117,6 +121,9 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Mock
     private AuthenticatedUser authenticatedUser;
+
+    @Mock
+    private Credentials credentials;
 
     @Mock
     private IdentifiableObjectStore<User> userStore;
@@ -151,8 +158,10 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         when(anotherUser.uid()).thenReturn("anotherUserUid");
 
+        when(credentials.username()).thenReturn(USERNAME);
+        when(credentials.password()).thenReturn(PASSWORD);
+
         when(authenticatedUser.user()).thenReturn(UID);
-        when(authenticatedUser.credentials()).thenReturn(base64(USERNAME, PASSWORD));
         when(authenticatedUser.hash()).thenReturn(md5(USERNAME, PASSWORD));
 
         when(systemInfoFromAPI.contextPath()).thenReturn(baseEndpoint);
@@ -178,7 +187,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     private Single<User> instantiateCall(String username, String password, String serverUrl) {
         return new UserAuthenticateCallFactory(databaseAdapter, apiCallExecutor,
-                userService, userHandler, resourceHandler, authenticatedUserStore,
+                userService, credentialsSecureStore, userHandler, resourceHandler, authenticatedUserStore,
                 systemInfoRepository, userStore, wipeModule, configurationManager).logIn(username, password, serverUrl);
     }
 
@@ -248,7 +257,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         verifyNoTransactionStarted();
 
         // stores must not be invoked
-        verify(authenticatedUserStore).selectFirst();
+        verify(credentialsSecureStore).getCredentials();
         verifyNoMoreInteractions(authenticatedUserStore);
         verifyNoMoreInteractions(userHandler);
     }
@@ -309,7 +318,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Test
     public void throw_d2_call_exception_state_exception_if_user_already_signed_in() {
-        when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
+        when(credentialsSecureStore.getCredentials()).thenReturn(credentials);
         TestObserver<User> testObserver = logInSingle.test();
         assertD2Error(testObserver);
     }
@@ -318,7 +327,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Test
     public void continue_if_user_has_logged_out() {
-        when(authenticatedUser.credentials()).thenReturn(null);
+        when(credentialsSecureStore.getCredentials()).thenReturn(null);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
         logInSingle.blockingGet();
         verifySuccess();
@@ -328,7 +337,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     public void user_login_offline_if_previously_logged() throws Exception {
         whenAPICall().thenThrow(d2Error);
 
-        when(authenticatedUser.credentials()).thenReturn(null);
+        when(credentialsSecureStore.getCredentials()).thenReturn(null);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
         logInSingle.test().awaitTerminalEvent();
@@ -354,7 +363,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     public void throw_d2_exception_if_different_authenticated_user_offline() throws Exception {
         whenAPICall().thenThrow(d2Error);
 
-        when(authenticatedUser.credentials()).thenReturn(null);
+        when(credentialsSecureStore.getCredentials()).thenReturn(null);
         when(authenticatedUser.hash()).thenReturn("different_hash");
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
@@ -372,7 +381,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         AuthenticatedUser authenticatedUserModel =
                 AuthenticatedUser.builder()
                 .user(UID)
-                .credentials(base64(USERNAME, PASSWORD))
                 .hash(md5(USERNAME, PASSWORD))
                 .build();
         verifyTransactionComplete();
@@ -384,7 +392,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         AuthenticatedUser authenticatedUserModel =
                 AuthenticatedUser.builder()
                         .user(UID)
-                        .credentials(base64(USERNAME, PASSWORD))
                         .hash(md5(USERNAME, PASSWORD))
                         .build();
         verifyTransactionComplete();

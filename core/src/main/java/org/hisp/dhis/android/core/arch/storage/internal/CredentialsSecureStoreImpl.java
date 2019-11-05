@@ -26,46 +26,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.arch.storage.internal;
 
-import android.database.Cursor;
+import android.content.Context;
 
-import androidx.annotation.Nullable;
+public class CredentialsSecureStoreImpl implements CredentialsSecureStore {
 
-import com.google.auto.value.AutoValue;
+    private static final String USERNAME_KEY = "username";
+    private static final String PASSWORD_KEY = "password";
 
-import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.common.CoreObject;
+    private final SecureStore secureStore;
 
-@AutoValue
-public abstract class AuthenticatedUser implements CoreObject {
+    private Credentials credentials;
 
-    @Nullable
-    public abstract String user();
-
-    @Nullable
-    public abstract String hash();
-
-    public static Builder builder() {
-        return new AutoValue_AuthenticatedUser.Builder();
+    public CredentialsSecureStoreImpl(Context context) {
+        this.secureStore = new AndroidSecureStore(context);
     }
 
-    public static AuthenticatedUser create(Cursor cursor) {
-        return $AutoValue_AuthenticatedUser.createFromCursor(cursor);
+    public void setCredentials(Credentials credentials) {
+        this.credentials = credentials;
+        this.secureStore.setData(USERNAME_KEY, credentials.username());
+        this.secureStore.setData(PASSWORD_KEY, credentials.password());
     }
 
-    public abstract Builder toBuilder();
+    public Credentials getCredentials() {
+        if (this.credentials == null) {
+            String password = this.secureStore.getData(PASSWORD_KEY);
+            String username = this.secureStore.getData(USERNAME_KEY);
 
+            if (password != null && username != null) {
+                this.credentials = Credentials.create(username, password);
+            }
+        }
+        return this.credentials;
+    }
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseObject.Builder<Builder> {
-
-        public abstract Builder id(Long id);
-
-        public abstract Builder user(@Nullable String user);
-
-        public abstract Builder hash(@Nullable String hash);
-
-        public abstract AuthenticatedUser build();
+    public void removeCredentials() {
+        this.credentials = null;
+        this.secureStore.removeData(USERNAME_KEY);
+        this.secureStore.removeData(PASSWORD_KEY);
     }
 }

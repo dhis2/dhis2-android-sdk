@@ -26,46 +26,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.arch.storage.internal;
 
-import android.database.Cursor;
+import androidx.test.InstrumentationRegistry;
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import com.google.auto.value.AutoValue;
+import static com.google.common.truth.Truth.assertThat;
 
-import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.common.CoreObject;
+@RunWith(D2JunitRunner.class)
+public class CredentialsSecureStorageMockIntegrationShould {
 
-@AutoValue
-public abstract class AuthenticatedUser implements CoreObject {
+    private CredentialsSecureStore credentialsSecureStore;
 
-    @Nullable
-    public abstract String user();
-
-    @Nullable
-    public abstract String hash();
-
-    public static Builder builder() {
-        return new AutoValue_AuthenticatedUser.Builder();
+    @Before
+    public void setUp() {
+        credentialsSecureStore =
+                new CredentialsSecureStoreImpl(InstrumentationRegistry.getContext().getApplicationContext());
     }
 
-    public static AuthenticatedUser create(Cursor cursor) {
-        return $AutoValue_AuthenticatedUser.createFromCursor(cursor);
+    @Test
+    public void credentials_are_correctly_stored() {
+        Credentials credentials = Credentials.create("username", "password");
+        credentialsSecureStore.setCredentials(credentials);
+
+        Credentials retrievedCredentials = credentialsSecureStore.getCredentials();
+
+        assertThat(retrievedCredentials.username()).isEqualTo(credentials.username());
+        assertThat(retrievedCredentials.password()).isEqualTo(credentials.password());
     }
 
-    public abstract Builder toBuilder();
+    @Test
+    public void credentials_are_correctly_removed() {
+        Credentials credentials = Credentials.create("username", "password");
+        credentialsSecureStore.setCredentials(credentials);
 
+        credentialsSecureStore.removeCredentials();
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseObject.Builder<Builder> {
+        Credentials retrievedCredentials = credentialsSecureStore.getCredentials();
 
-        public abstract Builder id(Long id);
-
-        public abstract Builder user(@Nullable String user);
-
-        public abstract Builder hash(@Nullable String hash);
-
-        public abstract AuthenticatedUser build();
+        assertThat(retrievedCredentials).isNull();
     }
+
 }

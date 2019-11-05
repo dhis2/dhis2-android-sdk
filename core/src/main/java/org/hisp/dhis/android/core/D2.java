@@ -30,10 +30,14 @@ package org.hisp.dhis.android.core;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
+
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
 import org.hisp.dhis.android.core.arch.d2.internal.D2Modules;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.category.CategoryModule;
 import org.hisp.dhis.android.core.constant.ConstantModule;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
@@ -59,8 +63,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.VisibleForTesting;
 import retrofit2.Retrofit;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.CouplingBetweenObjects"})
@@ -70,10 +72,11 @@ public final class D2 {
     private final D2Modules modules;
     private final D2DIComponent d2DIComponent;
 
-    D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter, @NonNull Context context) {
+    D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter, @NonNull Context context,
+       @NonNull CredentialsSecureStore credentialsSecureStore) {
         this.retrofit = retrofit;
         this.databaseAdapter = databaseAdapter;
-        this.d2DIComponent = D2DIComponent.create(context, retrofit, databaseAdapter);
+        this.d2DIComponent = D2DIComponent.create(context, retrofit, databaseAdapter, credentialsSecureStore);
         this.modules = d2DIComponent.modules();
     }
 

@@ -26,46 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.arch.storage.internal;
 
-import android.database.Cursor;
+import javax.inject.Singleton;
 
-import androidx.annotation.Nullable;
+import dagger.Module;
+import dagger.Provides;
 
-import com.google.auto.value.AutoValue;
+@Module
+public class SecureStorageDIModule {
+    private final CredentialsSecureStore credentialsSecureStore;
 
-import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-public abstract class AuthenticatedUser implements CoreObject {
-
-    @Nullable
-    public abstract String user();
-
-    @Nullable
-    public abstract String hash();
-
-    public static Builder builder() {
-        return new AutoValue_AuthenticatedUser.Builder();
+    public SecureStorageDIModule(CredentialsSecureStore credentialsSecureStore) {
+        this.credentialsSecureStore = credentialsSecureStore;
     }
 
-    public static AuthenticatedUser create(Cursor cursor) {
-        return $AutoValue_AuthenticatedUser.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseObject.Builder<Builder> {
-
-        public abstract Builder id(Long id);
-
-        public abstract Builder user(@Nullable String user);
-
-        public abstract Builder hash(@Nullable String hash);
-
-        public abstract AuthenticatedUser build();
+    @Provides
+    @Singleton
+    CredentialsSecureStore credentialsSecureStore() {
+        return credentialsSecureStore;
     }
 }

@@ -26,46 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.arch.storage.internal;
 
-import android.database.Cursor;
-
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.common.CoreObject;
-
 @AutoValue
-public abstract class AuthenticatedUser implements CoreObject {
+public abstract class Credentials {
 
-    @Nullable
-    public abstract String user();
+    @NonNull
+    public abstract String username();
 
-    @Nullable
-    public abstract String hash();
+    @NonNull
+    public abstract String password();
 
-    public static Builder builder() {
-        return new AutoValue_AuthenticatedUser.Builder();
-    }
-
-    public static AuthenticatedUser create(Cursor cursor) {
-        return $AutoValue_AuthenticatedUser.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseObject.Builder<Builder> {
-
-        public abstract Builder id(Long id);
-
-        public abstract Builder user(@Nullable String user);
-
-        public abstract Builder hash(@Nullable String hash);
-
-        public abstract AuthenticatedUser build();
+    public static Credentials create(@NonNull String username, @NonNull String password) {
+        return new AutoValue_Credentials(username, password);
     }
 }

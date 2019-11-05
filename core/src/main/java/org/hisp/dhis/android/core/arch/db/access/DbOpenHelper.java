@@ -44,7 +44,7 @@ import java.util.Map;
 
 public class DbOpenHelper extends SQLBriteOpenHelper {
 
-    public static final int VERSION = 62;
+    public static final int VERSION = 63;
 
     public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
         super(context, databaseName, null, VERSION);

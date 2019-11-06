@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
 
 public final class DataElementFields {
 
-    public final static String STYLE = "style";
+    private final static String STYLE = "style";
     private final static String ACCESS = "access";
 
     private static final FieldsHelper<DataElement> fh = new FieldsHelper<>();

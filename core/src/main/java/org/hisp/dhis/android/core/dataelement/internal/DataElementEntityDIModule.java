@@ -31,11 +31,9 @@ package org.hisp.dhis.android.core.dataelement.internal;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
 
 import java.util.Collections;
 import java.util.Map;
@@ -55,19 +53,13 @@ public final class DataElementEntityDIModule {
 
     @Provides
     @Reusable
-    Handler<DataElement> handler(DataElementHandler impl) {
-        return impl;
+    Handler<DataElement> handler(IdentifiableObjectStore<DataElement> store) {
+        return new IdentifiableHandlerImpl<>(store);
     }
 
     @Provides
     @Reusable
-    Map<String, ChildrenAppender<DataElement>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<DataElement> childrenAppender =
-                new ObjectStyleChildrenAppender<>(
-                        ObjectStyleStoreImpl.create(databaseAdapter),
-                        DataElementTableInfo.TABLE_INFO
-                );
-
-        return Collections.singletonMap(DataElementFields.STYLE, childrenAppender);
+    Map<String, ChildrenAppender<DataElement>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.dataelement;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.CoreColumns;
-import org.hisp.dhis.android.core.common.NameableColumns;
+import org.hisp.dhis.android.core.common.NameableWithStyleColumns;
 
 public final class DataElementTableInfo {
 
@@ -51,7 +51,7 @@ public final class DataElementTableInfo {
         }
     };
 
-    public static class Columns extends NameableColumns {
+    public static class Columns extends NameableWithStyleColumns {
         public final static String VALUE_TYPE = "valueType";
         public final static String ZERO_IS_SIGNIFICANT = "zeroIsSignificant";
         public final static String AGGREGATION_TYPE = "aggregationType";

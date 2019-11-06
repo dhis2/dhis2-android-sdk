@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.text.ParseException;
-import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -76,13 +75,5 @@ public class NoteDHISVersionManager {
                 .value(note.value())
                 .storedBy(note.storedBy())
                 .build();
-    }
-
-    String serializeStoredDate(Date date) {
-        if (this.versionManager.is2_29()) {
-            return BaseIdentifiableObject.dateToSpaceDateStr(date);
-        } else {
-            return BaseIdentifiableObject.dateToDateStr(date);
-        }
     }
 }

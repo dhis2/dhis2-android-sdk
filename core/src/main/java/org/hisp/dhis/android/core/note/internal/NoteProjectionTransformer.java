@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.note.internal;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.note.NoteCreateProjection;
@@ -45,12 +46,10 @@ import dagger.Reusable;
 final class NoteProjectionTransformer implements Transformer<NoteCreateProjection, Note> {
 
     private final CredentialsSecureStore credentialsSecureStore;
-    private final NoteDHISVersionManager versionManager;
 
     @Inject
-    NoteProjectionTransformer(CredentialsSecureStore credentialsSecureStore, NoteDHISVersionManager versionManager) {
+    NoteProjectionTransformer(CredentialsSecureStore credentialsSecureStore) {
         this.credentialsSecureStore = credentialsSecureStore;
-        this.versionManager = versionManager;
     }
 
     @Override
@@ -61,7 +60,7 @@ final class NoteProjectionTransformer implements Transformer<NoteCreateProjectio
                 .enrollment(projection.enrollment())
                 .value(projection.value())
                 .storedBy(credentialsSecureStore.getCredentials().username())
-                .storedDate(versionManager.serializeStoredDate(new Date()))
+                .storedDate(BaseIdentifiableObject.dateToDateStr(new Date()))
                 .deleted(false)
                 .build();
     }

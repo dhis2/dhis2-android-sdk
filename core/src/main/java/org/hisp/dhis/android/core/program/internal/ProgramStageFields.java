@@ -49,7 +49,7 @@ public final class ProgramStageFields {
 
     public static final String PROGRAM_STAGE_DATA_ELEMENTS = "programStageDataElements";
     private static final String CAPTURE_COORDINATES = "captureCoordinates";
-    public static final String STYLE = "style";
+    private static final String STYLE = "style";
     public static final String PROGRAM_STAGE_SECTIONS = "programStageSections";
     private static final String ACCESS = "access";
 

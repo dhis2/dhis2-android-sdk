@@ -150,8 +150,12 @@ public final class ProgramStageCollectionRepository
         return cf.bool(Columns.REMIND_COMPLETED);
     }
 
-    public ProgramStageCollectionRepository withStyle() {
-        return cf.withChild(ProgramStageFields.STYLE);
+    public StringFilterConnector<ProgramStageCollectionRepository> byColor() {
+        return cf.string(Columns.COLOR);
+    }
+
+    public StringFilterConnector<ProgramStageCollectionRepository> byIcon() {
+        return cf.string(Columns.ICON);
     }
 
     /**

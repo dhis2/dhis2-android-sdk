@@ -35,12 +35,10 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
-import org.hisp.dhis.android.core.program.ProgramStageTableInfo;
 
 import java.util.Collection;
 
@@ -52,7 +50,6 @@ import dagger.Reusable;
 final class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage> {
     private final HandlerWithTransformer<ProgramStageSection> programStageSectionHandler;
     private final Handler<ProgramStageDataElement> programStageDataElementHandler;
-    private final ObjectStyleHandler styleHandler;
     private final OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner;
     private final OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner;
     private final SubCollectionCleaner<ProgramStage> programStageCleaner;
@@ -61,14 +58,12 @@ final class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage> {
     ProgramStageHandler(IdentifiableObjectStore<ProgramStage> programStageStore,
                         HandlerWithTransformer<ProgramStageSection> programStageSectionHandler,
                         Handler<ProgramStageDataElement> programStageDataElementHandler,
-                        ObjectStyleHandler styleHandler,
                         OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner,
                         OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner,
                         SubCollectionCleaner<ProgramStage> programStageCleaner) {
         super(programStageStore);
         this.programStageSectionHandler = programStageSectionHandler;
         this.programStageDataElementHandler = programStageDataElementHandler;
-        this.styleHandler = styleHandler;
         this.programStageDataElementCleaner = programStageDataElementCleaner;
         this.programStageSectionCleaner = programStageSectionCleaner;
         this.programStageCleaner = programStageCleaner;
@@ -84,8 +79,6 @@ final class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage> {
                 programStageSection -> programStageSection.toBuilder()
                         .programStage(ObjectWithUid.create(programStage.uid()))
                         .build());
-
-        styleHandler.handle(programStage.style(), programStage.uid(), ProgramStageTableInfo.TABLE_INFO.name());
 
         if (action == HandleAction.Update) {
             programStageDataElementCleaner.deleteOrphan(programStage,

@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
 public abstract class NameableWithStyleStatementBinder<O extends NameableObject & ObjectWithStyle>
-        extends IdentifiableStatementBinder<O> {
+        extends NameableStatementBinder<O> {
 
     @Override
     public void bindToStatement(@NonNull O o, @NonNull SQLiteStatement sqLiteStatement) {

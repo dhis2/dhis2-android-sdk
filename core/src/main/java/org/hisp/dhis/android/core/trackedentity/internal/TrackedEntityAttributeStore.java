@@ -33,7 +33,7 @@ import android.database.sqlite.SQLiteStatement;
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableWithStyleStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
@@ -48,26 +48,26 @@ public final class TrackedEntityAttributeStore {
     private TrackedEntityAttributeStore() {}
 
     private static StatementBinder<TrackedEntityAttribute> BINDER =
-            new NameableStatementBinder<TrackedEntityAttribute>() {
+            new NameableWithStyleStatementBinder<TrackedEntityAttribute>() {
 
         @Override
         public void bindToStatement(@NonNull TrackedEntityAttribute o,
                                     @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 11, o.pattern());
-            sqLiteBind(sqLiteStatement, 12, o.sortOrderInListNoProgram());
-            sqLiteBind(sqLiteStatement, 13, UidsHelper.getUidOrNull(o.optionSet()));
-            sqLiteBind(sqLiteStatement, 14, o.valueType());
-            sqLiteBind(sqLiteStatement, 15, o.expression());
-            sqLiteBind(sqLiteStatement, 16, o.programScope());
-            sqLiteBind(sqLiteStatement, 17, o.displayInListNoProgram());
-            sqLiteBind(sqLiteStatement, 18, o.generated());
-            sqLiteBind(sqLiteStatement, 19, o.displayOnVisitSchedule());
-            sqLiteBind(sqLiteStatement, 20, o.orgUnitScope());
-            sqLiteBind(sqLiteStatement, 21, o.unique());
-            sqLiteBind(sqLiteStatement, 22, o.inherit());
-            sqLiteBind(sqLiteStatement, 23, o.formName());
-            sqLiteBind(sqLiteStatement, 24, o.fieldMask());
+            sqLiteBind(sqLiteStatement, 13, o.pattern());
+            sqLiteBind(sqLiteStatement, 14, o.sortOrderInListNoProgram());
+            sqLiteBind(sqLiteStatement, 15, UidsHelper.getUidOrNull(o.optionSet()));
+            sqLiteBind(sqLiteStatement, 16, o.valueType());
+            sqLiteBind(sqLiteStatement, 17, o.expression());
+            sqLiteBind(sqLiteStatement, 18, o.programScope());
+            sqLiteBind(sqLiteStatement, 19, o.displayInListNoProgram());
+            sqLiteBind(sqLiteStatement, 20, o.generated());
+            sqLiteBind(sqLiteStatement, 21, o.displayOnVisitSchedule());
+            sqLiteBind(sqLiteStatement, 22, o.orgUnitScope());
+            sqLiteBind(sqLiteStatement, 23, o.unique());
+            sqLiteBind(sqLiteStatement, 24, o.inherit());
+            sqLiteBind(sqLiteStatement, 25, o.formName());
+            sqLiteBind(sqLiteStatement, 26, o.fieldMask());
         }
     };
 

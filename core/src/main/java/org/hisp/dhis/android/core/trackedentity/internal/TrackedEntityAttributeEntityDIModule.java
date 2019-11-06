@@ -32,10 +32,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
 
 import java.util.Collections;
 import java.util.Map;
@@ -61,13 +58,7 @@ public final class TrackedEntityAttributeEntityDIModule {
 
     @Provides
     @Reusable
-    Map<String, ChildrenAppender<TrackedEntityAttribute>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<TrackedEntityAttribute> childrenAppender =
-                new ObjectStyleChildrenAppender<>(
-                        ObjectStyleStoreImpl.create(databaseAdapter),
-                        TrackedEntityAttributeTableInfo.TABLE_INFO
-                );
-
-        return Collections.singletonMap(TrackedEntityAttributeFields.STYLE, childrenAppender);
+    Map<String, ChildrenAppender<TrackedEntityAttribute>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

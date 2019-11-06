@@ -175,12 +175,19 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
 
         // Auxiliary fields
         abstract Access access();
+        abstract ObjectStyle style();
 
         public TrackedEntityAttribute build() {
             try {
                 access();
             } catch (IllegalStateException e) {
                 access(AccessHelper.defaultAccess());
+            }
+
+            try {
+                style();
+            } catch (IllegalStateException e) {
+                style(ObjectStyle.builder().build());
             }
 
             return autoBuild();

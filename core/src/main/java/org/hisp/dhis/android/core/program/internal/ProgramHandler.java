@@ -33,13 +33,11 @@ import org.hisp.dhis.android.core.arch.cleaners.internal.ParentOrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramSection;
-import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramType;
 
@@ -58,7 +56,6 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
     private final Handler<ProgramIndicator> programIndicatorHandler;
     private final Handler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler;
     private final Handler<ProgramSection> programSectionHandler;
-    private final ObjectStyleHandler styleHandler;
     private final ParentOrphanCleaner<Program> orphanCleaner;
     private final CollectionCleaner<Program> collectionCleaner;
 
@@ -68,7 +65,6 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
                    Handler<ProgramIndicator> programIndicatorHandler,
                    Handler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler,
                    Handler<ProgramSection> programSectionHandler,
-                   ObjectStyleHandler styleHandler,
                    ParentOrphanCleaner<Program> orphanCleaner,
                    CollectionCleaner<Program> collectionCleaner) {
         super(programStore);
@@ -76,7 +72,6 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
         this.programIndicatorHandler = programIndicatorHandler;
         this.programTrackedEntityAttributeHandler = programTrackedEntityAttributeHandler;
         this.programSectionHandler = programSectionHandler;
-        this.styleHandler = styleHandler;
         this.orphanCleaner = orphanCleaner;
         this.collectionCleaner = collectionCleaner;
     }
@@ -88,7 +83,6 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
         programIndicatorHandler.handleMany(ProgramInternalAccessor.accessProgramIndicators(program));
         programRuleVariableHandler.handleMany(ProgramInternalAccessor.accessProgramRuleVariables(program));
         programSectionHandler.handleMany(ProgramInternalAccessor.accessProgramSections(program));
-        styleHandler.handle(program.style(), program.uid(), ProgramTableInfo.TABLE_INFO.name());
 
         if (action == HandleAction.Update) {
             orphanCleaner.deleteOrphan(program);

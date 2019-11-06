@@ -34,8 +34,6 @@ import org.hisp.dhis.android.core.arch.cleaners.internal.ParentOrphanCleaner;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns;
@@ -69,14 +67,7 @@ public final class ProgramEntityDIModule {
             DatabaseAdapter databaseAdapter,
             ProgramTrackedEntityTypeChildrenAppender trackedEntityTypeChildrenAppender) {
 
-        ChildrenAppender<Program> objectStyleChildrenAppender =
-                new ObjectStyleChildrenAppender<>(
-                        ObjectStyleStoreImpl.create(databaseAdapter),
-                        ProgramTableInfo.TABLE_INFO
-                );
-
         return new HashMap<String, ChildrenAppender<Program>>() {{
-            put(ProgramFields.STYLE, objectStyleChildrenAppender);
             put(ProgramFields.PROGRAM_STAGES, ProgramStageChildrenAppender.create(databaseAdapter));
             put(ProgramFields.PROGRAM_RULE_VARIABLES, ProgramRuleVariableChildrenAppender.create(databaseAdapter));
             put(ProgramFields.PROGRAM_INDICATORS, ProgramIndicatorChildrenAppender.create(databaseAdapter));

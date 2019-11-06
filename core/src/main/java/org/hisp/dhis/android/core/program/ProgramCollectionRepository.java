@@ -159,6 +159,14 @@ public final class ProgramCollectionRepository
         return cf.enumC(Columns.ACCESS_LEVEL);
     }
 
+    public StringFilterConnector<ProgramCollectionRepository> byColor() {
+        return cf.string(Columns.COLOR);
+    }
+
+    public StringFilterConnector<ProgramCollectionRepository> byIcon() {
+        return cf.string(Columns.ICON);
+    }
+
     public ProgramCollectionRepository byOrganisationUnitUid(String uid) {
         return byOrganisationUnitList(Collections.singletonList(uid));
     }
@@ -169,10 +177,6 @@ public final class ProgramCollectionRepository
                 OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
                 OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
                 uids);
-    }
-
-    public ProgramCollectionRepository withStyle() {
-        return cf.withChild(ProgramFields.STYLE);
     }
 
     /**

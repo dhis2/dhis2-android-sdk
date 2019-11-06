@@ -123,11 +123,18 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
     }
 
     @Test
-    public void include_style_as_child() {
-        DataElement dataElement = d2.dataElementModule().dataElements()
-                .withStyle()
-                .uid("g9eOBujte1U")
+    public void filter_by_field_color() {
+        List<DataElement> dataElements = d2.dataElementModule().dataElements()
+                .byColor().eq("#600")
                 .blockingGet();
-        assertThat(dataElement.style().icon(), is("data-element-icon"));
+        assertThat(dataElements.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_field_icon() {
+        List<DataElement> dataElements = d2.dataElementModule().dataElements()
+                .byIcon().eq("data-element-icon-2")
+                .blockingGet();
+        assertThat(dataElements.size(), is(1));
     }
 }

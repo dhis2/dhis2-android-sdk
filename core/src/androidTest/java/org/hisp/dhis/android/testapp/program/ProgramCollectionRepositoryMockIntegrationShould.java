@@ -151,6 +151,22 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     }
 
     @Test
+    public void filter_by_field_color() {
+        List<Program> programs = d2.programModule().programs()
+                .byColor().eq("#333")
+                .blockingGet();
+        assertThat(programs.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_field_icon() {
+        List<Program> programs = d2.programModule().programs()
+                .byIcon().eq("program-icon")
+                .blockingGet();
+        assertThat(programs.size(), is(1));
+    }
+
+    @Test
     public void filter_by_use_first_stage_during_registration() {
         List<Program> programs = d2.programModule().programs()
                 .byUseFirstStageDuringRegistration().isTrue()
@@ -278,40 +294,6 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     }
 
     @Test
-    public void include_object_style_as_children_in_object_repository_when_all_selected() {
-        Program program = d2.programModule().programs()
-                .withStyle().one().blockingGet();
-        assertThat(program.style().icon(), is("program-icon"));
-        assertThat(program.style().color(), is("#333"));
-    }
-
-    @Test
-    public void include_object_style_as_children_in_object_repository_when_explicitly_selected() {
-        Program program = d2.programModule().programs()
-                .withStyle()
-                .one().blockingGet();
-        assertThat(program.style().icon(), is("program-icon"));
-        assertThat(program.style().color(), is("#333"));
-    }
-
-    @Test
-    public void include_object_style_as_children_in_collection_repository_when_all_selected() {
-        Program program = d2.programModule().programs()
-                .withStyle().blockingGet().get(0);
-        assertThat(program.style().icon(), is("program-icon"));
-        assertThat(program.style().color(), is("#333"));
-    }
-
-    @Test
-    public void include_object_style_as_children_in_collection_repository_when_explicitly_selected() {
-        Program program = d2.programModule().programs()
-                .withStyle()
-                .blockingGet().get(0);
-        assertThat(program.style().icon(), is("program-icon"));
-        assertThat(program.style().color(), is("#333"));
-    }
-
-    @Test
     public void include_program_stages_as_children_when_all_selected() {
         Program program = d2.programModule().programs()
                 .withProgramStages().one().blockingGet();
@@ -325,13 +307,6 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
                 .withProgramStages().one().blockingGet();
         assertThat(program.programStages().size(), is(2));
         assertThat(program.programStages().get(0).name(), is("Antenatal care visit - Program rules demo"));
-    }
-
-    @Test
-    public void not_include_style_as_children_when_only_program_stages_selected() {
-        Program program = d2.programModule().programs()
-                .withProgramStages().one().blockingGet();
-        assertThat(program.style() == null, is(true));
     }
 
     @Test

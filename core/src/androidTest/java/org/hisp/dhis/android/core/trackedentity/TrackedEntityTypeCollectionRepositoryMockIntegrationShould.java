@@ -50,14 +50,6 @@ public class TrackedEntityTypeCollectionRepositoryMockIntegrationShould extends 
     }
 
     @Test
-    public void include_object_style_as_children() {
-        TrackedEntityType trackedEntityType = d2.trackedEntityModule().trackedEntityTypes()
-                .withStyle().one().blockingGet();
-        assertThat(trackedEntityType.style().icon(), is("my-tracked-entity-attribute-icon-name"));
-        assertThat(trackedEntityType.style().color(), is("#000"));
-    }
-
-    @Test
     public void include_attributes_as_children() {
         TrackedEntityType trackedEntityType = d2.trackedEntityModule().trackedEntityTypes()
                 .withTrackedEntityTypeAttributes().one().blockingGet();
@@ -69,6 +61,22 @@ public class TrackedEntityTypeCollectionRepositoryMockIntegrationShould extends 
         List<TrackedEntityType> trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes()
                 .byFeatureType().eq(FeatureType.NONE)
                 .blockingGet();
+        assertThat(trackedEntityTypes.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_field_color() {
+        List<TrackedEntityType> trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes()
+                .byColor().eq("#000")
+                        .blockingGet();
+        assertThat(trackedEntityTypes.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_field_icon() {
+        List<TrackedEntityType> trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes()
+                .byIcon().eq("my-tracked-entity-attribute-icon-name")
+                        .blockingGet();
         assertThat(trackedEntityTypes.size(), is(1));
     }
 }

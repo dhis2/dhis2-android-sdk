@@ -57,19 +57,25 @@ public class OptionCollectionRepositoryMockIntegrationShould extends BaseMockInt
     }
 
     @Test
-    public void filter_by_optionset_uid() {
+    public void filter_by_option_set_uid() {
         List<Option> options = d2.optionModule().options()
                 .byOptionSetUid().eq("VQ2lai3OfVG").blockingGet();
         assertThat(options.size(), is(2));
     }
 
     @Test
-    public void include_object_style() {
-        Option option = d2.optionModule().options()
-                .withStyle()
-                .uid("Z1ILwhy5VDY")
+    public void filter_by_field_color() {
+        List<Option> options = d2.optionModule().options()
+                .byColor().eq("#13f2dd")
                 .blockingGet();
-        assertThat(option.style().icon(), is("woman_negative"));
-        assertThat(option.style().color(), is("#13f2dd"));
+        assertThat(options.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_field_icon() {
+        List<Option> options = d2.optionModule().options()
+                .byIcon().eq("woman_negative")
+                .blockingGet();
+        assertThat(options.size(), is(1));
     }
 }

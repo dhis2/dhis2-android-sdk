@@ -212,6 +212,22 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
     }
 
     @Test
+    public void filter_by_field_color() {
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
+                .byColor().eq("#000")
+                .blockingGet();
+        assertThat(dataSets.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_field_icon() {
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
+                .byIcon().eq("my-icon-name")
+                .blockingGet();
+        assertThat(dataSets.size(), is(1));
+    }
+
+    @Test
     public void filter_by_organisation_unit_uid() {
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byOrganisationUnitUid("DiszpKrYNg8")
@@ -225,14 +241,6 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
                 .byOrganisationUnitList(Collections.singletonList("DiszpKrYNg8"))
                 .blockingGet();
         assertThat(dataSets.size(), is(1));
-    }
-
-    @Test
-    public void include_style_as_children() {
-        DataSet dataSet = d2.dataSetModule().dataSets()
-                .withStyle()
-                .one().blockingGet();
-        assertThat(dataSet.style().icon(), is("my-icon-name"));
     }
 
     @Test

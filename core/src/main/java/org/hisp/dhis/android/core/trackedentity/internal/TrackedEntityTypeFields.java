@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo.Colum
 
 public final class TrackedEntityTypeFields {
 
-    public final static String STYLE = "style";
+    private final static String STYLE = "style";
     public final static String TRACKED_ENTITY_TYPE_ATTRIBUTES = "trackedEntityTypeAttributes";
 
     private static final FieldsHelper<TrackedEntityType> fh = new FieldsHelper<>();

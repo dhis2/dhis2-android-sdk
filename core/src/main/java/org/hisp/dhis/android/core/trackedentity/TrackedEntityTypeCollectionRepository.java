@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
@@ -32,6 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo.Columns;
@@ -59,8 +61,12 @@ public final class TrackedEntityTypeCollectionRepository
         return cf.enumC(Columns.FEATURE_TYPE);
     }
 
-    public TrackedEntityTypeCollectionRepository withStyle() {
-        return cf.withChild(TrackedEntityTypeFields.STYLE);
+    public StringFilterConnector<TrackedEntityTypeCollectionRepository> byColor() {
+        return cf.string(Columns.COLOR);
+    }
+
+    public StringFilterConnector<TrackedEntityTypeCollectionRepository> byIcon() {
+        return cf.string(Columns.ICON);
     }
 
     public TrackedEntityTypeCollectionRepository withTrackedEntityTypeAttributes() {

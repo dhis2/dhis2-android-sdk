@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTracked
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 
 import java.util.List;
@@ -83,6 +84,19 @@ public abstract class TrackedEntityType extends BaseNameableObject implements Co
 
         public abstract Builder featureType(FeatureType featureType);
 
-        public abstract TrackedEntityType build();
+        abstract TrackedEntityType autoBuild();
+
+        // Auxiliary fields
+        abstract ObjectStyle style();
+
+        public TrackedEntityType build() {
+            try {
+                style();
+            } catch (IllegalStateException e) {
+                style(ObjectStyle.builder().build());
+            }
+
+            return autoBuild();
+        }
     }
 }

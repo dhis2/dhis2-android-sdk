@@ -33,10 +33,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -65,14 +62,8 @@ public final class TrackedEntityTypeEntityDIModule implements IdentifiableStoreP
     @Reusable
     @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<TrackedEntityType>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<TrackedEntityType> objectStyleChildrenAppender =
-                new ObjectStyleChildrenAppender<>(
-                        ObjectStyleStoreImpl.create(databaseAdapter),
-                        TrackedEntityTypeTableInfo.TABLE_INFO
-                );
 
         return new HashMap<String, ChildrenAppender<TrackedEntityType>>() {{
-            put(TrackedEntityTypeFields.STYLE, objectStyleChildrenAppender);
             put(TrackedEntityTypeFields.TRACKED_ENTITY_TYPE_ATTRIBUTES,
                     TrackedEntityTypeAttributeChildrenAppender.create(databaseAdapter)); 
         }};

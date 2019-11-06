@@ -50,6 +50,7 @@ import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
@@ -224,12 +225,19 @@ public abstract class DataSet extends BaseNameableObject
 
         // Auxiliary fields
         abstract Access access();
+        abstract ObjectStyle style();
 
         public DataSet build() {
             try {
                 access();
             } catch (IllegalStateException e) {
                 access(AccessHelper.defaultAccess());
+            }
+            
+            try {
+                style();
+            } catch (IllegalStateException e) {
+                style(ObjectStyle.builder().build());
             }
 
             return autoBuild();

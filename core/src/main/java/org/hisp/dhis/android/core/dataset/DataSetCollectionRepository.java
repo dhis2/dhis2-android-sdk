@@ -127,6 +127,14 @@ public final class DataSetCollectionRepository
         return cf.bool(Columns.ACCESS_DATA_WRITE);
     }
 
+    public StringFilterConnector<DataSetCollectionRepository> byColor() {
+        return cf.string(Columns.COLOR);
+    }
+
+    public StringFilterConnector<DataSetCollectionRepository> byIcon() {
+        return cf.string(Columns.ICON);
+    }
+
     public DataSetCollectionRepository byOrganisationUnitUid(String uid) {
         return byOrganisationUnitList(Collections.singletonList(uid));
     }
@@ -137,10 +145,6 @@ public final class DataSetCollectionRepository
                 DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET,
                 DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
                 uids);
-    }
-
-    public DataSetCollectionRepository withStyle() {
-        return cf.withChild(DataSetFields.STYLE);
     }
 
     public DataSetCollectionRepository withCompulsoryDataElementOperands() {

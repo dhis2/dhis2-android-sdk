@@ -258,7 +258,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         // stores must not be invoked
         verify(credentialsSecureStore).getCredentials();
-        verifyNoMoreInteractions(authenticatedUserStore);
+        verify(authenticatedUserStore).selectFirst();
         verifyNoMoreInteractions(userHandler);
     }
 
@@ -319,6 +319,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Test
     public void throw_d2_call_exception_state_exception_if_user_already_signed_in() {
         when(credentialsSecureStore.getCredentials()).thenReturn(credentials);
+        when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
         TestObserver<User> testObserver = logInSingle.test();
         assertD2Error(testObserver);
     }

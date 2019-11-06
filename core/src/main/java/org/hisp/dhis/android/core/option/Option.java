@@ -41,6 +41,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
@@ -79,6 +80,19 @@ public abstract class Option extends BaseIdentifiableObject
 
         public abstract Builder optionSet(@Nullable ObjectWithUid optionSet);
 
-        public abstract Option build();
+        abstract Option autoBuild();
+
+        // Auxiliary fields
+        abstract ObjectStyle style();
+
+        public Option build() {
+            try {
+                style();
+            } catch (IllegalStateException e) {
+                style(ObjectStyle.builder().build());
+            }
+
+            return autoBuild();
+        }
     }
 }

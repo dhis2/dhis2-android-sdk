@@ -30,8 +30,10 @@ package org.hisp.dhis.android.core.option.internal;
 
 import android.database.sqlite.SQLiteStatement;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableWithStyleStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
@@ -39,8 +41,6 @@ import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SinglePare
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionTableInfo;
-
-import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
@@ -51,12 +51,12 @@ final class OptionStore {
 
     private OptionStore() {}
 
-    private static StatementBinder<Option> BINDER = new IdentifiableStatementBinder<Option>() {
+    private static StatementBinder<Option> BINDER = new IdentifiableWithStyleStatementBinder<Option>() {
         @Override
         public void bindToStatement(@NonNull Option o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.sortOrder());
-            sqLiteBind(sqLiteStatement, 8, UidsHelper.getUidOrNull(o.optionSet()));
+            sqLiteBind(sqLiteStatement, 9, o.sortOrder());
+            sqLiteBind(sqLiteStatement, 10, UidsHelper.getUidOrNull(o.optionSet()));
         }
     };
 

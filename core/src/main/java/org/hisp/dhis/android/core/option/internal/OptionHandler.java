@@ -30,11 +30,8 @@ package org.hisp.dhis.android.core.option.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.option.Option;
-import org.hisp.dhis.android.core.option.OptionTableInfo;
 
 import java.util.Collection;
 
@@ -44,21 +41,13 @@ import dagger.Reusable;
 
 @Reusable
 final class OptionHandler extends IdentifiableHandlerImpl<Option> {
-    private final ObjectStyleHandler styleHandler;
     private final SubCollectionCleaner<Option> optionCleaner;
 
     @Inject
     OptionHandler(IdentifiableObjectStore<Option> optionStore,
-                  ObjectStyleHandler styleHandler,
                   SubCollectionCleaner<Option> optionCleaner) {
         super(optionStore);
-        this.styleHandler = styleHandler;
         this.optionCleaner = optionCleaner;
-    }
-
-    @Override
-    protected void afterObjectHandled(Option option, HandleAction action) {
-        styleHandler.handle(option.style(), option.uid(), OptionTableInfo.TABLE_INFO.name());
     }
 
     @Override

@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.option.OptionTableInfo.Columns;
-import org.hisp.dhis.android.core.option.internal.OptionFields;
 
 import java.util.Map;
 
@@ -63,7 +62,11 @@ public final class OptionCollectionRepository
         return cf.string(Columns.OPTION_SET);
     }
 
-    public OptionCollectionRepository withStyle() {
-        return cf.withChild(OptionFields.STYLE);
+    public StringFilterConnector<OptionCollectionRepository> byColor() {
+        return cf.string(Columns.COLOR);
+    }
+
+    public StringFilterConnector<OptionCollectionRepository> byIcon() {
+        return cf.string(Columns.ICON);
     }
 }

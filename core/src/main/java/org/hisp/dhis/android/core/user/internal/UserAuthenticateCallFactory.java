@@ -240,14 +240,14 @@ public final class UserAuthenticateCallFactory {
         Credentials credentials = credentialsSecureStore.getCredentials();
         AuthenticatedUser existingUser = authenticatedUserStore.selectFirst();
         if (credentials != null) {
-            if (existingUser != null) {
+            if (existingUser == null) {
+                credentialsSecureStore.removeCredentials();
+            } else {
                 throw D2Error.builder()
                         .errorCode(D2ErrorCode.ALREADY_AUTHENTICATED)
                         .errorDescription("A user is already authenticated: " + credentials.username())
                         .errorComponent(D2ErrorComponent.SDK)
                         .build();
-            } else {
-                credentialsSecureStore.removeCredentials();
             }
         }
     }

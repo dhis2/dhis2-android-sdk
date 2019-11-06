@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.program.ProgramSection;
 import org.hisp.dhis.android.core.program.ProgramSectionAttributeLink;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
@@ -46,7 +45,6 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.same;
@@ -64,9 +62,6 @@ public class ProgramSectionHandlerShould {
             programSectionAttributeLinkHandler;
 
     @Mock
-    private ObjectStyleHandler styleHandler;
-
-    @Mock
     private ProgramSection programSection;
 
     private String SECTION_UID = "section_uid";
@@ -78,19 +73,12 @@ public class ProgramSectionHandlerShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        programSectionHandler = new ProgramSectionHandler(programSectionStore, programSectionAttributeLinkHandler,
-                styleHandler);
+        programSectionHandler = new ProgramSectionHandler(programSectionStore, programSectionAttributeLinkHandler);
 
         List<TrackedEntityAttribute> attributes = Lists.newArrayList(
                 TrackedEntityAttribute.builder().uid("attribute_uid").build());
         when(programSection.attributes()).thenReturn(attributes);
         when(programSection.uid()).thenReturn(SECTION_UID);
-    }
-
-    @Test
-    public void call_style_handler() throws Exception {
-        programSectionHandler.handle(programSection);
-        verify(styleHandler).handle(same(programSection.style()), anyString(), anyString());
     }
 
     @Test
@@ -103,6 +91,6 @@ public class ProgramSectionHandlerShould {
     @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<ProgramSection> genericHandler = new ProgramSectionHandler(
-                null,null, null);
+                null,null);
     }
 }

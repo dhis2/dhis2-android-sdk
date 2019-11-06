@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.dataset.DataInputPeriod;
 import org.hisp.dhis.android.core.dataset.DataSet;
@@ -69,9 +68,6 @@ public class DataSetHandlerShould {
 
     @Mock
     private IdentifiableObjectStore<DataSet> dataSetStore;
-
-    @Mock
-    private ObjectStyleHandler styleHandler;
 
     @Mock
     private Handler<Section> sectionHandler;
@@ -137,7 +133,6 @@ public class DataSetHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         dataSetHandler = new DataSetHandler(dataSetStore,
-                styleHandler,
                 sectionHandler,
                 sectionOrphanCleaner,
                 compulsoryDataElementOperandHandler,
@@ -233,14 +228,6 @@ public class DataSetHandlerShould {
         dataSetHandler.handle(dataSet);
 
         verify(dataInputPeriodHandler).handleMany(anyString(), anyList(), any());
-    }
-
-    @Test
-    public void handle_style() {
-
-        dataSetHandler.handle(dataSet);
-
-        verify(styleHandler).handle(eq(dataSet.style()), anyString(), anyString());
     }
 
     @Test

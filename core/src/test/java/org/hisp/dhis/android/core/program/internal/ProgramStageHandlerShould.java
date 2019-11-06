@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor;
@@ -55,7 +54,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
@@ -96,9 +94,6 @@ public class ProgramStageHandlerShould {
     private List<ProgramStageSection> programStageSections;
 
     @Mock
-    private ObjectStyleHandler styleHandler;
-
-    @Mock
     private OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner;
 
     @Mock
@@ -121,7 +116,6 @@ public class ProgramStageHandlerShould {
                 programStageStore,
                 programStageSectionHandler,
                 programStageDataElementHandler,
-                styleHandler,
                 programStageDataElementCleaner,
                 programStageSectionCleaner,
                 programStageCleaner);
@@ -155,12 +149,6 @@ public class ProgramStageHandlerShould {
     public void call_program_stage_section_handler() throws Exception {
         programStageHandler.handle(programStage);
         verify(programStageSectionHandler).handleMany(eq(programStageSections), any(Transformer.class));
-    }
-
-    @Test
-    public void call_style_handler() throws Exception {
-        programStageHandler.handle(programStage);
-        verify(styleHandler).handle(eq(objectStyle), anyString(), anyString());
     }
 
     @Test

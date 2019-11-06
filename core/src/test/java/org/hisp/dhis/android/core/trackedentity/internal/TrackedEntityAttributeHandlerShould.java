@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,8 +43,6 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -57,9 +54,6 @@ public class TrackedEntityAttributeHandlerShould {
 
     @Mock
     private TrackedEntityAttribute trackedEntityAttribute;
-
-    @Mock
-    private ObjectStyleHandler styleHandler;
 
     @Mock
     private ObjectStyle objectStyle;
@@ -74,7 +68,7 @@ public class TrackedEntityAttributeHandlerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        trackedEntityAttributeHandler = new TrackedEntityAttributeHandler(trackedEntityAttributeStore, styleHandler);
+        trackedEntityAttributeHandler = new TrackedEntityAttributeHandler(trackedEntityAttributeStore);
 
         trackedEntityAttributes = new ArrayList<>();
         trackedEntityAttributes.add(trackedEntityAttribute);
@@ -89,13 +83,7 @@ public class TrackedEntityAttributeHandlerShould {
     @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<TrackedEntityAttribute> genericHandler =
-                new TrackedEntityAttributeHandler(null, null);
-    }
-
-    @Test
-    public void call_object_style_handler() {
-        trackedEntityAttributeHandler.handleMany(trackedEntityAttributes);
-        verify(styleHandler).handle(any(ObjectStyle.class), anyString(), anyString());
+                new TrackedEntityAttributeHandler(null);
     }
 
     @Test

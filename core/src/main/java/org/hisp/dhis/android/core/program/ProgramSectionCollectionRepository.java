@@ -72,8 +72,12 @@ public final class ProgramSectionCollectionRepository
         return cf.string(Columns.FORM_NAME);
     }
 
-    public ProgramSectionCollectionRepository withStyle() {
-        return cf.withChild(ProgramSectionFields.STYLE);
+    public StringFilterConnector<ProgramSectionCollectionRepository> byColor() {
+        return cf.string(Columns.COLOR);
+    }
+
+    public StringFilterConnector<ProgramSectionCollectionRepository> byIcon() {
+        return cf.string(Columns.ICON);
     }
 
     public ProgramSectionCollectionRepository withAttributes() {

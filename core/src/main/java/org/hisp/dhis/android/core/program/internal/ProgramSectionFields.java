@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.program.ProgramSectionTableInfo.Columns;
 public final class ProgramSectionFields {
 
     public static final String ATTRIBUTES = "programTrackedEntityAttribute";
-    public static final String STYLE = "style";
+    private static final String STYLE = "style";
 
     private static FieldsHelper<ProgramSection> fh = new FieldsHelper<>();
 

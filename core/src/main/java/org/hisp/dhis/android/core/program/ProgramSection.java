@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectW
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityAttributeListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.program.internal.ProgramSectionFields;
@@ -104,6 +105,19 @@ public abstract class ProgramSection extends BaseIdentifiableObject
 
         public abstract Builder formName(String formName);
 
-        public abstract ProgramSection build();
+        abstract ProgramSection autoBuild();
+
+        // Auxiliary fields
+        abstract ObjectStyle style();
+
+        public ProgramSection build() {
+            try {
+                style();
+            } catch (IllegalStateException e) {
+                style(ObjectStyle.builder().build());
+            }
+
+            return autoBuild();
+        }
     }
 }

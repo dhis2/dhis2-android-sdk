@@ -124,7 +124,7 @@ public final class UserAuthenticateCallFactory {
     private User loginInternal(String username, String password, String serverUrl) throws D2Error {
         throwExceptionIfUsernameNull(username);
         throwExceptionIfPasswordNull(password);
-        throwExceptionIfAlreadyAuthenticated();
+        throwExceptionIfAlreadyAuthenticatedAndDbNotEmpty();
 
         HttpUrl httpServerUrl = ServerUrlParser.parse(serverUrl);
         ServerUrlInterceptor.setServerUrl(httpServerUrl.toString());
@@ -236,14 +236,19 @@ public final class UserAuthenticateCallFactory {
         }
     }
 
-    private void throwExceptionIfAlreadyAuthenticated() throws D2Error {
+    private void throwExceptionIfAlreadyAuthenticatedAndDbNotEmpty() throws D2Error {
         Credentials credentials = credentialsSecureStore.getCredentials();
+        AuthenticatedUser existingUser = authenticatedUserStore.selectFirst();
         if (credentials != null) {
-            throw D2Error.builder()
-                    .errorCode(D2ErrorCode.ALREADY_AUTHENTICATED)
-                    .errorDescription("A user is already authenticated: " + credentials.username())
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .build();
+            if (existingUser != null) {
+                throw D2Error.builder()
+                        .errorCode(D2ErrorCode.ALREADY_AUTHENTICATED)
+                        .errorDescription("A user is already authenticated: " + credentials.username())
+                        .errorComponent(D2ErrorComponent.SDK)
+                        .build();
+            } else {
+                credentialsSecureStore.removeCredentials();
+            }
         }
     }
 

@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.database.Cursor;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -40,7 +37,7 @@ import com.google.auto.value.AutoValue;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ObjectStyle.Builder.class)
-public abstract class ObjectStyle extends BaseObject {
+public abstract class ObjectStyle {
 
     @Nullable
     @JsonProperty()
@@ -50,11 +47,6 @@ public abstract class ObjectStyle extends BaseObject {
     @JsonProperty()
     public abstract String icon();
 
-    @NonNull
-    public static ObjectStyle create(Cursor cursor) {
-        return AutoValue_ObjectStyle.createFromCursor(cursor);
-    }
-
     public abstract Builder toBuilder();
 
     public static Builder builder() {
@@ -63,7 +55,7 @@ public abstract class ObjectStyle extends BaseObject {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder {
         public abstract Builder color(String color);
 
         public abstract Builder icon(String icon);

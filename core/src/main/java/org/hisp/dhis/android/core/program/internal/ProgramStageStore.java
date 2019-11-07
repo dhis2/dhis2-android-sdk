@@ -33,7 +33,7 @@ import android.database.sqlite.SQLiteStatement;
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableWithStyleStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
@@ -46,33 +46,33 @@ import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLi
 
 public final class ProgramStageStore {
 
-    private static StatementBinder<ProgramStage> BINDER = new IdentifiableStatementBinder<ProgramStage>() {
+    private static StatementBinder<ProgramStage> BINDER = new IdentifiableWithStyleStatementBinder<ProgramStage>() {
 
         @Override
         public void bindToStatement(@NonNull ProgramStage o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.description());
-            sqLiteBind(sqLiteStatement, 8, o.displayDescription());
-            sqLiteBind(sqLiteStatement, 9, o.executionDateLabel());
-            sqLiteBind(sqLiteStatement, 10, o.allowGenerateNextVisit());
-            sqLiteBind(sqLiteStatement, 11, o.validCompleteOnly());
-            sqLiteBind(sqLiteStatement, 12, o.reportDateToUse());
-            sqLiteBind(sqLiteStatement, 13, o.openAfterEnrollment());
-            sqLiteBind(sqLiteStatement, 14, o.repeatable());
-            sqLiteBind(sqLiteStatement, 15, o.formType().name());
-            sqLiteBind(sqLiteStatement, 16, o.displayGenerateEventBox());
-            sqLiteBind(sqLiteStatement, 17, o.generatedByEnrollmentDate());
-            sqLiteBind(sqLiteStatement, 18, o.autoGenerateEvent());
-            sqLiteBind(sqLiteStatement, 19, o.sortOrder());
-            sqLiteBind(sqLiteStatement, 20, o.hideDueDate());
-            sqLiteBind(sqLiteStatement, 21, o.blockEntryForm());
-            sqLiteBind(sqLiteStatement, 22, o.minDaysFromStart());
-            sqLiteBind(sqLiteStatement, 23, o.standardInterval());
-            sqLiteBind(sqLiteStatement, 24, UidsHelper.getUidOrNull(o.program()));
-            sqLiteBind(sqLiteStatement, 25, o.periodType());
-            sqLiteBind(sqLiteStatement, 26, o.access().data().write());
-            sqLiteBind(sqLiteStatement, 27, o.remindCompleted());
-            sqLiteBind(sqLiteStatement, 28, o.featureType());
+            sqLiteBind(sqLiteStatement, 9, o.description());
+            sqLiteBind(sqLiteStatement, 10, o.displayDescription());
+            sqLiteBind(sqLiteStatement, 11, o.executionDateLabel());
+            sqLiteBind(sqLiteStatement, 12, o.allowGenerateNextVisit());
+            sqLiteBind(sqLiteStatement, 13, o.validCompleteOnly());
+            sqLiteBind(sqLiteStatement, 14, o.reportDateToUse());
+            sqLiteBind(sqLiteStatement, 15, o.openAfterEnrollment());
+            sqLiteBind(sqLiteStatement, 16, o.repeatable());
+            sqLiteBind(sqLiteStatement, 17, o.formType().name());
+            sqLiteBind(sqLiteStatement, 18, o.displayGenerateEventBox());
+            sqLiteBind(sqLiteStatement, 19, o.generatedByEnrollmentDate());
+            sqLiteBind(sqLiteStatement, 20, o.autoGenerateEvent());
+            sqLiteBind(sqLiteStatement, 21, o.sortOrder());
+            sqLiteBind(sqLiteStatement, 22, o.hideDueDate());
+            sqLiteBind(sqLiteStatement, 23, o.blockEntryForm());
+            sqLiteBind(sqLiteStatement, 24, o.minDaysFromStart());
+            sqLiteBind(sqLiteStatement, 25, o.standardInterval());
+            sqLiteBind(sqLiteStatement, 26, UidsHelper.getUidOrNull(o.program()));
+            sqLiteBind(sqLiteStatement, 27, o.periodType());
+            sqLiteBind(sqLiteStatement, 28, o.access().data().write());
+            sqLiteBind(sqLiteStatement, 29, o.remindCompleted());
+            sqLiteBind(sqLiteStatement, 30, o.featureType());
         }
     };
 

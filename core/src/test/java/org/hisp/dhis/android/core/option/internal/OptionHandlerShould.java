@@ -32,9 +32,7 @@ import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.option.Option;
-import org.hisp.dhis.android.core.option.OptionTableInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,9 +60,6 @@ public class OptionHandlerShould {
     @Mock
     private SubCollectionCleaner<Option> optionCleaner;
 
-    @Mock
-    private ObjectStyleHandler styleHandler;
-
     private List<Option> options;
 
     // object to test
@@ -73,16 +68,10 @@ public class OptionHandlerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        optionHandler = new OptionHandler(optionStore, styleHandler, optionCleaner);
+        optionHandler = new OptionHandler(optionStore, optionCleaner);
         when(option.uid()).thenReturn("test_option_uid");
         options = Collections.singletonList(option);
         when(option.style()).thenReturn(style);
-    }
-
-    @Test
-    public void handle_style() {
-        optionHandler.handle(option);
-        verify(styleHandler).handle(style, option.uid(), OptionTableInfo.TABLE_INFO.name());
     }
 
     @Test
@@ -93,7 +82,6 @@ public class OptionHandlerShould {
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<Option> genericHandler =
-                new OptionHandler(null, null, null);
+        IdentifiableHandlerImpl<Option> genericHandler = new OptionHandler(null, null);
     }
 }

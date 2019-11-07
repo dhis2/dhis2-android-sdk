@@ -25,16 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.trackedentity.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo;
 
 import javax.inject.Inject;
 
@@ -43,24 +42,18 @@ import dagger.Reusable;
 @Reusable
 final class TrackedEntityTypeHandler extends IdentifiableHandlerImpl<TrackedEntityType> {
 
-    private final ObjectStyleHandler styleHandler;
     private final OrderedLinkHandler<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute> attributeHandler;
 
     @Inject
     TrackedEntityTypeHandler(IdentifiableObjectStore<TrackedEntityType> trackedEntityTypeStore,
-                             ObjectStyleHandler styleHandler,
                              OrderedLinkHandler<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute>
                                      attributeHandler) {
         super(trackedEntityTypeStore);
-        this.styleHandler = styleHandler;
         this.attributeHandler = attributeHandler;
     }
 
     @Override
     protected void afterObjectHandled(TrackedEntityType trackedEntityType, HandleAction action) {
-        styleHandler.handle(trackedEntityType.style(), trackedEntityType.uid(),
-                TrackedEntityTypeTableInfo.TABLE_INFO.name());
-
         attributeHandler.handleMany(trackedEntityType.uid(), trackedEntityType.trackedEntityTypeAttributes(),
                 (trackedEntityTypeAttribute, sortOrder) ->
                         trackedEntityTypeAttribute.toBuilder().sortOrder(sortOrder).build());

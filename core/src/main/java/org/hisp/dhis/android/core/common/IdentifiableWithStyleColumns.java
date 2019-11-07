@@ -26,9 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 
-public final class IgnoreObjectStyleAdapter extends IgnoreColumnAdapter<ObjectStyle> {
+public class IdentifiableWithStyleColumns extends IdentifiableColumns {
+    public static final String COLOR = "color";
+    public static final String ICON = "icon";
+
+    @Override
+    public String[] all() {
+        return CollectionsHelper.appendInNewArray(super.all(), COLOR, ICON);
+    }
 }

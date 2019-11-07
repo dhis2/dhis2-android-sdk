@@ -25,31 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common.objectstyle.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.ObjectStyle;
+package org.hisp.dhis.android.core.arch.db.stores.binders.internal;
+
+import android.database.sqlite.SQLiteStatement;
+
+import androidx.annotation.NonNull;
+
+import org.hisp.dhis.android.core.common.NameableObject;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-public final class ObjectStyleChildrenAppender<O extends ObjectWithUidInterface & ObjectWithStyle<O, B>,
-        B extends ObjectWithStyle.Builder<O, B>> extends ChildrenAppender<O> {
+import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
-    private final ObjectStyleStore objectStyleStore;
-    private final TableInfo objectWithStyleTableInfo;
-
-
-    public ObjectStyleChildrenAppender(ObjectStyleStore objectStyleStore,
-                                TableInfo objectWithStyleTableInfo) {
-        this.objectStyleStore = objectStyleStore;
-        this.objectWithStyleTableInfo = objectWithStyleTableInfo;
-    }
+public abstract class NameableWithStyleStatementBinder<O extends NameableObject & ObjectWithStyle>
+        extends NameableStatementBinder<O> {
 
     @Override
-    protected O appendChildren(O objectWithStyle) {
-        B builder = objectWithStyle.toBuilder();
-        ObjectStyle style = objectStyleStore.getStyle(objectWithStyle, objectWithStyleTableInfo);
-        return builder.style(style).build();
+    public void bindToStatement(@NonNull O o, @NonNull SQLiteStatement sqLiteStatement) {
+        super.bindToStatement(o, sqLiteStatement);
+        sqLiteBind(sqLiteStatement, 11, o.style().color());
+        sqLiteBind(sqLiteStatement, 12, o.style().icon());
     }
 }

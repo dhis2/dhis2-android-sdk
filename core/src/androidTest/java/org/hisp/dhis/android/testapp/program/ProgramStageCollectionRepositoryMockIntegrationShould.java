@@ -57,17 +57,6 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
     }
 
     @Test
-    public void include_object_style_as_children() {
-        ProgramStage programStage =
-                d2.programModule().programStages()
-                        .withStyle()
-                        .one().blockingGet();
-
-        assertThat(programStage.style().icon(), is("program-stage-icon"));
-        assertThat(programStage.style().color(), is("#444"));
-    }
-
-    @Test
     public void include_program_stage_data_elements_as_children() {
         ProgramStage programStage =
                 d2.programModule().programStages()
@@ -327,6 +316,22 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .isTrue()
                         .blockingGet();
 
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_field_color() {
+        List<ProgramStage> programStages = d2.programModule().programStages()
+                .byColor().eq("#444")
+                .blockingGet();
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_field_icon() {
+        List<ProgramStage> programStages = d2.programModule().programStages()
+                .byIcon().eq("program-stage-icon")
+                .blockingGet();
         assertThat(programStages.size(), is(1));
     }
 

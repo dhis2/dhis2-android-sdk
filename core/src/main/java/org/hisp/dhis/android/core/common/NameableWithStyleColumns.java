@@ -26,34 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.testapp.common;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
-import org.mockito.Mock;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 
-public class ObjectStylePublicAccessShould extends BasePublicAccessShould<ObjectStyle> {
-
-    @Mock
-    private ObjectStyle object;
+public class NameableWithStyleColumns extends NameableColumns {
+    public static final String COLOR = "color";
+    public static final String ICON = "icon";
 
     @Override
-    public ObjectStyle object() {
-        return object;
-    }
-
-    @Override
-    public void has_public_create_method() {
-        ObjectStyle.create(null);
-    }
-
-    @Override
-    public void has_public_builder_method() {
-        ObjectStyle.builder();
-    }
-
-    @Override
-    public void has_public_to_builder_method() {
-        object().toBuilder();
+    public String[] all() {
+        return CollectionsHelper.appendInNewArray(super.all(), COLOR, ICON);
     }
 }

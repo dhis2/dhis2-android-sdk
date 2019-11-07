@@ -31,15 +31,12 @@ package org.hisp.dhis.android.core.common;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectStyleAdapter;
-
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.ObjectStyleColumnAdapter;
 
 public interface ObjectWithStyle<O, B extends ObjectWithStyle.Builder<O, B>> {
 
-    @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreObjectStyleAdapter.class)
+    @ColumnAdapter(ObjectStyleColumnAdapter.class)
     ObjectStyle style();
 
     B toBuilder();

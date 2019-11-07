@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectW
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
@@ -126,6 +127,19 @@ public abstract class DataElement extends BaseNameableObject
 
         public abstract DataElement.Builder fieldMask(String fieldMask);
 
-        public abstract DataElement build();
+        abstract DataElement autoBuild();
+
+        // Auxiliary fields
+        abstract ObjectStyle style();
+
+        public DataElement build() {
+            try {
+                style();
+            } catch (IllegalStateException e) {
+                style(ObjectStyle.builder().build());
+            }
+
+            return autoBuild();
+        }
     }
 }

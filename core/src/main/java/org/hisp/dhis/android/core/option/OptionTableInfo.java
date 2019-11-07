@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.option;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.CoreColumns;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
+import org.hisp.dhis.android.core.common.IdentifiableWithStyleColumns;
 
 public final class OptionTableInfo {
 
@@ -51,7 +51,7 @@ public final class OptionTableInfo {
         }
     };
 
-    public static class Columns extends IdentifiableColumns {
+    public static class Columns extends IdentifiableWithStyleColumns {
 
         public final static String SORT_ORDER = "sortOrder";
         public final static String OPTION_SET = "optionSet";

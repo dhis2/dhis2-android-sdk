@@ -116,7 +116,11 @@ public final class TrackedEntityAttributeCollectionRepository
         return cf.string(Columns.FORM_NAME);
     }
 
-    public TrackedEntityAttributeCollectionRepository withObjectStyle() {
-        return cf.withChild(TrackedEntityAttributeFields.STYLE);
+    public StringFilterConnector<TrackedEntityAttributeCollectionRepository> byColor() {
+        return cf.string(Columns.COLOR);
+    }
+
+    public StringFilterConnector<TrackedEntityAttributeCollectionRepository> byIcon() {
+        return cf.string(Columns.ICON);
     }
 }

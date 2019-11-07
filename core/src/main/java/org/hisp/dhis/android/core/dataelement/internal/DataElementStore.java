@@ -33,7 +33,7 @@ import android.database.sqlite.SQLiteStatement;
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableWithStyleStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
@@ -46,19 +46,19 @@ public final class DataElementStore {
 
     private DataElementStore() {}
 
-    private static StatementBinder<DataElement> BINDER = new NameableStatementBinder<DataElement>() {
+    private static StatementBinder<DataElement> BINDER = new NameableWithStyleStatementBinder<DataElement>() {
         @Override
         public void bindToStatement(@NonNull DataElement o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 11, o.valueType());
-            sqLiteBind(sqLiteStatement, 12, o.zeroIsSignificant());
-            sqLiteBind(sqLiteStatement, 13, o.aggregationType());
-            sqLiteBind(sqLiteStatement, 14, o.formName());
-            sqLiteBind(sqLiteStatement, 15, o.domainType());
-            sqLiteBind(sqLiteStatement, 16, o.displayFormName());
-            sqLiteBind(sqLiteStatement, 17, o.optionSetUid());
-            sqLiteBind(sqLiteStatement, 18, o.categoryComboUid());
-            sqLiteBind(sqLiteStatement, 19, o.fieldMask());
+            sqLiteBind(sqLiteStatement, 13, o.valueType());
+            sqLiteBind(sqLiteStatement, 14, o.zeroIsSignificant());
+            sqLiteBind(sqLiteStatement, 15, o.aggregationType());
+            sqLiteBind(sqLiteStatement, 16, o.formName());
+            sqLiteBind(sqLiteStatement, 17, o.domainType());
+            sqLiteBind(sqLiteStatement, 18, o.displayFormName());
+            sqLiteBind(sqLiteStatement, 19, o.optionSetUid());
+            sqLiteBind(sqLiteStatement, 20, o.categoryComboUid());
+            sqLiteBind(sqLiteStatement, 21, o.fieldMask());
         }
     };
 

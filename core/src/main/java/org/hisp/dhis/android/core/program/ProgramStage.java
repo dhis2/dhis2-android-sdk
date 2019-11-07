@@ -52,6 +52,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.FormType;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -275,6 +276,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
         abstract Boolean captureCoordinates();
         abstract FeatureType featureType();
         abstract Access access();
+        abstract ObjectStyle style();
         public ProgramStage build() {
             if (featureType() == null) {
                 if (captureCoordinates() != null) {
@@ -290,6 +292,12 @@ public abstract class ProgramStage extends BaseIdentifiableObject
                 }
             } catch (IllegalStateException e) {
                 access(AccessHelper.defaultAccess());
+            }
+
+            try {
+                style();
+            } catch (IllegalStateException e) {
+                style(ObjectStyle.builder().build());
             }
 
             return autoBuild();

@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramInternalAccessor;
@@ -54,10 +53,8 @@ import org.mockito.MockitoAnnotations;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -80,9 +77,6 @@ public class ProgramHandlerShould {
 
     @Mock
     private Handler<ProgramSection> programSectionHandler;
-
-    @Mock
-    private ObjectStyleHandler styleHandler;
 
     @Mock
     private ParentOrphanCleaner<Program> orphanCleaner;
@@ -129,7 +123,7 @@ public class ProgramHandlerShould {
 
         programHandler = new ProgramHandler(
                 programStore, programRuleVariableHandler, programIndicatorHandler,
-                programTrackedEntityAttributeHandler, programSectionHandler, styleHandler, orphanCleaner,
+                programTrackedEntityAttributeHandler, programSectionHandler, orphanCleaner,
                 collectionCleaner);
 
         when(program.uid()).thenReturn("test_program_uid");
@@ -187,12 +181,6 @@ public class ProgramHandlerShould {
     public void call_program_rule_variable_handler() {
         programHandler.handle(program);
         verify(programRuleVariableHandler).handleMany(programRuleVariables);
-    }
-
-    @Test
-    public void call_style_handler() {
-        programHandler.handle(program);
-        verify(styleHandler).handle(same(program.style()), anyString(), anyString());
     }
 
     @Test

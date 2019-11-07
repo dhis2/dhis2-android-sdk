@@ -26,48 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import android.content.ContentValues;
+import android.database.Cursor;
 
-public final class ObjectStyleTableInfo {
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-    private ObjectStyleTableInfo() {
+import org.hisp.dhis.android.core.common.ObjectStyle;
+
+public class ObjectStyleColumnAdapter implements ColumnTypeAdapter<ObjectStyle> {
+
+    public static final String COLOR = "color";
+    public static final String ICON = "icon";
+    
+    @Override
+    public ObjectStyle fromCursor(Cursor cursor, String columnName) {
+        int colorColumnIndex = cursor.getColumnIndex(COLOR);
+        int iconColumnIndex = cursor.getColumnIndex(ICON);
+        String color = cursor.getString(colorColumnIndex);
+        String icon = cursor.getString(iconColumnIndex);
+        return ObjectStyle.builder().color(color).icon(icon).build();
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "ObjectStyle";
-        }
-
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends CoreColumns {
-
-        public static final String UID = IdentifiableColumns.UID;
-        public static final String OBJECT_TABLE = "objectTable";
-        public static final String COLOR = "color";
-        public static final String ICON = "icon";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    UID,
-                    OBJECT_TABLE,
-                    COLOR,
-                    ICON);
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{UID};
-        }
+    @Override
+    public void toContentValues(ContentValues values, String columnName, ObjectStyle value) {
+        values.put(COLOR, value.color());
+        values.put(ICON, value.icon());
     }
 }

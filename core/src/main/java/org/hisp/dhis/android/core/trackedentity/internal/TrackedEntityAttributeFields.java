@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo.
 
 public final class TrackedEntityAttributeFields {
     public static final String UNIQUE = "unique";
-    public static final String STYLE = "style";
+    private static final String STYLE = "style";
     private static final String ACCESS = "access";
     public static final String ORG_UNIT_SCOPE = "orgunitScope";
 

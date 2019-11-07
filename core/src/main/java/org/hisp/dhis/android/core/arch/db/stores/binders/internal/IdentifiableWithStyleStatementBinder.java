@@ -26,25 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common.objectstyle.internal;
+package org.hisp.dhis.android.core.arch.db.stores.binders.internal;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.common.ObjectStyle;
+import android.database.sqlite.SQLiteStatement;
 
-public class ObjectStyleTransformer implements Transformer<ObjectStyle, ObjectStyle> {
+import androidx.annotation.NonNull;
 
-    private final ObjectStyle.Builder builder;
+import org.hisp.dhis.android.core.common.IdentifiableObject;
+import org.hisp.dhis.android.core.common.ObjectWithStyle;
 
-    public ObjectStyleTransformer(String uid, String objectTable) {
-        builder = ObjectStyle.builder()
-                .uid(uid)
-                .objectTable(objectTable);
-    }
+import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
+
+public abstract class IdentifiableWithStyleStatementBinder<O extends IdentifiableObject & ObjectWithStyle>
+        extends IdentifiableStatementBinder<O> {
 
     @Override
-    public ObjectStyle transform(ObjectStyle objectStyle) {
-        return builder
-                .color(objectStyle.color())
-                .icon(objectStyle.icon()).build();
+    public void bindToStatement(@NonNull O o, @NonNull SQLiteStatement sqLiteStatement) {
+        super.bindToStatement(o, sqLiteStatement);
+        sqLiteBind(sqLiteStatement, 7, o.style().color());
+        sqLiteBind(sqLiteStatement, 8, o.style().icon());
     }
 }

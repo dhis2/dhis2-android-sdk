@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableWithStyleStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
@@ -57,35 +57,35 @@ public final class ProgramStore extends IdentifiableObjectStoreImpl<Program> imp
         super(databaseAdapter, statementWrapper, statementBuilder, BINDER, Program::create);
     }
     
-    private static StatementBinder<Program> BINDER = new NameableStatementBinder<Program>() {
+    private static StatementBinder<Program> BINDER = new NameableWithStyleStatementBinder<Program>() {
         
         @Override
         public void bindToStatement(@NonNull Program o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 11, o.version());
-            sqLiteBind(sqLiteStatement, 12, o.onlyEnrollOnce());
-            sqLiteBind(sqLiteStatement, 13, o.enrollmentDateLabel());
-            sqLiteBind(sqLiteStatement, 14, o.displayIncidentDate());
-            sqLiteBind(sqLiteStatement, 15, o.incidentDateLabel());
-            sqLiteBind(sqLiteStatement, 16, o.registration());
-            sqLiteBind(sqLiteStatement, 17, o.selectEnrollmentDatesInFuture());
-            sqLiteBind(sqLiteStatement, 18, o.dataEntryMethod());
-            sqLiteBind(sqLiteStatement, 19, o.ignoreOverdueEvents());
-            sqLiteBind(sqLiteStatement, 20, o.selectIncidentDatesInFuture());
-            sqLiteBind(sqLiteStatement, 21, o.useFirstStageDuringRegistration());
-            sqLiteBind(sqLiteStatement, 22, o.displayFrontPageList());
-            sqLiteBind(sqLiteStatement, 23, o.programType());
-            sqLiteBind(sqLiteStatement, 24, UidsHelper.getUidOrNull(o.relatedProgram()));
-            sqLiteBind(sqLiteStatement, 25, UidsHelper.getUidOrNull(o.trackedEntityType()));
-            sqLiteBind(sqLiteStatement, 26, o.categoryComboUid());
-            sqLiteBind(sqLiteStatement, 27, o.access().data().write());
-            sqLiteBind(sqLiteStatement, 28, o.expiryDays());
-            sqLiteBind(sqLiteStatement, 29, o.completeEventsExpiryDays());
-            sqLiteBind(sqLiteStatement, 30, o.expiryPeriodType());
-            sqLiteBind(sqLiteStatement, 31, o.minAttributesRequiredToSearch());
-            sqLiteBind(sqLiteStatement, 32, o.maxTeiCountToReturn());
-            sqLiteBind(sqLiteStatement, 33, o.featureType());
-            sqLiteBind(sqLiteStatement, 34, o.accessLevel());
+            sqLiteBind(sqLiteStatement, 13, o.version());
+            sqLiteBind(sqLiteStatement, 14, o.onlyEnrollOnce());
+            sqLiteBind(sqLiteStatement, 15, o.enrollmentDateLabel());
+            sqLiteBind(sqLiteStatement, 16, o.displayIncidentDate());
+            sqLiteBind(sqLiteStatement, 17, o.incidentDateLabel());
+            sqLiteBind(sqLiteStatement, 18, o.registration());
+            sqLiteBind(sqLiteStatement, 19, o.selectEnrollmentDatesInFuture());
+            sqLiteBind(sqLiteStatement, 20, o.dataEntryMethod());
+            sqLiteBind(sqLiteStatement, 21, o.ignoreOverdueEvents());
+            sqLiteBind(sqLiteStatement, 22, o.selectIncidentDatesInFuture());
+            sqLiteBind(sqLiteStatement, 23, o.useFirstStageDuringRegistration());
+            sqLiteBind(sqLiteStatement, 24, o.displayFrontPageList());
+            sqLiteBind(sqLiteStatement, 25, o.programType());
+            sqLiteBind(sqLiteStatement, 26, UidsHelper.getUidOrNull(o.relatedProgram()));
+            sqLiteBind(sqLiteStatement, 27, UidsHelper.getUidOrNull(o.trackedEntityType()));
+            sqLiteBind(sqLiteStatement, 28, o.categoryComboUid());
+            sqLiteBind(sqLiteStatement, 29, o.access().data().write());
+            sqLiteBind(sqLiteStatement, 30, o.expiryDays());
+            sqLiteBind(sqLiteStatement, 31, o.completeEventsExpiryDays());
+            sqLiteBind(sqLiteStatement, 32, o.expiryPeriodType());
+            sqLiteBind(sqLiteStatement, 33, o.minAttributesRequiredToSearch());
+            sqLiteBind(sqLiteStatement, 34, o.maxTeiCountToReturn());
+            sqLiteBind(sqLiteStatement, 35, o.featureType());
+            sqLiteBind(sqLiteStatement, 36, o.accessLevel());
         }
     };
 

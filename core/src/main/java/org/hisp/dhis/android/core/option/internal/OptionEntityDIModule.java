@@ -34,8 +34,6 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionTableInfo;
 
@@ -71,12 +69,7 @@ public final class OptionEntityDIModule {
 
     @Provides
     @Reusable
-    Map<String, ChildrenAppender<Option>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<Option> childrenAppender = new ObjectStyleChildrenAppender<>(
-                ObjectStyleStoreImpl.create(databaseAdapter),
-                OptionTableInfo.TABLE_INFO
-        );
-
-        return Collections.singletonMap(OptionFields.STYLE, childrenAppender);
+    Map<String, ChildrenAppender<Option>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

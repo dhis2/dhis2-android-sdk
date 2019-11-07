@@ -29,11 +29,8 @@
 package org.hisp.dhis.android.core.trackedentity.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
 
 import javax.inject.Inject;
 
@@ -41,26 +38,15 @@ import dagger.Reusable;
 
 @Reusable
 final class TrackedEntityAttributeHandler extends IdentifiableHandlerImpl<TrackedEntityAttribute> {
-    private final ObjectStyleHandler styleHandler;
 
     @Inject
-    TrackedEntityAttributeHandler(IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore,
-                                  ObjectStyleHandler styleHandler) {
+    TrackedEntityAttributeHandler(IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore) {
         super(trackedEntityAttributeStore);
-        this.styleHandler = styleHandler;
     }
 
     @Override
     protected TrackedEntityAttribute beforeObjectHandled(TrackedEntityAttribute o) {
         return o.formName() == null ? o.toBuilder().formName(o.name()).build() : o;
-    }
-
-    @Override
-    protected void afterObjectHandled(TrackedEntityAttribute trackedEntityAttribute, HandleAction action) {
-        if (action != HandleAction.Delete) {
-            styleHandler.handle(trackedEntityAttribute.style(), trackedEntityAttribute.uid(),
-                    TrackedEntityAttributeTableInfo.TABLE_INFO.name());
-        }
     }
 
     @Override

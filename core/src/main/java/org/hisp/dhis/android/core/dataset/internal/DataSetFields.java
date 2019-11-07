@@ -54,7 +54,7 @@ public final class DataSetFields {
     public static final String COMPULSORY_DATA_ELEMENT_OPERANDS = "compulsoryDataElementOperands";
     public static final String DATA_INPUT_PERIODS = "dataInputPeriods";
     private static final String ACCESS = "access";
-    public static final String STYLE = "style";
+    private static final String STYLE = "style";
 
     private static FieldsHelper<DataSet> fh = new FieldsHelper<>();
 

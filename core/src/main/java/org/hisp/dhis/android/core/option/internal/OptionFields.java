@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.option.OptionTableInfo.Columns;
 
 public final class OptionFields {
 
-    public final static String STYLE = "style";
+    private final static String STYLE = "style";
 
     private static final FieldsHelper<Option> fh = new FieldsHelper<>();
 

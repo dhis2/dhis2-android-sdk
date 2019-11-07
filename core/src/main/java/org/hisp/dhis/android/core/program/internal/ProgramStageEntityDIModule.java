@@ -37,8 +37,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo;
@@ -96,14 +94,8 @@ public final class ProgramStageEntityDIModule implements IdentifiableStoreProvid
     @Reusable
     @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<ProgramStage>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<ProgramStage> objectStyleChildrenAppender =
-                new ObjectStyleChildrenAppender<>(
-                        ObjectStyleStoreImpl.create(databaseAdapter),
-                        ProgramStageTableInfo.TABLE_INFO
-                );
 
         return new HashMap<String, ChildrenAppender<ProgramStage>>() {{
-            put(ProgramStageFields.STYLE, objectStyleChildrenAppender);
             put(ProgramStageFields.PROGRAM_STAGE_DATA_ELEMENTS,
                     ProgramStageDataElementChildrenAppender.create(databaseAdapter));
             put(ProgramStageFields.PROGRAM_STAGE_SECTIONS, ProgramStageSectionChildrenAppender.create(databaseAdapter));

@@ -52,17 +52,6 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
     }
 
     @Test
-    public void include_object_style_as_children() {
-        ProgramSection programSection =
-                d2.programModule().programSections()
-                        .withStyle()
-                        .one().blockingGet();
-
-        assertThat(programSection.style().icon(), is("section-icon"));
-        assertThat(programSection.style().color(), is("#555"));
-    }
-
-    @Test
     public void include_attributes_children() {
         ProgramSection programSection =
                 d2.programModule().programSections()
@@ -113,6 +102,24 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
                         .eq("formName")
                         .blockingGet();
 
+        assertThat(programSections.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_field_color() {
+        List<ProgramSection> programSections =
+                d2.programModule().programSections()
+                        .byColor().eq("#555")
+                .blockingGet();
+        assertThat(programSections.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_field_icon() {
+        List<ProgramSection> programSections =
+                d2.programModule().programSections()
+                .byIcon().eq("section-icon")
+                .blockingGet();
         assertThat(programSections.size(), is(1));
     }
 

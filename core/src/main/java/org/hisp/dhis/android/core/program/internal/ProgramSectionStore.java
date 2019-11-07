@@ -30,8 +30,10 @@ package org.hisp.dhis.android.core.program.internal;
 
 import android.database.sqlite.SQLiteStatement;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableWithStyleStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
@@ -40,22 +42,20 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.program.ProgramSection;
 import org.hisp.dhis.android.core.program.ProgramSectionTableInfo;
 
-import androidx.annotation.NonNull;
-
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
 public final class ProgramSectionStore {
 
     private static StatementBinder<ProgramSection> BINDER
-            = new IdentifiableStatementBinder<ProgramSection>() {
+            = new IdentifiableWithStyleStatementBinder<ProgramSection>() {
 
         @Override
         public void bindToStatement(@NonNull ProgramSection o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.description());
-            sqLiteBind(sqLiteStatement, 8, UidsHelper.getUidOrNull(o.program()));
-            sqLiteBind(sqLiteStatement, 9, o.sortOrder());
-            sqLiteBind(sqLiteStatement, 10, o.formName());
+            sqLiteBind(sqLiteStatement, 9, o.description());
+            sqLiteBind(sqLiteStatement, 10, UidsHelper.getUidOrNull(o.program()));
+            sqLiteBind(sqLiteStatement, 11, o.sortOrder());
+            sqLiteBind(sqLiteStatement, 12, o.formName());
         }
     };
 

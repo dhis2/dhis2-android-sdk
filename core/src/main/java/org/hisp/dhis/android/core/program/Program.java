@@ -59,6 +59,7 @@ import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -382,6 +383,7 @@ public abstract class Program extends BaseNameableObject
         abstract FeatureType featureType();
         abstract Access access();
         abstract AccessLevel accessLevel();
+        abstract ObjectStyle style();
 
         public Program build() {
             if (featureType() == null) {
@@ -400,6 +402,12 @@ public abstract class Program extends BaseNameableObject
 
             if (accessLevel() == null) {
                 accessLevel(AccessLevel.OPEN);      // Since 2.30
+            }
+
+            try {
+                style();
+            } catch (IllegalStateException e) {
+                style(ObjectStyle.builder().build());
             }
 
             return autoBuild();

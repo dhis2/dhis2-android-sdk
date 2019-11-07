@@ -26,31 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.note;
+package org.hisp.dhis.android.core.note.internal;
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import org.hisp.dhis.android.core.note.NoteModule;
 
-import java.io.IOException;
-import java.text.ParseException;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+@Module(includes = {
+        NoteEntityDIModule.class
+})
+public final class NotePackageDIModule {
 
-public class Note29Should extends BaseObjectShould implements ObjectShould {
-
-    public Note29Should() {
-        super("enrollment/note/note_29.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Note note = objectMapper.readValue(jsonStream, Note.class);
-
-        assertThat(note.uid()).isEqualTo(null);
-        assertThat(note.value()).isEqualTo("Note");
-        assertThat(note.storedBy()).isEqualTo("android");
-        assertThat(note.storedDate()).isEqualTo("2018-03-19 15:20:55.058");
+    @Provides
+    @Reusable
+    NoteModule module(NoteModuleImpl impl) {
+        return impl;
     }
 }

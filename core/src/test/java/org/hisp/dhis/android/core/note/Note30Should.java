@@ -26,37 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.internal;
+package org.hisp.dhis.android.core.note;
 
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
-import org.hisp.dhis.android.core.note.NoteTableInfo;
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.internal.TableWiper;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-import javax.inject.Inject;
+import java.io.IOException;
+import java.text.ParseException;
 
-import dagger.Reusable;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-@Reusable
-public final class EnrollmentModuleWiper implements ModuleWiper {
+public class Note30Should extends BaseObjectShould implements ObjectShould {
 
-    private final TableWiper tableWiper;
-
-    @Inject
-    EnrollmentModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    public Note30Should() {
+        super("enrollment/note/note_30.json");
     }
 
     @Override
-    public void wipeMetadata() {
-        // No metadata to wipe
-    }
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        Note note = objectMapper.readValue(jsonStream, Note.class);
 
-    @Override
-    public void wipeData() {
-        tableWiper.wipeTables(
-                EnrollmentTableInfo.TABLE_INFO,
-                NoteTableInfo.TABLE_INFO
-        );
+        assertThat(note.uid()).isEqualTo("noteUid");
+        assertThat(note.value()).isEqualTo("Note");
+        assertThat(note.storedBy()).isEqualTo("android");
+        assertThat(note.storedDate()).isEqualTo("2018-03-19T15:20:55.058");
     }
 }

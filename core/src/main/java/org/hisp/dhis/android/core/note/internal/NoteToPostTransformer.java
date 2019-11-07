@@ -26,37 +26,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.internal;
+package org.hisp.dhis.android.core.note.internal;
 
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
-import org.hisp.dhis.android.core.note.NoteTableInfo;
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.internal.TableWiper;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
-import javax.inject.Inject;
+import java.text.ParseException;
 
-import dagger.Reusable;
+public class NoteToPostTransformer implements Transformer<Note, Note> {
 
-@Reusable
-public final class EnrollmentModuleWiper implements ModuleWiper {
+    private final DHISVersionManager versionManager;
 
-    private final TableWiper tableWiper;
-
-    @Inject
-    EnrollmentModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    public NoteToPostTransformer(DHISVersionManager versionManager) {
+        this.versionManager = versionManager;
     }
 
     @Override
-    public void wipeMetadata() {
-        // No metadata to wipe
-    }
+    public Note transform(Note note) {
 
-    @Override
-    public void wipeData() {
-        tableWiper.wipeTables(
-                EnrollmentTableInfo.TABLE_INFO,
-                NoteTableInfo.TABLE_INFO
-        );
+        Note.Builder noteBuilder = note.toBuilder();
+
+        try {
+            if (this.versionManager.is2_29()) {
+                noteBuilder.storedDate(BaseIdentifiableObject.dateToSpaceDateStr(
+                        BaseIdentifiableObject.parseDate(note.storedDate())))
+                .uid(null);
+            }
+        } catch (ParseException ignored) {
+            noteBuilder
+                    .storedDate(null)
+                    .uid(null);
+        }
+
+        return noteBuilder.build();
     }
 }

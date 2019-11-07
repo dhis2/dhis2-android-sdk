@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.event.internal.EventStore;
+import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
@@ -54,7 +55,7 @@ public final class DataStatePropagatorImpl implements DataStatePropagator {
     private final EventStore eventStore;
 
     @Inject
-    public DataStatePropagatorImpl(TrackedEntityInstanceStore trackedEntityInstanceStore,
+    DataStatePropagatorImpl(TrackedEntityInstanceStore trackedEntityInstanceStore,
                             EnrollmentStore enrollmentStore,
                             EventStore eventStore) {
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
@@ -62,10 +63,12 @@ public final class DataStatePropagatorImpl implements DataStatePropagator {
         this.eventStore = eventStore;
     }
 
+    @Override
     public void propagateEnrollmentUpdate(Enrollment enrollment) {
         setTeiStateForUpdate(enrollment.trackedEntityInstance());
     }
 
+    @Override
     public void propagateEventUpdate(Event event) {
         if (event.enrollment() != null) {
             Enrollment enrollment = enrollmentStore.selectByUid(event.enrollment());
@@ -74,14 +77,23 @@ public final class DataStatePropagatorImpl implements DataStatePropagator {
         }
     }
 
+    @Override
     public void propagateTrackedEntityDataValueUpdate(TrackedEntityDataValue dataValue) {
         Event event = eventStore.selectByUid(dataValue.event());
         eventStore.setStateForUpdate(event.uid());
         propagateEventUpdate(event);
     }
 
+    @Override
     public void propagateTrackedEntityAttributeUpdate(TrackedEntityAttributeValue trackedEntityAttributeValue) {
         setTeiStateForUpdate(trackedEntityAttributeValue.trackedEntityInstance());
+    }
+
+    @Override
+    public void propagateNoteCreation(Note note) {
+        Enrollment enrollment = enrollmentStore.selectByUid(note.enrollment());
+        enrollmentStore.setStateForUpdate(enrollment.uid());
+        setTeiStateForUpdate(enrollment.trackedEntityInstance());
     }
 
     private void setTeiStateForUpdate(String trackedEntityInstanceUid) {

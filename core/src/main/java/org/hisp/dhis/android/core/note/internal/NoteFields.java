@@ -26,31 +26,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.note;
+package org.hisp.dhis.android.core.note.internal;
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.note.NoteTableInfo.Columns;
 
-import java.io.IOException;
-import java.text.ParseException;
+public final class NoteFields {
+    public final static String UID = "note";
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+    private static final FieldsHelper<Note> fh = new FieldsHelper<>();
 
-public class Note30Should extends BaseObjectShould implements ObjectShould {
+    public static final Field<Note, String> uid = fh.uid();
 
-    public Note30Should() {
-        super("enrollment/note/note_30.json");
-    }
+    public static final Fields<Note> all = Fields.<Note>builder()
+            .fields(
+                    fh.<String>field(UID),
+                    fh.<String>field(Columns.VALUE),
+                    fh.<String>field(Columns.STORED_BY),
+                    fh.<String>field(Columns.STORED_DATE)
+            ).build();
 
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Note note = objectMapper.readValue(jsonStream, Note.class);
-
-        assertThat(note.uid()).isEqualTo("noteUid");
-        assertThat(note.value()).isEqualTo("Note");
-        assertThat(note.storedBy()).isEqualTo("android");
-        assertThat(note.storedDate()).isEqualTo("2018-03-19T15:20:55.058");
+    private NoteFields() {
     }
 }

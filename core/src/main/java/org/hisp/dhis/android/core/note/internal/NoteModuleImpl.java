@@ -25,38 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.note.internal;
 
-package org.hisp.dhis.android.core.enrollment.internal;
-
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
-import org.hisp.dhis.android.core.note.NoteTableInfo;
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.internal.TableWiper;
+import org.hisp.dhis.android.core.note.NoteCollectionRepository;
+import org.hisp.dhis.android.core.note.NoteModule;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class EnrollmentModuleWiper implements ModuleWiper {
+public final class NoteModuleImpl implements NoteModule {
 
-    private final TableWiper tableWiper;
+    private final NoteCollectionRepository notes;
 
     @Inject
-    EnrollmentModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    NoteModuleImpl(NoteCollectionRepository notes) {
+        this.notes = notes;
     }
 
     @Override
-    public void wipeMetadata() {
-        // No metadata to wipe
-    }
-
-    @Override
-    public void wipeData() {
-        tableWiper.wipeTables(
-                EnrollmentTableInfo.TABLE_INFO,
-                NoteTableInfo.TABLE_INFO
-        );
+    public NoteCollectionRepository notes() {
+        return notes;
     }
 }

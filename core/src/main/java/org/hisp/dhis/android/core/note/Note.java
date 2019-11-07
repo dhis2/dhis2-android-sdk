@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.note;
+package org.hisp.dhis.android.core.note;
 
 import android.database.Cursor;
 
@@ -40,7 +40,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.enrollment.note.internal.NoteFields;
+import org.hisp.dhis.android.core.note.internal.NoteFields;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Note.Builder.class)

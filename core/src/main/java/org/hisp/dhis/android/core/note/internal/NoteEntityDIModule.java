@@ -26,40 +26,48 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.note.internal;
+package org.hisp.dhis.android.core.note.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.enrollment.note.Note;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.note.NoteCreateProjection;
 
-import java.text.ParseException;
+import java.util.Collections;
+import java.util.Map;
 
-public class NoteToPostTransformer implements Transformer<Note, Note> {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    private final DHISVersionManager versionManager;
+@Module
+public final class NoteEntityDIModule {
 
-    public NoteToPostTransformer(DHISVersionManager versionManager) {
-        this.versionManager = versionManager;
+    @Provides
+    @Reusable
+    public ObjectWithoutUidStore<Note> store(DatabaseAdapter databaseAdapter) {
+        return NoteStore.create(databaseAdapter);
     }
 
-    @Override
-    public Note transform(Note note) {
+    @Provides
+    @Reusable
+    public Handler<Note> handler(ObjectWithoutUidStore<Note> store) {
+        return new ObjectWithoutUidHandlerImpl<>(store);
+    }
 
-        Note.Builder noteBuilder = note.toBuilder();
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<Note>> childrenAppenders() {
+        return Collections.emptyMap();
+    }
 
-        try {
-            if (this.versionManager.is2_29()) {
-                noteBuilder.storedDate(BaseIdentifiableObject.dateToSpaceDateStr(
-                        BaseIdentifiableObject.parseDate(note.storedDate())))
-                .uid(null);
-            }
-        } catch (ParseException ignored) {
-            noteBuilder
-                    .storedDate(null)
-                    .uid(null);
-        }
-
-        return noteBuilder.build();
+    @Provides
+    @Reusable
+    Transformer<NoteCreateProjection, Note> transformer(NoteProjectionTransformer impl) {
+        return impl;
     }
 }

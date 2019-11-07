@@ -26,34 +26,55 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.testapp.enrollment.note;
+package org.hisp.dhis.android.testapp.note;
 
 import org.hisp.dhis.android.core.note.Note;
-import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
-import org.mockito.Mock;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public class NotePublicAccessShould extends BasePublicAccessShould<Note> {
+import java.util.List;
 
-    @Mock
-    private Note object;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
-    @Override
-    public Note object() {
-        return object;
+@RunWith(D2JunitRunner.class)
+public class NoteCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
+
+    @Test
+    public void find_all() {
+        List<Note> notes = d2.noteModule().notes().blockingGet();
+        assertThat(notes.size(), is(4));
     }
 
-    @Override
-    public void has_public_create_method() {
-        Note.create(null);
+    @Test
+    public void filter_by_uid() {
+        List<Note> notes = d2.noteModule().notes().byUid().eq("noteUid1").blockingGet();
+        assertThat(notes.size(), is(1));
     }
 
-    @Override
-    public void has_public_builder_method() {
-        Note.builder();
+    @Test
+    public void filter_by_enrollment_uid() {
+        List<Note> notes = d2.noteModule().notes().byEnrollmentUid().eq("enroll1").blockingGet();
+        assertThat(notes.size(), is(2));
     }
 
-    @Override
-    public void has_public_to_builder_method() {
-        object().toBuilder();
+    @Test
+    public void filter_by_value() {
+        List<Note> notes = d2.noteModule().notes().byValue().eq("Note 3").blockingGet();
+        assertThat(notes.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_stored_by() {
+        List<Note> notes = d2.noteModule().notes().byStoredBy().eq("android").blockingGet();
+        assertThat(notes.size(), is(4));
+    }
+
+    @Test
+    public void filter_by_stored_date() {
+        List<Note> notes = d2.noteModule().notes().byStoredDate().eq("2018-03-19T15:20:55.058").blockingGet();
+        assertThat(notes.size(), is(4));
     }
 }

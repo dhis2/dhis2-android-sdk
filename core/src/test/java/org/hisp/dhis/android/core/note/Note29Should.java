@@ -26,56 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.note;
+package org.hisp.dhis.android.core.note;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
-import org.hisp.dhis.android.core.common.DataColumns;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
-import org.hisp.dhis.android.core.enrollment.note.internal.NoteFields;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-public final class NoteTableInfo {
+import java.io.IOException;
+import java.text.ParseException;
 
-    private NoteTableInfo() {
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
+public class Note29Should extends BaseObjectShould implements ObjectShould {
+
+    public Note29Should() {
+        super("enrollment/note/note_29.json");
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        Note note = objectMapper.readValue(jsonStream, Note.class);
 
-        @Override
-        public String name() {
-            return "Note";
-        }
-
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends CoreColumns {
-        public final static String ENROLLMENT = "enrollment";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    ENROLLMENT,
-                    NoteFields.VALUE,
-                    NoteFields.STORED_BY,
-                    NoteFields.STORED_DATE,
-                    IdentifiableColumns.UID,
-                    DataColumns.STATE
-            );
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{
-                    ENROLLMENT,
-                    NoteFields.VALUE,
-                    NoteFields.STORED_BY,
-                    NoteFields.STORED_DATE
-            };
-        }
+        assertThat(note.uid()).isEqualTo(null);
+        assertThat(note.value()).isEqualTo("Note");
+        assertThat(note.storedBy()).isEqualTo("android");
+        assertThat(note.storedDate()).isEqualTo("2018-03-19 15:20:55.058");
     }
 }

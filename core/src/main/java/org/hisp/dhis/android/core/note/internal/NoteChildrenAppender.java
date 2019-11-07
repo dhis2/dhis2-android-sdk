@@ -25,33 +25,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.note.internal;
 
-package org.hisp.dhis.android.core.enrollment.note.internal;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.note.Note;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.enrollment.note.Note;
+public final class NoteChildrenAppender extends ChildrenAppender<Enrollment> {
 
-public final class NoteFields {
 
-    public final static String UID = "note";
-    public final static String VALUE = "value";
-    public final static String STORED_BY = "storedBy";
-    public final static String STORED_DATE = "storedDate";
+    private final SingleParentChildStore<Enrollment, Note> childStore;
 
-    private static final FieldsHelper<Note> fh = new FieldsHelper<>();
+    private NoteChildrenAppender(SingleParentChildStore<Enrollment, Note> childStore) {
+        this.childStore = childStore;
+    }
 
-    public static final Field<Note, String> uid = fh.uid();
+    @Override
+    protected Enrollment appendChildren(Enrollment enrollment) {
+        Enrollment.Builder builder = enrollment.toBuilder();
+        builder.notes(childStore.getChildren(enrollment));
+        return builder.build();
+    }
 
-    public static final Fields<Note> all = Fields.<Note>builder()
-            .fields(
-                    fh.<String>field(UID),
-                    fh.<String>field(VALUE),
-                    fh.<String>field(STORED_BY),
-                    fh.<String>field(STORED_DATE)
-            ).build();
-
-    private NoteFields() {
+    public static ChildrenAppender<Enrollment> create(DatabaseAdapter databaseAdapter) {
+        return new NoteChildrenAppender(
+                StoreFactory.singleParentChildStore(
+                        databaseAdapter,
+                        NoteStore.CHILD_PROJECTION,
+                        Note::create)
+        );
     }
 }

@@ -26,30 +26,58 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.note.internal;
+package org.hisp.dhis.android.core.note;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
-import org.hisp.dhis.android.core.enrollment.note.Note;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.DataColumns;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+public final class NoteTableInfo {
 
-@Module
-public final class NoteEntityDIModule {
-
-    @Provides
-    @Reusable
-    public ObjectWithoutUidStore<Note> store(DatabaseAdapter databaseAdapter) {
-        return NoteStore.create(databaseAdapter);
+    private NoteTableInfo() {
     }
 
-    @Provides
-    @Reusable
-    public Handler<Note> handler(ObjectWithoutUidStore<Note> store) {
-        return new ObjectWithoutUidHandlerImpl<>(store);
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "Note";
+        }
+
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
+
+    public static class Columns extends CoreColumns {
+        public final static String ENROLLMENT = "enrollment";
+        public final static String VALUE = "value";
+        public final static String STORED_BY = "storedBy";
+        public final static String STORED_DATE = "storedDate";
+
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    ENROLLMENT,
+                    VALUE,
+                    STORED_BY,
+                    STORED_DATE,
+                    IdentifiableColumns.UID,
+                    DataColumns.STATE
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return new String[]{
+                    ENROLLMENT,
+                    VALUE,
+                    STORED_BY,
+                    STORED_DATE
+            };
+        }
     }
 }

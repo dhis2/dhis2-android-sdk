@@ -26,37 +26,48 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.internal;
+package org.hisp.dhis.android.core.note;
 
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
-import org.hisp.dhis.android.core.note.NoteTableInfo;
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.internal.TableWiper;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import javax.inject.Inject;
+import androidx.annotation.Nullable;
 
-import dagger.Reusable;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_Note.Builder.class)
+public abstract class NoteCreateProjection {
 
-@Reusable
-public final class EnrollmentModuleWiper implements ModuleWiper {
+    @Nullable
+    @JsonIgnore()
+    public abstract String enrollment();
 
-    private final TableWiper tableWiper;
+    @Nullable
+    @JsonProperty()
+    public abstract String value();
 
-    @Inject
-    EnrollmentModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    public static NoteCreateProjection create(String enrollment, String value) {
+        return builder()
+                .enrollment(enrollment)
+                .value(value)
+                .build();
     }
 
-    @Override
-    public void wipeMetadata() {
-        // No metadata to wipe
+    public static Builder builder() {
+        return new AutoValue_NoteCreateProjection.Builder();
     }
 
-    @Override
-    public void wipeData() {
-        tableWiper.wipeTables(
-                EnrollmentTableInfo.TABLE_INFO,
-                NoteTableInfo.TABLE_INFO
-        );
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder {
+        public abstract Builder enrollment(String enrollment);
+
+        public abstract Builder value(String value);
+
+        public abstract NoteCreateProjection build();
     }
 }

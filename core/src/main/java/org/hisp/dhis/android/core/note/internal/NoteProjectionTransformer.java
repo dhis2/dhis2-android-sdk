@@ -25,37 +25,43 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.enrollment.note.internal;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.note.Note;
+package org.hisp.dhis.android.core.note.internal;
 
-public final class NoteChildrenAppender extends ChildrenAppender<Enrollment> {
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
+import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.note.NoteCreateProjection;
 
+import java.util.Date;
 
-    private final SingleParentChildStore<Enrollment, Note> childStore;
+import javax.inject.Inject;
 
-    private NoteChildrenAppender(SingleParentChildStore<Enrollment, Note> childStore) {
-        this.childStore = childStore;
+import dagger.Reusable;
+
+@Reusable
+final class NoteProjectionTransformer implements Transformer<NoteCreateProjection, Note> {
+
+    private final CredentialsSecureStore credentialsSecureStore;
+
+    @Inject
+    NoteProjectionTransformer(CredentialsSecureStore credentialsSecureStore) {
+        this.credentialsSecureStore = credentialsSecureStore;
     }
 
     @Override
-    protected Enrollment appendChildren(Enrollment enrollment) {
-        Enrollment.Builder builder = enrollment.toBuilder();
-        builder.notes(childStore.getChildren(enrollment));
-        return builder.build();
-    }
-
-    public static ChildrenAppender<Enrollment> create(DatabaseAdapter databaseAdapter) {
-        return new NoteChildrenAppender(
-                StoreFactory.singleParentChildStore(
-                        databaseAdapter,
-                        NoteStore.CHILD_PROJECTION,
-                        Note::create)
-        );
+    public Note transform(NoteCreateProjection projection) {
+        return Note.builder()
+                .uid(new CodeGeneratorImpl().generate())
+                .state(State.TO_POST)
+                .enrollment(projection.enrollment())
+                .value(projection.value())
+                .storedBy(credentialsSecureStore.getCredentials().username())
+                .storedDate(BaseIdentifiableObject.dateToDateStr(new Date()))
+                .deleted(false)
+                .build();
     }
 }

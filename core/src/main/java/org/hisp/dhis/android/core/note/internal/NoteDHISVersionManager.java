@@ -26,11 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.note.internal;
+package org.hisp.dhis.android.core.note.internal;
 
+import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.note.Note;
+import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.text.ParseException;
@@ -45,7 +46,7 @@ public class NoteDHISVersionManager {
     private final DHISVersionManager versionManager;
 
     @Inject
-    public NoteDHISVersionManager(DHISVersionManager versionManager) {
+    NoteDHISVersionManager(DHISVersionManager versionManager) {
         this.versionManager = versionManager;
     }
 
@@ -57,7 +58,7 @@ public class NoteDHISVersionManager {
                 builder
                         .storedDate(BaseIdentifiableObject.dateToDateStr(
                         BaseIdentifiableObject.parseSpaceDate(note.storedDate())))
-                        .uid(null);
+                        .uid(new CodeGeneratorImpl().generate());
             } else {
                 builder
                         .storedDate(BaseIdentifiableObject.dateToDateStr(
@@ -67,7 +68,7 @@ public class NoteDHISVersionManager {
         } catch (ParseException ignored) {
             builder
                     .storedDate(null)
-                    .uid(null);
+                    .uid(new CodeGeneratorImpl().generate());
         }
 
         return builder

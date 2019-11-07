@@ -61,6 +61,7 @@ import org.hisp.dhis.android.core.imports.internal.ImportPackageDIModule;
 import org.hisp.dhis.android.core.indicator.internal.IndicatorPackageDIModule;
 import org.hisp.dhis.android.core.legendset.internal.LegendPackageDIModule;
 import org.hisp.dhis.android.core.maintenance.internal.MaintenancePackageDIModule;
+import org.hisp.dhis.android.core.note.internal.NotePackageDIModule;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.internal.OptionPackageDIModule;
@@ -111,6 +112,8 @@ import retrofit2.Retrofit;
         IndicatorPackageDIModule.class,
         LegendPackageDIModule.class,
         MaintenancePackageDIModule.class,
+        MaintenancePackageDIModule.class,
+        NotePackageDIModule.class,
         OptionPackageDIModule.class,
         OrganisationUnitPackageDIModule.class,
         PeriodPackageDIModule.class,

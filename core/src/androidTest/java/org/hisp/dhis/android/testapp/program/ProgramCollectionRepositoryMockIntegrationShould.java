@@ -294,22 +294,6 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     }
 
     @Test
-    public void include_program_rule_variables_as_children() {
-        Program program = d2.programModule().programs()
-                .withProgramRuleVariables().one().blockingGet();
-        assertThat(program.programRuleVariables().size(), is(2));
-        assertThat(program.programRuleVariables().get(0).name(), is("hemoglobin"));
-    }
-
-    @Test
-    public void include_program_sections_as_children() {
-        Program program = d2.programModule().programs()
-                .withProgramSections().one().blockingGet();
-        assertThat(program.programSections().size(), is(2));
-        assertThat(program.programSections().get(0).name(), is("My Program Section"));
-    }
-
-    @Test
     public void include_tracked_entity_type_as_children() {
         Program program = d2.programModule().programs()
                 .withTrackedEntityType().one().blockingGet();

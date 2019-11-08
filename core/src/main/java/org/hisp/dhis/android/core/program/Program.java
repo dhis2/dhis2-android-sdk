@@ -166,16 +166,10 @@ public abstract class Program extends BaseNameableObject
     @ColumnAdapter(IgnoreProgramIndicatorListColumnAdapter.class)
     abstract List<ProgramIndicator> programIndicators();
 
-    /**
-     * @deprecated use d2.programModule().programRuleVariables instead
-     *
-     * @return
-     */
-    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramRuleVariableListColumnAdapter.class)
-    public abstract List<ProgramRuleVariable> programRuleVariables();
+    abstract List<ProgramRuleVariable> programRuleVariables();
 
     @Nullable
     @JsonProperty()
@@ -198,12 +192,6 @@ public abstract class Program extends BaseNameableObject
     @JsonProperty()
     public abstract Integer maxTeiCountToReturn();
 
-    /**
-     * @deprecated use d2.programModule().programSections instead
-     *
-     * @return
-     */
-    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramSectionListColumnAdapter.class)
@@ -287,13 +275,7 @@ public abstract class Program extends BaseNameableObject
 
         abstract Builder programIndicators(List<ProgramIndicator> programIndicators);
 
-        /**
-         * @deprecated will be package-private in SDK 1.0
-         *
-         * @return
-         */
-        @Deprecated
-        public abstract Builder programRuleVariables(List<ProgramRuleVariable> programRuleVariables);
+        abstract Builder programRuleVariables(List<ProgramRuleVariable> programRuleVariables);
 
         public abstract Builder expiryDays(Integer expiryDays);
 
@@ -305,13 +287,7 @@ public abstract class Program extends BaseNameableObject
 
         public abstract Builder maxTeiCountToReturn(Integer maxTeiCountToReturn);
 
-        /**
-         * @deprecated will be package-private in SDK 1.0
-         *
-         * @return
-         */
-        @Deprecated
-        public abstract Builder programSections(List<ProgramSection> programSections);
+        abstract Builder programSections(List<ProgramSection> programSections);
 
         public abstract Builder featureType(FeatureType featureType);
 

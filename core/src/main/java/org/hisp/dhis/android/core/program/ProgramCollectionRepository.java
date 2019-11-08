@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns;
-import org.hisp.dhis.android.core.program.internal.ProgramFields;
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
 
 import java.util.Collections;
@@ -177,14 +176,6 @@ public final class ProgramCollectionRepository
                 OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
                 OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
                 uids);
-    }
-
-    public ProgramCollectionRepository withProgramRuleVariables() {
-        return cf.withChild(ProgramFields.PROGRAM_RULE_VARIABLES);
-    }
-
-    public ProgramCollectionRepository withProgramSections() {
-        return cf.withChild(ProgramFields.PROGRAM_SECTIONS);
     }
 
     public ProgramCollectionRepository withTrackedEntityType() {

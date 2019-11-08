@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 
-import androidx.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -58,6 +56,8 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramStage.Builder.class)
@@ -148,16 +148,10 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     @JsonProperty()
     public abstract Integer standardInterval();
 
-    /**
-     * @deprecated use d2.programModule().programStageSections instead
-     *
-     * @return
-     */
-    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramStageSectionListColumnAdapter.class)
-    public abstract List<ProgramStageSection> programStageSections();
+    abstract List<ProgramStageSection> programStageSections();
 
     /**
      * @deprecated use d2.programModule().programStageDataElements instead

@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship.internal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -35,14 +35,11 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.TrackedEntityInstanceWithUidColumnAdapter;
+import org.hisp.dhis.android.core.relationship.BaseRelationship;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import androidx.annotation.Nullable;
 
-/**
- * @deprecated since 2.29. Only internal use
- */
-@Deprecated
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Relationship229Compatible.Builder.class)
 public abstract class Relationship229Compatible extends BaseRelationship {

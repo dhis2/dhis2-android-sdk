@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.relationship;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
 import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
+import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
 import org.junit.Test;
 
 import java.io.IOException;

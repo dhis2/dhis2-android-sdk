@@ -47,7 +47,7 @@ import org.hisp.dhis.android.core.program.ProgramStageTableInfo.Columns;
 
 public final class ProgramStageFields {
 
-    public static final String PROGRAM_STAGE_DATA_ELEMENTS = "programStageDataElements";
+    static final String PROGRAM_STAGE_DATA_ELEMENTS = "programStageDataElements";
     private static final String CAPTURE_COORDINATES = "captureCoordinates";
     private static final String STYLE = "style";
     public static final String PROGRAM_STAGE_SECTIONS = "programStageSections";

@@ -57,16 +57,6 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
     }
 
     @Test
-    public void include_program_stage_data_elements_as_children() {
-        ProgramStage programStage =
-                d2.programModule().programStages()
-                        .withProgramStageDataElements()
-                        .one().blockingGet();
-
-        assertThat(ProgramStageInternalAccessor.accessProgramStageDataElements(programStage).size(), is(3));
-    }
-
-    @Test
     public void include_program_stage_section_as_children() {
         ProgramStage programStage =
                 d2.programModule().programStages()

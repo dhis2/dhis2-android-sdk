@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilt
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.option.OptionSetTableInfo.Columns;
-import org.hisp.dhis.android.core.option.internal.OptionSetFields;
 
 import java.util.Map;
 
@@ -62,15 +61,5 @@ public final class OptionSetCollectionRepository
 
     public EnumFilterConnector<OptionSetCollectionRepository, ValueType> byValueType() {
         return cf.enumC(Columns.VALUE_TYPE);
-    }
-
-    /**
-     * @deprecated use d2.optionModule().options().byOptionSetUid() instead
-     *
-     * @return
-     */
-    @Deprecated
-    public OptionSetCollectionRepository withOptions() {
-        return cf.withChild(OptionSetFields.OPTIONS);
     }
 }

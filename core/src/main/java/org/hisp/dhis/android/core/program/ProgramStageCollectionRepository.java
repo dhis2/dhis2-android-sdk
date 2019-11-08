@@ -159,16 +159,6 @@ public final class ProgramStageCollectionRepository
     }
 
     /**
-     * @deprecated use d2.programModule().programStageDataElements().byProgramStage() instead
-     *
-     * @return
-     */
-    @Deprecated
-    public ProgramStageCollectionRepository withProgramStageDataElements() {
-        return cf.withChild(ProgramStageFields.PROGRAM_STAGE_DATA_ELEMENTS);
-    }
-
-    /**
      * @deprecated use d2.programModule().programStageSections().byProgramStageUid() instead
      *
      * @return

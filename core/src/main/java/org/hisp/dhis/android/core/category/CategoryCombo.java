@@ -89,13 +89,7 @@ public abstract class CategoryCombo extends BaseIdentifiableObject implements Co
 
         public abstract List<Category> categories();
 
-        /**
-         * @deprecated use d2.categoryModule().categoryOptionCombos instead
-         *
-         * @return
-         */
-        @Deprecated
-        public abstract List<CategoryOptionCombo> categoryOptionCombos();
+        abstract List<CategoryOptionCombo> categoryOptionCombos();
 
         public abstract CategoryCombo build();
     }

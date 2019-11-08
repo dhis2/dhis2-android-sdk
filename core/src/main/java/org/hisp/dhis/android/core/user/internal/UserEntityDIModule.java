@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.user.User;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import dagger.Module;
@@ -61,12 +61,7 @@ public final class UserEntityDIModule implements IdentifiableStoreProvider<User>
 
     @Provides
     @Reusable
-    @SuppressWarnings("PMD.NonStaticInitializer")
-    Map<String, ChildrenAppender<User>> childrenAppenders(
-            UserCredentialsChildrenAppender userCredentialsChildrenAppender) {
-
-        return new HashMap<String, ChildrenAppender<User>>() {{
-            put(UserFields.USER_CREDENTIALS, userCredentialsChildrenAppender);
-        }};
+    Map<String, ChildrenAppender<User>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

@@ -302,22 +302,6 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     }
 
     @Test
-    public void include_program_indicators_as_children() {
-        Program program = d2.programModule().programs()
-                .withProgramIndicators().one().blockingGet();
-        assertThat(program.programIndicators().size(), is(2));
-        assertThat(program.programIndicators().get(0).name(), is("Age at visit"));
-    }
-
-    @Test
-    public void include_program_tracked_entity_attributes_as_children() {
-        Program program = d2.programModule().programs()
-                .withProgramTrackedEntityAttributes().one().blockingGet();
-        assertThat(program.programTrackedEntityAttributes().size(), is(2));
-        assertThat(program.programTrackedEntityAttributes().get(0).name(), is("Child Programme Gender"));
-    }
-
-    @Test
     public void include_program_sections_as_children() {
         Program program = d2.programModule().programs()
                 .withProgramSections().one().blockingGet();

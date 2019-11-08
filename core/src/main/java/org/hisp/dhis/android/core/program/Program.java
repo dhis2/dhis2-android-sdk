@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 
-import androidx.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -66,6 +64,8 @@ import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_Program.Builder.class)
@@ -135,16 +135,10 @@ public abstract class Program extends BaseNameableObject
     @ColumnAdapter(DbProgramTypeColumnAdapter.class)
     public abstract ProgramType programType();
 
-    /**
-     * @deprecated use d2.programModule().programTrackedEntityAttributes instead
-     *
-     * @return
-    */
-    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramTrackedEntityAttributeListColumnAdapter.class)
-    public abstract List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes();
+    abstract List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes();
 
     @Nullable
     @JsonProperty()
@@ -170,16 +164,10 @@ public abstract class Program extends BaseNameableObject
     @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
 
-    /**
-     * @deprecated use d2.programModule().programIndicators instead
-     *
-     * @return
-     */
-    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramIndicatorListColumnAdapter.class)
-    public abstract List<ProgramIndicator> programIndicators();
+    abstract List<ProgramIndicator> programIndicators();
 
     /**
      * @deprecated use d2.programModule().programStages() instead
@@ -322,13 +310,7 @@ public abstract class Program extends BaseNameableObject
 
         public abstract Builder access(Access access);
 
-        /**
-         * @deprecated will be package-private in SDK 1.0
-         *
-         * @return
-         */
-        @Deprecated
-        public abstract Builder programIndicators(List<ProgramIndicator> programIndicators);
+        abstract Builder programIndicators(List<ProgramIndicator> programIndicators);
 
         /**
          * @deprecated will be removed in SDK 1.0

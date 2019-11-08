@@ -197,10 +197,6 @@ public final class ProgramCollectionRepository
         return cf.withChild(ProgramFields.PROGRAM_RULES);
     }
 
-    public ProgramCollectionRepository withProgramTrackedEntityAttributes() {
-        return cf.withChild(ProgramFields.PROGRAM_TRACKED_ENTITY_ATTRIBUTES);
-    }
-
     public ProgramCollectionRepository withProgramSections() {
         return cf.withChild(ProgramFields.PROGRAM_SECTIONS);
     }

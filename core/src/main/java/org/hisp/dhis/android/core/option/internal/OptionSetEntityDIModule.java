@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionTableInfo;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import dagger.Module;
@@ -70,10 +70,7 @@ public final class OptionSetEntityDIModule {
 
     @Provides
     @Reusable
-    @SuppressWarnings("PMD.NonStaticInitializer")
-    Map<String, ChildrenAppender<OptionSet>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return new HashMap<String, ChildrenAppender<OptionSet>>() {{
-            put(OptionSetFields.OPTIONS, OptionSetOptionChildrenAppender.create(databaseAdapter));
-        }};
+    Map<String, ChildrenAppender<OptionSet>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

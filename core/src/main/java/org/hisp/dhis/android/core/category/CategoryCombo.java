@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.category;
 
 import android.database.Cursor;
 
-import androidx.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -44,6 +42,8 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_CategoryCombo.Builder.class)
@@ -60,16 +60,10 @@ public abstract class CategoryCombo extends BaseIdentifiableObject implements Co
     @ColumnAdapter(IgnoreCategoryListColumnAdapter.class)
     public abstract List<Category> categories();
 
-    /**
-     * @deprecated use d2.categoryModule().categoryOptionCombos.byCategoryComboUid() instead
-     *
-     * @return
-     */
-    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreCategoryOptionComboListColumnAdapter.class)
-    public abstract List<CategoryOptionCombo> categoryOptionCombos();
+    abstract List<CategoryOptionCombo> categoryOptionCombos();
 
     public static CategoryCombo create(Cursor cursor) {
         return $AutoValue_CategoryCombo.createFromCursor(cursor);

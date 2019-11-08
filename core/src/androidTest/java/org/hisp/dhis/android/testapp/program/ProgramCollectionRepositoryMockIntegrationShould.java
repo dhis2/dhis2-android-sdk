@@ -294,22 +294,6 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     }
 
     @Test
-    public void include_program_stages_as_children_when_all_selected() {
-        Program program = d2.programModule().programs()
-                .withProgramStages().one().blockingGet();
-        assertThat(program.programStages().size(), is(2));
-        assertThat(program.programStages().get(0).name(), is("Antenatal care visit - Program rules demo"));
-    }
-
-    @Test
-    public void include_program_stages_as_children_when_explicitly_selected() {
-        Program program = d2.programModule().programs()
-                .withProgramStages().one().blockingGet();
-        assertThat(program.programStages().size(), is(2));
-        assertThat(program.programStages().get(0).name(), is("Antenatal care visit - Program rules demo"));
-    }
-
-    @Test
     public void include_program_rule_variables_as_children() {
         Program program = d2.programModule().programs()
                 .withProgramRuleVariables().one().blockingGet();

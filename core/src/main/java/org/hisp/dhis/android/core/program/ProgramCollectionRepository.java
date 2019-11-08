@@ -179,16 +179,6 @@ public final class ProgramCollectionRepository
                 uids);
     }
 
-    /**
-     * @deprecated use d2.programModule().programStages().byProgramUid() instead
-     *
-     * @return
-     */
-    @Deprecated
-    public ProgramCollectionRepository withProgramStages() {
-        return cf.withChild(ProgramFields.PROGRAM_STAGES);
-    }
-
     public ProgramCollectionRepository withProgramRuleVariables() {
         return cf.withChild(ProgramFields.PROGRAM_RULE_VARIABLES);
     }

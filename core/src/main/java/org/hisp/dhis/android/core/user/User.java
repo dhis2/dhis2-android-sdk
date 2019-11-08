@@ -144,13 +144,7 @@ public abstract class User extends BaseIdentifiableObject implements CoreObject 
 
         public abstract Builder nationality(String nationality);
 
-        /**
-         * @deprecated will be package-private in SDK 1.0
-         *
-         * @return
-         */
-        @Deprecated
-        public abstract Builder userCredentials(UserCredentials userCredentials);
+        abstract Builder userCredentials(UserCredentials userCredentials);
 
         abstract Builder organisationUnits(List<OrganisationUnit> organisationUnits);
 

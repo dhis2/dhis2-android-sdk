@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -46,10 +45,8 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColu
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.TrackedEntityTypeWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramIndicatorListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramRuleListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramRuleVariableListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramSectionListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramStageListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramTrackedEntityAttributeListColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.category.CategoryCombo;
@@ -168,28 +165,6 @@ public abstract class Program extends BaseNameableObject
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramIndicatorListColumnAdapter.class)
     abstract List<ProgramIndicator> programIndicators();
-
-    /**
-     * @deprecated use d2.programModule().programStages() instead
-     *
-     * @return
-     */
-    @Deprecated
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(IgnoreProgramStageListColumnAdapter.class)
-    public abstract List<ProgramStage> programStages();
-
-    /**
-     * @deprecated use d2.programModule().programRules() instead. This will be removed in SDK 1.0
-     *
-     * @return
-     */
-    @Deprecated
-    @Nullable
-    @JsonIgnore()
-    @ColumnAdapter(IgnoreProgramRuleListColumnAdapter.class)
-    public abstract List<ProgramRule> programRules();
 
     /**
      * @deprecated use d2.programModule().programRuleVariables instead
@@ -311,22 +286,6 @@ public abstract class Program extends BaseNameableObject
         public abstract Builder access(Access access);
 
         abstract Builder programIndicators(List<ProgramIndicator> programIndicators);
-
-        /**
-         * @deprecated will be removed in SDK 1.0
-         *
-         * @return
-         */
-        @Deprecated
-        public abstract Builder programStages(List<ProgramStage> programStages);
-
-        /**
-         * @deprecated will be removed in SDK 1.0
-         *
-         * @return
-         */
-        @Deprecated
-        public abstract Builder programRules(List<ProgramRule> programRules);
 
         /**
          * @deprecated will be package-private in SDK 1.0

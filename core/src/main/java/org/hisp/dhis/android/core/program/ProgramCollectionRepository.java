@@ -183,20 +183,6 @@ public final class ProgramCollectionRepository
         return cf.withChild(ProgramFields.PROGRAM_RULE_VARIABLES);
     }
 
-    public ProgramCollectionRepository withProgramIndicators() {
-        return cf.withChild(ProgramFields.PROGRAM_INDICATORS);
-    }
-
-    /**
-     * @deprecated use d2.programModule().programRules().byProgramUid() instead
-     *
-     * @return
-     */
-    @Deprecated
-    public ProgramCollectionRepository withProgramRules() {
-        return cf.withChild(ProgramFields.PROGRAM_RULES);
-    }
-
     public ProgramCollectionRepository withProgramSections() {
         return cf.withChild(ProgramFields.PROGRAM_SECTIONS);
     }

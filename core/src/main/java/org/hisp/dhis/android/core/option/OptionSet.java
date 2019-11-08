@@ -83,14 +83,7 @@ public abstract class OptionSet extends BaseIdentifiableObject implements CoreOb
 
         public abstract Builder valueType(@Nullable ValueType valueType);
 
-
-        /**
-         * @deprecated use d2.optionModule().options() instead
-         *
-         * @return
-         */
-        @Deprecated
-        public abstract Builder options(@Nullable List<Option> options);
+        abstract Builder options(@Nullable List<Option> options);
 
         public abstract OptionSet build();
     }

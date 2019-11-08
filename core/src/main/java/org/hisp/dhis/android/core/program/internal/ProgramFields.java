@@ -50,7 +50,6 @@ public final class ProgramFields {
     public static final String PROGRAM_TRACKED_ENTITY_ATTRIBUTES = "programTrackedEntityAttributes";
     private static final String CAPTURE_COORDINATES = "captureCoordinates";
     public static final String PROGRAM_INDICATORS = "programIndicators";
-    public static final String PROGRAM_RULES = "programRules";
     public static final String PROGRAM_RULE_VARIABLES = "programRuleVariables";
     private static final String ACCESS = "access";
     private static final String STYLE = "style";

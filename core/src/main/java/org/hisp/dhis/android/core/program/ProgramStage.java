@@ -234,13 +234,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
 
         public abstract Builder standardInterval(Integer standardInterval);
 
-        /**
-         * @deprecated will be package-private in SDK 1.0
-         *
-         * @return
-         */
-        @Deprecated
-        public abstract Builder programStageSections(List<ProgramStageSection> programStageSections);
+        abstract Builder programStageSections(List<ProgramStageSection> programStageSections);
 
         abstract Builder programStageDataElements(List<ProgramStageDataElement> programStageDataElements);
 

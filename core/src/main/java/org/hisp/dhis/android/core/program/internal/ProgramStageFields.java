@@ -47,10 +47,10 @@ import org.hisp.dhis.android.core.program.ProgramStageTableInfo.Columns;
 
 public final class ProgramStageFields {
 
-    static final String PROGRAM_STAGE_DATA_ELEMENTS = "programStageDataElements";
+    private static final String PROGRAM_STAGE_DATA_ELEMENTS = "programStageDataElements";
     private static final String CAPTURE_COORDINATES = "captureCoordinates";
     private static final String STYLE = "style";
-    public static final String PROGRAM_STAGE_SECTIONS = "programStageSections";
+    static final String PROGRAM_STAGE_SECTIONS = "programStageSections";
     private static final String ACCESS = "access";
 
     private static FieldsHelper<ProgramStage> fh = new FieldsHelper<>();

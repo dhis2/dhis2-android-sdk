@@ -256,13 +256,7 @@ public abstract class Program extends BaseNameableObject
 
         public abstract Builder programType(ProgramType programType);
 
-        /**
-         * @deprecated will be package-private in SDK 1.0
-         *
-         * @return
-         */
-        @Deprecated
-        public abstract Builder programTrackedEntityAttributes(List<ProgramTrackedEntityAttribute>
+        abstract Builder programTrackedEntityAttributes(List<ProgramTrackedEntityAttribute>
                                                                        programTrackedEntityAttributes);
 
         public abstract Builder relatedProgram(ObjectWithUid relatedProgram);

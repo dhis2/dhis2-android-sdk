@@ -96,8 +96,6 @@ public final class ProgramStageEntityDIModule implements IdentifiableStoreProvid
     Map<String, ChildrenAppender<ProgramStage>> childrenAppenders(DatabaseAdapter databaseAdapter) {
 
         return new HashMap<String, ChildrenAppender<ProgramStage>>() {{
-            put(ProgramStageFields.PROGRAM_STAGE_DATA_ELEMENTS,
-                    ProgramStageDataElementChildrenAppender.create(databaseAdapter));
             put(ProgramStageFields.PROGRAM_STAGE_SECTIONS, ProgramStageSectionChildrenAppender.create(databaseAdapter));
         }};
     }

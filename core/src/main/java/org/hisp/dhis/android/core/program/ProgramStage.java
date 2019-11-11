@@ -153,16 +153,10 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     @ColumnAdapter(IgnoreProgramStageSectionListColumnAdapter.class)
     abstract List<ProgramStageSection> programStageSections();
 
-    /**
-     * @deprecated use d2.programModule().programStageDataElements instead
-     *
-     * @return
-     */
-    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramStageDataElementListColumnAdapter.class)
-    public abstract List<ProgramStageDataElement> programStageDataElements();
+    abstract List<ProgramStageDataElement> programStageDataElements();
 
     @Nullable
     @JsonProperty()
@@ -248,13 +242,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
         @Deprecated
         public abstract Builder programStageSections(List<ProgramStageSection> programStageSections);
 
-        /**
-         * @deprecated will be package-private in SDK 1.0
-         *
-         * @return
-         */
-        @Deprecated
-        public abstract Builder programStageDataElements(List<ProgramStageDataElement> programStageDataElements);
+        abstract Builder programStageDataElements(List<ProgramStageDataElement> programStageDataElements);
 
         public abstract Builder periodType(PeriodType periodType);
 

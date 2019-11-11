@@ -68,8 +68,6 @@ public final class ProgramEntityDIModule {
             ProgramTrackedEntityTypeChildrenAppender trackedEntityTypeChildrenAppender) {
 
         return new HashMap<String, ChildrenAppender<Program>>() {{
-            put(ProgramFields.PROGRAM_TRACKED_ENTITY_ATTRIBUTES,
-                    ProgramTrackedEntityAttributeChildrenAppender.create(databaseAdapter));
             put(Columns.TRACKED_ENTITY_TYPE, trackedEntityTypeChildrenAppender);
         }};
     }

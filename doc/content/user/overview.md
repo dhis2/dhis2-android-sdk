@@ -9,3 +9,5 @@ Goals:
 - Work offline (internal database).
 - Communicate with DHIS2 instances.
 - Facilitate the development of Android apps.
+
+<!--TODO Include information about libraries (rxjava,...), written in java, etc-->

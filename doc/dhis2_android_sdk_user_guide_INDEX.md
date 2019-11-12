@@ -14,4 +14,5 @@ title: 'DHIS 2 Android SDK Developer guide'
 !INCLUDE "content/compatibility-strategy.md"
 !INCLUDE "content/db-interaction.md"
 !INCLUDE "content/program-rule-engine.md"
+!INCLUDE "content/program-indicator-engine.md"
 !INCLUDE "content/debugging.md"

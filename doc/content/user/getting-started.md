@@ -32,6 +32,7 @@ D2Configuration configuration = D2Configuration.builder()
 ```
 
 Using the configuration you can instantiate `D2`.
+
 ```java
 Single<D2> d2Single = D2Manager.instantiateD2(configuration);
 ```

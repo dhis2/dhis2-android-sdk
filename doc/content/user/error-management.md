@@ -8,7 +8,7 @@ Errors that happen in the context of the SDK are wrapped in a type of exception:
 |-|-|-|-|
 | errorComponent    | D2ErrorComponent | true          | Source of the error: Database, SDK or Server |
 | errorCode         | D2ErrorCode | true          | SDK-defined unique error code |
-| errorDescription  | String | true          | Description of the error in english (technincal details, just for logs and debugging) |
+| errorDescription  | String | true          | Description of the error in english (technical details, just for logs and debugging) |
 | httpErrorCode     | Integer | false   | If caused by HTTP request, HTTP error code |
 | originalException | Exception | false | Original Java Exception causing the error, if any |
 

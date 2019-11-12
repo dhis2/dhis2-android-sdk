@@ -112,12 +112,11 @@ Several properties can be appended in the same query in any order. For example, 
 
 ```java
 d2.programModule().programs()
-    .withStyle()
     .withTrackedEntityType()
     ...
 ```
 
-will return a program with a nested `ObjectStyle` (color, icon) and a nested `TrackedEntityType`.
+will return a nested `TrackedEntityType` object.
 
 ### Module list
 

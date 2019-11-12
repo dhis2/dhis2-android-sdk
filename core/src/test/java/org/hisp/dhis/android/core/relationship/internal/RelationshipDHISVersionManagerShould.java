@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.relationship.internal;
 import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
 import org.hisp.dhis.android.core.relationship.BaseRelationship;
 import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.junit.Before;
 import org.junit.Test;

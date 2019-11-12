@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.relationship;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 

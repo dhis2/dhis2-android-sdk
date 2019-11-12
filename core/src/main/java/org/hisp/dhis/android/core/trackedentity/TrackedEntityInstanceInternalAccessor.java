@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
+import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
 
 import java.util.List;
 

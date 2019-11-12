@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.testapp.user;
 
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserInternalAccessor;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
@@ -46,13 +45,5 @@ public class UserObjectRepositoryMockIntegrationShould extends BaseMockIntegrati
         User user = d2.userModule().user().blockingGet();
         assertThat(user.uid(), is("DXyJmlo9rge"));
         assertThat(user.firstName(), is("John"));
-    }
-
-    @Test
-    public void return_user_credentials_as_children() {
-        User user = d2.userModule().user().withUserCredentials().blockingGet();
-        assertThat(UserInternalAccessor.accessUserCredentials(user).user().uid(), is(user.uid()));
-        assertThat(UserInternalAccessor.accessUserCredentials(user).username(), is("android"));
-        assertThat(UserInternalAccessor.accessUserCredentials(user).name(), is("John Barnes"));
     }
 }

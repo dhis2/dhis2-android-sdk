@@ -50,7 +50,7 @@ import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
+import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 
 import java.util.Date;

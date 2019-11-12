@@ -32,8 +32,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyOneObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
-import org.hisp.dhis.android.core.user.internal.UserFields;
 
 import java.util.Map;
 
@@ -50,15 +48,5 @@ public final class UserObjectRepository extends ReadOnlyOneObjectRepositoryImpl<
                          RepositoryScope scope) {
         super(store, childrenAppenders, scope,
                 s -> new UserObjectRepository(store, childrenAppenders, s));
-    }
-
-    /**
-     * @deprecated use d2.userModule().userCredentials() instead
-     *
-     * @return
-     */
-    @Deprecated
-    public UserObjectRepository withUserCredentials() {
-        return repositoryFactory.updated(RepositoryScopeHelper.withChild(scope, UserFields.USER_CREDENTIALS));
     }
 }

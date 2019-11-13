@@ -103,21 +103,67 @@ The possible states are:
 
 #### Tracker data download
 
-By default, the SDK only downloads TrackedEntityInstances and Events that are located in user capture scope.
+By default, the SDK only downloads TrackedEntityInstances and Events
+that are located in user capture scope, but it is also possible to
+download TrackedEntityInstances in search scope.
 
+##### Capture scope
+
+Inside the tracked entity module remains the
+TrackedEntityInstanceDownloader. The downloader follows a builder
+pattern which allows the tracked entity instances download filtering by
+different parameters. The same behavior can be found within the event
+module for events.
+
+The downloader track the latest successful download in order to void
+downloading unmodified data. It makes use of paging with a best effort
+strategy: in case a page fails to be downloaded or persisted, it is
+skipped and the rest of pages are persisted.
+
+This is an example of how it can be used.
 ```java
-d2.trackedEntityModule().downloadTrackedEntityInstances(500, false, false)
+d2.trackedEntityModule().trackedEntityInstanceDownloader()
+    .[filters]
+    .[limits]
+    .download()
+```
+```java
+d2.eventModule().eventDownloader()
+    .[filters]
+    .[limits]
+    .download()
 ```
 
-It keeps track of the latest successful download in order to void downloading unmodified data. It makes use of paging with a best effort strategy: in case a page fails to be downloaded or persisted, it is skipped and the rest of pages are persisted.
+Currently it is possible to specify the next filters:
 
-Currently it is possible to specify the maximum number of TEIs to download and apply this limit globally, per program and/or per orgunit. For example:
+- `byProgramUid()`. Filters by program uid and return the not synced
+  objects inside the program.
+- `byUid()`. Filters by the tracked entity instance uid and return a
+  unique object. (Only for tracked entity instances).
+  
+The downloader also allow to limit the number of downloaded objects. 
+These limits can also be combined with each other.
 
-- Given a max number N, we can download the following number of TEIs in total:
-  - Globally: N
-  - Per orgunit: N x (Number of orgunits)
-  - Per program: N x (Number of programs)
-  - Per orgunit AND per program: N x (Number of combinations orgunit-program)
+- `limit()`. Limit the maximum number of objects to download.
+- `limitByProgram()`. Take the established limit and apply it for each
+  program. The number of objects that will be downloaded will be the one
+  obtained by multiplying the limit set by the number of user programs.
+- `limitByOrgunit()`. Take the established limit and apply it for each
+  organisation unit. The number of objects that will be downloaded will
+  be the one obtained by multiplying the limit set by the number of user
+  organisation units.
+
+The next snippet of code shows an example of the
+TrackedEntityInstanceDownloader usage.
+
+```java
+d2.trackedEntityModule().trackedEntityInstanceDownloader()
+    .byProgramUid("program-uid")
+    .limitByOrgunit(true)
+    .limitByProgram(true)
+    .limit(50)
+    .download()
+```
 
 TrackedEntityInstances located in search scope can be downloaded by using a different method. In this case it is required to provide the TEI uid, which might be obtained with a search query.
 

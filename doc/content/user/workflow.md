@@ -110,10 +110,10 @@ download TrackedEntityInstances in search scope.
 ##### Capture scope
 
 Inside the tracked entity module remains the
-TrackedEntityInstanceDownloader. The downloader follows a builder
+`TrackedEntityInstanceDownloader`. The downloader follows a builder
 pattern which allows the tracked entity instances download filtering by
-different parameters. The same behavior can be found within the event
-module for events.
+**different parameters** as well as define some **limits**. The same
+behavior can be found within the event module for events.
 
 The downloader track the latest successful download in order to void
 downloading unmodified data. It makes use of paging with a best effort
@@ -165,19 +165,109 @@ d2.trackedEntityModule().trackedEntityInstanceDownloader()
     .download()
 ```
 
-TrackedEntityInstances located in search scope can be downloaded by using a different method. In this case it is required to provide the TEI uid, which might be obtained with a search query.
+##### Search scope
+
+DHIS2 has a functionality to filter TrackedEntityInstances by related
+properties, like attributes, organisation units, programs or enrollment
+dates. The Sdk provides methods that allow the tracked entity
+instance download within the search scope. With the aim of downloading
+tracked entity instances within the search scope the Sdk provides access
+to the `TrackedEntityInstanceQueryCollectionRepository` within the
+tracked entity instance module.
+
+The tracked entity instance query is a powerful tool that follows a
+builder pattern which allows the tracked entity instances download
+filtering by **different parameters** as well as define a **repository
+mode**.
 
 ```java
-d2.downloadTrackedEntityInstancesByUid(uid-list)
+d2.trackedEntityModule().trackedEntityInstanceQuery()
+    .[repository mode]
+    .[filters]
+    .download()
+```
+
+These are the different repository modes available:
+
+- `onlineOnly()`. Only TrackedEntityInstances coming from the server are
+  shown in the list. Internet connection is required to use this mode.
+- `offlineOnly()`. Only TrackedEntityInstances coming from local
+  database are shown in the list.
+- `onlineFirst()`. TrackedEntityInstances coming from the server are
+  shown in first place. Once there are no more results online, it
+  continues with TrackedEntityInstances in local database. Internet
+  connection is required to use this mode.
+- `offlineFirst()`. TrackedEntityInstances coming from local database
+  are shown in first place. Once there are no more results, it continues
+  with TrackedEntityInstances coming from the server. This method may
+  speed up the initial load. Internet connection is required to use this
+  mode.
+  
+This repository follows the same syntax as other repositories.
+Additionally it repository offers different strategies to fetch data: 
+
+- `byAttribute()`. This method adds an *attribute* filter to the query.
+  If this method is call several times, conditions are appended with AND
+  connector. For example: 
+    ```java
+    d2.trackedEntityModule().trackedEntityInstanceQuery()
+        .byAttribute("uid1").eq("value1")
+        .byAttribute("uid2").eq("value2")
+        .download()
+    ```
+    That means that the instance must have attribute `uid1` with value
+    `value1` **AND** attribute `uid2` with value `value2`.
+- `byFilter()`. This method adds a *filter* to the query. If this
+  method is call several times, conditions are appended with AND
+  connector. For example:
+    ```java
+    d2.trackedEntityModule().trackedEntityInstanceQuery()
+        .byFilter("uid1").eq("value1")
+        .byFilter("uid2").eq("value2")
+        .download()
+    ```
+    That means that the instance must have attribute `uid1` with value
+    `value1` **AND** attribute `uid2` with value `value2`.
+- `byQuery()`. Search tracked entity instances with **any** attribute
+  matching the query.
+- `byProgram()`. Filter by enrollment program. Only one program can be
+  specified.
+- `byOrgUnits()`. Filter by tracked entity instance organisation units.
+  More than one organisation unit can be specified.
+- `byOrgUnitMode()`. Define the organisation unit mode. The possible
+  modes are the next:
+  - **SELECTED**. Specified units only.
+  - **CHILDREN**. Immediate children of specified units, including
+    specified units.
+  - **DESCENDANTS**. All units in sub-hierarchy of specified units,
+    including specified units.
+  - **ACCESSIBLE**. All organisation units accessible by the user
+    (search scope).
+  - **ALL**. All units in system.
+- `byProgramStartDate()`. Define an enrollment start date. It only
+  applies if a program has been specified.
+- `byProgramEndDate()`. Define an enrollment end date. It only applies
+  if a program has been specified.
+- `byTrackedEntityType()`. Filter by TrackedEntityType. Only one type
+  can be specified.
+- `byIncludeDeleted()`. Whether to include or not deleted tracked entity
+  instances. Currently this filter only applies to **offline**
+  instances.
+- `byStates()`. Filter by sync status. Using this filter forces
+  **offline only** mode.
+  
+Example:
+
+```java
+d2.trackedEntityModule().trackedEntityInstanceQuery()
+                .byOrgUnits().eq("orgunitUid")
+                .byOrgUnitMode().eq(OrganisationUnitMode.DESCENDANTS)
+                .byProgram().eq("programUid")
+                .byAttribute("attributeUid").like("value")
+                .offlineFirst()
 ```
 
 [//]: # (Include glass protected download)
-
-There is a similar method for Events with the same behavior.
-
-```java
-d2.eventModule().downloadSingleEvents(500, false, false)
-```
 
 #### Tracker data write
 
@@ -224,29 +314,8 @@ Server response is parsed to ensure that data has been correctly uploaded to the
 d2.importModule().trackerImportConflicts()
 ```
 
-Conflicts linked to a TrackedEntityInstance, Enrollment or Event are automatically removed after a successful upload of the object.
-
-#### Tracker data query (search)
-
-DHIS2 has a functionality to filter TrackedEntityInstances by related properties, like attributes, orgunits, programs or enrollment dates. In the SDK, this functionality is exposed in the `TrackedEntityInstanceQueryCollectionRepository`.
-
-This repository follows the same syntax as other repositories. Additionally it repository offers different strategies to fetch data:
-
-- **Offline only**: show only TEIs stored locally.
-- **Offline first**: show TEIs stored locally in first place; then show TEIs in the server (duplicated TEIs are not shown).
-- **Online only**: show only TEIs in the server.
-- **Online fist**: show TEIs in the server in first place; then show TEIs stored locally.
-
-Example:
-
-```java
-d2.trackedEntityModule().trackedEntityInstanceQuery()
-                .byOrgUnits().eq("orgunitUid")
-                .byOrgUnitMode().eq(OrganisationUnitMode.DESCENDANTS)
-                .byProgram().eq("programUid")
-                .byAttribute("attributeUid").like("value")
-                .offlineFirst()
-```
+Conflicts linked to a TrackedEntityInstance, Enrollment or Event are
+automatically removed after a successful upload of the object.
 
 #### Tracker data: reserved values
 

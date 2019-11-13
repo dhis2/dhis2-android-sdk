@@ -115,7 +115,7 @@ pattern which allows the tracked entity instances download filtering by
 **different parameters** as well as define some **limits**. The same
 behavior can be found within the event module for events.
 
-The downloader track the latest successful download in order to void
+The downloader track the latest successful download in order to avoid
 downloading unmodified data. It makes use of paging with a best effort
 strategy: in case a page fails to be downloaded or persisted, it is
 skipped and the rest of pages are persisted.
@@ -363,7 +363,8 @@ By default, the SDK downloads aggregated data values and dataset complete regist
   - Sixmonthly: last 5 six-months (starting in January and April).
   - Yearly: last 5 years (including financial year variants).
 
-It keeps track of the latest successful download in order to void downloading unmodified server data.
+It keeps track of the latest successful download in order to avoid
+downloading unmodified server data.
 
 #### Aggregated data write
 

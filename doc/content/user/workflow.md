@@ -33,7 +33,7 @@ After a logout the SDK keeps track of the last logged user so that it is able to
   - If server is different (even if the user is the same): wipe DB and try **login online**.
   - If user account has been disabled in server: wipe DB and throw an error.
 - If Offline:
-  - If the user has been ever authenticated:
+  - If the user has ever been authenticated:
     - If server is the same: try **login offline**.
     - If server is different: throw an error.
   - If the user has not been authenticated before: throw an error.
@@ -109,16 +109,16 @@ download TrackedEntityInstances in search scope.
 
 ##### Capture scope
 
-Inside the tracked entity module remains the
+The tracked entity module contains the
 `TrackedEntityInstanceDownloader`. The downloader follows a builder
-pattern which allows the tracked entity instances download filtering by
+pattern which allows the download of tracked entity instances filtering by
 **different parameters** as well as define some **limits**. The same
 behavior can be found within the event module for events.
 
 The downloader track the latest successful download in order to avoid
 downloading unmodified data. It makes use of paging with a best effort
 strategy: in case a page fails to be downloaded or persisted, it is
-skipped and the rest of pages are persisted.
+skipped but it will continue with the next pages.
 
 This is an example of how it can be used.
 ```java
@@ -136,12 +136,12 @@ d2.eventModule().eventDownloader()
 
 Currently it is possible to specify the next filters:
 
-- `byProgramUid()`. Filters by program uid and return the not synced
+- `byProgramUid()`. Filters by program uid and downloads the not synced
   objects inside the program.
-- `byUid()`. Filters by the tracked entity instance uid and return a
+- `byUid()`. Filters by the tracked entity instance uid and downloads a
   unique object. (Only for tracked entity instances).
-  
-The downloader also allow to limit the number of downloaded objects. 
+
+The downloader also allows to limit the number of downloaded objects.
 These limits can also be combined with each other.
 
 - `limit()`. Limit the maximum number of objects to download.
@@ -169,16 +169,13 @@ d2.trackedEntityModule().trackedEntityInstanceDownloader()
 
 DHIS2 has a functionality to filter TrackedEntityInstances by related
 properties, like attributes, organisation units, programs or enrollment
-dates. The Sdk provides methods that allow the tracked entity
-instance download within the search scope. With the aim of downloading
-tracked entity instances within the search scope the Sdk provides access
-to the `TrackedEntityInstanceQueryCollectionRepository` within the
-tracked entity instance module.
+dates. The Sdk provides the the `TrackedEntityInstanceQueryCollectionRepository` 
+with methods that allow the download of tracked entity
+instances within the search scope. It can be found inside the tracked entity instance module.
 
 The tracked entity instance query is a powerful tool that follows a
-builder pattern which allows the tracked entity instances download
-filtering by **different parameters** as well as define a **repository
-mode**.
+builder pattern and allows the download of tracked entity instances
+filtering by **different parameters**.
 
 ```java
 d2.trackedEntityModule().trackedEntityInstanceQuery()
@@ -187,28 +184,29 @@ d2.trackedEntityModule().trackedEntityInstanceQuery()
     .download()
 ```
 
+The source where the TEIs are retrieved from is defined by the **repository mode**.
 These are the different repository modes available:
 
 - `onlineOnly()`. Only TrackedEntityInstances coming from the server are
-  shown in the list. Internet connection is required to use this mode.
+  returned in the list. Internet connection is required to use this mode.
 - `offlineOnly()`. Only TrackedEntityInstances coming from local
-  database are shown in the list.
+  database are returned in the list.
 - `onlineFirst()`. TrackedEntityInstances coming from the server are
-  shown in first place. Once there are no more results online, it
-  continues with TrackedEntityInstances in local database. Internet
+  returned in first place. Once there are no more results online, it
+  continues with TrackedEntityInstances in the local database. Internet
   connection is required to use this mode.
 - `offlineFirst()`. TrackedEntityInstances coming from local database
-  are shown in first place. Once there are no more results, it continues
+  are returned in first place. Once there are no more results, it continues
   with TrackedEntityInstances coming from the server. This method may
   speed up the initial load. Internet connection is required to use this
   mode.
-  
+
 This repository follows the same syntax as other repositories.
-Additionally it repository offers different strategies to fetch data: 
+Additionally, the repository offers different strategies to fetch data:
 
 - `byAttribute()`. This method adds an *attribute* filter to the query.
-  If this method is call several times, conditions are appended with AND
-  connector. For example: 
+  If this method is called several times, conditions are appended with an AND
+  connector. For example:
     ```java
     d2.trackedEntityModule().trackedEntityInstanceQuery()
         .byAttribute("uid1").eq("value1")
@@ -218,7 +216,7 @@ Additionally it repository offers different strategies to fetch data:
     That means that the instance must have attribute `uid1` with value
     `value1` **AND** attribute `uid2` with value `value2`.
 - `byFilter()`. This method adds a *filter* to the query. If this
-  method is call several times, conditions are appended with AND
+  method is called several times, conditions are appended with an AND
   connector. For example:
     ```java
     d2.trackedEntityModule().trackedEntityInstanceQuery()
@@ -255,7 +253,7 @@ Additionally it repository offers different strategies to fetch data:
   instances.
 - `byStates()`. Filter by sync status. Using this filter forces
   **offline only** mode.
-  
+
 Example:
 
 ```java
@@ -273,7 +271,7 @@ d2.trackedEntityModule().trackedEntityInstanceQuery()
 
 In general, there are two different cases to manage data creation/edition/deletion: the case where the object is identifiable (that is, it has an `uid` property) and the case where the object is not identifiable.
 
-**Identifiable objects** (TrackedEntityInstance, Enrollment, Event). These repositories have an `uid()` method that gives you access to edition methods for a single object. In case the object does not exist yet, it is required to create it first. A typical workflow to create/edit an object would be:
+**Identifiable objects** (TrackedEntityInstance, Enrollment, Event). These repositories have a `uid()` method that gives you access to edition methods for a single object. In case the object does not exist yet, it is required to create it first. A typical workflow to create/edit an object would be:
 
 - Use the `CreateProjection` class to add a new instance in the repository.
 - Save the uid returned by this method.
@@ -283,7 +281,7 @@ And in code this would look like:
 
 ```java
 String eventUid = d2.eventModule().events().add(
-    EventCreateProjection.create("enrollent", "program", "programStage", "orgUnit", "attCombo"));
+    EventCreateProjection.create("enrollment", "program", "programStage", "orgUnit", "attCombo"));
 
 d2.eventModule().events().uid(eventUid).setStatus(COMPLETED);
 ```
@@ -351,7 +349,7 @@ d2.aggregatedModule().data().download()
 
 By default, the SDK downloads aggregated data values and dataset complete registration values corresponding to:
 
-- **DataSets**: all available dataSets (those the use has at least read data access to).
+- **DataSets**: all available dataSets (those the user has at least read data access to).
 - **OrganisationUnits**: capture scope.
 - **Periods**: all available periods, which means at least:
   - Days: last 60 days.
@@ -387,7 +385,7 @@ d2.dataValueModule().dataValues().upload();
 
 #### DataSet reports
 
-A DataSetReport in the SDK is a handy representation of the existing aggregated data. It would the equivalent of some kind of DataSet instance: a DataSetReport represents a unique combination of DataSet - Period - Orgunit - AttributeOptionCombo and includes extra information like sync state, value count or displayName for some properties.
+A DataSetReport in the SDK is a handy representation of the existing aggregated data. It would be the equivalent of a DataSet instance: a DataSetReport represents a unique combination of DataSet - Period - Orgunit - AttributeOptionCombo and includes extra information like sync state, value count or displayName for some properties.
 
 ```java
 d2.dataValueModule().dataSetReports

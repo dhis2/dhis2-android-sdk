@@ -2,7 +2,7 @@
 
 <!--DHIS2-SECTION-ID:modules_and_repositories-->
 
-`D2` object is the entry point to interact with the SDK. The SDK forces `D2` object to be a singleton across the application.
+`D2` object is the entry point to interact with the SDK. The SDK forces the `D2` object to be a singleton across the application.
 
 Modules are the layer below `D2`. They act as a wrapper for related functionality. A module includes some related repositories and might expose some services and helpers.
 
@@ -122,14 +122,18 @@ will return a nested `TrackedEntityType` object.
 
 <!--DHIS2-SECTION-ID:module_list-->
 
-System:
-
+System modules:
+- importModule
 - maintenanceModule
 - systemInfoModule
 - systemSettingModule
+- wipeModule
 
-Metadata / data:
+Big block modules:
+- metadataModule
+- aggregatedDataModule
 
+Concrete modules:
 - categoryModule
 - constantModule
 - dataElementModule
@@ -138,12 +142,14 @@ Metadata / data:
 - dataValueModule
 - enrollmentModule
 - eventModule
-- importModule
+- fileResourceModule
 - indicatorModule
 - legendSetModule
+- noteModule
 - programModule
+- optionModule
 - organisationUnitModule
-- periodModuleModule
+- periodModule
 - relationshipModule
 - trackedEntityModule
 - userModule

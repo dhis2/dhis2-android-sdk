@@ -59,13 +59,11 @@ public class UserShould extends BaseObjectShould implements ObjectShould {
         assertThat(user.firstName()).isEqualTo("John");
         assertThat(user.email()).isEqualTo("john@hmail.com");
         assertThat(user.displayName()).isEqualTo("John Barnes");
-        assertThat(user.userCredentials().uid()).isEqualTo("M0fCOxtkURr");
-        assertThat(user.userCredentials().username()).isEqualTo("android");
+        assertThat(UserInternalAccessor.accessUserCredentials(user).uid()).isEqualTo("M0fCOxtkURr");
+        assertThat(UserInternalAccessor.accessUserCredentials(user).username()).isEqualTo("android");
 
-        assertThat(user.userCredentials().userRoles().get(0).uid()).isEqualTo("Ufph3mGRmMo");
+        assertThat(UserInternalAccessor.accessUserCredentials(user).userRoles().get(0).uid()).isEqualTo("Ufph3mGRmMo");
 
         assertThat(user.organisationUnits().get(0).uid()).isEqualTo("DiszpKrYNg8");
-
-        assertThat(user.dataViewOrganisationUnits().get(0).uid()).isEqualTo("YuQRtpLP10I");
     }
 }

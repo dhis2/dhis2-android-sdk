@@ -21,6 +21,7 @@
           "enrollmentDateLabel": "Date of enrollment",
           "onlyEnrollOnce": true,
           "programType": "WITH_REGISTRATION",
+          "accessLevel": "PROTECTED",
           "relationshipFromA": false,
           "version": 5,
           "selectIncidentDatesInFuture": false,
@@ -86,46 +87,7 @@
                       "id": "IpHINAT79UW"
                   },
                   "trackedEntityAttribute": {
-                      "code": "MMD_PER_NAM",
-                      "created": "2014-06-06T20:41:25.233",
-                      "lastUpdated": "2015-10-20T13:57:00.939",
-                      "name": "First name",
-                      "id": "w75KJ2mc4zz",
-                      "shortName": "First name",
-                      "displayDescription": "First name",
-                      "programScope": false,
-                      "displayInListNoProgram": true,
-                      "displayName": "First name",
-                      "pattern": "",
-                      "description": "First name",
-                      "displayShortName": "First name",
-                      "sortOrderInListNoProgram": 1,
-                      "displayOnVisitSchedule": false,
-                      "generated": false,
-                      "inherit": false,
-                      "unique": false,
-                      "valueType": "TEXT",
-                      "orgunitScope": false,
-                      "access": {
-                          "read": true
-                      },
-                      "renderType": {
-                          "DESKTOP": {
-                              "type": "SPINNER",
-                              "min": 5,
-                              "max": 600,
-                              "step": 4,
-                              "decimalPoints": 3
-                          },
-                          "MOBILE": {
-                              "type": "SLIDER",
-                              "min": 555,
-                              "max": 88888,
-                              "step": 77,
-                              "decimalPoints": 1
-                          }
-                      }
-
+                      "id": "w75KJ2mc4zz"
                   }
               },
               {
@@ -145,28 +107,7 @@
                       "id": "IpHINAT79UW"
                   },
                   "trackedEntityAttribute": {
-                      "created": "2015-04-14T10:21:48.043",
-                      "lastUpdated": "2015-10-20T13:57:00.944",
-                      "name": "Last name",
-                      "id": "zDhUuAYrxNC",
-                      "shortName": "Last name",
-                      "displayDescription": "Last name",
-                      "programScope": false,
-                      "displayInListNoProgram": true,
-                      "displayName": "Last name",
-                      "pattern": "",
-                      "description": "Last name",
-                      "displayShortName": "Last name",
-                      "sortOrderInListNoProgram": 2,
-                      "displayOnVisitSchedule": false,
-                      "generated": false,
-                      "inherit": false,
-                      "unique": false,
-                      "valueType": "TEXT",
-                      "access": {
-                          "read": true
-                      },
-                      "orgunitScope": false
+                      "id": "zDhUuAYrxNC"
                   }
               },
               {
@@ -186,28 +127,7 @@
                       "id": "IpHINAT79UW"
                   },
                   "trackedEntityAttribute": {
-                      "created": "2014-01-09T19:12:46.526",
-                      "lastUpdated": "2015-10-20T13:57:01.028",
-                      "name": "Gender",
-                      "id": "cejWyOfXge6",
-                      "shortName": "Gender",
-                      "displayDescription": "Gender",
-                      "programScope": false,
-                      "displayInListNoProgram": false,
-                      "displayName": "Gender",
-                      "pattern": "",
-                      "description": "Gender",
-                      "displayShortName": "Gender",
-                      "sortOrderInListNoProgram": 0,
-                      "displayOnVisitSchedule": false,
-                      "generated": false,
-                      "inherit": false,
-                      "unique": false,
-                      "valueType": "TEXT",
-                      "access": {
-                          "read": true
-                      },
-                      "orgunitScope": false
+                      "id": "cejWyOfXge6"
                   }
               }
           ],
@@ -382,14 +302,6 @@
                       "id": "IpHINAT79UW"
                   },
                   "legendSets": []
-              }
-          ],
-          "programStages": [
-              {
-                  "id": "A03MvHHogjR"
-              },
-              {
-                  "id": "ZzYYXq4fJie"
               }
           ],
           "programRules": [

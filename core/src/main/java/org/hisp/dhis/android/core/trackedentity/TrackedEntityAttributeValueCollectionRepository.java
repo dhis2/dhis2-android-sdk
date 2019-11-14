@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo.Columns;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore;
 
 import java.util.Map;
 
@@ -70,22 +72,22 @@ public final class TrackedEntityAttributeValueCollectionRepository extends ReadO
     }
 
     public StringFilterConnector<TrackedEntityAttributeValueCollectionRepository> byTrackedEntityAttribute() {
-        return cf.string(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE);
+        return cf.string(Columns.TRACKED_ENTITY_ATTRIBUTE);
     }
 
     public StringFilterConnector<TrackedEntityAttributeValueCollectionRepository> byValue() {
-        return cf.string(TrackedEntityAttributeValueFields.VALUE);
+        return cf.string(Columns.VALUE);
     }
 
     public DateFilterConnector<TrackedEntityAttributeValueCollectionRepository> byCreated() {
-        return cf.date(TrackedEntityAttributeValueFields.CREATED);
+        return cf.date(Columns.CREATED);
     }
 
     public DateFilterConnector<TrackedEntityAttributeValueCollectionRepository> byLastUpdated() {
-        return cf.date(TrackedEntityAttributeValueFields.LAST_UPDATED);
+        return cf.date(Columns.LAST_UPDATED);
     }
 
     public StringFilterConnector<TrackedEntityAttributeValueCollectionRepository> byTrackedEntityInstance() {
-        return cf.string(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE);
+        return cf.string(Columns.TRACKED_ENTITY_INSTANCE);
     }
 }

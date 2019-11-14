@@ -30,22 +30,22 @@ package org.hisp.dhis.android.core.dataapproval;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.data.database.DbDataApprovalStateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DataApprovalStateColumnAdapter;
+import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalFields;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_DataApproval.Builder.class)
-public abstract class DataApproval extends BaseModel {
+public abstract class DataApproval extends BaseObject {
 
     @JsonProperty(DataApprovalFields.WORKFLOW)
     public abstract String workflow();
@@ -61,7 +61,7 @@ public abstract class DataApproval extends BaseModel {
 
     @Nullable
     @JsonProperty
-    @ColumnAdapter(DbDataApprovalStateColumnAdapter.class)
+    @ColumnAdapter(DataApprovalStateColumnAdapter.class)
     public abstract DataApprovalState state();
 
     @NonNull
@@ -78,7 +78,7 @@ public abstract class DataApproval extends BaseModel {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseModel.Builder<DataApproval.Builder> {
+    public abstract static class Builder extends BaseObject.Builder<DataApproval.Builder> {
 
         @JsonProperty(DataApprovalFields.WORKFLOW)
         public abstract Builder workflow(@NonNull String workflow);

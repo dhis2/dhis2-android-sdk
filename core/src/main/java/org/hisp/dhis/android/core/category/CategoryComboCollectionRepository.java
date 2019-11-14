@@ -41,6 +41,8 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 
+import static org.hisp.dhis.android.core.category.CategoryComboTableInfo.Columns;
+
 @Reusable
 public final class CategoryComboCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<CategoryCombo, CategoryComboCollectionRepository> {
@@ -54,7 +56,7 @@ public final class CategoryComboCollectionRepository
     }
 
     public BooleanFilterConnector<CategoryComboCollectionRepository> byIsDefault() {
-        return cf.bool(CategoryComboFields.IS_DEFAULT);
+        return cf.bool(Columns.IS_DEFAULT);
     }
 
     public CategoryComboCollectionRepository withCategories() {

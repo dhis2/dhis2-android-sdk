@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.period;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class PeriodTableInfo {
 
@@ -45,12 +45,12 @@ public final class PeriodTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
         public static final String PERIOD_ID = "periodId";
         public static final String PERIOD_TYPE = "periodType";
         public static final String START_DATE = "startDate";
@@ -58,7 +58,7 @@ public final class PeriodTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     PERIOD_ID,
                     PERIOD_TYPE,
                     START_DATE,
@@ -68,7 +68,7 @@ public final class PeriodTableInfo {
 
         @Override
         public String[] whereUpdate() {
-            return Utils.appendInNewArray(super.whereUpdate(),
+            return CollectionsHelper.appendInNewArray(super.whereUpdate(),
                     PERIOD_ID
             );
         }

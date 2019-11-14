@@ -32,7 +32,7 @@ import io.reactivex.Observable;
 import io.reactivex.Single;
 
 public interface RxAPICallExecutor {
-    <P> Single<P> wrapSingle(Single<P> single);
+    <P> Single<P> wrapSingle(Single<P> single, boolean storeError);
 
     <P> Observable<P> wrapObservableTransactionally(Observable<P> observable, boolean cleanForeignKeys);
 }

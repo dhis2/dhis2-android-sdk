@@ -55,17 +55,20 @@ final class SearchOrganisationUnitOnDemandCallFactory {
     private final OrganisationUnitService service;
     private final APICallExecutor apiCallExecutor;
     private final D2CallExecutor d2CallExecutor;
-    private final SearchOrganisationUnitHandler handler;
+    private final OrganisationUnitHandler handler;
+    private final OrganisationUnitDisplayPathTransformer pathTransformer;
 
     @Inject
     SearchOrganisationUnitOnDemandCallFactory(OrganisationUnitService service,
                                               APICallExecutor apiCallExecutor,
                                               D2CallExecutor d2CallExecutor,
-                                              SearchOrganisationUnitHandler handler) {
+                                              OrganisationUnitHandler handler,
+                                              OrganisationUnitDisplayPathTransformer pathTransformer) {
         this.service = service;
         this.apiCallExecutor = apiCallExecutor;
         this.d2CallExecutor = d2CallExecutor;
         this.handler = handler;
+        this.pathTransformer = pathTransformer;
     }
 
     public Callable<List<OrganisationUnit>> create(Set<String> uids, User user) {
@@ -88,8 +91,8 @@ final class SearchOrganisationUnitOnDemandCallFactory {
         return objectList -> {
             if (objectList != null && !objectList.isEmpty()) {
                 d2CallExecutor.executeD2CallTransactionally(() -> {
-                    handler.setUser(user);
-                    handler.handleMany(objectList, new OrganisationUnitDisplayPathTransformer());
+                    handler.setData(null, null, user, OrganisationUnit.Scope.SCOPE_TEI_SEARCH);
+                    handler.handleMany(objectList, pathTransformer);
                     return null;
                 });
             }

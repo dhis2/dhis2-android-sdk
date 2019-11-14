@@ -28,14 +28,13 @@
 
 package org.hisp.dhis.android.core.organisationunit.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
-import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 
 final class OrganisationUnitProgramChildrenAppender extends ChildrenAppender<OrganisationUnit> {
@@ -44,27 +43,27 @@ final class OrganisationUnitProgramChildrenAppender extends ChildrenAppender<Org
             ProgramTableInfo.TABLE_INFO,
             OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
             OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM);
-    private final LinkModelChildStore<OrganisationUnit, Program> linkModelChildStore;
+
+    private final ObjectWithUidChildStore<OrganisationUnit> childStore;
 
     private OrganisationUnitProgramChildrenAppender(
-            LinkModelChildStore<OrganisationUnit, Program> linkModelChildStore) {
-        this.linkModelChildStore = linkModelChildStore;
+            ObjectWithUidChildStore<OrganisationUnit> childStore) {
+        this.childStore = childStore;
     }
 
     @Override
     protected OrganisationUnit appendChildren(OrganisationUnit organisationUnit) {
         OrganisationUnit.Builder builder = organisationUnit.toBuilder();
-        builder.programs(linkModelChildStore.getChildren(organisationUnit));
+        builder.programs(childStore.getChildren(organisationUnit));
         return builder.build();
     }
 
     static ChildrenAppender<OrganisationUnit> create(DatabaseAdapter databaseAdapter) {
         return new OrganisationUnitProgramChildrenAppender(
-                StoreFactory.linkModelChildStore(
+                StoreFactory.objectWithUidChildStore(
                         databaseAdapter,
                         OrganisationUnitProgramLinkTableInfo.TABLE_INFO,
-                        CHILD_PROJECTION,
-                        Program::create
+                        CHILD_PROJECTION
                 )
         );
     }

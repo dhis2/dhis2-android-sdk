@@ -1,0 +1,56 @@
+{
+  "options": [
+    {
+      "lastUpdated": "2014-08-18T12:39:16.000",
+      "code": "0-14 years",
+      "created": "2014-08-18T12:39:16.000",
+      "name": "0-14 years",
+      "id": "Y1ILwhy5VDY",
+      "sortOrder": 1,
+      "displayName": "0-14 years",
+      "optionSet": {
+        "id": "VQ2lai3OfVG"
+      }
+    },
+    {
+      "lastUpdated": "2014-08-18T12:39:16.000",
+      "code": "15-19 years",
+      "created": "2014-08-18T12:39:16.000",
+      "name": "15-19 years",
+      "id": "egT1YqFWsVk",
+      "sortOrder": 2,
+      "displayName": "15-19 years",
+      "optionSet": {
+        "id": "VQ2lai3OfVG"
+      }
+    },
+    {
+      "lastUpdated": "2014-08-18T12:39:16.000",
+      "code": "15-19 years",
+      "created": "2014-08-18T12:39:16.000",
+      "name": "15-19 years",
+      "id": "non_existent_option_uid",
+      "sortOrder": 3,
+      "displayName": "15-19 years",
+      "optionSet": {
+        "id": "non_existent_option_set_uid"
+      }
+    },
+    {
+      "lastUpdated": "2014-08-18T12:39:16.000",
+      "code": "First option",
+      "created": "2014-08-18T12:39:16.000",
+      "name": "First option",
+      "id": "Z1ILwhy5VDY",
+      "sortOrder": 1,
+      "displayName": "First option",
+      "optionSet": {
+        "id": "TQ2lai3OfVG"
+      },
+      "style": {
+        "color": "#13f2dd",
+        "icon": "woman_negative"
+      }
+    }
+  ]
+}

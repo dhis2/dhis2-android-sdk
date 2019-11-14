@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -37,31 +39,28 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEnrollmentListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationship229CompatibleListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStringColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityAttributeValueListColumnAdapter;
+import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
+import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.data.database.DataDeleteColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreEnrollmentListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreRelationship229CompatibleListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityAttributeValueListColumnAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 
 import java.util.Date;
 import java.util.List;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
 @JsonDeserialize(builder = AutoValue_TrackedEntityInstance.Builder.class)
-public abstract class TrackedEntityInstance extends BaseDataModel
-        implements ObjectWithUidInterface, ObjectWithDeleteInterface {
+public abstract class TrackedEntityInstance extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Override
-    @Nullable
     @JsonProperty(TrackedEntityInstanceFields.UID)
     public abstract String uid();
 
@@ -77,11 +76,13 @@ public abstract class TrackedEntityInstance extends BaseDataModel
 
     @Nullable
     @JsonIgnore()
-    public abstract String createdAtClient();
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date createdAtClient();
 
     @Nullable
     @JsonIgnore()
-    public abstract String lastUpdatedAtClient();
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date lastUpdatedAtClient();
 
     @Nullable
     @JsonProperty(TrackedEntityInstanceFields.ORGANISATION_UNIT)
@@ -91,19 +92,19 @@ public abstract class TrackedEntityInstance extends BaseDataModel
     @JsonProperty()
     public abstract String trackedEntityType();
 
+    /**
+     * @deprecated since 2.30, replaced by {@link #geometry()}
+     */
     @Nullable
     @JsonProperty()
-    public abstract String coordinates();
+    @Deprecated
+    @ColumnAdapter(IgnoreStringColumnAdapter.class)
+    abstract String coordinates();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DbFeatureTypeColumnAdapter.class)
-    public abstract FeatureType featureType();
-
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(DataDeleteColumnAdapter.class)
-    public abstract Boolean deleted();
+    @ColumnAdapter(DbGeometryColumnAdapter.class)
+    public abstract Geometry geometry();
 
     @Nullable
     @JsonProperty(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)
@@ -113,12 +114,12 @@ public abstract class TrackedEntityInstance extends BaseDataModel
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreRelationship229CompatibleListColumnAdapter.class)
-    public abstract List<Relationship229Compatible> relationships();
+    abstract List<Relationship229Compatible> relationships();
 
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreEnrollmentListColumnAdapter.class)
-    public abstract List<Enrollment> enrollments();
+    abstract List<Enrollment> enrollments();
 
     public static Builder builder() {
         return new $$AutoValue_TrackedEntityInstance.Builder();
@@ -132,7 +133,7 @@ public abstract class TrackedEntityInstance extends BaseDataModel
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseDataModel.Builder<Builder> {
+    public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         @JsonProperty(TrackedEntityInstanceFields.UID)
@@ -142,29 +143,48 @@ public abstract class TrackedEntityInstance extends BaseDataModel
 
         public abstract Builder lastUpdated(Date lastUpdated);
 
-        public abstract Builder createdAtClient(String createdAtClient);
+        public abstract Builder createdAtClient(Date createdAtClient);
 
-        public abstract Builder lastUpdatedAtClient(String lastUpdatedAtClient);
+        public abstract Builder lastUpdatedAtClient(Date lastUpdatedAtClient);
 
         @JsonProperty(TrackedEntityInstanceFields.ORGANISATION_UNIT)
         public abstract Builder organisationUnit(String organisationUnit);
 
         public abstract Builder trackedEntityType(String trackedEntityType);
 
-        public abstract Builder coordinates(String coordinates);
+        /**
+         * @deprecated since 2.30, replaced by {@link #geometry()}
+         */
+        @Deprecated
+        abstract Builder coordinates(String coordinates);
 
-        public abstract Builder featureType(FeatureType featureType);
-
-        public abstract Builder deleted(Boolean deleted);
+        public abstract Builder geometry(Geometry geometry);
 
         @JsonProperty(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)
         public abstract Builder trackedEntityAttributeValues(
                 List<TrackedEntityAttributeValue> trackedEntityAttributeValues);
 
-        public abstract Builder relationships(List<Relationship229Compatible> relationships);
+        abstract Builder relationships(List<Relationship229Compatible> relationships);
 
-        public abstract Builder enrollments(List<Enrollment> enrollments);
+        abstract Builder enrollments(List<Enrollment> enrollments);
 
-        public abstract TrackedEntityInstance build();
+        abstract TrackedEntityInstance autoBuild();
+
+        // Auxiliary fields to access values
+        abstract String coordinates();
+        abstract Geometry geometry();
+        public TrackedEntityInstance build() {
+            if (geometry() == null) {
+                if (coordinates() != null) {
+                    geometry(Geometry.builder()
+                            .type(FeatureType.POINT)
+                            .coordinates(coordinates())
+                            .build());
+                }
+            } else {
+                coordinates(geometry().coordinates());
+            }
+            return autoBuild();
+        }
     }
 }

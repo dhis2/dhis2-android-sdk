@@ -31,8 +31,10 @@ import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
+import org.hisp.dhis.android.core.user.UserInternalAccessor;
 import org.hisp.dhis.android.core.user.UserRole;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,7 +74,8 @@ public class UserHandlerShould {
         MockitoAnnotations.initMocks(this);
         userHandler = new UserHandler(userStore, userCredentialsHandler, userRoleHandler, userRoleCollectionCleaner);
         userCredentials = UserCredentials.builder().uid("credentialsUid").build();
-        when(user.userCredentials()).thenReturn(userCredentials);
+        when(UserInternalAccessor.accessUserCredentials(user)).thenReturn(userCredentials);
+        when(user.uid()).thenReturn("userUid");
     }
 
     @Test
@@ -83,7 +86,7 @@ public class UserHandlerShould {
     @Test
     public void call_user_credentials_handler() {
         userHandler.handle(user);
-        UserCredentials credentialsWithUser = userCredentials.toBuilder().user(user).build();
+        UserCredentials credentialsWithUser = userCredentials.toBuilder().user(ObjectWithUid.create(user.uid())).build();
         verify(userCredentialsHandler).handle(credentialsWithUser);
     }
 }

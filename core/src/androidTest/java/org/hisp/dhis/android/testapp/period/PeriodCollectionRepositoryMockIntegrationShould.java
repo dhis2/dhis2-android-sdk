@@ -46,34 +46,28 @@ import static org.hamcrest.core.Is.is;
 public class PeriodCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
-    public void find_all() {
-        List<Period> periods = d2.periodModule().periods.get();
-        assertThat(periods.size(), is(191));
-    }
-
-    @Test
     public void filter_by_period_id() {
-        List<Period> periods = d2.periodModule().periods
+        List<Period> periods = d2.periodModule().periods()
                 .byPeriodId()
-                .eq("2018").get();
+                .eq("2018").blockingGet();
         assertThat(periods.size(), is(1));
     }
 
     @Test
     public void filter_by_period_type() {
-        List<Period> periods = d2.periodModule().periods
+        List<Period> periods = d2.periodModule().periods()
                 .byPeriodType()
-                .eq(PeriodType.Quarterly).get();
+                .eq(PeriodType.Quarterly).blockingGet();
         assertThat(periods.size(), is(5));
     }
 
     @Test
     public void filter_by_start_and_end_date() throws ParseException {
-        List<Period> periods = d2.periodModule().periods
+        List<Period> periods = d2.periodModule().periods()
                 .byStartDate()
-                .eq(BaseIdentifiableObject.parseDate("2018-10-01T00:00:00.000"))
+                .eq(BaseIdentifiableObject.parseDate("2017-10-01T00:00:00.000"))
                 .byEndDate()
-                .eq(BaseIdentifiableObject.parseDate("2019-09-30T23:59:59.999")).get();
+                .eq(BaseIdentifiableObject.parseDate("2018-09-30T23:59:59.999")).blockingGet();
         assertThat(periods.size(), is(1));
     }
 }

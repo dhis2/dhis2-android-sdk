@@ -28,25 +28,29 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem;
 
-public class FilterConnectorFactory<R extends ReadOnlyCollectionRepository<?>> {
+public class FilterConnectorFactory<R extends BaseRepository> {
 
     private final RepositoryScope scope;
-    public final CollectionRepositoryFactory<R> repositoryFactory;
+    public final BaseRepositoryFactory<R> repositoryFactory;
 
     public FilterConnectorFactory(RepositoryScope scope,
-                                  CollectionRepositoryFactory<R> repositoryFactory) {
+                                  BaseRepositoryFactory<R> repositoryFactory) {
         this.scope = scope;
         this.repositoryFactory = repositoryFactory;
     }
 
     public StringFilterConnector<R> string(String key) {
         return new StringFilterConnector<>(repositoryFactory, scope, key);
+    }
+
+    public BaseStringFilterConnector<R> baseString(String key) {
+        return new BaseStringFilterConnector<>(repositoryFactory, scope, key);
     }
 
     public DateFilterConnector<R> date(String key) {
@@ -61,12 +65,20 @@ public class FilterConnectorFactory<R extends ReadOnlyCollectionRepository<?>> {
         return new IntegerFilterConnector<>(repositoryFactory, scope, key);
     }
 
+    public LongFilterConnector<R> longC(String key) {
+        return new LongFilterConnector<>(repositoryFactory, scope, key);
+    }
+
     public DoubleFilterConnector<R> doubleC(String key) {
         return new DoubleFilterConnector<>(repositoryFactory, scope, key);
     }
 
     public <E extends Enum<E>> EnumFilterConnector<R, E> enumC(String key) {
         return new EnumFilterConnector<>(repositoryFactory, scope, key);
+    }
+
+    public UnwrappedEqInFilterConnector<R> unwrappedEqIn(String key) {
+        return new UnwrappedEqInFilterConnector<>(repositoryFactory, scope, key);
     }
 
     public SubQueryFilterConnector<R> subQuery(String key) {

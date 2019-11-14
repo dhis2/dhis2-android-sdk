@@ -44,8 +44,7 @@ interface DataApprovalService {
     Call<List<DataApproval>> getDataApprovals(
             @Query("fields") @Which Fields<DataApproval> fields,
             @Query("wf") String workflow,
-            @Query("startDate") String startDate,
-            @Query("endDate") String endDate,
+            @Query("pe") String startDate,
             @Query("ou") String organisationUnit,
             @Query("aoc") String attributeOptionCombo
     );

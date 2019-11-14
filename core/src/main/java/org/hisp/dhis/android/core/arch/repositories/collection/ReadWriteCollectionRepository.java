@@ -27,9 +27,12 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
-public interface ReadWriteCollectionRepository<M extends Model> extends ReadOnlyCollectionRepository<M> {
-    void add(M m) throws D2Error;
+import io.reactivex.Completable;
+
+public interface ReadWriteCollectionRepository<M extends CoreObject> extends ReadOnlyCollectionRepository<M> {
+    Completable add(M m);
+    void blockingAdd(M m) throws D2Error;
 }

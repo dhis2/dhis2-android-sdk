@@ -30,17 +30,15 @@ package org.hisp.dhis.android.core.enrollment.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.DataOrphanCleanerImpl;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
-import org.hisp.dhis.android.core.enrollment.note.internal.NoteChildrenAppender;
+import org.hisp.dhis.android.core.note.internal.NoteChildrenAppender;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.internal.EventChildrenAppender;
-import org.hisp.dhis.android.core.event.internal.EventFields;
 import org.hisp.dhis.android.core.event.EventTableInfo;
 
 import java.util.HashMap;
@@ -77,14 +75,13 @@ public final class EnrollmentEntityDIModule {
     Map<String, ChildrenAppender<Enrollment>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         return new HashMap<String, ChildrenAppender<Enrollment>>() {{
             put(EnrollmentFields.NOTES, NoteChildrenAppender.create(databaseAdapter));
-            put(EnrollmentFields.EVENTS, EventChildrenAppender.create(databaseAdapter));
         }};
     }
 
     @Provides
     @Reusable
     OrphanCleaner<Enrollment, Event> eventOrphanCleaner(DatabaseAdapter databaseAdapter) {
-        return new DataOrphanCleanerImpl<>(EventTableInfo.TABLE_INFO.name(), EventFields.ENROLLMENT,
-                BaseDataModel.Columns.STATE, databaseAdapter);
+        return new DataOrphanCleanerImpl<>(EventTableInfo.TABLE_INFO.name(), EventTableInfo.Columns.ENROLLMENT,
+                DataColumns.STATE, databaseAdapter);
     }
 }

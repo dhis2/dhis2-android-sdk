@@ -28,28 +28,38 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import io.reactivex.Single;
 
-public final class IsUserLoggedInCallableFactory {
+final class IsUserLoggedInCallableFactory {
+
+    @NonNull
+    private final CredentialsSecureStore credentialsSecureStore;
 
     @NonNull
     private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
 
     @Inject
-    IsUserLoggedInCallableFactory(@NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore) {
+    IsUserLoggedInCallableFactory(@NonNull CredentialsSecureStore credentialsSecureStore,
+                                  @NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore) {
+        this.credentialsSecureStore = credentialsSecureStore;
         this.authenticatedUserStore = authenticatedUserStore;
     }
 
-    public Single<Boolean> isLogged() {
+    Single<Boolean> isLogged() {
         return Single.create(emitter -> {
+            Credentials credentials = credentialsSecureStore.getCredentials();
             AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
-            emitter.onSuccess(authenticatedUser != null && authenticatedUser.credentials() != null);
+
+            emitter.onSuccess(credentials != null && authenticatedUser != null);
         });
     }
 }

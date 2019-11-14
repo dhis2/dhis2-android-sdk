@@ -30,20 +30,20 @@ package org.hisp.dhis.android.core.imports;
 
 import android.database.Cursor;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbImportStatusColumnAdapter;
-
-import java.util.Date;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ImportStatusColumnAdapter;
+import org.hisp.dhis.android.core.common.BaseObject;
+
+import java.util.Date;
+
 @AutoValue
-public abstract class TrackerImportConflict extends BaseModel {
+public abstract class TrackerImportConflict extends BaseObject {
 
     @Nullable
     public abstract String conflict();
@@ -67,7 +67,7 @@ public abstract class TrackerImportConflict extends BaseModel {
     public abstract String errorCode();
 
     @Nullable
-    @ColumnAdapter(DbImportStatusColumnAdapter.class)
+    @ColumnAdapter(ImportStatusColumnAdapter.class)
     public abstract ImportStatus status();
 
     @Nullable
@@ -86,7 +86,7 @@ public abstract class TrackerImportConflict extends BaseModel {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
+    public static abstract class Builder extends BaseObject.Builder<Builder> {
         public abstract Builder conflict(String conflict);
 
         public abstract Builder value(String value);

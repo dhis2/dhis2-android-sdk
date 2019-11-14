@@ -32,13 +32,14 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.Unit;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.user.UserInternalAccessor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -120,6 +121,9 @@ public class OrganisationUnitCallUnitShould {
     @Mock
     private OrganisationUnitHandler organisationUnitHandler;
 
+    @Mock
+    private OrganisationUnitDisplayPathTransformer organisationUnitDisplayPathTransformer;
+
     //the call we are testing:
     private Callable<Unit> organisationUnitCall;
 
@@ -168,12 +172,12 @@ public class OrganisationUnitCallUnitShould {
         when(user.nationality()).thenReturn("user_nationality");
 
         organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService, organisationUnitHandler,
-                apiCallExecutor, resourceHandler)
+                organisationUnitDisplayPathTransformer, apiCallExecutor, resourceHandler)
                 .create(user, new HashSet<>(), new HashSet<>());
 
         //Return only one organisationUnit.
         organisationUnits = Collections.singletonList(organisationUnit);
-        when(user.organisationUnits()).thenReturn(new ArrayList<>(organisationUnits));
+        when(UserInternalAccessor.accessOrganisationUnits(user)).thenReturn(new ArrayList<>(organisationUnits));
 
         when(organisationUnitService.getOrganisationUnits(
                 fieldsCaptor.capture(), filtersCaptor.capture(), pagingCaptor.capture(),

@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.arch.cleaners.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collection;
 
@@ -57,7 +57,7 @@ public class OrphanCleanerImpl<P extends ObjectWithUidInterface, C extends Objec
         String clause =
                 parentColumn + "='" + parent.uid() + "'"
                 + " AND "
-                + BaseIdentifiableObjectModel.Columns.UID + " NOT IN (" + childrenUids + ");";
+                + IdentifiableColumns.UID + " NOT IN (" + childrenUids + ");";
         return databaseAdapter.database().delete(tableName, clause, null) > 0;
     }
 }

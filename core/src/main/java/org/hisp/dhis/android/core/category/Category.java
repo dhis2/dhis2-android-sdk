@@ -30,23 +30,23 @@ package org.hisp.dhis.android.core.category;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCategoryOptionListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.data.database.IgnoreCategoryOptionListColumnAdapter;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.List;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Category.Builder.class)
-public abstract class Category extends BaseIdentifiableObject implements Model {
+public abstract class Category extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
     @JsonProperty()

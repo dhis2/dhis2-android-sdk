@@ -28,19 +28,19 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipItemAdapter;
+import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreRelationshipItemAdapter;
 
 import java.util.Date;
 
-import androidx.annotation.Nullable;
-
-public abstract class BaseRelationship extends BaseModel implements ObjectWithUidInterface {
+public abstract class BaseRelationship extends BaseObject implements ObjectWithUidInterface {
 
     @Nullable
     @JsonProperty(RelationshipFields.RELATIONSHIP)
@@ -74,7 +74,7 @@ public abstract class BaseRelationship extends BaseModel implements ObjectWithUi
     @ColumnAdapter(IgnoreRelationshipItemAdapter.class)
     public abstract RelationshipItem to();
 
-    public abstract static class Builder<T extends Builder> extends BaseModel.Builder<T> {
+    public abstract static class Builder<T extends Builder> extends BaseObject.Builder<T> {
 
         @JsonProperty(RelationshipFields.RELATIONSHIP)
         public abstract T uid(String uid);

@@ -32,8 +32,8 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFields;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -127,7 +127,7 @@ public final class TrackedEntityInstanceQueryDataSource
     }
 
     private List<TrackedEntityInstance> queryOffline(int requestedLoadSize) {
-        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope.query(), returnedUids,
+        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, returnedUids,
                 requestedLoadSize);
         List<TrackedEntityInstance> instances = store.selectRawQuery(sqlQuery);
         addUids(returnedUids, instances);
@@ -135,7 +135,7 @@ public final class TrackedEntityInstanceQueryDataSource
     }
 
     private List<TrackedEntityInstance> queryOnline(int requestLoadSize, boolean isInitial) {
-        TrackedEntityInstanceQuery onlineQuery = scope.query().toBuilder()
+        TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(scope).toBuilder()
                 .page(currentOnlinePage + 1)
                 .pageSize(requestLoadSize)
                 .paging(true).build();
@@ -177,6 +177,6 @@ public final class TrackedEntityInstanceQueryDataSource
     private List<TrackedEntityInstance> appendAttributes(List<TrackedEntityInstance> withoutChildren) {
         return ChildrenAppenderExecutor.appendInObjectCollection(withoutChildren, childrenAppenders,
                 new ChildrenSelection(Collections.singleton(
-                        TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES), false));
+                        TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)));
     }
 }

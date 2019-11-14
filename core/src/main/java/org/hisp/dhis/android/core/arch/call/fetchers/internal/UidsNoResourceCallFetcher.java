@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.arch.call.fetchers.internal;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,14 +61,18 @@ public abstract class UidsNoResourceCallFetcher<P> implements CallFetcher<P> {
 
         List<P> objects = new ArrayList<>();
         if (!uids.isEmpty()) {
-            List<Set<String>> partitions = Utils.setPartition(uids, limit);
+            List<Set<String>> partitions = CollectionsHelper.setPartition(uids, limit);
 
             for (Set<String> partitionUids : partitions) {
                 UidsQuery uidQuery = UidsQuery.create(partitionUids);
                 List<P> callObjects = apiCallExecutor.executePayloadCall(getCall(uidQuery));
-                objects.addAll(callObjects);
+                objects.addAll(transform(callObjects));
             }
         }
         return objects;
+    }
+
+    protected List<P> transform(List<P> list) {
+        return list;
     }
 }

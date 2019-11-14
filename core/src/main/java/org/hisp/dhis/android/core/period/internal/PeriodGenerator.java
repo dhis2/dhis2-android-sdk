@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.period.Period;
 import java.util.List;
 
 interface PeriodGenerator {
-    List<Period> generateLastPeriods(int count) throws RuntimeException;
+    List<Period> generatePeriods(int past, int future) throws RuntimeException;
 }

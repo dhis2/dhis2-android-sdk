@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.dataset.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo;
 import org.hisp.dhis.android.core.dataset.Section;
@@ -44,22 +44,22 @@ final class SectionGreyedFieldsChildrenAppender extends ChildrenAppender<Section
             SectionGreyedFieldsLinkTableInfo.Columns.SECTION,
             SectionGreyedFieldsLinkTableInfo.Columns.DATA_ELEMENT_OPERAND);
 
-    private final LinkModelChildStore<Section, DataElementOperand> linkModelChildStore;
+    private final LinkChildStore<Section, DataElementOperand> linkChildStore;
 
-    private SectionGreyedFieldsChildrenAppender(LinkModelChildStore<Section, DataElementOperand> linkModelChildStore) {
-        this.linkModelChildStore = linkModelChildStore;
+    private SectionGreyedFieldsChildrenAppender(LinkChildStore<Section, DataElementOperand> linkChildStore) {
+        this.linkChildStore = linkChildStore;
     }
 
     @Override
     protected Section appendChildren(Section section) {
         Section.Builder builder = section.toBuilder();
-        builder.greyedFields(linkModelChildStore.getChildren(section));
+        builder.greyedFields(linkChildStore.getChildren(section));
         return builder.build();
     }
 
     static ChildrenAppender<Section> create(DatabaseAdapter databaseAdapter) {
         return new SectionGreyedFieldsChildrenAppender(
-                StoreFactory.linkModelChildStore(
+                StoreFactory.linkChildStore(
                         databaseAdapter,
                         SectionGreyedFieldsLinkTableInfo.TABLE_INFO,
                         CHILD_PROJECTION,

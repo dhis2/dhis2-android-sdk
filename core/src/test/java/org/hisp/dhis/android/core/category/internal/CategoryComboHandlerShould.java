@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
 import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryComboInternalAccessor;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.junit.Before;
 import org.junit.Test;
@@ -91,7 +92,7 @@ public class CategoryComboHandlerShould {
         categories = new ArrayList<>();
         categories.add(category);
         when(combo.uid()).thenReturn(comboUid);
-        when(combo.categoryOptionCombos()).thenReturn(optionCombos);
+        when(CategoryComboInternalAccessor.accessCategoryOptionCombos(combo)).thenReturn(optionCombos);
         when(combo.categories()).thenReturn(categories);
 
         categoryComboHandler = new CategoryComboHandler(categoryComboStore, optionComboHandler,

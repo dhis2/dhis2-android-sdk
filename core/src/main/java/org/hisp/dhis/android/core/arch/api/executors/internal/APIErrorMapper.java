@@ -39,6 +39,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 import javax.inject.Inject;
+import javax.net.ssl.SSLException;
 
 import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -55,19 +56,21 @@ final class APIErrorMapper {
         // Constructor only to enable injection
     }
 
-    D2Error mapRetrofitException(Throwable t, D2Error.Builder errorBuilder) {
-        if (t instanceof SocketTimeoutException) {
-            return socketTimeoutException(errorBuilder, (SocketTimeoutException) t);
-        } else if (t instanceof UnknownHostException) {
-            return unknownHostException(errorBuilder, (UnknownHostException) t);
-        } else if (t instanceof HttpException) {
-            return httpException(errorBuilder, (HttpException) t);
-        } else if (t instanceof IOException) {
-            return ioException(errorBuilder, (IOException) t);
-        } else if (t instanceof Exception) {
-            return unexpectedException(errorBuilder, (Exception) t);
+    D2Error mapRetrofitException(Throwable throwable, D2Error.Builder errorBuilder) {
+        if (throwable instanceof SocketTimeoutException) {
+            return socketTimeoutException(errorBuilder, (SocketTimeoutException) throwable);
+        } else if (throwable instanceof UnknownHostException) {
+            return unknownHostException(errorBuilder, (UnknownHostException) throwable);
+        } else if (throwable instanceof HttpException) {
+            return httpException(errorBuilder, (HttpException) throwable);
+        } else if (throwable instanceof SSLException) {
+            return sslException(errorBuilder, (SSLException) throwable);
+        } else if (throwable instanceof IOException) {
+            return ioException(errorBuilder, (IOException) throwable);
+        } else if (throwable instanceof Exception) {
+            return unexpectedException(errorBuilder, (Exception) throwable);
         } else {
-            return unexpectedException(errorBuilder, new RuntimeException(t));
+            return unexpectedException(errorBuilder, new RuntimeException(throwable));
         }
     }
 
@@ -87,6 +90,14 @@ final class APIErrorMapper {
         return logAndAppendOriginal(errorBuilder, e)
                 .errorCode(D2ErrorCode.UNKNOWN_HOST)
                 .errorDescription("API call failed due to UnknownHostException")
+                .build();
+    }
+
+    private D2Error sslException(D2Error.Builder errorBuilder, SSLException sslException) {
+        return logAndAppendOriginal(errorBuilder, sslException)
+                .errorDescription(sslException.getMessage())
+                .errorCode(D2ErrorCode.SSL_ERROR)
+                .errorDescription("API call threw SSLException")
                 .build();
     }
 
@@ -114,24 +125,20 @@ final class APIErrorMapper {
     }
 
     D2Error.Builder getCollectionErrorBuilder(Call<?> call) {
-        return getBaseErrorBuilder(call)
-                .uid(null);
+        return getBaseErrorBuilder(call);
     }
 
     D2Error.Builder getObjectErrorBuilder(Call<?> call) {
-        return getBaseErrorBuilder(call)
-                .uid("TODO"); // TODO
+        return getBaseErrorBuilder(call);
     }
 
     D2Error.Builder getRxObjectErrorBuilder() {
         return D2Error.builder()
-                .resourceType("TODO") // TODO
                 .errorComponent(D2ErrorComponent.Server);
     }
 
     private D2Error.Builder getBaseErrorBuilder(Call<?> call) {
         return D2Error.builder()
-                .resourceType("TODO") // TODO
                 .url(getUrl(call))
                 .errorComponent(D2ErrorComponent.Server);
     }

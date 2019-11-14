@@ -36,12 +36,13 @@ import com.google.common.collect.Sets;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.user.UserInternalAccessor;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
 import org.hisp.dhis.android.core.user.UserTableInfo;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
@@ -84,11 +85,14 @@ public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrati
         OrganisationUnitService organisationUnitService = d2.retrofit().create(OrganisationUnitService.class);
 
         // Create a user with the root as assigned organisation unit (for the test):
-        User user = User.builder().uid("user_uid").organisationUnits(organisationUnits).build();
+
+        User user = UserInternalAccessor.insertOrganisationUnits(User.builder(), organisationUnits)
+                .uid("user_uid").build();
+
         database.insert(UserTableInfo.TABLE_INFO.name(), null, user.toContentValues());
 
         ContentValues userContentValues = new ContentValues();
-        userContentValues.put(BaseIdentifiableObjectModel.Columns.UID, "user_uid");
+        userContentValues.put(IdentifiableColumns.UID, "user_uid");
         database.insert(UserTableInfo.TABLE_INFO.name(), null, userContentValues);
 
         // inserting programs for creating OrgUnitProgramLinks
@@ -101,13 +105,15 @@ public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrati
 
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter);
 
+        OrganisationUnitDisplayPathTransformer pathTransformer = new OrganisationUnitDisplayPathTransformer();
+
         organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService,
-                organisationUnitHandler, apiCallExecutor, objects.resourceHandler).create(user, programUids, null);
+                organisationUnitHandler, pathTransformer, apiCallExecutor, objects.resourceHandler).create(user, programUids, null);
     }
 
     private void insertProgramWithUid(String uid) {
         ContentValues program = new ContentValues();
-        program.put(BaseIdentifiableObjectModel.Columns.UID, uid);
+        program.put(IdentifiableColumns.UID, uid);
         database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program);
     }
 

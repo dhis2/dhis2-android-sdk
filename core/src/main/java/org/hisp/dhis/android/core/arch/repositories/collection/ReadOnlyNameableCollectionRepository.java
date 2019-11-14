@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.NameableFilters;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.NameableObject;
 
 public interface ReadOnlyNameableCollectionRepository
-        <M extends Model & NameableObject, R extends ReadOnlyCollectionRepository<?>>
+        <M extends CoreObject & NameableObject, R extends ReadOnlyCollectionRepository<?>>
         extends ReadOnlyIdentifiableCollectionRepository<M, R>, NameableFilters<R> {
 }

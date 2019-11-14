@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
@@ -37,13 +37,12 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
+import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,8 +54,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
@@ -97,19 +94,13 @@ public class ProgramStageHandlerShould {
     private List<ProgramStageSection> programStageSections;
 
     @Mock
-    private ObjectStyleHandler styleHandler;
-
-    @Mock
     private OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner;
 
     @Mock
     private OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner;
 
     @Mock
-    private CollectionCleaner<ProgramStage> collectionCleaner;
-
-    @Mock
-    private DHISVersionManager versionManager;
+    private SubCollectionCleaner<ProgramStage> programStageCleaner;
 
     @Mock
     private ProgramStage.Builder programStageBuilder;
@@ -125,11 +116,9 @@ public class ProgramStageHandlerShould {
                 programStageStore,
                 programStageSectionHandler,
                 programStageDataElementHandler,
-                styleHandler,
                 programStageDataElementCleaner,
                 programStageSectionCleaner,
-                collectionCleaner,
-                versionManager);
+                programStageCleaner);
 
         programStageSections = new ArrayList<>();
         programStageSections.add(programStageSection);
@@ -138,15 +127,15 @@ public class ProgramStageHandlerShould {
 
         when(programStage.uid()).thenReturn("test_program_stage_uid");
         when(programStage.style()).thenReturn(objectStyle);
-        when(programStage.programStageDataElements()).thenReturn(programStageDataElements);
-        when(programStage.programStageSections()).thenReturn(programStageSections);
+        when(ProgramStageInternalAccessor.accessProgramStageDataElements(programStage))
+                .thenReturn(programStageDataElements);
+        when(ProgramStageInternalAccessor.accessProgramStageSections(programStage)).thenReturn(programStageSections);
         when(dataAccess.read()).thenReturn(true);
         when(access.data()).thenReturn(dataAccess);
         when(programStage.access()).thenReturn(access);
 
         when(programStage.toBuilder()).thenReturn(programStageBuilder);
         when(programStageBuilder.featureType(any(FeatureType.class))).thenReturn(programStageBuilder);
-        when(programStageBuilder.captureCoordinates(any(Boolean.class))).thenReturn(programStageBuilder);
         when(programStageBuilder.build()).thenReturn(programStage);
     }
 
@@ -160,12 +149,6 @@ public class ProgramStageHandlerShould {
     public void call_program_stage_section_handler() throws Exception {
         programStageHandler.handle(programStage);
         verify(programStageSectionHandler).handleMany(eq(programStageSections), any(Transformer.class));
-    }
-
-    @Test
-    public void call_style_handler() throws Exception {
-        programStageHandler.handle(programStage);
-        verify(styleHandler).handle(eq(objectStyle), anyString(), anyString());
     }
 
     @Test
@@ -200,26 +183,6 @@ public class ProgramStageHandlerShould {
     public void call_collection_cleaner_when_calling_handle_many() {
         List<ProgramStage> programStages = Collections.singletonList(programStage);
         programStageHandler.handleMany(programStages);
-        verify(collectionCleaner).deleteNotPresent(programStages);
-    }
-
-    @Test
-    public void save_feature_type_if_version_is_2_29() {
-        when(versionManager.is2_29()).thenReturn(true);
-        when(programStage.captureCoordinates()).thenReturn(true);
-        when(programStage.featureType()).thenReturn(FeatureType.POINT);
-
-        programStageHandler.handle(programStage);
-        assertThat(programStageHandler.beforeObjectHandled(programStage).featureType()).isEqualTo(FeatureType.POINT);
-    }
-
-    @Test
-    public void save_capture_coordinates_if_version_is_higher_than_2_29() {
-        when(versionManager.is2_29()).thenReturn(false);
-        when(programStage.featureType()).thenReturn(FeatureType.POLYGON);
-        when(programStage.captureCoordinates()).thenReturn(true);
-
-        programStageHandler.handle(programStage);
-        assertThat(programStageHandler.beforeObjectHandled(programStage).captureCoordinates()).isTrue();
+        verify(programStageCleaner).deleteNotPresent(programStages);
     }
 }

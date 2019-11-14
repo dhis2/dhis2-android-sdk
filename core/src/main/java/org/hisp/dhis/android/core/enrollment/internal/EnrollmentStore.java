@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.enrollment.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectWithStateStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 
 import java.util.List;
 import java.util.Map;
 
-public interface EnrollmentStore extends IdentifiableObjectWithStateStore<Enrollment> {
+public interface EnrollmentStore extends IdentifiableDeletableDataObjectStore<Enrollment> {
 
     Map<String, List<Enrollment>> queryEnrollmentsToPost();
 }

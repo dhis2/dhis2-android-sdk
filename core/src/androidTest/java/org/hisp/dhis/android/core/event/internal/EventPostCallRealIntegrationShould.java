@@ -29,17 +29,17 @@
 package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.common.Coordinates;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
+import org.hisp.dhis.android.core.D2Factory;
+import org.hisp.dhis.android.core.arch.helpers.CodeGenerator;
+import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
-import org.hisp.dhis.android.core.utils.CodeGenerator;
-import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
@@ -74,7 +74,7 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2 = D2Factory.forNewDatabase();
 
         eventStore = EventStoreImpl.create(databaseAdapter());
         trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter());
@@ -98,7 +98,7 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
         createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid1,
                 dataElementUid, attributeOptionCombo);
 
-        d2.eventModule().events.upload().call();
+        d2.eventModule().events().blockingUpload();
     }
 
     // commented out since it is a flaky test that works against a real server.
@@ -151,7 +151,8 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
             String dataElementUid, String attributeOptionCombo) {
 
         eventStore.insert(Event.builder().uid(eventUid).created(new Date()).lastUpdated(new Date())
-                .status(EventStatus.ACTIVE).coordinate(Coordinates.create(13.21, 12.21)).program(programUid)
+                .geometry(Geometry.builder().type(FeatureType.POINT).coordinates("[12.21, 13.21]").build())
+                .status(EventStatus.ACTIVE).program(programUid)
                 .programStage(programStageUid).organisationUnit(orgUnitUid).eventDate(new Date())
                 .completedDate(new Date()).dueDate(new Date()).state(State.TO_POST)
                 .attributeOptionCombo(attributeOptionCombo).build());
@@ -200,12 +201,12 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
     }
 
     private void pushDummyEvent() throws Exception {
-        d2.eventModule().events.upload().call();
+        d2.eventModule().events().blockingUpload();
     }
 
     private void downloadMetadata() throws Exception {
-        d2.userModule().logIn(user, password).blockingGet();
-        d2.syncMetaData().blockingSubscribe();
+        d2.userModule().logIn(user, password, url).blockingGet();
+        d2.metadataModule().blockingDownload();
     }
 
     private boolean verifyPushedEventIsInPullList(Event event, List<Event> eventList) {

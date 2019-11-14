@@ -28,17 +28,16 @@
 
 package org.hisp.dhis.android.core.enrollment.internal;
 
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectWithStateStoreImpl;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
-import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 
@@ -51,7 +50,7 @@ import java.util.Map;
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
 public final class EnrollmentStoreImpl
-        extends IdentifiableObjectWithStateStoreImpl<Enrollment> implements EnrollmentStore {
+        extends IdentifiableDeletableDataObjectStoreImpl<Enrollment> implements EnrollmentStore {
 
     private static final StatementBinder<Enrollment> BINDER = (o, sqLiteStatement) -> {
         sqLiteBind(sqLiteStatement, 1, o.uid());
@@ -66,30 +65,29 @@ public final class EnrollmentStoreImpl
         sqLiteBind(sqLiteStatement, 10, o.followUp());
         sqLiteBind(sqLiteStatement, 11, o.status());
         sqLiteBind(sqLiteStatement, 12, o.trackedEntityInstance());
-        sqLiteBind(sqLiteStatement, 13, CoordinateHelper.getLatitude(o.coordinate()));
-        sqLiteBind(sqLiteStatement, 14, CoordinateHelper.getLongitude(o.coordinate()));
+        sqLiteBind(sqLiteStatement, 13, o.geometry() == null ? null : o.geometry().type());
+        sqLiteBind(sqLiteStatement, 14, o.geometry() == null ? null : o.geometry().coordinates());
         sqLiteBind(sqLiteStatement, 15, o.state());
+        sqLiteBind(sqLiteStatement, 16, o.deleted());
     };
 
-
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            EnrollmentTableInfo.TABLE_INFO, EnrollmentFields.TRACKED_ENTITY_INSTANCE);
+            EnrollmentTableInfo.TABLE_INFO, EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE);
 
     private EnrollmentStoreImpl(DatabaseAdapter databaseAdapter,
                                 SQLStatementWrapper statementWrapper,
                                 SQLStatementBuilderImpl builder,
                                 StatementBinder<Enrollment> binder,
-                                CursorModelFactory<Enrollment> modelFactory) {
-        super(databaseAdapter, statementWrapper, builder, binder, modelFactory);
+                                ObjectFactory<Enrollment> objectFactory) {
+        super(databaseAdapter, statementWrapper, builder, binder, objectFactory);
     }
 
     @Override
     public Map<String, List<Enrollment>> queryEnrollmentsToPost() {
         String enrollmentsToPostQuery = new WhereClauseBuilder()
-                .appendInKeyStringValues(BaseDataModel.Columns.STATE, Arrays.asList(
+                .appendInKeyStringValues(DataColumns.STATE, Arrays.asList(
                         State.TO_POST.name(),
-                        State.TO_UPDATE.name(),
-                        State.TO_DELETE.name())).build();
+                        State.TO_UPDATE.name())).build();
 
         List<Enrollment> enrollmentList = selectWhere(enrollmentsToPostQuery);
 

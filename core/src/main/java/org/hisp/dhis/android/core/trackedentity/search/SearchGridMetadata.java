@@ -37,12 +37,12 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 
 @AutoValue
-public abstract class SearchGridMetadata {
+abstract class SearchGridMetadata {
     private final static String NAMES = "names";
 
     @NonNull
     @JsonProperty(NAMES)
-    public abstract Map<String, String> names();
+    abstract Map<String, String> names();
 
     @JsonCreator
     static SearchGridMetadata create(

@@ -53,7 +53,7 @@ public class SystemInfoCallMockIntegrationShould extends BaseMockIntegrationTest
     @BeforeClass
     public static void setUpClass() throws Exception {
         BaseMockIntegrationTestEmptyEnqueable.setUpClass();
-        systemInfoRepository = d2.systemInfoModule().systemInfo;
+        systemInfoRepository = d2.systemInfoModule().systemInfo();
     }
 
     @Before
@@ -64,7 +64,7 @@ public class SystemInfoCallMockIntegrationShould extends BaseMockIntegrationTest
 
     @Test
     public void persist_system_info_when_call() {
-        systemInfoRepository.download().test().awaitTerminalEvent();
+        systemInfoRepository.blockingDownload(true);
         isSystemInfoInDb(systemInfoFromAPI);
     }
 
@@ -73,12 +73,12 @@ public class SystemInfoCallMockIntegrationShould extends BaseMockIntegrationTest
         database.insert(tableInfo.name(), null, systemInfoFromDB.toContentValues());
         isSystemInfoInDb(systemInfoFromDB);
 
-        systemInfoRepository.download().test().awaitTerminalEvent();
+        systemInfoRepository.blockingDownload(true);
         isSystemInfoInDb(systemInfoFromAPI);
     }
 
     private void isSystemInfoInDb(SystemInfo si) {
-        SystemInfo siDb = systemInfoRepository.get();
+        SystemInfo siDb = systemInfoRepository.blockingGet();
         assertThat(si.toBuilder().id(null).build()).isEqualTo(
                 siDb.toBuilder().id(null).build()
         );

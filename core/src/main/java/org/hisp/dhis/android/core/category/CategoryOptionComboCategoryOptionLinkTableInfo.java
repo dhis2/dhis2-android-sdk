@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class CategoryOptionComboCategoryOptionLinkTableInfo {
 
@@ -50,13 +50,13 @@ public final class CategoryOptionComboCategoryOptionLinkTableInfo {
     private CategoryOptionComboCategoryOptionLinkTableInfo() {
     }
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
         public static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
         public static final String CATEGORY_OPTION = "categoryOption";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     CATEGORY_OPTION_COMBO, CATEGORY_OPTION);
         }
 

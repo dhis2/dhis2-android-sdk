@@ -29,9 +29,8 @@
 package org.hisp.dhis.android.core.trackedentity.search;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
+import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
@@ -46,33 +45,30 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends BaseRealIntegrationTest {
     private D2 d2;
-    private TrackedEntityInstanceQuery.Builder queryBuilder;
+    private TrackedEntityInstanceQueryCollectionRepository repository;
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
 
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2 = D2Factory.forNewDatabase();
 
 
         List<String> orgUnits = new ArrayList<>();
         orgUnits.add("O6uvpzGd5pu");
 
-        queryBuilder = TrackedEntityInstanceQuery.builder()
-                .paging(true).page(1).pageSize(50)
-                .orgUnits(orgUnits).orgUnitMode(OrganisationUnitMode.ACCESSIBLE);
+        repository = d2.trackedEntityModule().trackedEntityInstanceQuery()
+                .byOrgUnits().in(orgUnits).byOrgUnitMode().eq(OrganisationUnitMode.ACCESSIBLE);
     }
 
     //@Test
-    public void query_and_download_tracked_entity_instances() throws Exception {
+    public void query_and_download_tracked_entity_instances() {
         login();
 
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
 
-        TrackedEntityInstanceQuery query = queryBuilder.build();
-        List<TrackedEntityInstance> queriedTeis =
-                d2.trackedEntityModule().trackedEntityInstanceQuery.onlineOnly().query(query).get();
+        List<TrackedEntityInstance> queriedTeis = repository.onlineOnly().blockingGet();
         assertThat(queriedTeis).isNotEmpty();
 
         Set<String> uids = new HashSet<>(queriedTeis.size());
@@ -81,11 +77,13 @@ public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends 
             uids.add(tei.uid());
         }
 
-        List<TrackedEntityInstance> downloadedTeis = d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(uids).call();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().in(uids).blockingDownload();
+        List<TrackedEntityInstance> downloadedTeis = d2.trackedEntityModule().trackedEntityInstances().byUid().in(uids).blockingGet();
+
         assertThat(queriedTeis.size()).isEqualTo(downloadedTeis.size());
     }
 
     private void login() {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
     }
 }

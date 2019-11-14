@@ -45,8 +45,8 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
     @Test
     public void find_all() {
         List<ProgramStageSection> stageSections =
-                d2.programModule().programStageSections
-                        .get();
+                d2.programModule().programStageSections()
+                        .blockingGet();
 
         assertThat(stageSections.size(), is(2));
     }
@@ -54,9 +54,9 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
     @Test
     public void include_program_indicators_as_children() {
         ProgramStageSection stageSections =
-                d2.programModule().programStageSections
+                d2.programModule().programStageSections()
                         .withProgramIndicators()
-                        .one().get();
+                        .one().blockingGet();
 
         assertThat(stageSections.programIndicators().size(), is(1));
     }
@@ -64,9 +64,9 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
     @Test
     public void include_data_elements_as_children() {
         ProgramStageSection stageSections =
-                d2.programModule().programStageSections
+                d2.programModule().programStageSections()
                         .withDataElements()
-                        .one().get();
+                        .one().blockingGet();
 
         assertThat(stageSections.dataElements().size(), is(1));
         assertThat(stageSections.dataElements().get(0).name(), is("MCH ANC Visit"));
@@ -75,10 +75,10 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
     @Test
     public void filter_by_sort_order() {
         List<ProgramStageSection> stageSections =
-                d2.programModule().programStageSections
+                d2.programModule().programStageSections()
                         .bySortOrder()
                         .eq(1)
-                        .get();
+                        .blockingGet();
 
         assertThat(stageSections.size(), is(1));
     }
@@ -86,10 +86,10 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
     @Test
     public void filter_by_program_stage() {
         List<ProgramStageSection> stageSections =
-                d2.programModule().programStageSections
+                d2.programModule().programStageSections()
                         .byProgramStageUid()
                         .eq("dBwrot7S421")
-                        .get();
+                        .blockingGet();
 
         assertThat(stageSections.size(), is(1));
     }
@@ -97,10 +97,10 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
     @Test
     public void filter_by_desktop_render_type() {
         List<ProgramStageSection> stageSections =
-                d2.programModule().programStageSections
+                d2.programModule().programStageSections()
                         .byDesktopRenderType()
                         .eq("LISTING")
-                        .get();
+                        .blockingGet();
 
         assertThat(stageSections.size(), is(1));
     }
@@ -108,10 +108,10 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
     @Test
     public void filter_by_mobile_render_type() {
         List<ProgramStageSection> stageSections =
-                d2.programModule().programStageSections
+                d2.programModule().programStageSections()
                         .byMobileRenderType()
                         .eq("LISTING")
-                        .get();
+                        .blockingGet();
 
         assertThat(stageSections.size(), is(1));
     }

@@ -29,18 +29,17 @@
 package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.dataset.DataInputPeriodSamples;
 import org.hisp.dhis.android.core.dataset.DataInputPeriod;
 import org.hisp.dhis.android.core.dataset.DataInputPeriodTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
-import androidx.test.runner.AndroidJUnit4;
-
-@RunWith(AndroidJUnit4.class)
+@RunWith(D2JunitRunner.class)
 public class DataInputPeriodLinkStoreIntegrationShould
-        extends LinkModelStoreAbstractIntegrationShould<DataInputPeriod> {
+        extends LinkStoreAbstractIntegrationShould<DataInputPeriod> {
 
     public DataInputPeriodLinkStoreIntegrationShould() {
         super(DataInputPeriodLinkStore.create(DatabaseAdapterFactory.get()), DataInputPeriodTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());

@@ -62,5 +62,6 @@ public class DataSetCompleteRegistrationShould extends BaseObjectShould implemen
         assertThat(dataSetCompleteRegistration.attributeOptionCombo()).isEqualTo("HllvX50cXC0");
         assertThat(dataSetCompleteRegistration.date()).isEqualTo(dateFormat.parse("2010-04-05"));
         assertThat(dataSetCompleteRegistration.storedBy()).isEqualTo("admin");
+        assertThat(dataSetCompleteRegistration.deleted()).isFalse();
     }
 }

@@ -31,11 +31,11 @@ package org.hisp.dhis.android.core.arch.db.querybuilders.internal;
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 import static org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo.SORT_ORDER;
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
-import static org.hisp.dhis.android.core.utils.Utils.commaAndSpaceSeparatedArrayValues;
+import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaAndSpaceSeparatedArrayValues;
+import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 
 public class SQLStatementBuilderImpl implements SQLStatementBuilder {
     // TODO save TableInfo instead of separate files when architecture 1.0 is ready
@@ -64,7 +64,7 @@ public class SQLStatementBuilderImpl implements SQLStatementBuilder {
         this(tableName, columns, updateWhereColumns, false);
     }
 
-    public SQLStatementBuilderImpl(String tableName, BaseModel.Columns columns) {
+    public SQLStatementBuilderImpl(String tableName, CoreColumns columns) {
         this(tableName, columns.all().clone(), columns.whereUpdate().clone(), false);
     }
 
@@ -205,14 +205,14 @@ public class SQLStatementBuilderImpl implements SQLStatementBuilder {
 
     public String updateWhere() {
         // TODO refactor to only generate for object without uids store.
-        String whereClause = whereColumns.length == 0 ? BaseModel.Columns.ID + " = -1" :
+        String whereClause = whereColumns.length == 0 ? CoreColumns.ID + " = -1" :
                 andSeparatedColumnEqualInterrogationMark(whereColumns);
         return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(columns) +
                 WHERE + whereClause + ";";
     }
 
     public String deleteWhere() {
-        String whereClause = whereColumns.length == 0 ? BaseModel.Columns.ID + " = -1" :
+        String whereClause = whereColumns.length == 0 ? CoreColumns.ID + " = -1" :
                 andSeparatedColumnEqualInterrogationMark(whereColumns);
         return "DELETE" + FROM + tableName + WHERE + whereClause + ";";
     }

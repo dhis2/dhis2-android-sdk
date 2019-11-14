@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.arch.handlers.internal;
 
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.List;
 
-public interface OrderedLinkHandler<S, M extends Model> {
+public interface OrderedLinkHandler<S, M extends CoreObject> {
     void handleMany(String masterUid, List<S> slaveCollection, OrderedLinkTransformer<S, M> transformer);
 }

@@ -21,22 +21,46 @@
       "attributeOptionCombo": "bRowv6yZOF2",
       "value": "10",
       "storedBy": "android",
-      "created": "2010-01-11T00:00:00.000+0000",
-      "lastUpdated": "2010-01-11T00:00:00.000+0000",
+      "created": "2010-02-11T00:00:00.000+0000",
+      "lastUpdated": "2010-02-11T00:00:00.000+0000",
       "comment": "N/A",
       "followup": true
     },
     {
       "dataElement": "g9eOBujte1U",
-      "period": "2019",
+      "period": "2016",
       "orgUnit": "DiszpKrYNg8",
       "categoryOptionCombo": "Gmbgme7z9BF",
       "attributeOptionCombo": "bRowv6yZOF2",
       "value": "11",
       "storedBy": "android",
-      "created": "2012-01-11T00:00:00.000+0000",
-      "lastUpdated": "2012-01-11T00:00:00.000+0000",
+      "created": "2012-03-11T00:00:00.000+0000",
+      "lastUpdated": "2012-03-11T00:00:00.000+0000",
       "comment": "Relevant comment",
+      "followup": false
+    },
+    {
+      "dataElement": "g9eOBujte1U",
+      "period": "201907",
+      "orgUnit": "DiszpKrYNg8",
+      "categoryOptionCombo": "Gmbgme7z9BF",
+      "attributeOptionCombo": "bRowv6yZOF2",
+      "value": "12",
+      "storedBy": "bodata1",
+      "created": "2012-08-11T00:00:00.000+0000",
+      "lastUpdated": "2012-08-11T00:00:00.000+0000",
+      "followup": false
+    },
+    {
+      "dataElement": "g9eOBujte1U",
+      "period": "201907",
+      "orgUnit": "DiszpKrYNg8",
+      "categoryOptionCombo": "bRowv6yZOF2",
+      "attributeOptionCombo": "bRowv6yZOF2",
+      "value": "12",
+      "storedBy": "bodata1",
+      "created": "2012-08-11T00:00:00.000+0000",
+      "lastUpdated": "2012-08-11T00:00:00.000+0000",
       "followup": false
     }
   ]

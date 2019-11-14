@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core.common.internal;
 
-import org.hisp.dhis.android.core.common.ObjectStyleTableInfo;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingTableInfo;
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.internal.TableWiper;
 
 import javax.inject.Inject;
 
@@ -49,9 +48,7 @@ public final class CommonModuleWiper implements ModuleWiper {
 
     @Override
     public void wipeMetadata() {
-        tableWiper.wipeTables(
-                ObjectStyleTableInfo.TABLE_INFO,
-                ValueTypeDeviceRenderingTableInfo.TABLE_INFO);
+        tableWiper.wipeTables(ValueTypeDeviceRenderingTableInfo.TABLE_INFO);
     }
 
     @Override

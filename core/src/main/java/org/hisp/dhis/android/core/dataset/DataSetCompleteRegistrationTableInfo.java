@@ -29,10 +29,9 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.DeletableDataColumns;
 
 public final class DataSetCompleteRegistrationTableInfo {
 
@@ -46,30 +45,40 @@ public final class DataSetCompleteRegistrationTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new DataSetCompleteRegistrationTableInfo.Columns();
         }
     };
 
-    static class Columns extends BaseDataModel.Columns {
+    public static class Columns extends DeletableDataColumns {
+
+        public static final String PERIOD = "period";
+        public static final String DATA_SET = "dataSet";
+        public static final String ORGANISATION_UNIT = "organisationUnit";
+        public static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
+        public static final String DATE = "date";
+        public static final String STORED_BY = "storedBy";
+
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    DataSetCompleteRegistrationFields.PERIOD,
-                    DataSetCompleteRegistrationFields.DATA_SET,
-                    DataSetCompleteRegistrationFields.ORGANISATION_UNIT,
-                    DataSetCompleteRegistrationFields.ATTRIBUTE_OPTION_COMBO,
-                    DataSetCompleteRegistrationFields.DATE,
-                    DataSetCompleteRegistrationFields.STORED_BY,
-                    STATE);
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    PERIOD,
+                    DATA_SET,
+                    ORGANISATION_UNIT,
+                    ATTRIBUTE_OPTION_COMBO,
+                    DATE,
+                    STORED_BY,
+                    STATE,
+                    DELETED);
         }
 
         @Override
         public String[] whereUpdate() {
-            return new String[]{DataSetCompleteRegistrationFields.PERIOD,
-                    DataSetCompleteRegistrationFields.DATA_SET,
-                    DataSetCompleteRegistrationFields.ORGANISATION_UNIT,
-                    DataSetCompleteRegistrationFields.ATTRIBUTE_OPTION_COMBO};
+            return new String[]{
+                    PERIOD,
+                    DATA_SET,
+                    ORGANISATION_UNIT,
+                    ATTRIBUTE_OPTION_COMBO};
         }
     }
 }

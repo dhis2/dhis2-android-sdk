@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.fields.internal.NestedField;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Property;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.AggregationType;
@@ -37,35 +36,27 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.legendset.LegendSet;
 import org.hisp.dhis.android.core.legendset.internal.LegendSetFields;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
+import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo.Columns;
 
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
 
 public final class ProgramIndicatorFields {
-
-    public static final String DISPLAY_IN_FORM = "displayInForm";
-    public static final String EXPRESSION = "expression";
-    public static final String DIMENSION_ITEM = "dimensionItem";
-    public static final String FILTER = "filter";
-    public static final String DECIMALS = "decimals";
-    public static final String AGGREGATION_TYPE = "aggregationType";
-    public static final String PROGRAM = "program";
     public static final String LEGEND_SETS = "legendSets";
 
     private static final FieldsHelper<ProgramIndicator> fh = new FieldsHelper<>();
 
     static final Property<ProgramIndicator, Boolean> uid = fh.field(UID);
-    static final NestedField<ProgramIndicator, ?> programWithUid = fh.nestedFieldWithUid(PROGRAM);
 
     public static final Fields<ProgramIndicator> allFields = Fields.<ProgramIndicator>builder()
             .fields(fh.getNameableFields())
             .fields(
-                    fh.<Boolean>field(DISPLAY_IN_FORM),
-                    fh.<String>field(EXPRESSION),
-                    fh.<String>field(DIMENSION_ITEM),
-                    fh.<String>field(FILTER),
-                    fh.<Integer>field(DECIMALS),
-                    fh.<AggregationType>field(AGGREGATION_TYPE),
-                    fh.<ObjectWithUid>nestedField(PROGRAM).with(ObjectWithUid.uid),
+                    fh.<Boolean>field(Columns.DISPLAY_IN_FORM),
+                    fh.<String>field(Columns.EXPRESSION),
+                    fh.<String>field(Columns.DIMENSION_ITEM),
+                    fh.<String>field(Columns.FILTER),
+                    fh.<Integer>field(Columns.DECIMALS),
+                    fh.<AggregationType>field(Columns.AGGREGATION_TYPE),
+                    fh.<ObjectWithUid>nestedField(Columns.PROGRAM).with(ObjectWithUid.uid),
                     fh.<LegendSet>nestedField(LEGEND_SETS).with(LegendSetFields.allFields)
             ).build();
 

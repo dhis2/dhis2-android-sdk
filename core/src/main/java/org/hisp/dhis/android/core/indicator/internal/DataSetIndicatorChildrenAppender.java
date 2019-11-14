@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.indicator.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo;
 import org.hisp.dhis.android.core.indicator.Indicator;
@@ -43,23 +43,23 @@ public final class DataSetIndicatorChildrenAppender extends ChildrenAppender<Dat
             IndicatorTableInfo.TABLE_INFO,
             DataSetIndicatorLinkTableInfo.Columns.DATA_SET,
             DataSetIndicatorLinkTableInfo.Columns.INDICATOR);
-    private final LinkModelChildStore<DataSet, Indicator> linkModelChildStore;
+    private final LinkChildStore<DataSet, Indicator> linkChildStore;
 
     private DataSetIndicatorChildrenAppender(
-            LinkModelChildStore<DataSet, Indicator> linkModelChildStore) {
-        this.linkModelChildStore = linkModelChildStore;
+            LinkChildStore<DataSet, Indicator> linkChildStore) {
+        this.linkChildStore = linkChildStore;
     }
 
     @Override
     protected DataSet appendChildren(DataSet dataSet) {
         DataSet.Builder builder = dataSet.toBuilder();
-        builder.indicators(linkModelChildStore.getChildren(dataSet));
+        builder.indicators(linkChildStore.getChildren(dataSet));
         return builder.build();
     }
 
     public static ChildrenAppender<DataSet> create(DatabaseAdapter databaseAdapter) {
         return new DataSetIndicatorChildrenAppender(
-                StoreFactory.linkModelChildStore(
+                StoreFactory.linkChildStore(
                         databaseAdapter,
                         DataSetIndicatorLinkTableInfo.TABLE_INFO,
                         CHILD_PROJECTION,

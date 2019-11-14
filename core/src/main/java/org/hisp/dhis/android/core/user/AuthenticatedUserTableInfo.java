@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class AuthenticatedUserTableInfo {
 
@@ -45,19 +45,18 @@ public final class AuthenticatedUserTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    static class Columns extends BaseModel.Columns {
-        static final String USER = "user";
-        static final String CREDENTIALS = "credentials";
-        static final String HASH = "hash";
+    public static class Columns extends CoreColumns {
+        public static final String USER = "user";
+        public static final String HASH = "hash";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(), USER, CREDENTIALS, HASH);
+            return CollectionsHelper.appendInNewArray(super.all(), USER, HASH);
         }
 
         @Override

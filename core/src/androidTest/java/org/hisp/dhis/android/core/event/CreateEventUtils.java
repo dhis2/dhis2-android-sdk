@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.event;
 
 import android.content.ContentValues;
 
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.event.internal.EventFields;
+import org.hisp.dhis.android.core.event.EventTableInfo.Columns;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,8 +41,8 @@ public class CreateEventUtils {
 
     private static final String ENROLLMENT_UID = "test_enrollment";
     private static final EventStatus STATUS = EventStatus.ACTIVE;
-    private static final String LATITUDE = "10.832152";
-    private static final String LONGITUDE = "59.345231";
+    private static final FeatureType GEOMETRY_TYPE = FeatureType.POINT;
+    private static final String GEOMETRY_COORDINATES = "[59.345231, 10.832152]";
 
     // timestamp
     private static final String DATE = "2017-01-12T11:31:00.000";
@@ -56,22 +56,22 @@ public class CreateEventUtils {
         event.put(EventTableInfo.Columns.UID, uid);
 
         if (enrollmentUid == null) {
-            event.putNull(EventFields.ENROLLMENT);
+            event.putNull(Columns.ENROLLMENT);
         }
 
-        event.put(EventFields.ENROLLMENT, enrollmentUid);
-        event.put(EventFields.CREATED, DATE);
-        event.put(EventFields.LAST_UPDATED, DATE);
-        event.put(EventFields.STATUS, STATUS.name());
-        event.put(EventTableInfo.Columns.LATITUDE, LATITUDE);
-        event.put(EventTableInfo.Columns.LONGITUDE, LONGITUDE);
-        event.put(EventFields.PROGRAM, program);
-        event.put(EventFields.PROGRAM_STAGE, programStage);
-        event.put(EventTableInfo.Columns.ORGANISATION_UNIT, orgUnit);
-        event.put(EventFields.EVENT_DATE, DATE);
-        event.put(EventFields.COMPLETE_DATE, DATE);
-        event.put(EventFields.DUE_DATE, DATE);
-        event.put(BaseDataModel.Columns.STATE, State.TO_POST.name());
+        event.put(Columns.ENROLLMENT, enrollmentUid);
+        event.put(Columns.CREATED, DATE);
+        event.put(Columns.LAST_UPDATED, DATE);
+        event.put(Columns.STATUS, STATUS.name());
+        event.put(Columns.GEOMETRY_TYPE, GEOMETRY_TYPE.getFeatureType());
+        event.put(Columns.GEOMETRY_COORDINATES, GEOMETRY_COORDINATES);
+        event.put(Columns.PROGRAM, program);
+        event.put(Columns.PROGRAM_STAGE, programStage);
+        event.put(Columns.ORGANISATION_UNIT, orgUnit);
+        event.put(Columns.EVENT_DATE, DATE);
+        event.put(Columns.COMPLETE_DATE, DATE);
+        event.put(Columns.DUE_DATE, DATE);
+        event.put(Columns.STATE, State.TO_POST.name());
         return event;
     }
 }

@@ -40,8 +40,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import io.reactivex.Single;
-
 import static com.google.common.truth.Truth.assertThat;
 
 // ToDo: implement integration tests for user authentication task
@@ -50,17 +48,11 @@ import static com.google.common.truth.Truth.assertThat;
 @RunWith(D2JunitRunner.class)
 public class UserAuthenticateCallMockIntegrationShould extends BaseMockIntegrationTestEmptyEnqueable {
 
-    private Single<User> logInSingle;
-
     @Before
     public void setUp() throws D2Error {
         dhis2MockServer.enqueueMockResponse("user/user.json");
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
-
-        logInSingle = d2.userModule().logIn("test_user", "test_password");
     }
-
-
 
     @After
     public void tearDown() {
@@ -69,23 +61,23 @@ public class UserAuthenticateCallMockIntegrationShould extends BaseMockIntegrati
 
     @Test
     public void persist_user_in_data_base_when_call() {
-        logInSingle.blockingGet();
+        login();
 
-        User user = d2.userModule().user.get();
+        User user = d2.userModule().user().blockingGet();
         assertThat(user.uid()).isEqualTo("DXyJmlo9rge");
         assertThat(user.name()).isEqualTo("John Barnes");
 
-        UserCredentials userCredentials = d2.userModule().userCredentials.get();
+        UserCredentials userCredentials = d2.userModule().userCredentials().blockingGet();
         assertThat(userCredentials.uid()).isEqualTo("M0fCOxtkURr");
         assertThat(userCredentials.username()).isEqualTo("android");
 
-        AuthenticatedUser authenticatedUser = d2.userModule().authenticatedUser.get();
+        AuthenticatedUser authenticatedUser = d2.userModule().authenticatedUser().blockingGet();
         assertThat(authenticatedUser.user()).isEqualTo("DXyJmlo9rge");
     }
 
     @Test
     public void return_correct_user_when_call() throws Exception {
-        User user =  logInSingle.blockingGet();
+        User user = login();
 
         // verify payload which has been returned from call
         assertThat(user.uid()).isEqualTo("DXyJmlo9rge");
@@ -98,5 +90,17 @@ public class UserAuthenticateCallMockIntegrationShould extends BaseMockIntegrati
         assertThat(user.firstName()).isEqualTo("John");
         assertThat(user.surname()).isEqualTo("Barnes");
         assertThat(user.email()).isEqualTo("john@hmail.com");
+    }
+
+    private User login() {
+        User user;
+        try {
+            d2.userModule().logOut().blockingAwait();
+        } catch (RuntimeException e) {
+            // Do nothing
+        } finally {
+            user = d2.userModule().blockingLogIn("test_user", "test_password", dhis2MockServer.getBaseEndpoint());
+        }
+        return user;
     }
 }

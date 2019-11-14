@@ -28,17 +28,21 @@
 
 package org.hisp.dhis.android.core.utils.integration.real;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.facebook.stetho.Stetho;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2DIComponent;
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
+import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
+import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
+import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.junit.After;
 import org.junit.Before;
@@ -53,21 +57,27 @@ import static com.google.common.truth.Truth.assertThat;
 public abstract class BaseRealIntegrationTest {
     private SQLiteDatabase sqLiteDatabase;
     private DatabaseAdapter databaseAdapter;
+    private Context context;
 
     protected Date serverDate = new Date();
     protected ResourceHandler resourceHandler;
+    protected CredentialsSecureStore credentialsSecureStore;
 
-    private String dbName = null;
+    protected String username = RealServerMother.username;
+    protected String password = RealServerMother.password;
+    protected String url = RealServerMother.url;
 
     @Before
     public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , dbName);
+        context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+
+        DbOpenHelper dbOpenHelper = new DbOpenHelper(context, null);
         sqLiteDatabase = dbOpenHelper.getWritableDatabase();
         databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+        credentialsSecureStore = new CredentialsSecureStoreImpl(context);
         resourceHandler = ResourceHandler.create(databaseAdapter);
         resourceHandler.setServerDate(serverDate);
-        Stetho.initializeWithDefaults(InstrumentationRegistry.getTargetContext().getApplicationContext());
+        Stetho.initializeWithDefaults(context);
     }
 
     @After
@@ -86,7 +96,7 @@ public abstract class BaseRealIntegrationTest {
 
     protected GenericCallData getGenericCallData(D2 d2) {
         return GenericCallData.create(
-                databaseAdapter(), d2.retrofit(), resourceHandler, d2.systemInfoModule().versionManager);
+                databaseAdapter(), d2.retrofit(), resourceHandler, d2.systemInfoModule().versionManager());
     }
 
     protected Cursor getCursor(String table, String[] columns) {
@@ -96,6 +106,6 @@ public abstract class BaseRealIntegrationTest {
 
     protected D2DIComponent getD2DIComponent(D2 d2) {
         return D2DIComponent.create(InstrumentationRegistry.getTargetContext().getApplicationContext(), d2.retrofit(),
-                databaseAdapter);
+                databaseAdapter, credentialsSecureStore);
     }
 }

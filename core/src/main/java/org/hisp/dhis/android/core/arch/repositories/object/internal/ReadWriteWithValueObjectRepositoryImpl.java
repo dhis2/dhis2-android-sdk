@@ -25,27 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.repositories.object.internal;
 
 import android.database.sqlite.SQLiteConstraintException;
+import android.util.Log;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.util.Map;
 
-public class ReadWriteWithValueObjectRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
-        extends ReadOnlyOneObjectRepositoryImpl<M, R> {
+import io.reactivex.Completable;
+
+public class ReadWriteWithValueObjectRepositoryImpl<M extends CoreObject, R extends ReadOnlyObjectRepository<M>>
+        extends ReadOnlyOneObjectRepositoryImpl<M, R> implements ReadWriteObjectRepository<M> {
 
     private final ObjectWithoutUidStore<M> store;
-    protected M objectWithValue;
 
     public ReadWriteWithValueObjectRepositoryImpl(ObjectWithoutUidStore<M> store,
                                                   Map<String, ChildrenAppender<M>> childrenAppenders,
@@ -55,15 +58,35 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends Model, R extends R
         this.store = store;
     }
 
-    public void delete() throws D2Error {
+    @Override
+    public Completable delete() {
+        return Completable.fromAction(this::blockingDelete);
+    }
+
+    @Override
+    public void blockingDelete() throws D2Error {
         delete(getWithoutChildren());
+    }
+
+    @Override
+    public Completable deleteIfExist() {
+        return Completable.fromAction(this::blockingDeleteIfExist);
+    }
+
+    @Override
+    public void blockingDeleteIfExist() {
+        try {
+            blockingDelete();
+        } catch (D2Error d2Error) {
+            Log.v(ReadWriteWithValueObjectRepositoryImpl.class.getCanonicalName(), d2Error.errorDescription());
+        }
     }
 
     @SuppressWarnings({"PMD.PreserveStackTrace"})
     protected void delete(M m) throws D2Error {
         try {
             store.deleteWhere(m);
-            propagateState();
+            propagateState(m);
         } catch (Exception e) {
             throw D2Error
                     .builder()
@@ -76,11 +99,10 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends Model, R extends R
     }
 
     @SuppressWarnings({"PMD.PreserveStackTrace"})
-    protected Unit setObject(M m) throws D2Error {
+    protected void setObject(M m) throws D2Error {
         try {
             store.updateOrInsertWhere(m);
-            propagateState();
-            return new Unit();
+            propagateState(m);
         } catch (SQLiteConstraintException e) {
             throw D2Error
                     .builder()
@@ -100,7 +122,7 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends Model, R extends R
         }
     }
 
-    protected void propagateState() {
+    protected void propagateState(M m) {
         // Method is empty because is the default action.
     }
 }

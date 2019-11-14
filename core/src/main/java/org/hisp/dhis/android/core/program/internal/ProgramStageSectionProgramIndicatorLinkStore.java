@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLink;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkTableInfo;
 
@@ -47,8 +47,8 @@ final class ProgramStageSectionProgramIndicatorLinkStore {
 
     private ProgramStageSectionProgramIndicatorLinkStore() {}
 
-    public static LinkModelStore<ProgramStageSectionProgramIndicatorLink> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter,
+    public static LinkStore<ProgramStageSectionProgramIndicatorLink> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkStore(databaseAdapter,
                 ProgramStageSectionProgramIndicatorLinkTableInfo.TABLE_INFO,
                 ProgramStageSectionProgramIndicatorLinkTableInfo.Columns.PROGRAM_STAGE_SECTION,
                 BINDER,

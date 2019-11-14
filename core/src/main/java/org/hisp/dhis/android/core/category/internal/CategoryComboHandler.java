@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.category.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
@@ -37,11 +39,12 @@ import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
 import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryComboInternalAccessor;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
@@ -56,7 +59,7 @@ final class CategoryComboHandler extends IdentifiableHandlerImpl<CategoryCombo> 
             @NonNull IdentifiableObjectStore<CategoryCombo> store,
             @NonNull HandlerWithTransformer<CategoryOptionCombo> optionComboHandler,
             @NonNull OrderedLinkHandler<Category, CategoryCategoryComboLink> categoryCategoryComboLinkHandler,
-            OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner) {
+            @NonNull OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner) {
         super(store);
         this.optionComboHandler = optionComboHandler;
         this.categoryCategoryComboLinkHandler = categoryCategoryComboLinkHandler;
@@ -65,8 +68,8 @@ final class CategoryComboHandler extends IdentifiableHandlerImpl<CategoryCombo> 
 
     @Override
     protected void afterObjectHandled(final CategoryCombo combo, HandleAction action) {
-        optionComboHandler.handleMany(combo.categoryOptionCombos(),
-                optionCombo -> optionCombo.toBuilder().categoryCombo(combo).build());
+        optionComboHandler.handleMany(CategoryComboInternalAccessor.accessCategoryOptionCombos(combo),
+                optionCombo -> optionCombo.toBuilder().categoryCombo(ObjectWithUid.create(combo.uid())).build());
 
         categoryCategoryComboLinkHandler.handleMany(combo.uid(), combo.categories(),
                 (category, sortOrder) -> CategoryCategoryComboLink.builder()
@@ -76,7 +79,7 @@ final class CategoryComboHandler extends IdentifiableHandlerImpl<CategoryCombo> 
                         .build());
 
         if (action == HandleAction.Update) {
-            categoryOptionCleaner.deleteOrphan(combo, combo.categoryOptionCombos());
+            categoryOptionCleaner.deleteOrphan(combo, CategoryComboInternalAccessor.accessCategoryOptionCombos(combo));
         }
     }
 }

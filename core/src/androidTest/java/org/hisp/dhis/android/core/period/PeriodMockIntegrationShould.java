@@ -44,8 +44,20 @@ public class PeriodMockIntegrationShould extends BaseMockIntegrationTestFullDisp
 
     @Test
     public void get_period_passing_period_type_and_a_date() throws ParseException {
-        Period period = d2.periodModule().periodHelper.getPeriod(PeriodType.BiWeekly,
+        Period period = d2.periodModule().periodHelper().getPeriod(PeriodType.BiWeekly,
                 BaseIdentifiableObject.DATE_FORMAT.parse("2019-06-24T12:24:25.319"));
         assertThat(period.periodId(), is("2019BiW13"));
+    }
+
+    @Test
+    public void get_periods() {
+        assertThat(d2.periodModule().periods().blockingCount(), is(193));
+    }
+
+    @Test
+    public void ensure_future_periods_are_downloaded() {
+        int MONTHLY_PERIODS = 11; // Copy from ParentPeriodGeneratorImpl to keep it private
+        assertThat(d2.periodModule().periods().byPeriodType().eq(PeriodType.Monthly).blockingCount(),
+                is(MONTHLY_PERIODS + 3));
     }
 }

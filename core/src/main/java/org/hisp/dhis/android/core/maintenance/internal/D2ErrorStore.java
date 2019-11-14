@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.maintenance.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorTableInfo;
 
@@ -40,14 +40,12 @@ import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLi
 public final class D2ErrorStore {
 
     private static final StatementBinder<D2Error> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.resourceType());
-        sqLiteBind(sqLiteStatement, 2, o.uid());
-        sqLiteBind(sqLiteStatement, 3, o.url());
-        sqLiteBind(sqLiteStatement, 4, o.errorComponent());
-        sqLiteBind(sqLiteStatement, 5, o.errorCode());
-        sqLiteBind(sqLiteStatement, 6, o.errorDescription());
-        sqLiteBind(sqLiteStatement, 7, o.httpErrorCode());
-        sqLiteBind(sqLiteStatement, 8, o.created());
+        sqLiteBind(sqLiteStatement, 1, o.url());
+        sqLiteBind(sqLiteStatement, 2, o.errorComponent());
+        sqLiteBind(sqLiteStatement, 3, o.errorCode());
+        sqLiteBind(sqLiteStatement, 4, o.errorDescription());
+        sqLiteBind(sqLiteStatement, 5, o.httpErrorCode());
+        sqLiteBind(sqLiteStatement, 6, o.created());
     };
 
     private D2ErrorStore() {

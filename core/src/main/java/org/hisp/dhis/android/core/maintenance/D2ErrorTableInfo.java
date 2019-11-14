@@ -29,10 +29,8 @@
 package org.hisp.dhis.android.core.maintenance;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
-
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class D2ErrorTableInfo {
 
@@ -47,25 +45,22 @@ public final class D2ErrorTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    static class Columns extends BaseModel.Columns {
-        static final String RESOURCE_TYPE = "resourceType";
-        static final String URL = "url";
-        static final String ERROR_COMPONENT = "errorComponent";
-        static final String ERROR_CODE = "errorCode";
-        static final String ERROR_DESCRIPTION = "errorDescription";
-        static final String HTTP_ERROR_CODE = "httpErrorCode";
-        static final String CREATED = "created";
+    public static class Columns extends CoreColumns {
+        public static final String URL = "url";
+        public static final String ERROR_COMPONENT = "errorComponent";
+        public static final String ERROR_CODE = "errorCode";
+        public static final String ERROR_DESCRIPTION = "errorDescription";
+        public static final String HTTP_ERROR_CODE = "httpErrorCode";
+        public static final String CREATED = "created";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    RESOURCE_TYPE,
-                    UID,
+            return CollectionsHelper.appendInNewArray(super.all(),
                     URL,
                     ERROR_COMPONENT,
                     ERROR_CODE,

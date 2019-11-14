@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
+import org.hisp.dhis.android.core.dataset.DataSetModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -44,6 +45,7 @@ import retrofit2.Retrofit;
         DataSetCompulsoryDataElementOperandEntityDIModule.class,
         DataSetEntityDIModule.class,
         DataSetCompleteRegistrationEntityDIModule.class,
+        DataSetInstanceEntityDIModule.class,
         SectionEntityDIModule.class,
         SectionDataElementEntityDIModule.class,
         SectionGreyedFieldsEntityDIModule.class
@@ -73,5 +75,11 @@ public final class DataSetPackageDIModule {
     @Reusable
     DataSetCompleteRegistrationService dataSetCompleteRegistrationService(Retrofit retrofit) {
         return retrofit.create(DataSetCompleteRegistrationService.class);
+    }
+
+    @Provides
+    @Reusable
+    DataSetModule module(DataSetModuleImpl impl) {
+        return impl;
     }
 }

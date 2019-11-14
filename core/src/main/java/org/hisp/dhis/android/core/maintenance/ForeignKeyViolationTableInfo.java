@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.maintenance;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class ForeignKeyViolationTableInfo {
 
@@ -45,24 +45,24 @@ public final class ForeignKeyViolationTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    static class Columns extends BaseModel.Columns {
-        final static String FROM_TABLE = "fromTable";
-        final static String FROM_COLUMN = "fromColumn";
-        final static String TO_TABLE = "toTable";
-        final static String TO_COLUMN = "toColumn";
-        final static String NOT_FOUND_VALUE = "notFoundValue";
-        final static String FROM_OBJECT_UID = "fromObjectUid";
-        final static String FROM_OBJECT_ROW = "fromObjectRow";
-        final static String CREATED = "created";
+    public static class Columns extends CoreColumns {
+        public final static String FROM_TABLE = "fromTable";
+        public final static String FROM_COLUMN = "fromColumn";
+        public final static String TO_TABLE = "toTable";
+        public final static String TO_COLUMN = "toColumn";
+        public final static String NOT_FOUND_VALUE = "notFoundValue";
+        public final static String FROM_OBJECT_UID = "fromObjectUid";
+        public final static String FROM_OBJECT_ROW = "fromObjectRow";
+        public final static String CREATED = "created";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     FROM_TABLE,
                     FROM_COLUMN,
                     TO_TABLE,

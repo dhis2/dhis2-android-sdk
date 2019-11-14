@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core;
 
 import android.util.Log;
 
-import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
@@ -46,14 +44,12 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
-    Exception e;
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
-
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2 = D2Factory.forNewDatabase();
     }
 
 
@@ -77,11 +73,11 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
     //@Test
     public void response_successful_on_sync_meta_data_once() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
 
-        //TODO: add aditional sync + break point.
+        //TODO: add additional sync + break point.
         //when debugger stops at the new break point manually change metadata online & resume.
         //This way I can make sure that additive (updates) work as well.
         //The changes could be to one of the programs, adding stuff to it.
@@ -90,8 +86,8 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void download_metadata_in_io_scheduler() throws Exception {
-        d2.userModule().logIn("android", "Android123")
-                .flatMapObservable(user -> d2.syncMetaData())
+        d2.userModule().logIn(username, password, url)
+                .flatMapObservable(user -> d2.metadataModule().download())
                 .subscribeOn(Schedulers.io())
                 .subscribe(progress -> Log.i("META", progress.lastCall()));
 
@@ -100,30 +96,30 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void response_successful_on_sync_meta_data_two_times() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
         //first sync:
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
 
         //second sync:
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
     }
 
     //@Test
     public void response_successful_on_login_wipe_db_and_login() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
         d2.wipeModule().wipeEverything();
 
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
     }
 
     //@Test
     public void response_successful_on_login_logout_and_login() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
         d2.userModule().logOut().blockingAwait();
 
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
     }
 }

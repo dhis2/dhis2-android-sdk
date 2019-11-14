@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboFields;
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 import java.util.List;
 import java.util.Map;
@@ -59,11 +59,11 @@ public final class CategoryOptionComboCollectionRepository
     }
 
     public StringFilterConnector<CategoryOptionComboCollectionRepository> byCategoryComboUid() {
-        return cf.string(CategoryOptionComboFields.CATEGORY_COMBO);
+        return cf.string(CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO);
     }
 
     public CategoryOptionComboCollectionRepository byCategoryOptions(List<String> categoryOptionUids) {
-        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).withThoseChildrenExactly(
+        return cf.subQuery(IdentifiableColumns.UID).withThoseChildrenExactly(
                 CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name(),
                 CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO,
                 CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION,

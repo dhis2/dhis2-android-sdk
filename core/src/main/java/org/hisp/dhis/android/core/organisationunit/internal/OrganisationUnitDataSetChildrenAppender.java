@@ -28,12 +28,11 @@
 
 package org.hisp.dhis.android.core.organisationunit.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -45,27 +44,25 @@ final class OrganisationUnitDataSetChildrenAppender extends ChildrenAppender<Org
             DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
             DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET);
 
-    private final LinkModelChildStore<OrganisationUnit, DataSet> linkModelChildStore;
+    private final ObjectWithUidChildStore<OrganisationUnit> childStore;
 
-    private OrganisationUnitDataSetChildrenAppender(
-            LinkModelChildStore<OrganisationUnit, DataSet> linkModelChildStore) {
-        this.linkModelChildStore = linkModelChildStore;
+    private OrganisationUnitDataSetChildrenAppender(ObjectWithUidChildStore<OrganisationUnit> childStore) {
+        this.childStore = childStore;
     }
 
     @Override
     protected OrganisationUnit appendChildren(OrganisationUnit organisationUnit) {
         OrganisationUnit.Builder builder = organisationUnit.toBuilder();
-        builder.dataSets(linkModelChildStore.getChildren(organisationUnit));
+        builder.dataSets(childStore.getChildren(organisationUnit));
         return builder.build();
     }
 
     static ChildrenAppender<OrganisationUnit> create(DatabaseAdapter databaseAdapter) {
         return new OrganisationUnitDataSetChildrenAppender(
-                StoreFactory.linkModelChildStore(
+                StoreFactory.objectWithUidChildStore(
                         databaseAdapter,
                         DataSetOrganisationUnitLinkTableInfo.TABLE_INFO,
-                        CHILD_PROJECTION,
-                        DataSet::create
+                        CHILD_PROJECTION
                 )
         );
     }

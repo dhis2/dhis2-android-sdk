@@ -32,50 +32,26 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.internal.AccessFields;
+import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
+import org.hisp.dhis.android.core.program.ProgramStageTableInfo.Columns;
 
 public final class ProgramStageFields {
 
-    public static final String DESCRIPTION = "description";
-    public static final String DISPLAY_DESCRIPTION = "displayDescription";
-    public static final String EXECUTION_DATE_LABEL = "executionDateLabel";
-    public static final String ALLOW_GENERATE_NEXT_VISIT = "allowGenerateNextVisit";
-    public static final String VALID_COMPLETE_ONLY = "validCompleteOnly";
-    public static final String REPORT_DATE_TO_USE = "reportDateToUse";
-    public static final String OPEN_AFTER_ENROLLMENT = "openAfterEnrollment";
     public static final String PROGRAM_STAGE_DATA_ELEMENTS = "programStageDataElements";
-    public static final String REPEATABLE = "repeatable";
-    /**
-     * @deprecated since 2.29, replaced by {@link #FEATURE_TYPE}
-     */
-    @Deprecated
-    public static final String CAPTURE_COORDINATES = "captureCoordinates";
-    public static final String FEATURE_TYPE = "featureType";
-    public static final String FORM_TYPE = "formType";
-    public static final String DISPLAY_GENERATE_EVENT_BOX = "displayGenerateEventBox";
-    public static final String GENERATED_BY_ENROLMENT_DATE = "generatedByEnrollmentDate";
-    public static final String AUTO_GENERATE_EVENT = "autoGenerateEvent";
-    public static final String SORT_ORDER = "sortOrder";
-    public static final String HIDE_DUE_DATE = "hideDueDate";
-    public static final String BLOCK_ENTRY_FORM = "blockEntryForm";
-    public static final String MIN_DAYS_FROM_START = "minDaysFromStart";
-    public static final String STANDARD_INTERVAL = "standardInterval";
+    private static final String CAPTURE_COORDINATES = "captureCoordinates";
+    private static final String STYLE = "style";
     public static final String PROGRAM_STAGE_SECTIONS = "programStageSections";
-    public static final String STYLE = "style";
-    public static final String PERIOD_TYPE = "periodType";
-    public static final String PROGRAM = "program";
     private static final String ACCESS = "access";
-    public static final String REMIND_COMPLETED = "remindCompleted";
-
 
     private static FieldsHelper<ProgramStage> fh = new FieldsHelper<>();
 
@@ -83,36 +59,35 @@ public final class ProgramStageFields {
     static final Fields<ProgramStage> allFields = Fields.<ProgramStage>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<String>field(DESCRIPTION),
-                    fh.<String>field(DISPLAY_DESCRIPTION),
-                    fh.<String>field(EXECUTION_DATE_LABEL),
-                    fh.<Boolean>field(ALLOW_GENERATE_NEXT_VISIT),
-                    fh.<Boolean>field(VALID_COMPLETE_ONLY),
-                    fh.<String>field(REPORT_DATE_TO_USE),
-                    fh.<Boolean>field(OPEN_AFTER_ENROLLMENT),
-                    fh.<Boolean>field(REPEATABLE),
+                    fh.<String>field(Columns.DESCRIPTION),
+                    fh.<String>field(Columns.DISPLAY_DESCRIPTION),
+                    fh.<String>field(Columns.EXECUTION_DATE_LABEL),
+                    fh.<Boolean>field(Columns.ALLOW_GENERATE_NEXT_VISIT),
+                    fh.<Boolean>field(Columns.VALID_COMPLETE_ONLY),
+                    fh.<String>field(Columns.REPORT_DATE_TO_USE),
+                    fh.<Boolean>field(Columns.OPEN_AFTER_ENROLLMENT),
+                    fh.<Boolean>field(Columns.REPEATABLE),
                     fh.<Boolean>field(CAPTURE_COORDINATES),
-                    fh.<FeatureType>field(FEATURE_TYPE),
-                    fh.<FormType>field(FORM_TYPE),
-                    fh.<Boolean>field(DISPLAY_GENERATE_EVENT_BOX),
-                    fh.<Boolean>field(GENERATED_BY_ENROLMENT_DATE),
-                    fh.<Boolean>field(AUTO_GENERATE_EVENT),
-                    fh.<Integer>field(SORT_ORDER),
-                    fh.<Boolean>field(HIDE_DUE_DATE),
-                    fh.<Boolean>field(BLOCK_ENTRY_FORM),
-                    fh.<Integer>field(MIN_DAYS_FROM_START),
-                    fh.<Integer>field(STANDARD_INTERVAL),
+                    fh.<FeatureType>field(Columns.FEATURE_TYPE),
+                    fh.<FormType>field(Columns.FORM_TYPE),
+                    fh.<Boolean>field(Columns.DISPLAY_GENERATE_EVENT_BOX),
+                    fh.<Boolean>field(Columns.GENERATED_BY_ENROLMENT_DATE),
+                    fh.<Boolean>field(Columns.AUTO_GENERATE_EVENT),
+                    fh.<Integer>field(Columns.SORT_ORDER),
+                    fh.<Boolean>field(Columns.HIDE_DUE_DATE),
+                    fh.<Boolean>field(Columns.BLOCK_ENTRY_FORM),
+                    fh.<Integer>field(Columns.MIN_DAYS_FROM_START),
+                    fh.<Integer>field(Columns.STANDARD_INTERVAL),
                     fh.<ProgramStageSection>nestedField(PROGRAM_STAGE_SECTIONS)
                             .with(ProgramStageSectionFields.allFields),
                     fh.<ProgramStageDataElement>nestedField(PROGRAM_STAGE_DATA_ELEMENTS)
                             .with(ProgramStageDataElementFields.allFields),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
-                    fh.<PeriodType>field(PERIOD_TYPE),
-                    fh.<ObjectWithUid>field(PROGRAM),
-                    fh.<Access>nestedField(ACCESS).with(Access.data.with(DataAccess.write)),
-                    fh.<Boolean>field(REMIND_COMPLETED)
+                    fh.<PeriodType>field(Columns.PERIOD_TYPE),
+                    fh.<ObjectWithUid>field(Columns.PROGRAM),
+                    fh.<Access>nestedField(ACCESS).with(AccessFields.data.with(DataAccessFields.write)),
+                    fh.<Boolean>field(Columns.REMIND_COMPLETED)
             ).build();
-
 
     private ProgramStageFields() {
     }

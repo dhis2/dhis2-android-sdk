@@ -37,6 +37,8 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo.Columns;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields;
 
 import java.util.Map;
 
@@ -59,39 +61,39 @@ public final class TrackedEntityAttributeCollectionRepository
     }
 
     public StringFilterConnector<TrackedEntityAttributeCollectionRepository> byPattern() {
-        return cf.string(TrackedEntityAttributeFields.PATTERN);
+        return cf.string(Columns.PATTERN);
     }
 
     public IntegerFilterConnector<TrackedEntityAttributeCollectionRepository> bySortOrderInListNoProgram() {
-        return cf.integer(TrackedEntityAttributeFields.SORT_ORDER_IN_LIST_NO_PROGRAM);
+        return cf.integer(Columns.SORT_ORDER_IN_LIST_NO_PROGRAM);
     }
 
     public StringFilterConnector<TrackedEntityAttributeCollectionRepository> byOptionSetUid() {
-        return cf.string(TrackedEntityAttributeFields.OPTION_SET);
+        return cf.string(Columns.OPTION_SET);
     }
 
     public EnumFilterConnector<TrackedEntityAttributeCollectionRepository, ValueType> byValueType() {
-        return cf.enumC(TrackedEntityAttributeFields.VALUE_TYPE);
+        return cf.enumC(Columns.VALUE_TYPE);
     }
 
     public StringFilterConnector<TrackedEntityAttributeCollectionRepository> byExpression() {
-        return cf.string(TrackedEntityAttributeFields.EXPRESSION);
+        return cf.string(Columns.EXPRESSION);
     }
 
     public BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> byProgramScope() {
-        return cf.bool(TrackedEntityAttributeFields.PROGRAM_SCOPE);
+        return cf.bool(Columns.PROGRAM_SCOPE);
     }
 
     public BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> byDisplayInListNoProgram() {
-        return cf.bool(TrackedEntityAttributeFields.DISPLAY_IN_LIST_NO_PROGRAM);
+        return cf.bool(Columns.DISPLAY_IN_LIST_NO_PROGRAM);
     }
 
     public BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> byGenerated() {
-        return cf.bool(TrackedEntityAttributeFields.GENERATED);
+        return cf.bool(Columns.GENERATED);
     }
 
     public BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> byDisplayOnVisitSchedule() {
-        return cf.bool(TrackedEntityAttributeFields.DISPLAY_ON_VISIT_SCHEDULE);
+        return cf.bool(Columns.DISPLAY_ON_VISIT_SCHEDULE);
     }
 
     public BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> byOrgUnitScope() {
@@ -103,14 +105,22 @@ public final class TrackedEntityAttributeCollectionRepository
     }
 
     public BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> byInherit() {
-        return cf.bool(TrackedEntityAttributeFields.INHERIT);
+        return cf.bool(Columns.INHERIT);
+    }
+
+    public StringFilterConnector<TrackedEntityAttributeCollectionRepository> byFieldMask() {
+        return cf.string(Columns.FIELD_MASK);
     }
 
     public StringFilterConnector<TrackedEntityAttributeCollectionRepository> byFormName() {
-        return cf.string(TrackedEntityAttributeFields.FORM_NAME);
+        return cf.string(Columns.FORM_NAME);
     }
 
-    public TrackedEntityAttributeCollectionRepository withObjectStyle() {
-        return cf.withChild(TrackedEntityAttributeFields.STYLE);
+    public StringFilterConnector<TrackedEntityAttributeCollectionRepository> byColor() {
+        return cf.string(Columns.COLOR);
+    }
+
+    public StringFilterConnector<TrackedEntityAttributeCollectionRepository> byIcon() {
+        return cf.string(Columns.ICON);
     }
 }

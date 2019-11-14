@@ -28,17 +28,14 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo;
-
-import java.util.Collection;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
@@ -54,14 +51,15 @@ final class DataSetCompleteRegistrationStoreImpl extends
                 sqLiteBind(sqLiteStatement, 5, dataSetCompleteRegistration.date());
                 sqLiteBind(sqLiteStatement, 6, dataSetCompleteRegistration.storedBy());
                 sqLiteBind(sqLiteStatement, 7, dataSetCompleteRegistration.state());
+                sqLiteBind(sqLiteStatement, 8, dataSetCompleteRegistration.deleted());
             };
 
     private static final WhereStatementBinder<DataSetCompleteRegistration> WHERE_UPDATE_BINDER =
             (dataSetCompleteRegistration, sqLiteStatement) -> {
-                sqLiteBind(sqLiteStatement, 8, dataSetCompleteRegistration.period());
-                sqLiteBind(sqLiteStatement, 9, dataSetCompleteRegistration.dataSet());
-                sqLiteBind(sqLiteStatement, 10, dataSetCompleteRegistration.organisationUnit());
-                sqLiteBind(sqLiteStatement, 11, dataSetCompleteRegistration.attributeOptionCombo());
+                sqLiteBind(sqLiteStatement, 9, dataSetCompleteRegistration.period());
+                sqLiteBind(sqLiteStatement, 10, dataSetCompleteRegistration.dataSet());
+                sqLiteBind(sqLiteStatement, 11, dataSetCompleteRegistration.organisationUnit());
+                sqLiteBind(sqLiteStatement, 12, dataSetCompleteRegistration.attributeOptionCombo());
             };
 
     private static final WhereStatementBinder<DataSetCompleteRegistration> WHERE_DELETE_BINDER =
@@ -87,23 +85,22 @@ final class DataSetCompleteRegistrationStoreImpl extends
         return new DataSetCompleteRegistrationStoreImpl(databaseAdapter, sqlStatementBuilder);
     }
 
-    @Override
-    public Collection<DataSetCompleteRegistration> getDataSetCompleteRegistrationsWithState(State state) {
-        String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(DataSetCompleteRegistration.Columns.STATE, state.name())
-                .build();
-        return selectWhere(whereClause);
-    }
-
     /**
      * @param dataSetCompleteRegistration DataSetCompleteRegistration element you want to update
      * @param newState The new state to be set for the DataValue
      */
     @Override
     public void setState(DataSetCompleteRegistration dataSetCompleteRegistration, State newState) {
-
         DataSetCompleteRegistration updatedDataSetCompleteRegistration
                 = dataSetCompleteRegistration.toBuilder().state(newState).build();
+
+        updateWhere(updatedDataSetCompleteRegistration);
+    }
+
+    @Override
+    public void setDeleted(DataSetCompleteRegistration dataSetCompleteRegistration) {
+        DataSetCompleteRegistration updatedDataSetCompleteRegistration
+                = dataSetCompleteRegistration.toBuilder().deleted(true).build();
 
         updateWhere(updatedDataSetCompleteRegistration);
     }

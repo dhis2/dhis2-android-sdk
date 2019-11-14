@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -37,23 +39,23 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbValueTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DefaultAccessColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreAccessAdapter;
-import org.hisp.dhis.android.core.data.database.OptionSetWithUidColumnAdapter;
-import org.hisp.dhis.android.core.option.OptionSet;
-
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_TrackedEntityAttribute.Builder.class)
 public abstract class TrackedEntityAttribute extends BaseNameableObject
-        implements Model, ObjectWithStyle<TrackedEntityAttribute, TrackedEntityAttribute.Builder>  {
+        implements CoreObject, ObjectWithStyle<TrackedEntityAttribute, TrackedEntityAttribute.Builder>  {
 
     @Nullable
     @JsonProperty()
@@ -65,8 +67,8 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(OptionSetWithUidColumnAdapter.class)
-    public abstract OptionSet optionSet();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid optionSet();
 
     @Nullable
     @JsonProperty()
@@ -109,7 +111,10 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreAccessAdapter.class)
+    public abstract String fieldMask();
+
+    @JsonProperty()
+    @ColumnAdapter(DefaultAccessColumnAdapter.class)
     public abstract Access access();
 
     @Nullable
@@ -137,7 +142,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
 
         public abstract Builder sortOrderInListNoProgram(Integer sortOrderInListNoProgram);
 
-        public abstract Builder optionSet(OptionSet optionSet);
+        public abstract Builder optionSet(ObjectWithUid optionSet);
 
         public abstract Builder valueType(ValueType valueType);
 
@@ -158,12 +163,34 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
 
         public abstract Builder inherit(Boolean inherit);
 
+        public abstract Builder fieldMask(String fieldMask);
+
         public abstract Builder style(ObjectStyle style);
 
         public abstract Builder access(Access access);
 
         public abstract Builder formName(String formName);
 
-        public abstract TrackedEntityAttribute build();
+        abstract TrackedEntityAttribute autoBuild();
+
+        // Auxiliary fields
+        abstract Access access();
+        abstract ObjectStyle style();
+
+        public TrackedEntityAttribute build() {
+            try {
+                access();
+            } catch (IllegalStateException e) {
+                access(AccessHelper.defaultAccess());
+            }
+
+            try {
+                style();
+            } catch (IllegalStateException e) {
+                style(ObjectStyle.builder().build());
+            }
+
+            return autoBuild();
+        }
     }
 }

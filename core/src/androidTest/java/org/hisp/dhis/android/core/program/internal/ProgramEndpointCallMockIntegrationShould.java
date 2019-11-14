@@ -33,20 +33,18 @@ import android.database.Cursor;
 
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;
 import org.hisp.dhis.android.core.legendset.LegendTableInfo;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo;
-import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo;
-import org.hisp.dhis.android.core.program.ProgramRuleTableInfo;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
+import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
+import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityAttributeUtils;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
@@ -60,7 +58,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
+import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(D2JunitRunner.class)
@@ -68,36 +66,33 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
     private static String ACCESS_DATA_WRITE = "accessDataWrite";
     private static String[] PROGRAM_PROJECTION = {
             UID,
-            BaseIdentifiableObjectModel.Columns.CODE,
-            BaseIdentifiableObjectModel.Columns.NAME,
-            BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
-            BaseIdentifiableObjectModel.Columns.CREATED,
-            BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
-            BaseNameableObjectModel.Columns.SHORT_NAME,
-            BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME,
-            BaseNameableObjectModel.Columns.DESCRIPTION,
-            BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION,
-            ProgramFields.VERSION,
-            ProgramFields.ONLY_ENROLL_ONCE,
-            ProgramFields.ENROLLMENT_DATE_LABEL,
-            ProgramFields.DISPLAY_INCIDENT_DATE,
-            ProgramFields.INCIDENT_DATE_LABEL,
-            ProgramFields.REGISTRATION,
-            ProgramFields.SELECT_ENROLLMENT_DATES_IN_FUTURE,
-            ProgramFields.DATA_ENTRY_METHOD,
-            ProgramFields.IGNORE_OVERDUE_EVENTS,
-            ProgramFields.RELATIONSHIP_FROM_A,
-            ProgramFields.SELECT_INCIDENT_DATES_IN_FUTURE,
-            ProgramFields.CAPTURE_COORDINATES,
-            ProgramFields.USE_FIRST_STAGE_DURING_REGISTRATION,
-            ProgramFields.DISPLAY_FRONT_PAGE_LIST,
-            ProgramFields.PROGRAM_TYPE,
-            ProgramFields.RELATIONSHIP_TYPE,
-            ProgramFields.RELATIONSHIP_TEXT,
-            ProgramFields.RELATED_PROGRAM,
-            ProgramFields.TRACKED_ENTITY_TYPE,
-            ProgramFields.CATEGORY_COMBO,
-            ACCESS_DATA_WRITE
+            Columns.CODE,
+            Columns.NAME,
+            Columns.DISPLAY_NAME,
+            Columns.CREATED,
+            Columns.LAST_UPDATED,
+            Columns.SHORT_NAME,
+            Columns.DISPLAY_SHORT_NAME,
+            Columns.DESCRIPTION,
+            Columns.DISPLAY_DESCRIPTION,
+            Columns.VERSION,
+            Columns.ONLY_ENROLL_ONCE,
+            Columns.ENROLLMENT_DATE_LABEL,
+            Columns.DISPLAY_INCIDENT_DATE,
+            Columns.INCIDENT_DATE_LABEL,
+            Columns.REGISTRATION,
+            Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE,
+            Columns.DATA_ENTRY_METHOD,
+            Columns.IGNORE_OVERDUE_EVENTS,
+            Columns.SELECT_INCIDENT_DATES_IN_FUTURE,
+            Columns.USE_FIRST_STAGE_DURING_REGISTRATION,
+            Columns.DISPLAY_FRONT_PAGE_LIST,
+            Columns.PROGRAM_TYPE,
+            Columns.RELATED_PROGRAM,
+            Columns.TRACKED_ENTITY_TYPE,
+            Columns.CATEGORY_COMBO,
+            ACCESS_DATA_WRITE,
+            Columns.ACCESS_LEVEL
     };
 
     private static Callable<List<Program>> programEndpointCall;
@@ -115,6 +110,16 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
         // inserting tracked entity
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
         database.insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType);
+
+        // inserting tracked entity attributes
+        ContentValues trackedEntityAttribute1 = CreateTrackedEntityAttributeUtils.create(1L, "w75KJ2mc4zz", null);
+        database.insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute1);
+
+        ContentValues trackedEntityAttribute2 = CreateTrackedEntityAttributeUtils.create(2L, "zDhUuAYrxNC", null);
+        database.insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute2);
+
+        ContentValues trackedEntityAttribute3 = CreateTrackedEntityAttributeUtils.create(3L, "cejWyOfXge6", null);
+        database.insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute3);
 
         programEndpointCall = objects.d2DIComponent.programCallFactory().create();
     }
@@ -154,17 +159,14 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
                 0, // false
                 0, // false
                 0, // false
-                0, // false
-                1, // true
                 1, // true
                 0, // false
                 "WITH_REGISTRATION",
                 null,
-                null,
-                null,
                 "nEenWmSyUEp",
                 "nM3u9s5a52V",
-                0
+                0,
+                "PROTECTED"
         ).isExhausted();
     }
 
@@ -173,17 +175,17 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
         programEndpointCall.call();
         String[] projection = {
                 UID,
-                BaseIdentifiableObjectModel.Columns.CODE,
-                BaseIdentifiableObjectModel.Columns.NAME,
-                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
-                BaseIdentifiableObjectModel.Columns.CREATED,
-                BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
-                ProgramRuleVariableFields.USE_CODE_FOR_OPTION_SET,
-                ProgramRuleVariableFields.PROGRAM,
-                ProgramRuleVariableFields.PROGRAM_STAGE,
-                ProgramRuleVariableFields.DATA_ELEMENT,
-                ProgramRuleVariableFields.TRACKED_ENTITY_ATTRIBUTE,
-                ProgramRuleVariableFields.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
+                IdentifiableColumns.CODE,
+                IdentifiableColumns.NAME,
+                IdentifiableColumns.DISPLAY_NAME,
+                IdentifiableColumns.CREATED,
+                IdentifiableColumns.LAST_UPDATED,
+                ProgramRuleVariableTableInfo.Columns.USE_CODE_FOR_OPTION_SET,
+                ProgramRuleVariableTableInfo.Columns.PROGRAM,
+                ProgramRuleVariableTableInfo.Columns.PROGRAM_STAGE,
+                ProgramRuleVariableTableInfo.Columns.DATA_ELEMENT,
+                ProgramRuleVariableTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                ProgramRuleVariableTableInfo.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
         };
 
         Cursor programRuleVariableCursor = database.query(ProgramRuleVariableTableInfo.TABLE_INFO.name(), projection,
@@ -210,21 +212,21 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
         programEndpointCall.call();
         String[] projection = {
                 UID,
-                BaseIdentifiableObjectModel.Columns.CODE,
-                BaseIdentifiableObjectModel.Columns.NAME,
-                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
-                BaseIdentifiableObjectModel.Columns.CREATED,
-                BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
-                BaseNameableObjectModel.Columns.SHORT_NAME,
-                BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME,
-                BaseNameableObjectModel.Columns.DESCRIPTION,
-                BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION,
-                ProgramTrackedEntityAttributeFields.MANDATORY,
-                ProgramTrackedEntityAttributeFields.TRACKED_ENTITY_ATTRIBUTE,
-                ProgramTrackedEntityAttributeFields.ALLOW_FUTURE_DATE,
-                ProgramTrackedEntityAttributeFields.DISPLAY_IN_LIST,
-                ProgramTrackedEntityAttributeFields.PROGRAM,
-                ProgramTrackedEntityAttributeFields.SORT_ORDER
+                ProgramTrackedEntityAttributeTableInfo.Columns.CODE,
+                ProgramTrackedEntityAttributeTableInfo.Columns.NAME,
+                ProgramTrackedEntityAttributeTableInfo.Columns.DISPLAY_NAME,
+                ProgramTrackedEntityAttributeTableInfo.Columns.CREATED,
+                ProgramTrackedEntityAttributeTableInfo.Columns.LAST_UPDATED,
+                ProgramTrackedEntityAttributeTableInfo.Columns.SHORT_NAME,
+                ProgramTrackedEntityAttributeTableInfo.Columns.DISPLAY_SHORT_NAME,
+                ProgramTrackedEntityAttributeTableInfo.Columns.DESCRIPTION,
+                ProgramTrackedEntityAttributeTableInfo.Columns.DISPLAY_DESCRIPTION,
+                ProgramTrackedEntityAttributeTableInfo.Columns.MANDATORY,
+                ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                ProgramTrackedEntityAttributeTableInfo.Columns.ALLOW_FUTURE_DATE,
+                ProgramTrackedEntityAttributeTableInfo.Columns.DISPLAY_IN_LIST,
+                ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM,
+                ProgramTrackedEntityAttributeTableInfo.Columns.SORT_ORDER
         };
 
         Cursor programTrackedEntityAttributeCursor = database.query(
@@ -251,63 +253,6 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
                 1, // true
                 "IpHINAT79UW",
                 99
-        ).isExhausted();
-    }
-
-    @Test
-    public void persist_tracked_entity_attribute_when_call() throws Exception {
-        programEndpointCall.call();
-        String[] projection = {
-                UID,
-                BaseIdentifiableObjectModel.Columns.CODE,
-                BaseIdentifiableObjectModel.Columns.NAME,
-                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
-                BaseIdentifiableObjectModel.Columns.CREATED,
-                BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
-                BaseNameableObjectModel.Columns.SHORT_NAME,
-                BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME,
-                BaseNameableObjectModel.Columns.DESCRIPTION,
-                BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION,
-                TrackedEntityAttributeFields.PATTERN,
-                TrackedEntityAttributeFields.SORT_ORDER_IN_LIST_NO_PROGRAM,
-                TrackedEntityAttributeFields.OPTION_SET,
-                TrackedEntityAttributeFields.VALUE_TYPE,
-                TrackedEntityAttributeFields.EXPRESSION,
-                TrackedEntityAttributeFields.PROGRAM_SCOPE,
-                TrackedEntityAttributeFields.DISPLAY_IN_LIST_NO_PROGRAM,
-                TrackedEntityAttributeFields.GENERATED,
-                TrackedEntityAttributeFields.DISPLAY_ON_VISIT_SCHEDULE,
-                TrackedEntityAttributeFields.ORG_UNIT_SCOPE,
-                TrackedEntityAttributeTableInfo.Columns.UNIQUE,
-                TrackedEntityAttributeFields.INHERIT
-        };
-
-        Cursor trackedEntityAttributeCursor = database.query(TrackedEntityAttributeTableInfo.TABLE_INFO.name(),
-                projection, UID + "=?", new String[]{"w75KJ2mc4zz"}, null, null, null);
-
-        assertThatCursor(trackedEntityAttributeCursor).hasRow(
-                "w75KJ2mc4zz",
-                "MMD_PER_NAM",
-                "First name",
-                "First name",
-                "2014-06-06T20:41:25.233",
-                "2015-10-20T13:57:00.939",
-                "First name",
-                "First name",
-                "First name",
-                "First name",
-                "",
-                1,
-                null,
-                "TEXT",
-                null,
-                0, // false
-                1, // true
-                0, // false
-                0, // false
-                0, // false
-                0, // false
-                0 // false
         ).isExhausted();
     }
 
@@ -381,85 +326,6 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
                 40,
                 "#d9f0a3",
                 "TiOkbpGEud4"
-        ).isExhausted();
-    }
-
-    @Test
-    public void persist_program_rules_when_call() throws Exception {
-        programEndpointCall.call();
-        String[] projection = {
-                UID,
-                BaseIdentifiableObjectModel.Columns.CODE,
-                BaseIdentifiableObjectModel.Columns.NAME,
-                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
-                BaseIdentifiableObjectModel.Columns.CREATED,
-                BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
-                ProgramRuleFields.PRIORITY,
-                ProgramRuleFields.CONDITION,
-                ProgramRuleFields.PROGRAM,
-                ProgramRuleFields.PROGRAM_STAGE
-        };
-
-        Cursor programRuleCursor = database.query(ProgramRuleTableInfo.TABLE_INFO.name(), projection,
-                UID + "=?", new String[]{"NAgjOfWMXg6"}, null, null, null);
-
-        assertThatCursor(programRuleCursor).hasRow(
-                "NAgjOfWMXg6",
-                null,
-                "Ask for comment for low apgar",
-                "Ask for comment for low apgar",
-                "2015-09-14T21:17:40.841",
-                "2015-09-14T22:22:15.383",
-                null,
-                "#{apgarscore} >= 0 && #{apgarscore} < 4 && #{apgarcomment} == ''",
-                "IpHINAT79UW",
-                null
-        ).isExhausted();
-    }
-
-    @Test
-    public void persist_program_rule_actions_when_call() throws Exception {
-        programEndpointCall.call();
-
-        String[] projection = {
-                UID,
-                ProgramRuleActionTableInfo.Columns.CODE,
-                ProgramRuleActionTableInfo.Columns.NAME,
-                ProgramRuleActionTableInfo.Columns.DISPLAY_NAME,
-                ProgramRuleActionTableInfo.Columns.CREATED,
-                ProgramRuleActionTableInfo.Columns.LAST_UPDATED,
-                ProgramRuleActionFields.DATA,
-                ProgramRuleActionFields.CONTENT,
-                ProgramRuleActionFields.LOCATION,
-                ProgramRuleActionFields.TRACKED_ENTITY_ATTRIBUTE,
-                ProgramRuleActionFields.PROGRAM_INDICATOR,
-                ProgramRuleActionFields.PROGRAM_STAGE_SECTION,
-                ProgramRuleActionFields.PROGRAM_RULE_ACTION_TYPE,
-                ProgramRuleActionFields.PROGRAM_STAGE,
-                ProgramRuleActionFields.DATA_ELEMENT,
-                ProgramRuleActionFields.PROGRAM_RULE
-        };
-
-        Cursor programRuleActionCursor = database.query(ProgramRuleActionTableInfo.TABLE_INFO.name(), projection,
-                UID + "=?", new String[]{"v434s5YPDcP"}, null, null, null);
-
-        assertThatCursor(programRuleActionCursor).hasRow(
-                "v434s5YPDcP",
-                null,
-                null,
-                null,
-                "2015-09-14T21:17:41.033",
-                "2015-09-14T22:22:15.458",
-                null,
-                "It is suggested that an explanation is provided when the Apgar score is below 4",
-                null,
-                null,
-                null,
-                null,
-                "SHOWWARNING",
-                null,
-                null,
-                "NAgjOfWMXg6"
         ).isExhausted();
     }
 

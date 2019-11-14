@@ -31,14 +31,13 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Map;
 
 import io.reactivex.Single;
 
-public abstract class ReadOnlyObjectRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
+public abstract class ReadOnlyObjectRepositoryImpl<M extends CoreObject, R extends ReadOnlyObjectRepository<M>>
         implements ReadOnlyObjectRepository<M> {
 
     private final Map<String, ChildrenAppender<M>> childrenAppenders;
@@ -56,21 +55,22 @@ public abstract class ReadOnlyObjectRepositoryImpl<M extends Model, R extends Re
     abstract M getWithoutChildren();
 
     @Override
-    public final M get() {
+    public final Single<M> get() {
+        return Single.fromCallable(this::blockingGet);
+    }
+
+    @Override
+    public final M blockingGet() {
         return ChildrenAppenderExecutor.appendInObject(getWithoutChildren(), childrenAppenders, scope.children());
     }
 
     @Override
-    public final Single<M> getAsync() {
-        return Single.fromCallable(this::get);
+    public final Single<Boolean> exists() {
+        return Single.fromCallable(this::blockingExists);
     }
 
     @Override
-    public boolean exists() {
+    public boolean blockingExists() {
         return getWithoutChildren() != null;
-    }
-
-    public R withAllChildren() {
-        return repositoryFactory.updated(RepositoryScopeHelper.withAllChildren(scope));
     }
 }

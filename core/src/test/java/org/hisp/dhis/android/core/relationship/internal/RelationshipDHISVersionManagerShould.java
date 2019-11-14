@@ -126,6 +126,7 @@ public class RelationshipDHISVersionManagerShould extends RelationshipSamples {
     @Test
     public void include_to_as_relative_when_passing_from_in_2_29() {
         when(versionManager.is2_29()).thenReturn(true);
+        when(versionManager.is2_29()).thenReturn(true);
         Relationship229Compatible compatible = relationshipDHISVersionManager.to229Compatible(get230(), FROM_UID);
         assertThat(compatible.relative().uid()).isEqualTo(TO_UID);
     }

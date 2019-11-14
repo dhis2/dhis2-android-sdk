@@ -30,10 +30,9 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.common.CoreColumns;
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo.Columns;
 
 public class CreateTrackedEntityAttributeUtils {
 
@@ -72,29 +71,29 @@ public class CreateTrackedEntityAttributeUtils {
 
         ContentValues values = new ContentValues();
 
-        values.put(BaseModel.Columns.ID, id);
-        values.put(BaseIdentifiableObjectModel.Columns.UID, uid);
-        values.put(BaseIdentifiableObjectModel.Columns.CODE, CODE);
-        values.put(BaseIdentifiableObjectModel.Columns.NAME, NAME);
-        values.put(BaseIdentifiableObjectModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
-        values.put(BaseIdentifiableObjectModel.Columns.CREATED, DATE);
-        values.put(BaseIdentifiableObjectModel.Columns.LAST_UPDATED, DATE);
-        values.put(BaseNameableObjectModel.Columns.SHORT_NAME, SHORT_NAME);
-        values.put(BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
-        values.put(BaseNameableObjectModel.Columns.DESCRIPTION, DESCRIPTION);
-        values.put(BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
-        values.put(TrackedEntityAttributeFields.PATTERN, PATTERN);
-        values.put(TrackedEntityAttributeFields.SORT_ORDER_IN_LIST_NO_PROGRAM, SORT_ORDER_IN_LIST_NO_PROGRAM);
-        values.put(TrackedEntityAttributeFields.OPTION_SET, optionSetUid);
-        values.put(TrackedEntityAttributeFields.VALUE_TYPE, VALUE_TYPE.name());
-        values.put(TrackedEntityAttributeFields.EXPRESSION, EXPRESSION);
-        values.put(TrackedEntityAttributeFields.PROGRAM_SCOPE, PROGRAM_SCOPE);
-        values.put(TrackedEntityAttributeFields.DISPLAY_IN_LIST_NO_PROGRAM, DISPLAY_IN_LIST_NO_PROGRAM);
-        values.put(TrackedEntityAttributeFields.GENERATED, GENERATED);
-        values.put(TrackedEntityAttributeFields.DISPLAY_ON_VISIT_SCHEDULE, DISPLAY_ON_VISIT_SCHEDULE);
-        values.put(TrackedEntityAttributeFields.ORG_UNIT_SCOPE, ORG_UNIT_SCOPE);
-        values.put(TrackedEntityAttributeTableInfo.Columns.UNIQUE, UNIQUE);
-        values.put(TrackedEntityAttributeFields.INHERIT, INHERIT);
+        values.put(CoreColumns.ID, id);
+        values.put(Columns.UID, uid);
+        values.put(Columns.CODE, CODE);
+        values.put(Columns.NAME, NAME);
+        values.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
+        values.put(Columns.CREATED, DATE);
+        values.put(Columns.LAST_UPDATED, DATE);
+        values.put(Columns.SHORT_NAME, SHORT_NAME);
+        values.put(Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
+        values.put(Columns.DESCRIPTION, DESCRIPTION);
+        values.put(Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
+        values.put(Columns.PATTERN, PATTERN);
+        values.put(Columns.SORT_ORDER_IN_LIST_NO_PROGRAM, SORT_ORDER_IN_LIST_NO_PROGRAM);
+        values.put(Columns.OPTION_SET, optionSetUid);
+        values.put(Columns.VALUE_TYPE, VALUE_TYPE.name());
+        values.put(Columns.EXPRESSION, EXPRESSION);
+        values.put(Columns.PROGRAM_SCOPE, PROGRAM_SCOPE);
+        values.put(Columns.DISPLAY_IN_LIST_NO_PROGRAM, DISPLAY_IN_LIST_NO_PROGRAM);
+        values.put(Columns.GENERATED, GENERATED);
+        values.put(Columns.DISPLAY_ON_VISIT_SCHEDULE, DISPLAY_ON_VISIT_SCHEDULE);
+        values.put(Columns.ORG_UNIT_SCOPE, ORG_UNIT_SCOPE);
+        values.put(Columns.UNIQUE, UNIQUE);
+        values.put(Columns.INHERIT, INHERIT);
 
         return values;
     }

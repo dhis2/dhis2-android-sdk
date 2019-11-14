@@ -30,23 +30,23 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.RelationshipConstraintTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.RelationshipEntityTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.DbRelationshipConstraintTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbRelationshipEntityTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_RelationshipConstraint.Builder.class)
-public abstract class RelationshipConstraint extends BaseModel {
+public abstract class RelationshipConstraint extends BaseObject {
 
     @Nullable
     @JsonIgnore()
@@ -55,11 +55,11 @@ public abstract class RelationshipConstraint extends BaseModel {
 
     @Nullable
     @JsonIgnore()
-    @ColumnAdapter(DbRelationshipConstraintTypeColumnAdapter.class)
+    @ColumnAdapter(RelationshipConstraintTypeColumnAdapter.class)
     public abstract RelationshipConstraintType constraintType();
 
     @Nullable
-    @ColumnAdapter(DbRelationshipEntityTypeColumnAdapter.class)
+    @ColumnAdapter(RelationshipEntityTypeColumnAdapter.class)
     public abstract RelationshipEntityType relationshipEntity();
 
     @Nullable
@@ -86,7 +86,7 @@ public abstract class RelationshipConstraint extends BaseModel {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
+    public static abstract class Builder extends BaseObject.Builder<Builder> {
 
         public abstract Builder relationshipType(ObjectWithUid relationshipType);
 

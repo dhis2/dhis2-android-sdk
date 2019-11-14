@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.IdentifiableWithStyleColumns;
 
 public final class OptionTableInfo {
 
@@ -46,18 +46,21 @@ public final class OptionTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends IdentifiableWithStyleColumns {
+
+        public final static String SORT_ORDER = "sortOrder";
+        public final static String OPTION_SET = "optionSet";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    OptionFields.SORT_ORDER,
-                    OptionFields.OPTION_SET
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    SORT_ORDER,
+                    OPTION_SET
             );
         }
     }

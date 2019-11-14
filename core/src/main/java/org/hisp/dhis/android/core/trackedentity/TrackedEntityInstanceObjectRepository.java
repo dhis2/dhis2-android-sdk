@@ -29,22 +29,21 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithUidDataObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
 import java.util.Date;
 import java.util.Map;
 
 public final class TrackedEntityInstanceObjectRepository
-        extends ReadWriteWithUidDataObjectRepositoryImpl<TrackedEntityInstance, TrackedEntityInstanceObjectRepository>
-        implements ReadWriteObjectRepository<TrackedEntityInstance> {
+        extends ReadWriteWithUidDataObjectRepositoryImpl<TrackedEntityInstance, TrackedEntityInstanceObjectRepository> {
 
     TrackedEntityInstanceObjectRepository(final TrackedEntityInstanceStore store,
                                           final String uid,
@@ -58,8 +57,8 @@ public final class TrackedEntityInstanceObjectRepository
         return updateObject(updateBuilder().organisationUnit(organisationUnitUid).build());
     }
 
-    public Unit setCoordinates(String coordinates) throws D2Error {
-        return updateObject(updateBuilder().coordinates(coordinates).build());
+    public Unit setGeometry(Geometry geometry) throws D2Error {
+        return updateObject(updateBuilder().geometry(geometry).build());
     }
 
     private TrackedEntityInstance.Builder updateBuilder() throws D2Error {
@@ -74,11 +73,11 @@ public final class TrackedEntityInstanceObjectRepository
                     .build();
         }
         Date updateDate = new Date();
-        state = state == State.TO_POST || state == State.TO_DELETE ? state : State.TO_UPDATE;
+        state = state == State.TO_POST ? state : State.TO_UPDATE;
 
         return trackedEntityInstance.toBuilder()
                 .state(state)
                 .lastUpdated(updateDate)
-                .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(updateDate));
+                .lastUpdatedAtClient(updateDate);
     }
 }

@@ -44,6 +44,7 @@ interface RelationshipTypeService {
     Call<Payload<RelationshipType>> getRelationshipTypes(
             @Query("fields") @Which Fields<RelationshipType> fields,
             @Query("filter") @Where Filter<RelationshipType, String> lastUpdated,
+            @Query("filter") String accessDataReadFilter,
             @Query("paging") Boolean paging
     );
 }

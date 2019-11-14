@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventCreateProjection;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueChildrenAppender;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueChildrenAppender;
 
 import java.util.Collections;
 import java.util.Map;

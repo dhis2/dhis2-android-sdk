@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSetElement;
 
 import dagger.Module;
@@ -43,13 +43,13 @@ public final class DataSetElementEntityDIModule {
 
     @Provides
     @Reusable
-    LinkModelStore<DataSetElement> store(DatabaseAdapter databaseAdapter) {
+    LinkStore<DataSetElement> store(DatabaseAdapter databaseAdapter) {
         return DataSetDataElementLinkStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    LinkHandler<DataSetElement, DataSetElement> handler(LinkModelStore<DataSetElement> store) {
+    LinkHandler<DataSetElement, DataSetElement> handler(LinkStore<DataSetElement> store) {
         return new LinkHandlerImpl<>(store);
     }
 }

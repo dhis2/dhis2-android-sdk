@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import org.hisp.dhis.android.core.user.UserModule;
+
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
@@ -53,5 +55,11 @@ public final class UserPackageDIModule {
     @Reusable
     AuthorityService authorityService(Retrofit retrofit) {
         return retrofit.create(AuthorityService.class);
+    }
+
+    @Provides
+    @Reusable
+    UserModule module(UserModuleImpl impl) {
+        return impl;
     }
 }

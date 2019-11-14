@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSetElement;
 import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo;
 
@@ -48,10 +48,10 @@ final class DataSetDataElementLinkStore {
 
     private DataSetDataElementLinkStore() {}
 
-    public static LinkModelStore<DataSetElement> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter,
+    public static LinkStore<DataSetElement> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkStore(databaseAdapter,
                 DataSetElementLinkTableInfo.TABLE_INFO,
-                DataSetElementFields.DATA_SET,
+                DataSetElementLinkTableInfo.Columns.DATA_SET,
                 BINDER,
                 DataSetElement::create);
     }

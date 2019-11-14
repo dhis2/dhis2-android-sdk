@@ -34,13 +34,12 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
-import org.hisp.dhis.android.core.program.ProgramRule;
+import org.hisp.dhis.android.core.program.ProgramInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramSection;
-import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -54,10 +53,8 @@ import org.mockito.MockitoAnnotations;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -76,16 +73,10 @@ public class ProgramHandlerShould {
     private Handler<ProgramIndicator> programIndicatorHandler;
 
     @Mock
-    private Handler<ProgramRule> programRuleHandler;
-
-    @Mock
     private Handler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler;
 
     @Mock
     private Handler<ProgramSection> programSectionHandler;
-
-    @Mock
-    private ObjectStyleHandler styleHandler;
 
     @Mock
     private ParentOrphanCleaner<Program> orphanCleaner;
@@ -103,10 +94,7 @@ public class ProgramHandlerShould {
     private Access access;
 
     @Mock
-    private List<ProgramStage> programStages;
-
-    @Mock
-    private Program relatedProgram;
+    private ObjectWithUid relatedProgram;
 
     @Mock
     private TrackedEntityType trackedEntityType;
@@ -118,22 +106,13 @@ public class ProgramHandlerShould {
     private List<ProgramIndicator> programIndicators;
 
     @Mock
-    private ProgramRule programRule;
-
-    @Mock
     private ProgramRuleVariable programRuleVariable;
-
-    @Mock
-    private List<ProgramRule> programRules;
 
     @Mock
     private List<ProgramRuleVariable> programRuleVariables;
 
     @Mock
     private List<ProgramSection> programSections;
-
-    @Mock
-    private ProgramDHISVersionManager versionManager;
 
     // object to test
     private ProgramHandler programHandler;
@@ -143,9 +122,9 @@ public class ProgramHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         programHandler = new ProgramHandler(
-                programStore, programRuleVariableHandler, programIndicatorHandler, programRuleHandler,
-                programTrackedEntityAttributeHandler, programSectionHandler, styleHandler, orphanCleaner,
-                collectionCleaner, versionManager);
+                programStore, programRuleVariableHandler, programIndicatorHandler,
+                programTrackedEntityAttributeHandler, programSectionHandler, orphanCleaner,
+                collectionCleaner);
 
         when(program.uid()).thenReturn("test_program_uid");
         when(program.code()).thenReturn("test_program_code");
@@ -156,7 +135,7 @@ public class ProgramHandlerShould {
         when(program.description()).thenReturn("A test program for the integration tests.");
         when(program.displayDescription()).thenReturn("A test program for the integration tests.");
 
-        //ProgramModel attributes:
+        //Program attributes:
         when(program.version()).thenReturn(1);
         when(program.onlyEnrollOnce()).thenReturn(true);
         when(program.enrollmentDateLabel()).thenReturn("enrollment date");
@@ -166,31 +145,24 @@ public class ProgramHandlerShould {
         when(program.selectEnrollmentDatesInFuture()).thenReturn(true);
         when(program.dataEntryMethod()).thenReturn(true);
         when(program.ignoreOverdueEvents()).thenReturn(false);
-        when(program.relationshipFromA()).thenReturn(true);
         when(program.selectIncidentDatesInFuture()).thenReturn(true);
-        when(program.captureCoordinates()).thenReturn(true);
         when(program.useFirstStageDuringRegistration()).thenReturn(true);
         when(program.displayFrontPageList()).thenReturn(true);
         when(program.programType()).thenReturn(ProgramType.WITH_REGISTRATION);
-        when(program.relationshipText()).thenReturn("test relationship");
         when(program.relatedProgram()).thenReturn(relatedProgram);
         when(program.trackedEntityType()).thenReturn(trackedEntityType);
 
-        programRules = Collections.singletonList(programRule);
         programRuleVariables = Collections.singletonList(programRuleVariable);
 
-        when(program.programStages()).thenReturn(programStages);
-        when(program.programTrackedEntityAttributes()).thenReturn(programTrackedEntityAttributes);
-        when(program.programIndicators()).thenReturn(programIndicators);
-        when(program.programRules()).thenReturn(programRules);
-        when(program.programRuleVariables()).thenReturn(programRuleVariables);
-        when(program.programSections()).thenReturn(programSections);
+        when(ProgramInternalAccessor.accessProgramTrackedEntityAttributes(program))
+                .thenReturn(programTrackedEntityAttributes);
+        when(ProgramInternalAccessor.accessProgramIndicators(program)).thenReturn(programIndicators);
+        when(ProgramInternalAccessor.accessProgramRuleVariables(program)).thenReturn(programRuleVariables);
+        when(ProgramInternalAccessor.accessProgramSections(program)).thenReturn(programSections);
         when(program.access()).thenReturn(access);
         when(access.data()).thenReturn(dataAccess);
         when(dataAccess.read()).thenReturn(true);
         when(dataAccess.write()).thenReturn(true);
-
-        when(versionManager.addCaptureCoordinatesOrFeatureType(program)).thenReturn(program);
     }
 
     @Test
@@ -206,21 +178,9 @@ public class ProgramHandlerShould {
     }
 
     @Test
-    public void call_program_rule_handler() {
-        programHandler.handle(program);
-        verify(programRuleHandler).handleMany(programRules);
-    }
-
-    @Test
     public void call_program_rule_variable_handler() {
         programHandler.handle(program);
         verify(programRuleVariableHandler).handleMany(programRuleVariables);
-    }
-
-    @Test
-    public void call_style_handler() {
-        programHandler.handle(program);
-        verify(styleHandler).handle(same(program.style()), anyString(), anyString());
     }
 
     @Test

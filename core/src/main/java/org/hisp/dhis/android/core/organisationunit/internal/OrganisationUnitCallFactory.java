@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.user.UserInternalAccessor;
 
 import java.util.List;
 import java.util.Set;
@@ -53,6 +54,7 @@ class OrganisationUnitCallFactory {
 
     private final OrganisationUnitService organisationUnitService;
     private final OrganisationUnitHandler handler;
+    private final OrganisationUnitDisplayPathTransformer pathTransformer;
 
     private final APICallExecutor apiCallExecutor;
     private final ResourceHandler resourceHandler;
@@ -60,10 +62,12 @@ class OrganisationUnitCallFactory {
     @Inject
     OrganisationUnitCallFactory(@NonNull OrganisationUnitService organisationUnitService,
                                 @NonNull OrganisationUnitHandler handler,
+                                @NonNull OrganisationUnitDisplayPathTransformer pathTransformer,
                                 @NonNull APICallExecutor apiCallExecutor,
                                 @NonNull ResourceHandler resourceHandler) {
         this.organisationUnitService = organisationUnitService;
         this.handler = handler;
+        this.pathTransformer = pathTransformer;
         this.apiCallExecutor = apiCallExecutor;
         this.resourceHandler = resourceHandler;
     }
@@ -90,7 +94,7 @@ class OrganisationUnitCallFactory {
     private void downloadCaptureOrgunits(final User user,
                                          final Set<String> programUids,
                                          final Set<String> dataSetUids) throws D2Error {
-        Set<String> captureOrgunitsUids = findRoots(user.organisationUnits());
+        Set<String> captureOrgunitsUids = findRoots(UserInternalAccessor.accessOrganisationUnits(user));
         downloadOrgunits(captureOrgunitsUids, user,
                 OrganisationUnit.Scope.SCOPE_DATA_CAPTURE, programUids, dataSetUids);
     }
@@ -98,7 +102,7 @@ class OrganisationUnitCallFactory {
     private void downloadSearchOrgunits(final User user,
                                         final Set<String> programUids,
                                         final Set<String> dataSetUids) throws D2Error {
-        Set<String> searchOrgunitsUids = findRoots(user.teiSearchOrganisationUnits());
+        Set<String> searchOrgunitsUids = findRoots(UserInternalAccessor.accessTeiSearchOrganisationUnits(user));
         downloadOrgunits(searchOrgunitsUids, user,
                 OrganisationUnit.Scope.SCOPE_TEI_SEARCH, programUids, dataSetUids);
     }
@@ -110,7 +114,6 @@ class OrganisationUnitCallFactory {
                                   final Set<String> dataSetUids) throws D2Error {
 
         handler.setData(programUids, dataSetUids, user, scope);
-        OrganisationUnitDisplayPathTransformer transformer = new OrganisationUnitDisplayPathTransformer();
 
         for (String uid : orgUnits) {
             OrganisationUnitQuery.Builder queryBuilder = OrganisationUnitQuery.builder().orgUnit(uid);
@@ -121,7 +124,7 @@ class OrganisationUnitCallFactory {
                 pageQuery = queryBuilder.build();
                 pageOrgunits = apiCallExecutor.executePayloadCall(getOrganisationUnitAndDescendants(pageQuery));
 
-                handler.handleMany(pageOrgunits, transformer);
+                handler.handleMany(pageOrgunits, pathTransformer);
 
                 queryBuilder.page(pageQuery.page() + 1);
             }

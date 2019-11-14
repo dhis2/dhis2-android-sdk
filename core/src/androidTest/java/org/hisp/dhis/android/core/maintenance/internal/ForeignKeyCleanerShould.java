@@ -30,20 +30,22 @@ package org.hisp.dhis.android.core.maintenance.internal;
 
 import android.database.Cursor;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.D2Factory;
+import org.hisp.dhis.android.core.arch.api.internal.ServerUrlInterceptor;
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
-import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
 import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo;
@@ -51,7 +53,6 @@ import org.hisp.dhis.android.core.program.ProgramRuleActionType;
 import org.hisp.dhis.android.core.program.ProgramRuleTableInfo;
 import org.hisp.dhis.android.core.program.internal.ProgramRuleActionStore;
 import org.hisp.dhis.android.core.program.internal.ProgramRuleStore;
-import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserCredentialsTableInfo;
 import org.hisp.dhis.android.core.user.UserTableInfo;
@@ -65,8 +66,6 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.test.runner.AndroidJUnit4;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -82,10 +81,10 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
             UserCredentialsTableInfo.Columns.USER
     };
     private final String[] PROGRAM_RULE_PROJECTION = {
-            BaseIdentifiableObjectModel.Columns.UID
+            IdentifiableColumns.UID
     };
     private final String[] PROGRAM_RULE_ACTION_PROJECTION = {
-            BaseIdentifiableObjectModel.Columns.UID
+            IdentifiableColumns.UID
     };
 
     @Override
@@ -94,8 +93,9 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
         super.setUp();
 
         dhis2MockServer = new Dhis2MockServer();
+        ServerUrlInterceptor.setServerUrl(dhis2MockServer.getBaseEndpoint() + "api/");
 
-        d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
+        d2 = D2Factory.forDatabaseAdapter(databaseAdapter());
     }
 
     @Override
@@ -159,7 +159,7 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
 
         ForeignKeyViolation categoryOptionComboViolation = ForeignKeyViolation.builder()
                 .toTable(UserTableInfo.TABLE_INFO.name())
-                .toColumn(BaseIdentifiableObjectModel.Columns.UID)
+                .toColumn(IdentifiableColumns.UID)
                 .fromTable(UserCredentialsTableInfo.TABLE_INFO.name())
                 .fromColumn(UserCredentialsTableInfo.Columns.USER)
                 .notFoundValue("no_user_uid")
@@ -192,7 +192,7 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
         programRuleCursor.close();
         programRuleActionCursor.close();
 
-        final Program program = Program.builder().uid("nonexisent-program").build();
+        final ObjectWithUid program = ObjectWithUid.create("nonexisent-program");
 
         executor.executeD2CallTransactionally(() -> {
             ProgramRuleStore.create(d2.databaseAdapter()).insert(ProgramRule.builder()
@@ -237,7 +237,7 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
 
         executor.executeD2CallTransactionally(() -> {
             givenAMetadataInDatabase();
-            User user = User.builder().uid("no_user_uid").build();
+            ObjectWithUid user = ObjectWithUid.create("no_user_uid");
             UserCredentials userCredentials = UserCredentials.builder()
                     .id(2L)
                     .uid("user_credential_uid1")
@@ -261,7 +261,8 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
     private void givenAMetadataInDatabase() {
         try {
             dhis2MockServer.setRequestDispatcher();
-            d2.syncMetaData().blockingSubscribe();
+            d2.userModule().logIn(username, password, dhis2MockServer.getBaseEndpoint());
+            d2.metadataModule().blockingDownload();
         } catch (Exception ignore) {
         }
     }

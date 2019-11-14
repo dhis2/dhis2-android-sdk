@@ -28,101 +28,21 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.Callable;
+public interface TrackedEntityModule {
 
-import javax.inject.Inject;
+    TrackedEntityTypeCollectionRepository trackedEntityTypes();
+    TrackedEntityInstanceCollectionRepository trackedEntityInstances();
+    TrackedEntityDataValueCollectionRepository trackedEntityDataValues();
+    TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues();
+    TrackedEntityAttributeCollectionRepository trackedEntityAttributes();
+    TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes();
 
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.reactivex.Observable;
+    TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class TrackedEntityModule {
+    TrackedEntityAttributeReservedValueManager reservedValueManager();
 
-    public final TrackedEntityTypeCollectionRepository trackedEntityTypes;
-    public final TrackedEntityInstanceCollectionRepository trackedEntityInstances;
-    public final TrackedEntityDataValueCollectionRepository trackedEntityDataValues;
-    public final TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues;
-    public final TrackedEntityAttributeCollectionRepository trackedEntityAttributes;
-    public final TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes;
-
-    public final TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery;
-
-    public final TrackedEntityAttributeReservedValueManager reservedValueManager;
-
-    private final TrackedEntityInstanceWithLimitCallFactory withLimitCallFactory;
-    private final TrackedEntityInstanceListDownloadAndPersistCallFactory downloadAndPersistCallFactory;
-
-    @Inject
-    TrackedEntityModule(
-            TrackedEntityTypeCollectionRepository trackedEntityTypes,
-            TrackedEntityInstanceCollectionRepository trackedEntityInstances,
-            TrackedEntityDataValueCollectionRepository trackedEntityDataValues,
-            TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues,
-            TrackedEntityAttributeCollectionRepository trackedEntityAttributes,
-            TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes,
-            TrackedEntityAttributeReservedValueManager reservedValueManager,
-            TrackedEntityInstanceWithLimitCallFactory withLimitCallFactory,
-            TrackedEntityInstanceListDownloadAndPersistCallFactory downloadAndPersistCallFactory,
-            TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery) {
-        this.trackedEntityTypes = trackedEntityTypes;
-        this.trackedEntityInstances = trackedEntityInstances;
-        this.trackedEntityDataValues = trackedEntityDataValues;
-        this.trackedEntityAttributeValues = trackedEntityAttributeValues;
-        this.trackedEntityAttributes = trackedEntityAttributes;
-        this.trackedEntityTypeAttributes =trackedEntityTypeAttributes;
-        this.reservedValueManager = reservedValueManager;
-        this.withLimitCallFactory = withLimitCallFactory;
-        this.downloadAndPersistCallFactory = downloadAndPersistCallFactory;
-        this.trackedEntityInstanceQuery = trackedEntityInstanceQuery;
-    }
-
-    /**
-     * Downloads and persists TrackedEntityInstances from the server. Only instances in capture scope are downloaded.
-     * This method keeps track of the latest successful download in order to void downloading unmodified data.
-     *
-     * It makes use of paging with a best effort strategy: in case a page fails to be downloaded or persisted, it is
-     * skipped and the rest of pages are persisted.
-     *
-     * @param teiLimit Max number of TrackedEntityInstances to download.
-     * @param limitByOrgUnit If true, the limit of TEIs is considered per organisation unit.
-     * @param limitByProgram If true, the limit of TEIs is considered per program.
-     * @return An Observable that notifies about the progress.
-     */
-    public Observable<D2Progress> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit,
-                                                                 boolean limitByProgram) {
-        return withLimitCallFactory.download(teiLimit, limitByOrgUnit, limitByProgram);
-    }
-
-    /**
-     * Downloads and persists a list of TrackedEntityInstances. This method could be used to download
-     * TrackedEntityInstances located in search scope once their uids have been obtained by a search query.
-     *
-     * It downloads the TEIs with all their visible programs.
-     *
-     * @param uids List of TrackedEntityInstance uids
-     * @return -
-     */
-    public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {
-        return downloadAndPersistCallFactory.getCall(uids);
-    }
-
-    /**
-     * Download and persists a list of TrackedEntityInstances for a specific program. This method is required to
-     * download glass-protected TrackedEntityInstances.
-     *
-     * @param uids List of TrackedEntityInstance uids
-     * @param program Program uid
-     * @return -
-     */
-    public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids,
-                                                                                     String program) {
-        return downloadAndPersistCallFactory.getCall(uids, program);
-    }
+    TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
 }

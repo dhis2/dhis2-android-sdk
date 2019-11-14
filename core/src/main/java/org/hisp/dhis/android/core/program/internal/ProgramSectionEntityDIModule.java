@@ -28,14 +28,11 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleStoreImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.program.ProgramSection;
-import org.hisp.dhis.android.core.program.ProgramSectionTableInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,14 +60,8 @@ public final class ProgramSectionEntityDIModule {
     @Reusable
     @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<ProgramSection>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<ProgramSection> objectStyleChildrenAppender =
-                new ObjectStyleChildrenAppender<>(
-                        ObjectStyleStoreImpl.create(databaseAdapter),
-                        ProgramSectionTableInfo.TABLE_INFO
-                );
 
         return new HashMap<String, ChildrenAppender<ProgramSection>>() {{
-            put(ProgramSectionFields.STYLE, objectStyleChildrenAppender);
             put(ProgramSectionFields.ATTRIBUTES, ProgramSectionAttributeChildrenAppender.create(databaseAdapter));
         }};
     }

@@ -49,30 +49,30 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void find_all() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
-                        .get();
+                d2.dataValueModule().dataValues()
+                        .blockingGet();
 
-        assertThat(dataValues.size(), is(3));
+        assertThat(dataValues.size(), is(5));
     }
 
     @Test
     public void filter_by_data_element() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byDataElementUid()
                         .eq("g9eOBujte1U")
-                        .get();
+                        .blockingGet();
 
-        assertThat(dataValues.size(), is(3));
+        assertThat(dataValues.size(), is(5));
     }
 
     @Test
     public void filter_by_period() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byPeriod()
                         .eq("2018")
-                        .get();
+                        .blockingGet();
 
         assertThat(dataValues.size(), is(1));
     }
@@ -80,43 +80,43 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void filter_by_organisation_unit() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byOrganisationUnitUid()
                         .eq("DiszpKrYNg8")
-                        .get();
+                        .blockingGet();
 
-        assertThat(dataValues.size(), is(3));
+        assertThat(dataValues.size(), is(5));
     }
 
     @Test
     public void filter_by_category_option_combo() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byCategoryOptionComboUid()
                         .eq("Gmbgme7z9BF")
-                        .get();
+                        .blockingGet();
 
-        assertThat(dataValues.size(), is(3));
+        assertThat(dataValues.size(), is(4));
     }
 
     @Test
     public void filter_by_attribute_option_combo() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byAttributeOptionComboUid()
                         .eq("bRowv6yZOF2")
-                        .get();
+                        .blockingGet();
 
-        assertThat(dataValues.size(), is(3));
+        assertThat(dataValues.size(), is(5));
     }
 
     @Test
     public void filter_by_value() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byValue()
                         .eq("11")
-                        .get();
+                        .blockingGet();
 
         assertThat(dataValues.size(), is(1));
     }
@@ -124,10 +124,10 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void filter_by_stored_by() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byStoredBy()
                         .eq("android")
-                        .get();
+                        .blockingGet();
 
         assertThat(dataValues.size(), is(2));
     }
@@ -135,10 +135,10 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void filter_by_created() throws ParseException {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byCreated()
-                        .eq(BaseIdentifiableObject.DATE_FORMAT.parse("2010-01-11T00:00:00.000+0000"))
-                        .get();
+                        .eq(BaseIdentifiableObject.DATE_FORMAT.parse("2010-02-11T00:00:00.000+0100"))
+                        .blockingGet();
 
         assertThat(dataValues.size(), is(1));
     }
@@ -146,10 +146,10 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void filter_by_last_updated() throws ParseException {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byLastUpdated()
                         .eq(BaseIdentifiableObject.DATE_FORMAT.parse("2011-01-11T00:00:00.000+0000"))
-                        .get();
+                        .blockingGet();
 
         assertThat(dataValues.size(), is(1));
     }
@@ -157,10 +157,10 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void filter_by_comment() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byComment()
                         .eq("Relevant comment")
-                        .get();
+                        .blockingGet();
 
         assertThat(dataValues.size(), is(1));
     }
@@ -168,30 +168,40 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void filter_by_follow_up() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byFollowUp()
                         .isFalse()
-                        .get();
+                        .blockingGet();
 
-        assertThat(dataValues.size(), is(2));
+        assertThat(dataValues.size(), is(4));
     }
 
     @Test
     public void filter_by_state() {
         List<DataValue> dataValues =
-                d2.dataValueModule().dataValues
+                d2.dataValueModule().dataValues()
                         .byState().eq(State.SYNCED)
-                        .get();
+                        .blockingGet();
 
-        assertThat(dataValues.size(), is(3));
+        assertThat(dataValues.size(), is(5));
+    }
+
+    @Test
+    public void filter_by_deleted() {
+        List<DataValue> dataValues =
+                d2.dataValueModule().dataValues()
+                        .byDeleted().isFalse()
+                        .blockingGet();
+
+        assertThat(dataValues.size(), is(5));
     }
 
     @Test
     public void return_data_value_object_repository() {
-        DataValueObjectRepository objectRepository = d2.dataValueModule().dataValues
+        DataValueObjectRepository objectRepository = d2.dataValueModule().dataValues()
                 .value("2018", "DiszpKrYNg8", "g9eOBujte1U",
                         "Gmbgme7z9BF", "bRowv6yZOF2");
-        assertThat(objectRepository.exists(), is(Boolean.TRUE));
-        assertThat(objectRepository.get().value(), is("10"));
+        assertThat(objectRepository.blockingExists(), is(Boolean.TRUE));
+        assertThat(objectRepository.blockingGet().value(), is("10"));
     }
 }

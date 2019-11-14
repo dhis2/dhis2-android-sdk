@@ -29,11 +29,9 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithUidDataObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
@@ -44,11 +42,9 @@ import java.util.Date;
 import java.util.Map;
 
 public final class EventObjectRepository
-        extends ReadWriteWithUidDataObjectRepositoryImpl<Event, EventObjectRepository>
-        implements ReadWriteObjectRepository<Event> {
+        extends ReadWriteWithUidDataObjectRepositoryImpl<Event, EventObjectRepository> {
 
     private final DataStatePropagator dataStatePropagator;
-    private Event event;
 
     EventObjectRepository(final EventStore store,
                           final String uid,
@@ -72,10 +68,6 @@ public final class EventObjectRepository
         return updateObject(updateBuilder().status(eventStatus).build());
     }
 
-    public Unit setCoordinate(Coordinates coordinate) throws D2Error {
-        return updateObject(updateBuilder().coordinate(coordinate).build());
-    }
-
     public Unit setCompletedDate(Date completedDate) throws D2Error {
         return updateObject(updateBuilder().completedDate(completedDate).build());
     }
@@ -84,22 +76,28 @@ public final class EventObjectRepository
         return updateObject(updateBuilder().dueDate(dueDate).build());
     }
 
+    public Unit setGeometry(Geometry geometry) throws D2Error {
+        return updateObject(updateBuilder().geometry(geometry).build());
+    }
+
+    public Unit setAttributeOptionComboUid(String attributeOptionComboUid) throws D2Error {
+        return updateObject(updateBuilder().attributeOptionCombo(attributeOptionComboUid).build());
+    }
+
     private Event.Builder updateBuilder() {
-        event = getWithoutChildren();
+        Event event = getWithoutChildren();
         Date updateDate = new Date();
         State state = event.state();
-        if (state != State.TO_POST && state != State.TO_DELETE) {
-            state = State.TO_UPDATE;
-        }
+        state = state == State.TO_POST ? state : State.TO_UPDATE;
 
         return event.toBuilder()
                 .state(state)
                 .lastUpdated(updateDate)
-                .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(updateDate));
+                .lastUpdatedAtClient(updateDate);
     }
 
     @Override
-    protected void propagateState() {
+    protected void propagateState(Event event) {
         dataStatePropagator.propagateEventUpdate(event);
     }
 }

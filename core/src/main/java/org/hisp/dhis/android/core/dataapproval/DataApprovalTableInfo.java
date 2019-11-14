@@ -29,9 +29,8 @@
 package org.hisp.dhis.android.core.dataapproval;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public class DataApprovalTableInfo {
 
@@ -45,26 +44,27 @@ public class DataApprovalTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new DataApprovalTableInfo.Columns();
         }
     };
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
 
-        public static String WORKFLOW = "workflow";
-        public static String ORGANISATION_UNIT = "organisationUnit";
-        public static String PERIOD = "period";
-        public static String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
+        public static final String WORKFLOW = "workflow";
+        public static final String ORGANISATION_UNIT = "organisationUnit";
+        public static final String PERIOD = "period";
+        public static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
+        public static final String STATE = "state";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     WORKFLOW,
                     ORGANISATION_UNIT,
                     PERIOD,
                     ATTRIBUTE_OPTION_COMBO,
-                    DataApprovalFields.STATE);
+                    STATE);
         }
 
         @Override

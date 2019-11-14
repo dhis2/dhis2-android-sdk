@@ -1,0 +1,16 @@
+[
+  {
+    "aoc": "Gmbgme7z9BF",
+    "pe": "2018",
+    "ou": "DiszpKrYNg8",
+    "permissions": {
+      "mayApprove": false,
+      "mayUnapprove": false,
+      "mayAccept": false,
+      "mayUnaccept": false,
+      "mayReadData": true
+    },
+    "state": "UNAPPROVED_ABOVE",
+    "wf": "rIUL3hYOjJc"
+  }
+]

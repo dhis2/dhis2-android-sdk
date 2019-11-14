@@ -33,7 +33,6 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
 
 import java.util.Collection;
-import java.util.Date;
 
 @AutoValue
 public abstract class DataApprovalQuery extends BaseQuery {
@@ -42,20 +41,17 @@ public abstract class DataApprovalQuery extends BaseQuery {
 
     public abstract Collection<String> organisationUnistUids();
 
-    public abstract Date startDate();
-
-    public abstract Date endDate();
+    public abstract Collection<String> periodIds();
 
     public abstract Collection<String> attributeOptionCombosUids();
 
     public static DataApprovalQuery create(Collection<String> workflowsUids,
                                            Collection<String> organisationUnitsUids,
-                                           Date startDate,
-                                           Date endDate,
+                                           Collection<String> periodIds,
                                            Collection<String> attributeOptionCombosUids) {
 
         return new AutoValue_DataApprovalQuery(1, BaseQuery.DEFAULT_PAGE_SIZE,
                 false, workflowsUids, organisationUnitsUids,
-                startDate, endDate, attributeOptionCombosUids);
+                periodIds, attributeOptionCombosUids);
     }
 }

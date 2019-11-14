@@ -1,0 +1,212 @@
+/*
+ * Copyright (c) 2004-2019, University of Oslo
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.hisp.dhis.android.core.arch.storage.internal;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
+import android.util.Base64;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import java.io.IOException;
+import java.math.BigInteger;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyPairGenerator;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.UnrecoverableEntryException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.security.spec.AlgorithmParameterSpec;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.security.auth.x500.X500Principal;
+
+@SuppressWarnings({"PMD.EmptyCatchBlock", "PMD.ExcessiveImports"})
+final class AndroidSecureStore implements SecureStore {
+
+    private static final String KEY_ALGORITHM_RSA = "RSA";
+
+    private static final String KEYSTORE_PROVIDER_ANDROID_KEYSTORE = "AndroidKeyStore";
+    private static final String RSA_ECB_PKCS1_PADDING = "RSA/ECB/PKCS1Padding";
+    private static final Charset CHARSET = StandardCharsets.UTF_8;
+
+    private static final String PREFERENCES_FILE = "preferences";
+    private static final String ALIAS = "dhis_sdk_key";
+
+    private final SharedPreferences preferences;
+
+    AndroidSecureStore(Context context) {
+        preferences = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
+
+        KeyStore ks;
+
+        try {
+            ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
+            ks.load(null);
+            PrivateKey privateKey = (PrivateKey) ks.getKey(ALIAS, null);
+
+            if (privateKey != null && ks.getCertificate(ALIAS) != null) {
+                PublicKey publicKey = ks.getCertificate(ALIAS).getPublicKey();
+                if (publicKey != null) {
+                    return;
+                }
+            }
+        } catch (KeyStoreException | CertificateException | IOException |
+                NoSuchAlgorithmException | UnrecoverableKeyException ex) {
+            return;
+        }
+
+        // Create a start and end time, for the validity range of the key pair that's about to be
+        // generated.
+        Calendar start = new GregorianCalendar();
+        Calendar end = new GregorianCalendar();
+        end.add(Calendar.YEAR, 10);
+
+        AlgorithmParameterSpec spec;
+        if (android.os.Build.VERSION.SDK_INT < 23) {
+            spec = new android.security.KeyPairGeneratorSpec.Builder(context)
+                    .setAlias(ALIAS)
+                    .setSubject(new X500Principal("CN=" + ALIAS))
+                    .setSerialNumber(BigInteger.valueOf(1337))
+                    .setStartDate(start.getTime()).setEndDate(end.getTime())
+                    .build();
+        } else {
+            spec = new KeyGenParameterSpec.Builder(ALIAS, KeyProperties.PURPOSE_DECRYPT)
+                    .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
+                    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
+                    .build();
+        }
+
+        KeyPairGenerator kpGenerator;
+        try {
+            kpGenerator = KeyPairGenerator.getInstance(KEY_ALGORITHM_RSA, KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
+            kpGenerator.initialize(spec);
+            kpGenerator.generateKeyPair();
+        } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException | NoSuchProviderException e) {
+            deleteKeyStoreEntry(ks, ALIAS);
+        }
+    }
+
+    public void setData(@NonNull String key, @NonNull String data) {
+        KeyStore ks = null;
+        try {
+            ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
+
+            ks.load(null);
+            if (ks.getCertificate(ALIAS) == null) {
+                return;
+            }
+
+            PublicKey publicKey = ks.getCertificate(ALIAS).getPublicKey();
+
+            if (publicKey == null) {
+                return;
+            }
+
+            String value = encrypt(publicKey, data.getBytes(CHARSET));
+
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(key, value);
+            editor.apply();
+        } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException
+                | IllegalBlockSizeException | BadPaddingException | KeyStoreException |
+                CertificateException | IOException e) {
+            deleteKeyStoreEntry(ks, ALIAS);
+        }
+    }
+
+    public String getData(@NonNull String key) {
+        KeyStore ks = null;
+        try {
+            ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
+            ks.load(null);
+            PrivateKey privateKey = (PrivateKey) ks.getKey(ALIAS, null);
+            String value = preferences.getString(key, null);
+
+            return value == null ? null :
+                    new String(decrypt(privateKey, value), CHARSET);
+        } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException
+                | UnrecoverableEntryException | InvalidKeyException | NoSuchPaddingException
+                | IllegalBlockSizeException | BadPaddingException e) {
+            deleteKeyStoreEntry(ks, ALIAS);
+        }
+        return null;
+    }
+
+    public void removeData(String key) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove(key);
+        editor.apply();
+    }
+
+    private static String encrypt(PublicKey encryptionKey, byte[] data) throws NoSuchAlgorithmException,
+            NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+
+        Cipher cipher = Cipher.getInstance(RSA_ECB_PKCS1_PADDING);
+        cipher.init(Cipher.ENCRYPT_MODE, encryptionKey);
+        byte[] encrypted = cipher.doFinal(data);
+        return Base64.encodeToString(encrypted, Base64.DEFAULT);
+    }
+
+    private static byte[] decrypt(PrivateKey decryptionKey, @NonNull String encryptedData)
+            throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
+            IllegalBlockSizeException, BadPaddingException {
+
+        byte[] encryptedBuffer = Base64.decode(encryptedData, Base64.DEFAULT);
+        Cipher cipher = Cipher.getInstance(RSA_ECB_PKCS1_PADDING);
+        cipher.init(Cipher.DECRYPT_MODE, decryptionKey);
+        return cipher.doFinal(encryptedBuffer);
+    }
+
+    private void deleteKeyStoreEntry(KeyStore ks, String entry) {
+        try {
+            if (ks != null) {
+                ks.deleteEntry(entry);
+            }
+        } catch (Exception e1) {
+            Log.w("SECURE_STORE", "Cannot deleted entry " + entry);
+        }
+    }
+}

@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.dataset.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSet;
@@ -44,23 +44,23 @@ final class DataSetCompulsoryDataElementOperandChildrenAppender extends Children
             DataSetCompulsoryDataElementOperandLinkTableInfo.Columns.DATA_SET,
             DataSetCompulsoryDataElementOperandLinkTableInfo.Columns.DATA_ELEMENT_OPERAND);
 
-    private final LinkModelChildStore<DataSet, DataElementOperand> linkModelChildStore;
+    private final LinkChildStore<DataSet, DataElementOperand> linkChildStore;
 
     private DataSetCompulsoryDataElementOperandChildrenAppender(
-            LinkModelChildStore<DataSet, DataElementOperand> linkModelChildStore) {
-        this.linkModelChildStore = linkModelChildStore;
+            LinkChildStore<DataSet, DataElementOperand> linkChildStore) {
+        this.linkChildStore = linkChildStore;
     }
 
     @Override
     protected DataSet appendChildren(DataSet dataSet) {
         DataSet.Builder builder = dataSet.toBuilder();
-        builder.compulsoryDataElementOperands(linkModelChildStore.getChildren(dataSet));
+        builder.compulsoryDataElementOperands(linkChildStore.getChildren(dataSet));
         return builder.build();
     }
 
     static ChildrenAppender<DataSet> create(DatabaseAdapter databaseAdapter) {
         return new DataSetCompulsoryDataElementOperandChildrenAppender(
-                StoreFactory.linkModelChildStore(
+                StoreFactory.linkChildStore(
                         databaseAdapter,
                         DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO,
                         CHILD_PROJECTION,

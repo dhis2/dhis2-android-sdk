@@ -31,8 +31,8 @@ package org.hisp.dhis.android.testapp.trackedentity;
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -51,8 +51,8 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void find_all() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
-                        .get();
+                d2.trackedEntityModule().trackedEntityInstances()
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(2));
     }
@@ -60,9 +60,9 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_uid() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .byUid().eq("nWrB0TfWlvD")
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(1));
     }
@@ -70,9 +70,9 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_created() throws ParseException {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .byCreated().eq(BaseNameableObject.DATE_FORMAT.parse("2019-01-10T13:40:27.987"))
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(1));
     }
@@ -80,9 +80,9 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_lastUpdated() throws ParseException {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .byLastUpdated().eq(BaseNameableObject.DATE_FORMAT.parse("2018-01-10T13:40:28.592"))
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(1));
     }
@@ -90,9 +90,9 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_created_at_client() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .byCreatedAtClient().eq("2019-01-22T18:38:15.845")
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(1));
     }
@@ -100,9 +100,9 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_last_updated_at_client() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .byLastUpdatedAtClient().eq("2019-01-22T18:38:15.845")
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(1));
     }
@@ -110,9 +110,9 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_organisation_unit() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .byOrganisationUnitUid().eq("DiszpKrYNg8")
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(2));
     }
@@ -120,29 +120,29 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_tracked_entity_type() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .byTrackedEntityType().eq("nEenWmSyUEp")
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(2));
     }
 
     @Test
-    public void filter_by_coordinates() {
+    public void filter_by_geometry_type() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
-                        .byCoordinates().eq("[9,9]")
-                        .get();
+                d2.trackedEntityModule().trackedEntityInstances()
+                        .byGeometryType().eq(FeatureType.POINT)
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(1));
     }
 
     @Test
-    public void filter_by_feature_type() {
+    public void filter_by_geometry_coordinates() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
-                        .byFeatureType().eq(FeatureType.POINT)
-                        .get();
+                d2.trackedEntityModule().trackedEntityInstances()
+                        .byGeometryCoordinates().eq("[9.0, 9.0]")
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(1));
     }
@@ -150,20 +150,30 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void filter_by_state() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .byState().eq(State.SYNCED)
-                        .get();
+                        .blockingGet();
 
         // TODO set to assertThat(trackedEntityInstances.size(), is(2)); after moving write tests to another db
         assertThat(trackedEntityInstances.size(), is(1));
     }
 
     @Test
+    public void filter_by_deleted() {
+        List<TrackedEntityInstance> trackedEntityInstances =
+                d2.trackedEntityModule().trackedEntityInstances()
+                        .byDeleted().isFalse()
+                        .blockingGet();
+
+        assertThat(trackedEntityInstances.size(), is(2));
+    }
+
+    @Test
     public void filter_by_program_uids() {
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.trackedEntityModule().trackedEntityInstances
+                d2.trackedEntityModule().trackedEntityInstances()
                         .byProgramUids(Lists.newArrayList("lxAQ7Zs9VYR"))
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(2));
     }

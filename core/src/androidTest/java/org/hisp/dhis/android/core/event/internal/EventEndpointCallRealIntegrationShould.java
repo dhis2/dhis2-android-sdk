@@ -31,11 +31,10 @@ package org.hisp.dhis.android.core.event.internal;
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
@@ -56,7 +55,7 @@ public class EventEndpointCallRealIntegrationShould extends BaseRealIntegrationT
     public void setUp() throws IOException {
         super.setUp();
 
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2 = D2Factory.forNewDatabase();
     }
 
     //This test is commented because technically it is flaky.
@@ -64,9 +63,9 @@ public class EventEndpointCallRealIntegrationShould extends BaseRealIntegrationT
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
     //@Test
     public void download_number_of_events_according_to_default_limit() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
 
         Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
 
@@ -81,9 +80,9 @@ public class EventEndpointCallRealIntegrationShould extends BaseRealIntegrationT
 
     //@Test
     public void download_event_with_category_combo_option() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
 
         Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
 

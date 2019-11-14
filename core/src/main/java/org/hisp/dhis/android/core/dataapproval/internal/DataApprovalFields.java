@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.dataapproval.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.dataapproval.DataApproval;
 import org.hisp.dhis.android.core.dataapproval.DataApprovalState;
+import org.hisp.dhis.android.core.dataapproval.DataApprovalTableInfo.Columns;
 
 public final class DataApprovalFields {
 
@@ -40,18 +40,15 @@ public final class DataApprovalFields {
     public static final String ORGANISATION_UNIT = "ou";
     public static final String PERIOD = "pe";
     public static final String ATTRIBUTE_OPTION_COMBO = "aoc";
-    public static final String STATE = "state";
 
     private static FieldsHelper<DataApproval> fieldsHelper = new FieldsHelper<>();
-
-    static final Field<DataApproval, String> lastUpdated = fieldsHelper.lastUpdated();
 
     static final Fields<DataApproval> allFields = Fields.<DataApproval>builder().fields(
             fieldsHelper.<String>field(WORKFLOW),
             fieldsHelper.<String>field(ORGANISATION_UNIT),
             fieldsHelper.<String>field(PERIOD),
             fieldsHelper.<String>field(ATTRIBUTE_OPTION_COMBO),
-            fieldsHelper.<DataApprovalState>field(STATE)
+            fieldsHelper.<DataApprovalState>field(Columns.STATE)
     ).build();
 
     private DataApprovalFields() {

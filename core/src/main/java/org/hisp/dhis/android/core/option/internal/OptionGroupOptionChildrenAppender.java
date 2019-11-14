@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.option.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.option.OptionGroup;
 import org.hisp.dhis.android.core.option.OptionGroupOptionLinkTableInfo;
 import org.hisp.dhis.android.core.option.OptionTableInfo;
@@ -43,16 +43,16 @@ final class OptionGroupOptionChildrenAppender extends ChildrenAppender<OptionGro
             OptionGroupOptionLinkTableInfo.Columns.OPTION_GROUP,
             OptionGroupOptionLinkTableInfo.Columns.OPTION);
 
-    private final ObjectWithUidChildStore<OptionGroup> linkModelChildStore;
+    private final ObjectWithUidChildStore<OptionGroup> childStore;
 
-    private OptionGroupOptionChildrenAppender(ObjectWithUidChildStore<OptionGroup> linkModelChildStore) {
-        this.linkModelChildStore = linkModelChildStore;
+    private OptionGroupOptionChildrenAppender(ObjectWithUidChildStore<OptionGroup> childStore) {
+        this.childStore = childStore;
     }
 
     @Override
     protected OptionGroup appendChildren(OptionGroup optionGroup) {
         OptionGroup.Builder builder = optionGroup.toBuilder();
-        builder.options(linkModelChildStore.getChildren(optionGroup));
+        builder.options(childStore.getChildren(optionGroup));
         return builder.build();
     }
 

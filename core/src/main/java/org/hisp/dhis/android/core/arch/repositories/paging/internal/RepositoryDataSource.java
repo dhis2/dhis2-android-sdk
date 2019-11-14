@@ -32,17 +32,17 @@ import androidx.paging.ItemKeyedDataSource;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.List;
 import java.util.Map;
 
-public final class RepositoryDataSource<M extends Model> extends ItemKeyedDataSource<M, M> {
+public final class RepositoryDataSource<M extends CoreObject> extends ItemKeyedDataSource<M, M> {
 
     private final ReadableStore<M> store;
     private final RepositoryScope scope;

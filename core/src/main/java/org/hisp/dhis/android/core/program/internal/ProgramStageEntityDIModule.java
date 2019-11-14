@@ -28,17 +28,15 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl;
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleanerImpl;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleStoreImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo;
@@ -71,37 +69,33 @@ public final class ProgramStageEntityDIModule implements IdentifiableStoreProvid
 
     @Provides
     @Reusable
-    public OrphanCleaner<ProgramStage, ProgramStageDataElement> dataElementOrphanCleaner(
+    OrphanCleaner<ProgramStage, ProgramStageDataElement> dataElementOrphanCleaner(
             DatabaseAdapter databaseAdapter) {
         return new OrphanCleanerImpl<>(ProgramStageDataElementTableInfo.TABLE_INFO.name(),
-                ProgramStageDataElementFields.PROGRAM_STAGE, databaseAdapter);
+                ProgramStageDataElementTableInfo.Columns.PROGRAM_STAGE, databaseAdapter);
     }
 
     @Provides
     @Reusable
-    public OrphanCleaner<ProgramStage, ProgramStageSection> sectionOrphanCleaner(DatabaseAdapter databaseAdapter) {
+    OrphanCleaner<ProgramStage, ProgramStageSection> sectionOrphanCleaner(DatabaseAdapter databaseAdapter) {
         return new OrphanCleanerImpl<>(ProgramStageSectionTableInfo.TABLE_INFO.name(),
                         ProgramStageSectionTableInfo.Columns.PROGRAM_STAGE, databaseAdapter);
     }
 
     @Provides
     @Reusable
-    public CollectionCleaner<ProgramStage> collectionCleaner(DatabaseAdapter databaseAdapter) {
-        return new CollectionCleanerImpl<>(ProgramStageTableInfo.TABLE_INFO.name(), databaseAdapter);
+    SubCollectionCleaner<ProgramStage> stageCleaner(DatabaseAdapter databaseAdapter) {
+        return new SubCollectionCleanerImpl<>(ProgramStageTableInfo.TABLE_INFO.name(),
+                ProgramStageTableInfo.Columns.PROGRAM, databaseAdapter,
+                programStage -> programStage.program().uid());
     }
 
     @Provides
     @Reusable
     @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<ProgramStage>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<ProgramStage> objectStyleChildrenAppender =
-                new ObjectStyleChildrenAppender<>(
-                        ObjectStyleStoreImpl.create(databaseAdapter),
-                        ProgramStageTableInfo.TABLE_INFO
-                );
 
         return new HashMap<String, ChildrenAppender<ProgramStage>>() {{
-            put(ProgramStageFields.STYLE, objectStyleChildrenAppender);
             put(ProgramStageFields.PROGRAM_STAGE_DATA_ELEMENTS,
                     ProgramStageDataElementChildrenAppender.create(databaseAdapter));
             put(ProgramStageFields.PROGRAM_STAGE_SECTIONS, ProgramStageSectionChildrenAppender.create(databaseAdapter));

@@ -29,11 +29,14 @@
 package org.hisp.dhis.android.core.trackedentity.api;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
+import org.hisp.dhis.android.core.arch.helpers.CodeGenerator;
+import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse;
@@ -41,10 +44,9 @@ import org.hisp.dhis.android.core.imports.internal.TEIImportSummary;
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstancePayload;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
-import org.hisp.dhis.android.core.utils.CodeGenerator;
-import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePayload;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
@@ -67,7 +69,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
      * - role: not a superuser
      * - capture orgunit: DiszpKrYNg8 - Negelhun CHC
      * - search orgunit: YuQRtpLP10I - Badja
-     *
+     * <p>
      * - read/write access to PROTECTED program: IpHINAT79UW
      */
 
@@ -100,7 +102,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
     public void setUp() throws IOException {
         super.setUp();
 
-        d2 = D2Factory.create(this.serverUrl, databaseAdapter());
+        d2 = D2Factory.forNewDatabase();
 
         executor = APICallExecutorImpl.create(d2.databaseAdapter());
 
@@ -121,8 +123,8 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
         for (int i = 0; i < 2; i++) {
             TEIWebResponse response =
                     executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
-                            .postTrackedEntityInstances(wrapPayload(tei), this.strategy), Collections.singletonList(409),
-                    TEIWebResponse.class);
+                                    .postTrackedEntityInstances(wrapPayload(tei), this.strategy), Collections.singletonList(409),
+                            TEIWebResponse.class);
 
             assertThat(response.response().status()).isEqualTo(SUCCESS);
 
@@ -154,7 +156,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
 
         TEIWebResponse response2 =
                 executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
-                        .postTrackedEntityInstances(wrapPayload(tei), this.strategy), Collections.singletonList(409),
+                                .postTrackedEntityInstances(wrapPayload(tei), this.strategy), Collections.singletonList(409),
                         TEIWebResponse.class);
 
         assertThat(response2.response().status()).isEqualTo(SUCCESS);
@@ -170,7 +172,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
     //@Test
     public void tei_with_enrollment_in_search_scope_in_protected_program() throws Exception {
 
-        TrackedEntityInstance tei = teiWithEnollmentInSearchScope();
+        TrackedEntityInstance tei = teiWithEnrollmentInSearchScope();
 
         TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                         .postTrackedEntityInstances(wrapPayload(tei), this.strategy), Collections.singletonList(409),
@@ -200,7 +202,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
     // @Test
     public void tei_with_enrollment_in_search_scope_in_protected_program_breaking_glass() throws Exception {
 
-        TrackedEntityInstance tei = teiWithEnollmentInSearchScope();
+        TrackedEntityInstance tei = teiWithEnrollmentInSearchScope();
 
         TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                         .postTrackedEntityInstances(wrapPayload(tei), this.strategy), Collections.singletonList(409),
@@ -232,7 +234,8 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
     }
 
     private TrackedEntityInstance validTei() {
-        return TrackedEntityInstance.builder()
+        return TrackedEntityInstanceInternalAccessor
+                .insertEnrollments(TrackedEntityInstance.builder(), Arrays.asList(validEnrollment()))
                 .uid(codeGenerator.generate())
                 .organisationUnit(captureOrgunit)
                 .trackedEntityType(trackedEntityType)
@@ -246,17 +249,15 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
                                 .value("TrackedEntity")
                                 .build()
                 ))
-                .enrollments(Arrays.asList(validEnrollment()))
                 .build();
     }
 
     private Enrollment validEnrollment() {
-        return Enrollment.builder()
+        return EnrollmentInternalAccessor.insertEvents(Enrollment.builder(), Arrays.asList(validEvent()))
                 .uid(codeGenerator.generate())
                 .organisationUnit(captureOrgunit)
                 .program(program)
                 .status(EnrollmentStatus.ACTIVE)
-                .events(Arrays.asList(validEvent()))
                 .build();
     }
 
@@ -269,28 +270,28 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
                 .build();
     }
 
-    private TrackedEntityInstancePayload wrapPayload(TrackedEntityInstance ...instances) {
-        TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
-        payload.trackedEntityInstances = Arrays.asList(instances);
+    private TrackedEntityInstancePayload wrapPayload(TrackedEntityInstance... instances) {
+        TrackedEntityInstancePayload payload = TrackedEntityInstancePayload.create(Arrays.asList(instances));
         return payload;
     }
 
     private TrackedEntityInstance teiWithEventInSearchScope() {
-        return validTei().toBuilder()
-                .enrollments(Arrays.asList(validEnrollment().toBuilder()
-                        .events(Arrays.asList(validEvent().toBuilder()
-                                .organisationUnit(searchOrgunit)
+
+        return TrackedEntityInstanceInternalAccessor.insertEnrollments(validTei().toBuilder(),
+                Collections.singletonList(
+                        EnrollmentInternalAccessor.insertEvents(validEnrollment().toBuilder(),
+                                Collections.singletonList(validEvent().toBuilder()
+                                        .organisationUnit(searchOrgunit)
+                                        .build()))
                                 .build()))
-                        .build()))
                 .build();
     }
 
-    private TrackedEntityInstance teiWithEnollmentInSearchScope() {
-        return validTei().toBuilder()
-                .enrollments(Arrays.asList(validEnrollment().toBuilder()
-                        .organisationUnit(searchOrgunit)
-                        .events(Arrays.asList(validEvent()))
-                        .build()))
+    private TrackedEntityInstance teiWithEnrollmentInSearchScope() {
+        return TrackedEntityInstanceInternalAccessor.insertEnrollments(validTei().toBuilder(), Collections.singletonList(
+                EnrollmentInternalAccessor.insertEvents(validEnrollment().toBuilder(),
+                        Collections.singletonList(validEvent()))
+                        .organisationUnit(searchOrgunit).build()))
                 .build();
     }
 
@@ -299,7 +300,8 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
                 .organisationUnit(searchOrgunit)
                 .build();
     }
+
     private void login() {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
+        d2.userModule().logIn(username, password, serverUrl).blockingGet();
     }
 }

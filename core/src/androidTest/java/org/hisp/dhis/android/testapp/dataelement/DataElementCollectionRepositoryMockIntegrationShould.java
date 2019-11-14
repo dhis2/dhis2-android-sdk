@@ -45,81 +45,96 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
 
     @Test
     public void find_all() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements
-                .get();
-        assertThat(dataElements.size(), is(5));
+        List<DataElement> dataElements = d2.dataElementModule().dataElements()
+                .blockingGet();
+        assertThat(dataElements.size(), is(10));
     }
 
     @Test
     public void filter_by_value_type() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements
+        List<DataElement> dataElements = d2.dataElementModule().dataElements()
                 .byValueType().eq(ValueType.TEXT)
-                .get();
-        assertThat(dataElements.size(), is(1));
+                .blockingGet();
+        assertThat(dataElements.size(), is(2));
     }
 
     @Test
     public void filter_by_zero_is_significant() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements
+        List<DataElement> dataElements = d2.dataElementModule().dataElements()
                 .byZeroIsSignificant().isFalse()
-                .get();
-        assertThat(dataElements.size(), is(3));
+                .blockingGet();
+        assertThat(dataElements.size(), is(8));
     }
 
     @Test
     public void filter_by_aggregation_type() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements
+        List<DataElement> dataElements = d2.dataElementModule().dataElements()
                 .byAggregationType().eq("AVERAGE")
-                .get();
-        assertThat(dataElements.size(), is(1));
+                .blockingGet();
+        assertThat(dataElements.size(), is(2));
     }
 
     @Test
     public void filter_by_form_name() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements
+        List<DataElement> dataElements = d2.dataElementModule().dataElements()
                 .byFormName().eq("ANC Visit")
-                .get();
-        assertThat(dataElements.size(), is(1));
+                .blockingGet();
+        assertThat(dataElements.size(), is(2));
     }
 
     @Test
     public void filter_by_domain_type() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements
+        List<DataElement> dataElements = d2.dataElementModule().dataElements()
                 .byDomainType().eq("TRACKER")
-                .get();
-        assertThat(dataElements.size(), is(5));
+                .blockingGet();
+        assertThat(dataElements.size(), is(10));
     }
 
     @Test
     public void filter_by_display_form_name() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements
+        List<DataElement> dataElements = d2.dataElementModule().dataElements()
                 .byDisplayFormName().eq("ANC Visit")
-                .get();
-        assertThat(dataElements.size(), is(1));
+                .blockingGet();
+        assertThat(dataElements.size(), is(2));
     }
 
     @Test
     public void filter_by_option_set() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements
+        List<DataElement> dataElements = d2.dataElementModule().dataElements()
                 .byOptionSetUid().eq("VQ2lai3OfVG")
-                .get();
+                .blockingGet();
         assertThat(dataElements.size(), is(1));
     }
 
     @Test
     public void filter_by_category_combo() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements
+        List<DataElement> dataElements = d2.dataElementModule().dataElements()
                 .byCategoryComboUid().eq("m2jTvAj5kkm")
-                .get();
+                .blockingGet();
+        assertThat(dataElements.size(), is(6));
+    }
+
+    @Test
+    public void filter_by_field_mask() {
+        List<DataElement> dataElements = d2.dataElementModule().dataElements()
+                .byFieldMask().eq("XXXXX")
+                .blockingGet();
         assertThat(dataElements.size(), is(1));
     }
 
     @Test
-    public void include_style_as_child() {
-        DataElement dataElement = d2.dataElementModule().dataElements
-                .withStyle()
-                .uid("g9eOBujte1U")
-                .get();
-        assertThat(dataElement.style().icon(), is("data-element-icon"));
+    public void filter_by_field_color() {
+        List<DataElement> dataElements = d2.dataElementModule().dataElements()
+                .byColor().eq("#600")
+                .blockingGet();
+        assertThat(dataElements.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_field_icon() {
+        List<DataElement> dataElements = d2.dataElementModule().dataElements()
+                .byIcon().eq("data-element-icon-2")
+                .blockingGet();
+        assertThat(dataElements.size(), is(1));
     }
 }

@@ -33,13 +33,11 @@ import org.hisp.dhis.android.core.arch.cleaners.internal.ParentOrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
-import org.hisp.dhis.android.core.program.ProgramRule;
+import org.hisp.dhis.android.core.program.ProgramInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramSection;
-import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramType;
 
@@ -56,50 +54,35 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
 
     private final Handler<ProgramRuleVariable> programRuleVariableHandler;
     private final Handler<ProgramIndicator> programIndicatorHandler;
-    private final Handler<ProgramRule> programRuleHandler;
     private final Handler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler;
     private final Handler<ProgramSection> programSectionHandler;
-    private final ObjectStyleHandler styleHandler;
     private final ParentOrphanCleaner<Program> orphanCleaner;
     private final CollectionCleaner<Program> collectionCleaner;
-    private final ProgramDHISVersionManager programVersionManager;
 
     @Inject
     ProgramHandler(ProgramStoreInterface programStore,
                    Handler<ProgramRuleVariable> programRuleVariableHandler,
                    Handler<ProgramIndicator> programIndicatorHandler,
-                   Handler<ProgramRule> programRuleHandler,
                    Handler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler,
                    Handler<ProgramSection> programSectionHandler,
-                   ObjectStyleHandler styleHandler,
                    ParentOrphanCleaner<Program> orphanCleaner,
-                   CollectionCleaner<Program> collectionCleaner,
-                   ProgramDHISVersionManager programVersionManager) {
+                   CollectionCleaner<Program> collectionCleaner) {
         super(programStore);
         this.programRuleVariableHandler = programRuleVariableHandler;
         this.programIndicatorHandler = programIndicatorHandler;
-        this.programRuleHandler = programRuleHandler;
         this.programTrackedEntityAttributeHandler = programTrackedEntityAttributeHandler;
         this.programSectionHandler = programSectionHandler;
-        this.styleHandler = styleHandler;
         this.orphanCleaner = orphanCleaner;
         this.collectionCleaner = collectionCleaner;
-        this.programVersionManager = programVersionManager;
-    }
-
-    @Override
-    protected Program beforeObjectHandled(Program program) {
-        return programVersionManager.addCaptureCoordinatesOrFeatureType(program);
     }
 
     @Override
     protected void afterObjectHandled(Program program, HandleAction action) {
-        programTrackedEntityAttributeHandler.handleMany(program.programTrackedEntityAttributes());
-        programIndicatorHandler.handleMany(program.programIndicators());
-        programRuleHandler.handleMany(program.programRules());
-        programRuleVariableHandler.handleMany(program.programRuleVariables());
-        programSectionHandler.handleMany(program.programSections());
-        styleHandler.handle(program.style(), program.uid(), ProgramTableInfo.TABLE_INFO.name());
+        programTrackedEntityAttributeHandler.handleMany(ProgramInternalAccessor
+                .accessProgramTrackedEntityAttributes(program));
+        programIndicatorHandler.handleMany(ProgramInternalAccessor.accessProgramIndicators(program));
+        programRuleVariableHandler.handleMany(ProgramInternalAccessor.accessProgramRuleVariables(program));
+        programSectionHandler.handleMany(ProgramInternalAccessor.accessProgramSections(program));
 
         if (action == HandleAction.Update) {
             orphanCleaner.deleteOrphan(program);

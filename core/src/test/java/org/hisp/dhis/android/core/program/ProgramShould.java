@@ -33,6 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
@@ -65,7 +66,7 @@ public class ProgramShould extends BaseObjectShould implements ObjectShould {
         assertThat(program.displayShortName()).isEqualTo("WHO RMNCH Tracker");
         assertThat(program.ignoreOverdueEvents()).isFalse();
         assertThat(program.dataEntryMethod()).isFalse();
-        assertThat(program.captureCoordinates()).isFalse();
+        assertThat(program.captureCoordinates()).isTrue();
         assertThat(program.enrollmentDateLabel()).isEqualTo("Date of first visit");
         assertThat(program.onlyEnrollOnce()).isFalse();
         assertThat(program.version()).isEqualTo(11);
@@ -76,23 +77,16 @@ public class ProgramShould extends BaseObjectShould implements ObjectShould {
         assertThat(program.useFirstStageDuringRegistration()).isFalse();
         assertThat(program.minAttributesRequiredToSearch()).isEqualTo(3);
         assertThat(program.maxTeiCountToReturn()).isEqualTo(2);
+        assertThat(program.featureType()).isEqualTo(FeatureType.MULTI_POLYGON);
+        assertThat(program.accessLevel()).isEqualTo(AccessLevel.PROTECTED);
 
         assertThat(program.displayFrontPageList()).isFalse();
         assertThat(program.programType()).isEqualTo(ProgramType.WITH_REGISTRATION);
-        assertThat(program.relationshipFromA()).isTrue();
-        assertThat(program.relationshipText()).isEqualTo("Add child");
         assertThat(program.displayIncidentDate()).isFalse();
         assertThat(program.categoryCombo().uid()).isEqualTo("p0KPaWEg3cf");
         assertThat(program.trackedEntityType().uid()).isEqualTo("nEenWmSyUEp");
         assertThat(program.relatedProgram().uid()).isEqualTo("IpHINAT79UW");
-        assertThat(program.relationshipType().uid()).isEqualTo("V2kkHafqs8G");
         assertThat(program.programIndicators()).isEmpty();
-
-        assertThat(program.programStages().get(0).uid()).isEqualTo("WZbXY0S00lP");
-        assertThat(program.programStages().get(1).uid()).isEqualTo("PUZaKR0Jh2k");
-
-        assertThat(program.programRules().get(0).uid()).isEqualTo("tO1D62oB0tq");
-        assertThat(program.programRules().get(1).uid()).isEqualTo("ruleonr1065");
 
         assertThat(program.programRuleVariables().get(0).uid()).isEqualTo("varonrw1032");
         assertThat(program.programRuleVariables().get(1).uid()).isEqualTo("idLCptBEOF9");

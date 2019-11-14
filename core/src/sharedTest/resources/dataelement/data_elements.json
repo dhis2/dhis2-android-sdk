@@ -5,6 +5,42 @@
       "lastUpdated": "2014-11-11T21:56:05.560",
       "id": "g9eOBujte1U",
       "href": "https://play.dhis2.org/android-current/api/dataElements/g9eOBujte1U",
+      "created": "2012-07-20T08:36:46.552",
+      "name": "MCH ANC Visit",
+      "shortName": "ANC Visit",
+      "aggregationType": "AVERAGE",
+      "domainType": "TRACKER",
+      "displayName": "MCH ANC Visit",
+      "publicAccess": "rw------",
+      "displayShortName": "ANC Visit",
+      "externalAccess": false,
+      "valueType": "TEXT",
+      "formName": "ANC Visit",
+      "dimensionItem": "g9eOBujte1U",
+      "dimension": "dim",
+      "displayFormName": "ANC Visit",
+      "numberType": "numTy",
+      "zeroIsSignificant": false,
+      "fieldMask": "XXXXX",
+      "url": "",
+      "optionSetValue": true,
+      "dimensionItemType": "DATA_ELEMENT",
+      "access": {
+        "read": true
+      },
+      "categoryCombo": {
+        "id": "m2jTvAj5kkm"
+      },
+      "style": {
+        "color": "#645",
+        "icon": "data-element-icon"
+      }
+    },
+    {
+      "code": "DE_2005835",
+      "lastUpdated": "2014-10-11T21:56:05.560",
+      "id": "bx6fsa0t90x",
+      "href": "https://play.dhis2.org/android-current/api/dataElements/bx6fsa0t90x",
       "created": "2012-09-20T08:36:46.552",
       "name": "MCH ANC Visit",
       "shortName": "ANC Visit",
@@ -23,6 +59,130 @@
       "zeroIsSignificant": false,
       "url": "",
       "optionSetValue": true,
+      "dimensionItemType": "DATA_ELEMENT",
+      "access": {
+        "read": true
+      },
+      "categoryCombo": {
+        "id": "m2jTvAj5kkm"
+      },
+      "style": {
+        "color": "#645",
+        "icon": "data-element-icon"
+      }
+    },
+    {
+      "lastUpdated": "2019-03-08T16:06:52.337",
+      "id": "jDx8LZlznYu",
+      "href": "https://play.dhis2.org/android-current/api/dataElements/jDx8LZlznYu",
+      "created": "2019-03-08T16:06:52.337",
+      "name": "AA Age months",
+      "shortName": "AA Age months",
+      "aggregationType": "SUM",
+      "domainType": "TRACKER",
+      "displayName": "AA Age months",
+      "publicAccess": "rw------",
+      "displayShortName": "AA Age months",
+      "externalAccess": false,
+      "valueType": "NUMBER",
+      "dimensionItem": "jDx8LZlznYu",
+      "displayFormName": "AA Age months",
+      "zeroIsSignificant": false,
+      "favorite": false,
+      "optionSetValue": false,
+      "dimensionItemType": "DATA_ELEMENT",
+      "access": {
+        "read": true
+      },
+      "categoryCombo": {
+        "id": "m2jTvAj5kkm"
+      },
+      "style": {
+        "color": "#645",
+        "icon": "data-element-icon"
+      }
+    },
+    {
+      "lastUpdated": "2019-03-08T16:06:35.799",
+      "id": "uFAQYm3UgBL",
+      "href": "https://play.dhis2.org/android-current/api/dataElements/uFAQYm3UgBL",
+      "created": "2019-03-08T16:06:35.799",
+      "name": "AA Age weeks",
+      "shortName": "AA Age weeks",
+      "aggregationType": "SUM",
+      "domainType": "TRACKER",
+      "displayName": "AA Age weeks",
+      "publicAccess": "rw------",
+      "displayShortName": "AA Age weeks",
+      "externalAccess": false,
+      "valueType": "NUMBER",
+      "dimensionItem": "uFAQYm3UgBL",
+      "displayFormName": "AA Age weeks",
+      "zeroIsSignificant": false,
+      "favorite": false,
+      "optionSetValue": false,
+      "dimensionItemType": "DATA_ELEMENT",
+      "access": {
+        "read": true
+      },
+      "categoryCombo": {
+        "id": "m2jTvAj5kkm"
+      },
+      "style": {
+        "color": "#645",
+        "icon": "data-element-icon"
+      }
+    },
+    {
+      "lastUpdated": "2019-03-08T16:07:10.306",
+      "id": "hB9F8vKFmlk",
+      "href": "https://play.dhis2.org/android-current/api/dataElements/hB9F8vKFmlk",
+      "created": "2019-03-08T16:07:10.306",
+      "name": "AA Age years",
+      "shortName": "AA Age years",
+      "aggregationType": "SUM",
+      "domainType": "TRACKER",
+      "displayName": "AA Age years",
+      "publicAccess": "rw------",
+      "displayShortName": "AA Age years",
+      "externalAccess": false,
+      "valueType": "NUMBER",
+      "dimensionItem": "hB9F8vKFmlk",
+      "displayFormName": "AA Age years",
+      "zeroIsSignificant": false,
+      "favorite": false,
+      "optionSetValue": false,
+      "dimensionItemType": "DATA_ELEMENT",
+      "access": {
+        "read": true
+      },
+      "categoryCombo": {
+        "id": "m2jTvAj5kkm"
+      },
+      "style": {
+        "color": "#600",
+        "icon": "data-element-icon-2"
+      }
+    },
+    {
+      "lastUpdated": "2018-08-20T16:23:55.605",
+      "id": "ciWE5jde1ax",
+      "href": "https://play.dhis2.org/android-current/api/dataElements/ciWE5jde1ax",
+      "created": "2018-08-16T17:42:35.455",
+      "name": "AA date",
+      "shortName": "AA date",
+      "aggregationType": "NONE",
+      "domainType": "TRACKER",
+      "displayName": "AA date",
+      "publicAccess": "rw------",
+      "displayShortName": "AA date",
+      "externalAccess": false,
+      "valueType": "DATE",
+      "dimensionItem": "ciWE5jde1ax",
+      "displayFormName": "AA date",
+      "zeroIsSignificant": false,
+      "favorite": false,
+      "optionSetValue": false,
       "dimensionItemType": "DATA_ELEMENT",
       "access": {
         "read": true

@@ -28,14 +28,21 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.internal.APIUrlProvider;
+import org.hisp.dhis.android.core.arch.api.internal.ServerUrlInterceptor;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.Transaction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.configuration.Configuration;
+import org.hisp.dhis.android.core.configuration.ConfigurationManager;
+import org.hisp.dhis.android.core.configuration.ServerUrlParser;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -44,20 +51,20 @@ import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.wipe.WipeModule;
+import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Single;
+import okhttp3.HttpUrl;
 import retrofit2.Call;
 
 import static okhttp3.Credentials.basic;
-import static org.hisp.dhis.android.core.utils.UserUtils.base64;
-import static org.hisp.dhis.android.core.utils.UserUtils.md5;
+import static org.hisp.dhis.android.core.arch.helpers.UserHelper.md5;
 
 @Reusable
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class UserAuthenticateCallFactory {
 
     private final DatabaseAdapter databaseAdapter;
@@ -65,31 +72,35 @@ public final class UserAuthenticateCallFactory {
 
     private final UserService userService;
 
+    private final CredentialsSecureStore credentialsSecureStore;
+
     private final Handler<User> userHandler;
     private final ResourceHandler resourceHandler;
     private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final IdentifiableObjectStore<User> userStore;
     private final WipeModule wipeModule;
-
-    private final APIUrlProvider apiUrlProvider;
+    private final ConfigurationManager configurationManager;
 
     @Inject
     UserAuthenticateCallFactory(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull APICallExecutor apiCallExecutor,
             @NonNull UserService userService,
+            @NonNull CredentialsSecureStore credentialsSecureStore,
             @NonNull Handler<User> userHandler,
             @NonNull ResourceHandler resourceHandler,
             @NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore,
             @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             @NonNull IdentifiableObjectStore<User> userStore,
             @NonNull WipeModule wipeModule,
-            @NonNull APIUrlProvider apiUrlProvider) {
+            @NonNull ConfigurationManager configurationManager) {
         this.databaseAdapter = databaseAdapter;
         this.apiCallExecutor = apiCallExecutor;
 
         this.userService = userService;
+
+        this.credentialsSecureStore = credentialsSecureStore;
 
         this.userHandler = userHandler;
         this.resourceHandler = resourceHandler;
@@ -97,24 +108,27 @@ public final class UserAuthenticateCallFactory {
         this.systemInfoRepository = systemInfoRepository;
         this.userStore = userStore;
         this.wipeModule = wipeModule;
-
-        this.apiUrlProvider = apiUrlProvider;
+        this.configurationManager = configurationManager;
     }
 
-    public Single<User> logIn(final String username, final String password) {
+    public Single<User> logIn(final String username, final String password, final String serverUrl) {
         return Single.create(emitter -> {
             try {
-                emitter.onSuccess(loginInternal(username, password));
+                emitter.onSuccess(loginInternal(username, password, serverUrl));
             } catch (Throwable t) {
                 emitter.onError(t);
             }
         });
     }
 
-    private User loginInternal(String username, String password) throws D2Error {
+    private User loginInternal(String username, String password, String serverUrl) throws D2Error {
         throwExceptionIfUsernameNull(username);
         throwExceptionIfPasswordNull(password);
-        throwExceptionIfAlreadyAuthenticated();
+        throwExceptionIfAlreadyAuthenticatedAndDbNotEmpty();
+
+        HttpUrl httpServerUrl = ServerUrlParser.parse(serverUrl);
+        ServerUrlInterceptor.setServerUrl(httpServerUrl.toString());
+        configurationManager.configure(Configuration.forServerUrl(httpServerUrl));
 
         Call<User> authenticateCall =
                 userService.authenticate(basic(username, password), UserFields.allFieldsWithoutOrgUnit);
@@ -122,13 +136,13 @@ public final class UserAuthenticateCallFactory {
         try {
             User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,
                     new UserAuthenticateCallErrorCatcher());
-            return loginOnline(authenticatedUser, username, password);
+            return loginOnline(authenticatedUser, username, password, serverUrl);
         } catch (D2Error d2Error) {
             if (
                     d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
                             d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
                             d2Error.errorCode() == D2ErrorCode.UNKNOWN_HOST) {
-                return loginOffline(username, password);
+                return loginOffline(username, password, serverUrl);
             } else if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
                 wipeModule.wipeEverything();
                 throw d2Error;
@@ -138,8 +152,9 @@ public final class UserAuthenticateCallFactory {
         }
     }
 
-    private User loginOnline(User authenticatedUser, String username, String password) throws D2Error {
-        if (wasLoggedAndUserIsNew(authenticatedUser) || wasLoggedAndServerIsNew()) {
+    private User loginOnline(User authenticatedUser, String username, String password,
+                             String serverUrl) throws D2Error {
+        if (wasLoggedAndUserIsNew(authenticatedUser) || wasLoggedAndServerIsNew(serverUrl)) {
             wipeModule.wipeEverything();
         }
 
@@ -148,8 +163,9 @@ public final class UserAuthenticateCallFactory {
             AuthenticatedUser authenticatedUserToStore = buildAuthenticatedUser(authenticatedUser.uid(),
                     username, password);
             authenticatedUserStore.updateOrInsertWhere(authenticatedUserToStore);
+            credentialsSecureStore.setCredentials(Credentials.create(username, password));
 
-            systemInfoRepository.download().blockingAwait();
+            systemInfoRepository.download(true).blockingAwait();
 
             handleUser(authenticatedUser);
             transaction.setSuccessful();
@@ -159,8 +175,8 @@ public final class UserAuthenticateCallFactory {
         }
     }
 
-    private User loginOffline(String username, String password) throws D2Error {
-        if (wasLoggedAndServerIsNew()) {
+    private User loginOffline(String username, String password, String serverUrl) throws D2Error {
+        if (wasLoggedAndServerIsNew(serverUrl)) {
             throw D2Error.builder()
                     .errorCode(D2ErrorCode.DIFFERENT_SERVER_OFFLINE)
                     .errorDescription("Cannot switch servers offline.")
@@ -191,6 +207,7 @@ public final class UserAuthenticateCallFactory {
             AuthenticatedUser authenticatedUser = buildAuthenticatedUser(existingUser.user(),
                     username, password);
             authenticatedUserStore.updateOrInsertWhere(authenticatedUser);
+            credentialsSecureStore.setCredentials(Credentials.create(username, password));
             transaction.setSuccessful();
         } finally {
             transaction.end();
@@ -219,14 +236,19 @@ public final class UserAuthenticateCallFactory {
         }
     }
 
-    private void throwExceptionIfAlreadyAuthenticated() throws D2Error {
-        AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
-        if (authenticatedUser != null && authenticatedUser.credentials() != null) {
-            throw D2Error.builder()
-                    .errorCode(D2ErrorCode.ALREADY_AUTHENTICATED)
-                    .errorDescription("A user is already authenticated: " + authenticatedUser.user())
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .build();
+    private void throwExceptionIfAlreadyAuthenticatedAndDbNotEmpty() throws D2Error {
+        Credentials credentials = credentialsSecureStore.getCredentials();
+        AuthenticatedUser existingUser = authenticatedUserStore.selectFirst();
+        if (credentials != null) {
+            if (existingUser == null) {
+                credentialsSecureStore.removeCredentials();
+            } else {
+                throw D2Error.builder()
+                        .errorCode(D2ErrorCode.ALREADY_AUTHENTICATED)
+                        .errorDescription("A user is already authenticated: " + credentials.username())
+                        .errorComponent(D2ErrorComponent.SDK)
+                        .build();
+            }
         }
     }
 
@@ -235,9 +257,9 @@ public final class UserAuthenticateCallFactory {
         return lastUser != null && !lastUser.uid().equals(newUser.uid());
     }
 
-    private boolean wasLoggedAndServerIsNew() {
-        SystemInfo lastSystemInfo = systemInfoRepository.get();
-        return lastSystemInfo != null && !(lastSystemInfo.contextPath() + "/api/").equals(apiUrlProvider.getAPIUrl());
+    private boolean wasLoggedAndServerIsNew(String serverUrl) {
+        SystemInfo lastSystemInfo = systemInfoRepository.blockingGet();
+        return lastSystemInfo != null && !serverUrl.equals(lastSystemInfo.contextPath());
     }
 
     private void handleUser(User user) {
@@ -250,7 +272,6 @@ public final class UserAuthenticateCallFactory {
     private AuthenticatedUser buildAuthenticatedUser(String uid, String username, String password) {
         return AuthenticatedUser.builder()
                 .user(uid)
-                .credentials(base64(username, password))
                 .hash(md5(username, password))
                 .build();
     }

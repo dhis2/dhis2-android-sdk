@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.imports;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class TrackerImportConflictTableInfo {
 
@@ -45,12 +45,12 @@ public final class TrackerImportConflictTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
         final static String CONFLICT = "conflict";
         final static String VALUE = "value";
         public final static String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
@@ -63,7 +63,7 @@ public final class TrackerImportConflictTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     CONFLICT,
                     VALUE,
                     TRACKED_ENTITY_INSTANCE,

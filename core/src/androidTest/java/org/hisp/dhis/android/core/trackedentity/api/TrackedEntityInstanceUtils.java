@@ -28,22 +28,25 @@
 
 package org.hisp.dhis.android.core.trackedentity.api;
 
+import org.hisp.dhis.android.core.arch.helpers.CodeGenerator;
+import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.internal.BaseImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
-import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.internal.TEIImportSummary;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.utils.CodeGenerator;
-import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -63,8 +66,8 @@ class TrackedEntityInstanceUtils {
     private static String validNumberDataElementUid = "a3kGcGDCuk6"; // MCH Apgar Score
     private static String trackedEntityTypeUid = "nEenWmSyUEp"; // Person
     private static String validTrackedEntityAttributeUid = "w75KJ2mc4zz"; // First name
-    private static String coordinates = "[9,9]";
     private static FeatureType featureType = FeatureType.POINT;
+    private static Geometry geometry = Geometry.builder().type(featureType).coordinates("[-11.96, 9.49]").build();
 
     private static String validCategoryComboOptionUid = "HllvX50cXC0"; // Default
 
@@ -76,18 +79,19 @@ class TrackedEntityInstanceUtils {
                                                               List<Enrollment> enrollments) {
         Date refDate = getValidDate();
 
-        return TrackedEntityInstance.builder()
+        return TrackedEntityInstanceInternalAccessor
+                .insertEnrollments(
+                        TrackedEntityInstanceInternalAccessor
+                                .insertRelationships(TrackedEntityInstance.builder(), relationships),
+                        enrollments)
                 .uid(trackedEntityInstanceUid)
                 .created(refDate)
                 .lastUpdated(refDate)
                 .organisationUnit(orgUnitUid)
                 .trackedEntityType(trackedEntityTypeUid)
-                .coordinates(coordinates)
-                .featureType(featureType)
+                .geometry(geometry)
                 .deleted(false)
                 .trackedEntityAttributeValues(attributes)
-                .relationships(relationships)
-                .enrollments(enrollments)
                 .build();
     }
 
@@ -222,8 +226,9 @@ class TrackedEntityInstanceUtils {
         String enrollmentUid = codeGenerator.generate();
         Event event = createValidEvent(enrollmentUid);
 
-        return getEnrollment(enrollmentUid, teiUid, refDate).toBuilder()
-                .events(Collections.singletonList(event)).build();
+        return EnrollmentInternalAccessor.insertEvents(getEnrollment(enrollmentUid, teiUid, refDate).toBuilder(),
+                Collections.singletonList(event))
+                .build();
     }
 
     private static Enrollment createEnrollmentAndFutureEvent(String teiUid) {
@@ -231,8 +236,9 @@ class TrackedEntityInstanceUtils {
         String enrollmentUid = codeGenerator.generate();
         Event event = createFutureEvent(enrollmentUid);
 
-        return getEnrollment(enrollmentUid, teiUid, refDate).toBuilder()
-                .events(Collections.singletonList(event)).build();
+        return EnrollmentInternalAccessor.insertEvents(getEnrollment(enrollmentUid, teiUid, refDate).toBuilder(),
+                Collections.singletonList(event))
+                .build();
     }
 
     private static Enrollment createEnrollmentAndEventWithInvalidDataElement(String teiUid) {
@@ -240,8 +246,9 @@ class TrackedEntityInstanceUtils {
         String enrollmentUid = codeGenerator.generate();
         Event event = createEventWithInvalidDataElement(enrollmentUid);
 
-        return getEnrollment(enrollmentUid, teiUid, refDate).toBuilder()
-                .events(Collections.singletonList(event)).build();
+        return EnrollmentInternalAccessor.insertEvents(getEnrollment(enrollmentUid, teiUid, refDate).toBuilder(),
+                Collections.singletonList(event))
+                .build();
     }
 
     private static Enrollment createEnrollmentAndEventWithValidAndInvalidDataValue(String teiUid) {
@@ -249,8 +256,9 @@ class TrackedEntityInstanceUtils {
         String enrollmentUid = codeGenerator.generate();
         Event event = createEventWithValidAndInvalidDataValue(enrollmentUid);
 
-        return getEnrollment(enrollmentUid, teiUid, refDate).toBuilder()
-                .events(Collections.singletonList(event)).build();
+        return EnrollmentInternalAccessor.insertEvents(getEnrollment(enrollmentUid, teiUid, refDate).toBuilder(),
+                Collections.singletonList(event))
+                .build();
     }
 
     private static Enrollment createCompletedEnrollmentWithEvent(String teiUid) {
@@ -258,16 +266,28 @@ class TrackedEntityInstanceUtils {
         String enrollmentUid = codeGenerator.generate();
         Event event = createValidCompletedEvent(enrollmentUid);
 
-        return getEnrollment(enrollmentUid, teiUid, refDate).toBuilder()
+        return EnrollmentInternalAccessor.insertEvents(getEnrollment(enrollmentUid, teiUid, refDate).toBuilder(),
+                Collections.singletonList(event))
                 .status(EnrollmentStatus.COMPLETED)
-                .events(Collections.singletonList(event)).build();
+                .build();
     }
 
     private static Enrollment getEnrollment(String enrollmentUid, String teiUid, Date refDate) {
-        return Enrollment.builder().uid(enrollmentUid).created(refDate).lastUpdated(refDate)
-                .organisationUnit(validOrgUnitUid).program(validProgramUid).enrollmentDate(refDate).incidentDate(refDate)
-                .followUp(false).status(EnrollmentStatus.ACTIVE).trackedEntityInstance(teiUid).deleted(false)
-                .events(Collections.emptyList()).notes(Collections.emptyList()).build();
+
+        return EnrollmentInternalAccessor.insertEvents(Enrollment.builder(), Collections.emptyList())
+                .uid(enrollmentUid)
+                .created(refDate)
+                .lastUpdated(refDate)
+                .organisationUnit(validOrgUnitUid)
+                .program(validProgramUid)
+                .enrollmentDate(refDate)
+                .incidentDate(refDate)
+                .followUp(false)
+                .status(EnrollmentStatus.ACTIVE)
+                .trackedEntityInstance(teiUid)
+                .deleted(false)
+                .notes(Collections.emptyList())
+                .build();
     }
 
     private static Event createValidEvent(String enrollmentUid) {

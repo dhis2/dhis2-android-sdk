@@ -28,9 +28,10 @@
 
 package org.hisp.dhis.android.core.maintenance.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
+import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -47,5 +48,11 @@ public final class MaintenancePackageDIModule {
     ForeignKeyCleaner cleaner(DatabaseAdapter databaseAdapter,
                               ObjectStore<ForeignKeyViolation> foreignKeyViolationStore) {
         return new ForeignKeyCleanerImpl(databaseAdapter, foreignKeyViolationStore);
+    }
+
+    @Provides
+    @Reusable
+    MaintenanceModule module(MaintenanceModuleImpl impl) {
+        return impl;
     }
 }

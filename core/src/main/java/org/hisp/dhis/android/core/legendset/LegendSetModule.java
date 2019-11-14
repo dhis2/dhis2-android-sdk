@@ -28,19 +28,7 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class LegendSetModule {
-
-    public final LegendSetCollectionRepository legendSets;
-
-    @Inject
-    LegendSetModule(LegendSetCollectionRepository legendSets) {
-        this.legendSets = legendSets;
-    }
+public interface LegendSetModule {
+    LegendSetCollectionRepository legendSets();
+    LegendCollectionRepository legends();
 }

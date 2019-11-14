@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
@@ -36,14 +37,19 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.dataset.internal.DataSetFields;
 import org.hisp.dhis.android.core.period.PeriodType;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+
+import static org.hisp.dhis.android.core.dataset.DataSetTableInfo.Columns;
 
 @Reusable
 public final class DataSetCollectionRepository
@@ -58,75 +64,87 @@ public final class DataSetCollectionRepository
     }
 
     public EnumFilterConnector<DataSetCollectionRepository, PeriodType> byPeriodType() {
-        return cf.enumC(DataSetFields.PERIOD_TYPE);
+        return cf.enumC(Columns.PERIOD_TYPE);
     }
 
     public StringFilterConnector<DataSetCollectionRepository> byCategoryComboUid() {
-        return cf.string(DataSetFields.CATEGORY_COMBO);
+        return cf.string(Columns.CATEGORY_COMBO);
     }
 
     public BooleanFilterConnector<DataSetCollectionRepository> byMobile() {
-        return cf.bool(DataSetFields.MOBILE);
+        return cf.bool(Columns.MOBILE);
     }
 
     public IntegerFilterConnector<DataSetCollectionRepository> byVersion() {
-        return cf.integer(DataSetFields.VERSION);
+        return cf.integer(Columns.VERSION);
     }
 
     public IntegerFilterConnector<DataSetCollectionRepository> byExpiryDays() {
-        return cf.integer(DataSetFields.EXPIRY_DAYS);
+        return cf.integer(Columns.EXPIRY_DAYS);
     }
 
     public IntegerFilterConnector<DataSetCollectionRepository> byTimelyDays() {
-        return cf.integer(DataSetFields.TIMELY_DAYS);
+        return cf.integer(Columns.TIMELY_DAYS);
     }
 
     public BooleanFilterConnector<DataSetCollectionRepository> byNotifyCompletingUser() {
-        return cf.bool(DataSetFields.NOTIFY_COMPLETING_USER);
+        return cf.bool(Columns.NOTIFY_COMPLETING_USER);
     }
 
     public IntegerFilterConnector<DataSetCollectionRepository> byOpenFuturePeriods() {
-        return cf.integer(DataSetFields.OPEN_FUTURE_PERIODS);
+        return cf.integer(Columns.OPEN_FUTURE_PERIODS);
     }
 
     public BooleanFilterConnector<DataSetCollectionRepository> byFieldCombinationRequired() {
-        return cf.bool(DataSetFields.FIELD_COMBINATION_REQUIRED);
+        return cf.bool(Columns.FIELD_COMBINATION_REQUIRED);
     }
 
     public BooleanFilterConnector<DataSetCollectionRepository> byValidCompleteOnly() {
-        return cf.bool(DataSetFields.VALID_COMPLETE_ONLY);
+        return cf.bool(Columns.VALID_COMPLETE_ONLY);
     }
 
     public BooleanFilterConnector<DataSetCollectionRepository> byNoValueRequiresComment() {
-        return cf.bool(DataSetFields.NO_VALUE_REQUIRES_COMMENT);
+        return cf.bool(Columns.NO_VALUE_REQUIRES_COMMENT);
     }
 
     public BooleanFilterConnector<DataSetCollectionRepository> bySkipOffline() {
-        return cf.bool(DataSetFields.SKIP_OFFLINE);
+        return cf.bool(Columns.SKIP_OFFLINE);
     }
 
     public BooleanFilterConnector<DataSetCollectionRepository> byDataElementDecoration() {
-        return cf.bool(DataSetFields.DATA_ELEMENT_DECORATION);
+        return cf.bool(Columns.DATA_ELEMENT_DECORATION);
     }
 
     public BooleanFilterConnector<DataSetCollectionRepository> byRenderAsTabs() {
-        return cf.bool(DataSetFields.RENDER_AS_TABS);
+        return cf.bool(Columns.RENDER_AS_TABS);
     }
 
     public BooleanFilterConnector<DataSetCollectionRepository> byRenderHorizontally() {
-        return cf.bool(DataSetFields.RENDER_HORIZONTALLY);
+        return cf.bool(Columns.RENDER_HORIZONTALLY);
     }
 
     public BooleanFilterConnector<DataSetCollectionRepository> byAccessDataWrite() {
-        return cf.bool(DataSetFields.ACCESS_DATA_WRITE);
+        return cf.bool(Columns.ACCESS_DATA_WRITE);
     }
 
-    public DataSetCollectionRepository withStyle() {
-        return cf.withChild(DataSetFields.STYLE);
+    public StringFilterConnector<DataSetCollectionRepository> byColor() {
+        return cf.string(Columns.COLOR);
     }
 
-    public DataSetCollectionRepository withSections() {
-        return cf.withChild(DataSetFields.SECTIONS);
+    public StringFilterConnector<DataSetCollectionRepository> byIcon() {
+        return cf.string(Columns.ICON);
+    }
+
+    public DataSetCollectionRepository byOrganisationUnitUid(String uid) {
+        return byOrganisationUnitList(Collections.singletonList(uid));
+    }
+
+    public DataSetCollectionRepository byOrganisationUnitList(List<String> uids) {
+        return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
+                DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
+                DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET,
+                DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
+                uids);
     }
 
     public DataSetCollectionRepository withCompulsoryDataElementOperands() {

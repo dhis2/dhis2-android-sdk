@@ -29,12 +29,10 @@
 package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCollectionRepository;
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
@@ -56,7 +54,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
 
         super.setUp();
 
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2 = D2Factory.forNewDatabase();
 
         dataSetCompleteRegistrationStore = DataSetCompleteRegistrationStoreImpl.create(databaseAdapter());
     }
@@ -64,31 +62,31 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void upload_data_set_complete_registrations_with_to_post_state() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
-        d2.syncMetaData().blockingSubscribe();
+        d2.userModule().logIn(username, password, url).blockingGet();
+        d2.metadataModule().blockingDownload();
         d2.aggregatedModule().data().download().subscribe();
 
         DataSetCompleteRegistration dataSetCompleteRegistration
                 = getTestDataSetCompleteRegistrationWith(State.TO_POST, "2018");
 
         DataSetCompleteRegistrationCollectionRepository repository
-                = d2.dataSetModule().dataSetCompleteRegistrations;
-        repository.add(dataSetCompleteRegistration);
+                = d2.dataSetModule().dataSetCompleteRegistrations();
+        repository.blockingAdd(dataSetCompleteRegistration);
 
-        DataValueImportSummary dataValueImportSummary = repository.upload().call();
+        repository.blockingUpload();
 
-        int importCountTotal = dataValueImportSummary.importCount().imported() +
+        /*int importCountTotal = dataValueImportSummary.importCount().imported() +
                 dataValueImportSummary.importCount().updated() +
                 dataValueImportSummary.importCount().ignored();
 
-        assertThat(importCountTotal == 1).isTrue();
+        assertThat(importCountTotal == 1).isTrue();*/
     }
 
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void upload_data_set_complete_registrations_with_to_update_state() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
-        d2.syncMetaData().blockingSubscribe();
+        d2.userModule().logIn(username, password, url).blockingGet();
+        d2.metadataModule().blockingDownload();
         d2.aggregatedModule().data().download().subscribe();
 
         DataSetCompleteRegistration dataSetCompleteRegistration
@@ -96,19 +94,19 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
 
         assertThat(insertToPostDataSetCompleteRegistration(dataSetCompleteRegistration)).isTrue();
 
-        DataValueImportSummary dataValueImportSummary = d2.dataSetModule().dataSetCompleteRegistrations.upload().call();
+        d2.dataSetModule().dataSetCompleteRegistrations().blockingUpload();
 
-        int importCountTotal = dataValueImportSummary.importCount().updated() +
+        /*int importCountTotal = dataValueImportSummary.importCount().updated() +
                 dataValueImportSummary.importCount().ignored();
 
-        assertThat(importCountTotal == 1).isTrue();
+        assertThat(importCountTotal == 1).isTrue();*/
     }
 
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void update_and_delete_different_data_set_complete_registrations() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
-        d2.syncMetaData().blockingSubscribe();
+        d2.userModule().logIn(username, password, url).blockingGet();
+        d2.metadataModule().blockingDownload();
         d2.aggregatedModule().data().download().subscribe();
 
         DataSetCompleteRegistration toDeleteDataSetCompleteRegistration
@@ -117,37 +115,39 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
         DataSetCompleteRegistration dataSetCompleteRegistration
                 = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2018");
 
-        DataSetCompleteRegistrationCollectionRepository repository = d2.dataSetModule().dataSetCompleteRegistrations;
-        repository.add(toDeleteDataSetCompleteRegistration);
-        repository.add(dataSetCompleteRegistration);
-        dataSetCompleteRegistrationStore.setState(toDeleteDataSetCompleteRegistration, State.TO_DELETE);
+        DataSetCompleteRegistrationCollectionRepository repository = d2.dataSetModule().dataSetCompleteRegistrations();
+        repository.blockingAdd(toDeleteDataSetCompleteRegistration);
+        repository.blockingAdd(dataSetCompleteRegistration);
+        dataSetCompleteRegistrationStore.setDeleted(toDeleteDataSetCompleteRegistration);
+        dataSetCompleteRegistrationStore.setState(toDeleteDataSetCompleteRegistration, State.TO_UPDATE);
 
-        DataValueImportSummary dataValueImportSummary = repository.upload().call();
+        repository.blockingUpload();
 
-        int importCountTotal = dataValueImportSummary.importCount().updated() +
+        /*int importCountTotal = dataValueImportSummary.importCount().updated() +
                 dataValueImportSummary.importCount().ignored();
         assertThat(importCountTotal == 1).isTrue();
-        assertThat(dataValueImportSummary.importCount().deleted() == 1).isTrue();
+        assertThat(dataValueImportSummary.importCount().deleted() == 1).isTrue();*/
     }
 
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void delete_data_set_complete_registrations_with_to_delete_state() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
-        d2.syncMetaData().blockingSubscribe();
+        d2.userModule().logIn(username, password, url).blockingGet();
+        d2.metadataModule().blockingDownload();
         d2.aggregatedModule().data().download().subscribe();
 
         DataSetCompleteRegistration dataSetCompleteRegistration
                 = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2018");
 
         DataSetCompleteRegistrationCollectionRepository repository
-                = d2.dataSetModule().dataSetCompleteRegistrations;
-        repository.add(dataSetCompleteRegistration);
-        dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, State.TO_DELETE);
+                = d2.dataSetModule().dataSetCompleteRegistrations();
+        repository.blockingAdd(dataSetCompleteRegistration);
+        dataSetCompleteRegistrationStore.setDeleted(dataSetCompleteRegistration);
+        dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, State.TO_UPDATE);
 
-        DataValueImportSummary dataValueImportSummary = repository.upload().call();
+        repository.blockingUpload();
 
-        assertThat(dataValueImportSummary.importCount().deleted() == 1).isTrue();
+        // assertThat(dataValueImportSummary.importCount().deleted() == 1).isTrue();
     }
 
     private boolean insertToPostDataSetCompleteRegistration(DataSetCompleteRegistration dataSetCompleteRegistration){

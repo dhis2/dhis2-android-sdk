@@ -32,11 +32,9 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.indicator.IndicatorType;
+import org.hisp.dhis.android.core.indicator.IndicatorTypeTableInfo.Columns;
 
-public final class IndicatorTypeFields {
-
-    public final static String NUMBER = "number";
-    public final static String FACTOR = "factor";
+final class IndicatorTypeFields {
 
     private static final FieldsHelper<IndicatorType> fh = new FieldsHelper<>();
 
@@ -47,8 +45,8 @@ public final class IndicatorTypeFields {
     public static final Fields<IndicatorType> allFields = Fields.<IndicatorType>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<Boolean>field(NUMBER),
-                    fh.<Integer>field(FACTOR)
+                    fh.<Boolean>field(Columns.NUMBER),
+                    fh.<Integer>field(Columns.FACTOR)
             ).build();
 
     private IndicatorTypeFields() {

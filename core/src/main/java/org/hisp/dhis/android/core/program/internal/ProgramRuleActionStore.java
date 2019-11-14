@@ -30,13 +30,13 @@ package org.hisp.dhis.android.core.program.internal;
 
 import android.database.sqlite.SQLiteStatement;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
 import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo;
 
@@ -66,7 +66,7 @@ public final class ProgramRuleActionStore {
     };
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            ProgramRuleActionTableInfo.TABLE_INFO, ProgramRuleActionFields.PROGRAM_RULE);
+            ProgramRuleActionTableInfo.TABLE_INFO, ProgramRuleActionTableInfo.Columns.PROGRAM_RULE);
 
     private ProgramRuleActionStore() {}
 

@@ -25,17 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.domain.metadata;
+
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.program.Program;
@@ -52,7 +57,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
 
@@ -66,40 +70,45 @@ public class MetadataCall {
     private final UserModuleDownloader userModuleDownloader;
     private final CategoryModuleDownloader categoryDownloader;
     private final ProgramModuleDownloader programDownloader;
-    private final OrganisationUnitModuleDownloader organisationUnitDownloadModule;
+    private final OrganisationUnitModuleDownloader organisationUnitModuleDownloader;
     private final DataSetModuleDownloader dataSetDownloader;
     private final ConstantModuleDownloader constantModuleDownloader;
     private final SmsModule smsModule;
+    private final DatabaseAdapter databaseAdapter;
 
     @Inject
-    public MetadataCall(@NonNull RxAPICallExecutor rxCallExecutor,
-                        @NonNull SystemInfoModuleDownloader systemInfoDownloader,
-                        @NonNull SystemSettingModuleDownloader systemSettingDownloader,
-                        @NonNull UserModuleDownloader userModuleDownloader,
-                        @NonNull CategoryModuleDownloader categoryDownloader,
-                        @NonNull ProgramModuleDownloader programDownloader,
-                        @NonNull OrganisationUnitModuleDownloader organisationUnitDownloadModule,
-                        @NonNull DataSetModuleDownloader dataSetDownloader,
-                        @NonNull ConstantModuleDownloader constantModuleDownloader,
-                        @NonNull SmsModule smsModule) {
+    MetadataCall(@NonNull RxAPICallExecutor rxCallExecutor,
+                 @NonNull SystemInfoModuleDownloader systemInfoDownloader,
+                 @NonNull SystemSettingModuleDownloader systemSettingDownloader,
+                 @NonNull UserModuleDownloader userModuleDownloader,
+                 @NonNull CategoryModuleDownloader categoryDownloader,
+                 @NonNull ProgramModuleDownloader programDownloader,
+                 @NonNull OrganisationUnitModuleDownloader organisationUnitModuleDownloader,
+                 @NonNull DataSetModuleDownloader dataSetDownloader,
+                 @NonNull ConstantModuleDownloader constantModuleDownloader,
+                 @NonNull SmsModule smsModule,
+                 @NonNull DatabaseAdapter databaseAdapter) {
         this.rxCallExecutor = rxCallExecutor;
         this.systemInfoDownloader = systemInfoDownloader;
         this.systemSettingDownloader = systemSettingDownloader;
         this.userModuleDownloader = userModuleDownloader;
         this.categoryDownloader = categoryDownloader;
         this.programDownloader = programDownloader;
-        this.organisationUnitDownloadModule = organisationUnitDownloadModule;
+        this.organisationUnitModuleDownloader = organisationUnitModuleDownloader;
         this.dataSetDownloader = dataSetDownloader;
         this.constantModuleDownloader = constantModuleDownloader;
         this.smsModule = smsModule;
+        this.databaseAdapter = databaseAdapter;
     }
 
     public Observable<D2Progress> download() {
+        D2ProgressManager progressManager = new D2ProgressManager(9);
 
-        return rxCallExecutor.wrapObservableTransactionally(Observable.create(emitter -> {
-                    D2ProgressManager progressManager = new D2ProgressManager(9);
+        return rxCallExecutor.wrapObservableTransactionally(
+                systemInfoDownloader.downloadMetadata().andThen(Observable.create(emitter -> {
 
-                    systemInfoDownloader.downloadMetadata().blockingAwait();
+                    databaseAdapter.delete(ForeignKeyViolationTableInfo.TABLE_INFO.name());
+
                     emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
 
                     systemSettingDownloader.downloadMetadata().call();
@@ -122,7 +131,7 @@ public class MetadataCall {
                     emitter.onNext(progressManager.increaseProgress(Category.class, false));
 
 
-                    organisationUnitDownloadModule.downloadMetadata(user, programs, dataSets).call();
+                    organisationUnitModuleDownloader.downloadMetadata(user, programs, dataSets).call();
                     emitter.onNext(progressManager.increaseProgress(OrganisationUnit.class, false));
 
 
@@ -134,7 +143,11 @@ public class MetadataCall {
                     emitter.onNext(progressManager.increaseProgress(SmsModule.class, false));
 
                     emitter.onComplete();
-                }
-        ), true);
+
+                })), true);
+    }
+
+    public void blockingDownload() {
+        download().blockingSubscribe();
     }
 }

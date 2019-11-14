@@ -31,18 +31,23 @@ package org.hisp.dhis.android.core.relationship.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.internal.AccessFields;
+import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo.Columns;
 
 public final class RelationshipTypeFields {
 
-    public static final String B_IS_TO_A = "bIsToA";
-    public static final String A_IS_TO_B = "aIsToB";
-    public static final String FROM_CONSTRAINT = "fromConstraint";
-    public static final String TO_CONSTRAINT = "toConstraint";
+    private static final String B_IS_TO_A = "bIsToA";
+    private static final String A_IS_TO_B = "aIsToB";
+    private static final String FROM_CONSTRAINT = "fromConstraint";
+    private static final String TO_CONSTRAINT = "toConstraint";
+    private static final String ACCESS = "access";
 
     // Used only for children appending, can't be used in query
-    static final String CONSTRAINTS = "constraints";
+    public static final String CONSTRAINTS = "constraints";
 
     private static final FieldsHelper<RelationshipType> fh = new FieldsHelper<>();
 
@@ -53,10 +58,14 @@ public final class RelationshipTypeFields {
             .fields(
                     fh.<String>field(B_IS_TO_A),
                     fh.<String>field(A_IS_TO_B),
+                    fh.<String>field(Columns.FROM_TO_NAME),
+                    fh.<String>field(Columns.TO_FROM_NAME),
+                    fh.<String>field(Columns.BIDIRECTIONAL),
                     fh.<RelationshipConstraint>nestedField(FROM_CONSTRAINT)
                             .with(RelationshipConstraintFields.allFields),
                     fh.<RelationshipConstraint>nestedField(TO_CONSTRAINT)
-                            .with(RelationshipConstraintFields.allFields)
+                            .with(RelationshipConstraintFields.allFields),
+                    fh.<Access>nestedField(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields))
             ).build();
 
     private RelationshipTypeFields() {

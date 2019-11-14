@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import androidx.annotation.NonNull;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 @AutoValue
 public abstract class SearchGrid {
@@ -46,23 +46,23 @@ public abstract class SearchGrid {
 
     @NonNull
     @JsonProperty(HEADERS)
-    public abstract List<SearchGridHeader> headers();
+    abstract List<SearchGridHeader> headers();
 
     @NonNull
     @JsonProperty(META_DATA)
-    public abstract SearchGridMetadata metaData();
+    abstract SearchGridMetadata metaData();
 
     @NonNull
     @JsonProperty(WIDTH)
-    public abstract Integer width();
+    abstract Integer width();
 
     @NonNull
     @JsonProperty(HEIGHT)
-    public abstract Integer height();
+    abstract Integer height();
 
     @NonNull
     @JsonProperty(ROWS)
-    public abstract List<List<String>> rows();
+    abstract List<List<String>> rows();
 
     @JsonCreator
     static SearchGrid create(

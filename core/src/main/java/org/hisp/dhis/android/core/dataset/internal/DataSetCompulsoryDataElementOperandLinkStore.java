@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLink;
 import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLinkTableInfo;
 
@@ -48,9 +48,9 @@ final class DataSetCompulsoryDataElementOperandLinkStore {
     private DataSetCompulsoryDataElementOperandLinkStore() {
     }
 
-    public static LinkModelStore<DataSetCompulsoryDataElementOperandLink> create(DatabaseAdapter databaseAdapter) {
+    public static LinkStore<DataSetCompulsoryDataElementOperandLink> create(DatabaseAdapter databaseAdapter) {
 
-        return StoreFactory.linkModelStore(databaseAdapter,
+        return StoreFactory.linkStore(databaseAdapter,
                 DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO,
                 DataSetCompulsoryDataElementOperandLinkTableInfo.Columns.DATA_SET,
                 BINDER,

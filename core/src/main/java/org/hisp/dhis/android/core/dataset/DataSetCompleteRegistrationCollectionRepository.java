@@ -28,27 +28,30 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationFields;
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo.Columns;
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationPostCall;
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore;
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
+import io.reactivex.Observable;
 
 @Reusable
 public final class DataSetCompleteRegistrationCollectionRepository
@@ -59,6 +62,7 @@ public final class DataSetCompleteRegistrationCollectionRepository
 
     private final Handler<DataSetCompleteRegistration> handler;
     private final DataSetCompleteRegistrationPostCall postCall;
+    private final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
 
     @Inject
     DataSetCompleteRegistrationCollectionRepository(
@@ -67,45 +71,84 @@ public final class DataSetCompleteRegistrationCollectionRepository
             final RepositoryScope scope,
             final Handler<DataSetCompleteRegistration> handler,
             final DataSetCompleteRegistrationPostCall postCall) {
+
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new DataSetCompleteRegistrationCollectionRepository(store, childrenAppenders,
                         s, handler, postCall)));
+
         this.handler = handler;
         this.postCall = postCall;
+        this.dataSetCompleteRegistrationStore = store;
     }
 
     @Override
-    public void add(DataSetCompleteRegistration dataSetCompleteRegistration) {
+    public Completable add(DataSetCompleteRegistration dataSetCompleteRegistration) {
+        return Completable.fromAction(() -> blockingAdd(dataSetCompleteRegistration));
+    }
+
+    @Override
+    public void blockingAdd(DataSetCompleteRegistration dataSetCompleteRegistration) {
         handler.handle(dataSetCompleteRegistration.toBuilder().state(State.TO_POST).build());
     }
 
     @Override
-    public Callable<DataValueImportSummary> upload() {
-        return postCall;
+    public Observable<D2Progress> upload() {
+        return Observable.fromCallable(() ->
+                byState().in(State.TO_POST, State.TO_UPDATE).getWithoutChildren()
+        ).flatMap(postCall::uploadDataSetCompleteRegistrations);
     }
 
+    @Override
+    public void blockingUpload() {
+        upload().blockingSubscribe();
+    }
+
+    public DataSetCompleteRegistrationObjectRepository value(final String period,
+                                             final String organisationUnit,
+                                             final String dataSet,
+                                             final String attributeOptionCombo) {
+
+        RepositoryScope updatedScope = byPeriod().eq(period)
+                .byOrganisationUnitUid().eq(organisationUnit)
+                .byDataSetUid().eq(dataSet)
+                .byAttributeOptionComboUid().eq(attributeOptionCombo)
+                .scope;
+
+        return new DataSetCompleteRegistrationObjectRepository(
+                dataSetCompleteRegistrationStore, childrenAppenders,
+                updatedScope, period, organisationUnit, dataSet, attributeOptionCombo);
+    }
 
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byPeriod() {
-        return cf.string(DataSetCompleteRegistrationFields.PERIOD);
+        return cf.string(Columns.PERIOD);
     }
 
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byDataSetUid() {
-        return cf.string(DataSetCompleteRegistrationFields.DATA_SET);
+        return cf.string(Columns.DATA_SET);
     }
 
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byOrganisationUnitUid() {
-        return cf.string(DataSetCompleteRegistrationFields.ORGANISATION_UNIT);
+        return cf.string(Columns.ORGANISATION_UNIT);
     }
 
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byAttributeOptionComboUid() {
-        return cf.string(DataSetCompleteRegistrationFields.ATTRIBUTE_OPTION_COMBO);
+        return cf.string(Columns.ATTRIBUTE_OPTION_COMBO);
     }
 
     public DateFilterConnector<DataSetCompleteRegistrationCollectionRepository> byDate() {
-        return cf.date(DataSetCompleteRegistrationFields.DATE);
+        return cf.date(Columns.DATE);
     }
 
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byStoredBy() {
-        return cf.string(DataSetCompleteRegistrationFields.STORED_BY);
+        return cf.string(Columns.STORED_BY);
     }
+
+    public BooleanFilterConnector<DataSetCompleteRegistrationCollectionRepository> byDeleted() {
+        return cf.bool(Columns.DELETED);
+    }
+
+    public EnumFilterConnector<DataSetCompleteRegistrationCollectionRepository, State> byState() {
+        return cf.enumC(Columns.STATE);
+    }
+
 }

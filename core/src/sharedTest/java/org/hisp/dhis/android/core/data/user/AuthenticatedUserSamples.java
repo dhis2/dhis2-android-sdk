@@ -36,7 +36,6 @@ public class AuthenticatedUserSamples {
         return AuthenticatedUser.builder()
                 .id(1L)
                 .user("user")
-                .credentials("credentials")
                 .hash("hash")
                 .build();
     }

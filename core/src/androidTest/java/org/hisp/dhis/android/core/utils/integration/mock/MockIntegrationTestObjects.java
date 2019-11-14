@@ -35,9 +35,11 @@ import android.util.Log;
 import com.facebook.stetho.Stetho;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2DIComponent;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.D2Factory;
+import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 
@@ -58,6 +60,7 @@ public class MockIntegrationTestObjects {
     public final Dhis2MockServer dhis2MockServer;
     public final MockIntegrationTestDatabaseContent content;
     private final String dbName;
+    private final CredentialsSecureStore credentialsSecureStore;
 
     MockIntegrationTestObjects(MockIntegrationTestDatabaseContent content) throws Exception {
         this.content = content;
@@ -70,12 +73,13 @@ public class MockIntegrationTestObjects {
 
         dhis2MockServer = new Dhis2MockServer();
 
-        d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), dbName);
+        d2 = D2Factory.forDatabaseName(dbName);
 
         database = d2.databaseAdapter().database();
         databaseAdapter = d2.databaseAdapter();
+        credentialsSecureStore = new CredentialsSecureStoreImpl(context);
 
-        d2DIComponent = D2DIComponent.create(context, d2.retrofit(), databaseAdapter);
+        d2DIComponent = D2DIComponent.create(context, d2.retrofit(), databaseAdapter, credentialsSecureStore);
 
         resourceHandler = ResourceHandler.create(databaseAdapter);
         resourceHandler.setServerDate(serverDate);

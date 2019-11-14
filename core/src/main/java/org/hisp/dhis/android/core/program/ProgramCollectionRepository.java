@@ -35,13 +35,15 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns;
 import org.hisp.dhis.android.core.program.internal.ProgramFields;
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -62,83 +64,67 @@ public final class ProgramCollectionRepository
     }
 
     public IntegerFilterConnector<ProgramCollectionRepository> byVersion() {
-        return cf.integer(ProgramFields.VERSION);
+        return cf.integer(Columns.VERSION);
     }
 
     public BooleanFilterConnector<ProgramCollectionRepository> byOnlyEnrollOnce() {
-        return cf.bool(ProgramFields.ONLY_ENROLL_ONCE);
+        return cf.bool(Columns.ONLY_ENROLL_ONCE);
     }
 
     public StringFilterConnector<ProgramCollectionRepository> byEnrollmentDateLabel() {
-        return cf.string(ProgramFields.ENROLLMENT_DATE_LABEL);
+        return cf.string(Columns.ENROLLMENT_DATE_LABEL);
     }
 
     public BooleanFilterConnector<ProgramCollectionRepository> byDisplayIncidentDate() {
-        return cf.bool(ProgramFields.DISPLAY_INCIDENT_DATE);
+        return cf.bool(Columns.DISPLAY_INCIDENT_DATE);
     }
 
     public StringFilterConnector<ProgramCollectionRepository> byIncidentDateLabel() {
-        return cf.string(ProgramFields.INCIDENT_DATE_LABEL);
+        return cf.string(Columns.INCIDENT_DATE_LABEL);
     }
 
     public BooleanFilterConnector<ProgramCollectionRepository> byRegistration() {
-        return cf.bool(ProgramFields.REGISTRATION);
+        return cf.bool(Columns.REGISTRATION);
     }
 
     public BooleanFilterConnector<ProgramCollectionRepository> bySelectEnrollmentDatesInFuture() {
-        return cf.bool(ProgramFields.SELECT_ENROLLMENT_DATES_IN_FUTURE);
+        return cf.bool(Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE);
     }
 
     public BooleanFilterConnector<ProgramCollectionRepository> byDataEntryMethod() {
-        return cf.bool(ProgramFields.DATA_ENTRY_METHOD);
+        return cf.bool(Columns.DATA_ENTRY_METHOD);
     }
 
     public BooleanFilterConnector<ProgramCollectionRepository> byIgnoreOverdueEvents() {
-        return cf.bool(ProgramFields.IGNORE_OVERDUE_EVENTS);
-    }
-
-    public BooleanFilterConnector<ProgramCollectionRepository> byRelationshipFromA() {
-        return cf.bool(ProgramFields.RELATIONSHIP_FROM_A);
+        return cf.bool(Columns.IGNORE_OVERDUE_EVENTS);
     }
 
     public BooleanFilterConnector<ProgramCollectionRepository> bySelectIncidentDatesInFuture() {
-        return cf.bool(ProgramFields.SELECT_INCIDENT_DATES_IN_FUTURE);
-    }
-
-    public BooleanFilterConnector<ProgramCollectionRepository> byCaptureCoordinates() {
-        return cf.bool(ProgramFields.CAPTURE_COORDINATES);
+        return cf.bool(Columns.SELECT_INCIDENT_DATES_IN_FUTURE);
     }
 
     public BooleanFilterConnector<ProgramCollectionRepository> byUseFirstStageDuringRegistration() {
-        return cf.bool(ProgramFields.USE_FIRST_STAGE_DURING_REGISTRATION);
+        return cf.bool(Columns.USE_FIRST_STAGE_DURING_REGISTRATION);
     }
 
     public BooleanFilterConnector<ProgramCollectionRepository> byDisplayFrontPageList() {
-        return cf.bool(ProgramFields.DISPLAY_FRONT_PAGE_LIST);
+        return cf.bool(Columns.DISPLAY_FRONT_PAGE_LIST);
     }
 
     public EnumFilterConnector<ProgramCollectionRepository, ProgramType> byProgramType() {
-        return cf.enumC(ProgramFields.PROGRAM_TYPE);
-    }
-
-    public StringFilterConnector<ProgramCollectionRepository> byRelationshipTypeUid() {
-        return cf.string(ProgramFields.RELATIONSHIP_TYPE);
-    }
-
-    public StringFilterConnector<ProgramCollectionRepository> byRelationshipText() {
-        return cf.string(ProgramFields.RELATIONSHIP_TEXT);
+        return cf.enumC(Columns.PROGRAM_TYPE);
     }
 
     public StringFilterConnector<ProgramCollectionRepository> byRelatedProgramUid() {
-        return cf.string(ProgramFields.RELATED_PROGRAM);
+        return cf.string(Columns.RELATED_PROGRAM);
     }
 
     public StringFilterConnector<ProgramCollectionRepository> byTrackedEntityTypeUid() {
-        return cf.string(ProgramFields.TRACKED_ENTITY_TYPE);
+        return cf.string(Columns.TRACKED_ENTITY_TYPE);
     }
 
     public StringFilterConnector<ProgramCollectionRepository> byCategoryComboUid() {
-        return cf.string(ProgramFields.CATEGORY_COMBO);
+        return cf.string(Columns.CATEGORY_COMBO);
     }
 
     public BooleanFilterConnector<ProgramCollectionRepository> byAccessDataWrite() {
@@ -146,41 +132,59 @@ public final class ProgramCollectionRepository
     }
 
     public IntegerFilterConnector<ProgramCollectionRepository> byExpiryDays() {
-        return cf.integer(ProgramFields.EXPIRY_DAYS);
+        return cf.integer(Columns.EXPIRY_DAYS);
     }
 
     public IntegerFilterConnector<ProgramCollectionRepository> byCompleteEventsExpiryDays() {
-        return cf.integer(ProgramFields.COMPLETE_EVENTS_EXPIRY_DAYS);
+        return cf.integer(Columns.COMPLETE_EVENTS_EXPIRY_DAYS);
     }
 
     public EnumFilterConnector<ProgramCollectionRepository, PeriodType> byExpiryPeriodType() {
-        return cf.enumC(ProgramFields.EXPIRY_PERIOD_TYPE);
+        return cf.enumC(Columns.EXPIRY_PERIOD_TYPE);
     }
 
     public IntegerFilterConnector<ProgramCollectionRepository> byMinAttributesRequiredToSearch() {
-        return cf.integer(ProgramFields.MIN_ATTRIBUTES_REQUIRED_TO_SEARCH);
+        return cf.integer(Columns.MIN_ATTRIBUTES_REQUIRED_TO_SEARCH);
     }
 
     public IntegerFilterConnector<ProgramCollectionRepository> byMaxTeiCountToReturn() {
-        return cf.integer(ProgramFields.MAX_TEI_COUNT_TO_RETURN);
+        return cf.integer(Columns.MAX_TEI_COUNT_TO_RETURN);
     }
 
     public EnumFilterConnector<ProgramCollectionRepository, FeatureType> byFeatureType() {
-        return cf.enumC(ProgramFields.FEATURE_TYPE);
+        return cf.enumC(Columns.FEATURE_TYPE);
+    }
+
+    public EnumFilterConnector<ProgramCollectionRepository, AccessLevel> byAccessLevel() {
+        return cf.enumC(Columns.ACCESS_LEVEL);
+    }
+
+    public StringFilterConnector<ProgramCollectionRepository> byColor() {
+        return cf.string(Columns.COLOR);
+    }
+
+    public StringFilterConnector<ProgramCollectionRepository> byIcon() {
+        return cf.string(Columns.ICON);
+    }
+
+    public ProgramCollectionRepository byOrganisationUnitUid(String uid) {
+        return byOrganisationUnitList(Collections.singletonList(uid));
     }
 
     public ProgramCollectionRepository byOrganisationUnitList(List<String> uids) {
-        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).inLinkTable(
+        return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
                 OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
                 OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
                 OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
                 uids);
     }
 
-    public ProgramCollectionRepository withStyle() {
-        return cf.withChild(ProgramFields.STYLE);
-    }
-
+    /**
+     * @deprecated use d2.programModule().programStages().byProgramUid() instead
+     *
+     * @return
+     */
+    @Deprecated
     public ProgramCollectionRepository withProgramStages() {
         return cf.withChild(ProgramFields.PROGRAM_STAGES);
     }
@@ -193,6 +197,12 @@ public final class ProgramCollectionRepository
         return cf.withChild(ProgramFields.PROGRAM_INDICATORS);
     }
 
+    /**
+     * @deprecated use d2.programModule().programRules().byProgramUid() instead
+     *
+     * @return
+     */
+    @Deprecated
     public ProgramCollectionRepository withProgramRules() {
         return cf.withChild(ProgramFields.PROGRAM_RULES);
     }
@@ -205,15 +215,7 @@ public final class ProgramCollectionRepository
         return cf.withChild(ProgramFields.PROGRAM_SECTIONS);
     }
 
-    public ProgramCollectionRepository withCategoryCombo() {
-        return cf.withChild(ProgramFields.CATEGORY_COMBO);
-    }
-
-    public ProgramCollectionRepository withRelatedProgram() {
-        return cf.withChild(ProgramFields.RELATED_PROGRAM);
-    }
-
     public ProgramCollectionRepository withTrackedEntityType() {
-        return cf.withChild(ProgramFields.TRACKED_ENTITY_TYPE);
+        return cf.withChild(Columns.TRACKED_ENTITY_TYPE);
     }
 }

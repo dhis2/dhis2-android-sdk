@@ -29,9 +29,8 @@
 package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class RelationshipItemTableInfo {
 
@@ -46,29 +45,32 @@ public final class RelationshipItemTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
         public static final String RELATIONSHIP = "relationship";
         public static final String RELATIONSHIP_ITEM_TYPE = "relationshipItemType";
+        public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+        public static final String ENROLLMENT = "enrollment";
+        public static final String EVENT = "event";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     RELATIONSHIP,
                     RELATIONSHIP_ITEM_TYPE,
-                    RelationshipItemFields.TRACKED_ENTITY_INSTANCE,
-                    RelationshipItemFields.ENROLLMENT,
-                    RelationshipItemFields.EVENT
+                    TRACKED_ENTITY_INSTANCE,
+                    ENROLLMENT,
+                    EVENT
             );
         }
 
         @Override
         public String[] whereUpdate() {
-            return Utils.appendInNewArray(super.whereUpdate(),
+            return CollectionsHelper.appendInNewArray(super.whereUpdate(),
                     RELATIONSHIP,
                     RELATIONSHIP_ITEM_TYPE
             );

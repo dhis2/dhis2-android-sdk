@@ -30,21 +30,24 @@ package org.hisp.dhis.android.core.dataset;
 
 import android.database.Cursor;
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.Model;
-
 import androidx.annotation.Nullable;
 
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
+
 @AutoValue
-public abstract class SectionGreyedFieldsLink implements Model {
+public abstract class SectionGreyedFieldsLink implements CoreObject {
 
     @Nullable
     public abstract String section();
 
     @Nullable
     public abstract String dataElementOperand();
+
+    @Nullable
+    public abstract String categoryOptionCombo();
 
     public static Builder builder() {
         return new AutoValue_SectionGreyedFieldsLink.Builder();
@@ -57,13 +60,15 @@ public abstract class SectionGreyedFieldsLink implements Model {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
+    public static abstract class Builder extends BaseObject.Builder<Builder> {
 
         public abstract Builder id(Long id);
 
         public abstract Builder section(String section);
 
         public abstract Builder dataElementOperand(String dataElementOperand);
+
+        public abstract Builder categoryOptionCombo(String categoryOptionCombo);
 
         public abstract SectionGreyedFieldsLink build();
     }

@@ -29,8 +29,9 @@
 package org.hisp.dhis.android.core.data.trackedentity;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import java.text.ParseException;
@@ -44,12 +45,14 @@ public class TrackedEntityInstanceSamples {
                 .uid("tei_uid")
                 .created(getDate("2014-08-20T12:28:56.409"))
                 .lastUpdated(getDate("2015-10-14T13:36:53.063"))
-                .createdAtClient("created_at_client")
-                .lastUpdatedAtClient("last_updated_at_client")
+                .createdAtClient(getDate("2014-10-14T13:36:53.063"))
+                .lastUpdatedAtClient(getDate("2014-11-11T10:10:50.123"))
                 .organisationUnit("organisation_unit")
                 .trackedEntityType("tracked_entity_type")
-                .coordinates("coordinates")
-                .featureType(FeatureType.MULTI_POLYGON)
+                .geometry(Geometry.builder()
+                        .type(FeatureType.POLYGON)
+                        .coordinates("[11.0, 11.0]")
+                        .build())
                 .state(State.TO_POST)
                 .deleted(false)
                 .build();

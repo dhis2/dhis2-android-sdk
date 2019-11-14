@@ -30,25 +30,25 @@ package org.hisp.dhis.android.core.datavalue;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueFields;
 
 import java.util.Date;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_DataValue.Builder.class)
-public abstract class DataValue extends BaseDataModel {
+public abstract class DataValue extends BaseDeletableDataObject {
 
     @Nullable
     @JsonProperty
@@ -96,10 +96,6 @@ public abstract class DataValue extends BaseDataModel {
     @JsonProperty(DataValueFields.FOLLOW_UP)
     public abstract Boolean followUp();
 
-    @Nullable
-    @JsonProperty
-    public abstract Boolean deleted();
-
     @NonNull
     public static DataValue create(Cursor cursor) {
         return AutoValue_DataValue.createFromCursor(cursor);
@@ -114,7 +110,7 @@ public abstract class DataValue extends BaseDataModel {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseDataModel.Builder<DataValue.Builder> {
+    public abstract static class Builder extends BaseDeletableDataObject.Builder<DataValue.Builder> {
 
         public Builder() {
             state(State.SYNCED);
@@ -144,8 +140,16 @@ public abstract class DataValue extends BaseDataModel {
         @JsonProperty(DataValueFields.FOLLOW_UP)
         public abstract DataValue.Builder followUp(@NonNull Boolean followUp);
 
-        public abstract DataValue.Builder deleted(@NonNull Boolean deleted);
+        abstract DataValue autoBuild();
 
-        public abstract DataValue build();
+        // Auxiliary fields
+        abstract Boolean deleted();
+
+        public DataValue build() {
+            if (deleted() == null) {
+                deleted(false);
+            }
+            return autoBuild();
+        }
     }
 }

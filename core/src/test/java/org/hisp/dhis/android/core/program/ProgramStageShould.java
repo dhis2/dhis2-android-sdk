@@ -30,14 +30,15 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -66,7 +67,7 @@ public class ProgramStageShould  extends BaseObjectShould implements ObjectShoul
         assertThat(programStage.allowGenerateNextVisit()).isFalse();
         assertThat(programStage.autoGenerateEvent()).isTrue();
         assertThat(programStage.blockEntryForm()).isFalse();
-        assertThat(programStage.captureCoordinates()).isFalse();
+        assertThat(programStage.captureCoordinates()).isTrue();
         assertThat(programStage.displayGenerateEventBox()).isFalse();
         assertThat(programStage.executionDateLabel()).isNull();
         assertThat(programStage.formType()).isEqualTo(FormType.DEFAULT);
@@ -77,28 +78,29 @@ public class ProgramStageShould  extends BaseObjectShould implements ObjectShoul
         assertThat(programStage.repeatable()).isFalse();
         assertThat(programStage.reportDateToUse()).isEqualTo("false");
         assertThat(programStage.standardInterval()).isNull();
-        assertThat(programStage.programStageSections()).isEmpty();
+        assertThat(ProgramStageInternalAccessor.accessProgramStageSections(programStage)).isEmpty();
         assertThat(programStage.periodType()).isEqualTo(PeriodType.Monthly);
         assertThat(programStage.remindCompleted()).isEqualTo(false);
         assertThat(programStage.featureType()).isEqualTo(FeatureType.POINT);
 
-        assertThat(programStage.programStageDataElements().get(0).uid()).isEqualTo("EQCf1l2Mdr8");
-        assertThat(programStage.programStageDataElements().get(1).uid()).isEqualTo("muxw4SGzUwJ");
-        assertThat(programStage.programStageDataElements().get(2).uid()).isEqualTo("KWybjio9UZT");
-        assertThat(programStage.programStageDataElements().get(3).uid()).isEqualTo("ejm0g2hwHHc");
-        assertThat(programStage.programStageDataElements().get(4).uid()).isEqualTo("yvV3txhSCyc");
-        assertThat(programStage.programStageDataElements().get(5).uid()).isEqualTo("fzQrjBpbwQD");
-        assertThat(programStage.programStageDataElements().get(6).uid()).isEqualTo("BbvkNf9PCxX");
-        assertThat(programStage.programStageDataElements().get(7).uid()).isEqualTo("MbdCfd4HaMQ");
-        assertThat(programStage.programStageDataElements().get(8).uid()).isEqualTo("SBn4XCFRbyT");
-        assertThat(programStage.programStageDataElements().get(9).uid()).isEqualTo("F0PZ4nZ86vo");
-        assertThat(programStage.programStageDataElements().get(10).uid()).isEqualTo("gFBRqVFh60H");
-        assertThat(programStage.programStageDataElements().get(11).uid()).isEqualTo("ljAoyjH4GYA");
-        assertThat(programStage.programStageDataElements().get(12).uid()).isEqualTo("MAdsNY2gOlv");
-        assertThat(programStage.programStageDataElements().get(13).uid()).isEqualTo("IpVUTCDdlGW");
-        assertThat(programStage.programStageDataElements().get(14).uid()).isEqualTo("psBtdqepNVM");
-        assertThat(programStage.programStageDataElements().get(15).uid()).isEqualTo("UzB6pZxZ2Rb");
-        assertThat(programStage.programStageDataElements().get(16).uid()).isEqualTo("FQZEMbBVabW");
-
+        List<ProgramStageDataElement> dataElements =
+                ProgramStageInternalAccessor.accessProgramStageDataElements(programStage);
+        assertThat(dataElements.get(0).uid()).isEqualTo("EQCf1l2Mdr8");
+        assertThat(dataElements.get(1).uid()).isEqualTo("muxw4SGzUwJ");
+        assertThat(dataElements.get(2).uid()).isEqualTo("KWybjio9UZT");
+        assertThat(dataElements.get(3).uid()).isEqualTo("ejm0g2hwHHc");
+        assertThat(dataElements.get(4).uid()).isEqualTo("yvV3txhSCyc");
+        assertThat(dataElements.get(5).uid()).isEqualTo("fzQrjBpbwQD");
+        assertThat(dataElements.get(6).uid()).isEqualTo("BbvkNf9PCxX");
+        assertThat(dataElements.get(7).uid()).isEqualTo("MbdCfd4HaMQ");
+        assertThat(dataElements.get(8).uid()).isEqualTo("SBn4XCFRbyT");
+        assertThat(dataElements.get(9).uid()).isEqualTo("F0PZ4nZ86vo");
+        assertThat(dataElements.get(10).uid()).isEqualTo("gFBRqVFh60H");
+        assertThat(dataElements.get(11).uid()).isEqualTo("ljAoyjH4GYA");
+        assertThat(dataElements.get(12).uid()).isEqualTo("MAdsNY2gOlv");
+        assertThat(dataElements.get(13).uid()).isEqualTo("IpVUTCDdlGW");
+        assertThat(dataElements.get(14).uid()).isEqualTo("psBtdqepNVM");
+        assertThat(dataElements.get(15).uid()).isEqualTo("UzB6pZxZ2Rb");
+        assertThat(dataElements.get(16).uid()).isEqualTo("FQZEMbBVabW");
     }
 }

@@ -64,12 +64,12 @@ public class ReadOnlyCollectionRepositoryImplIntegrationShould extends BaseMockI
         handler.handle(RELATIONSHIP_TYPE_1);
         handler.handle(RELATIONSHIP_TYPE_2);
 
-        relationshipTypeCollectionRepository = d2.relationshipModule().relationshipTypes;
+        relationshipTypeCollectionRepository = d2.relationshipModule().relationshipTypes();
     }
 
     @Test
     public void get_all_relationship_types_without_children_when_calling_get() {
-        List<RelationshipType> types = relationshipTypeCollectionRepository.get();
+        List<RelationshipType> types = relationshipTypeCollectionRepository.blockingGet();
         assertThat(types.size()).isEqualTo(2);
 
         for (RelationshipType targetType: types) {
@@ -80,7 +80,7 @@ public class ReadOnlyCollectionRepositoryImplIntegrationShould extends BaseMockI
 
     @Test
     public void get_all_relationship_types_without_children_when_calling_get_async() {
-        List<RelationshipType> types = relationshipTypeCollectionRepository.getAsync().blockingGet();
+        List<RelationshipType> types = relationshipTypeCollectionRepository.get().blockingGet();
         assertThat(types.size()).isEqualTo(2);
 
         for (RelationshipType targetType: types) {
@@ -90,27 +90,37 @@ public class ReadOnlyCollectionRepositoryImplIntegrationShould extends BaseMockI
     }
 
     @Test
-    public void get_all_relationship_types_with_children_when_calling_get_with_children() {
-        List<RelationshipType> types = relationshipTypeCollectionRepository.withAllChildren().get();
-        assertThat(types.size()).isEqualTo(2);
-
-        for (RelationshipType targetType: types) {
-            RelationshipType referenceType = typeMap.get(targetType.uid());
-            assertThat(targetType).isEqualTo(referenceType);
-        }
-    }
-
-    @Test
     public void get_count_with_unrestricted_scope() {
-        int count = relationshipTypeCollectionRepository.count();
+        int count = relationshipTypeCollectionRepository.blockingCount();
 
         assertThat(count).isEqualTo(2);
     }
 
     @Test
     public void get_count_with_restricted_scope() {
-        int count = relationshipTypeCollectionRepository.byUid().eq(RELATIONSHIP_TYPE_UID_1).count();
+        int count = relationshipTypeCollectionRepository.byUid().eq(RELATIONSHIP_TYPE_UID_1).blockingCount();
 
         assertThat(count).isEqualTo(1);
+    }
+
+    @Test
+    public void get_isEmpty_with_unrestricted_scope() {
+        boolean isEmpty = relationshipTypeCollectionRepository.blockingIsEmpty();
+
+        assertThat(isEmpty).isEqualTo(false);
+    }
+
+    @Test
+    public void get_isEmpty_with_restricted_scope() {
+        boolean isEmpty = relationshipTypeCollectionRepository.byUid().eq(RELATIONSHIP_TYPE_UID_1).blockingIsEmpty();
+
+        assertThat(isEmpty).isEqualTo(false);
+    }
+
+    @Test
+    public void get_isEmpty_with_zero_elements_scope() {
+        boolean isEmpty = relationshipTypeCollectionRepository.byCode().eq("non-existing").blockingIsEmpty();
+
+        assertThat(isEmpty).isEqualTo(true);
     }
 }

@@ -29,10 +29,9 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.option.internal.OptionGroupFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public final class OptionGroupTableInfo {
 
@@ -47,17 +46,18 @@ public final class OptionGroupTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends IdentifiableColumns {
+        public final static String OPTION_SET = "optionSet";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    OptionGroupFields.OPTION_SET
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    OPTION_SET
             );
         }
     }

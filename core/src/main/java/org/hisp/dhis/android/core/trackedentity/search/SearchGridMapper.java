@@ -49,7 +49,7 @@ class SearchGridMapper {
         // Empty constructor to add Dagger annotation
     }
 
-    public List<TrackedEntityInstance> transform(SearchGrid searchGrid) throws ParseException {
+    List<TrackedEntityInstance> transform(SearchGrid searchGrid) throws ParseException {
         List<TrackedEntityInstance> teis = new ArrayList<>(searchGrid.rows().size());
         for (List<String> row : searchGrid.rows()) {
             TrackedEntityInstance tei = TrackedEntityInstance.builder()

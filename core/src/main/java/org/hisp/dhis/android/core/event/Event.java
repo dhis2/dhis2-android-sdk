@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.event;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -37,29 +39,27 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EventStatusColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCoordinatesColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityDataValueListColumnAdapter;
+import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
+import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.Coordinates;
-import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.data.database.CoordinatesColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DataDeleteColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbEventStatusColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityDataValueListColumnAdapter;
 import org.hisp.dhis.android.core.event.internal.EventFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
 import java.util.Date;
 import java.util.List;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Event.Builder.class)
-public abstract class Event extends BaseDataModel implements ObjectWithDeleteInterface, ObjectWithUidInterface {
+public abstract class Event extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Override
-    @Nullable
     @JsonProperty(EventFields.UID)
     public abstract String uid();
 
@@ -79,11 +79,13 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
 
     @Nullable
     @JsonIgnore()
-    public abstract String createdAtClient();
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date createdAtClient();
 
     @Nullable
     @JsonIgnore()
-    public abstract String lastUpdatedAtClient();
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date lastUpdatedAtClient();
 
     @Nullable
     @JsonProperty()
@@ -104,13 +106,22 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DbEventStatusColumnAdapter.class)
+    @ColumnAdapter(EventStatusColumnAdapter.class)
     public abstract EventStatus status();
+
+    /**
+     * @deprecated since 2.30, replaced by {@link #geometry()}
+     */
+    @Nullable
+    @JsonProperty()
+    @Deprecated
+    @ColumnAdapter(IgnoreCoordinatesColumnAdapter.class)
+    abstract Coordinates coordinate();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(CoordinatesColumnAdapter.class)
-    public abstract Coordinates coordinate();
+    @ColumnAdapter(DbGeometryColumnAdapter.class)
+    public abstract Geometry geometry();
 
     @Nullable
     @JsonProperty()
@@ -121,11 +132,6 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
     @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date dueDate();
-
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(DataDeleteColumnAdapter.class)
-    public abstract Boolean deleted();
 
     @Nullable
     @JsonProperty()
@@ -148,7 +154,7 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseDataModel.Builder<Builder> {
+    public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         @JsonProperty(EventFields.UID)
@@ -160,9 +166,9 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
 
         public abstract Builder lastUpdated(Date lastUpdated);
 
-        public abstract Builder createdAtClient(String createdAtClient);
+        public abstract Builder createdAtClient(Date createdAtClient);
 
-        public abstract Builder lastUpdatedAtClient(String lastUpdatedAtClient);
+        public abstract Builder lastUpdatedAtClient(Date lastUpdatedAtClient);
 
         public abstract Builder program(String program);
 
@@ -175,19 +181,36 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
 
         public abstract Builder status(EventStatus status);
 
-        public abstract Builder coordinate(Coordinates coordinate);
+        /**
+         * @deprecated since 2.29, replaced by {@link #geometry(Geometry geometry)}
+         */
+        abstract Builder coordinate(Coordinates coordinate);
+
+        public abstract Builder geometry(Geometry geometry);
 
         public abstract Builder completedDate(Date completedDate);
 
         public abstract Builder dueDate(Date dueDate);
-
-        public abstract Builder deleted(Boolean deleted);
 
         public abstract Builder attributeOptionCombo(String attributeOptionCombo);
 
         @JsonProperty(EventFields.TRACKED_ENTITY_DATA_VALUES)
         public abstract Builder trackedEntityDataValues(List<TrackedEntityDataValue> trackedEntityDataValues);
 
-        public abstract Event build();
+        abstract Event autoBuild();
+
+        // Auxiliary fields to access values
+        abstract Coordinates coordinate();
+        abstract Geometry geometry();
+        public Event build() {
+            if (geometry() == null) {
+                if (coordinate() != null) {
+                    geometry(CoordinateHelper.getGeometryFromCoordinates(coordinate()));
+                }
+            } else {
+                coordinate(CoordinateHelper.getCoordinatesFromGeometry(geometry()));
+            }
+            return autoBuild();
+        }
     }
 }

@@ -29,10 +29,9 @@
 package org.hisp.dhis.android.core.organisationunit;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.NameableColumns;
 
 public final class OrganisationUnitTableInfo {
 
@@ -47,23 +46,27 @@ public final class OrganisationUnitTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    static class Columns extends BaseNameableObjectModel.Columns {
-
-        static final String DISPLAY_NAME_PATH = "displayNamePath";
+    public static class Columns extends NameableColumns {
+        public static final String PARENT = "parent";
+        public static final String PATH = "path";
+        public static final String OPENING_DATE = "openingDate";
+        public static final String CLOSED_DATE = "closedDate";
+        public static final String LEVEL = "level";
+        public static final String DISPLAY_NAME_PATH = "displayNamePath";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    OrganisationUnitFields.PATH,
-                    OrganisationUnitFields.OPENING_DATE,
-                    OrganisationUnitFields.CLOSED_DATE,
-                    OrganisationUnitFields.LEVEL,
-                    OrganisationUnitFields.PARENT,
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    PATH,
+                    OPENING_DATE,
+                    CLOSED_DATE,
+                    LEVEL,
+                    PARENT,
                     DISPLAY_NAME_PATH
             );
         }

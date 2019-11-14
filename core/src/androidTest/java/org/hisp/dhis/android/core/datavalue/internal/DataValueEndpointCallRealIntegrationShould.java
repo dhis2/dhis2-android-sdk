@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.core.datavalue.internal;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
@@ -58,7 +58,7 @@ public class DataValueEndpointCallRealIntegrationShould extends BaseRealIntegrat
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        d2 = D2Factory.create("https://play.dhis2.org/android-current/api/", databaseAdapter());
+        d2 = D2Factory.forNewDatabase();
         dataValueCall = createCall();
     }
 
@@ -73,7 +73,7 @@ public class DataValueEndpointCallRealIntegrationShould extends BaseRealIntegrat
     // @Test
     public void download_data_values() throws Exception {
         if (!d2.userModule().isLogged().blockingGet()) {
-            d2.userModule().logIn("android", "Android123").blockingGet();
+            d2.userModule().logIn(username, password, url).blockingGet();
         }
 
         /*  This test won't pass independently of the sync of metadata, as the foreign keys

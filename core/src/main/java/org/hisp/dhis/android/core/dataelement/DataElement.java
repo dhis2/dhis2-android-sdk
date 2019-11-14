@@ -30,28 +30,27 @@ package org.hisp.dhis.android.core.dataelement;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbValueTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreAccessAdapter;
-import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_DataElement.Builder.class)
 public abstract class DataElement extends BaseNameableObject
-        implements Model, ObjectWithStyle<DataElement, DataElement.Builder> {
+        implements CoreObject, ObjectWithStyle<DataElement, DataElement.Builder> {
 
     @Nullable
     @ColumnAdapter(DbValueTypeColumnAdapter.class)
@@ -91,8 +90,7 @@ public abstract class DataElement extends BaseNameableObject
     }
 
     @Nullable
-    @ColumnAdapter(IgnoreAccessAdapter.class)
-    public abstract Access access();
+    public abstract String fieldMask();
 
     public static Builder builder() {
         return new $$AutoValue_DataElement.Builder();
@@ -127,8 +125,21 @@ public abstract class DataElement extends BaseNameableObject
 
         public abstract DataElement.Builder categoryCombo(ObjectWithUid categoryCombo);
 
-        public abstract DataElement.Builder access(Access access);
+        public abstract DataElement.Builder fieldMask(String fieldMask);
 
-        public abstract DataElement build();
+        abstract DataElement autoBuild();
+
+        // Auxiliary fields
+        abstract ObjectStyle style();
+
+        public DataElement build() {
+            try {
+                style();
+            } catch (IllegalStateException e) {
+                style(ObjectStyle.builder().build());
+            }
+
+            return autoBuild();
+        }
     }
 }

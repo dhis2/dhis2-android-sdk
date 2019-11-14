@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
@@ -44,23 +44,23 @@ final class ProgramStageSectionDataElementChildrenAppender extends ChildrenAppen
             ProgramStageSectionDataElementLinkTableInfo.Columns.PROGRAM_STAGE_SECTION,
             ProgramStageSectionDataElementLinkTableInfo.Columns.DATA_ELEMENT);
 
-    private final LinkModelChildStore<ProgramStageSection, DataElement> linkModelChildStore;
+    private final LinkChildStore<ProgramStageSection, DataElement> linkChildStore;
 
     private ProgramStageSectionDataElementChildrenAppender(
-            LinkModelChildStore<ProgramStageSection, DataElement> linkModelChildStore) {
-        this.linkModelChildStore = linkModelChildStore;
+            LinkChildStore<ProgramStageSection, DataElement> linkChildStore) {
+        this.linkChildStore = linkChildStore;
     }
 
     @Override
     protected ProgramStageSection appendChildren(ProgramStageSection programStageSection) {
         ProgramStageSection.Builder builder = programStageSection.toBuilder();
-        builder.dataElements(linkModelChildStore.getChildren(programStageSection));
+        builder.dataElements(linkChildStore.getChildren(programStageSection));
         return builder.build();
     }
 
     static ChildrenAppender<ProgramStageSection> create(DatabaseAdapter databaseAdapter) {
         return new ProgramStageSectionDataElementChildrenAppender(
-                StoreFactory.linkModelChildStore(
+                StoreFactory.linkChildStore(
                         databaseAdapter,
                         ProgramStageSectionDataElementLinkTableInfo.TABLE_INFO,
                         CHILD_PROJECTION,

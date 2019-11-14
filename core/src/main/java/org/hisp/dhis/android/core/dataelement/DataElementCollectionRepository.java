@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
 
 import java.util.Map;
 
@@ -57,38 +56,46 @@ public final class DataElementCollectionRepository
     }
 
     public EnumFilterConnector<DataElementCollectionRepository, ValueType> byValueType() {
-        return cf.enumC(DataElementFields.VALUE_TYPE);
+        return cf.enumC(DataElementTableInfo.Columns.VALUE_TYPE);
     }
 
     public BooleanFilterConnector<DataElementCollectionRepository> byZeroIsSignificant() {
-        return cf.bool(DataElementFields.ZERO_IS_SIGNIFICANT);
+        return cf.bool(DataElementTableInfo.Columns.ZERO_IS_SIGNIFICANT);
     }
 
     public StringFilterConnector<DataElementCollectionRepository> byAggregationType() {
-        return cf.string(DataElementFields.AGGREGATION_TYPE);
+        return cf.string(DataElementTableInfo.Columns.AGGREGATION_TYPE);
     }
 
     public StringFilterConnector<DataElementCollectionRepository> byFormName() {
-        return cf.string(DataElementFields.FORM_NAME);
+        return cf.string(DataElementTableInfo.Columns.FORM_NAME);
     }
 
     public StringFilterConnector<DataElementCollectionRepository> byDomainType() {
-        return cf.string(DataElementFields.DOMAIN_TYPE);
+        return cf.string(DataElementTableInfo.Columns.DOMAIN_TYPE);
     }
 
     public StringFilterConnector<DataElementCollectionRepository> byDisplayFormName() {
-        return cf.string(DataElementFields.DISPLAY_FORM_NAME);
+        return cf.string(DataElementTableInfo.Columns.DISPLAY_FORM_NAME);
     }
 
     public StringFilterConnector<DataElementCollectionRepository> byOptionSetUid() {
-        return cf.string(DataElementFields.OPTION_SET);
+        return cf.string(DataElementTableInfo.Columns.OPTION_SET);
     }
 
     public StringFilterConnector<DataElementCollectionRepository> byCategoryComboUid() {
-        return cf.string(DataElementFields.CATEGORY_COMBO);
+        return cf.string(DataElementTableInfo.Columns.CATEGORY_COMBO);
     }
 
-    public DataElementCollectionRepository withStyle() {
-        return cf.withChild(DataElementFields.STYLE);
+    public StringFilterConnector<DataElementCollectionRepository> byFieldMask() {
+        return cf.string(DataElementTableInfo.Columns.FIELD_MASK);
+    }
+
+    public StringFilterConnector<DataElementCollectionRepository> byColor() {
+        return cf.string(DataElementTableInfo.Columns.COLOR);
+    }
+
+    public StringFilterConnector<DataElementCollectionRepository> byIcon() {
+        return cf.string(DataElementTableInfo.Columns.ICON);
     }
 }

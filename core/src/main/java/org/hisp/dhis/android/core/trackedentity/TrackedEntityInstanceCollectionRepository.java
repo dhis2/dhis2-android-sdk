@@ -28,31 +28,33 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
-import org.hisp.dhis.android.core.imports.internal.WebResponse;
-import org.hisp.dhis.android.core.period.FeatureType;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo.Columns;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostCall;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Observable;
 
 @Reusable
 public final class TrackedEntityInstanceCollectionRepository
@@ -78,8 +80,15 @@ public final class TrackedEntityInstanceCollectionRepository
     }
 
     @Override
-    public Callable<WebResponse> upload() {
-        return () -> postCall.call(byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).getWithoutChildren());
+    public Observable<D2Progress> upload() {
+        return Observable.fromCallable(() ->
+                byState().in(State.TO_POST, State.TO_UPDATE).getWithoutChildren()
+        ).flatMap(postCall::uploadTrackedEntityInstances);
+    }
+
+    @Override
+    public void blockingUpload() {
+        upload().blockingSubscribe();
     }
 
     @Override
@@ -89,62 +98,58 @@ public final class TrackedEntityInstanceCollectionRepository
     }
 
     public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byUid() {
-        return cf.string(TrackedEntityInstanceTableInfo.Columns.UID);
+        return cf.string(Columns.UID);
     }
 
     public DateFilterConnector<TrackedEntityInstanceCollectionRepository> byCreated() {
-        return cf.date(TrackedEntityInstanceFields.CREATED);
+        return cf.date(Columns.CREATED);
     }
 
     public DateFilterConnector<TrackedEntityInstanceCollectionRepository> byLastUpdated() {
-        return cf.date(TrackedEntityInstanceFields.LAST_UPDATED);
+        return cf.date(Columns.LAST_UPDATED);
     }
 
     public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byCreatedAtClient() {
-        return cf.string(TrackedEntityInstanceTableInfo.Columns.CREATED_AT_CLIENT);
+        return cf.string(Columns.CREATED_AT_CLIENT);
     }
 
     public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byLastUpdatedAtClient() {
-        return cf.string(TrackedEntityInstanceTableInfo.Columns.LAST_UPDATED_AT_CLIENT);
+        return cf.string(Columns.LAST_UPDATED_AT_CLIENT);
     }
 
     public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byOrganisationUnitUid() {
-        return cf.string(TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT);
+        return cf.string(Columns.ORGANISATION_UNIT);
     }
 
     public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byTrackedEntityType() {
-        return cf.string(TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE);
+        return cf.string(Columns.TRACKED_ENTITY_TYPE);
     }
 
-    public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byCoordinates() {
-        return cf.string(TrackedEntityInstanceFields.COORDINATES);
+    public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, FeatureType> byGeometryType() {
+        return cf.enumC(Columns.GEOMETRY_TYPE);
     }
 
-    public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, FeatureType> byFeatureType() {
-        return cf.enumC(TrackedEntityInstanceFields.FEATURE_TYPE);
+    public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byGeometryCoordinates() {
+        return cf.string(Columns.GEOMETRY_COORDINATES);
     }
 
     public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> byState() {
-        return cf.enumC(BaseDataModel.Columns.STATE);
+        return cf.enumC(Columns.STATE);
+    }
+
+    public BooleanFilterConnector<TrackedEntityInstanceCollectionRepository> byDeleted() {
+        return cf.bool(Columns.DELETED);
     }
 
     public TrackedEntityInstanceCollectionRepository byProgramUids(List<String> programUids) {
-        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).inLinkTable(
+        return cf.subQuery(Columns.UID).inLinkTable(
                 EnrollmentTableInfo.TABLE_INFO.name(),
-                EnrollmentFields.TRACKED_ENTITY_INSTANCE,
-                EnrollmentFields.PROGRAM,
+                EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                EnrollmentTableInfo.Columns.PROGRAM,
                 programUids);
-    }
-
-    public TrackedEntityInstanceCollectionRepository withEnrollments() {
-        return cf.withChild(TrackedEntityInstanceFields.ENROLLMENTS);
     }
 
     public TrackedEntityInstanceCollectionRepository withTrackedEntityAttributeValues() {
         return cf.withChild(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES);
-    }
-
-    public TrackedEntityInstanceCollectionRepository withRelationships() {
-        return cf.withChild(TrackedEntityInstanceFields.RELATIONSHIPS);
     }
 }

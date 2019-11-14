@@ -29,7 +29,8 @@
 package org.hisp.dhis.android.core.data.trackedentity;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
@@ -46,14 +47,14 @@ public class EventSamples {
                 .enrollment("enrollment")
                 .created(getDate("2014-08-20T12:28:56.409"))
                 .lastUpdated(getDate("2015-10-14T13:36:53.063"))
-                .createdAtClient("created_at_client")
-                .lastUpdatedAtClient("last_updated_at_client")
+                .createdAtClient(getDate("2014-10-14T13:36:53.063"))
+                .lastUpdatedAtClient(getDate("2014-11-11T10:10:50.123"))
                 .program("program")
                 .programStage("program_stage")
                 .organisationUnit("organisation_unit")
                 .eventDate(getDate("2014-08-20T12:28:56.409"))
                 .status(EventStatus.ACTIVE)
-                .coordinate(Coordinates.create(21.21, 23.23))
+                .geometry(Geometry.builder().type(FeatureType.POINT).coordinates("[23.23, 21.21]").build())
                 .completedDate(getDate("2014-08-20T12:28:56.409"))
                 .dueDate(getDate("2014-08-20T12:28:56.409"))
                 .attributeOptionCombo("attribute_option_combo")

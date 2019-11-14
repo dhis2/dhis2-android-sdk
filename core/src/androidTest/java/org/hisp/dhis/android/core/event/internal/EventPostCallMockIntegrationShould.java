@@ -39,8 +39,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.After;
@@ -85,45 +85,49 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
     }
 
     @Test
-    public void handle_import_conflicts_correctly() throws Exception {
+    public void handle_import_conflicts_correctly() {
         storeEvents();
 
+        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts.json");
 
-        d2.eventModule().events.upload().call();
+        d2.eventModule().events().blockingUpload();
 
-        assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(3);
+        assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(3);
     }
 
     @Test
-    public void delete_old_import_conflicts() throws Exception {
+    public void delete_old_import_conflicts() {
         storeEvents();
 
+        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts.json");
-        d2.eventModule().events.upload().call();
-        assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(3);
+        d2.eventModule().events().blockingUpload();
+        assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(3);
 
         eventStore.setState("event1Id", State.TO_POST);
         eventStore.setState("event2Id", State.TO_POST);
         eventStore.setState("event3Id", State.TO_POST);
 
+        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts2.json");
-        d2.eventModule().events.upload().call();
-        assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(2);
+        d2.eventModule().events().blockingUpload();
+        assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(2);
     }
 
     @Test
-    public void handle_event_deletions() throws Exception {
+    public void handle_event_deletions()throws D2Error {
         storeEvents();
-        assertThat(d2.eventModule().events.count()).isEqualTo(4);
+        assertThat(d2.eventModule().events().blockingCount()).isEqualTo(4);
 
-        eventStore.setState("event1Id", State.TO_DELETE);
+        d2.eventModule().events().uid("event1Id").blockingDelete();
 
+        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts2.json");
 
-        d2.eventModule().events.upload().call();
+        d2.eventModule().events().blockingUpload();
 
-        assertThat(d2.eventModule().events.count()).isEqualTo(3);
+        assertThat(d2.eventModule().events().blockingCount()).isEqualTo(3);
     }
 
     @Test
@@ -133,20 +137,38 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
         String event3 = "event3";
         String event4 = "event4";
 
-        Program program = d2.programModule().programs.one().get();
+        Program program = d2.programModule().programs().one().blockingGet();
 
-        storeSingleEvent(event1, program, State.TO_POST);
-        storeSingleEvent(event2, program, State.TO_UPDATE);
-        storeSingleEvent(event3, program, State.TO_DELETE);
-        storeSingleEvent(event4, program, State.SYNCED);
+        storeSingleEvent(event1, program, State.TO_POST, false);
+        storeSingleEvent(event2, program, State.TO_UPDATE, false);
+        storeSingleEvent(event3, program, State.TO_UPDATE, true);
+        storeSingleEvent(event4, program, State.SYNCED, false);
 
         List<Event> events = eventPostCall.queryDataToSync(
-                d2.eventModule().events.byProgramUid().eq(program.uid())
-                .byState().in(State.TO_POST, State.TO_UPDATE, State.TO_DELETE).get());
+                d2.eventModule().events().byProgramUid().eq(program.uid())
+                .byState().in(State.TO_POST, State.TO_UPDATE).blockingGet());
 
         assertThat(events.size()).isEqualTo(3);
         assertThat(UidsHelper.getUidsList(events).containsAll(Lists.newArrayList(event1, event2, event3)))
                 .isEqualTo(true);
+    }
+
+    @Test
+    public void mark_payload_as_uploading() {
+        storeEvents();
+
+        // Ignore result. Just interested in check that target events are marked as UPLOADING
+        List<Event> events = eventPostCall.queryDataToSync(null);
+
+        List<Event> dbEvents = d2.eventModule().events().blockingGet();
+
+        for (Event event : dbEvents) {
+            if ("event1Id".equals(event.uid()) || "event2Id".equals(event.uid()) || "event3Id".equals(event.uid())) {
+                assertThat(event.state()).isEqualTo(State.UPLOADING);
+            } else {
+                assertThat(event.state()).isNotEqualTo(State.UPLOADING);
+            }
+        }
     }
 
     private void storeEvents() {
@@ -155,9 +177,9 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
         String event3Id = "event3Id";
         String event4Id = "event4Id";
 
-        OrganisationUnit orgUnit = d2.organisationUnitModule().organisationUnits.one().get();
-        Program program = d2.programModule().programs.one().get();
-        ProgramStage programStage = d2.programModule().programStages.one().get();
+        OrganisationUnit orgUnit = d2.organisationUnitModule().organisationUnits().one().blockingGet();
+        Program program = d2.programModule().programs().one().blockingGet();
+        ProgramStage programStage = d2.programModule().programStages().one().blockingGet();
 
         TrackedEntityDataValue dataValue1 = TrackedEntityDataValueSamples.get().toBuilder().event(event1Id).build();
 
@@ -214,12 +236,12 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
         tedvStore.insert(dataValue3);
         tedvStore.insert(dataValue4);
 
-        assertThat(d2.eventModule().events.count()).isEqualTo(4);
+        assertThat(d2.eventModule().events().blockingCount()).isEqualTo(4);
     }
 
-    private void storeSingleEvent(String eventUid, Program program, State state) {
-        OrganisationUnit orgUnit = d2.organisationUnitModule().organisationUnits.one().get();
-        ProgramStage programStage = d2.programModule().programStages.one().get();
+    private void storeSingleEvent(String eventUid, Program program, State state, Boolean deleted) {
+        OrganisationUnit orgUnit = d2.organisationUnitModule().organisationUnits().one().blockingGet();
+        ProgramStage programStage = d2.programModule().programStages().one().blockingGet();
 
         eventStore.insert(
                 Event.builder()
@@ -228,7 +250,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
                         .program(program.uid())
                         .programStage(programStage.uid())
                         .state(state)
-                        .deleted(false)
+                        .deleted(deleted)
                         .build());
     }
 }

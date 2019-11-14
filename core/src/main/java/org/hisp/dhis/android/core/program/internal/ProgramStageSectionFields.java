@@ -30,28 +30,24 @@ package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
-import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
 import org.hisp.dhis.android.core.program.ProgramStageSectionRendering;
+import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo.Columns;
 
 public final class ProgramStageSectionFields {
 
-    public static final String SORT_ORDER = "sortOrder";
     public static final String PROGRAM_INDICATORS = "programIndicators";
     public static final String DATA_ELEMENTS = "dataElements";
-    public static final String RENDER_TYPE = "renderType";
+    private static final String RENDER_TYPE = "renderType";
 
     private static final FieldsHelper<ProgramStageSection> fh = new FieldsHelper<>();
 
     public static final Fields<ProgramStageSection> allFields = Fields.<ProgramStageSection>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<Integer>field(SORT_ORDER),
-                    fh.<ProgramIndicator>nestedField(PROGRAM_INDICATORS)
-                            .with(ProgramIndicatorFields.uid, ProgramIndicatorFields.programWithUid),
-                    fh.<DataElement>nestedField(DATA_ELEMENTS).with(DataElementFields.uid),
+                    fh.<Integer>field(Columns.SORT_ORDER),
+                    fh.nestedFieldWithUid(PROGRAM_INDICATORS),
+                    fh.nestedFieldWithUid(DATA_ELEMENTS),
                     fh.<ProgramStageSectionRendering>nestedField(RENDER_TYPE)
             ).build();
 

@@ -28,10 +28,14 @@
 
 package org.hisp.dhis.android.core.data.organisationunit;
 
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
 
@@ -39,6 +43,11 @@ public class OrganisationUnitSamples {
 
     public static OrganisationUnit getOrganisationUnit(Long id, String uid) {
         OrganisationUnit.Builder builder = OrganisationUnit.builder();
+
+        List<String> displayNamePathArray = new ArrayList<>(3);
+        displayNamePathArray.add("grandpa");
+        displayNamePathArray.add("dad");
+        displayNamePathArray.add("me");
 
         fillNameableProperties(builder);
         return builder
@@ -49,7 +58,7 @@ public class OrganisationUnitSamples {
                 .closedDate(FillPropertiesTestUtils.LAST_UPDATED)
                 .level(100)
                 .parent(null)
-                .displayNamePath("/grandpa/dad/me/")
+                .displayNamePath(displayNamePathArray)
                 .build();
     }
 
@@ -76,8 +85,8 @@ public class OrganisationUnitSamples {
                 .path("/ImspTQPwCqd/at6UHUQatSo/qtr8GGlm4gg/cDw53Ej8rju")
                 .openingDate("2008-01-01T00:00:00.000")
                 .level(4)
-                .parent(OrganisationUnit.builder().uid("qtr8GGlm4gg").build())
-                .displayNamePath("/Afro Arab Clinic")
+                .parent(ObjectWithUid.create("qtr8GGlm4gg"))
+                .displayNamePath(Collections.singletonList("Afro Arab Clinic"))
                 .build();
     }
 
@@ -97,8 +106,8 @@ public class OrganisationUnitSamples {
                 .path("/ImspTQPwCqd/at6UHUQatSo/qtr8GGlm4gg/Rp268JB6Ne4")
                 .openingDate("2010-01-01T00:00:00.000")
                 .level(4)
-                .parent(OrganisationUnit.builder().uid("qtr8GGlm4gg").build())
-                .displayNamePath("/Adonkia CHP")
+                .parent(ObjectWithUid.create("qtr8GGlm4gg"))
+                .displayNamePath(Collections.singletonList("Adonkia CHP"))
                 .build();
     }
 }

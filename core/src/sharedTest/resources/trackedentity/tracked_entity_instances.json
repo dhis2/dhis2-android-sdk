@@ -7,7 +7,6 @@
       "orgUnit": "DiszpKrYNg8",
       "trackedEntityInstance": "nWrB0TfWlvh",
       "deleted": false,
-      "featureType": "NONE",
       "relationships": [
         {
           "lastUpdated": "2019-02-07T08:06:28.369",
@@ -48,7 +47,7 @@
         {
           "lastUpdated": "2019-01-10T13:40:28.000",
           "created": "2019-01-10T13:40:28.000",
-          "attribute": "lZGmxYbs97q",
+          "attribute": "cejWyOfXge6",
           "value": "4081507"
         }
       ],
@@ -65,6 +64,29 @@
           "deleted": false,
           "incidentDate": "2019-01-10T00:00:00.000",
           "status": "ACTIVE",
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [
+                  -12.408816,
+                  9.135595
+                ],
+                [
+                  -12.018653,
+                  9.411972
+                ],
+                [
+                  -11.337243,
+                  9.184383
+                ],
+                [
+                  -12.408816,
+                  9.135595
+                ]
+              ]
+            ]
+          },
           "notes": [
             {
               "note": "noteUid1",
@@ -96,11 +118,21 @@
               "lastUpdated": "2015-11-15T14:55:22.995",
               "completedBy": "system",
               "enrollment": "enroll1",
+              "deleted": false,
               "coordinate": {
                 "latitude": 0.0,
                 "longitude": 0.0
               },
-              "dataValues": [],
+              "dataValues": [
+                {
+                  "lastUpdated": "2017-12-12T07:35:12.167",
+                  "storedBy": "android",
+                  "created": "2017-12-12T07:35:12.166",
+                  "dataElement": "g9eOBujte1U",
+                  "value": "false",
+                  "providedElsewhere": false
+                }
+              ],
               "notes": []
             }
           ]
@@ -117,14 +149,26 @@
       "orgUnit": "DiszpKrYNg8",
       "trackedEntityInstance": "nWrB0TfWlvD",
       "deleted": false,
-      "featureType": "POINT",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.0,
+          9.0
+        ]
+      },
       "relationships": [],
       "attributes": [
         {
           "lastUpdated": "2018-01-10T13:40:28.000",
           "created": "2018-01-10T13:40:28.000",
-          "attribute": "lZGmxYbs97q",
-          "value": "4081507"
+          "attribute": "cejWyOfXge6",
+          "value": "654321"
+        },
+        {
+          "lastUpdated": "2017-01-10T13:40:28.000",
+          "created": "2017-01-10T13:40:28.000",
+          "attribute": "aejWyOfXge6",
+          "value": "123456"
         }
       ],
       "enrollments": [
@@ -177,6 +221,7 @@
               "lastUpdated": "2016-11-15T14:55:22.995",
               "completedBy": "system",
               "enrollment": "enroll2",
+              "deleted": false,
               "coordinate": {
                 "latitude": 0.0,
                 "longitude": 0.0

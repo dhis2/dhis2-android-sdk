@@ -29,70 +29,62 @@
 package org.hisp.dhis.android.core.datavalue.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.concurrent.Callable;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import dagger.Reusable;
+import io.reactivex.Observable;
 
 @Reusable
-public final class DataValuePostCall implements Callable<DataValueImportSummary> {
+public final class DataValuePostCall {
 
     private final DataValueService dataValueService;
-    private final DataValueStore dataValueStore;
+    private final DataValueImportHandler dataValueImportHandler;
     private final APICallExecutor apiCallExecutor;
+    private final SystemInfoModuleDownloader systemInfoDownloader;
 
     @Inject
     DataValuePostCall(@NonNull DataValueService dataValueService,
-                      @NonNull DataValueStore dataValueSetStore,
-                      APICallExecutor apiCallExecutor) {
+                      @NonNull DataValueImportHandler dataValueImportHandler,
+                      @NonNull APICallExecutor apiCallExecutor,
+                      @NonNull SystemInfoModuleDownloader systemInfoDownloader) {
 
         this.dataValueService = dataValueService;
-        this.dataValueStore = dataValueSetStore;
+        this.dataValueImportHandler = dataValueImportHandler;
         this.apiCallExecutor = apiCallExecutor;
+        this.systemInfoDownloader = systemInfoDownloader;
     }
 
-    @Override
-    public DataValueImportSummary call() throws Exception {
-        Collection<DataValue> toPostDataValues = new ArrayList<>();
+    public Observable<D2Progress> uploadDataValues(List<DataValue> dataValues) {
+        return Observable.defer(() -> {
+            if (dataValues.isEmpty()) {
+                return Observable.empty();
+            } else {
+                D2ProgressManager progressManager = new D2ProgressManager(2);
 
-        appendPostableDataValues(toPostDataValues);
-        appendUpdatableDataValues(toPostDataValues);
+                return systemInfoDownloader.downloadMetadata().andThen(Observable.create(emitter -> {
+                    emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
 
-        if (toPostDataValues.isEmpty()) {
-            return DataValueImportSummary.EMPTY;
-        }
+                    DataValueSet dataValueSet = new DataValueSet(dataValues);
 
-        DataValueSet dataValueSet = new DataValueSet(toPostDataValues);
+                    DataValueImportSummary dataValueImportSummary = apiCallExecutor.executeObjectCall(
+                            dataValueService.postDataValues(dataValueSet));
 
-        DataValueImportSummary dataValueImportSummary = apiCallExecutor.executeObjectCall(
-                dataValueService.postDataValues(dataValueSet));
+                    dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary);
 
-        handleImportSummary(dataValueSet, dataValueImportSummary);
-
-        return dataValueImportSummary;
-    }
-
-    private void appendPostableDataValues(Collection<DataValue> dataValues) {
-        dataValues.addAll(dataValueStore.getDataValuesWithState(State.TO_POST));
-    }
-
-    private void appendUpdatableDataValues(Collection<DataValue> dataValues) {
-        dataValues.addAll(dataValueStore.getDataValuesWithState(State.TO_UPDATE));
-    }
-
-    private void handleImportSummary(DataValueSet dataValueSet, DataValueImportSummary dataValueImportSummary) {
-
-        DataValueImportHandler dataValueImportHandler =
-                new DataValueImportHandler(dataValueStore);
-
-        dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary);
+                    emitter.onNext(progressManager.increaseProgress(DataValue.class, true));
+                    emitter.onComplete();
+                }));
+            }
+        });
     }
 }

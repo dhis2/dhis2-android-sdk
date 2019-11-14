@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class SectionGreyedFieldsLinkTableInfo {
 
@@ -50,15 +50,16 @@ public final class SectionGreyedFieldsLinkTableInfo {
     private SectionGreyedFieldsLinkTableInfo() {
     }
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
 
         public static final String SECTION = "section";
         public static final String DATA_ELEMENT_OPERAND = "dataElementOperand";
+        public static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    SECTION, DATA_ELEMENT_OPERAND);
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    SECTION, DATA_ELEMENT_OPERAND, CATEGORY_OPTION_COMBO);
         }
 
         @Override

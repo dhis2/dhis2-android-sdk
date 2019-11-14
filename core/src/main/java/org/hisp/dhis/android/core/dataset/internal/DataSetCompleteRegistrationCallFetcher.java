@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
-import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -139,7 +139,7 @@ abstract class DataSetCompleteRegistrationCallFetcher implements CallFetcher<Dat
     }
 
     private List<Set<String>> splitUids(Collection<String> allUids, int maxUidsPerSplit) {
-        return Utils.setPartition(allUids, maxUidsPerSplit);
+        return CollectionsHelper.setPartition(allUids, maxUidsPerSplit);
     }
 
     @NonNull

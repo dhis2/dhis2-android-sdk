@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core;
 
-import org.hisp.dhis.android.core.d2manager.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
@@ -44,40 +43,36 @@ public class UserAuthenticateCallRealIntegrationShould extends BaseRealIntegrati
     public void setUp() throws IOException {
         super.setUp();
 
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2 = D2Factory.forNewDatabase();
     }
 
     //@Test
     public void not_wipe_after_second_login_with_same_user() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
 
         d2.userModule().logOut().blockingAwait();
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
     }
 
     //@Test
     public void wipe_after_second_login_with_different_user() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
 
         d2.userModule().logOut().blockingAwait();
-        d2.userModule().logIn("admin", "district").blockingGet();
+        d2.userModule().logIn("admin", "district", url).blockingGet();
     }
 
     //@Test
     public void wipe_after_second_login_with_equivalent_user_in_different_server() throws Exception {
-        d2 = D2Factory.create("https://play.dhis2.org/2.29/api/", databaseAdapter());
+        d2.userModule().logIn(username, password, RealServerMother.url2_29).blockingGet();
 
-        d2.userModule().logIn("android", "Android123").blockingGet();
-
-        d2.syncMetaData().blockingSubscribe();
-
-        d2 = D2Factory.create("https://play.dhis2.org/android-current/api/", databaseAdapter());
+        d2.metadataModule().blockingDownload();
 
         d2.userModule().logOut().blockingAwait();
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, RealServerMother.android_current).blockingGet();
     }
 }

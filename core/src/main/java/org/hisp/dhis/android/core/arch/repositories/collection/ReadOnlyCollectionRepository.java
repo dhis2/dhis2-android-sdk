@@ -27,16 +27,17 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
+import androidx.lifecycle.LiveData;
+import androidx.paging.PagedList;
+
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.List;
 
-import androidx.lifecycle.LiveData;
-import androidx.paging.PagedList;
 import io.reactivex.Single;
 
-public interface ReadOnlyCollectionRepository<M extends Model> {
+public interface ReadOnlyCollectionRepository<M extends CoreObject> extends BaseRepository {
 
     /**
      * Query returning a Single object. As querying might be a
@@ -44,15 +45,15 @@ public interface ReadOnlyCollectionRepository<M extends Model> {
      *
      * @return A Single object emitting a list of elements.
      */
-    Single<List<M>> getAsync();
+    Single<List<M>> get();
 
     /**
      * Get the list of elements. Important: this is blocking method and it should be executed in a
-     * separated thread.
+     * separated thread. Use get when possible.
      *
      * @return List of elements
      */
-    List<M> get();
+    List<M> blockingGet();
 
     /**
      * Handy method to use in conjunction with PagedListAdapter to build
@@ -64,12 +65,33 @@ public interface ReadOnlyCollectionRepository<M extends Model> {
     LiveData<PagedList<M>> getPaged(int pageSize);
 
     /**
-     * Get a count of elements. Important: this is a blocking method and it should be executed in
+     * Get the count of elements.
+     * @return Element count
+     */
+    Single<Integer> count();
+
+    /**
+     * Get the count of elements. Important: this is a blocking method and it should be executed in
      * a separated thread.
      *
      * @return Element count
      */
-    int count();
+    int blockingCount();
+
+    /**
+     * Check if selection of objects with applied filters is empty.
+     * @return If selection is empty
+     */
+    Single<Boolean> isEmpty();
+
+    /**
+     * Check if selection of objects with applied filters is empty.
+     * Important: this is a blocking method and it should be executed in a separated thread.
+     * Use isEmpty when possible.
+     *
+     * @return If selection is empty
+     */
+    boolean blockingIsEmpty();
 
     /**
      * Get a {@link ReadOnlyObjectRepository} pointing to the first element in the list.

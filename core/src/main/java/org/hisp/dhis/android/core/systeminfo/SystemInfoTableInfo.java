@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class SystemInfoTableInfo {
 
@@ -45,25 +45,31 @@ public final class SystemInfoTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
+        static String SERVER_DATE = "serverDate";
+        static String DATE_FORMAT = "dateFormat";
+        static String VERSION = "version";
+        static String CONTEXT_PATH = "contextPath";
+        static String SYSTEM_NAME = "systemName";
+
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    SystemInfoFields.SERVER_DATE,
-                    SystemInfoFields.DATE_FORMAT,
-                    SystemInfoFields.VERSION,
-                    SystemInfoFields.CONTEXT_PATH,
-                    SystemInfoFields.SYSTEM_NAME);
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    SERVER_DATE,
+                    DATE_FORMAT,
+                    VERSION,
+                    CONTEXT_PATH,
+                    SYSTEM_NAME);
         }
 
         @Override
         public String[] whereUpdate() {
-            return new String[]{SystemInfoFields.CONTEXT_PATH};
+            return new String[]{CONTEXT_PATH};
         }
     }
 }

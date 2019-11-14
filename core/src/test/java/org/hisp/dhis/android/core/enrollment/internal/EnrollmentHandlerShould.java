@@ -35,9 +35,10 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.note.Note;
-import org.hisp.dhis.android.core.enrollment.note.internal.NoteDHISVersionManager;
-import org.hisp.dhis.android.core.enrollment.note.internal.NoteUniquenessManager;
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager;
+import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager;
 import org.hisp.dhis.android.core.event.Event;
 import org.junit.Before;
 import org.junit.Test;
@@ -94,7 +95,7 @@ public class EnrollmentHandlerShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         when(enrollment.uid()).thenReturn("test_enrollment_uid");
-        when(enrollment.events()).thenReturn(Collections.singletonList(event));
+        when(EnrollmentInternalAccessor.accessEvents(enrollment)).thenReturn(Collections.singletonList(event));
         when(enrollment.notes()).thenReturn(Collections.singletonList(note));
         when(note.storedDate()).thenReturn(FillPropertiesTestUtils.LAST_UPDATED_STR);
 

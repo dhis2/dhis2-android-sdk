@@ -58,7 +58,7 @@ public abstract class EventQuery extends BaseQuery {
     public abstract String lastUpdatedStartDate();
 
     @Nullable
-    public abstract Collection<String> uIds();
+    public abstract Collection<String> uids();
 
     public static Builder builder() {
         return new AutoValue_EventQuery.Builder()
@@ -66,7 +66,7 @@ public abstract class EventQuery extends BaseQuery {
                 .pageSize(DEFAULT_PAGE_SIZE)
                 .paging(true)
                 .ouMode(OrganisationUnitMode.SELECTED)
-                .uIds(Collections.emptyList());
+                .uids(Collections.emptyList());
     }
 
     @AutoValue.Builder
@@ -81,7 +81,7 @@ public abstract class EventQuery extends BaseQuery {
 
         public abstract Builder lastUpdatedStartDate(String lastUpdatedStartDate);
 
-        public abstract Builder uIds(Collection<String> uIds);
+        public abstract Builder uids(Collection<String> uIds);
 
         public abstract EventQuery build();
     }

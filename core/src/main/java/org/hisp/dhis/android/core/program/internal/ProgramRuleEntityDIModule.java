@@ -30,13 +30,16 @@ package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl;
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleanerImpl;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
 import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo;
+import org.hisp.dhis.android.core.program.ProgramRuleTableInfo;
 
 import java.util.Collections;
 import java.util.Map;
@@ -62,9 +65,17 @@ public final class ProgramRuleEntityDIModule {
 
     @Provides
     @Reusable
-    public OrphanCleaner<ProgramRule, ProgramRuleAction> actionCleaner(DatabaseAdapter databaseAdapter) {
+    OrphanCleaner<ProgramRule, ProgramRuleAction> actionCleaner(DatabaseAdapter databaseAdapter) {
         return new OrphanCleanerImpl<>(ProgramRuleActionTableInfo.TABLE_INFO.name(),
-                ProgramRuleActionFields.PROGRAM_RULE, databaseAdapter);
+                ProgramRuleActionTableInfo.Columns.PROGRAM_RULE, databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    SubCollectionCleaner<ProgramRule> ruleCleaner(DatabaseAdapter databaseAdapter) {
+        return new SubCollectionCleanerImpl<>(ProgramRuleTableInfo.TABLE_INFO.name(),
+                ProgramRuleTableInfo.Columns.PROGRAM, databaseAdapter,
+                programRule -> programRule.program().uid());
     }
 
     @Provides

@@ -36,6 +36,8 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo.Columns;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
 
 import java.util.Map;
 
@@ -69,30 +71,30 @@ public final class TrackedEntityDataValueCollectionRepository
     }
 
     public StringFilterConnector<TrackedEntityDataValueCollectionRepository> byEvent() {
-        return cf.string(TrackedEntityDataValueTableInfo.Columns.EVENT);
+        return cf.string(Columns.EVENT);
     }
 
     public DateFilterConnector<TrackedEntityDataValueCollectionRepository> byCreated() {
-        return cf.date(TrackedEntityDataValueFields.CREATED);
+        return cf.date(Columns.CREATED);
     }
 
     public DateFilterConnector<TrackedEntityDataValueCollectionRepository> byLastUpdated() {
-        return cf.date(TrackedEntityDataValueFields.LAST_UPDATED);
+        return cf.date(Columns.LAST_UPDATED);
     }
 
     public StringFilterConnector<TrackedEntityDataValueCollectionRepository> byDataElement() {
-        return cf.string(TrackedEntityDataValueFields.DATA_ELEMENT);
+        return cf.string(Columns.DATA_ELEMENT);
     }
 
     public StringFilterConnector<TrackedEntityDataValueCollectionRepository> byStoredBy() {
-        return cf.string(TrackedEntityDataValueFields.STORED_BY);
+        return cf.string(Columns.STORED_BY);
     }
 
     public StringFilterConnector<TrackedEntityDataValueCollectionRepository> byValue() {
-        return cf.string(TrackedEntityDataValueFields.VALUE);
+        return cf.string(Columns.VALUE);
     }
 
     public BooleanFilterConnector<TrackedEntityDataValueCollectionRepository> byProvidedElsewhere() {
-        return cf.bool(TrackedEntityDataValueFields.PROVIDED_ELSEWHERE);
+        return cf.bool(Columns.PROVIDED_ELSEWHERE);
     }
 }

@@ -29,9 +29,8 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.program.internal.ProgramStageSectionFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public final class ProgramStageSectionTableInfo {
 
@@ -46,20 +45,21 @@ public final class ProgramStageSectionTableInfo {
         }
 
         @Override
-        public BaseIdentifiableObjectModel.Columns columns() {
+        public IdentifiableColumns columns() {
             return new Columns();
         }
     };
 
-    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends IdentifiableColumns {
+        public static final String SORT_ORDER = "sortOrder";
         public static final String PROGRAM_STAGE = "programStage";
         public static final String DESKTOP_RENDER_TYPE = "desktopRenderType";
         public static final String MOBILE_RENDER_TYPE = "mobileRenderType";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    ProgramStageSectionFields.SORT_ORDER,
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    SORT_ORDER,
                     PROGRAM_STAGE,
                     DESKTOP_RENDER_TYPE,
                     MOBILE_RENDER_TYPE

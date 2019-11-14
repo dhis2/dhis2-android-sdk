@@ -30,16 +30,17 @@ package org.hisp.dhis.android.core.relationship.internal;
 
 import android.database.Cursor;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo;
+import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo.Columns;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,8 +118,8 @@ public final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<R
     @Override
     public List<String> getRelatedTeiUids(List<String> trackedEntityInstanceUids) {
         String whereFromClause = new WhereClauseBuilder()
-                .appendInKeyStringValues(RelationshipItemFields.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUids)
-                .appendKeyStringValue(RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE,
+                .appendInKeyStringValues(Columns.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUids)
+                .appendKeyStringValue(Columns.RELATIONSHIP_ITEM_TYPE,
                         RelationshipConstraintType.FROM)
                 .build();
         List<RelationshipItem> relationshipItems = selectWhere(whereFromClause);
@@ -154,11 +155,11 @@ public final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<R
 
     private String getItemElementColumn(RelationshipItem item) {
         if (item.hasTrackedEntityInstance()) {
-            return RelationshipItemFields.TRACKED_ENTITY_INSTANCE;
+            return Columns.TRACKED_ENTITY_INSTANCE;
         } else if (item.hasEnrollment()) {
-            return RelationshipItemFields.ENROLLMENT;
+            return Columns.ENROLLMENT;
         } else {
-            return RelationshipItemFields.EVENT;
+            return Columns.EVENT;
         }
     }
 

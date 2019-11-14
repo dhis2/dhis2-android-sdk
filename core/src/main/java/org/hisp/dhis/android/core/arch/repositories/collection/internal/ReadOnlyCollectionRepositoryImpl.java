@@ -31,10 +31,10 @@ import androidx.lifecycle.LiveData;
 import androidx.paging.DataSource;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
-import io.reactivex.Single;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
@@ -42,30 +42,28 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
 import org.hisp.dhis.android.core.arch.repositories.paging.internal.RepositoryDataSource;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.List;
 import java.util.Map;
 
-public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnlyCollectionRepository<M>>
+import io.reactivex.Single;
+
+public class ReadOnlyCollectionRepositoryImpl<M extends CoreObject, R extends ReadOnlyCollectionRepository<M>>
+        extends BaseRepositoryImpl<R>
         implements ReadOnlyCollectionRepository<M> {
 
     private final ReadableStore<M> store;
     protected final Map<String, ChildrenAppender<M>> childrenAppenders;
-    protected final RepositoryScope scope;
-    protected final FilterConnectorFactory<R> cf;
 
     public ReadOnlyCollectionRepositoryImpl(ReadableStore<M> store,
                                             Map<String, ChildrenAppender<M>> childrenAppenders,
                                             RepositoryScope scope,
                                             FilterConnectorFactory<R> cf) {
+        super(scope, cf);
         this.store = store;
         this.childrenAppenders = childrenAppenders;
-        this.scope = scope;
-        this.cf = cf;
     }
 
     protected List<M> getWithoutChildren() {
@@ -79,14 +77,14 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     @Override
-    public List<M> get() {
+    public List<M> blockingGet() {
         return ChildrenAppenderExecutor.appendInObjectCollection(getWithoutChildren(),
                 childrenAppenders, scope.children());
     }
 
     @Override
-    public Single<List<M>> getAsync() {
-        return Single.fromCallable(this::get);
+    public Single<List<M>> get() {
+        return Single.fromCallable(this::blockingGet);
     }
 
     @Override
@@ -106,15 +104,26 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     @Override
-    public int count() {
+    public Single<Integer> count() {
+        return Single.fromCallable(this::blockingCount);
+    }
+
+    @Override
+    public int blockingCount() {
         return store.countWhere(getWhereClause());
+    }
+
+    @Override
+    public Single<Boolean> isEmpty() {
+        return Single.fromCallable(this::blockingIsEmpty);
+    }
+
+    @Override
+    public boolean blockingIsEmpty() {
+        return blockingCount() == 0;
     }
 
     protected String getWhereClause() {
         return new WhereClauseFromScopeBuilder(new WhereClauseBuilder()).getWhereClause(scope);
-    }
-
-    public R withAllChildren() {
-        return cf.repositoryFactory.updated(RepositoryScopeHelper.withAllChildren(scope));
     }
 }

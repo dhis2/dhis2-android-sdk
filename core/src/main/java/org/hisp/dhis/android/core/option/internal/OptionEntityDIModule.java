@@ -28,14 +28,13 @@
 
 package org.hisp.dhis.android.core.option.internal;
 
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleanerImpl;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleChildrenAppender;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleStoreImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.option.Option;
-import org.hisp.dhis.android.core.option.OptionFields;
 import org.hisp.dhis.android.core.option.OptionTableInfo;
 
 import java.util.Collections;
@@ -62,12 +61,15 @@ public final class OptionEntityDIModule {
 
     @Provides
     @Reusable
-    Map<String, ChildrenAppender<Option>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<Option> childrenAppender = new ObjectStyleChildrenAppender<>(
-                ObjectStyleStoreImpl.create(databaseAdapter),
-                OptionTableInfo.TABLE_INFO
-        );
+    SubCollectionCleaner<Option> optionCleaner(DatabaseAdapter databaseAdapter) {
+        return new SubCollectionCleanerImpl<>(OptionTableInfo.TABLE_INFO.name(),
+                OptionTableInfo.Columns.OPTION_SET, databaseAdapter,
+                option -> option.optionSet().uid());
+    }
 
-        return Collections.singletonMap(OptionFields.STYLE, childrenAppender);
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<Option>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

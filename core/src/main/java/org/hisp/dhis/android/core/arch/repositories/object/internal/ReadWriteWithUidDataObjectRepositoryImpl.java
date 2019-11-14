@@ -25,14 +25,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.repositories.object.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectWithStateStore;
+import android.util.Log;
+
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.DataModel;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.DeletableDataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.Unit;
@@ -42,13 +46,15 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.util.Map;
 
+import io.reactivex.Completable;
+
 public class ReadWriteWithUidDataObjectRepositoryImpl
-        <M extends Model & ObjectWithUidInterface & DataModel, R extends ReadOnlyObjectRepository<M>>
-        extends ReadWriteWithUidObjectRepositoryImpl<M, R> {
+        <M extends CoreObject & ObjectWithUidInterface & DeletableDataObject, R extends ReadOnlyObjectRepository<M>>
+        extends ReadWriteWithUidObjectRepositoryImpl<M, R> implements ReadWriteObjectRepository<M> {
 
-    private final IdentifiableObjectWithStateStore<M> store;
+    private final IdentifiableDeletableDataObjectStore<M> store;
 
-    public ReadWriteWithUidDataObjectRepositoryImpl(IdentifiableObjectWithStateStore<M> store,
+    public ReadWriteWithUidDataObjectRepositoryImpl(IdentifiableDeletableDataObjectStore<M> store,
                                                     Map<String, ChildrenAppender<M>> childrenAppenders,
                                                     RepositoryScope scope,
                                                     ObjectRepositoryFactory<R> repositoryFactory) {
@@ -56,8 +62,14 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
         this.store = store;
     }
 
-    public void delete() throws D2Error {
-        M object = withAllChildren().get();
+    @Override
+    public Completable delete() {
+        return Completable.fromAction(this::blockingDelete);
+    }
+
+    @Override
+    public void blockingDelete() throws D2Error {
+        M object = blockingGet();
         if (object == null) {
             throw D2Error
                     .builder()
@@ -69,20 +81,35 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
             if (object.state() == State.TO_POST) {
                 store.delete(object.uid());
             } else {
-                store.setState(object.uid(), State.TO_DELETE);
-                propagateState();
+                store.setDeleted(object.uid());
+                store.setState(object.uid(), State.TO_UPDATE);
+                propagateState(object);
             }
+        }
+    }
+
+    @Override
+    public Completable deleteIfExist() {
+        return Completable.fromAction(this::blockingDeleteIfExist);
+    }
+
+    @Override
+    public void blockingDeleteIfExist() {
+        try {
+            blockingDelete();
+        } catch (D2Error d2Error) {
+            Log.v(ReadWriteWithUidDataObjectRepositoryImpl.class.getCanonicalName(), d2Error.errorDescription());
         }
     }
 
     @Override
     protected Unit updateObject(M m) throws D2Error {
         super.updateObject(m);
-        propagateState();
+        propagateState(m);
         return new Unit();
     }
 
-    protected void propagateState() {
+    protected void propagateState(M m) {
          // Method is empty because is the default action.
     }
 }

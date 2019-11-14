@@ -32,10 +32,8 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.program.ProgramSection;
 import org.hisp.dhis.android.core.program.ProgramSectionAttributeLink;
-import org.hisp.dhis.android.core.program.ProgramSectionTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 import javax.inject.Inject;
@@ -46,16 +44,13 @@ import dagger.Reusable;
 final class ProgramSectionHandler extends IdentifiableHandlerImpl<ProgramSection> {
     private final LinkHandler<TrackedEntityAttribute, ProgramSectionAttributeLink>
             programSectionAttributeLinkHandler;
-    private final ObjectStyleHandler styleHandler;
 
     @Inject
     ProgramSectionHandler(IdentifiableObjectStore<ProgramSection> programSectionStore,
                           LinkHandler<TrackedEntityAttribute, ProgramSectionAttributeLink>
-                                  programSectionAttributeLinkHandler,
-                          ObjectStyleHandler styleHandler) {
+                                  programSectionAttributeLinkHandler) {
         super(programSectionStore);
         this.programSectionAttributeLinkHandler = programSectionAttributeLinkHandler;
-        this.styleHandler = styleHandler;
     }
 
     @Override
@@ -64,7 +59,5 @@ final class ProgramSectionHandler extends IdentifiableHandlerImpl<ProgramSection
         programSectionAttributeLinkHandler.handleMany(programSection.uid(), programSection.attributes(),
                 trackedEntityAttribute -> ProgramSectionAttributeLink.builder()
                         .programSection(programSection.uid()).attribute(trackedEntityAttribute.uid()).build());
-
-        styleHandler.handle(programSection.style(), programSection.uid(), ProgramSectionTableInfo.TABLE_INFO.name());
     }
 }

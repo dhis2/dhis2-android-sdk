@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.children.internal;
 
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,7 +40,7 @@ public final class ChildrenAppenderExecutor {
     private ChildrenAppenderExecutor() {
     }
 
-    public static <M extends Model> M appendInObject(
+    public static <M extends CoreObject> M appendInObject(
             M m, Map<String, ChildrenAppender<M>> childrenAppenders, ChildrenSelection childrenSelection) {
 
         if (m == null) {
@@ -55,7 +55,7 @@ public final class ChildrenAppenderExecutor {
         }
     }
 
-    public static <M extends Model> List<M> appendInObjectCollection(
+    public static <M extends CoreObject> List<M> appendInObjectCollection(
             List<M> list, Map<String, ChildrenAppender<M>> childrenAppenders, ChildrenSelection childrenSelection) {
 
 
@@ -77,16 +77,12 @@ public final class ChildrenAppenderExecutor {
         return setWithChildren;
     }
 
-    private static <M extends Model> Collection<ChildrenAppender<M>> getSelectedChildrenAppenders(
+    private static <M extends CoreObject> Collection<ChildrenAppender<M>> getSelectedChildrenAppenders(
             Map<String, ChildrenAppender<M>> appendersMap, ChildrenSelection childrenSelection) {
-        if (childrenSelection.areAllChildrenSelected) {
-            return appendersMap.values();
-        } else {
-            List<ChildrenAppender<M>> appendersList = new ArrayList<>(appendersMap.size());
-            for (String key : childrenSelection.children) {
-                appendersList.add(appendersMap.get(key));
-            }
-            return appendersList;
+        List<ChildrenAppender<M>> appendersList = new ArrayList<>(appendersMap.size());
+        for (String key : childrenSelection.children) {
+            appendersList.add(appendersMap.get(key));
         }
+        return appendersList;
     }
 }

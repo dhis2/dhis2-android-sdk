@@ -31,46 +31,41 @@ package org.hisp.dhis.android.core.event.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueFields;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueFields;
+
+import static org.hisp.dhis.android.core.event.EventTableInfo.Columns;
 
 public final class EventFields {
 
     public static final String UID = "event";
-    public static final String ENROLLMENT = "enrollment";
-    public static final String CREATED = "created";
-    public static final String LAST_UPDATED = "lastUpdated";
-    public static final String STATUS = "status";
     private static final String COORDINATE = "coordinate";
-    public static final String PROGRAM = "program";
-    public static final String PROGRAM_STAGE = "programStage";
     public static final String ORGANISATION_UNIT = "orgUnit";
-    public static final String EVENT_DATE = "eventDate";
-    public static final String COMPLETE_DATE = "completedDate";
-    public static final String DUE_DATE = "dueDate";
     public static final String DELETED = "deleted";
     public static final String TRACKED_ENTITY_DATA_VALUES = "dataValues";
-    public static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
+    private final static String GEOMETRY = "geometry";
 
     private static FieldsHelper<Event> fh = new FieldsHelper<>();
 
     public static final Fields<Event> allFields = Fields.<Event>builder()
             .fields(fh.<String>field(UID),
-                    fh.<String>field(ENROLLMENT),
-                    fh.<String>field(CREATED),
-                    fh.<String>field(LAST_UPDATED),
-                    fh.<EventStatus>field(STATUS),
+                    fh.<String>field(Columns.ENROLLMENT),
+                    fh.<String>field(Columns.CREATED),
+                    fh.<String>field(Columns.LAST_UPDATED),
+                    fh.<EventStatus>field(Columns.STATUS),
                     fh.<Coordinates>field(COORDINATE),
-                    fh.<String>field(PROGRAM),
-                    fh.<String>field(PROGRAM_STAGE),
+                    fh.<Geometry>field(GEOMETRY),
+                    fh.<String>field(Columns.PROGRAM),
+                    fh.<String>field(Columns.PROGRAM_STAGE),
                     fh.<String>field(ORGANISATION_UNIT),
-                    fh.<String>field(EVENT_DATE),
-                    fh.<String>field(COMPLETE_DATE),
+                    fh.<String>field(Columns.EVENT_DATE),
+                    fh.<String>field(Columns.COMPLETE_DATE),
                     fh.<Boolean>field(DELETED),
-                    fh.<String>field(DUE_DATE),
-                    fh.<String>field(ATTRIBUTE_OPTION_COMBO),
+                    fh.<String>field(Columns.DUE_DATE),
+                    fh.<String>field(Columns.ATTRIBUTE_OPTION_COMBO),
                     fh.<TrackedEntityDataValue>nestedField(TRACKED_ENTITY_DATA_VALUES)
                             .with(TrackedEntityDataValueFields.allFields)
     ).build();

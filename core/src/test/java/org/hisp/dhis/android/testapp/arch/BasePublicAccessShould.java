@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.testapp.arch;
 
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.junit.Test;
 
-public abstract class BasePublicAccessShould<M extends Model> {
+public abstract class BasePublicAccessShould<M extends CoreObject> {
 
     public abstract M object();
 

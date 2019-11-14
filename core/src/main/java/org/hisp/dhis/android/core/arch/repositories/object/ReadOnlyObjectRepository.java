@@ -27,12 +27,13 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.object;
 
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import io.reactivex.Single;
 
-public interface ReadOnlyObjectRepository<M extends Model> {
-    M get();
-    Single<M> getAsync();
-    boolean exists();
+public interface ReadOnlyObjectRepository<M extends CoreObject> {
+    Single<M> get();
+    M blockingGet();
+    Single<Boolean> exists();
+    boolean blockingExists();
 }

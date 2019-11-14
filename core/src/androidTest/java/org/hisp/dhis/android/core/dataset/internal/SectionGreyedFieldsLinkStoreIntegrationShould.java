@@ -28,18 +28,17 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
-import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.dataset.SectionGreyedFieldsLinkSamples;
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink;
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
-import androidx.test.runner.AndroidJUnit4;
-
-@RunWith(AndroidJUnit4.class)
+@RunWith(D2JunitRunner.class)
 public class SectionGreyedFieldsLinkStoreIntegrationShould
-        extends LinkModelStoreAbstractIntegrationShould<SectionGreyedFieldsLink> {
+        extends LinkStoreAbstractIntegrationShould<SectionGreyedFieldsLink> {
 
     public SectionGreyedFieldsLinkStoreIntegrationShould() {
         super(SectionGreyedFieldsLinkStore.create(DatabaseAdapterFactory.get()),

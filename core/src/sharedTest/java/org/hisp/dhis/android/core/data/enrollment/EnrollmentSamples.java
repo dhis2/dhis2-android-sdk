@@ -29,7 +29,8 @@
 package org.hisp.dhis.android.core.data.enrollment;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
@@ -45,8 +46,8 @@ public class EnrollmentSamples {
                 .uid("enrollment_uid")
                 .created(getDate("2014-08-20T12:28:56.409"))
                 .lastUpdated(getDate("2015-10-14T13:36:53.063"))
-                .createdAtClient("created_at_client")
-                .lastUpdatedAtClient("last_updated_at_client")
+                .createdAtClient(getDate("2014-10-14T13:36:53.063"))
+                .lastUpdatedAtClient(getDate("2014-11-11T10:10:50.123"))
                 .organisationUnit("organisation_unit")
                 .program("program")
                 .enrollmentDate(getDate("2014-08-20T12:28:56.409"))
@@ -54,7 +55,9 @@ public class EnrollmentSamples {
                 .followUp(Boolean.FALSE)
                 .status(EnrollmentStatus.ACTIVE)
                 .trackedEntityInstance("tracked_entity_instance")
-                .coordinate(Coordinates.create(21.21, 23.23))
+                .geometry(Geometry.builder()
+                        .type(FeatureType.POINT)
+                        .coordinates("[21.21, 23.23]").build())
                 .state(State.TO_POST)
                 .deleted(false)
                 .build();

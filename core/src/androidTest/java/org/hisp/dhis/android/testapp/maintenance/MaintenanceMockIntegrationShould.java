@@ -30,10 +30,9 @@ package org.hisp.dhis.android.testapp.maintenance;
 
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo;
 import org.hisp.dhis.android.core.category.CategoryOptionTableInfo;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
-import org.hisp.dhis.android.core.option.OptionFields;
 import org.hisp.dhis.android.core.option.OptionSetTableInfo;
 import org.hisp.dhis.android.core.option.OptionTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
@@ -52,12 +51,12 @@ public class MaintenanceMockIntegrationShould extends BaseMockIntegrationTestFul
 
     @Test
     public void allow_access_to_foreign_key_violations() {
-        List<ForeignKeyViolation> violations = d2.maintenanceModule().foreignKeyViolations.get();
-        assertThat(violations.size(), is(2));
+        List<ForeignKeyViolation> violations = d2.maintenanceModule().foreignKeyViolations().blockingGet();
+        assertThat(violations.size(), is(3));
 
         ForeignKeyViolation categoryOptionComboViolation = ForeignKeyViolation.builder()
                 .toTable(CategoryOptionTableInfo.TABLE_INFO.name())
-                .toColumn(BaseIdentifiableObjectModel.Columns.UID)
+                .toColumn(IdentifiableColumns.UID)
                 .fromTable(CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name())
                 .fromColumn(CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION)
                 .notFoundValue("non_existent_category_option_uid")
@@ -65,9 +64,9 @@ public class MaintenanceMockIntegrationShould extends BaseMockIntegrationTestFul
 
         ForeignKeyViolation optionViolation = ForeignKeyViolation.builder()
                 .toTable(OptionSetTableInfo.TABLE_INFO.name())
-                .toColumn(BaseIdentifiableObjectModel.Columns.UID)
+                .toColumn(IdentifiableColumns.UID)
                 .fromTable(OptionTableInfo.TABLE_INFO.name())
-                .fromColumn(OptionFields.OPTION_SET)
+                .fromColumn(OptionTableInfo.Columns.OPTION_SET)
                 .notFoundValue("non_existent_option_set_uid")
                 .fromObjectUid("non_existent_option_uid")
                 .build();
@@ -79,12 +78,6 @@ public class MaintenanceMockIntegrationShould extends BaseMockIntegrationTestFul
 
         assertThat(violationsToCompare.contains(categoryOptionComboViolation), is(true));
         assertThat(violationsToCompare.contains(optionViolation), is(true));
-    }
-
-    @Test
-    public void allow_access_to_foreign_key_violations_with_children() {
-        List<ForeignKeyViolation> violations = d2.maintenanceModule().foreignKeyViolations.withAllChildren().get();
-        assertThat(violations.size(), is(2));
     }
 
     @Test
@@ -101,7 +94,7 @@ public class MaintenanceMockIntegrationShould extends BaseMockIntegrationTestFul
 
     @Test
     public void allow_access_to_d2_errors() {
-        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors.get();
+        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors().blockingGet();
         assertThat(d2Errors.size(), is(2));
     }
 }

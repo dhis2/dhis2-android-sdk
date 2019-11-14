@@ -28,13 +28,20 @@
 
 package org.hisp.dhis.android.core.enrollment.internal;
 
-import org.hisp.dhis.android.core.enrollment.note.internal.NoteEntityDIModule;
+import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 
 import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
 @Module(includes = {
-        EnrollmentEntityDIModule.class,
-        NoteEntityDIModule.class
+        EnrollmentEntityDIModule.class
 })
 public final class EnrollmentPackageDIModule {
+
+    @Provides
+    @Reusable
+    EnrollmentModule module(EnrollmentModuleImpl impl) {
+        return impl;
+    }
 }

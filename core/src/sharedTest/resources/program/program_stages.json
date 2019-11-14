@@ -52,7 +52,7 @@
           "id": "eM6beRIqUnM",
           "displayInReports": false,
           "compulsory": false,
-          "allowProvidedElsewhere": false,
+          "allowProvidedElsewhere": true,
           "sortOrder": 0,
           "allowFutureDate": false,
           "programStage": {
@@ -85,10 +85,10 @@
           "created": "2016-04-12T15:34:04.920",
           "id": "ZD8pd21Dt4i",
           "displayInReports": false,
-          "compulsory": false,
+          "compulsory": true,
           "allowProvidedElsewhere": false,
           "sortOrder": 1,
-          "allowFutureDate": false,
+          "allowFutureDate": true,
           "programStage": {
             "id": "dBwrot7S420"
           },
@@ -145,6 +145,19 @@
               "read": true
             }
           }
+        },
+        {
+          "lastUpdated": "2016-04-12T15:34:04.920",
+          "created": "2016-04-12T15:34:04.920",
+          "id": "aD8pd21Dt4i",
+          "displayInReports": false,
+          "compulsory": true,
+          "allowProvidedElsewhere": false,
+          "sortOrder": 1,
+          "allowFutureDate": true,
+          "programStage": {
+            "id": "dBwrot7S420"
+          }
         }
       ],
       "programStageSections": [
@@ -162,10 +175,7 @@
           },
           "programIndicators": [
             {
-              "id": "pindicator777",
-              "program": {
-                "id": "lxAQ7Zs9VYR"
-              }
+              "id": "GSae40Fyppf"
             }
           ],
           "dataElements": [
@@ -225,7 +235,7 @@
           "lastUpdated": "2015-04-12T15:34:04.913",
           "created": "2015-04-12T15:34:04.913",
           "id": "eM6beRIqUnC",
-          "displayInReports": false,
+          "displayInReports": true,
           "compulsory": false,
           "allowProvidedElsewhere": false,
           "sortOrder": 0,
@@ -293,7 +303,7 @@
           "created": "2015-04-12T15:34:04.924",
           "id": "QgGD234oA8C",
           "displayInReports": false,
-          "compulsory": false,
+          "compulsory": true,
           "allowProvidedElsewhere": false,
           "sortOrder": 2,
           "allowFutureDate": false,
@@ -318,6 +328,22 @@
             "valueType": "NUMBER",
             "access": {
               "read": true
+            }
+          },
+          "renderType": {
+            "DESKTOP": {
+              "type": "VERTICAL_RADIOBUTTONS",
+              "min": 0,
+              "max": 10,
+              "step": 1,
+              "decimalPoints": 0
+            },
+            "MOBILE": {
+              "type": "SHARED_HEADER_RADIOBUTTONS",
+              "min": 3,
+              "max": 15,
+              "step": 2,
+              "decimalPoints": 1
             }
           }
         }
@@ -345,10 +371,7 @@
           },
           "programIndicators": [
             {
-              "id": "pindicator778",
-              "program": {
-                "id": "lxAQ7Zs9VYR"
-              }
+              "id": "rXoaHGAXWy9"
             }
           ],
           "dataElements": [

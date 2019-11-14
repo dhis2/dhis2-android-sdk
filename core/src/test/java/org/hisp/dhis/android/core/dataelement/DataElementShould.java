@@ -71,6 +71,6 @@ public class DataElementShould extends BaseObjectShould implements ObjectShould 
         assertThat(dataElement.optionSetUid()).isEqualTo("fUS7fy2HbaI");
         assertThat(dataElement.categoryComboUid()).isEqualTo("p0KPaWEg3cf");
         assertThat(dataElement.domainType()).isEqualTo("TRACKER");
-        assertThat(dataElement.access().read()).isEqualTo(true);
+        assertThat(dataElement.fieldMask()).isEqualTo("XXXXX");
     }
 }

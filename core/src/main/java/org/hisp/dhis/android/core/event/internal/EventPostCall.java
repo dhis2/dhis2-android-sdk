@@ -29,12 +29,18 @@
 package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.imports.internal.EventWebResponse;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
+import org.hisp.dhis.android.core.imports.internal.EventWebResponse;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,6 +51,7 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import dagger.Reusable;
+import io.reactivex.Observable;
 
 @Reusable
 public final class EventPostCall {
@@ -58,6 +65,7 @@ public final class EventPostCall {
     private final EventImportHandler eventImportHandler;
 
     private final APICallExecutor apiCallExecutor;
+    private final SystemInfoModuleDownloader systemInfoDownloader;
 
     @Inject
     EventPostCall(@NonNull DHISVersionManager versionManager,
@@ -65,34 +73,45 @@ public final class EventPostCall {
                   @NonNull EventStore eventStore,
                   @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
                   @NonNull APICallExecutor apiCallExecutor,
-                  @NonNull EventImportHandler eventImportHandler) {
+                  @NonNull EventImportHandler eventImportHandler,
+                  @NonNull SystemInfoModuleDownloader systemInfoDownloader) {
         this.versionManager = versionManager;
         this.eventService = eventService;
         this.eventStore = eventStore;
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
         this.apiCallExecutor = apiCallExecutor;
         this.eventImportHandler = eventImportHandler;
+        this.systemInfoDownloader = systemInfoDownloader;
     }
 
-    public EventWebResponse call(List<Event> filteredEvents) throws Exception {
-        List<Event> eventsToPost = queryDataToSync(filteredEvents);
+    public Observable<D2Progress> uploadEvents(List<Event> filteredEvents) {
+        return Observable.defer(() -> {
+            List<Event> eventsToPost = queryDataToSync(filteredEvents);
 
-        // if there is nothing to send, return null
-        if (eventsToPost.isEmpty()) {
-            return EventWebResponse.empty();
-        }
+            // if there is nothing to send, return null
+            if (eventsToPost.isEmpty()) {
+                return Observable.empty();
+            } else {
+                D2ProgressManager progressManager = new D2ProgressManager(2);
+                return systemInfoDownloader.downloadMetadata().andThen(Observable.create(emitter -> {
 
-        EventPayload eventPayload = new EventPayload();
-        eventPayload.events = eventsToPost;
+                    emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
 
-        String strategy = versionManager.is2_29() ? "CREATE_AND_UPDATE" : "SYNC";
+                    EventPayload eventPayload = new EventPayload();
+                    eventPayload.events = eventsToPost;
 
-        EventWebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                eventService.postEvents(eventPayload, strategy), Collections.singletonList(409),
-                EventWebResponse.class);
+                    String strategy = versionManager.is2_29() ? "CREATE_AND_UPDATE" : "SYNC";
 
-        handleWebResponse(webResponse);
-        return webResponse;
+                    EventWebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
+                            eventService.postEvents(eventPayload, strategy), Collections.singletonList(409),
+                            EventWebResponse.class);
+
+                    handleWebResponse(webResponse);
+                    emitter.onNext(progressManager.increaseProgress(Event.class, true));
+                    emitter.onComplete();
+                }));
+            }
+        });
     }
 
     @NonNull
@@ -105,8 +124,17 @@ public final class EventPostCall {
 
         for (Event event : events) {
             List<TrackedEntityDataValue> dataValuesForEvent = dataValueMap.get(event.uid());
-            eventRecreated.add(event.toBuilder().trackedEntityDataValues(dataValuesForEvent).build());
+            if (versionManager.is2_30()) {
+                eventRecreated.add(event.toBuilder()
+                        .trackedEntityDataValues(dataValuesForEvent)
+                        .geometry(null)
+                        .build());
+            } else {
+                eventRecreated.add(event.toBuilder().trackedEntityDataValues(dataValuesForEvent).build());
+            }
         }
+
+        markPartitionsAsUploading(eventRecreated);
 
         return eventRecreated;
     }
@@ -121,5 +149,10 @@ public final class EventPostCall {
                 null,
                 null
         );
+    }
+
+    private void markPartitionsAsUploading(List<Event> events) {
+        List<String> eventUids = UidsHelper.getUidsList(events);
+        eventStore.setState(eventUids, State.UPLOADING);
     }
 }

@@ -28,11 +28,21 @@
 
 package org.hisp.dhis.android.core.legendset.internal;
 
+import org.hisp.dhis.android.core.legendset.LegendSetModule;
+
 import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
 @Module(includes = {
         LegendEntityDIModule.class,
         LegendSetEntityDIModule.class
 })
 public final class LegendPackageDIModule {
+
+    @Provides
+    @Reusable
+    LegendSetModule module(LegendSetModuleImpl impl) {
+        return impl;
+    }
 }

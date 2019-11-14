@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.testapp.enrollment.note;
 
-import org.hisp.dhis.android.core.enrollment.note.Note;
+import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
 import org.mockito.Mock;
 

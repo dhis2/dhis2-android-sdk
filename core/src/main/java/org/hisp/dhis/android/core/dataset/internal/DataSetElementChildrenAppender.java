@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.dataset.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetElement;
 import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo;
@@ -40,7 +40,7 @@ final class DataSetElementChildrenAppender extends ChildrenAppender<DataSet> {
 
     private static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
             DataSetElementLinkTableInfo.TABLE_INFO,
-            DataSetElementFields.DATA_SET);
+            DataSetElementLinkTableInfo.Columns.DATA_SET);
 
     private final SingleParentChildStore<DataSet, DataSetElement> childStore;
 

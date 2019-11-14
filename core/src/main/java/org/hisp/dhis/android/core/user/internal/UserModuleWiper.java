@@ -34,8 +34,8 @@ import org.hisp.dhis.android.core.user.UserCredentialsTableInfo;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo;
 import org.hisp.dhis.android.core.user.UserRoleTableInfo;
 import org.hisp.dhis.android.core.user.UserTableInfo;
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.internal.TableWiper;
 
 import javax.inject.Inject;
 

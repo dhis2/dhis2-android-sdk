@@ -67,7 +67,7 @@ public class PagingMockIntegrationShould extends BaseMockIntegrationTestFullDisp
 
     @Test
     public void get_initial_objects_with_default_order_considering_prefetch_distance() throws InterruptedException {
-        LiveData<PagedList<CategoryOption>> liveData = d2.categoryModule().categoryOptions.getPaged(2);
+        LiveData<PagedList<CategoryOption>> liveData = d2.categoryModule().categoryOptions().getPaged(2);
         TestObserver.test(liveData)
                 .awaitValue()
                 .assertHasValue()
@@ -82,7 +82,7 @@ public class PagingMockIntegrationShould extends BaseMockIntegrationTestFullDisp
 
     @Test
     public void get_initial_objects_ordered_by_display_name_asc() throws InterruptedException {
-        LiveData<PagedList<CategoryOption>> liveData = d2.categoryModule().categoryOptions
+        LiveData<PagedList<CategoryOption>> liveData = d2.categoryModule().categoryOptions()
                 .orderByDisplayName(RepositoryScope.OrderByDirection.ASC)
                 .getPaged(2);
         TestObserver.test(liveData)
@@ -99,7 +99,7 @@ public class PagingMockIntegrationShould extends BaseMockIntegrationTestFullDisp
 
     @Test
     public void get_initial_objects_ordered_by_display_name_desc() throws InterruptedException {
-        LiveData<PagedList<CategoryOption>> liveData = d2.categoryModule().categoryOptions
+        LiveData<PagedList<CategoryOption>> liveData = d2.categoryModule().categoryOptions()
                 .orderByDisplayName(RepositoryScope.OrderByDirection.DESC)
                 .getPaged(2);
         TestObserver.test(liveData)
@@ -116,7 +116,7 @@ public class PagingMockIntegrationShould extends BaseMockIntegrationTestFullDisp
 
     @Test
     public void get_initial_objects_ordered_by_description_desc() throws InterruptedException {
-        LiveData<PagedList<CategoryOption>> liveData = d2.categoryModule().categoryOptions
+        LiveData<PagedList<CategoryOption>> liveData = d2.categoryModule().categoryOptions()
                 .orderByDescription(RepositoryScope.OrderByDirection.DESC)
                 .getPaged(2);
         TestObserver.test(liveData)
@@ -133,7 +133,7 @@ public class PagingMockIntegrationShould extends BaseMockIntegrationTestFullDisp
 
     @Test
     public void get_initial_objects_ordered_by_description_and_display_name_desc() throws InterruptedException {
-        LiveData<PagedList<CategoryOption>> liveData = d2.categoryModule().categoryOptions
+        LiveData<PagedList<CategoryOption>> liveData = d2.categoryModule().categoryOptions()
                 .orderByDescription(RepositoryScope.OrderByDirection.DESC)
                 .orderByDisplayName(RepositoryScope.OrderByDirection.ASC)
                 .getPaged(2);

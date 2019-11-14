@@ -46,8 +46,8 @@ public class TrackedEntityTypeAttributeCollectionRepositoryMockIntegrationShould
     @Test
     public void find_all() {
         List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes =
-                d2.trackedEntityModule().trackedEntityTypeAttributes
-                        .get();
+                d2.trackedEntityModule().trackedEntityTypeAttributes()
+                        .blockingGet();
 
         assertThat(trackedEntityTypeAttributes.size(), is(1));
     }
@@ -55,9 +55,9 @@ public class TrackedEntityTypeAttributeCollectionRepositoryMockIntegrationShould
     @Test
     public void filter_by_tracked_entity_type_uid() {
         List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes =
-                d2.trackedEntityModule().trackedEntityTypeAttributes
+                d2.trackedEntityModule().trackedEntityTypeAttributes()
                         .byTrackedEntityTypeUid().eq("nEenWmSyUEp")
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityTypeAttributes.size(), is(1));
     }
@@ -65,9 +65,9 @@ public class TrackedEntityTypeAttributeCollectionRepositoryMockIntegrationShould
     @Test
     public void filter_by_tracked_entity_attribute_uid() {
         List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes =
-                d2.trackedEntityModule().trackedEntityTypeAttributes
+                d2.trackedEntityModule().trackedEntityTypeAttributes()
                         .byTrackedEntityAttributeUid().eq("cejWyOfXge6")
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityTypeAttributes.size(), is(1));
     }
@@ -75,9 +75,9 @@ public class TrackedEntityTypeAttributeCollectionRepositoryMockIntegrationShould
     @Test
     public void filter_by_display_in_list() {
         List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes =
-                d2.trackedEntityModule().trackedEntityTypeAttributes
+                d2.trackedEntityModule().trackedEntityTypeAttributes()
                         .byDisplayInList().isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityTypeAttributes.size(), is(1));
     }
@@ -85,9 +85,9 @@ public class TrackedEntityTypeAttributeCollectionRepositoryMockIntegrationShould
     @Test
     public void filter_by_mandatory() {
         List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes =
-                d2.trackedEntityModule().trackedEntityTypeAttributes
+                d2.trackedEntityModule().trackedEntityTypeAttributes()
                         .byMandatory().isFalse()
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityTypeAttributes.size(), is(1));
     }
@@ -95,9 +95,9 @@ public class TrackedEntityTypeAttributeCollectionRepositoryMockIntegrationShould
     @Test
     public void filter_by_searchable() {
         List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes =
-                d2.trackedEntityModule().trackedEntityTypeAttributes
+                d2.trackedEntityModule().trackedEntityTypeAttributes()
                         .bySearchable().isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityTypeAttributes.size(), is(1));
     }
@@ -105,9 +105,9 @@ public class TrackedEntityTypeAttributeCollectionRepositoryMockIntegrationShould
     @Test
     public void filter_by_sort_order() {
         List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes =
-                d2.trackedEntityModule().trackedEntityTypeAttributes
+                d2.trackedEntityModule().trackedEntityTypeAttributes()
                         .bySortOrder().smallerThan(2)
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityTypeAttributes.size(), is(1));
     }

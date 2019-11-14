@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.period.internal;
 
 import org.hisp.dhis.android.core.period.PeriodEntityDIModule;
+import org.hisp.dhis.android.core.period.PeriodModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -41,5 +42,11 @@ public final class PeriodPackageDIModule {
     @Reusable
     ParentPeriodGenerator parentPeriodGenerator() {
         return ParentPeriodGeneratorImpl.create();
+    }
+
+    @Provides
+    @Reusable
+    PeriodModule periodModule(PeriodModuleImpl impl) {
+        return impl;
     }
 }

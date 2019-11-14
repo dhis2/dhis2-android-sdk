@@ -49,58 +49,51 @@ public class WeeklyPeriodGeneratorShould {
     }
 
     @Test
-    public void generate_weekly_periods_for_one_week() throws Exception {
+    public void generate_weekly_periods_for_one_week() {
         calendar.set(2018, 2, 8);
         Period period = generateExpectedPeriod("2018W10", calendar, Calendar.MONDAY, PeriodType.Weekly);
+        calendar.set(2018, 2, 15);
+
 
         List<Period> generatedPeriods = WeeklyPeriodGeneratorFactory.weekly(calendar)
-                .generateLastPeriods(1);
+                .generatePeriods(1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
 
     @Test
-    public void generate_weekly_periods() throws Exception {
+    public void generate_weekly_periods() {
         calendar.set(2018,2,8);
         Period period1 = generateExpectedPeriod("2018W10", calendar, Calendar.MONDAY, PeriodType.Weekly);
         calendar.set(2018, 2, 15);
         Period period2 = generateExpectedPeriod("2018W11", calendar, Calendar.MONDAY, PeriodType.Weekly);
+        calendar.set(2018, 2, 22);
 
         List<Period> generatedPeriods = WeeklyPeriodGeneratorFactory.weekly(calendar)
-                .generateLastPeriods(2);
+                .generatePeriods(2, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period1, period2));
     }
 
     @Test
-    public void generate_weekly_periods_for_changing_year() throws Exception {
+    public void generate_weekly_periods_for_changing_year() {
         calendar.set(2016,11,31);
         Period period1 = generateExpectedPeriod("2016W52", calendar, Calendar.MONDAY, PeriodType.Weekly);
         calendar.set(2017, 0, 7);
         Period period2 = generateExpectedPeriod("2017W1", calendar, Calendar.MONDAY, PeriodType.Weekly);
         calendar.set(2017, 0, 14);
         Period period3 = generateExpectedPeriod("2017W2", calendar, Calendar.MONDAY, PeriodType.Weekly);
+        calendar.set(2017, 0, 21);
 
         List<Period> generatedPeriods = WeeklyPeriodGeneratorFactory.weekly(calendar)
-                .generateLastPeriods(3);
+                .generatePeriods(3, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period1, period2, period3));
     }
 
     @Test
-    public void generate_the_first_week_including_january_4() throws Exception {
+    public void generate_the_first_week_including_january_4() {
         calendar.set(2018, 0, 4);
-
-        List<Period> generatedPeriods = WeeklyPeriodGeneratorFactory
-                .weekly(calendar).generateLastPeriods(1);
-        List<Period> generatedWedPeriods = WeeklyPeriodGeneratorFactory
-                .wednesday(calendar).generateLastPeriods(1);
-        List<Period> generatedThuPeriods = WeeklyPeriodGeneratorFactory
-                .thursday(calendar).generateLastPeriods(1);
-        List<Period> generatedSatPeriods = WeeklyPeriodGeneratorFactory
-                .saturday(calendar).generateLastPeriods(1);
-        List<Period> generatedSunPeriods = WeeklyPeriodGeneratorFactory
-                .sunday(calendar).generateLastPeriods(1);
 
         Period period = generateExpectedPeriod("2018W1", calendar,
                 Calendar.MONDAY, PeriodType.Weekly);
@@ -112,6 +105,19 @@ public class WeeklyPeriodGeneratorShould {
                 Calendar.SATURDAY, PeriodType.WeeklySaturday);
         Period periodSunday = generateExpectedPeriod("2018SunW1", calendar,
                 Calendar.SUNDAY, PeriodType.WeeklySunday);
+
+        calendar.set(2018, 0, 11);
+
+        List<Period> generatedPeriods = WeeklyPeriodGeneratorFactory
+                .weekly(calendar).generatePeriods(1, 0);
+        List<Period> generatedWedPeriods = WeeklyPeriodGeneratorFactory
+                .wednesday(calendar).generatePeriods(1, 0);
+        List<Period> generatedThuPeriods = WeeklyPeriodGeneratorFactory
+                .thursday(calendar).generatePeriods(1, 0);
+        List<Period> generatedSatPeriods = WeeklyPeriodGeneratorFactory
+                .saturday(calendar).generatePeriods(1, 0);
+        List<Period> generatedSunPeriods = WeeklyPeriodGeneratorFactory
+                .sunday(calendar).generatePeriods(1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
         assertThat(generatedWedPeriods).isEqualTo(Lists.newArrayList(periodWednesday));

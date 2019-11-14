@@ -29,10 +29,8 @@
 package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.DeletableDataColumns;
 
 public final class EnrollmentTableInfo {
 
@@ -52,32 +50,41 @@ public final class EnrollmentTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
-        static final String UID = "uid";
-        static final String CREATED_AT_CLIENT = "createdAtClient";
-        static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
-        static final String ORGANISATION_UNIT = "organisationUnit";
-        static final String LATITUDE = "latitude";
-        static final String LONGITUDE = "longitude";
+    public static class Columns extends DeletableDataColumns {
+        public static final String UID = "uid";
+        public static final String CREATED = "created";
+        public static final String LAST_UPDATED = "lastUpdated";
+        public static final String CREATED_AT_CLIENT = "createdAtClient";
+        public static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
+        public static final String ORGANISATION_UNIT = "organisationUnit";
+        public static final String PROGRAM = "program";
+        public static final String ENROLLMENT_DATE = "enrollmentDate";
+        public static final String INCIDENT_DATE = "incidentDate";
+        public static final String FOLLOW_UP = "followup";
+        public static final String STATUS = "status";
+        public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+        public static final String GEOMETRY_TYPE = "geometryType";
+        public static final String GEOMETRY_COORDINATES = "geometryCoordinates";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     UID,
-                    EnrollmentFields.CREATED,
-                    EnrollmentFields.LAST_UPDATED,
+                    CREATED,
+                    LAST_UPDATED,
                     CREATED_AT_CLIENT,
                     LAST_UPDATED_AT_CLIENT,
                     ORGANISATION_UNIT,
-                    EnrollmentFields.PROGRAM,
-                    EnrollmentFields.ENROLLMENT_DATE,
-                    EnrollmentFields.INCIDENT_DATE,
-                    EnrollmentFields.FOLLOW_UP,
-                    EnrollmentFields.STATUS,
-                    EnrollmentFields.TRACKED_ENTITY_INSTANCE,
-                    LATITUDE,
-                    LONGITUDE,
-                    BaseDataModel.Columns.STATE
+                    PROGRAM,
+                    ENROLLMENT_DATE,
+                    INCIDENT_DATE,
+                    FOLLOW_UP,
+                    STATUS,
+                    TRACKED_ENTITY_INSTANCE,
+                    GEOMETRY_TYPE,
+                    GEOMETRY_COORDINATES,
+                    STATE,
+                    DELETED
             );
         }
 

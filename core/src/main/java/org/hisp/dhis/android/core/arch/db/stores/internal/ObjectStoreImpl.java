@@ -33,25 +33,25 @@ import android.database.sqlite.SQLiteStatement;
 
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
+import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isNull;
 
-public class ObjectStoreImpl<M extends Model> extends ReadableStoreImpl<M> implements ObjectStore<M> {
+public class ObjectStoreImpl<M extends CoreObject> extends ReadableStoreImpl<M> implements ObjectStore<M> {
     private final SQLiteStatement insertStatement;
     protected final SQLStatementBuilder builder;
     protected final StatementBinder<M> binder;
 
     public ObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
-                           SQLStatementBuilder builder, StatementBinder<M> binder, CursorModelFactory<M> modelFactory) {
-        super(databaseAdapter, builder, modelFactory);
+                           SQLStatementBuilder builder, StatementBinder<M> binder, ObjectFactory<M> objectFactory) {
+        super(databaseAdapter, builder, objectFactory);
         this.insertStatement = insertStatement;
         this.builder = builder;
         this.binder = binder;
@@ -94,7 +94,7 @@ public class ObjectStoreImpl<M extends Model> extends ReadableStoreImpl<M> imple
 
     @Override
     public boolean deleteById(@NonNull M m) {
-        return deleteWhere(BaseModel.Columns.ID + "='" + m.id() + "';");
+        return deleteWhere(CoreColumns.ID + "='" + m.id() + "';");
     }
 
     protected M popOneWhere(@NonNull String whereClause) {

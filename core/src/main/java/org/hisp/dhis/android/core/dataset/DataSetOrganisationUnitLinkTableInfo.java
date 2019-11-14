@@ -29,10 +29,8 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
-
-import androidx.annotation.VisibleForTesting;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class DataSetOrganisationUnitLinkTableInfo {
 
@@ -44,7 +42,7 @@ public final class DataSetOrganisationUnitLinkTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
@@ -52,15 +50,14 @@ public final class DataSetOrganisationUnitLinkTableInfo {
     private DataSetOrganisationUnitLinkTableInfo() {
     }
 
-    @VisibleForTesting
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
 
         public static final String DATA_SET = "dataSet";
         public static final String ORGANISATION_UNIT = "organisationUnit";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     DATA_SET,
                     ORGANISATION_UNIT
             );
@@ -68,7 +65,7 @@ public final class DataSetOrganisationUnitLinkTableInfo {
 
         @Override
         public String[] whereUpdate() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     DATA_SET,
                     ORGANISATION_UNIT
             );

@@ -45,29 +45,18 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
     @Test
     public void find_all() {
         List<ProgramSection> programSections =
-                d2.programModule().programSections
-                        .get();
+                d2.programModule().programSections()
+                        .blockingGet();
 
         assertThat(programSections.size(), is(2));
     }
 
     @Test
-    public void include_object_style_as_children() {
-        ProgramSection programSection =
-                d2.programModule().programSections
-                        .withStyle()
-                        .one().get();
-
-        assertThat(programSection.style().icon(), is("section-icon"));
-        assertThat(programSection.style().color(), is("#555"));
-    }
-
-    @Test
     public void include_attributes_children() {
         ProgramSection programSection =
-                d2.programModule().programSections
+                d2.programModule().programSections()
                         .withAttributes()
-                        .one().get();
+                        .one().blockingGet();
 
         assertThat(programSection.attributes().size(), is(1));
     }
@@ -75,10 +64,10 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
     @Test
     public void filter_by_description() {
         List<ProgramSection> programSections =
-                d2.programModule().programSections
+                d2.programModule().programSections()
                         .byDescription()
                         .eq("Description")
-                        .get();
+                        .blockingGet();
 
         assertThat(programSections.size(), is(1));
     }
@@ -86,10 +75,10 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
     @Test
     public void filter_by_program() {
         List<ProgramSection> programSections =
-                d2.programModule().programSections
+                d2.programModule().programSections()
                         .byProgramUid()
                         .eq("lxAQ7Zs9VYR")
-                        .get();
+                        .blockingGet();
 
         assertThat(programSections.size(), is(2));
     }
@@ -97,10 +86,10 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
     @Test
     public void filter_by_sort_order() {
         List<ProgramSection> programSections =
-                d2.programModule().programSections
+                d2.programModule().programSections()
                         .bySortOrder()
                         .eq(1)
-                        .get();
+                        .blockingGet();
 
         assertThat(programSections.size(), is(1));
     }
@@ -108,11 +97,29 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
     @Test
     public void filter_by_form_name() {
         List<ProgramSection> programSections =
-                d2.programModule().programSections
+                d2.programModule().programSections()
                         .byFormName()
                         .eq("formName")
-                        .get();
+                        .blockingGet();
 
+        assertThat(programSections.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_field_color() {
+        List<ProgramSection> programSections =
+                d2.programModule().programSections()
+                        .byColor().eq("#555")
+                .blockingGet();
+        assertThat(programSections.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_field_icon() {
+        List<ProgramSection> programSections =
+                d2.programModule().programSections()
+                .byIcon().eq("section-icon")
+                .blockingGet();
         assertThat(programSections.size(), is(1));
     }
 

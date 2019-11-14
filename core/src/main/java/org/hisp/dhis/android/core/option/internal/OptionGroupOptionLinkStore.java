@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.option.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.option.OptionGroupOptionLink;
 import org.hisp.dhis.android.core.option.OptionGroupOptionLinkTableInfo;
 
@@ -47,8 +47,8 @@ public final class OptionGroupOptionLinkStore {
 
     private OptionGroupOptionLinkStore() {}
 
-    public static LinkModelStore<OptionGroupOptionLink> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, OptionGroupOptionLinkTableInfo.TABLE_INFO,
+    public static LinkStore<OptionGroupOptionLink> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkStore(databaseAdapter, OptionGroupOptionLinkTableInfo.TABLE_INFO,
                 OptionGroupOptionLinkTableInfo.Columns.OPTION_GROUP, BINDER, OptionGroupOptionLink::create);
     }
 }

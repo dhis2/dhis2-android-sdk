@@ -25,7 +25,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.relationship;
+
+import android.util.Log;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
@@ -40,6 +43,8 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemElementS
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
 
 import java.util.Map;
+
+import io.reactivex.Completable;
 
 final class RelationshipObjectRepository
         extends ReadOnlyOneObjectRepositoryImpl<Relationship, RelationshipObjectRepository>
@@ -62,8 +67,13 @@ final class RelationshipObjectRepository
     }
 
     @Override
-    public void delete() throws D2Error {
-        Relationship relationship = withAllChildren().get();
+    public Completable delete() {
+        return Completable.fromAction(this::blockingDelete);
+    }
+
+    @Override
+    public void blockingDelete() throws D2Error {
+        Relationship relationship = blockingGet();
         if (relationship == null) {
             throw D2Error
                     .builder()
@@ -76,6 +86,21 @@ final class RelationshipObjectRepository
             StoreWithState elementStore = storeSelector.getElementStore(fromItem);
             relationshipStore.delete(uid);
             elementStore.setState(fromItem.elementUid(), State.TO_UPDATE);
+        }
+    }
+
+    @Override
+    public Completable deleteIfExist() {
+        return Completable.fromAction(this::blockingDeleteIfExist);
+    }
+
+    @Override
+    public void blockingDeleteIfExist() {
+        try {
+            blockingDelete();
+        } catch (D2Error d2Error) {
+            Log.v(RelationshipObjectRepository.class.getCanonicalName(), d2Error.errorDescription());
+
         }
     }
 }

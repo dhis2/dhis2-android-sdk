@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.option.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.option.OptionGroupOptionLink;
 
 import dagger.Module;
@@ -44,13 +44,13 @@ public final class OptionGroupOptionEntityDIModule {
 
     @Provides
     @Reusable
-    public LinkModelStore<OptionGroupOptionLink> store(DatabaseAdapter databaseAdapter) {
+    public LinkStore<OptionGroupOptionLink> store(DatabaseAdapter databaseAdapter) {
         return OptionGroupOptionLinkStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    public LinkHandler<ObjectWithUid, OptionGroupOptionLink> handler(LinkModelStore<OptionGroupOptionLink> store) {
+    public LinkHandler<ObjectWithUid, OptionGroupOptionLink> handler(LinkStore<OptionGroupOptionLink> store) {
         return new LinkHandlerImpl<>(store);
     }
 }

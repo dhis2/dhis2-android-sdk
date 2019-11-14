@@ -32,12 +32,14 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteValueObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithValueObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
 
 import java.util.Date;
 import java.util.Map;
+
+import io.reactivex.Completable;
 
 public final class TrackedEntityDataValueObjectRepository
         extends ReadWriteWithValueObjectRepositoryImpl<TrackedEntityDataValue, TrackedEntityDataValueObjectRepository>
@@ -61,14 +63,19 @@ public final class TrackedEntityDataValueObjectRepository
         this.dataElement = dataElement;
     }
 
-    public Unit set(String value) throws D2Error {
-        objectWithValue = setBuilder().value(value).build();
-        return setObject(objectWithValue);
+    @Override
+    public Completable set(String value) {
+        return Completable.fromAction(() -> blockingSet(value));
+    }
+
+    public void blockingSet(String value) throws D2Error {
+        TrackedEntityDataValue objectWithValue = setBuilder().value(value).build();
+        setObject(objectWithValue);
     }
 
     private TrackedEntityDataValue.Builder setBuilder() {
         Date date = new Date();
-        if (exists()) {
+        if (blockingExists()) {
             return getWithoutChildren().toBuilder()
                     .lastUpdated(date);
         } else {
@@ -82,7 +89,7 @@ public final class TrackedEntityDataValueObjectRepository
     }
 
     @Override
-    protected void propagateState() {
-        dataStatePropagator.propagateTrackedEntityDataValueUpdate(objectWithValue);
+    protected void propagateState(TrackedEntityDataValue trackedEntityDataValue) {
+        dataStatePropagator.propagateTrackedEntityDataValueUpdate(trackedEntityDataValue);
     }
 }

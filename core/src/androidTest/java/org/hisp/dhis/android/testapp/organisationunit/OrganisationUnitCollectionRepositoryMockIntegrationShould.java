@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -46,147 +47,156 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
 
     @Test
     public void find_all() {
-        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits.get();
+        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits().blockingGet();
         assertThat(organisationUnits.size(), is(1));
     }
 
     @Test
     public void filter_by_parent_uid() {
-        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits
-                .byParentUid().eq("YuQRtpLP10I").get();
+        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
+                .byParentUid().eq("YuQRtpLP10I").blockingGet();
         assertThat(organisationUnits.size(), is(1));
     }
 
     @Test
     public void filter_by_path() {
-        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits
-                .byPath().eq("/ImspTQPwCqd/O6uvpzGd5pu/YuQRtpLP10I/DiszpKrYNg8").get();
+        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
+                .byPath().eq("/ImspTQPwCqd/O6uvpzGd5pu/YuQRtpLP10I/DiszpKrYNg8").blockingGet();
         assertThat(organisationUnits.size(), is(1));
     }
 
     @Test
     public void filter_by_opening_date() throws ParseException {
-        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits
-                .byOpeningDate().eq(BaseIdentifiableObject.parseDate("1970-01-01T00:00:00.000")).get();
+        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
+                .byOpeningDate().eq(BaseIdentifiableObject.parseDate("1970-01-01T00:00:00.000")).blockingGet();
         assertThat(organisationUnits.size(), is(1));
     }
 
     @Test
     public void filter_by_closed_date() throws ParseException {
-        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits
-                .byClosedDate().eq(BaseIdentifiableObject.parseDate("2018-05-22T15:21:48.516")).get();
+        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
+                .byClosedDate().eq(BaseIdentifiableObject.parseDate("2018-05-22T15:21:48.516")).blockingGet();
         assertThat(organisationUnits.size(), is(1));
     }
 
     @Test
     public void filter_by_level() {
-        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits
-                .byLevel().eq(4).get();
-        assertThat(organisationUnits.size(), is(1));
-    }
-
-    @Test
-    public void filter_by_display_name_path() {
-        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits
-                .byDisplayNamePath().eq("/Ngelehun CHC").get();
+        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
+                .byLevel().eq(4).blockingGet();
         assertThat(organisationUnits.size(), is(1));
     }
 
     @Test
     public void filter_by_organisation_unit_scope() {
-        List<OrganisationUnit> captureOrganisationUnits = d2.organisationUnitModule().organisationUnits
+        List<OrganisationUnit> captureOrganisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-                .get();
+                .blockingGet();
         assertThat(captureOrganisationUnits.size(), is(1));
 
-        List<OrganisationUnit> searchOrganisationUnits = d2.organisationUnitModule().organisationUnits
+        List<OrganisationUnit> searchOrganisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
-                .get();
+                .blockingGet();
         assertThat(searchOrganisationUnits.size(), is(0));
     }
 
     @Test
     public void filter_by_root_organisation_unit() {
-        List<OrganisationUnit> rootOrganisationUnits = d2.organisationUnitModule().organisationUnits
+        List<OrganisationUnit> rootOrganisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byRootOrganisationUnit(Boolean.TRUE)
-                .get();
+                .blockingGet();
         assertThat(rootOrganisationUnits.size(), is(1));
 
-        List<OrganisationUnit> notRootOrganisationUnits = d2.organisationUnitModule().organisationUnits
+        List<OrganisationUnit> notRootOrganisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byRootOrganisationUnit(Boolean.FALSE)
-                .get();
+                .blockingGet();
         assertThat(notRootOrganisationUnits.size(), is(0));
     }
 
     @Test
+    public void filter_by_program() {
+        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
+                .byProgramUids(Collections.singletonList("lxAQ7Zs9VYR"))
+                .blockingGet();
+        assertThat(organisationUnits.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_data_Set() {
+        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
+                .byDataSetUids(Collections.singletonList("lyLU2wR22tC"))
+                .blockingGet();
+        assertThat(organisationUnits.size(), is(1));
+    }
+
+    @Test
     public void filter_by_root_capture_organisation_unit() {
-        List<OrganisationUnit> rootOrganisationUnits = d2.organisationUnitModule().organisationUnits
+        List<OrganisationUnit> rootOrganisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byRootOrganisationUnit(Boolean.TRUE)
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-                .get();
+                .blockingGet();
         assertThat(rootOrganisationUnits.size(), is(1));
     }
 
     @Test
     public void include_programs_as_children() {
-        OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .withPrograms().one().get();
-        assertThat(organisationUnit.programs().get(0).name(), is("Antenatal care visit"));
+        OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
+                .withProgramUids().one().blockingGet();
+        assertThat(organisationUnit.programs().get(0).uid(), is("lxAQ7Zs9VYR"));
     }
 
     @Test
     public void include_data_sets_as_children() {
-        OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .withDataSets().one().get();
-        assertThat(organisationUnit.dataSets().get(0).name(), is("ART monthly summary"));
+        OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
+                .withDataSetUids().one().blockingGet();
+        assertThat(organisationUnit.dataSets().get(0).uid(), is("lyLU2wR22tC"));
     }
 
     @Test
     public void include_organisation_unit_groups_as_children() {
-        OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .withOrganisationUnitGroups().one().get();
+        OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
+                .withOrganisationUnitGroups().one().blockingGet();
         assertThat(organisationUnit.organisationUnitGroups().get(0).name(), is("CHC"));
     }
 
     @Test
     public void include_programs_as_children_in_collection_repository_when_all_selected() {
-        OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .withAllChildren().get().get(0);
-        assertThat(organisationUnit.programs().get(0).name(), is("Antenatal care visit"));
+        OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
+                .withProgramUids().blockingGet().get(0);
+        assertThat(organisationUnit.programs().get(0).uid(), is("lxAQ7Zs9VYR"));
     }
 
     @Test
     public void include_data_sets_as_children_in_collection_repository_when_all_selected() {
-        OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .withAllChildren().get().get(0);
-        assertThat(organisationUnit.dataSets().get(0).name(), is("ART monthly summary"));
+        OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
+                .withDataSetUids().blockingGet().get(0);
+        assertThat(organisationUnit.dataSets().get(0).uid(), is("lyLU2wR22tC"));
     }
 
     @Test
     public void include_organisation_unit_groups_as_children_in_collection_repository_when_all_selected() {
-        OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .withAllChildren().get().get(0);
+        OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
+                .withOrganisationUnitGroups().blockingGet().get(0);
         assertThat(organisationUnit.organisationUnitGroups().get(0).name(), is("CHC"));
     }
 
     @Test
     public void include_programs_as_children_in_object_repository_when_all_selected() {
-        OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .one().withAllChildren().get();
-        assertThat(organisationUnit.programs().get(0).name(), is("Antenatal care visit"));
+        OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
+                .withProgramUids().one().blockingGet();
+        assertThat(organisationUnit.programs().get(0).uid(), is("lxAQ7Zs9VYR"));
     }
 
     @Test
     public void include_data_sets_as_children_in_object_repository_when_all_selected() {
-        OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .one().withAllChildren().get();
-        assertThat(organisationUnit.dataSets().get(0).name(), is("ART monthly summary"));
+        OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
+                .withDataSetUids().one().blockingGet();
+        assertThat(organisationUnit.dataSets().get(0).uid(), is("lyLU2wR22tC"));
     }
 
     @Test
     public void include_organisation_unit_groups_as_children_in_object_repository_when_all_selected() {
-        OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
-                .one().withAllChildren().get();
+        OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
+                .withOrganisationUnitGroups().one().blockingGet();
         assertThat(organisationUnit.organisationUnitGroups().get(0).name(), is("CHC"));
     }
 }

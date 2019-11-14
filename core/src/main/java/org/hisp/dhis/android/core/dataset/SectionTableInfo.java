@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public final class SectionTableInfo {
 
@@ -46,21 +46,27 @@ public final class SectionTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends IdentifiableColumns {
+
+        public final static String DESCRIPTION = "description";
+        public final static String SORT_ORDER = "sortOrder";
+        public final static String DATA_SET = "dataSet";
+        public final static String SHOW_ROW_TOTALS = "showRowTotals";
+        public final static String SHOW_COLUMN_TOTALS = "showColumnTotals";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    SectionFields.DESCRIPTION,
-                    SectionFields.SORT_ORDER,
-                    SectionFields.DATA_SET,
-                    SectionFields.SHOW_ROW_TOTALS,
-                    SectionFields.SHOW_COLUMN_TOTALS
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    DESCRIPTION,
+                    SORT_ORDER,
+                    DATA_SET,
+                    SHOW_ROW_TOTALS,
+                    SHOW_COLUMN_TOTALS
             );
         }
     }

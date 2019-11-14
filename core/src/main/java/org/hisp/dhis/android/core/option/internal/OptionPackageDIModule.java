@@ -29,7 +29,9 @@
 package org.hisp.dhis.android.core.option.internal;
 
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
+import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionGroup;
+import org.hisp.dhis.android.core.option.OptionModule;
 import org.hisp.dhis.android.core.option.OptionSet;
 
 import dagger.Module;
@@ -59,6 +61,18 @@ public final class OptionPackageDIModule {
 
     @Provides
     @Reusable
+    UidsCallFactory<Option> optionCallFactory(OptionEndpointCallFactory impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    OptionService optionService(Retrofit retrofit) {
+        return retrofit.create(OptionService.class);
+    }
+
+    @Provides
+    @Reusable
     UidsCallFactory<OptionGroup> optionGroupCallFactory(OptionGroupCallFactory impl) {
         return impl;
     }
@@ -67,5 +81,11 @@ public final class OptionPackageDIModule {
     @Reusable
     OptionGroupService optionGroupService(Retrofit retrofit) {
         return retrofit.create(OptionGroupService.class);
+    }
+
+    @Provides
+    @Reusable
+    OptionModule module(OptionModuleImpl impl) {
+        return impl;
     }
 }

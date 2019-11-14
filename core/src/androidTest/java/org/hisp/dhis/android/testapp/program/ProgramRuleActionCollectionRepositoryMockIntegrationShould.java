@@ -46,8 +46,8 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
     @Test
     public void find_all() {
         List<ProgramRuleAction> programRuleActions =
-                d2.programModule().programRuleActions
-                        .get();
+                d2.programModule().programRuleActions()
+                        .blockingGet();
 
         assertThat(programRuleActions.size(), is(3));
     }
@@ -55,10 +55,10 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
     @Test
     public void filter_by_data() {
         List<ProgramRuleAction> programRuleActions =
-                d2.programModule().programRuleActions
+                d2.programModule().programRuleActions()
                         .byData()
                         .eq("data")
-                        .get();
+                        .blockingGet();
 
         assertThat(programRuleActions.size(), is(1));
     }
@@ -66,10 +66,10 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
     @Test
     public void filter_by_content() {
         List<ProgramRuleAction> programRuleActions =
-                d2.programModule().programRuleActions
+                d2.programModule().programRuleActions()
                         .byContent()
                         .eq("The hemoglobin value cannot be above 99")
-                        .get();
+                        .blockingGet();
 
         assertThat(programRuleActions.size(), is(1));
     }
@@ -77,10 +77,10 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
     @Test
     public void filter_by_tracked_entity_attribute() {
         List<ProgramRuleAction> programRuleActions =
-                d2.programModule().programRuleActions
+                d2.programModule().programRuleActions()
                         .byTrackedEntityAttributeUid()
                         .eq("cejWyOfXge6")
-                        .get();
+                        .blockingGet();
 
         assertThat(programRuleActions.size(), is(1));
     }
@@ -88,10 +88,10 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
     @Test
     public void filter_by_program_indicator() {
         List<ProgramRuleAction> programRuleActions =
-                d2.programModule().programRuleActions
+                d2.programModule().programRuleActions()
                         .byProgramIndicatorUid()
                         .eq("GSae40Fyppf")
-                        .get();
+                        .blockingGet();
 
         assertThat(programRuleActions.size(), is(1));
     }
@@ -99,10 +99,10 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
     @Test
     public void filter_by_program_stage_section() {
         List<ProgramRuleAction> programRuleActions =
-                d2.programModule().programRuleActions
+                d2.programModule().programRuleActions()
                         .byProgramStageSectionUid()
                         .eq("bbjzL5gp0NZ")
-                        .get();
+                        .blockingGet();
 
         assertThat(programRuleActions.size(), is(1));
     }
@@ -110,10 +110,10 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
     @Test
     public void filter_by_program_rule_action_type() {
         List<ProgramRuleAction> programRuleActions =
-                d2.programModule().programRuleActions
+                d2.programModule().programRuleActions()
                         .byProgramRuleActionType()
                         .eq(ProgramRuleActionType.SHOWWARNING)
-                        .get();
+                        .blockingGet();
 
         assertThat(programRuleActions.size(), is(1));
     }
@@ -121,10 +121,10 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
     @Test
     public void filter_by_program_stage() {
         List<ProgramRuleAction> programRuleActions =
-                d2.programModule().programRuleActions
+                d2.programModule().programRuleActions()
                         .byProgramStageUid()
                         .eq("dBwrot7S420")
-                        .get();
+                        .blockingGet();
 
         assertThat(programRuleActions.size(), is(1));
     }
@@ -132,10 +132,10 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
     @Test
     public void filter_by_data_element() {
         List<ProgramRuleAction> programRuleActions =
-                d2.programModule().programRuleActions
+                d2.programModule().programRuleActions()
                         .byDataElementUid()
                         .eq("Ok9OQpitjQr")
-                        .get();
+                        .blockingGet();
 
         assertThat(programRuleActions.size(), is(1));
     }
@@ -143,10 +143,10 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
     @Test
     public void filter_by_program_rule() {
         List<ProgramRuleAction> programRuleActions =
-                d2.programModule().programRuleActions
+                d2.programModule().programRuleActions()
                         .byProgramRuleUid()
                         .eq("GC4gpdoSD4r")
-                        .get();
+                        .blockingGet();
 
         assertThat(programRuleActions.size(), is(1));
     }
@@ -154,10 +154,10 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
     @Test
     public void filter_by_option() {
         List<ProgramRuleAction> programRuleActions =
-                d2.programModule().programRuleActions
+                d2.programModule().programRuleActions()
                         .byOptionUid()
                         .eq("egT1YqFWsVk")
-                        .get();
+                        .blockingGet();
 
         assertThat(programRuleActions.size(), is(1));
     }
@@ -165,10 +165,10 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
     @Test
     public void filter_by_option_group() {
         List<ProgramRuleAction> programRuleActions =
-                d2.programModule().programRuleActions
+                d2.programModule().programRuleActions()
                         .byOptionGroupUid()
                         .eq("j3JYGVCIEdz")
-                        .get();
+                        .blockingGet();
 
         assertThat(programRuleActions.size(), is(1));
     }

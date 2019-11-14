@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.option.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.option.Option;
-import org.hisp.dhis.android.core.option.OptionFields;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionTableInfo;
 
@@ -57,14 +57,15 @@ public final class OptionSetEntityDIModule {
 
     @Provides
     @Reusable
-    Handler<OptionSet> handler(OptionSetHandler impl) {
-        return impl;
+    public Handler<OptionSet> handler(IdentifiableObjectStore<OptionSet> store) {
+        return new IdentifiableHandlerImpl<>(store);
     }
 
     @Provides
     @Reusable
     OrphanCleaner<OptionSet, Option> optionCleaner(DatabaseAdapter databaseAdapter) {
-        return new OrphanCleanerImpl<>(OptionTableInfo.TABLE_INFO.name(), OptionFields.OPTION_SET, databaseAdapter);
+        return new OrphanCleanerImpl<>(OptionTableInfo.TABLE_INFO.name(), OptionTableInfo.Columns.OPTION_SET,
+                databaseAdapter);
     }
 
     @Provides

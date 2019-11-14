@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class CategoryCategoryComboLinkTableInfo {
 
@@ -50,7 +50,7 @@ public final class CategoryCategoryComboLinkTableInfo {
     private CategoryCategoryComboLinkTableInfo() {
     }
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
 
         public static final String CATEGORY = "category";
         public static final String CATEGORY_COMBO = "categoryCombo";
@@ -58,7 +58,7 @@ public final class CategoryCategoryComboLinkTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     CATEGORY, CATEGORY_COMBO, SORT_ORDER);
         }
 

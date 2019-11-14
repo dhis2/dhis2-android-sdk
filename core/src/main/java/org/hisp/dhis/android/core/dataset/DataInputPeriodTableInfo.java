@@ -29,10 +29,9 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.dataset.internal.DataInputPeriodFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.DeletableDataColumns;
 
 public class DataInputPeriodTableInfo {
 
@@ -46,30 +45,25 @@ public class DataInputPeriodTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new DataInputPeriodTableInfo.Columns();
         }
     };
 
-    public static class Columns extends BaseDataModel.Columns {
+    public static class Columns extends DeletableDataColumns {
 
         public static final String DATA_SET = "dataSet";
+        public static final String PERIOD = "period";
+        public static final String OPENING_DATE = "openingDate";
+        public static final String CLOSING_DATE = "closingDate";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     DATA_SET,
-                    DataInputPeriodFields.PERIOD,
-                    DataInputPeriodFields.OPENING_DATE,
-                    DataInputPeriodFields.CLOSING_DATE);
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{
-                    DATA_SET,
-                    DataInputPeriodFields.PERIOD
-            };
+                    PERIOD,
+                    OPENING_DATE,
+                    CLOSING_DATE);
         }
     }
 

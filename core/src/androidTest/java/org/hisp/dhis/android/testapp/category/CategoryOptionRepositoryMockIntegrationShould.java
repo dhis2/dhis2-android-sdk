@@ -47,33 +47,33 @@ public class CategoryOptionRepositoryMockIntegrationShould extends BaseMockInteg
 
     @Test
     public void find_all() {
-        List<CategoryOption> options = d2.categoryModule().categoryOptions.get();
+        List<CategoryOption> options = d2.categoryModule().categoryOptions().blockingGet();
         assertThat(options.size(), is(8));
     }
 
     @Test
     public void filter_by_start_date() throws ParseException {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse("2012-12-24T12:24:24.000");
-        List<CategoryOption> options = d2.categoryModule().categoryOptions
+        List<CategoryOption> options = d2.categoryModule().categoryOptions()
                 .byStartDate().eq(date)
-                .get();
+                .blockingGet();
         assertThat(options.size(), is(1));
     }
 
     @Test
     public void filter_by_end_date() throws ParseException {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse("2013-12-24T12:24:24.777");
-        List<CategoryOption> options = d2.categoryModule().categoryOptions
+        List<CategoryOption> options = d2.categoryModule().categoryOptions()
                 .byEndDate().eq(date)
-                .get();
+                .blockingGet();
         assertThat(options.size(), is(1));
     }
 
     @Test
     public void filter_by_access_data_write() {
-        List<CategoryOption> options = d2.categoryModule().categoryOptions
+        List<CategoryOption> options = d2.categoryModule().categoryOptions()
                 .byAccessDataWrite().isTrue()
-                .get();
+                .blockingGet();
         assertThat(options.size(), is(5));
     }
 }

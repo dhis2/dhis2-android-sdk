@@ -30,37 +30,40 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AccessColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DBCaptureCoordinatesFromFeatureTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbFormTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.FeatureTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramStageDataElementListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramStageSectionListColumnAdapter;
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.FormType;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.AccessColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbFormTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreProgramStageDataElementListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreProgramStageSectionListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.List;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramStage.Builder.class)
 @SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.GodClass"})
 public abstract class ProgramStage extends BaseIdentifiableObject
-        implements ObjectWithStyle<ProgramStage, ProgramStage.Builder>, Model {
+        implements ObjectWithStyle<ProgramStage, ProgramStage.Builder>, CoreObject {
 
     @Nullable
     @JsonProperty()
@@ -100,11 +103,12 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     @Deprecated
     @Nullable
     @JsonProperty()
-    public abstract Boolean captureCoordinates();
+    @ColumnAdapter(DBCaptureCoordinatesFromFeatureTypeColumnAdapter.class)
+    abstract Boolean captureCoordinates();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DbFeatureTypeColumnAdapter.class)
+    @ColumnAdapter(FeatureTypeColumnAdapter.class)
     public abstract FeatureType featureType();
 
     @Nullable
@@ -144,11 +148,23 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     @JsonProperty()
     public abstract Integer standardInterval();
 
+    /**
+     * @deprecated use d2.programModule().programStageSections instead
+     *
+     * @return
+     */
+    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramStageSectionListColumnAdapter.class)
     public abstract List<ProgramStageSection> programStageSections();
 
+    /**
+     * @deprecated use d2.programModule().programStageDataElements instead
+     *
+     * @return
+     */
+    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramStageDataElementListColumnAdapter.class)
@@ -156,7 +172,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DbPeriodTypeColumnAdapter.class)
+    @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType periodType();
 
     @Nullable
@@ -164,7 +180,6 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
-    @Nullable
     @JsonProperty()
     @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
@@ -206,7 +221,10 @@ public abstract class ProgramStage extends BaseIdentifiableObject
 
         public abstract Builder repeatable(Boolean repeatable);
 
-        public abstract Builder captureCoordinates(Boolean captureCoordinates);
+        /**
+         * @deprecated since 2.29, replaced by {@link #featureType(FeatureType featureType)}
+         */
+        abstract Builder captureCoordinates(Boolean captureCoordinates);
 
         public abstract Builder featureType(FeatureType featureType);
 
@@ -228,8 +246,20 @@ public abstract class ProgramStage extends BaseIdentifiableObject
 
         public abstract Builder standardInterval(Integer standardInterval);
 
+        /**
+         * @deprecated will be package-private in SDK 1.0
+         *
+         * @return
+         */
+        @Deprecated
         public abstract Builder programStageSections(List<ProgramStageSection> programStageSections);
 
+        /**
+         * @deprecated will be package-private in SDK 1.0
+         *
+         * @return
+         */
+        @Deprecated
         public abstract Builder programStageDataElements(List<ProgramStageDataElement> programStageDataElements);
 
         public abstract Builder periodType(PeriodType periodType);
@@ -240,6 +270,37 @@ public abstract class ProgramStage extends BaseIdentifiableObject
 
         public abstract Builder remindCompleted(Boolean remindCompleted);
 
-        public abstract ProgramStage build();
+        abstract ProgramStage autoBuild();
+
+        // Auxiliary fields
+        abstract Boolean captureCoordinates();
+        abstract FeatureType featureType();
+        abstract Access access();
+        abstract ObjectStyle style();
+        public ProgramStage build() {
+            if (featureType() == null) {
+                if (captureCoordinates() != null) {
+                    featureType(captureCoordinates() ? FeatureType.POINT : FeatureType.NONE);
+                }
+            } else {
+                captureCoordinates(featureType() != FeatureType.NONE);
+            }
+
+            try {
+                if (access() == null) {
+                    access(AccessHelper.defaultAccess());
+                }
+            } catch (IllegalStateException e) {
+                access(AccessHelper.defaultAccess());
+            }
+
+            try {
+                style();
+            } catch (IllegalStateException e) {
+                style(ObjectStyle.builder().build());
+            }
+
+            return autoBuild();
+        }
     }
 }

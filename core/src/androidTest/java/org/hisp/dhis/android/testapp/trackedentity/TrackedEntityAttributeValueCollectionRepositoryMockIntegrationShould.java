@@ -50,35 +50,35 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
     @Test
     public void allow_access_to_all_tracked_entity_data_values() {
         List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
-                d2.trackedEntityModule().trackedEntityAttributeValues.get();
-        assertThat(trackedEntityAttributeValues.size(), is(2));
+                d2.trackedEntityModule().trackedEntityAttributeValues().blockingGet();
+        assertThat(trackedEntityAttributeValues.size(), is(3));
     }
 
     @Test
     public void filter_by_tracked_entity_attribute() {
         List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
-                d2.trackedEntityModule().trackedEntityAttributeValues
-                .byTrackedEntityAttribute().eq("lZGmxYbs97q")
-                .get();
+                d2.trackedEntityModule().trackedEntityAttributeValues()
+                .byTrackedEntityAttribute().eq("cejWyOfXge6")
+                .blockingGet();
         assertThat(trackedEntityAttributeValues.size(), is(2));
     }
 
     @Test
     public void filter_by_value() {
         List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
-                d2.trackedEntityModule().trackedEntityAttributeValues
+                d2.trackedEntityModule().trackedEntityAttributeValues()
                 .byValue().eq("4081507")
-                .get();
-        assertThat(trackedEntityAttributeValues.size(), is(2));
+                .blockingGet();
+        assertThat(trackedEntityAttributeValues.size(), is(1));
     }
 
     @Test
     public void filter_by_created() throws ParseException {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse("2019-01-10T13:40:28.000");
         List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
-                d2.trackedEntityModule().trackedEntityAttributeValues
+                d2.trackedEntityModule().trackedEntityAttributeValues()
                 .byCreated().eq(date)
-                .get();
+                .blockingGet();
         assertThat(trackedEntityAttributeValues.size(), is(1));
     }
 
@@ -86,26 +86,26 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
     public void filter_by_last_updated() throws ParseException {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse("2018-01-10T13:40:28.000");
         List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
-                d2.trackedEntityModule().trackedEntityAttributeValues
+                d2.trackedEntityModule().trackedEntityAttributeValues()
                 .byLastUpdated().eq(date)
-                .get();
+                .blockingGet();
         assertThat(trackedEntityAttributeValues.size(), is(1));
     }
 
     @Test
     public void filter_by_tracked_entity_instance() {
         List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
-                d2.trackedEntityModule().trackedEntityAttributeValues
+                d2.trackedEntityModule().trackedEntityAttributeValues()
                         .byTrackedEntityInstance().eq("nWrB0TfWlvh")
-                        .get();
+                        .blockingGet();
         assertThat(trackedEntityAttributeValues.size(), is(1));
     }
 
     @Test
     public void return_tracked_entity_attribute_value_object_repository() {
-        TrackedEntityAttributeValueObjectRepository objectRepository = d2.trackedEntityModule().trackedEntityAttributeValues
-                .value("lZGmxYbs97q", "nWrB0TfWlvh");
-        assertThat(objectRepository.exists(), is(Boolean.TRUE));
-        assertThat(objectRepository.get().value(), is("4081507"));
+        TrackedEntityAttributeValueObjectRepository objectRepository = d2.trackedEntityModule().trackedEntityAttributeValues()
+                .value("cejWyOfXge6", "nWrB0TfWlvh");
+        assertThat(objectRepository.blockingExists(), is(Boolean.TRUE));
+        assertThat(objectRepository.blockingGet().value(), is("4081507"));
     }
 }

@@ -28,25 +28,26 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 
-public final class DoubleFilterConnector<R extends ReadOnlyCollectionRepository<?>>
-        extends BaseFilterConnector<R, Double> {
+public final class DoubleFilterConnector<R extends BaseRepository>
+        extends BaseAbstractFilterConnector<R, Double> {
 
-    DoubleFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
+    DoubleFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
                           RepositoryScope scope,
                           String key) {
         super(repositoryFactory, scope, key);
     }
 
     public R smallerThan(double value) {
-        return newWithWrappedScope("<", value);
+        return newWithWrappedScope(FilterItemOperator.LT, value);
     }
 
     public R biggerThan(double value) {
-        return newWithWrappedScope(">", value);
+        return newWithWrappedScope(FilterItemOperator.GT, value);
     }
 
     String wrapValue(Double value) {

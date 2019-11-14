@@ -35,7 +35,7 @@ import com.google.auto.value.AutoValue;
 import androidx.annotation.NonNull;
 
 @AutoValue
-public abstract class SearchGridHeader {
+abstract class SearchGridHeader {
     private final static String NAME = "name";
     private final static String COLUMN = "column";
     private final static String TYPE = "type";
@@ -44,23 +44,23 @@ public abstract class SearchGridHeader {
 
     @NonNull
     @JsonProperty(NAME)
-    public abstract String name();
+    abstract String name();
 
     @NonNull
     @JsonProperty(COLUMN)
-    public abstract String column();
+    abstract String column();
 
     @NonNull
     @JsonProperty(TYPE)
-    public abstract String type();
+    abstract String type();
 
     @NonNull
     @JsonProperty(HIDDEN)
-    public abstract Boolean hidden();
+    abstract Boolean hidden();
 
     @NonNull
     @JsonProperty(META)
-    public abstract Boolean meta();
+    abstract Boolean meta();
 
     @JsonCreator
     static SearchGridHeader create(

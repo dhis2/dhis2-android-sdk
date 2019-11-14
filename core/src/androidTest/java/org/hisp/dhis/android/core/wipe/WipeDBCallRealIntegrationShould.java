@@ -29,13 +29,12 @@
 package org.hisp.dhis.android.core.wipe;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
+import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.data.database.DatabaseAssert;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.internal.EventCallFactory;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
@@ -53,14 +52,14 @@ public class WipeDBCallRealIntegrationShould extends BaseRealIntegrationTest {
     public void setUp() throws IOException {
         super.setUp();
 
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2 = D2Factory.forNewDatabase();
     }
 
     //@Test
     public void have_empty_database_when_wipe_db_after_sync_metadata() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
 
         DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
 
@@ -71,9 +70,9 @@ public class WipeDBCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void have_empty_database_when_wipe_db_after_sync_data() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
 
         Callable<List<Event>> eventCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
 
@@ -88,9 +87,9 @@ public class WipeDBCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void do_not_have_metadata_when_wipe_metadata_after_sync_metadata() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
 
         DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
 
@@ -101,11 +100,11 @@ public class WipeDBCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void do_not_have_data_when_wipe_data_after_sync() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
 
-        d2.trackedEntityModule().downloadTrackedEntityInstances(5, false, false).subscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(5).blockingDownload();
 
         TrackedEntityInstanceStore trackedEntityInstanceStore =
                 TrackedEntityInstanceStoreImpl.create(databaseAdapter());

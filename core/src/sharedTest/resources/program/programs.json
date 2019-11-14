@@ -14,6 +14,7 @@
       "enrollmentDateLabel": "Enrollment Date",
       "onlyEnrollOnce": false,
       "programType": "WITHOUT_REGISTRATION",
+      "accessLevel": "PROTECTED",
       "relationshipFromA": true,
       "dataEntryMethod": true,
       "version": 3,
@@ -95,39 +96,36 @@
           "name": "Child Programme Gender",
           "shortName": "Child Programme Gender",
           "displayName": "Child Programme Gender",
-          "mandatory": false,
+          "mandatory": true,
           "displayShortName": "Child Programme Gender",
           "externalAccess": false,
           "valueType": "TEXT",
-          "allowFutureDate": false,
+          "allowFutureDate": true,
           "dimensionItem": "IpHINAT79UW.cejWyOfXge6",
-          "displayInList": false,
+          "displayInList": true,
           "sortOrder": 1,
           "dimensionItemType": "PROGRAM_ATTRIBUTE",
+          "searchable": false,
           "program": {
             "id": "lxAQ7Zs9VYR"
           },
           "trackedEntityAttribute": {
-            "id": "cejWyOfXge6",
-            "lastUpdated": "2016-08-04T11:48:56.928",
-            "created": "2014-01-09T19:12:46.551",
-            "name": "TB number",
-            "shortName": "TB number",
-            "valueType": "NUMBER",
-            "programScope": false,
-            "orgunitScope": false,
-            "displayInListNoProgram": false,
-            "displayName": "TB number",
-            "pattern": "RANDOM(XXX######)",
-            "unique": false,
-            "inherit": false,
-            "access": {
-              "read": true,
-              "updateWithSection": true,
-              "externalize": false,
-              "delete": true,
-              "write": true,
-              "manage": false
+            "id": "cejWyOfXge6"
+          },
+          "renderType": {
+            "DESKTOP": {
+              "type": "VERTICAL_RADIOBUTTONS",
+              "min": 0,
+              "max": 10,
+              "step": 1,
+              "decimalPoints": 0
+            },
+            "MOBILE": {
+              "type": "SHARED_HEADER_RADIOBUTTONS",
+              "min": 3,
+              "max": 15,
+              "step": 2,
+              "decimalPoints": 1
             }
           }
         },
@@ -147,42 +145,12 @@
           "displayInList": false,
           "sortOrder": 2,
           "dimensionItemType": "PROGRAM_ATTRIBUTE",
+          "searchable": true,
           "program": {
             "id": "lxAQ7Zs9VYR"
           },
           "trackedEntityAttribute": {
-            "id": "aejWyOfXge6",
-            "lastUpdated": "2016-08-04T11:48:56.928",
-            "created": "2014-01-09T19:12:46.551",
-            "name": "Age",
-            "shortName": "Age",
-            "formName": "formname",
-            "valueType": "TEXT",
-            "programScope": true,
-            "orgunitScope": true,
-            "displayInListNoProgram": true,
-            "displayOnVisitSchedule": true,
-            "sortOrderInListNoProgram": 0,
-            "displayName": "Age",
-            "expression": "expression",
-            "generated": true,
-            "unique": true,
-            "inherit": true,
-            "optionSet": {
-              "id": "VQ2lai3OfVG"
-            },
-            "access": {
-              "read": true,
-              "updateWithSection": true,
-              "externalize": false,
-              "delete": true,
-              "write": true,
-              "manage": false
-            },
-            "style": {
-              "color": "#556",
-              "icon": "attribute-icon"
-            }
+            "id": "aejWyOfXge6"
           }
         }
       ],
@@ -228,11 +196,17 @@
               "legends": [
                 {
                   "id": "BzQkRWHS7lu",
-                  "name": "45 - 60"
+                  "name": "45 - 60",
+                  "startValue": 45,
+                  "endValue": 60,
+                  "color": "#F38026"
                 },
                 {
                   "id": "kEf6QhFVMab",
-                  "name": "15 - 30"
+                  "name": "15 - 30",
+                  "startValue": 15,
+                  "endValue": 30,
+                  "color": "#E6AE5E"
                 }
               ]
             }
@@ -258,11 +232,6 @@
             "id": "lxAQ7Zs9VYR"
           },
           "legendSets": []
-        }
-      ],
-      "programStages": [
-        {
-          "id": "dBwrot7S420"
         }
       ],
       "programSections": [

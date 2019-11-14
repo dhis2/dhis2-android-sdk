@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.program.internal.ProgramRuleVariableFields;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo.Columns;
 
 import java.util.Map;
 
@@ -57,28 +57,28 @@ public final class ProgramRuleVariableCollectionRepository extends ReadOnlyIdent
 
 
     public BooleanFilterConnector<ProgramRuleVariableCollectionRepository> byUseCodeForOptionSet() {
-        return cf.bool(ProgramRuleVariableFields.USE_CODE_FOR_OPTION_SET);
+        return cf.bool(Columns.USE_CODE_FOR_OPTION_SET);
     }
 
     public StringFilterConnector<ProgramRuleVariableCollectionRepository> byProgramUid() {
-        return cf.string(ProgramRuleVariableFields.PROGRAM);
+        return cf.string(Columns.PROGRAM);
     }
 
     public StringFilterConnector<ProgramRuleVariableCollectionRepository> byProgramStageUid() {
-        return cf.string(ProgramRuleVariableFields.PROGRAM_STAGE);
+        return cf.string(Columns.PROGRAM_STAGE);
     }
 
     public StringFilterConnector<ProgramRuleVariableCollectionRepository> byDataElementUid() {
-        return cf.string(ProgramRuleVariableFields.DATA_ELEMENT);
+        return cf.string(Columns.DATA_ELEMENT);
     }
 
     public StringFilterConnector<ProgramRuleVariableCollectionRepository> byTrackedEntityAttributeUid() {
-        return cf.string(ProgramRuleVariableFields.TRACKED_ENTITY_ATTRIBUTE);
+        return cf.string(Columns.TRACKED_ENTITY_ATTRIBUTE);
     }
 
     public EnumFilterConnector<ProgramRuleVariableCollectionRepository,
             ProgramRuleVariableSourceType> byProgramRuleVariableSourceType() {
 
-        return cf.enumC(ProgramRuleVariableFields.PROGRAM_RULE_VARIABLE_SOURCE_TYPE);
+        return cf.enumC(Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE);
     }
 }

@@ -29,10 +29,9 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.program.internal.ProgramRuleFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public final class ProgramRuleTableInfo {
 
@@ -47,19 +46,24 @@ public final class ProgramRuleTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends IdentifiableColumns {
+        public static final String PRIORITY = "priority";
+        public static final String CONDITION = "condition";
+        public static final String PROGRAM = "program";
+        public static final String PROGRAM_STAGE = "programStage";
+
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    ProgramRuleFields.PRIORITY,
-                    ProgramRuleFields.CONDITION,
-                    ProgramRuleFields.PROGRAM,
-                    ProgramRuleFields.PROGRAM_STAGE
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    PRIORITY,
+                    CONDITION,
+                    PROGRAM,
+                    PROGRAM_STAGE
             );
         }
     }

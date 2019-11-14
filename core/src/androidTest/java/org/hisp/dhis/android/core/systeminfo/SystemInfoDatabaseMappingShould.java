@@ -31,10 +31,10 @@ package org.hisp.dhis.android.core.systeminfo;
 import android.content.ContentValues;
 import android.database.MatrixCursor;
 
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoTableInfo.Columns;
-import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -54,7 +54,7 @@ public class SystemInfoDatabaseMappingShould {
 
     @Test
     public void map_cursor_to_object() {
-        String[] columnsWithId = Utils.appendInNewArray(SystemInfoTableInfo.TABLE_INFO.columns().all(),
+        String[] columnsWithId = CollectionsHelper.appendInNewArray(SystemInfoTableInfo.TABLE_INFO.columns().all(),
                 SystemInfoTableInfo.Columns.ID);
         MatrixCursor cursor = new MatrixCursor(columnsWithId);
 
@@ -72,10 +72,10 @@ public class SystemInfoDatabaseMappingShould {
     public void map_object_to_content_values() {
         ContentValues contentValues = systemInfo.toContentValues();
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(systemInfo.id());
-        assertThat(contentValues.getAsString(SystemInfoFields.SERVER_DATE)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(SystemInfoFields.DATE_FORMAT)).isEqualTo(systemInfo.dateFormat());
-        assertThat(contentValues.getAsString(SystemInfoFields.CONTEXT_PATH)).isEqualTo(systemInfo.contextPath());
-        assertThat(contentValues.getAsString(SystemInfoFields.VERSION)).isEqualTo(systemInfo.version());
-        assertThat(contentValues.getAsString(SystemInfoFields.SYSTEM_NAME)).isEqualTo(systemInfo.systemName());
+        assertThat(contentValues.getAsString(Columns.SERVER_DATE)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(Columns.DATE_FORMAT)).isEqualTo(systemInfo.dateFormat());
+        assertThat(contentValues.getAsString(Columns.CONTEXT_PATH)).isEqualTo(systemInfo.contextPath());
+        assertThat(contentValues.getAsString(Columns.VERSION)).isEqualTo(systemInfo.version());
+        assertThat(contentValues.getAsString(Columns.SYSTEM_NAME)).isEqualTo(systemInfo.systemName());
     }
 }

@@ -29,10 +29,9 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.NameableWithStyleColumns;
 
 public final class DataElementTableInfo {
 
@@ -47,24 +46,34 @@ public final class DataElementTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    static class Columns extends BaseNameableObjectModel.Columns {
+    public static class Columns extends NameableWithStyleColumns {
+        public final static String VALUE_TYPE = "valueType";
+        public final static String ZERO_IS_SIGNIFICANT = "zeroIsSignificant";
+        public final static String AGGREGATION_TYPE = "aggregationType";
+        public final static String FORM_NAME = "formName";
+        public final static String DOMAIN_TYPE = "domainType";
+        public final static String DISPLAY_FORM_NAME = "displayFormName";
+        public final static String OPTION_SET = "optionSet";
+        public final static String CATEGORY_COMBO = "categoryCombo";
+        public final static String FIELD_MASK = "fieldMask";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    DataElementFields.VALUE_TYPE,
-                    DataElementFields.ZERO_IS_SIGNIFICANT,
-                    DataElementFields.AGGREGATION_TYPE,
-                    DataElementFields.FORM_NAME,
-                    DataElementFields.DOMAIN_TYPE,
-                    DataElementFields.DISPLAY_FORM_NAME,
-                    DataElementFields.OPTION_SET,
-                    DataElementFields.CATEGORY_COMBO
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    VALUE_TYPE,
+                    ZERO_IS_SIGNIFICANT,
+                    AGGREGATION_TYPE,
+                    FORM_NAME,
+                    DOMAIN_TYPE,
+                    DISPLAY_FORM_NAME,
+                    OPTION_SET,
+                    CATEGORY_COMBO,
+                    FIELD_MASK
             );
         }
     }

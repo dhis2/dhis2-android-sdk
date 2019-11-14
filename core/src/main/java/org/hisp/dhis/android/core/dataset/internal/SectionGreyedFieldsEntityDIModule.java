@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink;
 
@@ -44,14 +44,14 @@ public final class SectionGreyedFieldsEntityDIModule {
 
     @Provides
     @Reusable
-    LinkModelStore<SectionGreyedFieldsLink> store(DatabaseAdapter databaseAdapter) {
+    LinkStore<SectionGreyedFieldsLink> store(DatabaseAdapter databaseAdapter) {
         return SectionGreyedFieldsLinkStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
     LinkHandler<DataElementOperand, SectionGreyedFieldsLink> handler(
-            LinkModelStore<SectionGreyedFieldsLink> store) {
+            LinkStore<SectionGreyedFieldsLink> store) {
         return  new LinkHandlerImpl<>(store);
     }
 }

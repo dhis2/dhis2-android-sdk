@@ -29,9 +29,8 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.program.internal.ProgramRuleActionFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public final class ProgramRuleActionTableInfo {
 
@@ -51,23 +50,35 @@ public final class ProgramRuleActionTableInfo {
         }
     };
 
-    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends IdentifiableColumns {
+        public static final String DATA = "data";
+        public static final String CONTENT = "content";
+        public static final String LOCATION = "location";
+        public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+        public static final String PROGRAM_INDICATOR = "programIndicator";
+        public static final String PROGRAM_STAGE_SECTION = "programStageSection";
+        public static final String PROGRAM_RULE_ACTION_TYPE = "programRuleActionType";
+        public static final String PROGRAM_RULE = "programRule";
+        public static final String PROGRAM_STAGE = "programStage";
+        public static final String DATA_ELEMENT = "dataElement";
+        public static final String OPTION = "option";
+        public static final String OPTION_GROUP = "optionGroup";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    ProgramRuleActionFields.DATA,
-                    ProgramRuleActionFields.CONTENT,
-                    ProgramRuleActionFields.LOCATION,
-                    ProgramRuleActionFields.TRACKED_ENTITY_ATTRIBUTE,
-                    ProgramRuleActionFields.PROGRAM_INDICATOR,
-                    ProgramRuleActionFields.PROGRAM_STAGE_SECTION,
-                    ProgramRuleActionFields.PROGRAM_RULE_ACTION_TYPE,
-                    ProgramRuleActionFields.PROGRAM_STAGE,
-                    ProgramRuleActionFields.DATA_ELEMENT,
-                    ProgramRuleActionFields.PROGRAM_RULE,
-                    ProgramRuleActionFields.OPTION,
-                    ProgramRuleActionFields.OPTION_GROUP
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    DATA,
+                    CONTENT,
+                    LOCATION,
+                    TRACKED_ENTITY_ATTRIBUTE,
+                    PROGRAM_INDICATOR,
+                    PROGRAM_STAGE_SECTION,
+                    PROGRAM_RULE_ACTION_TYPE,
+                    PROGRAM_STAGE,
+                    DATA_ELEMENT,
+                    PROGRAM_RULE,
+                    OPTION,
+                    OPTION_GROUP
             );
         }
     }

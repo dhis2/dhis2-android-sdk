@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.enrollment.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
@@ -35,9 +37,10 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.note.Note;
-import org.hisp.dhis.android.core.enrollment.note.internal.NoteDHISVersionManager;
-import org.hisp.dhis.android.core.enrollment.note.internal.NoteUniquenessManager;
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager;
+import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager;
 import org.hisp.dhis.android.core.event.Event;
 
 import java.util.ArrayList;
@@ -46,7 +49,6 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
@@ -75,7 +77,7 @@ final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
     @Override
     protected void afterObjectHandled(Enrollment enrollment, HandleAction action) {
         if (action != HandleAction.Delete) {
-            eventHandler.handleMany(enrollment.events(),
+            eventHandler.handleMany(EnrollmentInternalAccessor.accessEvents(enrollment),
                     event -> event.toBuilder()
                             .state(State.SYNCED)
                             .build());
@@ -90,6 +92,6 @@ final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
             noteHandler.handleMany(notesToSync);
         }
 
-        eventOrphanCleaner.deleteOrphan(enrollment, enrollment.events());
+        eventOrphanCleaner.deleteOrphan(enrollment, EnrollmentInternalAccessor.accessEvents(enrollment));
     }
 }

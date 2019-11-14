@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.program.ProgramRuleTableInfo.Columns;
 import org.hisp.dhis.android.core.program.internal.ProgramRuleFields;
 
 import java.util.Map;
@@ -56,19 +57,19 @@ public final class ProgramRuleCollectionRepository
 
 
     public IntegerFilterConnector<ProgramRuleCollectionRepository> byPriority() {
-        return cf.integer(ProgramRuleFields.PRIORITY);
+        return cf.integer(Columns.PRIORITY);
     }
 
     public StringFilterConnector<ProgramRuleCollectionRepository> byCondition() {
-        return cf.string(ProgramRuleFields.CONDITION);
+        return cf.string(Columns.CONDITION);
     }
 
     public StringFilterConnector<ProgramRuleCollectionRepository> byProgramUid() {
-        return cf.string(ProgramRuleFields.PROGRAM);
+        return cf.string(Columns.PROGRAM);
     }
 
     public StringFilterConnector<ProgramRuleCollectionRepository> byProgramStageUid() {
-        return cf.string(ProgramRuleFields.PROGRAM_STAGE);
+        return cf.string(Columns.PROGRAM_STAGE);
     }
 
     public ProgramRuleCollectionRepository withProgramRuleActions() {

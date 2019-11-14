@@ -28,12 +28,9 @@
 
 package org.hisp.dhis.android.core.arch.api.authentication.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.user.AuthenticatedUser;
-import org.hisp.dhis.android.core.user.internal.AuthenticatedUserStore;
-
 import androidx.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 
 public final class BasicAuthenticatorFactory {
     private BasicAuthenticatorFactory() {
@@ -41,13 +38,7 @@ public final class BasicAuthenticatorFactory {
     }
 
     @NonNull
-    public static Authenticator create(@NonNull DatabaseAdapter databaseAdapter) {
-        if (databaseAdapter == null) {
-            throw new IllegalArgumentException("databaseAdapter == null");
-        }
-
-        ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore = AuthenticatedUserStore.create(
-                databaseAdapter);
-        return new BasicAuthenticator(authenticatedUserStore);
+    public static Authenticator create(@NonNull CredentialsSecureStore credentialsSecureStore) {
+        return new BasicAuthenticator(credentialsSecureStore);
     }
 }

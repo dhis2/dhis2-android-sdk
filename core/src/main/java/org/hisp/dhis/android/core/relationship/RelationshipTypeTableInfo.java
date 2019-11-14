@@ -29,10 +29,9 @@
 package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public final class RelationshipTypeTableInfo {
 
@@ -47,22 +46,25 @@ public final class RelationshipTypeTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends IdentifiableColumns {
 
-        /* Field name doesn't correspond with column name (typo: upper case A) We can keep the inconsistency
-        as it will be removed when 2.29 is no longer supported */
-        static final String A_IS_TO_B_WITH_UPPER_CASE_A = "AIsToB";
+        public static final String FROM_TO_NAME = "fromToName";
+        public static final String TO_FROM_NAME = "toFromName";
+        public static final String BIDIRECTIONAL = "bidirectional";
+        public static final String ACCESS_DATA_WRITE = "accessDataWrite";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    RelationshipTypeFields.B_IS_TO_A,
-                    A_IS_TO_B_WITH_UPPER_CASE_A
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    FROM_TO_NAME,
+                    TO_FROM_NAME,
+                    BIDIRECTIONAL,
+                    ACCESS_DATA_WRITE
             );
         }
     }

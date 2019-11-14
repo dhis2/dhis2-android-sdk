@@ -30,22 +30,20 @@ package org.hisp.dhis.android.core.event.internal;
 
 import android.database.Cursor;
 
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectWithStateStoreImpl;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
-import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventTableInfo;
+import org.hisp.dhis.android.core.event.EventTableInfo.Columns;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,7 +53,7 @@ import java.util.Map;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
-public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<Event> implements EventStore {
+public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreImpl<Event> implements EventStore {
 
     private static final String QUERY_SINGLE_EVENTS = "SELECT Event.* FROM Event WHERE Event.enrollment IS NULL";
 
@@ -67,8 +65,8 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
         sqLiteBind(sqLiteStatement, 5, o.createdAtClient());
         sqLiteBind(sqLiteStatement, 6, o.lastUpdatedAtClient());
         sqLiteBind(sqLiteStatement, 7, o.status());
-        sqLiteBind(sqLiteStatement, 8, CoordinateHelper.getLatitude(o.coordinate()));
-        sqLiteBind(sqLiteStatement, 9, CoordinateHelper.getLongitude(o.coordinate()));
+        sqLiteBind(sqLiteStatement, 8, o.geometry() == null ? null : o.geometry().type());
+        sqLiteBind(sqLiteStatement, 9, o.geometry() == null ? null : o.geometry().coordinates());
         sqLiteBind(sqLiteStatement, 10, o.program());
         sqLiteBind(sqLiteStatement, 11, o.programStage());
         sqLiteBind(sqLiteStatement, 12, o.organisationUnit());
@@ -77,27 +75,27 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
         sqLiteBind(sqLiteStatement, 15, o.dueDate());
         sqLiteBind(sqLiteStatement, 16, o.state());
         sqLiteBind(sqLiteStatement, 17, o.attributeOptionCombo());
+        sqLiteBind(sqLiteStatement, 18, o.deleted());
     };
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            EventTableInfo.TABLE_INFO, EventFields.ENROLLMENT);
+            EventTableInfo.TABLE_INFO, Columns.ENROLLMENT);
 
     private EventStoreImpl(DatabaseAdapter databaseAdapter,
                            SQLStatementWrapper statementWrapper,
                            SQLStatementBuilderImpl builder,
                            StatementBinder<Event> binder,
-                           CursorModelFactory<Event> modelFactory) {
-        super(databaseAdapter, statementWrapper, builder, binder, modelFactory);
+                           ObjectFactory<Event> objectFactory) {
+        super(databaseAdapter, statementWrapper, builder, binder, objectFactory);
     }
 
     @Override
     public Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost() {
         String eventsAttachedToEnrollmentsQuery = new WhereClauseBuilder()
-                .appendIsNotNullValue(EventFields.ENROLLMENT)
-                .appendInKeyStringValues(BaseDataModel.Columns.STATE, Arrays.asList(
+                .appendIsNotNullValue(Columns.ENROLLMENT)
+                .appendInKeyStringValues(Columns.STATE, Arrays.asList(
                         State.TO_POST.name(),
-                        State.TO_UPDATE.name(),
-                        State.TO_DELETE.name())).build();
+                        State.TO_UPDATE.name())).build();
 
         List<Event> eventList = selectWhere(eventsAttachedToEnrollmentsQuery);
 
@@ -112,7 +110,7 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
     @Override
     public List<Event> querySingleEventsToPost() {
         String singleEventsToPostQuery = QUERY_SINGLE_EVENTS +
-                " AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE' OR Event.state = 'TO_DELETE')";
+                " AND (Event.state = '" + State.TO_POST + "' OR Event.state = '" + State.TO_UPDATE + "')";
         return eventListFromQuery(singleEventsToPostQuery);
     }
 
@@ -126,7 +124,7 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
         String byEnrollmentAndProgramStageQuery = "SELECT Event.* FROM Event " +
                 "WHERE Event.enrollment = '" + enrollmentUid + "' " +
                 "AND Event.programStage = '" + programStageUid + "' " +
-                "ORDER BY Event." + EventFields.EVENT_DATE + ", Event." + EventFields.LAST_UPDATED;
+                "ORDER BY Event." + Columns.EVENT_DATE + ", Event." + Columns.LAST_UPDATED;
 
         return eventListFromQuery(byEnrollmentAndProgramStageQuery);
     }
@@ -143,12 +141,12 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
     @Override
     public int countTeisWhereEvents(String whereClause) {
         String whereStatement = whereClause == null ? "" : " WHERE " + whereClause;
-        String query = "SELECT COUNT(DISTINCT a." + EnrollmentFields.TRACKED_ENTITY_INSTANCE + ") " +
+        String query = "SELECT COUNT(DISTINCT a." + EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE + ") " +
                 "FROM " + EnrollmentTableInfo.TABLE_INFO.name() + " a " +
                 "INNER JOIN " +
-                "(SELECT DISTINCT " + EventFields.ENROLLMENT +
+                "(SELECT DISTINCT " + Columns.ENROLLMENT +
                     " FROM " + EventTableInfo.TABLE_INFO.name() + whereStatement + ") b " +
-                "ON a." + BaseIdentifiableObjectModel.Columns.UID + " = b." + EventFields.ENROLLMENT;
+                "ON a." + IdentifiableColumns.UID + " = b." + Columns.ENROLLMENT;
 
         return processCount(databaseAdapter.query(query));
     }

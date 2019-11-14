@@ -25,13 +25,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.ProgramInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
+import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute;
 
 import java.util.HashSet;
 import java.util.List;
@@ -41,13 +46,12 @@ final class ProgramParentUidsHelper {
 
     private ProgramParentUidsHelper() {}
 
-    static Set<String> getAssignedOptionSetUids(List<Program> programs, List<ProgramStage> programStages) {
+    static Set<String> getAssignedOptionSetUids(List<TrackedEntityAttribute> attributes,
+                                                List<ProgramStage> programStages) {
         Set<String> uids = new HashSet<>();
 
-        if (programs != null) {
-            for (Program program : programs) {
-                getOptionSetUidsForAttributes(uids, program);
-            }
+        if (attributes != null) {
+            getOptionSetUidsForAttributes(uids, attributes);
         }
 
         if (programStages != null) {
@@ -62,7 +66,7 @@ final class ProgramParentUidsHelper {
         for (int j = 0; j < programStagesSize; j++) {
             ProgramStage programStage = programStages.get(j);
             List<ProgramStageDataElement> programStageDataElements =
-                    programStage.programStageDataElements();
+                    ProgramStageInternalAccessor.accessProgramStageDataElements(programStage);
             int programStageDataElementSize = programStageDataElements.size();
 
             for (int k = 0; k < programStageDataElementSize; k++) {
@@ -76,18 +80,10 @@ final class ProgramParentUidsHelper {
         }
     }
 
-    private static void getOptionSetUidsForAttributes(Set<String> uids, Program program) {
-        int programTrackedEntityAttributeSize = program.programTrackedEntityAttributes().size();
-        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                program.programTrackedEntityAttributes();
-
-        for (int j = 0; j < programTrackedEntityAttributeSize; j++) {
-            ProgramTrackedEntityAttribute programTrackedEntityAttribute =
-                    programTrackedEntityAttributes.get(j);
-
-            if (programTrackedEntityAttribute.trackedEntityAttribute() != null &&
-                    programTrackedEntityAttribute.trackedEntityAttribute().optionSet() != null) {
-                uids.add(programTrackedEntityAttribute.trackedEntityAttribute().optionSet().uid());
+    private static void getOptionSetUidsForAttributes(Set<String> uids, List<TrackedEntityAttribute> attributes) {
+        for (TrackedEntityAttribute attribute : attributes) {
+            if (attribute.optionSet() != null) {
+                uids.add(attribute.optionSet().uid());
             }
         }
     }
@@ -110,13 +106,27 @@ final class ProgramParentUidsHelper {
         return uids;
     }
 
-    static Set<String> getAssignedProgramStageUids(List<Program> programs) {
-        Set<String> programStageUids = new HashSet<>();
+    static Set<String> getAssignedTrackedEntityAttributeUids(List<Program> programs, List<TrackedEntityType> types) {
+        Set<String> attributeUids = new HashSet<>();
 
         for (Program program : programs) {
-            UidsHelper.addUids(programStageUids, program.programStages());
+            List<ProgramTrackedEntityAttribute> attributes =
+                    ProgramInternalAccessor.accessProgramTrackedEntityAttributes(program);
+            if (attributes != null) {
+                for (ProgramTrackedEntityAttribute programAttribute : attributes) {
+                    attributeUids.add(programAttribute.trackedEntityAttribute().uid());
+                }
+            }
         }
 
-        return programStageUids;
+        for (TrackedEntityType type : types) {
+            if (type.trackedEntityTypeAttributes() != null) {
+                for (TrackedEntityTypeAttribute attribute : type.trackedEntityTypeAttributes()) {
+                    attributeUids.add(attribute.trackedEntityAttribute().uid());
+                }
+            }
+        }
+
+        return attributeUids;
     }
 }

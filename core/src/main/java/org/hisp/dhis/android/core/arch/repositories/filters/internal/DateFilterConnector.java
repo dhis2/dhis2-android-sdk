@@ -28,34 +28,35 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.CollectionRepositoryFactory;
+import androidx.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.period.DatePeriod;
-import org.hisp.dhis.android.core.period.internal.InPeriodQueryHelper;
 import org.hisp.dhis.android.core.period.Period;
+import org.hisp.dhis.android.core.period.internal.InPeriodQueryHelper;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import androidx.annotation.NonNull;
+public final class DateFilterConnector<R extends BaseRepository> extends BaseAbstractFilterConnector<R, Date> {
 
-public final class DateFilterConnector<R extends ReadOnlyCollectionRepository<?>> extends BaseFilterConnector<R, Date> {
-
-    DateFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
+    DateFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
                         RepositoryScope scope,
                         String key) {
         super(repositoryFactory, scope, key);
     }
 
     public R before(Date value) {
-        return newWithWrappedScope("<", value);
+        return newWithWrappedScope(FilterItemOperator.LT, value);
     }
 
     public R after(Date value) {
-        return newWithWrappedScope(">", value);
+        return newWithWrappedScope(FilterItemOperator.GT, value);
     }
 
     public R inDatePeriods(@NonNull List<DatePeriod> datePeriods) {

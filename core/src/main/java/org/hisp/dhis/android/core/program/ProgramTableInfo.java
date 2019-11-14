@@ -29,9 +29,8 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.program.internal.ProgramFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.NameableWithStyleColumns;
 
 public final class ProgramTableInfo {
 
@@ -51,39 +50,59 @@ public final class ProgramTableInfo {
         }
     };
 
-    static class Columns extends BaseNameableObjectModel.Columns {
+    public static class Columns extends NameableWithStyleColumns {
         public static final String ACCESS_DATA_WRITE = "accessDataWrite";
+        public static final String VERSION = "version";
+        public static final String ONLY_ENROLL_ONCE = "onlyEnrollOnce";
+        public static final String ENROLLMENT_DATE_LABEL = "enrollmentDateLabel";
+        public static final String DISPLAY_INCIDENT_DATE = "displayIncidentDate";
+        public static final String INCIDENT_DATE_LABEL = "incidentDateLabel";
+        public static final String REGISTRATION = "registration";
+        public static final String SELECT_ENROLLMENT_DATES_IN_FUTURE = "selectEnrollmentDatesInFuture";
+        public static final String DATA_ENTRY_METHOD = "dataEntryMethod";
+        public static final String IGNORE_OVERDUE_EVENTS = "ignoreOverdueEvents";
+        public static final String SELECT_INCIDENT_DATES_IN_FUTURE = "selectIncidentDatesInFuture";
+        public static final String USE_FIRST_STAGE_DURING_REGISTRATION = "useFirstStageDuringRegistration";
+        public static final String DISPLAY_FRONT_PAGE_LIST = "displayFrontPageList";
+        public static final String PROGRAM_TYPE = "programType";
+        public static final String RELATED_PROGRAM = "relatedProgram";
+        public static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
+        public static final String CATEGORY_COMBO = "categoryCombo";
+        public static final String EXPIRY_DAYS = "expiryDays";
+        public static final String COMPLETE_EVENTS_EXPIRY_DAYS = "completeEventsExpiryDays";
+        public static final String EXPIRY_PERIOD_TYPE = "expiryPeriodType";
+        public static final String MIN_ATTRIBUTES_REQUIRED_TO_SEARCH = "minAttributesRequiredToSearch";
+        public static final String MAX_TEI_COUNT_TO_RETURN = "maxTeiCountToReturn";
+        public static final String FEATURE_TYPE = "featureType";
+        public static final String ACCESS_LEVEL = "accessLevel";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    ProgramFields.VERSION,
-                    ProgramFields.ONLY_ENROLL_ONCE,
-                    ProgramFields.ENROLLMENT_DATE_LABEL,
-                    ProgramFields.DISPLAY_INCIDENT_DATE,
-                    ProgramFields.INCIDENT_DATE_LABEL,
-                    ProgramFields.REGISTRATION,
-                    ProgramFields.SELECT_ENROLLMENT_DATES_IN_FUTURE,
-                    ProgramFields.DATA_ENTRY_METHOD,
-                    ProgramFields.IGNORE_OVERDUE_EVENTS,
-                    ProgramFields.RELATIONSHIP_FROM_A,
-                    ProgramFields.SELECT_INCIDENT_DATES_IN_FUTURE,
-                    ProgramFields.CAPTURE_COORDINATES,
-                    ProgramFields.USE_FIRST_STAGE_DURING_REGISTRATION,
-                    ProgramFields.DISPLAY_FRONT_PAGE_LIST,
-                    ProgramFields.PROGRAM_TYPE,
-                    ProgramFields.RELATIONSHIP_TYPE,
-                    ProgramFields.RELATIONSHIP_TEXT,
-                    ProgramFields.RELATED_PROGRAM,
-                    ProgramFields.TRACKED_ENTITY_TYPE,
-                    ProgramFields.CATEGORY_COMBO,
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    VERSION,
+                    ONLY_ENROLL_ONCE,
+                    ENROLLMENT_DATE_LABEL,
+                    DISPLAY_INCIDENT_DATE,
+                    INCIDENT_DATE_LABEL,
+                    REGISTRATION,
+                    SELECT_ENROLLMENT_DATES_IN_FUTURE,
+                    DATA_ENTRY_METHOD,
+                    IGNORE_OVERDUE_EVENTS,
+                    SELECT_INCIDENT_DATES_IN_FUTURE,
+                    USE_FIRST_STAGE_DURING_REGISTRATION,
+                    DISPLAY_FRONT_PAGE_LIST,
+                    PROGRAM_TYPE,
+                    RELATED_PROGRAM,
+                    TRACKED_ENTITY_TYPE,
+                    CATEGORY_COMBO,
                     ACCESS_DATA_WRITE,
-                    ProgramFields.EXPIRY_DAYS,
-                    ProgramFields.COMPLETE_EVENTS_EXPIRY_DAYS,
-                    ProgramFields.EXPIRY_PERIOD_TYPE,
-                    ProgramFields.MIN_ATTRIBUTES_REQUIRED_TO_SEARCH,
-                    ProgramFields.MAX_TEI_COUNT_TO_RETURN,
-                    ProgramFields.FEATURE_TYPE
+                    EXPIRY_DAYS,
+                    COMPLETE_EVENTS_EXPIRY_DAYS,
+                    EXPIRY_PERIOD_TYPE,
+                    MIN_ATTRIBUTES_REQUIRED_TO_SEARCH,
+                    MAX_TEI_COUNT_TO_RETURN,
+                    FEATURE_TYPE,
+                    ACCESS_LEVEL
             );
         }
     }

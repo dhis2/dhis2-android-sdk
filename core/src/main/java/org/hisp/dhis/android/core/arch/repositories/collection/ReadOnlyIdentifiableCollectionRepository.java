@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IdentifiableFilters;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.IdentifiableObject;
-import org.hisp.dhis.android.core.common.Model;
 
 public interface ReadOnlyIdentifiableCollectionRepository
-        <M extends Model & IdentifiableObject, R extends ReadOnlyCollectionRepository<?>>
+        <M extends CoreObject & IdentifiableObject, R extends ReadOnlyCollectionRepository<?>>
         extends ReadOnlyWithUidCollectionRepository<M>,
         IdentifiableFilters<R> {
 }

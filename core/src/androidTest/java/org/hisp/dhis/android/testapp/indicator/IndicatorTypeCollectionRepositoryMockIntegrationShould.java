@@ -44,24 +44,24 @@ public class IndicatorTypeCollectionRepositoryMockIntegrationShould extends Base
 
     @Test
     public void find_all() {
-        List<IndicatorType> indicatorTypes = d2.indicatorModule().indicatorTypes
-                .get();
+        List<IndicatorType> indicatorTypes = d2.indicatorModule().indicatorTypes()
+                .blockingGet();
         assertThat(indicatorTypes.size(), is(1));
     }
 
     @Test
     public void filter_by_number() {
-        List<IndicatorType> indicatorTypes = d2.indicatorModule().indicatorTypes
+        List<IndicatorType> indicatorTypes = d2.indicatorModule().indicatorTypes()
                 .byNumber().isFalse()
-                .get();
+                .blockingGet();
         assertThat(indicatorTypes.size(), is(1));
     }
 
     @Test
     public void filter_by_factor() {
-        List<IndicatorType> indicatorTypes = d2.indicatorModule().indicatorTypes
+        List<IndicatorType> indicatorTypes = d2.indicatorModule().indicatorTypes()
                 .byFactor().eq(100)
-                .get();
+                .blockingGet();
         assertThat(indicatorTypes.size(), is(1));
     }
 }

@@ -30,17 +30,15 @@ package org.hisp.dhis.android.core.category.internal;
 
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo;
-import org.hisp.dhis.android.core.category.internal.CategoryCategoryComboLinkStore;
 import org.hisp.dhis.android.core.data.category.CategoryCategoryComboLinkSamples;
-import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
-import androidx.test.runner.AndroidJUnit4;
-
-@RunWith(AndroidJUnit4.class)
+@RunWith(D2JunitRunner.class)
 public class CategoryCategoryComboLinkStoreIntegrationShould
-        extends LinkModelStoreAbstractIntegrationShould<CategoryCategoryComboLink> {
+        extends LinkStoreAbstractIntegrationShould<CategoryCategoryComboLink> {
 
     public CategoryCategoryComboLinkStoreIntegrationShould() {
         super(CategoryCategoryComboLinkStore.create(DatabaseAdapterFactory.get()),

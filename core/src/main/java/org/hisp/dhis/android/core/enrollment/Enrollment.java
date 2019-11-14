@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.enrollment;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -38,31 +40,29 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStatusColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCoordinatesColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEventListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNoteListColumnAdapter;
+import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
+import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.Coordinates;
-import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.data.database.CoordinatesColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DataDeleteColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbEnrollmentStatusColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreEventListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreNoteListColumnAdapter;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
-import org.hisp.dhis.android.core.enrollment.note.Note;
+import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.event.Event;
 
 import java.util.Date;
 import java.util.List;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Enrollment.Builder.class)
-public abstract class Enrollment extends BaseDataModel implements ObjectWithDeleteInterface, ObjectWithUidInterface {
+public abstract class Enrollment extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Override
-    @Nullable
     @JsonProperty(EnrollmentFields.UID)
     public abstract String uid();
 
@@ -78,11 +78,13 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithDele
 
     @Nullable
     @JsonIgnore()
-    public abstract String createdAtClient();
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date createdAtClient();
 
     @Nullable
     @JsonIgnore()
-    public abstract String lastUpdatedAtClient();
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date lastUpdatedAtClient();
 
     @Nullable
     @JsonProperty(EnrollmentFields.ORGANISATION_UNIT)
@@ -103,33 +105,37 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithDele
     public abstract Date incidentDate();
 
     @Nullable
-    @JsonProperty(EnrollmentFields.FOLLOW_UP)
-    @ColumnName(EnrollmentFields.FOLLOW_UP)
+    @JsonProperty(EnrollmentTableInfo.Columns.FOLLOW_UP)
+    @ColumnName(EnrollmentTableInfo.Columns.FOLLOW_UP)
     public abstract Boolean followUp();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DbEnrollmentStatusColumnAdapter.class)
+    @ColumnAdapter(EnrollmentStatusColumnAdapter.class)
     public abstract EnrollmentStatus status();
 
     @Nullable
     @JsonIgnore()
     public abstract String trackedEntityInstance();
 
+    /**
+     * @deprecated since 2.30, replaced by {@link #geometry()}
+     */
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(CoordinatesColumnAdapter.class)
-    public abstract Coordinates coordinate();
+    @Deprecated
+    @ColumnAdapter(IgnoreCoordinatesColumnAdapter.class)
+    abstract Coordinates coordinate();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DataDeleteColumnAdapter.class)
-    public abstract Boolean deleted();
+    @ColumnAdapter(DbGeometryColumnAdapter.class)
+    public abstract Geometry geometry();
 
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreEventListColumnAdapter.class)
-    public abstract List<Event> events();
+    abstract List<Event> events();
 
     @Nullable
     @JsonProperty()
@@ -148,7 +154,7 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithDele
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseDataModel.Builder<Builder> {
+    public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         @JsonProperty(EnrollmentFields.UID)
@@ -158,9 +164,9 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithDele
 
         public abstract Builder lastUpdated(Date lastUpdated);
 
-        public abstract Builder createdAtClient(String createdAtClient);
+        public abstract Builder createdAtClient(Date createdAtClient);
 
-        public abstract Builder lastUpdatedAtClient(String lastUpdatedAtClient);
+        public abstract Builder lastUpdatedAtClient(Date lastUpdatedAtClient);
 
         @JsonProperty(EnrollmentFields.ORGANISATION_UNIT)
         public abstract Builder organisationUnit(String organisationUnit);
@@ -171,21 +177,38 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithDele
 
         public abstract Builder incidentDate(Date incidentDate);
 
-        @JsonProperty(EnrollmentFields.FOLLOW_UP)
+        @JsonProperty(EnrollmentTableInfo.Columns.FOLLOW_UP)
         public abstract Builder followUp(Boolean followUp);
 
         public abstract Builder status(EnrollmentStatus status);
 
         public abstract Builder trackedEntityInstance(String trackedEntityInstance);
 
-        public abstract Builder coordinate(Coordinates coordinate);
+        /**
+         * @deprecated since 2.30, replaced by {@link #geometry(Geometry geometry)}
+         */
+        abstract Builder coordinate(Coordinates coordinate);
 
-        public abstract Builder deleted(Boolean deleted);
+        public abstract Builder geometry(Geometry geometry);
 
-        public abstract Builder events(List<Event> events);
+        abstract Builder events(List<Event> events);
 
         public abstract Builder notes(List<Note> notes);
 
-        public abstract Enrollment build();
+        abstract Enrollment autoBuild();
+
+        // Auxiliary fields to access values
+        abstract Coordinates coordinate();
+        abstract Geometry geometry();
+        public Enrollment build() {
+            if (geometry() == null) {
+                if (coordinate() != null) {
+                    geometry(CoordinateHelper.getGeometryFromCoordinates(coordinate()));
+                }
+            } else {
+                coordinate(CoordinateHelper.getCoordinatesFromGeometry(geometry()));
+            }
+            return autoBuild();
+        }
     }
 }

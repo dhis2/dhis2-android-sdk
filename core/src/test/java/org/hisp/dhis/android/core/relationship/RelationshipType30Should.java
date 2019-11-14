@@ -58,11 +58,16 @@ public class RelationshipType30Should extends BaseObjectShould implements Object
                 BaseIdentifiableObject.DATE_FORMAT.parse("2014-04-14T13:53:20.166"));
         assertThat(relationshipType.aIsToB()).isNull();
         assertThat(relationshipType.bIsToA()).isNull();
+        assertThat(relationshipType.toFromName()).isNull();
+        assertThat(relationshipType.fromToName()).isNull();
         assertThat(relationshipType.fromConstraint()).isNotNull();
         assertThat(relationshipType.fromConstraint().relationshipEntity()).isEqualTo(RelationshipEntityType.TRACKED_ENTITY_INSTANCE);
         assertThat(relationshipType.fromConstraint().trackedEntityType().uid()).isEqualTo("nEenWmSyUEp");
         assertThat(relationshipType.toConstraint()).isNotNull();
         assertThat(relationshipType.toConstraint().relationshipEntity()).isEqualTo(RelationshipEntityType.PROGRAM_INSTANCE);
         assertThat(relationshipType.toConstraint().program().uid()).isEqualTo("WSGAb5XwJ3Y");
+        assertThat(relationshipType.bidirectional()).isFalse();
+        assertThat(relationshipType.access().data().read()).isTrue();
+        assertThat(relationshipType.access().data().write()).isFalse();
     }
 }

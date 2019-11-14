@@ -30,6 +30,20 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeCallFactory;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeEntityDIModule;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueEndpointCallFactory;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueEntityDIModule;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueQuery;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeService;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueEntityDIModule;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueEntityDIModule;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceEntityDIModule;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityModuleImpl;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttributeEntityDIModule;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeCallFactory;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeEntityDIModule;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeService;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryEntityDIModule;
 
 import dagger.Module;
@@ -63,9 +77,27 @@ public final class TrackedEntityPackageDIModule {
 
     @Provides
     @Reusable
+    UidsCallFactory<TrackedEntityAttribute> trackedEntityAttributeCallFactory(TrackedEntityAttributeCallFactory impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    TrackedEntityAttributeService trackedEntityAttributeService(Retrofit retrofit) {
+        return retrofit.create(TrackedEntityAttributeService.class);
+    }
+
+    @Provides
+    @Reusable
     QueryCallFactory<TrackedEntityAttributeReservedValue,
             TrackedEntityAttributeReservedValueQuery> dataValueCallFactory(
             TrackedEntityAttributeReservedValueEndpointCallFactory impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    TrackedEntityModule module(TrackedEntityModuleImpl impl) {
         return impl;
     }
 }

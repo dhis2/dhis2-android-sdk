@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.api.authentication.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.user.AuthenticatedUser;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +48,6 @@ import okhttp3.mockwebserver.RecordedRequest;
 
 import static okhttp3.Credentials.basic;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.hisp.dhis.android.core.utils.UserUtils.base64;
 import static org.mockito.Mockito.when;
 
 // ToDo: Solve problem with INFO logs from MockWebServer being interpreted as errors in gradle
@@ -56,7 +55,7 @@ import static org.mockito.Mockito.when;
 public class BasicAuthenticatorShould {
 
     @Mock
-    private ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
+    private CredentialsSecureStore credentialsSecureStore;
 
     private MockWebServer mockWebServer;
     private OkHttpClient okHttpClient;
@@ -70,19 +69,15 @@ public class BasicAuthenticatorShould {
         mockWebServer.start();
 
         okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(new BasicAuthenticator(authenticatedUserStore))
+                .addInterceptor(new BasicAuthenticator(credentialsSecureStore))
                 .build();
     }
 
     @Test
     public void return_test_and_user_when_server_take_request() throws IOException, InterruptedException {
-        AuthenticatedUser authenticatedUser =
-                AuthenticatedUser.builder()
-                        .user("test_user")
-                        .credentials(base64("test_user", "test_password"))
-                        .build();
+        Credentials credentials = Credentials.create("test_user", "test_password");
 
-        when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
+        when(credentialsSecureStore.getCredentials()).thenReturn(credentials);
 
         okHttpClient.newCall(
                 new Request.Builder()
@@ -97,7 +92,7 @@ public class BasicAuthenticatorShould {
 
     @Test
     public void return_null_when_server_take_request_with_authenticate_with_empty_list() throws IOException, InterruptedException {
-        when(authenticatedUserStore.selectFirst()).thenReturn(null);
+        when(credentialsSecureStore.getCredentials()).thenReturn(null);
 
         okHttpClient.newCall(
                 new Request.Builder()

@@ -54,7 +54,7 @@ public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockInte
         if (isNewInstance) {
             dhis2MockServer.setRequestDispatcher();
 
-            login();
+            freshLogin();
             downloadMetadata();
             downloadTrackedEntityInstances();
             downloadEvents();
@@ -69,20 +69,26 @@ public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockInte
         dhis2MockServer.shutdown();
     }
 
-    private static void login() throws Exception {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+    private static void freshLogin() {
+        try {
+            d2.userModule().logOut().blockingAwait();
+        } catch (RuntimeException e) {
+            // Do nothing
+        } finally {
+            d2.userModule().blockingLogIn("android", "Android123", dhis2MockServer.getBaseEndpoint());
+        }
     }
 
-    private static void downloadMetadata() throws Exception {
-        d2.syncMetaData().blockingSubscribe();
+    private static void downloadMetadata() {
+        d2.metadataModule().blockingDownload();
     }
 
     private static void downloadTrackedEntityInstances() {
-        d2.trackedEntityModule().downloadTrackedEntityInstances(2, false, false).subscribe();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(2).blockingDownload();
     }
 
-    private static void downloadEvents() throws Exception {
-        d2.eventModule().downloadSingleEvents(2, false, false).call();
+    private static void downloadEvents() {
+        d2.eventModule().eventDownloader().limit(2).blockingDownload();
     }
 
     private static void downloadAggregatedData() {
@@ -93,8 +99,6 @@ public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockInte
         ObjectStore<D2Error> d2ErrorStore = D2ErrorStore.create(databaseAdapter);
         d2ErrorStore.insert(D2ErrorSamples.get());
         d2ErrorStore.insert(D2Error.builder()
-                .resourceType("DataElement")
-                .uid("uid")
                 .errorComponent(D2ErrorComponent.SDK)
                 .errorCode(D2ErrorCode.DIFFERENT_SERVER_OFFLINE)
                 .url("http://dhis2.org/api/programs/uid")

@@ -27,8 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.db.querybuilders.internal;
 
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WhereClauseBuilder {
@@ -94,13 +95,23 @@ public class WhereClauseBuilder {
     }
 
     public WhereClauseBuilder appendNotInKeyStringValues(String column, List<String> values) {
-        String valuesArray = Utils.commaAndSpaceSeparatedArrayValues(Utils.withSingleQuotationMarksArray(values));
+        String valuesArray = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
+                CollectionsHelper.withSingleQuotationMarksArray(values));
         return appendKeyValue(column, valuesArray, AND, NOT_IN, PARENTHESES_END);
     }
 
     public WhereClauseBuilder appendInKeyStringValues(String column, List<String> values) {
-        String valuesArray = Utils.commaAndSpaceSeparatedArrayValues(Utils.withSingleQuotationMarksArray(values));
+        String valuesArray = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
+                CollectionsHelper.withSingleQuotationMarksArray(values));
         return appendKeyValue(column, valuesArray, AND, IN, PARENTHESES_END);
+    }
+
+    public <E extends Enum> WhereClauseBuilder appendInKeyEnumValues(String column, List<E> values) {
+        List<String> strValues = new ArrayList<>(values.size());
+        for (E e : values) {
+            strValues.add(e.name());
+        }
+        return appendInKeyStringValues(column, strValues);
     }
 
     public WhereClauseBuilder appendIsNullValue(String column) {

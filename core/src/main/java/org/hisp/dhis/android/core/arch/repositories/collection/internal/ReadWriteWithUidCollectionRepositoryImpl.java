@@ -29,15 +29,15 @@ package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
 import android.database.sqlite.SQLiteConstraintException;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -45,15 +45,17 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.util.Map;
 
+import io.reactivex.Single;
+
 public abstract class ReadWriteWithUidCollectionRepositoryImpl
-        <M extends Model & ObjectWithUidInterface, P, R extends ReadOnlyCollectionRepository<M>>
+        <M extends CoreObject & ObjectWithUidInterface, P, R extends ReadOnlyCollectionRepository<M>>
         extends ReadOnlyCollectionRepositoryImpl<M, R>
         implements ReadWriteWithUidCollectionRepository<M, P> {
 
-    protected final IdentifiableObjectStore<M> store;
+    protected final ObjectStore<M> store;
     protected final Transformer<P, M> transformer;
 
-    public ReadWriteWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
+    public ReadWriteWithUidCollectionRepositoryImpl(ObjectStore<M> store,
                                                     Map<String, ChildrenAppender<M>> childrenAppenders,
                                                     RepositoryScope scope,
                                                     Transformer<P, M> transformer,
@@ -63,14 +65,20 @@ public abstract class ReadWriteWithUidCollectionRepositoryImpl
         this.transformer = transformer;
     }
 
-    public abstract ReadWriteObjectRepository<M> uid(String uid);
+    public abstract ReadOnlyObjectRepository<M> uid(String uid);
+
+    @Override
+    public Single<String> add(P projection) {
+        return Single.fromCallable(() -> blockingAdd(projection));
+    }
 
     @SuppressWarnings({"PMD.PreserveStackTrace"})
     @Override
-    public String add(P projection) throws D2Error {
+    public String blockingAdd(P projection) throws D2Error {
         M object = transformer.transform(projection);
         try {
             store.insert(object);
+            propagateState(object);
             return object.uid();
         } catch (SQLiteConstraintException e) {
             throw D2Error
@@ -89,5 +97,10 @@ public abstract class ReadWriteWithUidCollectionRepositoryImpl
                     .originalException(e)
                     .build();
         }
+    }
+
+    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+    protected void propagateState(M m) {
+        // Method is empty because is the default action.
     }
 }

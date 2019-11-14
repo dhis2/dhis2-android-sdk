@@ -28,14 +28,12 @@
 
 package org.hisp.dhis.android.testapp.user;
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.user.UserInternalAccessor;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -45,24 +43,16 @@ public class UserObjectRepositoryMockIntegrationShould extends BaseMockIntegrati
 
     @Test
     public void find_user() {
-        User user = d2.userModule().user.get();
+        User user = d2.userModule().user().blockingGet();
         assertThat(user.uid(), is("DXyJmlo9rge"));
         assertThat(user.firstName(), is("John"));
     }
 
     @Test
     public void return_user_credentials_as_children() {
-        User user = d2.userModule().user.withUserCredentials().get();
-        assertThat(user.userCredentials().user().uid(), is(user.uid()));
-        assertThat(user.userCredentials().username(), is("android"));
-        assertThat(user.userCredentials().name(), is("John Barnes"));
-    }
-
-    @Test
-    public void return_organisation_units_as_children() {
-        User user = d2.userModule().user.withOrganisationUnits().get();
-        List<OrganisationUnit> organisationUnits = user.organisationUnits();
-        assertThat(organisationUnits.size(), is(1));
-        assertThat(organisationUnits.get(0).name(), is("Ngelehun CHC"));
+        User user = d2.userModule().user().withUserCredentials().blockingGet();
+        assertThat(UserInternalAccessor.accessUserCredentials(user).user().uid(), is(user.uid()));
+        assertThat(UserInternalAccessor.accessUserCredentials(user).username(), is("android"));
+        assertThat(UserInternalAccessor.accessUserCredentials(user).name(), is("John Barnes"));
     }
 }

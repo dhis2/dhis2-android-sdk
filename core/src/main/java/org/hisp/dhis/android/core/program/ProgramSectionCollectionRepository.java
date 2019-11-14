@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.program.ProgramSectionTableInfo.Columns;
 import org.hisp.dhis.android.core.program.internal.ProgramSectionFields;
 
 import java.util.Map;
@@ -56,23 +57,27 @@ public final class ProgramSectionCollectionRepository
 
 
     public StringFilterConnector<ProgramSectionCollectionRepository> byDescription() {
-        return cf.string(ProgramSectionFields.DESCRIPTION);
+        return cf.string(Columns.DESCRIPTION);
     }
 
     public StringFilterConnector<ProgramSectionCollectionRepository> byProgramUid() {
-        return cf.string(ProgramSectionFields.PROGRAM);
+        return cf.string(Columns.PROGRAM);
     }
 
     public IntegerFilterConnector<ProgramSectionCollectionRepository> bySortOrder() {
-        return cf.integer(ProgramSectionFields.SORT_ORDER);
+        return cf.integer(Columns.SORT_ORDER);
     }
 
     public StringFilterConnector<ProgramSectionCollectionRepository> byFormName() {
-        return cf.string(ProgramSectionFields.FORM_NAME);
+        return cf.string(Columns.FORM_NAME);
     }
 
-    public ProgramSectionCollectionRepository withStyle() {
-        return cf.withChild(ProgramSectionFields.STYLE);
+    public StringFilterConnector<ProgramSectionCollectionRepository> byColor() {
+        return cf.string(Columns.COLOR);
+    }
+
+    public StringFilterConnector<ProgramSectionCollectionRepository> byIcon() {
+        return cf.string(Columns.ICON);
     }
 
     public ProgramSectionCollectionRepository withAttributes() {

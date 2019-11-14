@@ -29,12 +29,11 @@
 package org.hisp.dhis.android.core.enrollment.internal;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 
 import java.util.Date;
 
@@ -50,12 +49,13 @@ final class EnrollmentProjectionTransformer implements Transformer<EnrollmentCre
                 .state(State.TO_POST)
                 .created(creationDate)
                 .lastUpdated(creationDate)
-                .createdAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
-                .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(creationDate))
+                .createdAtClient(creationDate)
+                .lastUpdatedAtClient(creationDate)
                 .organisationUnit(projection.organisationUnit())
                 .program(projection.program())
                 .trackedEntityInstance(projection.trackedEntityInstance())
                 .status(EnrollmentStatus.ACTIVE)
+                .deleted(false)
                 .build();
     }
 }

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.testapp.trackedentity;
 
+import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore;
@@ -52,9 +54,9 @@ public class TrackedEntityInstanceObjectRepositoryMockIntegrationShould extends 
         TrackedEntityInstanceObjectRepository repository = objectRepository();
 
         repository.setOrganisationUnitUid(orgUnitUid);
-        assertThat(repository.get().organisationUnit(), is(orgUnitUid));
+        assertThat(repository.blockingGet().organisationUnit(), is(orgUnitUid));
 
-        repository.delete();
+        repository.blockingDelete();
         OrganisationUnitStore.create(databaseAdapter).delete(orgUnitUid);
     }
 
@@ -67,25 +69,28 @@ public class TrackedEntityInstanceObjectRepositoryMockIntegrationShould extends 
         try {
             repository.setOrganisationUnitUid(orgUnitUid);
         } finally {
-            repository.delete();
+            repository.blockingDelete();
         }
     }
 
     @Test
-    public void update_coordinates() throws D2Error {
-        String coordinates = "[11, 10]";
+    public void update_geometry() throws D2Error {
+        Geometry geometry = Geometry.builder()
+                .type(FeatureType.POINT)
+                .coordinates("[11, 10]")
+                .build();
 
         TrackedEntityInstanceObjectRepository repository = objectRepository();
 
-        repository.setCoordinates(coordinates);
-        assertThat(repository.get().coordinates(), is(coordinates));
+        repository.setGeometry(geometry);
+        assertThat(repository.blockingGet().geometry(), is(geometry));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     private TrackedEntityInstanceObjectRepository objectRepository() throws D2Error {
-        String teiUid = d2.trackedEntityModule().trackedEntityInstances.add(
+        String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(
                 TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp"));
-        return d2.trackedEntityModule().trackedEntityInstances.uid(teiUid);
+        return d2.trackedEntityModule().trackedEntityInstances().uid(teiUid);
     }
 }

@@ -27,21 +27,18 @@
  */
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
+import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
-import org.hisp.dhis.android.core.program.ProgramStageTableInfo;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.Collection;
 
@@ -53,69 +50,46 @@ import dagger.Reusable;
 final class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage> {
     private final HandlerWithTransformer<ProgramStageSection> programStageSectionHandler;
     private final Handler<ProgramStageDataElement> programStageDataElementHandler;
-    private final ObjectStyleHandler styleHandler;
     private final OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner;
     private final OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner;
-    private final CollectionCleaner<ProgramStage> collectionCleaner;
-    private final DHISVersionManager versionManager;
+    private final SubCollectionCleaner<ProgramStage> programStageCleaner;
 
     @Inject
     ProgramStageHandler(IdentifiableObjectStore<ProgramStage> programStageStore,
                         HandlerWithTransformer<ProgramStageSection> programStageSectionHandler,
                         Handler<ProgramStageDataElement> programStageDataElementHandler,
-                        ObjectStyleHandler styleHandler,
                         OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner,
                         OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner,
-                        CollectionCleaner<ProgramStage> collectionCleaner,
-                        DHISVersionManager versionManager) {
+                        SubCollectionCleaner<ProgramStage> programStageCleaner) {
         super(programStageStore);
         this.programStageSectionHandler = programStageSectionHandler;
         this.programStageDataElementHandler = programStageDataElementHandler;
-        this.styleHandler = styleHandler;
         this.programStageDataElementCleaner = programStageDataElementCleaner;
         this.programStageSectionCleaner = programStageSectionCleaner;
-        this.collectionCleaner = collectionCleaner;
-        this.versionManager = versionManager;
-    }
-
-    @Override
-    protected ProgramStage beforeObjectHandled(ProgramStage programStage) {
-        ProgramStage adaptedProgramStage;
-        ProgramStage.Builder builder = programStage.toBuilder();
-        if (versionManager.is2_29()) {
-            adaptedProgramStage = programStage.captureCoordinates() ? builder.featureType(FeatureType.POINT).build() :
-                    builder.featureType(FeatureType.NONE).build();
-        } else {
-            if (programStage.featureType() == null) {
-                adaptedProgramStage = builder.captureCoordinates(false).featureType(FeatureType.NONE).build();
-            } else {
-                adaptedProgramStage = builder.captureCoordinates(
-                        programStage.featureType() != FeatureType.NONE).build();
-            }
-        }
-        return adaptedProgramStage;
+        this.programStageCleaner = programStageCleaner;
     }
 
     @Override
     protected void afterObjectHandled(final ProgramStage programStage, HandleAction action) {
 
-        programStageDataElementHandler.handleMany(programStage.programStageDataElements());
+        programStageDataElementHandler.handleMany(
+                ProgramStageInternalAccessor.accessProgramStageDataElements(programStage));
 
-        programStageSectionHandler.handleMany(programStage.programStageSections(),
+        programStageSectionHandler.handleMany(ProgramStageInternalAccessor.accessProgramStageSections(programStage),
                 programStageSection -> programStageSection.toBuilder()
                         .programStage(ObjectWithUid.create(programStage.uid()))
                         .build());
 
-        styleHandler.handle(programStage.style(), programStage.uid(), ProgramStageTableInfo.TABLE_INFO.name());
-
         if (action == HandleAction.Update) {
-            programStageDataElementCleaner.deleteOrphan(programStage, programStage.programStageDataElements());
-            programStageSectionCleaner.deleteOrphan(programStage, programStage.programStageSections());
+            programStageDataElementCleaner.deleteOrphan(programStage,
+                    ProgramStageInternalAccessor.accessProgramStageDataElements(programStage));
+            programStageSectionCleaner.deleteOrphan(programStage,
+                    ProgramStageInternalAccessor.accessProgramStageSections(programStage));
         }
     }
 
     @Override
     protected void afterCollectionHandled(Collection<ProgramStage> programStages) {
-        collectionCleaner.deleteNotPresent(programStages);
+        programStageCleaner.deleteNotPresent(programStages);
     }
 }

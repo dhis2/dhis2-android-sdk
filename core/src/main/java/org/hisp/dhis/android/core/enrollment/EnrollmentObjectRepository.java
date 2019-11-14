@@ -29,11 +29,9 @@
 package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithUidDataObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
@@ -44,11 +42,9 @@ import java.util.Date;
 import java.util.Map;
 
 public final class EnrollmentObjectRepository
-        extends ReadWriteWithUidDataObjectRepositoryImpl<Enrollment, EnrollmentObjectRepository>
-        implements ReadWriteObjectRepository<Enrollment> {
+        extends ReadWriteWithUidDataObjectRepositoryImpl<Enrollment, EnrollmentObjectRepository> {
 
     private final DataStatePropagator dataStatePropagator;
-    private Enrollment enrollment;
 
     EnrollmentObjectRepository(final EnrollmentStore store,
                                final String uid,
@@ -80,26 +76,24 @@ public final class EnrollmentObjectRepository
         return updateObject(updateBuilder().status(enrollmentStatus).build());
     }
 
-    public Unit setCoordinate(Coordinates coordinate) throws D2Error {
-        return updateObject(updateBuilder().coordinate(coordinate).build());
+    public Unit setGeometry(Geometry geometry) throws D2Error {
+        return updateObject(updateBuilder().geometry(geometry).build());
     }
 
     private Enrollment.Builder updateBuilder() {
-        enrollment = getWithoutChildren();
+        Enrollment enrollment = getWithoutChildren();
         Date updateDate = new Date();
         State state = enrollment.state();
-        if (state != State.TO_POST && state != State.TO_DELETE) {
-            state = State.TO_UPDATE;
-        }
+        state = state == State.TO_POST ? state : State.TO_UPDATE;
 
         return enrollment.toBuilder()
                 .state(state)
                 .lastUpdated(updateDate)
-                .lastUpdatedAtClient(BaseIdentifiableObject.dateToDateStr(updateDate));
+                .lastUpdatedAtClient(updateDate);
     }
 
     @Override
-    protected void propagateState() {
+    protected void propagateState(Enrollment enrollment) {
         dataStatePropagator.propagateEnrollmentUpdate(enrollment);
     }
 }

@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -37,28 +39,27 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.data.database.DbRelationshipConstraintTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.RelationshipItemEnrollmentColumnAdapter;
-import org.hisp.dhis.android.core.data.database.RelationshipItemEventColumnAdapter;
-import org.hisp.dhis.android.core.data.database.RelationshipItemTrackedEntityInstanceColumnAdapter;
-import org.hisp.dhis.android.core.data.database.RelationshipWithUidColumnAdapter;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemFields;
-
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RelationshipItemEnrollmentColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RelationshipItemEventColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RelationshipItemTrackedEntityInstanceColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.RelationshipConstraintTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo.Columns;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_RelationshipItem.Builder.class)
-public abstract class RelationshipItem implements Model {
+public abstract class RelationshipItem implements CoreObject {
 
     @Nullable
     @JsonIgnore()
-    @ColumnAdapter(RelationshipWithUidColumnAdapter.class)
-    public abstract Relationship relationship();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid relationship();
 
     @Nullable
     @JsonIgnore()
-    @ColumnAdapter(DbRelationshipConstraintTypeColumnAdapter.class)
+    @ColumnAdapter(RelationshipConstraintTypeColumnAdapter.class)
     public abstract RelationshipConstraintType relationshipItemType();
 
     @Nullable
@@ -100,11 +101,11 @@ public abstract class RelationshipItem implements Model {
 
     public String elementType() {
         if (hasTrackedEntityInstance()) {
-            return RelationshipItemFields.TRACKED_ENTITY_INSTANCE;
+            return Columns.TRACKED_ENTITY_INSTANCE;
         } else if (hasEnrollment()) {
-            return RelationshipItemFields.ENROLLMENT;
+            return Columns.ENROLLMENT;
         } else {
-            return RelationshipItemFields.EVENT;
+            return Columns.EVENT;
         }
     }
 
@@ -130,7 +131,7 @@ public abstract class RelationshipItem implements Model {
 
         public abstract Builder event(RelationshipItemEvent event);
 
-        public abstract Builder relationship(Relationship relationship);
+        public abstract Builder relationship(ObjectWithUid relationship);
 
         public abstract Builder relationshipItemType(RelationshipConstraintType relationshipItemType);
 

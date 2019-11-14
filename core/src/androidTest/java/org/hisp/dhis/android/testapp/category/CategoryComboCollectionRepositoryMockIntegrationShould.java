@@ -30,6 +30,7 @@ package org.hisp.dhis.android.testapp.category;
 
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboCollectionRepository;
+import org.hisp.dhis.android.core.category.CategoryComboInternalAccessor;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -55,18 +56,18 @@ public class CategoryComboCollectionRepositoryMockIntegrationShould extends Base
 
     @Test
     public void find_objects_with_equal_name() {
-        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
                 .byName().eq("Births");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
     }
 
     @Test
     public void find_objects_with_children_with_equal_name() {
-        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
                 .byName().eq("Births");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.withAllChildren().get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.withCategories().blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
         assertThat(combos.get(0).categories().isEmpty(), is(false));
@@ -74,61 +75,61 @@ public class CategoryComboCollectionRepositoryMockIntegrationShould extends Base
 
     @Test
     public void find_objects_with_equal_code() {
-        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
                 .byCode().eq("BIRTHS");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
     }
 
     @Test
     public void find_objects_with_equal_uid() {
-        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
                 .byUid().eq("m2jTvAj5kkm");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
     }
 
     @Test
     public void find_objects_with_equal_display_name() {
-        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
-                .byDisplayName().eq("Births Display");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
+                .byDisplayName().eq("Display name with' 'single quo'tes'");
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
     }
 
     @Test
     public void do_not_find_objects_with_wrong_equal_name() {
-        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
                 .byName().eq("Deaths");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.isEmpty(), is(true));
     }
 
     @Test
     public void do_not_find_objects_with_wrong_equal_code() {
-        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
                 .byCode().eq("DEATHS");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.isEmpty(), is(true));
     }
 
     @Test
     public void find_objects_with_like_name() {
-        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
-                .byName().like("%bi%");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
+                .byName().like("bi");
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
     }
 
     @Test
     public void find_objects_with_like_code() {
-        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
-                .byCode().like("%bi%");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
+                .byCode().like("bi");
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
     }
@@ -136,18 +137,18 @@ public class CategoryComboCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void find_objects_with_equal_created() throws ParseException {
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.203");
-        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
                 .byCreated().eq(created);
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(2));
     }
 
     @Test
     public void find_objects_with_equal_last_updated() throws ParseException {
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse("2016-04-18T16:04:34.745");
-        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
                 .byLastUpdated().eq(created);
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
     }
@@ -155,18 +156,18 @@ public class CategoryComboCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void find_objects_with_last_updated_before_date_before_both() throws ParseException {
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse(BEFORE_DATE);
-        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
                 .byLastUpdated().before(created);
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(0));
     }
 
     @Test
     public void find_objects_with_last_updated_before_date_in_between() throws ParseException {
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse(IN_BETWEEN_DATE);
-        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
                 .byLastUpdated().before(created);
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(DEFAULT_UID));
     }
@@ -174,27 +175,27 @@ public class CategoryComboCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void find_objects_with_last_updated_before_date_after_both() throws ParseException {
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse(AFTER_DATE);
-        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
                 .byLastUpdated().before(created);
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(2));
     }
 
     @Test
     public void find_objects_with_last_updated_after_date_before_both() throws ParseException {
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse(BEFORE_DATE);
-        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
                 .byLastUpdated().after(created);
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(2));
     }
 
     @Test
     public void find_objects_with_last_updated_after_date_in_between() throws ParseException {
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse(IN_BETWEEN_DATE);
-        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
                 .byLastUpdated().after(created);
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
     }
@@ -202,55 +203,55 @@ public class CategoryComboCollectionRepositoryMockIntegrationShould extends Base
     @Test
     public void find_objects_with_last_updated_after_date_after_both() throws ParseException {
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse(AFTER_DATE);
-        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
                 .byLastUpdated().after(created);
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(0));
     }
 
     @Test
     public void combine_date_and_string_filters() throws ParseException {
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse(BEFORE_DATE);
-        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
                 .byLastUpdated().after(created)
-                .byName().like("%t%");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+                .byName().like("t");
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(2));
     }
 
     @Test
     public void find_non_default_category_combo() {
-        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
                 .byIsDefault().isFalse();
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is("m2jTvAj5kkm"));
     }
 
     @Test
     public void find_default_category_combo() {
-        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
                 .byIsDefault().isTrue();
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is("p0KPaWEg3cf"));
     }
 
     @Test
     public void include_categories_as_children() {
-        CategoryCombo categoryCombo = d2.categoryModule().categoryCombos
+        CategoryCombo categoryCombo = d2.categoryModule().categoryCombos()
                 .withCategories()
                 .uid("m2jTvAj5kkm")
-                .get();
+                .blockingGet();
         assertThat(categoryCombo.categories().size(), is(2));
     }
 
     @Test
     public void include_category_option_combos_as_children() {
-        CategoryCombo categoryCombo = d2.categoryModule().categoryCombos
+        CategoryCombo categoryCombo = d2.categoryModule().categoryCombos()
                 .withCategoryOptionCombos()
                 .uid("m2jTvAj5kkm")
-                .get();
-        assertThat(categoryCombo.categoryOptionCombos().size(), is(2));
+                .blockingGet();
+        assertThat(CategoryComboInternalAccessor.accessCategoryOptionCombos(categoryCombo).size(), is(2));
     }
 }

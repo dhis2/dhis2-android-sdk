@@ -28,19 +28,20 @@
 
 package org.hisp.dhis.android.core.datavalue.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo;
 
 import java.util.Collection;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns;
 
 @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
@@ -58,15 +59,16 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
         sqLiteBind(sqLiteStatement, 10, dataValue.comment());
         sqLiteBind(sqLiteStatement, 11, dataValue.followUp());
         sqLiteBind(sqLiteStatement, 12, dataValue.state());
+        sqLiteBind(sqLiteStatement, 13, dataValue.deleted());
     };
 
     private static final WhereStatementBinder<DataValue> WHERE_UPDATE_BINDER
             = (dataValue, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 13, dataValue.dataElement());
-        sqLiteBind(sqLiteStatement, 14, dataValue.period());
-        sqLiteBind(sqLiteStatement, 15, dataValue.organisationUnit());
-        sqLiteBind(sqLiteStatement, 16, dataValue.categoryOptionCombo());
-        sqLiteBind(sqLiteStatement, 17, dataValue.attributeOptionCombo());
+        sqLiteBind(sqLiteStatement, 14, dataValue.dataElement());
+        sqLiteBind(sqLiteStatement, 15, dataValue.period());
+        sqLiteBind(sqLiteStatement, 16, dataValue.organisationUnit());
+        sqLiteBind(sqLiteStatement, 17, dataValue.categoryOptionCombo());
+        sqLiteBind(sqLiteStatement, 18, dataValue.attributeOptionCombo());
     };
 
     private static final WhereStatementBinder<DataValue> WHERE_DELETE_BINDER
@@ -93,7 +95,7 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
 
     Collection<DataValue> getDataValuesWithState(State state) {
         String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(DataValue.Columns.STATE, state.name()).build();
+                .appendKeyStringValue(Columns.STATE, state.name()).build();
         return selectWhere(whereClause);
     }
 
@@ -110,11 +112,11 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
 
     public boolean exists(DataValue dataValue) {
         String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(DataValueFields.DATA_ELEMENT, dataValue.dataElement())
-                .appendKeyStringValue(DataValueFields.PERIOD, dataValue.period())
-                .appendKeyStringValue(DataValueTableInfo.ORGANISATION_UNIT, dataValue.organisationUnit())
-                .appendKeyStringValue(DataValueFields.CATEGORY_OPTION_COMBO, dataValue.categoryOptionCombo())
-                .appendKeyStringValue(DataValueFields.ATTRIBUTE_OPTION_COMBO, dataValue.attributeOptionCombo())
+                .appendKeyStringValue(Columns.DATA_ELEMENT, dataValue.dataElement())
+                .appendKeyStringValue(Columns.PERIOD, dataValue.period())
+                .appendKeyStringValue(Columns.ORGANISATION_UNIT, dataValue.organisationUnit())
+                .appendKeyStringValue(Columns.CATEGORY_OPTION_COMBO, dataValue.categoryOptionCombo())
+                .appendKeyStringValue(Columns.ATTRIBUTE_OPTION_COMBO, dataValue.attributeOptionCombo())
                 .build();
         return selectWhere(whereClause).size() > 0;
     }

@@ -44,21 +44,21 @@ public class OrganisationUnitGroupCollectionRepositoryMockIntegrationShould exte
 
     @Test
     public void find_all() {
-        List<OrganisationUnitGroup> organisationUnitGroups = d2.organisationUnitModule().organisationUnitGroups.get();
+        List<OrganisationUnitGroup> organisationUnitGroups = d2.organisationUnitModule().organisationUnitGroups().blockingGet();
         assertThat(organisationUnitGroups.size(), is(1));
     }
 
     @Test
     public void filter_by_short_name() {
-        List<OrganisationUnitGroup> organisationUnitGroups = d2.organisationUnitModule().organisationUnitGroups
-                .byShortName().eq("CHC short").get();
+        List<OrganisationUnitGroup> organisationUnitGroups = d2.organisationUnitModule().organisationUnitGroups()
+                .byShortName().eq("CHC short").blockingGet();
         assertThat(organisationUnitGroups.size(), is(1));
     }
 
     @Test
     public void filter_by_display_short_name() {
-        List<OrganisationUnitGroup> organisationUnitGroups = d2.organisationUnitModule().organisationUnitGroups
-                .byDisplayShortName().eq("CHC display short").get();
+        List<OrganisationUnitGroup> organisationUnitGroups = d2.organisationUnitModule().organisationUnitGroups()
+                .byDisplayShortName().eq("CHC display short").blockingGet();
         assertThat(organisationUnitGroups.size(), is(1));
     }
 }

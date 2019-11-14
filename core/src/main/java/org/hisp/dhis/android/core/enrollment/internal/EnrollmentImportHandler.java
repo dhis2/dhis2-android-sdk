@@ -28,22 +28,25 @@
 
 package org.hisp.dhis.android.core.enrollment.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
-import org.hisp.dhis.android.core.enrollment.note.Note;
-import org.hisp.dhis.android.core.enrollment.note.NoteTableInfo;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.note.NoteTableInfo;
 import org.hisp.dhis.android.core.event.internal.EventImportHandler;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummaries;
 import org.hisp.dhis.android.core.imports.internal.ImportConflict;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,7 +54,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getState;
@@ -63,18 +65,21 @@ public class EnrollmentImportHandler {
     private final ObjectWithoutUidStore<Note> noteStore;
     private final EventImportHandler eventImportHandler;
     private final ObjectStore<TrackerImportConflict> trackerImportConflictStore;
+    private final DataStatePropagator dataStatePropagator;
 
     @Inject
     public EnrollmentImportHandler(@NonNull EnrollmentStore enrollmentStore,
                                    @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
                                    @NonNull ObjectWithoutUidStore<Note> noteStore,
                                    @NonNull EventImportHandler eventImportHandler,
-                                   @NonNull ObjectStore<TrackerImportConflict> trackerImportConflictStore) {
+                                   @NonNull ObjectStore<TrackerImportConflict> trackerImportConflictStore,
+                                   @NonNull DataStatePropagator dataStatePropagator) {
         this.enrollmentStore = enrollmentStore;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.noteStore = noteStore;
         this.eventImportHandler = eventImportHandler;
         this.trackerImportConflictStore = trackerImportConflictStore;
+        this.dataStatePropagator = dataStatePropagator;
     }
 
     public void handleEnrollmentImportSummary(List<EnrollmentImportSummary> enrollmentImportSummaries,
@@ -98,6 +103,7 @@ public class EnrollmentImportHandler {
                 handleAction = enrollmentStore.setStateOrDelete(enrollmentImportSummary.reference(), state);
                 if (state == State.ERROR || state == State.WARNING) {
                     parentState = parentState == State.ERROR ? State.ERROR : state;
+                    dataStatePropagator.resetUploadingEventStates(enrollmentImportSummary.reference());
                 }
 
                 deleteEnrollmentConflicts(enrollmentImportSummary.reference());
@@ -135,7 +141,7 @@ public class EnrollmentImportHandler {
 
     private void handleNoteImportSummary(String enrollmentUid, State state) {
         String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST)
+                .appendKeyStringValue(DataColumns.STATE, State.TO_POST)
                 .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build();
         List<Note> notes = noteStore.selectWhere(whereClause);
         for (Note note : notes) {

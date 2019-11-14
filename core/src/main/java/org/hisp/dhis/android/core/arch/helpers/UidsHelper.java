@@ -27,9 +27,8 @@
  */
 package org.hisp.dhis.android.core.arch.helpers;
 
-import org.hisp.dhis.android.core.common.IdentifiableObject;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,7 +42,7 @@ public final class UidsHelper {
 
     private UidsHelper() {}
 
-    public static <O extends IdentifiableObject> Set<String> getUids(Collection<O> objects) {
+    public static <O extends ObjectWithUidInterface> Set<String> getUids(Collection<O> objects) {
         return addUids(new HashSet<>(), objects);
     }
 
@@ -51,14 +50,14 @@ public final class UidsHelper {
         return object == null ? null : object.uid();
     }
 
-    public static <O extends IdentifiableObject> Set<String> addUids(Set<String> uids, Collection<O> objects) {
-        for (IdentifiableObject object: objects) {
+    public static <O extends ObjectWithUidInterface> Set<String> addUids(Set<String> uids, Collection<O> objects) {
+        for (ObjectWithUidInterface object: objects) {
             uids.add(object.uid());
         }
         return uids;
     }
 
-    public static <O extends ObjectWithUidInterface> List<String> getUidsList(List<O> objects) {
+    public static <O extends ObjectWithUidInterface> List<String> getUidsList(Collection<O> objects) {
         List<String> uids = new ArrayList<>(objects.size());
         for (O o: objects) {
             uids.add(o.uid());
@@ -93,6 +92,23 @@ public final class UidsHelper {
         return map;
     }
 
+    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
+    public static <O extends ObjectWithUidInterface> Map<String, List<O>> mapByParentUid(
+            Collection<O> objects, Transformer<O, String> parentExtractor) {
+
+        Map<String, List<O>> map = new HashMap<>();
+        for (O o : objects) {
+            String parentUid = parentExtractor.transform(o);
+            List<O> list = map.get(parentUid);
+            if (list == null) {
+                list = new ArrayList<>();
+            }
+            list.add(o);
+            map.put(parentUid, list);
+        }
+        return map;
+    }
+
     public static <O extends ObjectWithUidInterface> O findByUid(Collection<O> objects, String uid) {
         for (O o: objects) {
             if (uid.equals(o.uid())) {
@@ -104,6 +120,6 @@ public final class UidsHelper {
 
     public static <O extends ObjectWithUidInterface> String commaSeparatedUidsWithSingleQuotationMarks(
             Collection<O> objects) {
-        return Utils.commaAndSpaceSeparatedArrayValues(uidsArray(objects));
+        return CollectionsHelper.commaAndSpaceSeparatedArrayValues(uidsArray(objects));
     }
 }

@@ -28,9 +28,8 @@
 
 package org.hisp.dhis.android.core.data.program;
 
-import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.program.ProgramRule;
-import org.hisp.dhis.android.core.program.ProgramStage;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
@@ -44,8 +43,8 @@ public class ProgramRuleSamples {
                 .id(1L)
                 .priority(2)
                 .condition("condition")
-                .program(Program.builder().uid("program_uid").build())
-                .programStage(ProgramStage.builder().uid("program_stage_uid").build())
+                .program(ObjectWithUid.create("program_uid"))
+                .programStage(ObjectWithUid.create("program_stage_uid"))
                 .build();
     }
 }

@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.organisationunit;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class OrganisationUnitProgramLinkTableInfo {
 
@@ -50,14 +50,14 @@ public final class OrganisationUnitProgramLinkTableInfo {
     private OrganisationUnitProgramLinkTableInfo() {
     }
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
 
         public static final String PROGRAM = "program";
         public static final String ORGANISATION_UNIT = "organisationUnit";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(), PROGRAM, ORGANISATION_UNIT);
+            return CollectionsHelper.appendInNewArray(super.all(), PROGRAM, ORGANISATION_UNIT);
         }
 
         @Override

@@ -32,22 +32,20 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.option.OptionGroup;
+import org.hisp.dhis.android.core.option.OptionGroupTableInfo.Columns;
 
 public final class OptionGroupFields {
 
-    public final static String OPTION_SET = "optionSet";
     public final static String OPTIONS = "options";
 
     private static final FieldsHelper<OptionGroup> fh = new FieldsHelper<>();
 
     public static final Field<OptionGroup, String> uid = fh.uid();
 
-    static final Field<OptionGroup, String> lastUpdated = fh.lastUpdated();
-
     public static final Fields<OptionGroup> allFields = Fields.<OptionGroup>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.nestedFieldWithUid(OPTION_SET),
+                    fh.nestedFieldWithUid(Columns.OPTION_SET),
                     fh.nestedFieldWithUid(OPTIONS)
             ).build();
 

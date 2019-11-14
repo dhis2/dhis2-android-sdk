@@ -27,19 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataelement;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class DataElementModule {
-
-    public final DataElementCollectionRepository dataElements;
-
-    @Inject
-    DataElementModule(DataElementCollectionRepository dataElementsRepository) {
-        this.dataElements = dataElementsRepository;
-    }
+public interface DataElementModule {
+    DataElementCollectionRepository dataElements();
 }

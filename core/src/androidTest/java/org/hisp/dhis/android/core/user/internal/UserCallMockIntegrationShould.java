@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.user.internal;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.user.User;
@@ -58,11 +58,11 @@ public class UserCallMockIntegrationShould extends BaseMockIntegrationTestEmptyE
 
         userCall = objects.d2DIComponent.internalModules().user.userCall;
 
-        ContentValues program1 = CreateProgramUtils.create(1L, "eBAyeGv0exc", null, null, null);
-        ContentValues program2 = CreateProgramUtils.create(2L, "ur1Edk5Oe2n", null, null, null);
-        ContentValues program3 = CreateProgramUtils.create(3L, "fDd25txQckK", null, null, null);
-        ContentValues program4 = CreateProgramUtils.create(4L, "WSGAb5XwJ3Y", null, null, null);
-        ContentValues program5 = CreateProgramUtils.create(5L, "IpHINAT79UW", null, null, null);
+        ContentValues program1 = CreateProgramUtils.create(1L, "eBAyeGv0exc", null, null);
+        ContentValues program2 = CreateProgramUtils.create(2L, "ur1Edk5Oe2n", null, null);
+        ContentValues program3 = CreateProgramUtils.create(3L, "fDd25txQckK", null, null);
+        ContentValues program4 = CreateProgramUtils.create(4L, "WSGAb5XwJ3Y", null, null);
+        ContentValues program5 = CreateProgramUtils.create(5L, "IpHINAT79UW", null, null);
 
         database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program1);
         database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program2);
@@ -109,12 +109,12 @@ public class UserCallMockIntegrationShould extends BaseMockIntegrationTestEmptyE
         userCall.call();
 
         String[] projection = {
-                BaseIdentifiableObjectModel.Columns.UID,
-                BaseIdentifiableObjectModel.Columns.CODE,
-                BaseIdentifiableObjectModel.Columns.NAME,
-                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
-                BaseIdentifiableObjectModel.Columns.CREATED,
-                BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
+                IdentifiableColumns.UID,
+                IdentifiableColumns.CODE,
+                IdentifiableColumns.NAME,
+                IdentifiableColumns.DISPLAY_NAME,
+                IdentifiableColumns.CREATED,
+                IdentifiableColumns.LAST_UPDATED,
                 UserCredentialsFields.USERNAME,
                 UserCredentialsTableInfo.Columns.USER,
         };

@@ -8,7 +8,7 @@
   "ignoreOverdueEvents": false,
   "skipOffline": false,
   "dataEntryMethod": false,
-  "captureCoordinates": false,
+  "captureCoordinates": true,
   "enrollmentDateLabel": "Date of first visit",
   "onlyEnrollOnce": false,
   "version": 11,
@@ -24,12 +24,14 @@
   "withoutRegistration": false,
   "displayFrontPageList": false,
   "programType": "WITH_REGISTRATION",
+  "accessLevel": "PROTECTED",
   "relationshipFromA": true,
   "relationshipText": "Add child",
   "displayIncidentDate": false,
   "expiryDays": 0,
   "minAttributesRequiredToSearch": 3,
   "maxTeiCountToReturn": 2,
+  "featureType": "MULTI_POLYGON",
   "categoryCombo": {
     "id": "p0KPaWEg3cf"
   },
@@ -75,14 +77,6 @@
     }
   ],
   "notificationTemplates": [],
-  "programStages": [
-    {
-      "id": "WZbXY0S00lP"
-    },
-    {
-      "id": "PUZaKR0Jh2k"
-    }
-  ],
   "programRules": [
     {
       "id": "tO1D62oB0tq"

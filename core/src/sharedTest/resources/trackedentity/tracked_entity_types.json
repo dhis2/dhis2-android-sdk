@@ -8,6 +8,7 @@
       "displayDescription": "Person",
       "displayName": "Person",
       "description": "Person",
+      "featureType": "NONE",
       "style": {
         "color": "#000",
         "icon": "my-tracked-entity-attribute-icon-name"
@@ -22,6 +23,14 @@
           },
           "trackedEntityAttribute": {
             "id": "cejWyOfXge6"
+          }
+        },
+        {
+          "displayInList": true,
+          "searchable": true,
+          "mandatory": false,
+          "trackedEntityType": {
+            "id": "nEenWmSyUEp"
           }
         }
       ]

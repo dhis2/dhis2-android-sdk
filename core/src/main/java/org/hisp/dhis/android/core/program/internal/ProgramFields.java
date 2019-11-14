@@ -31,94 +31,69 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.internal.AccessFields;
+import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
-import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.program.AccessLevel;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramSection;
+import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramType;
 
 public final class ProgramFields {
-
-    public static final String VERSION = "version";
-    public static final String ONLY_ENROLL_ONCE = "onlyEnrollOnce";
-    public static final String ENROLLMENT_DATE_LABEL = "enrollmentDateLabel";
-    public static final String DISPLAY_INCIDENT_DATE = "displayIncidentDate";
-    public static final String INCIDENT_DATE_LABEL = "incidentDateLabel";
-    public static final String REGISTRATION = "registration";
-    public static final String SELECT_ENROLLMENT_DATES_IN_FUTURE = "selectEnrollmentDatesInFuture";
-    public static final String DATA_ENTRY_METHOD = "dataEntryMethod";
-    public static final String IGNORE_OVERDUE_EVENTS = "ignoreOverdueEvents";
-    public static final String RELATIONSHIP_FROM_A = "relationshipFromA";
-    public static final String SELECT_INCIDENT_DATES_IN_FUTURE = "selectIncidentDatesInFuture";
-    public static final String CAPTURE_COORDINATES = "captureCoordinates";
-    public static final String USE_FIRST_STAGE_DURING_REGISTRATION = "useFirstStageDuringRegistration";
-    public static final String DISPLAY_FRONT_PAGE_LIST = "displayFrontPageList";
-    public static final String PROGRAM_TYPE = "programType";
-    public static final String RELATIONSHIP_TYPE = "relationshipType";
-    public static final String RELATIONSHIP_TEXT = "relationshipText";
     public static final String PROGRAM_TRACKED_ENTITY_ATTRIBUTES = "programTrackedEntityAttributes";
-    public static final String RELATED_PROGRAM = "relatedProgram";
-    public static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
-    public static final String CATEGORY_COMBO = "categoryCombo";
+    private static final String CAPTURE_COORDINATES = "captureCoordinates";
     public static final String PROGRAM_INDICATORS = "programIndicators";
+    @Deprecated
     public static final String PROGRAM_STAGES = "programStages";
     public static final String PROGRAM_RULES = "programRules";
     public static final String PROGRAM_RULE_VARIABLES = "programRuleVariables";
-    public static final String ACCESS = "access";
-    public static final String STYLE = "style";
-    public static final String EXPIRY_DAYS = "expiryDays";
-    public static final String COMPLETE_EVENTS_EXPIRY_DAYS = "completeEventsExpiryDays";
-    public static final String EXPIRY_PERIOD_TYPE = "expiryPeriodType";
-    public static final String MIN_ATTRIBUTES_REQUIRED_TO_SEARCH = "minAttributesRequiredToSearch";
-    public static final String MAX_TEI_COUNT_TO_RETURN = "maxTeiCountToReturn";
+    private static final String ACCESS = "access";
+    private static final String STYLE = "style";
     public static final String PROGRAM_SECTIONS = "programSections";
-    public static final String FEATURE_TYPE = "featureType";
 
     private static FieldsHelper<Program> fh = new FieldsHelper<>();
 
     static final Fields<Program> allFields = Fields.<Program>builder()
             .fields(fh.getNameableFields())
             .fields(
-                    fh.<Integer>field(VERSION),
-                    fh.<Boolean>field(ONLY_ENROLL_ONCE),
-                    fh.<String>field(ENROLLMENT_DATE_LABEL),
-                    fh.<Boolean>field(DISPLAY_INCIDENT_DATE),
-                    fh.<String>field(INCIDENT_DATE_LABEL),
-                    fh.<Boolean>field(REGISTRATION),
-                    fh.<Boolean>field(SELECT_ENROLLMENT_DATES_IN_FUTURE),
-                    fh.<Boolean>field(DATA_ENTRY_METHOD),
-                    fh.<Boolean>field(IGNORE_OVERDUE_EVENTS),
-                    fh.<Boolean>field(RELATIONSHIP_FROM_A),
-                    fh.<Boolean>field(SELECT_INCIDENT_DATES_IN_FUTURE),
+                    fh.<Integer>field(Columns.VERSION),
+                    fh.<Boolean>field(Columns.ONLY_ENROLL_ONCE),
+                    fh.<String>field(Columns.ENROLLMENT_DATE_LABEL),
+                    fh.<Boolean>field(Columns.DISPLAY_INCIDENT_DATE),
+                    fh.<String>field(Columns.INCIDENT_DATE_LABEL),
+                    fh.<Boolean>field(Columns.REGISTRATION),
+                    fh.<Boolean>field(Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE),
+                    fh.<Boolean>field(Columns.DATA_ENTRY_METHOD),
+                    fh.<Boolean>field(Columns.IGNORE_OVERDUE_EVENTS),
+                    fh.<Boolean>field(Columns.SELECT_INCIDENT_DATES_IN_FUTURE),
                     fh.<Boolean>field(CAPTURE_COORDINATES),
-                    fh.<Boolean>field(USE_FIRST_STAGE_DURING_REGISTRATION),
-                    fh.<Boolean>field(DISPLAY_FRONT_PAGE_LIST),
-                    fh.<ProgramType>field(PROGRAM_TYPE),
-                    fh.nestedFieldWithUid(RELATIONSHIP_TYPE),
-                    fh.<String>field(RELATIONSHIP_TEXT),
+                    fh.<Boolean>field(Columns.USE_FIRST_STAGE_DURING_REGISTRATION),
+                    fh.<Boolean>field(Columns.DISPLAY_FRONT_PAGE_LIST),
+                    fh.<ProgramType>field(Columns.PROGRAM_TYPE),
                     fh.<ProgramTrackedEntityAttribute>nestedField(PROGRAM_TRACKED_ENTITY_ATTRIBUTES).with(
                             ProgramTrackedEntityAttributeFields.allFields),
-                    fh.nestedFieldWithUid(RELATED_PROGRAM),
-                    fh.nestedFieldWithUid(TRACKED_ENTITY_TYPE),
-                    fh.nestedFieldWithUid(CATEGORY_COMBO),
-                    fh.<Access>nestedField(ACCESS).with(Access.data.with(DataAccess.write)),
+                    fh.nestedFieldWithUid(Columns.RELATED_PROGRAM),
+                    fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_TYPE),
+                    fh.nestedFieldWithUid(Columns.CATEGORY_COMBO),
+                    fh.<Access>nestedField(ACCESS).with(AccessFields.data.with(DataAccessFields.write)),
                     fh.<ProgramIndicator>nestedField(PROGRAM_INDICATORS).with(ProgramIndicatorFields.allFields),
-                    fh.nestedFieldWithUid(PROGRAM_STAGES),
                     fh.<ProgramRuleVariable>nestedField(PROGRAM_RULE_VARIABLES)
                             .with(ProgramRuleVariableFields.allFields),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
-                    fh.<Integer>field(EXPIRY_DAYS),
-                    fh.<Integer>field(COMPLETE_EVENTS_EXPIRY_DAYS),
-                    fh.<PeriodType>field(EXPIRY_PERIOD_TYPE),
-                    fh.<Integer>field(MIN_ATTRIBUTES_REQUIRED_TO_SEARCH),
-                    fh.<Integer>field(MAX_TEI_COUNT_TO_RETURN),
-                    fh.<FeatureType>field(FEATURE_TYPE),
+                    fh.<Integer>field(Columns.EXPIRY_DAYS),
+                    fh.<Integer>field(Columns.COMPLETE_EVENTS_EXPIRY_DAYS),
+                    fh.<PeriodType>field(Columns.EXPIRY_PERIOD_TYPE),
+                    fh.<Integer>field(Columns.MIN_ATTRIBUTES_REQUIRED_TO_SEARCH),
+                    fh.<Integer>field(Columns.MAX_TEI_COUNT_TO_RETURN),
+                    fh.<FeatureType>field(Columns.FEATURE_TYPE),
+                    fh.<AccessLevel>field(Columns.ACCESS_LEVEL),
                     fh.<ProgramSection>nestedField(PROGRAM_SECTIONS).with(ProgramSectionFields.allFields)
             ).build();
 

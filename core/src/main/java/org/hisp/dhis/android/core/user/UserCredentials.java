@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.user;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -37,18 +39,17 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserRoleListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.data.database.IgnoreUserRoleListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.UserWithUidColumnAdapter;
+import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import java.util.List;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
-@JsonDeserialize(builder = AutoValue_UserCredentials.Builder.class)
-public abstract class UserCredentials extends BaseIdentifiableObject implements Model {
+@JsonDeserialize(builder = $$AutoValue_UserCredentials.Builder.class)
+public abstract class UserCredentials extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
     @JsonProperty()
@@ -61,8 +62,8 @@ public abstract class UserCredentials extends BaseIdentifiableObject implements 
 
     @Nullable
     @JsonIgnore
-    @ColumnAdapter(UserWithUidColumnAdapter.class)
-    public abstract User user();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid user();
 
     public static UserCredentials create(Cursor cursor) {
         return $AutoValue_UserCredentials.createFromCursor(cursor);
@@ -71,7 +72,7 @@ public abstract class UserCredentials extends BaseIdentifiableObject implements 
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_UserCredentials.Builder();
+        return new $$AutoValue_UserCredentials.Builder();
     }
 
     @AutoValue.Builder
@@ -83,7 +84,7 @@ public abstract class UserCredentials extends BaseIdentifiableObject implements 
 
         public abstract Builder id(Long id);
 
-        public abstract Builder user(User user);
+        public abstract Builder user(ObjectWithUid user);
 
         public abstract UserCredentials build();
     }

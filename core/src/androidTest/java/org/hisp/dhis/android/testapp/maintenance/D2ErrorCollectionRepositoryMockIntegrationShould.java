@@ -33,12 +33,14 @@ import com.google.common.collect.Lists;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
+import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -49,59 +51,60 @@ import static org.hamcrest.core.Is.is;
 public class D2ErrorCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
-    public void filter_d2_error_by_resource_type() {
-        List<D2Error> d2Errors = d2.maintenanceModule()
-                .d2Errors.byResourceType().eq("Program").get();
-        assertThat(d2Errors.size(), is(1));
-    }
-
-    @Test
-    public void filter_d2_error_by_uid() {
-        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors
-                .byUid().like("test_uid").get();
-        assertThat(d2Errors.size(), is(1));
-    }
-
-    @Test
     public void filter_d2_error_by_url() {
-        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors
-                .byUrl().like("http://dhis2.org/api/programs/uid").get();
+        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
+                .byUrl().like("http://dhis2.org/api/programs/uid").blockingGet();
         assertThat(d2Errors.size(), is(1));
     }
 
     @Test
     public void filter_d2_error_by_d2_error_code() {
-        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors
-                .byD2ErrorCode().eq(D2ErrorCode.DIFFERENT_SERVER_OFFLINE).get();
+        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
+                .byD2ErrorCode().eq(D2ErrorCode.DIFFERENT_SERVER_OFFLINE).blockingGet();
         assertThat(d2Errors.size(), is(1));
     }
 
     @Test
     public void filter_d2_error_by_d2_error_component() {
-        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors
-                .byD2ErrorComponent().eq(D2ErrorComponent.Server).get();
+        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
+                .byD2ErrorComponent().eq(D2ErrorComponent.Server).blockingGet();
         assertThat(d2Errors.size(), is(1));
     }
 
     @Test
     public void filter_d2_error_by_error_description() {
-        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors
-                .byErrorDescription().eq("Error processing response").get();
+        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
+                .byErrorDescription().eq("Error processing response").blockingGet();
         assertThat(d2Errors.size(), is(1));
     }
 
     @Test
     public void filter_d2_error_by_http_error_code() {
-        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors
-                .byHttpErrorCode().eq(402).get();
+        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
+                .byHttpErrorCode().eq(402).blockingGet();
         assertThat(d2Errors.size(), is(1));
     }
 
     @Test
     public void filter_d2_error_by_created() {
-        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors
-                .byCreated().inPeriods(Lists.newArrayList(
-                        d2.periodModule().periodHelper.getPeriod(PeriodType.Monthly, new Date()))).get();
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        Date startDate = cal.getTime();
+
+        cal.set(Calendar.HOUR, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        Date endDate = cal.getTime();
+
+        Period todayPeriod = Period.builder()
+                .periodType(PeriodType.Daily)
+                .startDate(startDate)
+                .endDate(endDate)
+                .build();
+        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
+                .byCreated().inPeriods(Lists.newArrayList(todayPeriod)).blockingGet();
         assertThat(d2Errors.size(), is(2));
     }
 }

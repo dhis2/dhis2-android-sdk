@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
@@ -43,23 +44,39 @@ public class TrackedEntityTypeCollectionRepositoryMockIntegrationShould extends 
 
     @Test
     public void allow_access_to_all_tracked_entity_types_without_children() {
-        List<TrackedEntityType> trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes
-                        .get();
+        List<TrackedEntityType> trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes()
+                        .blockingGet();
         assertThat(trackedEntityTypes.size(), is(1));
     }
 
     @Test
-    public void include_object_style_as_children() {
-        TrackedEntityType trackedEntityType = d2.trackedEntityModule().trackedEntityTypes
-                .withStyle().one().get();
-        assertThat(trackedEntityType.style().icon(), is("my-tracked-entity-attribute-icon-name"));
-        assertThat(trackedEntityType.style().color(), is("#000"));
+    public void include_attributes_as_children() {
+        TrackedEntityType trackedEntityType = d2.trackedEntityModule().trackedEntityTypes()
+                .withTrackedEntityTypeAttributes().one().blockingGet();
+        assertThat(trackedEntityType.trackedEntityTypeAttributes().size(), is(1));
     }
 
     @Test
-    public void include_attributes_as_children() {
-        TrackedEntityType trackedEntityType = d2.trackedEntityModule().trackedEntityTypes
-                .withTrackedEntityTypeAttributes().one().get();
-        assertThat(trackedEntityType.trackedEntityTypeAttributes().size(), is(1));
+    public void filter_by_feature_type() {
+        List<TrackedEntityType> trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes()
+                .byFeatureType().eq(FeatureType.NONE)
+                .blockingGet();
+        assertThat(trackedEntityTypes.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_field_color() {
+        List<TrackedEntityType> trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes()
+                .byColor().eq("#000")
+                        .blockingGet();
+        assertThat(trackedEntityTypes.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_field_icon() {
+        List<TrackedEntityType> trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes()
+                .byIcon().eq("my-tracked-entity-attribute-icon-name")
+                        .blockingGet();
+        assertThat(trackedEntityTypes.size(), is(1));
     }
 }

@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 
 public final class ValueTypeDeviceRenderingTableInfo {
 
@@ -44,14 +44,14 @@ public final class ValueTypeDeviceRenderingTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
         static final String OBJECT_TABLE = "objectTable";
-        static final String DEVICE_TYPE = "deviceType";
+        public static final String DEVICE_TYPE = "deviceType";
         static final String TYPE = "type";
         static final String MIN = "min";
         static final String MAX = "max";
@@ -60,8 +60,8 @@ public final class ValueTypeDeviceRenderingTableInfo {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    BaseIdentifiableObjectModel.Columns.UID,
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    IdentifiableColumns.UID,
                     OBJECT_TABLE,
                     DEVICE_TYPE,
                     TYPE,
@@ -74,8 +74,8 @@ public final class ValueTypeDeviceRenderingTableInfo {
 
         @Override
         public String[] whereUpdate() {
-            return Utils.appendInNewArray(super.whereUpdate(),
-                    BaseIdentifiableObjectModel.Columns.UID,
+            return CollectionsHelper.appendInNewArray(super.whereUpdate(),
+                    IdentifiableColumns.UID,
                     DEVICE_TYPE
             );
         }

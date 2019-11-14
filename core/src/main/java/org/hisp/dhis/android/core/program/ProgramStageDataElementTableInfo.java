@@ -29,10 +29,9 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public class ProgramStageDataElementTableInfo {
 
@@ -44,23 +43,31 @@ public class ProgramStageDataElementTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends IdentifiableColumns {
+
+        public static final String DISPLAY_IN_REPORTS = "displayInReports";
+        public static final String DATA_ELEMENT = "dataElement";
+        public static final String COMPULSORY = "compulsory";
+        public static final String ALLOW_PROVIDED_ELSEWHERE = "allowProvidedElsewhere";
+        public static final String SORT_ORDER = "sortOrder";
+        public static final String ALLOW_FUTURE_DATE = "allowFutureDate";
+        public static final String PROGRAM_STAGE = "programStage";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    ProgramStageDataElementFields.DISPLAY_IN_REPORTS,
-                    ProgramStageDataElementFields.DATA_ELEMENT,
-                    ProgramStageDataElementFields.COMPULSORY,
-                    ProgramStageDataElementFields.ALLOW_PROVIDED_ELSEWHERE,
-                    ProgramStageDataElementFields.SORT_ORDER,
-                    ProgramStageDataElementFields.ALLOW_FUTURE_DATE,
-                    ProgramStageDataElementFields.PROGRAM_STAGE
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    DISPLAY_IN_REPORTS,
+                    DATA_ELEMENT,
+                    COMPULSORY,
+                    ALLOW_PROVIDED_ELSEWHERE,
+                    SORT_ORDER,
+                    ALLOW_FUTURE_DATE,
+                    PROGRAM_STAGE
             );
         }
     }

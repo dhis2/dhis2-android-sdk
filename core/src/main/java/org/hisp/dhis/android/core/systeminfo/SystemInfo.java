@@ -30,22 +30,22 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.common.BaseObject;
 
 import java.util.Date;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 @AutoValue
 @JsonDeserialize(builder = AutoValue_SystemInfo.Builder.class)
-public abstract class SystemInfo extends BaseModel {
+public abstract class SystemInfo extends BaseObject {
 
     @Nullable
     @ColumnAdapter(DbDateColumnAdapter.class)
@@ -76,7 +76,7 @@ public abstract class SystemInfo extends BaseModel {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseModel.Builder<SystemInfo.Builder> {
+    public static abstract class Builder extends BaseObject.Builder<SystemInfo.Builder> {
         public abstract Builder serverDate(Date serverDate);
 
         public abstract Builder dateFormat(String dateFormat);

@@ -28,76 +28,74 @@
 
 package org.hisp.dhis.android.core.common;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.NestedField;
-
-import androidx.annotation.Nullable;
-
 @AutoValue
+@JsonDeserialize(builder = AutoValue_Access.Builder.class)
 public abstract class Access {
-    private static final String READ = "read";
-    private static final String WRITE = "write";
-    private static final String UPDATE = "update";
-    private static final String DELETE = "delete";
-    private static final String EXTERNALIZE = "externalize";
-    private static final String MANAGE = "manage";
-    private static final String DATA = "data";
 
-    public static final Field<Access, Boolean> read = Field.create(READ);
-    public static final Field<Access, Boolean> write = Field.create(WRITE);
-    public static final Field<Access, Boolean> update = Field.create(UPDATE);
-    public static final Field<Access, Boolean> delete = Field.create(DELETE);
-    public static final Field<Access, Boolean> externalize = Field.create(EXTERNALIZE);
-    public static final Field<Access, Boolean> manage = Field.create(MANAGE);
-    public static final NestedField<Access, DataAccess> data = NestedField.create(DATA);
-
-    public static final String ACCESS_DATA_WRITE = "accessDataWrite";
-
-    @Nullable
-    @JsonProperty(READ)
+    @JsonProperty()
     public abstract Boolean read();
 
-    @Nullable
-    @JsonProperty(WRITE)
+    @JsonProperty()
     public abstract Boolean write();
 
-    @Nullable
-    @JsonProperty(UPDATE)
-    public abstract Boolean update();
-
-    @Nullable
-    @JsonProperty(DELETE)
-    public abstract Boolean delete();
-
-    @Nullable
-    @JsonProperty(EXTERNALIZE)
-    public abstract Boolean externalize();
-
-    @Nullable
-    @JsonProperty(MANAGE)
-    public abstract Boolean manage();
-
-    @Nullable
-    @JsonProperty(DATA)
+    @JsonProperty()
     public abstract DataAccess data();
 
-    @JsonCreator
-    public static Access create(@JsonProperty(READ) Boolean read,
-                                @JsonProperty(WRITE) Boolean write,
-                                @JsonProperty(UPDATE) Boolean update,
-                                @JsonProperty(DELETE) Boolean delete,
-                                @JsonProperty(EXTERNALIZE) Boolean externalize,
-                                @JsonProperty(MANAGE) Boolean manage,
-                                @JsonProperty(DATA) DataAccess data) {
-        return new AutoValue_Access(read, write, update, delete, externalize, manage, data);
+    public static Access create(Boolean read, Boolean write, DataAccess data) {
+        return builder()
+                .read(read)
+                .write(write)
+                .data(data)
+                .build();
     }
 
-    public static Access createForDataWrite(Boolean accessDataWrite) {
-        return Access.create(null, null, null, null, null, null,
-                DataAccess.create(true, accessDataWrite));
+    public static Builder builder() {
+        return new AutoValue_Access.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+        public abstract Builder read(Boolean read);
+
+        public abstract Builder write(Boolean write);
+
+        public abstract Builder data(DataAccess data);
+
+        abstract Access autoBuild();
+
+        // Auxiliary fields
+        abstract Boolean read();
+
+        abstract Boolean write();
+
+        abstract DataAccess data();
+
+        public Access build() {
+            try {
+                read();
+            } catch (IllegalStateException e) {
+                read(Boolean.TRUE);
+            }
+
+            try {
+                write();
+            } catch (IllegalStateException e) {
+                write(Boolean.TRUE);
+            }
+
+            try {
+                data();
+            } catch (IllegalStateException e) {
+                data(DataAccess.create(Boolean.TRUE, Boolean.TRUE));
+            }
+
+            return autoBuild();
+        }
     }
 }

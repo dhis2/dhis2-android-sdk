@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.program.ProgramSection;
 import org.hisp.dhis.android.core.program.ProgramSectionAttributeLinkTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
@@ -44,23 +44,23 @@ final class ProgramSectionAttributeChildrenAppender extends ChildrenAppender<Pro
             ProgramSectionAttributeLinkTableInfo.Columns.PROGRAM_SECTION,
             ProgramSectionAttributeLinkTableInfo.Columns.ATTRIBUTE);
 
-    private final LinkModelChildStore<ProgramSection, TrackedEntityAttribute> linkModelChildStore;
+    private final LinkChildStore<ProgramSection, TrackedEntityAttribute> linkChildStore;
 
     private ProgramSectionAttributeChildrenAppender(
-            LinkModelChildStore<ProgramSection, TrackedEntityAttribute> linkModelChildStore) {
-        this.linkModelChildStore = linkModelChildStore;
+            LinkChildStore<ProgramSection, TrackedEntityAttribute> linkChildStore) {
+        this.linkChildStore = linkChildStore;
     }
 
     @Override
     protected ProgramSection appendChildren(ProgramSection programSection) {
         ProgramSection.Builder builder = programSection.toBuilder();
-        builder.attributes(linkModelChildStore.getChildren(programSection));
+        builder.attributes(linkChildStore.getChildren(programSection));
         return builder.build();
     }
 
     static ChildrenAppender<ProgramSection> create(DatabaseAdapter databaseAdapter) {
         return new ProgramSectionAttributeChildrenAppender(
-                StoreFactory.linkModelChildStore(
+                StoreFactory.linkChildStore(
                         databaseAdapter,
                         ProgramSectionAttributeLinkTableInfo.TABLE_INFO,
                         CHILD_PROJECTION,

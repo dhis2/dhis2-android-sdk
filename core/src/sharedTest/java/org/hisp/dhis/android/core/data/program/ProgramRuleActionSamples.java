@@ -29,13 +29,8 @@
 package org.hisp.dhis.android.core.data.program;
 
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
 import org.hisp.dhis.android.core.program.ProgramRuleActionType;
-import org.hisp.dhis.android.core.program.ProgramStage;
-import org.hisp.dhis.android.core.program.ProgramStageSection;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
@@ -50,12 +45,12 @@ public class ProgramRuleActionSamples {
                 .data("data")
                 .content("content")
                 .location("location")
-                .trackedEntityAttribute(TrackedEntityAttribute.builder().uid("tea").build())
-                .programIndicator(ProgramIndicator.builder().uid("pi").build())
-                .programStageSection(ProgramStageSection.builder().uid("pss").build())
+                .trackedEntityAttribute(ObjectWithUid.create("tea"))
+                .programIndicator(ObjectWithUid.create("pi"))
+                .programStageSection(ObjectWithUid.create("pss"))
                 .programRuleActionType(ProgramRuleActionType.ASSIGN)
-                .programStage(ProgramStage.builder().uid("ps").build())
-                .dataElement(DataElement.builder().uid("de").build())
+                .programStage(ObjectWithUid.create("ps"))
+                .dataElement(ObjectWithUid.create("de"))
                 .programRule(ObjectWithUid.create("pr"))
                 .option(ObjectWithUid.create("option"))
                 .optionGroup(ObjectWithUid.create("option_group"))

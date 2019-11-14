@@ -33,18 +33,11 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 
+import static org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns;
+
 public final class DataValueFields {
 
-    public static final String DATA_ELEMENT = "dataElement";
-    public static final String PERIOD = "period";
     public static final String ORGANISATION_UNIT = "orgUnit";
-    public static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
-    public static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
-    public static final String VALUE = "value";
-    public static final String STORED_BY = "storedBy";
-    public static final String CREATED = "created";
-    public static final String LAST_UPDATED = "lastUpdated";
-    public static final String COMMENT = "comment";
     public static final String FOLLOW_UP = "followup";
     public static final String DELETED = "deleted";
 
@@ -53,16 +46,16 @@ public final class DataValueFields {
     static final Field<DataValue, String> lastUpdated = fieldsHelper.lastUpdated();
 
     static final Fields<DataValue> allFields = Fields.<DataValue>builder().fields(
-            fieldsHelper.<String>field(DATA_ELEMENT),
-            fieldsHelper.<String>field(PERIOD),
+            fieldsHelper.<String>field(Columns.DATA_ELEMENT),
+            fieldsHelper.<String>field(Columns.PERIOD),
             fieldsHelper.<String>field(ORGANISATION_UNIT),
-            fieldsHelper.<String>field(CATEGORY_OPTION_COMBO),
-            fieldsHelper.<String>field(ATTRIBUTE_OPTION_COMBO),
-            fieldsHelper.<String>field(VALUE),
-            fieldsHelper.<String>field(STORED_BY),
-            fieldsHelper.<String>field(CREATED),
-            fieldsHelper.<String>field(LAST_UPDATED),
-            fieldsHelper.<String>field(COMMENT),
+            fieldsHelper.<String>field(Columns.CATEGORY_OPTION_COMBO),
+            fieldsHelper.<String>field(Columns.ATTRIBUTE_OPTION_COMBO),
+            fieldsHelper.<String>field(Columns.VALUE),
+            fieldsHelper.<String>field(Columns.STORED_BY),
+            fieldsHelper.<String>field(Columns.CREATED),
+            fieldsHelper.<String>field(Columns.LAST_UPDATED),
+            fieldsHelper.<String>field(Columns.COMMENT),
             fieldsHelper.<Boolean>field(FOLLOW_UP),
             fieldsHelper.<Boolean>field(DELETED)
 

@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class TrackedEntityTypeAttributeTableInfo {
 
@@ -50,18 +50,22 @@ public final class TrackedEntityTypeAttributeTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
-
-        static final String SORT_ORDER = "sortOrder";
+    public static class Columns extends CoreColumns {
+        public final static String TRACKED_ENTITY_TYPE = "trackedEntityType";
+        public final static String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+        public final static String DISPLAY_IN_LIST = "displayInList";
+        public final static String MANDATORY = "mandatory";
+        public final static String SEARCHABLE = "searchable";
+        public static final String SORT_ORDER = "sortOrder";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    TrackedEntityTypeAttributeFields.TRACKED_ENTITY_TYPE,
-                    TrackedEntityTypeAttributeFields.TRACKED_ENTITY_ATTRIBUTE,
-                    TrackedEntityTypeAttributeFields.DISPLAY_IN_LIST,
-                    TrackedEntityTypeAttributeFields.MANDATORY,
-                    TrackedEntityTypeAttributeFields.SEARCHABLE,
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    TRACKED_ENTITY_TYPE,
+                    TRACKED_ENTITY_ATTRIBUTE,
+                    DISPLAY_IN_LIST,
+                    MANDATORY,
+                    SEARCHABLE,
                     SORT_ORDER
             );
         }

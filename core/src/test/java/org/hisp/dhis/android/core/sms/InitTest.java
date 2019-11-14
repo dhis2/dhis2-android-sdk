@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.sms;
 
 import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase;
+import org.hisp.dhis.android.core.sms.mockrepos.MockLocalDbRepository;
+import org.hisp.dhis.android.core.sms.mockrepos.MockWebApiRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -41,8 +43,8 @@ public class InitTest {
     @Test
     public void allData() {
         String testGateway = "testGateway";
-        TestRepositories.TestLocalDbRepository testLocalDbRepository = new TestRepositories.TestLocalDbRepository();
-        TestRepositories.TestWebApiRepository testWebApiRepository = new TestRepositories.TestWebApiRepository();
+        MockLocalDbRepository testLocalDbRepository = new MockLocalDbRepository();
+        MockWebApiRepository testWebApiRepository = new MockWebApiRepository();
 
         new ConfigCase(testWebApiRepository, testLocalDbRepository)
                 .setGatewayNumber(testGateway)
@@ -55,8 +57,8 @@ public class InitTest {
 
     @Test
     public void emptyData() {
-        TestRepositories.TestLocalDbRepository testLocalDbRepository = new TestRepositories.TestLocalDbRepository();
-        TestRepositories.TestWebApiRepository testWebApiRepository = new TestRepositories.TestWebApiRepository();
+        MockLocalDbRepository testLocalDbRepository = new MockLocalDbRepository();
+        MockWebApiRepository testWebApiRepository = new MockWebApiRepository();
 
         new ConfigCase(testWebApiRepository, testLocalDbRepository)
                 .setGatewayNumber(null)

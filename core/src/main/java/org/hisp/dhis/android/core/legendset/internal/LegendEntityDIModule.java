@@ -28,11 +28,15 @@
 
 package org.hisp.dhis.android.core.legendset.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.legendset.Legend;
+
+import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -51,5 +55,11 @@ public final class LegendEntityDIModule {
     @Reusable
     public HandlerWithTransformer<Legend> handler(IdentifiableObjectStore<Legend> store) {
         return new IdentifiableHandlerImpl<>(store);
+    }
+
+    @Provides
+    @Reusable
+    public Map<String, ChildrenAppender<Legend>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.category.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
@@ -37,7 +38,6 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,7 +66,7 @@ public final class CategoryComboEntityDIModule implements IdentifiableStoreProvi
     @Reusable
     OrphanCleaner<CategoryCombo, CategoryOptionCombo> orphanCleaner(DatabaseAdapter databaseAdapter) {
         return new OrphanCleanerImpl<>(CategoryOptionComboTableInfo.TABLE_INFO.name(),
-                CategoryOptionComboFields.CATEGORY_COMBO, databaseAdapter);
+                CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO, databaseAdapter);
     }
 
     @Provides

@@ -32,17 +32,17 @@ import android.database.sqlite.SQLiteStatement;
 
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorModelFactory;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.CoreObject;
 
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
+import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isNull;
 
-public class ObjectWithoutUidStoreImpl<M extends Model>
+public class ObjectWithoutUidStoreImpl<M extends CoreObject>
         extends ObjectStoreImpl<M> implements ObjectWithoutUidStore<M> {
     private final SQLiteStatement updateWhereStatement;
     private final SQLiteStatement deleteWhereStatement;
@@ -54,8 +54,8 @@ public class ObjectWithoutUidStoreImpl<M extends Model>
                                      StatementBinder<M> binder,
                                      WhereStatementBinder<M> whereUpdateBinder,
                                      WhereStatementBinder<M> whereDeleteBinder,
-                                     CursorModelFactory<M> modelFactory) {
-        super(databaseAdapter, databaseAdapter.compileStatement(builder.insert()), builder, binder, modelFactory);
+                                     ObjectFactory<M> objectFactory) {
+        super(databaseAdapter, databaseAdapter.compileStatement(builder.insert()), builder, binder, objectFactory);
         this.updateWhereStatement = databaseAdapter.compileStatement(builder.updateWhere());
         this.deleteWhereStatement = databaseAdapter.compileStatement(builder.deleteWhere());
         this.whereUpdateBinder = whereUpdateBinder;

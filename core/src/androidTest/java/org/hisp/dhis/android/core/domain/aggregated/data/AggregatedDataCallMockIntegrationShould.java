@@ -38,17 +38,16 @@ public class AggregatedDataCallMockIntegrationShould extends BaseMockIntegration
 
     @Test
     public void emit_progress() {
-        TestObserver<D2Progress> testObserver = d2.aggregatedModule().data().download().test();
-        testObserver.assertValueCount(3);
 
-        testObserver.assertValueAt(0, v -> assertDouble(v.percentage(), 33.33) && v.lastCall().equals("SystemInfo"));
-        testObserver.assertValueAt(1, v -> assertDouble(v.percentage(), 66.66));
-        testObserver.assertValueAt(2, v -> assertDouble(v.percentage(), 100));
+        TestObserver<D2Progress> testObserver = d2.aggregatedModule().data().download().test();
+        testObserver.assertValueCount(4);
+
+        testObserver.assertValueAt(0, v -> v.lastCall().equals("SystemInfo"));
+        testObserver.assertValueAt(1, v -> v.lastCall().equals("DataValue"));
+        testObserver.assertValueAt(2, v -> v.lastCall().equals("DataSetCompleteRegistration"));
+        testObserver.assertValueAt(3, v -> v.lastCall().equals("DataApproval"));
+
 
         testObserver.dispose();
-    }
-
-    private boolean assertDouble(double d1, double d2) {
-        return d2 - d1 < 0.01;
     }
 }

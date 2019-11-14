@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.organisationunit.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 import java.util.HashMap;
@@ -59,8 +59,8 @@ public final class OrganisationUnitEntityDIModule implements IdentifiableStorePr
 
     @Provides
     @Reusable
-    public SearchOrganisationUnitHandler searchHandler(SearchOrganisationUnitHandlerImpl impl) {
-        return impl;
+    public OrganisationUnitDisplayPathTransformer pathTransformer() {
+        return new OrganisationUnitDisplayPathTransformer();
     }
 
     @Provides

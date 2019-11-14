@@ -30,31 +30,23 @@ package org.hisp.dhis.android.core.maintenance;
 
 import android.database.Cursor;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.data.database.D2ErrorCodeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.D2ErrorComponentColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreExceptionAdapter;
-
-import java.util.Date;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.D2ErrorCodeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.D2ErrorComponentColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreExceptionAdapter;
+import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
+
+import java.util.Date;
+
 @AutoValue
-public abstract class D2Error extends Exception implements ObjectWithUidInterface, Model {
-
-    @Nullable
-    public abstract String resourceType();
-
-    @Override
-    @Nullable
-    public abstract String uid();
+public abstract class D2Error extends Exception implements CoreObject {
 
     @Nullable
     public abstract String url();
@@ -93,11 +85,7 @@ public abstract class D2Error extends Exception implements ObjectWithUidInterfac
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
-
-        public abstract Builder resourceType(String resourceType);
-
-        public abstract Builder uid(String uid);
+    public static abstract class Builder extends BaseObject.Builder<Builder> {
 
         public abstract Builder url(String url);
 

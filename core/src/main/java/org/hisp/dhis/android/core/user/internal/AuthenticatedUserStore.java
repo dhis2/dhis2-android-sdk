@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo;
 
@@ -43,12 +43,11 @@ public final class AuthenticatedUserStore {
     private static final StatementBinder<AuthenticatedUser> BINDER
             = (o, sqLiteStatement) -> {
         sqLiteBind(sqLiteStatement, 1, o.user());
-        sqLiteBind(sqLiteStatement, 2, o.credentials());
-        sqLiteBind(sqLiteStatement, 3, o.hash());
+        sqLiteBind(sqLiteStatement, 2, o.hash());
     };
 
     private static final WhereStatementBinder<AuthenticatedUser> WHERE_UPDATE_BINDER
-            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 4, o.user());
+            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 3, o.user());
 
     private static final WhereStatementBinder<AuthenticatedUser> WHERE_DELETE_BINDER
             = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.user());

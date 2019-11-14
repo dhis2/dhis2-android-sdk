@@ -54,116 +54,116 @@ public class FiltersOperatorsMockIntegrationShould extends BaseMockIntegrationTe
 
     @Test
     public void filter_string_with_eq() {
-        ProgramStageCollectionRepository repository = d2.programModule().programStages
+        ProgramStageCollectionRepository repository = d2.programModule().programStages()
                 .byName().eq(NAME_1);
-        List<ProgramStage> objects = repository.get();
+        List<ProgramStage> objects = repository.blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_1));
     }
 
     @Test
     public void filter_string_with_neq_for_non_existent() {
-        ProgramStageCollectionRepository repository = d2.programModule().programStages
+        ProgramStageCollectionRepository repository = d2.programModule().programStages()
                 .byName().neq("Non existent");
-        List<ProgramStage> objects = repository.get();
+        List<ProgramStage> objects = repository.blockingGet();
         assertThat(objects.size(), is(2));
     }
 
     @Test
     public void filter_string_with_neq_for_non_existing() {
-        ProgramStageCollectionRepository repository = d2.programModule().programStages
+        ProgramStageCollectionRepository repository = d2.programModule().programStages()
                 .byName().neq(NAME_1);
-        List<ProgramStage> objects = repository.get();
+        List<ProgramStage> objects = repository.blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_2));
     }
 
     @Test
     public void filter_boolean_with_eq_true() {
-        ProgramStageCollectionRepository repository = d2.programModule().programStages
+        ProgramStageCollectionRepository repository = d2.programModule().programStages()
                 .byAllowGenerateNextVisit().eq(true);
-        List<ProgramStage> objects = repository.get();
+        List<ProgramStage> objects = repository.blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_2));
     }
 
     @Test
     public void filter_boolean_with_eq_false() {
-        ProgramStageCollectionRepository repository = d2.programModule().programStages
+        ProgramStageCollectionRepository repository = d2.programModule().programStages()
                 .byAllowGenerateNextVisit().eq(false);
-        List<ProgramStage> objects = repository.get();
+        List<ProgramStage> objects = repository.blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_1));
     }
 
     @Test
     public void filter_boolean_with_neq_true() {
-        ProgramStageCollectionRepository repository = d2.programModule().programStages
+        ProgramStageCollectionRepository repository = d2.programModule().programStages()
                 .byAllowGenerateNextVisit().neq(true);
-        List<ProgramStage> objects = repository.get();
+        List<ProgramStage> objects = repository.blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_1));
     }
 
     @Test
     public void filter_boolean_with_neq_false() {
-        ProgramStageCollectionRepository repository = d2.programModule().programStages
+        ProgramStageCollectionRepository repository = d2.programModule().programStages()
                 .byAllowGenerateNextVisit().neq(false);
-        List<ProgramStage> objects = repository.get();
+        List<ProgramStage> objects = repository.blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_2));
     }
 
     @Test
     public void filter_int_with_eq_0() {
-        ProgramStageCollectionRepository repository = d2.programModule().programStages
+        ProgramStageCollectionRepository repository = d2.programModule().programStages()
                 .byMinDaysFromStart().eq(0);
-        List<ProgramStage> objects = repository.get();
+        List<ProgramStage> objects = repository.blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_1));
     }
 
     @Test
     public void filter_int_with_eq_1() {
-        ProgramStageCollectionRepository repository = d2.programModule().programStages
+        ProgramStageCollectionRepository repository = d2.programModule().programStages()
                 .byMinDaysFromStart().eq(1);
-        List<ProgramStage> objects = repository.get();
+        List<ProgramStage> objects = repository.blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_2));
     }
 
     @Test
     public void filter_int_with_neq_0() {
-        ProgramStageCollectionRepository repository = d2.programModule().programStages
+        ProgramStageCollectionRepository repository = d2.programModule().programStages()
                 .byMinDaysFromStart().neq(0);
-        List<ProgramStage> objects = repository.get();
+        List<ProgramStage> objects = repository.blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_2));
     }
 
     @Test
     public void filter_int_with_neq_1() {
-        ProgramStageCollectionRepository repository = d2.programModule().programStages
+        ProgramStageCollectionRepository repository = d2.programModule().programStages()
                 .byMinDaysFromStart().neq(1);
-        List<ProgramStage> objects = repository.get();
+        List<ProgramStage> objects = repository.blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_1));
     }
 
     @Test
     public void filter_enum_with_eq() {
-        ProgramStageCollectionRepository repository = d2.programModule().programStages
+        ProgramStageCollectionRepository repository = d2.programModule().programStages()
                 .byPeriodType().eq(PeriodType.Monthly);
-        List<ProgramStage> objects = repository.get();
+        List<ProgramStage> objects = repository.blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_1));
     }
 
     @Test
     public void filter_enum_with_neq() {
-        ProgramStageCollectionRepository repository = d2.programModule().programStages
+        ProgramStageCollectionRepository repository = d2.programModule().programStages()
                 .byPeriodType().neq(PeriodType.Monthly);
-        List<ProgramStage> objects = repository.get();
+        List<ProgramStage> objects = repository.blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_2));
     }
@@ -171,9 +171,9 @@ public class FiltersOperatorsMockIntegrationShould extends BaseMockIntegrationTe
     @Test
     public void filter_date_with_eq() throws ParseException {
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse("2016-04-12T15:30:43.806");
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byCreated().eq(created)
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_1));
     }
@@ -181,276 +181,276 @@ public class FiltersOperatorsMockIntegrationShould extends BaseMockIntegrationTe
     @Test
     public void filter_date_with_neq() throws ParseException {
         Date created = BaseIdentifiableObject.DATE_FORMAT.parse("2016-04-12T15:30:43.806");
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byCreated().neq(created)
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_2));
     }
 
     @Test
     public void filter_string_with_in_with_no_elements() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byName().in(Collections.emptyList())
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(0));
     }
 
     @Test
     public void filter_string_with_in_with_one_element() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byName().in(Collections.singletonList(NAME_1))
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_1));
     }
 
     @Test
     public void filter_string_with_in_with_two_elements() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byName().in(Arrays.asList(NAME_1, NAME_2))
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(2));
     }
 
     @Test
     public void filter_string_with_not_in_with_no_elements() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byName().notIn(Collections.emptyList())
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(2));
     }
 
     @Test
     public void filter_string_with_not_in_with_one_element() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byName().notIn(Collections.singletonList(NAME_1))
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_2));
     }
 
     @Test
     public void filter_string_with_not_in_with_two_elements() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byName().notIn(Arrays.asList(NAME_1, NAME_2))
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(0));
     }
 
     @Test
     public void filter_string_with_varargs_with_in_with_no_elements() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byName().in()
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(0));
     }
 
     @Test
     public void filter_string_with_varargs_with_in_with_one_element() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byName().in(NAME_1)
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_1));
     }
 
     @Test
     public void filter_string_with_varargs_with_in_with_two_elements() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byName().in(NAME_1, NAME_2)
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(2));
     }
 
     @Test
     public void filter_string_with_varargs_with_not_in_with_no_elements() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byName().notIn()
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(2));
     }
 
     @Test
     public void filter_string_with_varargs_with_not_in_with_one_element() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byName().notIn(NAME_1)
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_2));
     }
 
     @Test
     public void filter_string_with_varargs_with_not_in_with_two_elements() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byName().notIn(NAME_1, NAME_2)
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(0));
     }
 
     @Test
     public void filter_int_with_in_with_no_elements() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byMinDaysFromStart().in(Collections.emptyList())
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(0));
     }
 
     @Test
     public void filter_int_with_in_with_one_element() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byMinDaysFromStart().in(Collections.singletonList(0))
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_1));
     }
 
     @Test
     public void filter_int_with_in_with_two_elements() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byMinDaysFromStart().in(Arrays.asList(0, 1))
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(2));
     }
 
     @Test
     public void filter_int_with_not_in_with_no_elements() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byMinDaysFromStart().notIn(Collections.emptyList())
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(2));
     }
 
     @Test
     public void filter_int_with_not_in_with_one_element() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byMinDaysFromStart().notIn(Collections.singletonList(0))
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_2));
     }
 
     @Test
     public void filter_int_with_not_in_with_two_elements() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byMinDaysFromStart().notIn(Arrays.asList(0, 1))
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(0));
     }
 
     @Test
     public void filter_boolean_with_in_with_no_elements() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byAllowGenerateNextVisit().in(Collections.emptyList())
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(0));
     }
 
     @Test
     public void filter_boolean_int_with_in_with_one_element() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byAllowGenerateNextVisit().in(Collections.singletonList(false))
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_1));
     }
 
     @Test
     public void filter_boolean_int_with_in_with_two_elements() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byAllowGenerateNextVisit().in(Arrays.asList(false, true))
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(2));
     }
 
     @Test
     public void filter_boolean_int_with_not_in_with_no_elements() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byAllowGenerateNextVisit().notIn(Collections.emptyList())
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(2));
     }
 
     @Test
     public void filter_boolean_int_with_not_in_with_one_element() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byAllowGenerateNextVisit().notIn(Collections.singletonList(false))
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_2));
     }
 
     @Test
     public void filter_boolean_int_with_not_in_with_two_elements() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byAllowGenerateNextVisit().notIn(Arrays.asList(false, true))
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(0));
     }
 
     @Test
     public void filter_enum_with_in_with_no_elements() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byPeriodType().in(Collections.emptyList())
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(0));
     }
 
     @Test
     public void filter_enum_int_with_in_with_one_element() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byPeriodType().in(Collections.singletonList(PeriodType.Monthly))
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_1));
     }
 
     @Test
     public void filter_enum_int_with_in_with_two_elements() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byPeriodType().in(Arrays.asList(PeriodType.Monthly, PeriodType.Weekly))
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(2));
     }
 
     @Test
     public void filter_enum_int_with_not_in_with_no_elements() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byPeriodType().notIn(Collections.emptyList())
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(2));
     }
 
     @Test
     public void filter_enum_int_with_not_in_with_one_element() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byPeriodType().notIn(Collections.singletonList(PeriodType.Monthly))
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_2));
     }
 
     @Test
     public void filter_enum_int_with_not_in_with_two_elements() {
-        List<ProgramStage> objects = d2.programModule().programStages
+        List<ProgramStage> objects = d2.programModule().programStages()
                 .byPeriodType().notIn(Arrays.asList(PeriodType.Monthly, PeriodType.Weekly))
-                .get();
+                .blockingGet();
         assertThat(objects.size(), is(0));
     }
 
     @Test
     public void filter_string_with_is_null() {
-        ProgramStageCollectionRepository repository = d2.programModule().programStages
+        ProgramStageCollectionRepository repository = d2.programModule().programStages()
                 .byDescription().isNull();
-        List<ProgramStage> objects = repository.get();
+        List<ProgramStage> objects = repository.blockingGet();
         assertThat(objects.size(), is(1));
     }
 
     @Test
     public void filter_string_with_is_not_null() {
-        ProgramStageCollectionRepository repository = d2.programModule().programStages
+        ProgramStageCollectionRepository repository = d2.programModule().programStages()
                 .byDescription().isNotNull();
-        List<ProgramStage> objects = repository.get();
+        List<ProgramStage> objects = repository.blockingGet();
         assertThat(objects.size(), is(1));
     }
 

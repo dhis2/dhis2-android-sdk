@@ -32,16 +32,9 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.indicator.Indicator;
+import org.hisp.dhis.android.core.indicator.IndicatorTableInfo.Columns;
 
-public final class IndicatorFields {
-
-    public final static String ANNUALIZED = "annualized";
-    public final static String INDICATOR_TYPE = "indicatorType";
-    public final static String NUMERATOR = "numerator";
-    public final static String NUMERATOR_DESCRIPTION = "numeratorDescription";
-    public final static String DENOMINATOR = "denominator";
-    public final static String DENOMINATOR_DESCRIPTION = "denominatorDescription";
-    public final static String URL = "url";
+final class IndicatorFields {
 
     private static final FieldsHelper<Indicator> fh = new FieldsHelper<>();
 
@@ -52,13 +45,13 @@ public final class IndicatorFields {
     public static final Fields<Indicator> allFields = Fields.<Indicator>builder()
             .fields(fh.getNameableFields())
             .fields(
-                    fh.<Boolean>field(ANNUALIZED),
-                    fh.nestedFieldWithUid(INDICATOR_TYPE),
-                    fh.<String>field(NUMERATOR),
-                    fh.<String>field(NUMERATOR_DESCRIPTION),
-                    fh.<String>field(DENOMINATOR),
-                    fh.<String>field(DENOMINATOR_DESCRIPTION),
-                    fh.<String>field(URL)
+                    fh.<Boolean>field(Columns.ANNUALIZED),
+                    fh.nestedFieldWithUid(Columns.INDICATOR_TYPE),
+                    fh.<String>field(Columns.NUMERATOR),
+                    fh.<String>field(Columns.NUMERATOR_DESCRIPTION),
+                    fh.<String>field(Columns.DENOMINATOR),
+                    fh.<String>field(Columns.DENOMINATOR_DESCRIPTION),
+                    fh.<String>field(Columns.URL)
             ).build();
 
     private IndicatorFields() {

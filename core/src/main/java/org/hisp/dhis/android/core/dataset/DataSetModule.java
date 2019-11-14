@@ -28,25 +28,13 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.dataapproval.DataApprovalCollectionRepository;
 
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+public interface DataSetModule {
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class DataSetModule {
-
-    public final DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations;
-    public final DataSetCollectionRepository dataSets;
-    public final SectionCollectionRepository sections;
-
-    @Inject
-    DataSetModule(DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations,
-                  DataSetCollectionRepository dataSets,
-                  SectionCollectionRepository sections) {
-        this.dataSetCompleteRegistrations = dataSetCompleteRegistrations;
-        this.dataSets = dataSets;
-        this.sections = sections;
-    }
+    DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations();
+    DataSetCollectionRepository dataSets();
+    SectionCollectionRepository sections();
+    DataApprovalCollectionRepository dataApprovals();
+    DataSetInstanceCollectionRepository dataSetInstances();
 }

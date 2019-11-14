@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,63 +42,66 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 @RunWith(JUnit4.class)
 public class TrackedEntityInstanceQueryOnlineShould {
 
-    private TrackedEntityInstanceQuery.Builder queryBuilder;
+    private TrackedEntityInstanceQueryRepositoryScope.Builder queryBuilder;
 
     @Before
     public void setUp() {
-        queryBuilder = TrackedEntityInstanceQuery.builder()
-                .page(1)
-                .pageSize(50)
-                .paging(true)
+        queryBuilder = TrackedEntityInstanceQueryRepositoryScope.builder()
                 .orgUnits(Collections.singletonList("uid"));
     }
 
     @Test
     public void parse_query_in_api_format() {
-        TrackedEntityInstanceQuery query = queryBuilder
-                .query(QueryFilter.create(QueryOperator.LIKE, "filter"))
+        TrackedEntityInstanceQueryRepositoryScope scope = queryBuilder
+                .query(RepositoryScopeFilterItem.builder().key("").operator(FilterItemOperator.LIKE).value("filter").build())
                 .build();
 
-        TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(query);
+        TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(scope);
 
         assertThat(onlineQuery.query()).isEqualTo("LIKE:filter");
     }
 
     @Test
     public void parse_attributes_in_api_format() {
-        TrackedEntityInstanceQuery query = queryBuilder
+        TrackedEntityInstanceQueryRepositoryScope scope = queryBuilder
                 .attribute(Arrays.asList(
-                        QueryItem.create("attribute1"),
-                        QueryItem.create("attribute2", QueryFilter.create("filter21")),
-                        QueryItem.create("attribute3",
-                                QueryFilter.create("filter31"),
-                                QueryFilter.create(QueryOperator.EQ, "filter32"))
+                        RepositoryScopeFilterItem.builder()
+                                .key("attribute1").operator(FilterItemOperator.EQ).value("filter1").build(),
+                        RepositoryScopeFilterItem.builder()
+                                .key("attribute2").operator(FilterItemOperator.EQ).value("filter21").build(),
+                        RepositoryScopeFilterItem.builder()
+                                .key("attribute3").operator(FilterItemOperator.LIKE).value("filter31").build(),
+                        RepositoryScopeFilterItem.builder()
+                                .key("attribute2").operator(FilterItemOperator.LIKE).value("filter22").build()
                 )).build();
 
-        TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(query);
+        TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(scope);
 
         assertThat(onlineQuery.attribute().size()).isEqualTo(3);
-        assertThat(onlineQuery.attribute()).contains("attribute1");
-        assertThat(onlineQuery.attribute()).contains("attribute2:EQ:filter21");
-        assertThat(onlineQuery.attribute()).contains("attribute3:EQ:filter31:EQ:filter32");
+        assertThat(onlineQuery.attribute()).contains("attribute1:EQ:filter1");
+        assertThat(onlineQuery.attribute()).contains("attribute2:EQ:filter21:LIKE:filter22");
+        assertThat(onlineQuery.attribute()).contains("attribute3:LIKE:filter31");
     }
 
     @Test
     public void parse_filters_in_api_format() {
-        TrackedEntityInstanceQuery query = queryBuilder
+        TrackedEntityInstanceQueryRepositoryScope scope = queryBuilder
                 .filter(Arrays.asList(
-                        QueryItem.create("filterItem1"),
-                        QueryItem.create("filterItem2", QueryFilter.create("filter21")),
-                        QueryItem.create("filterItem3",
-                                QueryFilter.create("filter31"),
-                                QueryFilter.create(QueryOperator.EQ, "filter32"))
+                        RepositoryScopeFilterItem.builder()
+                                .key("filterItem1").operator(FilterItemOperator.EQ).value("filter1").build(),
+                        RepositoryScopeFilterItem.builder()
+                                .key("filterItem2").operator(FilterItemOperator.LIKE).value("filter21").build(),
+                        RepositoryScopeFilterItem.builder()
+                                .key("filterItem3").operator(FilterItemOperator.LIKE).value("filter31").build(),
+                        RepositoryScopeFilterItem.builder()
+                                .key("filterItem3").operator(FilterItemOperator.EQ).value("filter32").build()
                 )).build();
 
-        TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(query);
+        TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(scope);
 
         assertThat(onlineQuery.filter().size()).isEqualTo(3);
-        assertThat(onlineQuery.filter()).contains("filterItem1");
-        assertThat(onlineQuery.filter()).contains("filterItem2:EQ:filter21");
-        assertThat(onlineQuery.filter()).contains("filterItem3:EQ:filter31:EQ:filter32");
+        assertThat(onlineQuery.filter()).contains("filterItem1:EQ:filter1");
+        assertThat(onlineQuery.filter()).contains("filterItem2:LIKE:filter21");
+        assertThat(onlineQuery.filter()).contains("filterItem3:LIKE:filter31:EQ:filter32");
     }
 }

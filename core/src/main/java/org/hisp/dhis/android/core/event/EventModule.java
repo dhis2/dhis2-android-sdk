@@ -28,52 +28,7 @@
 
 package org.hisp.dhis.android.core.event;
 
-import androidx.annotation.VisibleForTesting;
-
-import org.hisp.dhis.android.core.common.Unit;
-import org.hisp.dhis.android.core.event.internal.EventPersistenceCallFactory;
-import org.hisp.dhis.android.core.event.internal.EventWithLimitCallFactory;
-
-import java.util.concurrent.Callable;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class EventModule {
-
-    private final EventWithLimitCallFactory eventWithLimitCallFactory;
-    public final EventCollectionRepository events;
-
-    @VisibleForTesting
-    @SuppressFBWarnings("URF_UNREAD_FIELD")
-    final EventPersistenceCallFactory eventPersistenceCallFactory;
-
-    @Inject
-    EventModule(EventWithLimitCallFactory eventWithLimitCallFactory,
-                EventCollectionRepository events,
-                EventPersistenceCallFactory eventPersistenceCallFactory) {
-        this.eventWithLimitCallFactory = eventWithLimitCallFactory;
-        this.events = events;
-        this.eventPersistenceCallFactory = eventPersistenceCallFactory;
-    }
-
-    /**
-     * Downloads and persists Events from the server. Only instances in capture scope are downloaded.
-     * This method keeps track of the latest successful download in order to void downloading unmodified data.
-     *
-     * It makes use of paging with a best effort strategy: in case a page fails to be downloaded or persisted, it is
-     * skipped and the rest of pages are persisted.
-     *
-     * @param eventLimit Max number of events to download
-     * @param limitByOrgUnit If true, the limit of Events is considered per organisation unit.
-     * @param limitByProgram If true, the limit of Events is considered per program.
-     * @return -
-     */
-    public Callable<Unit> downloadSingleEvents(int eventLimit, boolean limitByOrgUnit, boolean limitByProgram) {
-        return eventWithLimitCallFactory.getCall(eventLimit, limitByOrgUnit, limitByProgram);
-    }
+public interface EventModule {
+    EventCollectionRepository events();
+    EventDownloader eventDownloader();
 }

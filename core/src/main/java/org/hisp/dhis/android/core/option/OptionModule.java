@@ -28,25 +28,8 @@
 
 package org.hisp.dhis.android.core.option;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class OptionModule {
-
-    public final OptionGroupCollectionRepository optionGroups;
-    public final OptionSetCollectionRepository optionSets;
-    public final OptionCollectionRepository options;
-
-    @Inject
-    OptionModule(OptionGroupCollectionRepository optionGroups,
-                 OptionSetCollectionRepository optionSets,
-                 OptionCollectionRepository options) {
-        this.optionGroups = optionGroups;
-        this.optionSets = optionSets;
-        this.options = options;
-    }
+public interface OptionModule {
+    OptionGroupCollectionRepository optionGroups();
+    OptionSetCollectionRepository optionSets();
+    OptionCollectionRepository options();
 }

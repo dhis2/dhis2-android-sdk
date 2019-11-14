@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnly
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelFields;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo.Columns;
 
 import java.util.Map;
 
@@ -55,6 +55,6 @@ public final class OrganisationUnitLevelCollectionRepository extends ReadOnlyIde
     }
 
     public IntegerFilterConnector<OrganisationUnitLevelCollectionRepository> byLevel() {
-        return cf.integer(OrganisationUnitLevelFields.LEVEL);
+        return cf.integer(Columns.LEVEL);
     }
 }

@@ -30,38 +30,48 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AccessColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipConstraintAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStringColumnAdapter;
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
+import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.data.database.IgnoreRelationshipConstraintAdapter;
-
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_RelationshipType.Builder.class)
-public abstract class RelationshipType extends BaseIdentifiableObject implements Model {
+@JsonDeserialize(builder = $$AutoValue_RelationshipType.Builder.class)
+public abstract class RelationshipType extends BaseIdentifiableObject implements CoreObject {
 
     /**
-     * @deprecated since 2.29, replaced by {@link #fromConstraint()}
+     * @deprecated since 2.30, replaced by {@link #fromConstraint()}
      */
     @Deprecated
     @Nullable
-    public abstract String bIsToA();
+    @ColumnAdapter(IgnoreStringColumnAdapter.class)
+    abstract String bIsToA();
 
     /* Field name doesn't correspond with column name (typo: upper case A) We can keep the inconsistency
         as it will be removed when 2.29 is no longer supported */
     /**
-     * @deprecated since 2.29, replaced by {@link #toConstraint()}
+     * @deprecated since 2.30, replaced by {@link #toConstraint()}
      */
     @Deprecated
     @Nullable
-    @ColumnName(RelationshipTypeTableInfo.Columns.A_IS_TO_B_WITH_UPPER_CASE_A)
-    public abstract String aIsToB();
+    @ColumnAdapter(IgnoreStringColumnAdapter.class)
+    abstract String aIsToB();
+
+    @Nullable
+    public abstract String fromToName();
+
+    @Nullable
+    public abstract String toFromName();
 
     @Nullable
     @ColumnAdapter(IgnoreRelationshipConstraintAdapter.class)
@@ -71,8 +81,14 @@ public abstract class RelationshipType extends BaseIdentifiableObject implements
     @ColumnAdapter(IgnoreRelationshipConstraintAdapter.class)
     public abstract RelationshipConstraint toConstraint();
 
+    @Nullable
+    public abstract Boolean bidirectional();
+
+    @ColumnAdapter(AccessColumnAdapter.class)
+    public abstract Access access();
+
     public static Builder builder() {
-        return new AutoValue_RelationshipType.Builder();
+        return new $$AutoValue_RelationshipType.Builder();
     }
 
     public static RelationshipType create(Cursor cursor) {
@@ -86,14 +102,47 @@ public abstract class RelationshipType extends BaseIdentifiableObject implements
     public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        public abstract Builder bIsToA(String bIsToA);
+        abstract Builder bIsToA(String bIsToA);
 
-        public abstract Builder aIsToB(String aIsToB);
+        abstract Builder aIsToB(String aIsToB);
+
+        public abstract Builder fromToName(String fromToName);
+
+        public abstract Builder toFromName(String toFromName);
 
         public abstract Builder fromConstraint(RelationshipConstraint fromConstraint);
 
         public abstract Builder toConstraint(RelationshipConstraint toConstraint);
 
-        public abstract RelationshipType build();
+        public abstract Builder bidirectional(Boolean bidirectional);
+
+        public abstract Builder access(Access access);
+
+        abstract RelationshipType autoBuild();
+
+        // Auxiliary fields to access values
+        abstract String bIsToA();
+        abstract String aIsToB();
+        abstract Boolean bidirectional();
+        abstract Access access();
+
+        public RelationshipType build() {
+            if (bIsToA() != null) {
+                fromToName(bIsToA());                                   // Since 2.30
+            }
+            if (aIsToB() != null) {
+                toFromName(aIsToB());                                   // Since 2.30
+            }
+            if (bidirectional() == null) {
+                bidirectional(false);                                   // Since 2.32
+            }
+
+            try {
+                access();
+            } catch (IllegalStateException e) {
+                access(AccessHelper.createForDataWrite(true));                // Since 2.30
+            }
+            return autoBuild();
+        }
     }
 }

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.option;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ValueType;
@@ -42,8 +44,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
-
-import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -65,18 +65,13 @@ public class OptionSetCallShould extends BaseMockIntegrationTestEmptyEnqueable {
     }
 
     @Test
-    public void persist_option_set_with_options_in_data_base_when_call() throws Exception {
+    public void persist_option_sets_in_data_base_when_call() throws Exception {
         executeOptionSetCall();
 
-        OptionSetCollectionRepository optionSets = d2.optionModule().optionSets;
-        assertThat(optionSets.count()).isEqualTo(2);
-        assertThat(optionSets.uid("VQ2lai3OfVG").exists()).isTrue();
-        assertThat(optionSets.uid("TQ2lai3OfVG").exists()).isTrue();
-
-        OptionCollectionRepository options = d2.optionModule().options;
-        assertThat(options.uid("Y1ILwhy5VDY").exists()).isTrue();
-        assertThat(options.uid("egT1YqFWsVk").exists()).isTrue();
-        assertThat(options.uid("Z1ILwhy5VDY").exists()).isTrue();
+        OptionSetCollectionRepository optionSets = d2.optionModule().optionSets();
+        assertThat(optionSets.blockingCount()).isEqualTo(2);
+        assertThat(optionSets.uid("VQ2lai3OfVG").blockingExists()).isTrue();
+        assertThat(optionSets.uid("TQ2lai3OfVG").blockingExists()).isTrue();
     }
 
     @Test
@@ -97,8 +92,6 @@ public class OptionSetCallShould extends BaseMockIntegrationTestEmptyEnqueable {
                 BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-06T14:23:38.789"));
         assertThat(optionSet.version()).isEqualTo(1);
         assertThat(optionSet.valueType()).isEqualTo(ValueType.TEXT);
-
-        assertThat(optionSet.options().size()).isEqualTo(3);
     }
 
     private List<OptionSet> executeOptionSetCall() throws Exception{

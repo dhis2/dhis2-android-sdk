@@ -29,9 +29,8 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.dataset.internal.DataSetElementFields;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class DataSetElementLinkTableInfo {
 
@@ -43,7 +42,7 @@ public final class DataSetElementLinkTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
@@ -51,22 +50,25 @@ public final class DataSetElementLinkTableInfo {
     private DataSetElementLinkTableInfo() {
     }
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
+        public static final String DATA_SET = "dataSet";
+        public static final String DATA_ELEMENT = "dataElement";
+        public static final String CATEGORY_COMBO = "categoryCombo";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    DataSetElementFields.DATA_SET,
-                    DataSetElementFields.DATA_ELEMENT,
-                    DataSetElementFields.CATEGORY_COMBO
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    DATA_SET,
+                    DATA_ELEMENT,
+                    CATEGORY_COMBO
             );
         }
 
         @Override
         public String[] whereUpdate() {
-            return Utils.appendInNewArray(super.all(),
-                    DataSetElementFields.DATA_SET,
-                    DataSetElementFields.DATA_ELEMENT
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    DATA_SET,
+                    DATA_ELEMENT
             );
         }
     }

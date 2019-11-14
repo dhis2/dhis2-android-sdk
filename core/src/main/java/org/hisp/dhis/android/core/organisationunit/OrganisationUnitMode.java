@@ -35,6 +35,7 @@ package org.hisp.dhis.android.core.organisationunit;
  * <li>SELECTED: specified units only.</li>
  * <li>CHILDREN: immediate children of specified units, including specified units.</li>
  * <li>DESCENDANTS: all units in sub-hierarchy of specified units, including specified units.</li>
+ * <li>ACCESSIBLE: all organisation units accessible by the user (search scope).</li>
  * <li>ALL: all units in system.</li>
  * </ul>
  *

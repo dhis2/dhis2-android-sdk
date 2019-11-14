@@ -28,20 +28,19 @@
 
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.common.State;
 
-import androidx.annotation.NonNull;
+import java.util.List;
 
 public interface StoreWithState {
 
     int setState(@NonNull String uid, @NonNull State state);
 
+    int setState(@NonNull List<String> uids, @NonNull State state);
+
     int setStateForUpdate(@NonNull String uid);
-
-    int setStateForDelete(@NonNull String uid);
-
-    HandleAction setStateOrDelete(@NonNull String uid, @NonNull State state);
 
     State getState(@NonNull String uid);
 

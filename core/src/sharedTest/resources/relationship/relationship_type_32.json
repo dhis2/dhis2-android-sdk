@@ -1,0 +1,35 @@
+{
+  "created": "2014-04-14T13:53:38.659",
+  "lastUpdated": "2014-04-14T13:53:41.066",
+  "code": "216595_B_(Person-Person)",
+  "name": "Sibling_b-to-a_(Person-Person)",
+  "id": "WiH6923nMtb",
+  "bidirectional": true,
+  "displayName": "Sibling_b-to-a_(Person-Person)",
+  "fromToName": "Sibling_b-to-a_(Person-Person)",
+  "toFromName": "Sibling_a-to-b_(Person-Person)",
+  "access": {
+    "read": true,
+    "update": true,
+    "externalize": false,
+    "delete": true,
+    "write": true,
+    "manage": true,
+    "data": {
+      "read": true,
+      "write": false
+    }
+  },
+  "toConstraint": {
+    "relationshipEntity": "PROGRAM_INSTANCE",
+    "program": {
+      "id": "WSGAb5XwJ3Y"
+    }
+  },
+  "fromConstraint": {
+    "relationshipEntity": "TRACKED_ENTITY_INSTANCE",
+    "trackedEntityType": {
+      "id": "nEenWmSyUEp"
+    }
+  }
+}

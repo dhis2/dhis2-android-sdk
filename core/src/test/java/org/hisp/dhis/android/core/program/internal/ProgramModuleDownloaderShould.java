@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.common.BaseCallShould;
+import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionGroup;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.program.Program;
@@ -37,6 +38,7 @@ import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,10 +68,10 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private Program program;
 
     @Mock
-    private ProgramStage programStageWithUid;
+    private TrackedEntityType trackedEntityType;
 
     @Mock
-    private TrackedEntityType trackedEntityType;
+    private TrackedEntityAttribute trackedEntityAttribute;
 
     @Mock
     private Callable<List<Program>> programEndpointCall;
@@ -84,10 +86,16 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private Callable<List<TrackedEntityType>> trackedEntityTypeCall;
 
     @Mock
+    private Callable<List<TrackedEntityAttribute>> trackedEntityAttributeCall;
+
+    @Mock
     private Callable<List<RelationshipType>> relationshipTypeCall;
 
     @Mock
     private Callable<List<OptionSet>> optionSetCall;
+
+    @Mock
+    private Callable<List<Option>> optionCall;
 
     @Mock
     private Callable<List<OptionGroup>> optionGroupCall;
@@ -105,10 +113,16 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private UidsCallFactory<TrackedEntityType> trackedEntityCallFactory;
 
     @Mock
+    private UidsCallFactory<TrackedEntityAttribute> trackedEntityAttributeCallFactory;
+
+    @Mock
     private ListCallFactory<RelationshipType> relationshipTypeCallFactory;
 
     @Mock
     private UidsCallFactory<OptionSet> optionSetCallFactory;
+
+    @Mock
+    private UidsCallFactory<Option> optionCallFactory;
 
     @Mock
     private UidsCallFactory<OptionGroup> optionGroupCallFactory;
@@ -128,12 +142,6 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 HttpsURLConnection.HTTP_CLIENT_TIMEOUT,
                 ResponseBody.create(MediaType.parse("application/json"), "{}"));
 
-        // Payload data
-        when(program.trackedEntityType()).thenReturn(trackedEntityType);
-        when(program.programStages()).thenReturn(Collections.singletonList(programStageWithUid));
-        when(programStageWithUid.uid()).thenReturn("program_stage_uid");
-        when(trackedEntityType.uid()).thenReturn("test_tracked_entity_uid");
-
         // Call factories
         when(programCallFactory.create())
                 .thenReturn(programEndpointCall);
@@ -143,18 +151,24 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 .thenReturn(programRuleEndpointCall);
         when(trackedEntityCallFactory.create(any(Set.class)))
                 .thenReturn(trackedEntityTypeCall);
+        when(trackedEntityAttributeCallFactory.create(any(Set.class)))
+                .thenReturn(trackedEntityAttributeCall);
         when(relationshipTypeCallFactory.create())
                 .thenReturn(relationshipTypeCall);
         when(optionSetCallFactory.create(any(Set.class)))
                 .thenReturn(optionSetCall);
+        when(optionCallFactory.create(any(Set.class)))
+                .thenReturn(optionCall);
         when(optionGroupCallFactory.create(any(Set.class)))
                 .thenReturn(optionGroupCall);
 
         // Calls
         when(programEndpointCall.call()).thenReturn(Collections.singletonList(program));
         when(trackedEntityTypeCall.call()).thenReturn(Collections.singletonList(trackedEntityType));
+        when(trackedEntityAttributeCall.call()).thenReturn(Collections.singletonList(trackedEntityAttribute));
         when(relationshipTypeCall.call()).thenReturn(Collections.emptyList());
         when(optionSetCall.call()).thenReturn(Collections.emptyList());
+        when(optionCall.call()).thenReturn(Collections.emptyList());
         when(optionGroupCall.call()).thenReturn(Collections.emptyList());
         when(programStageEndpointCall.call()).thenReturn(Collections.emptyList());
         when(programRuleEndpointCall.call()).thenReturn(Collections.emptyList());
@@ -167,8 +181,10 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 programStageCallFactory,
                 programRuleCallFactory,
                 trackedEntityCallFactory,
+                trackedEntityAttributeCallFactory,
                 relationshipTypeCallFactory,
                 optionSetCallFactory,
+                optionCallFactory,
                 optionGroupCallFactory,
                 versionManager).downloadMetadata();
     }
@@ -206,6 +222,12 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     @Test(expected = Exception.class)
     public void fail_when_tracked_entity_types_call_fail() throws Exception {
         whenEndpointCallFails(trackedEntityTypeCall);
+        programDownloadCall.call();
+    }
+
+    @Test(expected = Exception.class)
+    public void fail_when_tracked_entity_attributes_call_fail() throws Exception {
+        whenEndpointCallFails(trackedEntityAttributeCall);
         programDownloadCall.call();
     }
 

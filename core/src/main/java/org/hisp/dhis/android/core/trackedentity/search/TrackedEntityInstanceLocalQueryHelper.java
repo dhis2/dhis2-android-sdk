@@ -29,21 +29,20 @@
 package org.hisp.dhis.android.core.trackedentity.search;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo.Columns;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 
 import java.util.List;
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
-import static org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields.PARENT;
-import static org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields.PATH;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueFields.VALUE;
+import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 
 final class TrackedEntityInstanceLocalQueryHelper {
 
@@ -54,11 +53,11 @@ final class TrackedEntityInstanceLocalQueryHelper {
 
     private static String TEI_UID = dot(TEI_ALIAS, "uid");
     private static String TEI_ALL = dot(TEI_ALIAS, "*");
-    private static String TEI_STATE = dot(TEI_ALIAS, BaseDataModel.Columns.STATE);
+    private static String TEI_STATE = dot(TEI_ALIAS, DataColumns.STATE);
     private static String TEI_LAST_UPDATED = dot(TEI_ALIAS, "lastUpdated");
 
-    private static String ENROLLMENT_DATE = EnrollmentFields.ENROLLMENT_DATE;
-    private static String PROGRAM = EnrollmentFields.PROGRAM;
+    private static String ENROLLMENT_DATE = EnrollmentTableInfo.Columns.ENROLLMENT_DATE;
+    private static String PROGRAM = EnrollmentTableInfo.Columns.PROGRAM;
 
     private static String TRACKED_ENTITY_ATTRIBUTE =
             TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE;
@@ -68,33 +67,46 @@ final class TrackedEntityInstanceLocalQueryHelper {
     private TrackedEntityInstanceLocalQueryHelper() { }
 
     @SuppressWarnings({"PMD.UseStringBufferForStringAppends"})
-    static String getSqlQuery(TrackedEntityInstanceQuery query, List<String> excludeList, int limit) {
+    static String getSqlQuery(TrackedEntityInstanceQueryRepositoryScope scope, List<String> excludeList, int limit) {
 
         String queryStr = "SELECT DISTINCT " + TEI_ALL + " FROM " +
                 TrackedEntityInstanceTableInfo.TABLE_INFO.name() + " " + TEI_ALIAS;
 
         WhereClauseBuilder where = new WhereClauseBuilder();
 
-        if (hasProgram(query)) {
+        if (hasProgram(scope)) {
             queryStr += String.format(" JOIN %s %s ON %s = %s",
                     EnrollmentTableInfo.TABLE_INFO.name(), ENROLLMENT_ALIAS,
                     dot(TEI_ALIAS, UID),
                     dot(ENROLLMENT_ALIAS, "trackedentityinstance"));
 
-            appendProgramWhere(where, query);
+            appendProgramWhere(where, scope);
         }
 
-        if (hasOrgunits(query)) {
+        if (hasOrgunits(scope)) {
             queryStr += String.format(" JOIN %s %s ON %s = %s",
                     OrganisationUnitTableInfo.TABLE_INFO.name(), ORGUNIT_ALIAS,
                     dot(TEI_ALIAS, "organisationUnit"),
                     dot(ORGUNIT_ALIAS, UID));
 
-            appendOrgunitWhere(where, query);
+            appendOrgunitWhere(where, scope);
         }
 
-        appendQueryWhere(where, query);
-        appendFiltersWhere(where, query);
+        if (scope.trackedEntityType() != null) {
+            where.appendKeyStringValue(dot(TEI_ALIAS, TrackedEntityInstanceTableInfo.Columns.TRACKED_ENTITY_TYPE),
+                    escapeQuotes(scope.trackedEntityType()));
+        }
+
+        if (scope.states() != null) {
+            where.appendInKeyEnumValues(dot(TEI_ALIAS, DataColumns.STATE), scope.states());
+        }
+
+        if (scope.includeDeleted() == null || !scope.includeDeleted()) {
+            where.appendKeyOperatorValue(dot(TEI_ALIAS, TrackedEntityInstanceTableInfo.Columns.DELETED), "!=", "1");
+        }
+
+        appendQueryWhere(where, scope);
+        appendFiltersWhere(where, scope);
         appendExcludeList(where, excludeList);
 
         if (!where.isEmpty()) {
@@ -105,8 +117,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
 
         queryStr += " ORDER BY CASE " +
                 "WHEN " + TEI_STATE + " IN ('" + State.TO_POST + "','" + State.TO_UPDATE + "') THEN 1 " +
-                "WHEN " + TEI_STATE + " = '" + State.TO_DELETE + "' THEN 2 " +
-                "WHEN " + TEI_STATE + " = '" + State.SYNCED + "' THEN 3 ELSE 4 END ASC, " +
+                "WHEN " + TEI_STATE + " = '" + State.SYNCED + "' THEN 2 ELSE 3 END ASC, " +
                 TEI_LAST_UPDATED + " DESC ";
 
         if (limit > 0) {
@@ -116,51 +127,55 @@ final class TrackedEntityInstanceLocalQueryHelper {
         return queryStr;
     }
 
-    private static boolean hasProgram(TrackedEntityInstanceQuery query) {
-        return query.program() != null;
+    private static boolean hasProgram(TrackedEntityInstanceQueryRepositoryScope scope) {
+        return scope.program() != null;
     }
 
-    private static void appendProgramWhere(WhereClauseBuilder where, TrackedEntityInstanceQuery query) {
-        if (query.program() != null) {
-            where.appendKeyStringValue(dot(ENROLLMENT_ALIAS, PROGRAM), query.program());
+    private static void appendProgramWhere(WhereClauseBuilder where, TrackedEntityInstanceQueryRepositoryScope scope) {
+        if (scope.program() != null) {
+            where.appendKeyStringValue(dot(ENROLLMENT_ALIAS, PROGRAM), escapeQuotes(scope.program()));
         }
-        if (query.programStartDate() != null) {
+        if (scope.programStartDate() != null) {
             where.appendKeyGreaterOrEqStringValue(dot(ENROLLMENT_ALIAS, ENROLLMENT_DATE),
-                    query.formattedProgramStartDate());
+                    scope.formattedProgramStartDate());
         }
-        if (query.programEndDate() != null) {
+        if (scope.programEndDate() != null) {
             where.appendKeyLessThanOrEqStringValue(dot(ENROLLMENT_ALIAS, ENROLLMENT_DATE),
-                    query.formattedProgramEndDate());
+                    scope.formattedProgramEndDate());
+        }
+        if (scope.includeDeleted() == null || !scope.includeDeleted()) {
+            where.appendKeyOperatorValue(dot(ENROLLMENT_ALIAS, EnrollmentTableInfo.Columns.DELETED), "!=", "1");
         }
     }
 
-    private static boolean hasOrgunits(TrackedEntityInstanceQuery query) {
-        return !query.orgUnits().isEmpty() &&
-                !OrganisationUnitMode.ALL.equals(query.orgUnitMode()) &&
-                !OrganisationUnitMode.ACCESSIBLE.equals(query.orgUnitMode());
+    private static boolean hasOrgunits(TrackedEntityInstanceQueryRepositoryScope scope) {
+        return !scope.orgUnits().isEmpty() &&
+                !OrganisationUnitMode.ALL.equals(scope.orgUnitMode()) &&
+                !OrganisationUnitMode.ACCESSIBLE.equals(scope.orgUnitMode());
     }
 
-    private static void appendOrgunitWhere(WhereClauseBuilder where, TrackedEntityInstanceQuery query) {
-        OrganisationUnitMode ouMode = query.orgUnitMode() == null ? OrganisationUnitMode.SELECTED : query.orgUnitMode();
+    private static void appendOrgunitWhere(WhereClauseBuilder where, TrackedEntityInstanceQueryRepositoryScope scope) {
+        OrganisationUnitMode ouMode = scope.orgUnitMode() == null ? OrganisationUnitMode.SELECTED : scope.orgUnitMode();
 
         WhereClauseBuilder inner = new WhereClauseBuilder();
         switch (ouMode) {
             case DESCENDANTS:
-                for (String orgunit : query.orgUnits()) {
-                    inner.appendOrKeyLikeStringValue(dot(ORGUNIT_ALIAS, PATH), "%" + orgunit + "%");
+                for (String orgunit : scope.orgUnits()) {
+                    inner.appendOrKeyLikeStringValue(dot(ORGUNIT_ALIAS, Columns.PATH), "%" +
+                            escapeQuotes(orgunit) + "%");
                 }
                 break;
             case CHILDREN:
-                for (String orgunit : query.orgUnits()) {
-                    inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, PARENT), orgunit);
+                for (String orgunit : scope.orgUnits()) {
+                    inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, Columns.PARENT), escapeQuotes(orgunit));
                     // TODO Include orgunit?
-                    inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, UID), orgunit);
+                    inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, UID), escapeQuotes(orgunit));
                 }
                 break;
             // SELECTED mode
             default:
-                for (String orgunit : query.orgUnits()) {
-                    inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, UID), orgunit);
+                for (String orgunit : scope.orgUnits()) {
+                    inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, UID), escapeQuotes(orgunit));
                 }
                 break;
         }
@@ -170,40 +185,39 @@ final class TrackedEntityInstanceLocalQueryHelper {
         }
     }
 
-    private static void appendQueryWhere(WhereClauseBuilder where, TrackedEntityInstanceQuery query) {
-        if (query.query() != null) {
-            for (String filterStr : query.query().getSqlFilters()) {
+    private static void appendQueryWhere(WhereClauseBuilder where, TrackedEntityInstanceQueryRepositoryScope scope) {
+        if (scope.query() != null) {
+            String[] tokens = scope.query().value().split(" ");
+            for (String token : tokens) {
+                String valueStr = scope.query().operator().equals(FilterItemOperator.LIKE) ? "%" + escapeQuotes(token)
+                        + "%" : escapeQuotes(token);
                 String sub = String.format("SELECT 1 FROM %s %s WHERE %s = %s AND %s %s '%s'",
                         TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), TEAV_ALIAS,
                         dot(TEAV_ALIAS, TRACKED_ENTITY_INSTANCE), dot(TEI_ALIAS, UID),
-                        dot(TEAV_ALIAS, VALUE), query.query().operator().getSqlOperator(), filterStr);
+                        dot(TEAV_ALIAS, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
+                        scope.query().operator().getSqlOperator(), valueStr);
                 where.appendExistsSubQuery(sub);
             }
         }
     }
 
-    private static void appendFiltersWhere(WhereClauseBuilder where, TrackedEntityInstanceQuery query) {
+    private static void appendFiltersWhere(WhereClauseBuilder where, TrackedEntityInstanceQueryRepositoryScope scope) {
         // TODO Filter by program attributes in case program is provided
 
-        for (QueryItem item : query.filter()) {
-            if (!item.filters().isEmpty()) {
-                appendFilterWhere(where, item);
-            }
-        }
-        for (QueryItem item : query.attribute()) {
-            if (!item.filters().isEmpty()) {
-                appendFilterWhere(where, item);
-            }
-        }
+        appendFilterWhere(where, scope.filter());
+        appendFilterWhere(where, scope.attribute());
     }
 
-    private static void appendFilterWhere(WhereClauseBuilder where, QueryItem item) {
-        for (QueryFilter filter : item.filters()) {
+    private static void appendFilterWhere(WhereClauseBuilder where, List<RepositoryScopeFilterItem> items) {
+        for (RepositoryScopeFilterItem item : items) {
+            String valueStr = item.operator().equals(FilterItemOperator.LIKE) ? "%" + escapeQuotes(item.value())
+                    + "%" : escapeQuotes(item.value());
             String sub = String.format("SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s %s '%s'",
                     TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), TEAV_ALIAS,
                     dot(TEAV_ALIAS, TRACKED_ENTITY_INSTANCE), dot(TEI_ALIAS, UID),
-                    dot(TEAV_ALIAS, TRACKED_ENTITY_ATTRIBUTE), item.item(),
-                    dot(TEAV_ALIAS, VALUE), filter.operator().getSqlOperator(), filter.getSqlFilter());
+                    dot(TEAV_ALIAS, TRACKED_ENTITY_ATTRIBUTE), escapeQuotes(item.key()),
+                    dot(TEAV_ALIAS, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
+                    item.operator().getSqlOperator(), valueStr);
             where.appendExistsSubQuery(sub);
         }
     }
@@ -216,5 +230,9 @@ final class TrackedEntityInstanceLocalQueryHelper {
 
     private static String dot(String item1, String item2) {
         return item1 + "." + item2;
+    }
+
+    private static String escapeQuotes(String value) {
+        return value.replaceAll("'", "''");
     }
 }

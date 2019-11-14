@@ -29,13 +29,9 @@
 package org.hisp.dhis.android.core.legendset;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
-
-import static org.hisp.dhis.android.core.legendset.internal.LegendFields.COLOR;
-import static org.hisp.dhis.android.core.legendset.internal.LegendFields.END_VALUE;
-import static org.hisp.dhis.android.core.legendset.internal.LegendFields.START_VALUE;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public final class LegendTableInfo {
 
@@ -50,17 +46,20 @@ public final class LegendTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends IdentifiableColumns {
+        public final static String START_VALUE = "startValue";
+        public final static String END_VALUE = "endValue";
+        public final static String COLOR = "color";
         public final static String LEGEND_SET = "legendSet";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     START_VALUE, END_VALUE, COLOR, LEGEND_SET
             );
         }

@@ -44,15 +44,15 @@ public class ConstantCollectionRepositoryMockIntegrationShould extends BaseMockI
 
     @Test
     public void find_all() {
-        List<Constant> constants = d2.constantModule().constants.get();
+        List<Constant> constants = d2.constantModule().constants().blockingGet();
         assertThat(constants.size(), is(2));
     }
 
     @Test
     public void filter_by_value() {
-        List<Constant> constants = d2.constantModule().constants
+        List<Constant> constants = d2.constantModule().constants()
                 .byValue().eq(3.14)
-                .get();
+                .blockingGet();
         assertThat(constants.size(), is(1));
     }
 }

@@ -27,7 +27,8 @@
  */
 package org.hisp.dhis.android.core.category.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
@@ -35,7 +36,6 @@ import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryTableInfo;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 final class CategoryCategoryComboChildrenAppender extends ChildrenAppender<CategoryCombo> {
 
@@ -45,22 +45,22 @@ final class CategoryCategoryComboChildrenAppender extends ChildrenAppender<Categ
             CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO,
             CategoryCategoryComboLinkTableInfo.Columns.CATEGORY);
 
-    private final LinkModelChildStore<CategoryCombo, Category> linkModelChildStore;
+    private final LinkChildStore<CategoryCombo, Category> linkChildStore;
 
-    private CategoryCategoryComboChildrenAppender(LinkModelChildStore<CategoryCombo, Category> linkModelChildStore) {
-        this.linkModelChildStore = linkModelChildStore;
+    private CategoryCategoryComboChildrenAppender(LinkChildStore<CategoryCombo, Category> linkChildStore) {
+        this.linkChildStore = linkChildStore;
     }
 
     @Override
     protected CategoryCombo appendChildren(CategoryCombo categoryCombo) {
         CategoryCombo.Builder builder = categoryCombo.toBuilder();
-        builder.categories(linkModelChildStore.getChildren(categoryCombo));
+        builder.categories(linkChildStore.getChildren(categoryCombo));
         return builder.build();
     }
 
     static ChildrenAppender<CategoryCombo> create(DatabaseAdapter databaseAdapter) {
         return new CategoryCategoryComboChildrenAppender(
-                StoreFactory.linkModelChildStore(
+                StoreFactory.linkChildStore(
                         databaseAdapter,
                         CategoryCategoryComboLinkTableInfo.TABLE_INFO,
                         CHILD_PROJECTION,

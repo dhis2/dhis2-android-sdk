@@ -27,6 +27,9 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
@@ -37,7 +40,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -54,14 +57,14 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import dagger.Reusable;
+import io.reactivex.Single;
 
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
 
 @Reusable
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class RelationshipCollectionRepository
         extends ReadOnlyCollectionRepositoryImpl<Relationship, RelationshipCollectionRepository>
         implements ReadWriteWithUidCollectionRepository<Relationship, Relationship> {
@@ -88,7 +91,12 @@ public final class RelationshipCollectionRepository
     }
 
     @Override
-    public String add(Relationship relationship) throws D2Error {
+    public Single<String> add(Relationship relationship) {
+        return Single.fromCallable(() -> blockingAdd(relationship));
+    }
+
+    @Override
+    public String blockingAdd(Relationship relationship) throws D2Error {
         if (relationshipHandler.doesRelationshipExist(relationship)) {
             throw D2Error
                     .builder()
@@ -208,19 +216,19 @@ public final class RelationshipCollectionRepository
     }
 
     public StringFilterConnector<RelationshipCollectionRepository> byUid() {
-        return cf.string(BaseIdentifiableObjectModel.Columns.UID);
+        return cf.string(IdentifiableColumns.UID);
     }
 
     public StringFilterConnector<RelationshipCollectionRepository> byName() {
-        return cf.string(BaseIdentifiableObjectModel.Columns.NAME);
+        return cf.string(IdentifiableColumns.NAME);
     }
 
     public DateFilterConnector<RelationshipCollectionRepository> byCreated() {
-        return cf.date(BaseIdentifiableObjectModel.Columns.CREATED);
+        return cf.date(IdentifiableColumns.CREATED);
     }
 
     public DateFilterConnector<RelationshipCollectionRepository> byLastUpdated() {
-        return cf.date(BaseIdentifiableObjectModel.Columns.LAST_UPDATED);
+        return cf.date(IdentifiableColumns.LAST_UPDATED);
     }
 
     public StringFilterConnector<RelationshipCollectionRepository> byRelationshipType() {

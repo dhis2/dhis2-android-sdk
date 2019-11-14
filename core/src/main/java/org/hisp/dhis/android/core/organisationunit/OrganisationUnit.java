@@ -30,6 +30,9 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -37,28 +40,24 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringArrayColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitGroupListAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitListAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreDataSetListAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreOrganisationUnitGroupListAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreOrganisationUnitListAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreProgramListAdapter;
-import org.hisp.dhis.android.core.data.database.OrganisationUnitWithUidColumnAdapter;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 @AutoValue
-@JsonDeserialize(builder = AutoValue_OrganisationUnit.Builder.class)
-public abstract class OrganisationUnit extends BaseNameableObject implements Model {
+@JsonDeserialize(builder = $$AutoValue_OrganisationUnit.Builder.class)
+public abstract class OrganisationUnit extends BaseNameableObject implements CoreObject {
 
     public enum Scope {
         SCOPE_DATA_CAPTURE,
@@ -67,8 +66,8 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Mod
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(OrganisationUnitWithUidColumnAdapter.class)
-    public abstract OrganisationUnit parent();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid parent();
 
     @Nullable
     @JsonProperty()
@@ -90,18 +89,18 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Mod
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreProgramListAdapter.class)
-    public abstract List<Program> programs();
+    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
+    public abstract List<ObjectWithUid> programs();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreDataSetListAdapter.class)
-    public abstract List<DataSet> dataSets();
+    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
+    public abstract List<ObjectWithUid> dataSets();
 
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreOrganisationUnitListAdapter.class)
-    public abstract List<OrganisationUnit> ancestors();
+    abstract List<OrganisationUnit> ancestors();
 
     @Nullable
     @JsonProperty()
@@ -110,7 +109,8 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Mod
 
     @Nullable
     @JsonIgnore()
-    public abstract String displayNamePath();
+    @ColumnAdapter(StringArrayColumnAdapter.class)
+    public abstract List<String> displayNamePath();
 
     @NonNull
     public static OrganisationUnit create(Cursor cursor) {
@@ -120,7 +120,7 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Mod
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_OrganisationUnit.Builder();
+        return new $$AutoValue_OrganisationUnit.Builder();
     }
 
     @AutoValue.Builder
@@ -128,7 +128,7 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Mod
     public abstract static class Builder extends BaseNameableObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        public abstract Builder parent(OrganisationUnit parent);
+        public abstract Builder parent(ObjectWithUid parent);
 
         public abstract Builder path(String path);
 
@@ -146,15 +146,15 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Mod
 
         public abstract Builder level(Integer level);
 
-        public abstract Builder programs(List<Program> programs);
+        public abstract Builder programs(List<ObjectWithUid> programs);
 
-        public abstract Builder dataSets(List<DataSet> dataSets);
+        public abstract Builder dataSets(List<ObjectWithUid> dataSets);
 
-        public abstract Builder ancestors(List<OrganisationUnit> ancestors);
+        abstract Builder ancestors(List<OrganisationUnit> ancestors);
 
         public abstract Builder organisationUnitGroups(List<OrganisationUnitGroup> organisationUnitGroups);
 
-        public abstract Builder displayNamePath(String displayNamePath);
+        public abstract Builder displayNamePath(List<String> displayNamePath);
 
         public abstract OrganisationUnit build();
     }

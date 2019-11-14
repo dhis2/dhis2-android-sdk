@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.settings.internal;
 
+import org.hisp.dhis.android.core.settings.SystemSettingModule;
+
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
@@ -40,5 +42,11 @@ public final class SystemSettingPackageDIModule {
     @Reusable
     SystemSettingService service(Retrofit retrofit) {
         return retrofit.create(SystemSettingService.class);
+    }
+
+    @Provides
+    @Reusable
+    SystemSettingModule module(SystemSettingModuleImpl impl) {
+        return impl;
     }
 }

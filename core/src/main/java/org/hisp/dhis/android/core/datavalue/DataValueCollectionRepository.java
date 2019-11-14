@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
+import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
@@ -37,19 +38,18 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.datavalue.internal.DataValueFields;
 import org.hisp.dhis.android.core.datavalue.internal.DataValuePostCall;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore;
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Observable;
+
+import static org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns;
 
 @Reusable
 public final class DataValueCollectionRepository
@@ -71,8 +71,15 @@ public final class DataValueCollectionRepository
     }
 
     @Override
-    public Callable<DataValueImportSummary> upload() {
-        return postCall;
+    public Observable<D2Progress> upload() {
+        return Observable.fromCallable(() ->
+                byState().in(State.TO_POST, State.TO_UPDATE, State.WARNING, State.ERROR).getWithoutChildren()
+        ).flatMap(postCall::uploadDataValues);
+    }
+
+    @Override
+    public void blockingUpload() {
+        upload().blockingSubscribe();
     }
 
     public DataValueObjectRepository value(String period,
@@ -91,50 +98,54 @@ public final class DataValueCollectionRepository
     }
 
     public StringFilterConnector<DataValueCollectionRepository> byDataElementUid() {
-        return cf.string(DataValueFields.DATA_ELEMENT);
+        return cf.string(Columns.DATA_ELEMENT);
     }
 
     public StringFilterConnector<DataValueCollectionRepository> byPeriod() {
-        return cf.string(DataValueFields.PERIOD);
+        return cf.string(Columns.PERIOD);
     }
 
     public StringFilterConnector<DataValueCollectionRepository> byOrganisationUnitUid() {
-        return cf.string(DataValueTableInfo.ORGANISATION_UNIT);
+        return cf.string(Columns.ORGANISATION_UNIT);
     }
 
     public StringFilterConnector<DataValueCollectionRepository> byCategoryOptionComboUid() {
-        return cf.string(DataValueFields.CATEGORY_OPTION_COMBO);
+        return cf.string(Columns.CATEGORY_OPTION_COMBO);
     }
 
     public StringFilterConnector<DataValueCollectionRepository> byAttributeOptionComboUid() {
-        return cf.string(DataValueFields.ATTRIBUTE_OPTION_COMBO);
+        return cf.string(Columns.ATTRIBUTE_OPTION_COMBO);
     }
 
     public StringFilterConnector<DataValueCollectionRepository> byValue() {
-        return cf.string(DataValueFields.VALUE);
+        return cf.string(Columns.VALUE);
     }
 
     public StringFilterConnector<DataValueCollectionRepository> byStoredBy() {
-        return cf.string(DataValueFields.STORED_BY);
+        return cf.string(Columns.STORED_BY);
     }
 
     public DateFilterConnector<DataValueCollectionRepository> byCreated() {
-        return cf.date(DataValueFields.CREATED);
+        return cf.date(Columns.CREATED);
     }
 
     public DateFilterConnector<DataValueCollectionRepository> byLastUpdated() {
-        return cf.date(DataValueFields.LAST_UPDATED);
+        return cf.date(Columns.LAST_UPDATED);
     }
 
     public StringFilterConnector<DataValueCollectionRepository> byComment() {
-        return cf.string(DataValueFields.COMMENT);
+        return cf.string(Columns.COMMENT);
     }
 
     public BooleanFilterConnector<DataValueCollectionRepository> byFollowUp() {
-        return cf.bool(DataValueFields.FOLLOW_UP);
+        return cf.bool(Columns.FOLLOW_UP);
     }
 
     public EnumFilterConnector<DataValueCollectionRepository, State> byState() {
-        return cf.enumC(BaseDataModel.Columns.STATE);
+        return cf.enumC(Columns.STATE);
+    }
+
+    public BooleanFilterConnector<DataValueCollectionRepository> byDeleted() {
+        return cf.bool(Columns.DELETED);
     }
 }

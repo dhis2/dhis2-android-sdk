@@ -33,8 +33,9 @@ import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 
 public final class ObjectStyleFields {
-    public static final String COLOR = "color";
-    public static final String ICON = "icon";
+
+    private static final String COLOR = "color";
+    private static final String ICON = "icon";
 
     private static FieldsHelper<ObjectStyle> fh = new FieldsHelper<>();
     public static final Fields<ObjectStyle> allFields = Fields.<ObjectStyle>builder().fields(

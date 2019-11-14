@@ -46,8 +46,8 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
     @Test
     public void find_all() {
         List<Relationship> relationships =
-                d2.relationshipModule().relationships
-                        .get();
+                d2.relationshipModule().relationships()
+                        .blockingGet();
 
         assertThat(relationships.size(), is(2));
     }
@@ -55,9 +55,9 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
     @Test
     public void filter_by_uid() {
         List<Relationship> relationships =
-                d2.relationshipModule().relationships
+                d2.relationshipModule().relationships()
                         .byUid().eq("AJOytZW7OaI")
-                        .get();
+                        .blockingGet();
 
         assertThat(relationships.size(), is(1));
     }
@@ -65,9 +65,9 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
     @Test
     public void filter_by_name() {
         List<Relationship> relationships =
-                d2.relationshipModule().relationships
+                d2.relationshipModule().relationships()
                         .byName().eq("Lab Sample to Person")
-                        .get();
+                        .blockingGet();
 
         assertThat(relationships.size(), is(1));
     }
@@ -75,9 +75,9 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
     @Test
     public void filter_by_created() throws ParseException {
         List<Relationship> relationships =
-                d2.relationshipModule().relationships
+                d2.relationshipModule().relationships()
                         .byCreated().eq(BaseNameableObject.DATE_FORMAT.parse("2019-02-07T08:06:28.369"))
-                        .get();
+                        .blockingGet();
 
         assertThat(relationships.size(), is(1));
     }
@@ -85,9 +85,9 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
     @Test
     public void filter_by_last_updated() throws ParseException {
         List<Relationship> relationships =
-                d2.relationshipModule().relationships
+                d2.relationshipModule().relationships()
                         .byLastUpdated().eq(BaseNameableObject.DATE_FORMAT.parse("2018-02-07T08:06:28.369"))
-                        .get();
+                        .blockingGet();
 
         assertThat(relationships.size(), is(1));
     }
@@ -95,9 +95,9 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
     @Test
     public void filter_by_relationship_type() {
         List<Relationship> relationships =
-                d2.relationshipModule().relationships
+                d2.relationshipModule().relationships()
                         .byRelationshipType().eq("V2kkHafqs8G")
-                        .get();
+                        .blockingGet();
 
         assertThat(relationships.size(), is(1));
     }
@@ -106,7 +106,7 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
     public void get_by_item() {
         RelationshipItem item = RelationshipItem.builder().trackedEntityInstance(
                 RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh").build()).build();
-        List<Relationship> relationships = d2.relationshipModule().relationships.getByItem(item);
+        List<Relationship> relationships = d2.relationshipModule().relationships().getByItem(item);
         assertThat(relationships.size(), is(4));
     }
 

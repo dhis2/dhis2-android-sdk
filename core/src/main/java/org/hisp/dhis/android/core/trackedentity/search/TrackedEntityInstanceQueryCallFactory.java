@@ -28,14 +28,16 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService;
 
 import java.text.ParseException;
 import java.util.List;
@@ -44,13 +46,12 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.net.ssl.HttpsURLConnection;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import retrofit2.Call;
 
 @SuppressWarnings({"PMD.PreserveStackTrace"})
 @Reusable
-public class TrackedEntityInstanceQueryCallFactory {
+class TrackedEntityInstanceQueryCallFactory {
 
     private final TrackedEntityInstanceService service;
     private final SearchGridMapper mapper;
@@ -66,11 +67,7 @@ public class TrackedEntityInstanceQueryCallFactory {
         this.apiCallExecutor = apiCallExecutor;
     }
 
-    public Callable<List<TrackedEntityInstance>> getCall(final TrackedEntityInstanceQuery query) {
-        return getCallInternal(TrackedEntityInstanceQueryOnline.create(query));
-    }
-
-    Callable<List<TrackedEntityInstance>> getCallInternal(final TrackedEntityInstanceQueryOnline query) {
+    Callable<List<TrackedEntityInstance>> getCall(final TrackedEntityInstanceQueryOnline query) {
         return () -> queryTrackedEntityInstances(query);
     }
 
@@ -80,11 +77,11 @@ public class TrackedEntityInstanceQueryCallFactory {
         OrganisationUnitMode mode = query.orgUnitMode();
         String orgUnitModeStr = mode == null ? null : mode.toString();
 
-        String orgUnits = Utils.joinCollectionWithSeparator(query.orgUnits(), ";");
+        String orgUnits = CollectionsHelper.joinCollectionWithSeparator(query.orgUnits(), ";");
         Call<SearchGrid> searchGridCall = service.query(orgUnits,
-                orgUnitModeStr, query.program(), query.formattedProgramStartDate(),
-                query.formattedProgramEndDate(), query.query(), query.attribute(),
-                query.filter(), query.paging(), query.page(), query.pageSize());
+                orgUnitModeStr, query.program(), query.formattedProgramStartDate(), query.formattedProgramEndDate(),
+                query.trackedEntityType(), query.query(), query.attribute(), query.filter(),
+                query.paging(), query.page(), query.pageSize());
 
         SearchGrid searchGrid;
 

@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.legendset.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkTableInfo;
 
@@ -47,8 +47,8 @@ public final class ProgramIndicatorLegendSetLinkStore {
 
     private ProgramIndicatorLegendSetLinkStore() {}
 
-    public static LinkModelStore<ProgramIndicatorLegendSetLink> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO,
+    public static LinkStore<ProgramIndicatorLegendSetLink> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkStore(databaseAdapter, ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO,
                 ProgramIndicatorLegendSetLinkTableInfo.Columns.PROGRAM_INDICATOR,
                 BINDER, ProgramIndicatorLegendSetLink::create);
     }

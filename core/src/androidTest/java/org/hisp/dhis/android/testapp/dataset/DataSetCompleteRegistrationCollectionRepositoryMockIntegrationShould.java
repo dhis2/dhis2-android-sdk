@@ -49,19 +49,19 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
     @Test
     public void find_all() {
         List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
-                d2.dataSetModule().dataSetCompleteRegistrations
-                        .get();
+                d2.dataSetModule().dataSetCompleteRegistrations()
+                        .blockingGet();
 
-        assertThat(dataSetCompleteRegistrations.size(), is(5));
+        assertThat(dataSetCompleteRegistrations.size(), is(3));
     }
 
     @Test
     public void filter_by_period() {
         List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
-                d2.dataSetModule().dataSetCompleteRegistrations
+                d2.dataSetModule().dataSetCompleteRegistrations()
                         .byPeriod()
-                        .eq("2019")
-                        .get();
+                        .eq("2018")
+                        .blockingGet();
 
         assertThat(dataSetCompleteRegistrations.size(), is(1));
     }
@@ -69,66 +69,76 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
     @Test
     public void filter_by_data_set() {
         List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
-                d2.dataSetModule().dataSetCompleteRegistrations
+                d2.dataSetModule().dataSetCompleteRegistrations()
                         .byDataSetUid()
                         .eq("lyLU2wR22tC")
-                        .get();
-
-        assertThat(dataSetCompleteRegistrations.size(), is(5));
-    }
-
-    @Test
-    public void filter_by_organisation_unit() {
-        List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
-                d2.dataSetModule().dataSetCompleteRegistrations
-                        .byOrganisationUnitUid()
-                        .eq("DiszpKrYNg8")
-                        .get();
-
-        assertThat(dataSetCompleteRegistrations.size(), is(5));
-    }
-
-    @Test
-    public void filter_by_attribute_option_combo() {
-        List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
-                d2.dataSetModule().dataSetCompleteRegistrations
-                        .byAttributeOptionComboUid()
-                        .eq("bRowv6yZOF2").get();
-
-        assertThat(dataSetCompleteRegistrations.size(), is(5));
-    }
-
-    @Test
-    public void filter_by_date_after() throws ParseException {
-        List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
-                d2.dataSetModule().dataSetCompleteRegistrations
-                        .byDate()
-                        .after(simpleDateFormat.parse("2010-08-03"))
-                        .get();
-
-        assertThat(dataSetCompleteRegistrations.size(), is(2));
-    }
-
-    @Test
-    public void filter_by_date_before() throws ParseException {
-        List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
-                d2.dataSetModule().dataSetCompleteRegistrations
-                        .byDate()
-                        .before(simpleDateFormat.parse("2010-08-03"))
-                        .get();
+                        .blockingGet();
 
         assertThat(dataSetCompleteRegistrations.size(), is(3));
     }
 
     @Test
-    public void filter_by_stored_by() {
+    public void filter_by_organisation_unit() {
         List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
-                d2.dataSetModule().dataSetCompleteRegistrations
-                        .byStoredBy()
-                        .eq("imported")
-                        .get();
+                d2.dataSetModule().dataSetCompleteRegistrations()
+                        .byOrganisationUnitUid()
+                        .eq("DiszpKrYNg8")
+                        .blockingGet();
+
+        assertThat(dataSetCompleteRegistrations.size(), is(3));
+    }
+
+    @Test
+    public void filter_by_attribute_option_combo() {
+        List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
+                d2.dataSetModule().dataSetCompleteRegistrations()
+                        .byAttributeOptionComboUid()
+                        .eq("bRowv6yZOF2").blockingGet();
+
+        assertThat(dataSetCompleteRegistrations.size(), is(3));
+    }
+
+    @Test
+    public void filter_by_date_after() throws ParseException {
+        List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
+                d2.dataSetModule().dataSetCompleteRegistrations()
+                        .byDate()
+                        .after(simpleDateFormat.parse("2010-08-03"))
+                        .blockingGet();
+
+        assertThat(dataSetCompleteRegistrations.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_date_before() throws ParseException {
+        List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
+                d2.dataSetModule().dataSetCompleteRegistrations()
+                        .byDate()
+                        .before(simpleDateFormat.parse("2010-08-03"))
+                        .blockingGet();
 
         assertThat(dataSetCompleteRegistrations.size(), is(2));
+    }
+
+    @Test
+    public void filter_by_stored_by() {
+        List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
+                d2.dataSetModule().dataSetCompleteRegistrations()
+                        .byStoredBy()
+                        .eq("imported")
+                        .blockingGet();
+
+        assertThat(dataSetCompleteRegistrations.size(), is(2));
+    }
+
+    @Test
+    public void filter_by_deleted() {
+        List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
+                d2.dataSetModule().dataSetCompleteRegistrations()
+                        .byDeleted().isFalse()
+                        .blockingGet();
+
+        assertThat(dataSetCompleteRegistrations.size(), is(3));
     }
 
 }

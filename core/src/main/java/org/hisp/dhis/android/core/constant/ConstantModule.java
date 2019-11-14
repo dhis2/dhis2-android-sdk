@@ -28,19 +28,6 @@
 
 package org.hisp.dhis.android.core.constant;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class ConstantModule {
-
-    public final ConstantCollectionRepository constants;
-
-    @Inject
-    ConstantModule(ConstantCollectionRepository constantsRepository) {
-        this.constants = constantsRepository;
-    }
+public interface ConstantModule {
+    ConstantCollectionRepository constants();
 }

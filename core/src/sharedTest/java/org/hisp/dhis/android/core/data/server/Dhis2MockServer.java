@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.data.server;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.data.file.IFileReader;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 
@@ -37,7 +39,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import androidx.annotation.NonNull;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -55,8 +56,10 @@ public class Dhis2MockServer {
     private static final String PROGRAM_STAGES_JSON = "program/program_stages.json";
     private static final String PROGRAM_RULES_JSON = "program/program_rules.json";
     private static final String TRACKED_ENTITY_TYPES_JSON = "trackedentity/tracked_entity_types.json";
+    private static final String TRACKED_ENTITY_ATTRIBUTES_JSON = "trackedentity/tracked_entity_attributes.json";
     private static final String RELATIONSHIP_TYPES_JSON = "relationship/relationship_types.json";
     private static final String OPTION_SETS_JSON = "option/option_sets.json";
+    private static final String OPTIONS_JSON = "option/options.json";
     private static final String OPTION_GROUPS_JSON = "option/option_groups.json";
     private static final String DATA_SETS_JSON = "dataset/data_sets.json";
     private static final String DATA_ELEMENTS_JSON = "dataelement/data_elements.json";
@@ -71,6 +74,7 @@ public class Dhis2MockServer {
     private static final String TRACKED_ENTITY_INSTANCES_JSON = "trackedentity/tracked_entity_instances.json";
     private static final String DATA_VALUES_JSON = "datavalue/data_values.json";
     private static final String DATA_SET_COMPLETE_REGISTRATIONS_JSON = "dataset/data_set_complete_registrations.json";
+    private static final String DATA_APPROVALS_MULTIPLE_JSON = "dataapproval/data_approvals_multiple.json";
     private static final String ORGANISATION_UNITS_JSON = "organisationunit/organisation_units.json";
     private static final String SMS_METADATA_IDS = "sms/metadata_ids.json";
 
@@ -134,10 +138,14 @@ public class Dhis2MockServer {
                     return createMockResponse(PROGRAM_RULES_JSON);
                 } else if (path.startsWith("/api/trackedEntityTypes?")) {
                     return createMockResponse(TRACKED_ENTITY_TYPES_JSON);
+                } else if (path.startsWith("/api/trackedEntityAttributes?")) {
+                    return createMockResponse(TRACKED_ENTITY_ATTRIBUTES_JSON);
                 } else if (path.startsWith("/api/relationshipTypes?")) {
                     return createMockResponse(RELATIONSHIP_TYPES_JSON);
                 } else if (path.startsWith("/api/optionSets?")) {
                     return createMockResponse(OPTION_SETS_JSON);
+                } else if (path.startsWith("/api/options?")) {
+                    return createMockResponse(OPTIONS_JSON);
                 } else if (path.startsWith("/api/optionGroups?")) {
                     return createMockResponse(OPTION_GROUPS_JSON);
                 } else if (path.startsWith("/api/dataSets?")) {
@@ -166,6 +174,8 @@ public class Dhis2MockServer {
                     return createMockResponse(DATA_VALUES_JSON);
                 } else if (path.startsWith("/api/completeDataSetRegistrations?")) {
                     return createMockResponse(DATA_SET_COMPLETE_REGISTRATIONS_JSON);
+                } else if (path.startsWith("/api/dataApprovals/multiple?")) {
+                    return createMockResponse(DATA_APPROVALS_MULTIPLE_JSON);
                 } else {
                     return new MockResponse().setResponseCode(404).setBody("Path not present in Dhis2MockServer dispatcher");
                 }
@@ -183,8 +193,10 @@ public class Dhis2MockServer {
         enqueueMockResponse(PROGRAM_STAGES_JSON);
         enqueueMockResponse(PROGRAM_RULES_JSON);
         enqueueMockResponse(TRACKED_ENTITY_TYPES_JSON);
+        enqueueMockResponse(TRACKED_ENTITY_ATTRIBUTES_JSON);
         enqueueMockResponse(RELATIONSHIP_TYPES_JSON);
         enqueueMockResponse(OPTION_SETS_JSON);
+        enqueueMockResponse(OPTIONS_JSON);
         enqueueMockResponse(OPTION_GROUPS_JSON);
         enqueueMockResponse(DATA_SETS_JSON);
         enqueueMockResponse(DATA_ELEMENTS_JSON);

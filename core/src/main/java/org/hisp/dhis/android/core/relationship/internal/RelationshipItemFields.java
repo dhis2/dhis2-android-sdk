@@ -33,21 +33,20 @@ import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.relationship.RelationshipItemEnrollment;
 import org.hisp.dhis.android.core.relationship.RelationshipItemEvent;
+import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo.Columns;
 import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance;
 
 public final class RelationshipItemFields {
-    public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
-    public static final String ENROLLMENT = "enrollment";
-    public static final String EVENT = "event";
 
     private static final FieldsHelper<RelationshipItem> fh = new FieldsHelper<>();
 
     public static final Fields<RelationshipItem> allFields = Fields.<RelationshipItem>builder()
             .fields(
-                    fh.<RelationshipItemTrackedEntityInstance>nestedField(TRACKED_ENTITY_INSTANCE)
+                    fh.<RelationshipItemTrackedEntityInstance>nestedField(Columns.TRACKED_ENTITY_INSTANCE)
                             .with(RelationshipItemTrackedEntityInstanceFields.trackedEntityInstance),
-            fh.<RelationshipItemEnrollment>nestedField(ENROLLMENT).with(RelationshipItemEnrollmentFields.enrollment),
-            fh.<RelationshipItemEvent>nestedField(EVENT).with(RelationshipItemEventFields.event)
+            fh.<RelationshipItemEnrollment>nestedField(Columns.ENROLLMENT)
+                    .with(RelationshipItemEnrollmentFields.enrollment),
+            fh.<RelationshipItemEvent>nestedField(Columns.EVENT).with(RelationshipItemEventFields.event)
     ).build();
 
     private RelationshipItemFields() {

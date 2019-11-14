@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.arch.handlers.internal;
 
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Collection;
 
-public interface LinkHandler<S, O extends Model> {
+public interface LinkHandler<S, O extends CoreObject> {
     void handleMany(String masterUid, Collection<S> slaves, Transformer<S, O> transformer);
     void resetAllLinks();
 }

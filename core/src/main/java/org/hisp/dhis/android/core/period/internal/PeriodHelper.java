@@ -32,23 +32,35 @@ import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 
 @Singleton
 public class PeriodHelper {
 
     private final PeriodStore periodStore;
+    private final PeriodForDataSetManager periodForDataSetManager;
 
     @Inject
-    PeriodHelper(PeriodStore periodStore) {
+    PeriodHelper(PeriodStore periodStore, PeriodForDataSetManager periodForDataSetManager) {
         this.periodStore = periodStore;
+        this.periodForDataSetManager = periodForDataSetManager;
     }
 
     public Period getPeriod(@NonNull PeriodType periodType, @NonNull Date date) {
         return periodStore.selectPeriodByTypeAndDate(periodType, date);
+    }
+
+    public Single<List<Period>> getPeriodsForDataSet(String dataSetUid) {
+        return periodForDataSetManager.getPeriodsForDataSet(dataSetUid);
+    }
+
+    public List<Period> blockingGetPeriodsForDataSet(String dataSetUid) {
+        return getPeriodsForDataSet(dataSetUid).blockingGet();
     }
 }

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.event.Event;
 import org.junit.AfterClass;
@@ -120,7 +120,7 @@ public class EventEndpointCallShould {
         }
 
         EventQuery eventQuery = EventQuery.builder()
-                .uIds(uIds)
+                .uids(uIds)
                 .build();
 
         return new EventEndpointCallFactory(retrofit.create(EventService.class), APICallExecutorImpl.create(databaseAdapter)).getCall(eventQuery);

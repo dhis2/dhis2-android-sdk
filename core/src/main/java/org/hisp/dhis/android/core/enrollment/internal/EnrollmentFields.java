@@ -31,45 +31,41 @@ package org.hisp.dhis.android.core.enrollment.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.enrollment.note.Note;
-import org.hisp.dhis.android.core.enrollment.note.internal.NoteFields;
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.note.internal.NoteFields;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.internal.EventFields;
 
 public final class EnrollmentFields {
 
     public static final String UID = "enrollment";
-    public static final String CREATED = "created";
-    public static final String LAST_UPDATED = "lastUpdated";
     public static final String ORGANISATION_UNIT = "orgUnit";
-    public static final String PROGRAM = "program";
-    public static final String ENROLLMENT_DATE = "enrollmentDate";
-    public static final String INCIDENT_DATE = "incidentDate";
-    public static final String FOLLOW_UP = "followup";
-    public static final String STATUS = "status";
-    public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
-    public static final String COORDINATE = "coordinate";
+    private static final String COORDINATE = "coordinate";
     public static final String DELETED = "deleted";
-    public static final String EVENTS = "events";
+    private static final String EVENTS = "events";
     public static final String NOTES = "notes";
+    private final static String GEOMETRY = "geometry";
 
     private static FieldsHelper<Enrollment> fh = new FieldsHelper<>();
 
     public static final Fields<Enrollment> allFields = Fields.<Enrollment>builder()
             .fields(fh.<String>field(UID),
-                    fh.<String>field(CREATED),
-                    fh.<String>field(LAST_UPDATED),
+                    fh.<String>field(Columns.CREATED),
+                    fh.<String>field(Columns.LAST_UPDATED),
                     fh.<String>field(ORGANISATION_UNIT),
-                    fh.<String>field(PROGRAM),
-                    fh.<String>field(ENROLLMENT_DATE),
-                    fh.<String>field(INCIDENT_DATE),
-                    fh.<String>field(FOLLOW_UP),
-                    fh.<EnrollmentStatus>field(STATUS),
+                    fh.<String>field(Columns.PROGRAM),
+                    fh.<String>field(Columns.ENROLLMENT_DATE),
+                    fh.<String>field(Columns.INCIDENT_DATE),
+                    fh.<String>field(Columns.FOLLOW_UP),
+                    fh.<EnrollmentStatus>field(Columns.STATUS),
                     fh.<Boolean>field(DELETED),
-                    fh.<String>field(TRACKED_ENTITY_INSTANCE),
+                    fh.<String>field(Columns.TRACKED_ENTITY_INSTANCE),
                     fh.<Coordinates>field(COORDINATE),
+                    fh.<Geometry>field(GEOMETRY),
                     fh.<Event>nestedField(EVENTS).with(EventFields.allFields),
                     fh.<Note>nestedField(NOTES).with(NoteFields.all)
     ).build();

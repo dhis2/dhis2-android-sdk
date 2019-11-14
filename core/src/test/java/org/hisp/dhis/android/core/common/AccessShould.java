@@ -47,11 +47,7 @@ public class AccessShould extends BaseObjectShould implements ObjectShould {
         Access access = objectMapper.readValue(jsonStream, Access.class);
 
         assertThat(access.read()).isEqualTo(true);
-        assertThat(access.update()).isEqualTo(true);
-        assertThat(access.externalize()).isEqualTo(false);
-        assertThat(access.delete()).isEqualTo(true);
         assertThat(access.write()).isEqualTo(true);
-        assertThat(access.manage()).isEqualTo(true);
         assertThat(access.data()).isEqualTo(DataAccess.create(true, true));
     }
 }

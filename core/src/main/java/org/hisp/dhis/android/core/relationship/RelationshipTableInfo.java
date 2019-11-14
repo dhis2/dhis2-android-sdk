@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public final class RelationshipTableInfo {
 
@@ -46,21 +46,25 @@ public final class RelationshipTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
+        public static final String UID = IdentifiableColumns.UID;
+        public static final String NAME = IdentifiableColumns.NAME;
+        public static final String CREATED = IdentifiableColumns.CREATED;
+        public static final String LAST_UPDATED = IdentifiableColumns.LAST_UPDATED;
         public static final String RELATIONSHIP_TYPE = "relationshipType";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    BaseIdentifiableObjectModel.Columns.UID,
-                    BaseIdentifiableObjectModel.Columns.NAME,
-                    BaseIdentifiableObjectModel.Columns.CREATED,
-                    BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    UID,
+                    NAME,
+                    CREATED,
+                    LAST_UPDATED,
                     RELATIONSHIP_TYPE
             );
         }

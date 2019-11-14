@@ -35,18 +35,18 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleHandler;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.dataset.DataInputPeriod;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLink;
 import org.hisp.dhis.android.core.dataset.DataSetElement;
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
+import org.hisp.dhis.android.core.dataset.DataSetInternalAccessor;
 import org.hisp.dhis.android.core.dataset.Section;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink;
 import org.hisp.dhis.android.core.indicator.Indicator;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -54,8 +54,6 @@ import dagger.Reusable;
 
 @Reusable
 final class DataSetHandler extends IdentifiableHandlerImpl<DataSet> {
-
-    private final ObjectStyleHandler styleHandler;
 
     private final Handler<Section> sectionHandler;
     private final OrphanCleaner<DataSet, Section> sectionOrphanCleaner;
@@ -71,7 +69,6 @@ final class DataSetHandler extends IdentifiableHandlerImpl<DataSet> {
 
     @Inject
     DataSetHandler(IdentifiableObjectStore<DataSet> dataSetStore,
-                   ObjectStyleHandler styleHandler,
                    Handler<Section> sectionHandler,
                    OrphanCleaner<DataSet, Section> sectionOrphanCleaner,
                    Handler<DataElementOperand> compulsoryDataElementOperandHandler,
@@ -83,7 +80,6 @@ final class DataSetHandler extends IdentifiableHandlerImpl<DataSet> {
                    CollectionCleaner<DataSet> collectionCleaner) {
 
         super(dataSetStore);
-        this.styleHandler = styleHandler;
         this.sectionHandler = sectionHandler;
         this.sectionOrphanCleaner = sectionOrphanCleaner;
         this.compulsoryDataElementOperandHandler = compulsoryDataElementOperandHandler;
@@ -97,9 +93,9 @@ final class DataSetHandler extends IdentifiableHandlerImpl<DataSet> {
     @Override
     protected void afterObjectHandled(final DataSet dataSet, HandleAction action) {
 
-        styleHandler.handle(dataSet.style(), dataSet.uid(), DataSetTableInfo.TABLE_INFO.name());
+        List<Section> sections = DataSetInternalAccessor.accessSections(dataSet);
 
-        sectionHandler.handleMany(dataSet.sections());
+        sectionHandler.handleMany(sections);
 
         compulsoryDataElementOperandHandler.handleMany(dataSet.compulsoryDataElementOperands());
 
@@ -119,7 +115,7 @@ final class DataSetHandler extends IdentifiableHandlerImpl<DataSet> {
                 indicator -> DataSetIndicatorLink.builder().dataSet(dataSet.uid()).indicator(indicator.uid()).build());
 
         if (action == HandleAction.Update) {
-            sectionOrphanCleaner.deleteOrphan(dataSet, dataSet.sections());
+            sectionOrphanCleaner.deleteOrphan(dataSet, sections);
         }
     }
 

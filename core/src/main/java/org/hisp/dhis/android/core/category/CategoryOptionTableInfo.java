@@ -29,10 +29,9 @@
 package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.category.internal.CategoryOptionFields;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.NameableColumns;
 
 public final class CategoryOptionTableInfo {
 
@@ -47,19 +46,21 @@ public final class CategoryOptionTableInfo {
         }
 
         @Override
-        public BaseModel.Columns columns() {
+        public CoreColumns columns() {
             return new Columns();
         }
     };
 
-    static class Columns extends BaseNameableObjectModel.Columns {
-        static final String ACCESS_DATA_WRITE = "accessDataWrite";
+    public static class Columns extends NameableColumns {
+        public static final String START_DATE = "startDate";
+        public static final String END_DATE = "endDate";
+        public static final String ACCESS_DATA_WRITE = "accessDataWrite";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    CategoryOptionFields.START_DATE,
-                    CategoryOptionFields.END_DATE,
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    START_DATE,
+                    END_DATE,
                     ACCESS_DATA_WRITE
             );
         }

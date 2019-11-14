@@ -38,9 +38,14 @@ import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.program.ProgramStage;
+import org.hisp.dhis.android.core.program.ProgramStageDataElement;
+import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -72,12 +77,34 @@ public final class ProgramStageEndpointCallFactory extends UidsCallFactoryImpl<P
 
             @Override
             protected retrofit2.Call<Payload<ProgramStage>> getCall(UidsQuery query) {
-                String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
+                String accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString();
+                String programUidsFilterStr = "program." + ObjectWithUid.uid.in(query.uids()).generateString();
                 return service.getProgramStages(
                         ProgramStageFields.allFields,
-                        ProgramStageFields.uid.in(query.uids()),
+                        programUidsFilterStr,
                         accessDataReadFilter,
                         Boolean.FALSE);
+            }
+
+            @Override
+            protected List<ProgramStage> transform(List<ProgramStage> list) {
+                List<ProgramStage> stages = new ArrayList<>();
+                for (ProgramStage stage : list) {
+                    if (ProgramStageInternalAccessor.accessProgramStageDataElements(stage) == null) {
+                        stages.add(stage);
+                    } else {
+                        List<ProgramStageDataElement> psdes = new ArrayList<>();
+                        for (ProgramStageDataElement psde : ProgramStageInternalAccessor
+                                .accessProgramStageDataElements(stage)) {
+                            if (psde.dataElement() != null) {
+                                psdes.add(psde);
+                            }
+                        }
+                        stages.add(ProgramStageInternalAccessor.insertProgramStageDataElements(stage.toBuilder(), psdes)
+                                .build());
+                    }
+                }
+                return stages;
             }
         };
     }

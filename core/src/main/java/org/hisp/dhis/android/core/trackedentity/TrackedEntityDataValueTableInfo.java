@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class TrackedEntityDataValueTableInfo {
 
@@ -50,27 +50,33 @@ public final class TrackedEntityDataValueTableInfo {
         }
     };
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends CoreColumns {
         public static final String EVENT = "event";
+        public final static String DATA_ELEMENT = "dataElement";
+        public final static String STORED_BY = "storedBy";
+        public final static String VALUE = "value";
+        public final static String CREATED = "created";
+        public final static String LAST_UPDATED = "lastUpdated";
+        public final static String PROVIDED_ELSEWHERE = "providedElsewhere";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     EVENT,
-                    TrackedEntityDataValueFields.CREATED,
-                    TrackedEntityDataValueFields.LAST_UPDATED,
-                    TrackedEntityDataValueFields.DATA_ELEMENT,
-                    TrackedEntityDataValueFields.STORED_BY,
-                    TrackedEntityDataValueFields.VALUE,
-                    TrackedEntityDataValueFields.PROVIDED_ELSEWHERE
+                    CREATED,
+                    LAST_UPDATED,
+                    DATA_ELEMENT,
+                    STORED_BY,
+                    VALUE,
+                    PROVIDED_ELSEWHERE
             );
         }
 
         @Override
         public String[] whereUpdate() {
-            return Utils.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(super.all(),
                     EVENT,
-                    TrackedEntityDataValueFields.DATA_ELEMENT
+                    DATA_ELEMENT
             );
         }
     }

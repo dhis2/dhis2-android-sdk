@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-public final class EnumFilterConnector<R extends ReadOnlyCollectionRepository<?>, E extends Enum<E>>
-        extends BaseFilterConnector<R, E> {
+public final class EnumFilterConnector<R extends BaseRepository, E extends Enum<E>>
+        extends BaseAbstractFilterConnector<R, E> {
 
-    EnumFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
+    EnumFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
                         RepositoryScope scope,
                         String key) {
         super(repositoryFactory, scope, key);

@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
@@ -54,16 +56,16 @@ import org.hisp.dhis.android.core.program.internal.ProgramStageStore;
 import org.hisp.dhis.android.core.program.internal.ProgramStore;
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
 import org.junit.After;
 import org.junit.Before;
@@ -73,8 +75,6 @@ import org.junit.runner.RunWith;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -105,7 +105,7 @@ public class ProgramIndicatorEngineIntegrationShould extends BaseMockIntegration
     public void setUp() throws Exception {
         BaseMockIntegrationTestEmptyDispatcher.setUpClass();
 
-        programIndicatorEngine = d2.programModule().programIndicatorEngine;
+        programIndicatorEngine = d2.programModule().programIndicatorEngine();
         
         OrganisationUnit orgunit = OrganisationUnit.builder().uid(orgunitUid).build();
         OrganisationUnitStore.create(databaseAdapter).insert(orgunit);
@@ -127,8 +127,7 @@ public class ProgramIndicatorEngineIntegrationShould extends BaseMockIntegration
         ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, CategoryCombo.DEFAULT_UID);
         database.insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo);
 
-        Access access = Access.create(true, null, null, null, null, null,
-                DataAccess.create(true, true));
+        Access access = Access.create(true, null, DataAccess.create(true, true));
         Program program = Program.builder().uid(programUid)
                 .access(access)
                 .trackedEntityType(TrackedEntityType.builder().uid(teiTypeUid).build())

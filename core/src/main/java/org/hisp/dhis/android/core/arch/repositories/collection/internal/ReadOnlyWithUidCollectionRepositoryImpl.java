@@ -35,22 +35,22 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.Map;
 
-public class ReadOnlyWithUidCollectionRepositoryImpl<M extends Model & ObjectWithUidInterface,
+public class ReadOnlyWithUidCollectionRepositoryImpl<M extends CoreObject & ObjectWithUidInterface,
         R extends ReadOnlyCollectionRepository<M>>
         extends ReadOnlyCollectionRepositoryImpl<M, R>
         implements ReadOnlyWithUidCollectionRepository<M> {
 
     protected final IdentifiableObjectStore<M> store;
 
-    public ReadOnlyWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
-                                                   Map<String, ChildrenAppender<M>> childrenAppenders,
-                                                   RepositoryScope scope,
-                                                   FilterConnectorFactory<R> cf) {
+    ReadOnlyWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
+                                            Map<String, ChildrenAppender<M>> childrenAppenders,
+                                            RepositoryScope scope,
+                                            FilterConnectorFactory<R> cf) {
         super(store, childrenAppenders, scope, cf);
         this.store = store;
     }

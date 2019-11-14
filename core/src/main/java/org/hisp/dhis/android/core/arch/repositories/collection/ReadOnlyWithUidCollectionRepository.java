@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-public interface ReadOnlyWithUidCollectionRepository<M extends Model & ObjectWithUidInterface>
+public interface ReadOnlyWithUidCollectionRepository<M extends CoreObject & ObjectWithUidInterface>
         extends ReadOnlyCollectionRepository<M> {
 
     ReadOnlyObjectRepository<M> uid(String uid);

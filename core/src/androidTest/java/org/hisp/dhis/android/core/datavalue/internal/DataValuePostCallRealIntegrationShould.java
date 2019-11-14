@@ -29,11 +29,9 @@
 package org.hisp.dhis.android.core.datavalue.internal;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
+import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.datavalue.DataValue;
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
@@ -52,7 +50,7 @@ public class DataValuePostCallRealIntegrationShould extends BaseRealIntegrationT
 
         super.setUp();
 
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2 = D2Factory.forNewDatabase();
 
         dataValueStore = DataValueStore.create(databaseAdapter());
     }
@@ -60,40 +58,41 @@ public class DataValuePostCallRealIntegrationShould extends BaseRealIntegrationT
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void dataValuesWithToPostState_shouldBeUploaded() throws Exception {
+        d2.userModule().logIn(username, password, url).blockingGet();
 
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
         d2.aggregatedModule().data().download().subscribe();
 
         DataValue dataValue = getTestDataValueWith(State.TO_POST, 1);
 
         assertThat(insertToPostDataValue(dataValue)).isTrue();
 
-        DataValueImportSummary dataValueImportSummary = d2.dataValueModule().dataValues.upload().call();
+        d2.dataValueModule().dataValues().blockingUpload();
 
-        int importCountTotal = dataValueImportSummary.importCount().imported() +
+        /*int importCountTotal = dataValueImportSummary.importCount().imported() +
                 dataValueImportSummary.importCount().updated() +
                 dataValueImportSummary.importCount().ignored();
 
-        assertThat(importCountTotal == 1).isTrue();
+        assertThat(importCountTotal == 1).isTrue();*/
     }
 
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void dataValuesWithToUpdateState_shouldBeUploaded() throws Exception {
 
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
         d2.aggregatedModule().data().download().subscribe();
 
         DataValue dataValue = getTestDataValueWith(State.TO_UPDATE,2);
 
         assertThat(insertToPostDataValue(dataValue)).isTrue();
 
-        DataValueImportSummary dataValueImportSummary = d2.dataValueModule().dataValues.upload().call();
+        d2.dataValueModule().dataValues().blockingUpload();
 
-        int importCountTotal = dataValueImportSummary.importCount().updated() +
+        /*int importCountTotal = dataValueImportSummary.importCount().updated() +
                 dataValueImportSummary.importCount().ignored();
 
-        assertThat(importCountTotal == 1).isTrue();
+        assertThat(importCountTotal == 1).isTrue();*/
     }
 
 
@@ -106,11 +105,11 @@ public class DataValuePostCallRealIntegrationShould extends BaseRealIntegrationT
 
         DataValue dataValue =
                 DataValue.builder()
-                        .dataElement("WUg3MYWQ7pt")
-                        .categoryOptionCombo("bjDvmb4bfuf")
-                        .attributeOptionCombo("nvLjum6Xbv5")
+                        .dataElement("Qb790K82yqZ")
+                        .categoryOptionCombo("Gmbgme7z9BF")
+                        .attributeOptionCombo("RgrNGmlMOAJ")
                         .period("2018")
-                        .organisationUnit("DiszpKrYNg8")
+                        .organisationUnit("s91COhdBQ23")
                         .value(String.valueOf(value))
                         .state(state)
                         .build();

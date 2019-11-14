@@ -31,8 +31,7 @@ package org.hisp.dhis.android.core.trackedentity.search;
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
@@ -48,29 +47,29 @@ import static junit.framework.Assert.fail;
 
 public class TrackedEntityInstanceQueryCallRealIntegrationShould extends BaseRealIntegrationTest {
     private D2 d2;
-    private TrackedEntityInstanceQuery.Builder queryBuilder;
+    private TrackedEntityInstanceQueryCollectionRepository repository;
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
 
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2 = D2Factory.forNewDatabase();
 
 
         List<String> orgUnits = new ArrayList<>();
         orgUnits.add("DiszpKrYNg8");
 
-        queryBuilder = TrackedEntityInstanceQuery.builder()
-                .paging(true).page(1).pageSize(50)
-                .orgUnits(orgUnits).orgUnitMode(OrganisationUnitMode.ACCESSIBLE).program("IpHINAT79UW");
+        repository = d2.trackedEntityModule().trackedEntityInstanceQuery()
+                .byOrgUnits().in(orgUnits)
+                .byOrgUnitMode().eq(OrganisationUnitMode.ACCESSIBLE)
+                .byProgram().eq("IpHINAT79UW");
     }
 
     //@Test
     public void query_tracked_entity_instances_no_filter() throws Exception {
         login();
-        List<TrackedEntityInstance> queryResponse =
-                d2.trackedEntityModule().trackedEntityInstanceQuery.onlineOnly().get();
+        List<TrackedEntityInstance> queryResponse = repository.onlineOnly().blockingGet();
         assertThat(queryResponse).isNotEmpty();
     }
 
@@ -78,9 +77,8 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends BaseRea
     public void query_tracked_entity_instances_filter_name() throws Exception {
         login();
 
-        TrackedEntityInstanceQuery query = queryBuilder.query(QueryFilter.create("jorge")).build();
-        List<TrackedEntityInstance> queryResponse =
-                d2.trackedEntityModule().trackedEntityInstanceQuery.onlineOnly().query(query).get();
+        List<TrackedEntityInstance> queryResponse = repository.onlineOnly()
+                .byQuery().eq("jorge").blockingGet();
         assertThat(queryResponse).isNotEmpty();
     }
 
@@ -90,9 +88,8 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends BaseRea
 
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.YEAR, -1);
-        TrackedEntityInstanceQuery query = queryBuilder.programStartDate(cal.getTime()).build();
-        List<TrackedEntityInstance> queryResponse =
-                d2.trackedEntityModule().trackedEntityInstanceQuery.onlineOnly().query(query).get();
+        List<TrackedEntityInstance> queryResponse = repository.onlineOnly()
+                .byProgramStartDate().eq(cal.getTime()).blockingGet();
         assertThat(queryResponse).isNotEmpty();
     }
 
@@ -101,9 +98,8 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends BaseRea
         login();
 
         Calendar cal = Calendar.getInstance();
-        TrackedEntityInstanceQuery query = queryBuilder.programEndDate(cal.getTime()).build();
-        List<TrackedEntityInstance> queryResponse =
-                d2.trackedEntityModule().trackedEntityInstanceQuery.onlineOnly().query(query).get();
+        List<TrackedEntityInstance> queryResponse = repository.onlineOnly()
+                .byProgramEndDate().eq(cal.getTime()).blockingGet();
         assertThat(queryResponse).isNotEmpty();
     }
 
@@ -111,12 +107,8 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends BaseRea
     public void query_tracked_entity_instances_one_attribute() throws Exception {
         login();
 
-        List<QueryItem> attributeList = new ArrayList<>(1);
-        attributeList.add(QueryItem.create("w75KJ2mc4zz", QueryFilter.create(QueryOperator.LIKE, "john")));
-
-        TrackedEntityInstanceQuery query = queryBuilder.attribute(attributeList).build();
-        List<TrackedEntityInstance> queryResponse =
-                d2.trackedEntityModule().trackedEntityInstanceQuery.onlineOnly().query(query).get();
+        List<TrackedEntityInstance> queryResponse = repository.onlineOnly()
+                .byAttribute("w75KJ2mc4zz").like("john").blockingGet();
         assertThat(queryResponse).isNotEmpty();
     }
 
@@ -124,27 +116,10 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends BaseRea
     public void query_tracked_entity_instances_two_attributes() throws Exception {
         login();
 
-        List<QueryItem> attributeList = new ArrayList<>(2);
-
-        attributeList.add(QueryItem.create("w75KJ2mc4zz", QueryFilter.create(QueryOperator.LIKE, "Filona")));
-        attributeList.add(QueryItem.create("zDhUuAYrxNC", QueryFilter.create(QueryOperator.LIKE, "Ryder")));
-
-        TrackedEntityInstanceQuery query = queryBuilder.attribute(attributeList).build();
-        List<TrackedEntityInstance> queryResponse =
-                d2.trackedEntityModule().trackedEntityInstanceQuery.onlineOnly().query(query).get();
-        assertThat(queryResponse).isNotEmpty();
-    }
-
-    //@Test
-    public void use_attribute_to_reduce_attributes_returned() throws Exception {
-        login();
-
-        List<QueryItem> attributeList = new ArrayList<>(1);
-        attributeList.add(QueryItem.create("w75KJ2mc4zz"));
-
-        TrackedEntityInstanceQuery query = queryBuilder.attribute(attributeList).build();
-        List<TrackedEntityInstance> queryResponse =
-                d2.trackedEntityModule().trackedEntityInstanceQuery.onlineOnly().query(query).get();
+        List<TrackedEntityInstance> queryResponse = repository.onlineOnly()
+                .byAttribute("w75KJ2mc4zz").like("Filona")
+                .byAttribute("zDhUuAYrxNC").like("Ryeder")
+                .blockingGet();
         assertThat(queryResponse).isNotEmpty();
     }
 
@@ -152,12 +127,8 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends BaseRea
     public void query_tracked_entity_instances_one_filter() throws Exception {
         login();
 
-        List<QueryItem> filterList = new ArrayList<>(1);
-        filterList.add(QueryItem.create("w75KJ2mc4zz", QueryFilter.create(QueryOperator.LIKE, "jorge")));
-
-        TrackedEntityInstanceQuery query = queryBuilder.filter(filterList).build();
-        List<TrackedEntityInstance> queryResponse =
-                d2.trackedEntityModule().trackedEntityInstanceQuery.onlineOnly().query(query).get();
+        List<TrackedEntityInstance> queryResponse = repository.onlineOnly()
+                .byFilter("w75KJ2mc4zz").like("jorge").blockingGet();
         assertThat(queryResponse).isNotEmpty();
     }
 
@@ -165,13 +136,10 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends BaseRea
     public void query_tracked_entity_instances_two_filters() throws Exception {
         login();
 
-        List<QueryItem> filterList = new ArrayList<>(2);
-        filterList.add(QueryItem.create("w75KJ2mc4zz", QueryFilter.create(QueryOperator.LIKE, "Filona")));
-        filterList.add(QueryItem.create("zDhUuAYrxNC", QueryFilter.create(QueryOperator.LIKE, "Ryder")));
-
-        TrackedEntityInstanceQuery query = queryBuilder.filter(filterList).build();
-        List<TrackedEntityInstance> queryResponse =
-                d2.trackedEntityModule().trackedEntityInstanceQuery.onlineOnly().query(query).get();
+        List<TrackedEntityInstance> queryResponse = repository.onlineOnly()
+                .byFilter("w75KJ2mc4zz").like("Filona")
+                .byFilter("zDhUuAYrxNC").like("Ryeder")
+                .blockingGet();
         assertThat(queryResponse).isNotEmpty();
     }
 
@@ -517,10 +485,8 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends BaseRea
                 "iUauWFeH8Qp", "AXZq6q7Dr6E", "LZclRdyVk1t", "OI0BQUurVFS", "DwpbWkiqjMy", "MwfWgjMRgId",
                 "Q2USZSJmcNK", "EJoI3HArJ2W", "E497Rk80ivZ", "nOYt1LtFSyU", "wbtk73Zwhj9", "cMFi8lYbXHY");
 
-        queryBuilder.orgUnits(orgUnits);
-
         try {
-            d2.trackedEntityModule().trackedEntityInstanceQuery.onlineOnly().query(queryBuilder.build()).get();
+            repository.byOrgUnits().in(orgUnits).blockingGet();
             fail("D2Error was expected but was not thrown");
         } catch (Exception d2e) {
             // TODO
@@ -529,6 +495,6 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends BaseRea
     }
 
     private void login() {
-        d2.userModule().logIn("android", "Android123").blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
     }
 }

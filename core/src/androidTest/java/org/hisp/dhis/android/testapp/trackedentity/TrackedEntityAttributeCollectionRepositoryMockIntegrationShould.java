@@ -46,8 +46,8 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
     @Test
     public void find_all() {
         List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes
-                        .get();
+                d2.trackedEntityModule().trackedEntityAttributes()
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(2));
     }
@@ -55,9 +55,9 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
     @Test
     public void filter_by_pattern() {
         List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes
+                d2.trackedEntityModule().trackedEntityAttributes()
                         .byPattern().eq("RANDOM(XXX######)")
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -65,9 +65,9 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
     @Test
     public void filter_by_sort_order_in_list_no_programs() {
         List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes
+                d2.trackedEntityModule().trackedEntityAttributes()
                         .bySortOrderInListNoProgram().eq(0)
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -75,18 +75,18 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
     @Test
     public void filter_by_option_set() {
         List<TrackedEntityAttribute> dataElements =
-                d2.trackedEntityModule().trackedEntityAttributes
+                d2.trackedEntityModule().trackedEntityAttributes()
                         .byOptionSetUid().eq("VQ2lai3OfVG")
-                        .get();
+                        .blockingGet();
         assertThat(dataElements.size(), is(1));
     }
 
     @Test
     public void by_value_type() {
         List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes
+                d2.trackedEntityModule().trackedEntityAttributes()
                         .byValueType().eq(ValueType.NUMBER)
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -94,9 +94,9 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
     @Test
     public void by_expression() {
         List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes
+                d2.trackedEntityModule().trackedEntityAttributes()
                         .byExpression().eq("expression")
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -104,9 +104,9 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
     @Test
     public void by_program_scope() {
         List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes
+                d2.trackedEntityModule().trackedEntityAttributes()
                         .byProgramScope().isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -114,9 +114,9 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
     @Test
     public void by_display_in_list_no_program() {
         List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes
+                d2.trackedEntityModule().trackedEntityAttributes()
                         .byDisplayInListNoProgram().isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -124,9 +124,9 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
     @Test
     public void by_generated() {
         List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes
+                d2.trackedEntityModule().trackedEntityAttributes()
                         .byGenerated().isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -134,9 +134,9 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
     @Test
     public void by_display_on_visit_schedule() {
         List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes
+                d2.trackedEntityModule().trackedEntityAttributes()
                         .byDisplayOnVisitSchedule().isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -144,9 +144,9 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
     @Test
     public void by_orgunit_scope() {
         List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes
+                d2.trackedEntityModule().trackedEntityAttributes()
                         .byOrgUnitScope().isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -154,9 +154,9 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
     @Test
     public void by_unique() {
         List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes
+                d2.trackedEntityModule().trackedEntityAttributes()
                         .byUnique().isTrue()
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -164,9 +164,19 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
     @Test
     public void by_inherit() {
         List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes
+                d2.trackedEntityModule().trackedEntityAttributes()
                         .byInherit().isTrue()
-                        .get();
+                        .blockingGet();
+
+        assertThat(trackedEntityAttributes.size(), is(1));
+    }
+
+    @Test
+    public void by_field_mask() {
+        List<TrackedEntityAttribute> trackedEntityAttributes =
+                d2.trackedEntityModule().trackedEntityAttributes()
+                        .byFieldMask().eq("XXXXX")
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
@@ -174,24 +184,28 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
     @Test
     public void by_form_name() {
         List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes
+                d2.trackedEntityModule().trackedEntityAttributes()
                         .byFormName().eq("formname")
-                        .get();
+                        .blockingGet();
 
         assertThat(trackedEntityAttributes.size(), is(1));
     }
 
-
     @Test
-    public void include_object_style_as_children_in_object_repository_when_explicitly_selected() {
-        TrackedEntityAttribute trackedEntityAttribute =
-                d2.trackedEntityModule().trackedEntityAttributes
-                        .byUid().eq("aejWyOfXge6")
-                        .withObjectStyle()
-                        .one().get();
-
-        assertThat(trackedEntityAttribute.style().icon(), is("attribute-icon"));
-        assertThat(trackedEntityAttribute.style().color(), is("#556"));
+    public void filter_by_field_color() {
+        List<TrackedEntityAttribute> trackedEntityAttributes =
+                d2.trackedEntityModule().trackedEntityAttributes()
+                        .byColor().eq("#556")
+                        .blockingGet();
+        assertThat(trackedEntityAttributes.size(), is(1));
     }
 
+    @Test
+    public void filter_by_field_icon() {
+        List<TrackedEntityAttribute> trackedEntityAttributes =
+                d2.trackedEntityModule().trackedEntityAttributes()
+                        .byIcon().eq("attribute-icon")
+                        .blockingGet();
+        assertThat(trackedEntityAttributes.size(), is(1));
+    }
 }

@@ -30,25 +30,25 @@ package org.hisp.dhis.android.core.user;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitListAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserCredentialsAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.data.database.IgnoreOrganisationUnitListAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreUserCredentialsAdapter;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 @AutoValue
-@JsonDeserialize(builder = AutoValue_User.Builder.class)
-public abstract class User extends BaseIdentifiableObject implements Model {
+@JsonDeserialize(builder = $$AutoValue_User.Builder.class)
+public abstract class User extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
     public abstract String birthday();
@@ -89,26 +89,28 @@ public abstract class User extends BaseIdentifiableObject implements Model {
     @Nullable
     public abstract String nationality();
 
+    /**
+     * @deprecated use d2.userModule().userCredentials() instead
+     *
+     * @return
+     */
+    @Deprecated
     @Nullable
     @ColumnAdapter(IgnoreUserCredentialsAdapter.class)
     public abstract UserCredentials userCredentials();
 
     @Nullable
     @ColumnAdapter(IgnoreOrganisationUnitListAdapter.class)
-    public abstract List<OrganisationUnit> organisationUnits();
+    abstract List<OrganisationUnit> organisationUnits();
 
     @Nullable
     @ColumnAdapter(IgnoreOrganisationUnitListAdapter.class)
-    public abstract List<OrganisationUnit> teiSearchOrganisationUnits();
-
-    @Nullable
-    @ColumnAdapter(IgnoreOrganisationUnitListAdapter.class)
-    public abstract List<OrganisationUnit> dataViewOrganisationUnits();
+    abstract List<OrganisationUnit> teiSearchOrganisationUnits();
 
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_User.Builder();
+        return new $$AutoValue_User.Builder();
     }
 
     @NonNull
@@ -148,13 +150,17 @@ public abstract class User extends BaseIdentifiableObject implements Model {
 
         public abstract Builder nationality(String nationality);
 
+        /**
+         * @deprecated will be package-private in SDK 1.0
+         *
+         * @return
+         */
+        @Deprecated
         public abstract Builder userCredentials(UserCredentials userCredentials);
 
-        public abstract Builder organisationUnits(List<OrganisationUnit> organisationUnits);
+        abstract Builder organisationUnits(List<OrganisationUnit> organisationUnits);
 
-        public abstract Builder teiSearchOrganisationUnits(List<OrganisationUnit> teiSearchOrganisationUnits);
-
-        public abstract Builder dataViewOrganisationUnits(List<OrganisationUnit> dataViewOrganisationUnits);
+        abstract Builder teiSearchOrganisationUnits(List<OrganisationUnit> teiSearchOrganisationUnits);
 
         public abstract User build();
     }

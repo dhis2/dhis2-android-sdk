@@ -31,14 +31,13 @@ package org.hisp.dhis.android.core.category.internal;
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
@@ -58,17 +57,17 @@ public class CategoryComboEndpointCallRealIntegrationShould extends BaseRealInte
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2 = D2Factory.forNewDatabase();
     }
 
     //@Test
     public void download_categories_combos_and_relatives() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
         d2.databaseAdapter().database().setForeignKeyConstraintsEnabled(false);
 
         assertNotCombosInDB();
-        assertTrue(getCategoryCategoryComboLinkModels().isEmpty());
+        assertTrue(getCategoryCategoryComboLinks().isEmpty());
 
         Callable<List<CategoryCombo>> categoryComboEndpointCall =
                 getD2DIComponent(d2).internalModules().category.categoryComboCallFactory.create(
@@ -84,7 +83,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends BaseRealInte
 
     private void assertDataIsProperlyParsedAndInsertedInTheDB() {
         assertThereAreCombosInDB();
-        assertFalse(getCategoryCategoryComboLinkModels().isEmpty());
+        assertFalse(getCategoryCategoryComboLinks().isEmpty());
         assertThereAreCategoryOptionCombosInDB();
         assertThereAreCategoriesInDB();
     }
@@ -106,8 +105,8 @@ public class CategoryComboEndpointCallRealIntegrationShould extends BaseRealInte
         assertTrue(categoryCombos.size() > 0);
     }
 
-    private List<CategoryCategoryComboLink> getCategoryCategoryComboLinkModels() {
-        LinkModelStore<CategoryCategoryComboLink>
+    private List<CategoryCategoryComboLink> getCategoryCategoryComboLinks() {
+        LinkStore<CategoryCategoryComboLink>
                 categoryCategoryComboLinkStore = CategoryCategoryComboLinkStore.create(databaseAdapter());
         return categoryCategoryComboLinkStore.selectAll();
     }

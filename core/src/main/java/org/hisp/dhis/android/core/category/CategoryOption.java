@@ -30,26 +30,26 @@ package org.hisp.dhis.android.core.category;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AccessColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.data.database.AccessColumnAdapter;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
 @JsonDeserialize(builder = AutoValue_CategoryOption.Builder.class)
-public abstract class CategoryOption extends BaseNameableObject implements Model {
+public abstract class CategoryOption extends BaseNameableObject implements CoreObject {
 
     @Nullable
     @JsonProperty()
@@ -61,10 +61,8 @@ public abstract class CategoryOption extends BaseNameableObject implements Model
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date endDate();
 
-    @Nullable
     @JsonProperty()
     @ColumnAdapter(AccessColumnAdapter.class)
-    @ColumnName(CategoryOptionTableInfo.Columns.ACCESS_DATA_WRITE)
     public abstract Access access();
 
     public static CategoryOption create(Cursor cursor) {
@@ -90,7 +88,16 @@ public abstract class CategoryOption extends BaseNameableObject implements Model
 
         abstract CategoryOption autoBuild();
 
+        // Auxiliary fields
+        abstract Access access();
+
         public CategoryOption build() {
+            try {
+                access();
+            } catch (IllegalStateException e) {
+                access(AccessHelper.defaultAccess());
+            }
+
             return autoBuild();
         }
     }

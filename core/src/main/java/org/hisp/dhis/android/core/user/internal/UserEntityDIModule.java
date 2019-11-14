@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.user.User;
 
 import java.util.HashMap;
@@ -63,12 +63,10 @@ public final class UserEntityDIModule implements IdentifiableStoreProvider<User>
     @Reusable
     @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<User>> childrenAppenders(
-            DatabaseAdapter databaseAdapter,
             UserCredentialsChildrenAppender userCredentialsChildrenAppender) {
 
         return new HashMap<String, ChildrenAppender<User>>() {{
             put(UserFields.USER_CREDENTIALS, userCredentialsChildrenAppender);
-            put(UserFields.ORGANISATION_UNITS, UserOrganisationUnitChildrenAppender.create(databaseAdapter));
         }};
     }
 }

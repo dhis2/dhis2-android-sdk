@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.organisationunit.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 
 import dagger.Module;
@@ -41,7 +41,7 @@ public final class OrganisationUnitProgramLinkEntityDIModule {
 
     @Provides
     @Reusable
-    LinkModelStore<OrganisationUnitProgramLink> store(DatabaseAdapter databaseAdapter) {
+    LinkStore<OrganisationUnitProgramLink> store(DatabaseAdapter databaseAdapter) {
         return OrganisationUnitProgramLinkStore.create(databaseAdapter);
     }
 }

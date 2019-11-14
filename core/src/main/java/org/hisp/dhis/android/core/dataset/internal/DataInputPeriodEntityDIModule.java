@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataInputPeriod;
 
 import dagger.Module;
@@ -43,13 +43,13 @@ public final class DataInputPeriodEntityDIModule {
 
     @Provides
     @Reusable
-    LinkModelStore<DataInputPeriod> store(DatabaseAdapter databaseAdapter) {
+    LinkStore<DataInputPeriod> store(DatabaseAdapter databaseAdapter) {
         return DataInputPeriodLinkStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    LinkHandler<DataInputPeriod, DataInputPeriod> handler(LinkModelStore<DataInputPeriod> store) {
+    LinkHandler<DataInputPeriod, DataInputPeriod> handler(LinkStore<DataInputPeriod> store) {
         return new LinkHandlerImpl<>(store);
     }
 }

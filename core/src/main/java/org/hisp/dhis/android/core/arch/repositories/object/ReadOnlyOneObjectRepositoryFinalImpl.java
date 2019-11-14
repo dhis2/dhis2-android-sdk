@@ -27,15 +27,15 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.object;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyOneObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Map;
 
-public final class ReadOnlyOneObjectRepositoryFinalImpl<M extends Model>
+public final class ReadOnlyOneObjectRepositoryFinalImpl<M extends CoreObject>
         extends ReadOnlyOneObjectRepositoryImpl<M, ReadOnlyOneObjectRepositoryFinalImpl<M>> {
 
     public ReadOnlyOneObjectRepositoryFinalImpl(ReadableStore<M> store,

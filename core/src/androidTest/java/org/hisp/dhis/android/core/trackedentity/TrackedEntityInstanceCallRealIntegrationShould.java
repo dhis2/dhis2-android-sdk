@@ -28,18 +28,15 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import com.google.common.collect.Lists;
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.d2manager.D2Factory;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 public class TrackedEntityInstanceCallRealIntegrationShould extends BaseRealIntegrationTest {
 
@@ -50,7 +47,7 @@ public class TrackedEntityInstanceCallRealIntegrationShould extends BaseRealInte
     public void setUp() throws IOException {
         super.setUp();
 
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2 = D2Factory.forNewDatabase();
     }
 
     //This test is commented because technically it is flaky.
@@ -58,15 +55,16 @@ public class TrackedEntityInstanceCallRealIntegrationShould extends BaseRealInte
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
 
     //@Test
-    public void download_tei_enrollments_and_events() throws Exception {
-        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).blockingGet();
+    public void download_tei_enrollments_and_events() {
+        d2.userModule().logIn(username, password, url).blockingGet();
 
-        d2.syncMetaData().blockingSubscribe();
+        d2.metadataModule().blockingDownload();
 
-        Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
-                d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList("IaxoagO9899"));
+        d2.trackedEntityModule()
+                .trackedEntityInstanceDownloader().byUid().eq("IaxoagO9899").blockingDownload();
 
-        List<TrackedEntityInstance> teiResponse = trackedEntityInstanceByUidEndPointCall.call();
+        List<TrackedEntityInstance> teiResponse = d2.trackedEntityModule().trackedEntityInstances().byUid().eq("IaxoagO9899")
+                .blockingGet();
 
         Truth.assertThat(teiResponse.isEmpty()).isFalse();
     }

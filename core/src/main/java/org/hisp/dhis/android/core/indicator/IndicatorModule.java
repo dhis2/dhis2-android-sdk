@@ -28,22 +28,7 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class IndicatorModule {
-
-    public final IndicatorCollectionRepository indicators;
-    public final IndicatorTypeCollectionRepository indicatorTypes;
-
-    @Inject
-    IndicatorModule(IndicatorCollectionRepository indicators,
-                    IndicatorTypeCollectionRepository indicatorTypes) {
-        this.indicators = indicators;
-        this.indicatorTypes = indicatorTypes;
-    }
+public interface IndicatorModule {
+    IndicatorCollectionRepository indicators();
+    IndicatorTypeCollectionRepository indicatorTypes();
 }

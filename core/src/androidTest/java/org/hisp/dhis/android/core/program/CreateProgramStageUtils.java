@@ -30,9 +30,8 @@ package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.FormType;
-import org.hisp.dhis.android.core.program.internal.ProgramStageFields;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public class CreateProgramStageUtils {
 
@@ -47,7 +46,6 @@ public class CreateProgramStageUtils {
     private static final Integer OPEN_AFTER_ENROLLMENT = 0;
 
     private static final Integer REPEATABLE = 0;
-    private static final Integer CAPTURE_COORDINATES = 1;
     private static final FormType FORM_TYPE = FormType.DEFAULT;
     private static final Integer DISPLAY_GENERATE_EVENT_BOX = 1;
     private static final Integer GENERATED_BY_ENROLMENT_DATE = 1;
@@ -63,30 +61,29 @@ public class CreateProgramStageUtils {
 
     public static ContentValues create(long id, String uid, String programId) {
         ContentValues programStage = new ContentValues();
-        programStage.put(BaseIdentifiableObjectModel.Columns.ID, id);
-        programStage.put(BaseIdentifiableObjectModel.Columns.UID, uid);
-        programStage.put(BaseIdentifiableObjectModel.Columns.CODE, CODE);
-        programStage.put(BaseIdentifiableObjectModel.Columns.NAME, NAME);
-        programStage.put(BaseIdentifiableObjectModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
-        programStage.put(BaseIdentifiableObjectModel.Columns.CREATED, DATE);
-        programStage.put(BaseIdentifiableObjectModel.Columns.LAST_UPDATED, DATE);
-        programStage.put(ProgramStageFields.EXECUTION_DATE_LABEL, EXECUTION_DATE_LABEL);
-        programStage.put(ProgramStageFields.ALLOW_GENERATE_NEXT_VISIT, ALLOW_GENERATE_NEXT_VISIT);
-        programStage.put(ProgramStageFields.VALID_COMPLETE_ONLY, VALID_COMPLETE_ONLY);
-        programStage.put(ProgramStageFields.REPORT_DATE_TO_USE, REPORT_DATE_TO_USE);
-        programStage.put(ProgramStageFields.OPEN_AFTER_ENROLLMENT, OPEN_AFTER_ENROLLMENT);
-        programStage.put(ProgramStageFields.REPEATABLE, REPEATABLE);
-        programStage.put(ProgramStageFields.CAPTURE_COORDINATES, CAPTURE_COORDINATES);
-        programStage.put(ProgramStageFields.FORM_TYPE, FORM_TYPE.name());
-        programStage.put(ProgramStageFields.DISPLAY_GENERATE_EVENT_BOX, DISPLAY_GENERATE_EVENT_BOX);
-        programStage.put(ProgramStageFields.GENERATED_BY_ENROLMENT_DATE, GENERATED_BY_ENROLMENT_DATE);
-        programStage.put(ProgramStageFields.AUTO_GENERATE_EVENT, AUTO_GENERATE_EVENT);
-        programStage.put(ProgramStageFields.SORT_ORDER, SORT_ORDER);
-        programStage.put(ProgramStageFields.HIDE_DUE_DATE, HIDE_DUE_DATE);
-        programStage.put(ProgramStageFields.BLOCK_ENTRY_FORM, BLOCK_ENTRY_FORM);
-        programStage.put(ProgramStageFields.MIN_DAYS_FROM_START, MIN_DAYS_FROM_START);
-        programStage.put(ProgramStageFields.STANDARD_INTERVAL, STANDARD_INTERVAL);
-        programStage.put(ProgramStageFields.PROGRAM, programId);
+        programStage.put(IdentifiableColumns.ID, id);
+        programStage.put(IdentifiableColumns.UID, uid);
+        programStage.put(IdentifiableColumns.CODE, CODE);
+        programStage.put(IdentifiableColumns.NAME, NAME);
+        programStage.put(IdentifiableColumns.DISPLAY_NAME, DISPLAY_NAME);
+        programStage.put(IdentifiableColumns.CREATED, DATE);
+        programStage.put(IdentifiableColumns.LAST_UPDATED, DATE);
+        programStage.put(ProgramStageTableInfo.Columns.EXECUTION_DATE_LABEL, EXECUTION_DATE_LABEL);
+        programStage.put(ProgramStageTableInfo.Columns.ALLOW_GENERATE_NEXT_VISIT, ALLOW_GENERATE_NEXT_VISIT);
+        programStage.put(ProgramStageTableInfo.Columns.VALID_COMPLETE_ONLY, VALID_COMPLETE_ONLY);
+        programStage.put(ProgramStageTableInfo.Columns.REPORT_DATE_TO_USE, REPORT_DATE_TO_USE);
+        programStage.put(ProgramStageTableInfo.Columns.OPEN_AFTER_ENROLLMENT, OPEN_AFTER_ENROLLMENT);
+        programStage.put(ProgramStageTableInfo.Columns.REPEATABLE, REPEATABLE);
+        programStage.put(ProgramStageTableInfo.Columns.FORM_TYPE, FORM_TYPE.name());
+        programStage.put(ProgramStageTableInfo.Columns.DISPLAY_GENERATE_EVENT_BOX, DISPLAY_GENERATE_EVENT_BOX);
+        programStage.put(ProgramStageTableInfo.Columns.GENERATED_BY_ENROLMENT_DATE, GENERATED_BY_ENROLMENT_DATE);
+        programStage.put(ProgramStageTableInfo.Columns.AUTO_GENERATE_EVENT, AUTO_GENERATE_EVENT);
+        programStage.put(ProgramStageTableInfo.Columns.SORT_ORDER, SORT_ORDER);
+        programStage.put(ProgramStageTableInfo.Columns.HIDE_DUE_DATE, HIDE_DUE_DATE);
+        programStage.put(ProgramStageTableInfo.Columns.BLOCK_ENTRY_FORM, BLOCK_ENTRY_FORM);
+        programStage.put(ProgramStageTableInfo.Columns.MIN_DAYS_FROM_START, MIN_DAYS_FROM_START);
+        programStage.put(ProgramStageTableInfo.Columns.STANDARD_INTERVAL, STANDARD_INTERVAL);
+        programStage.put(ProgramStageTableInfo.Columns.PROGRAM, programId);
 
         return programStage;
     }

@@ -28,7 +28,10 @@
 
 package org.hisp.dhis.android.testapp.event;
 
-import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.category.CategoryOptionCombo;
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl;
+import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.event.EventCreateProjection;
 import org.hisp.dhis.android.core.event.EventObjectRepository;
 import org.hisp.dhis.android.core.event.EventStatus;
@@ -56,9 +59,9 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         EventObjectRepository repository = objectRepository();
 
         repository.setOrganisationUnitUid(orgUnitUid);
-        assertThat(repository.get().organisationUnit(), is(orgUnitUid));
+        assertThat(repository.blockingGet().organisationUnit(), is(orgUnitUid));
 
-        repository.delete();
+        repository.blockingDelete();
         OrganisationUnitStore.create(databaseAdapter).delete(orgUnitUid);
     }
 
@@ -71,7 +74,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         try {
             repository.setOrganisationUnitUid(orgUnitUid);
         } finally {
-            repository.delete();
+            repository.blockingDelete();
         }
     }
 
@@ -82,10 +85,11 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         EventObjectRepository repository = objectRepository();
 
         repository.setEventDate(eventDate);
-        assertThat(repository.get().eventDate(), is(eventDate));
+        assertThat(repository.blockingGet().eventDate(), is(eventDate));
 
-        repository.delete();
+        repository.blockingDelete();
     }
+
     @Test
     public void update_event_status() throws D2Error {
         EventStatus eventStatus = EventStatus.COMPLETED;
@@ -93,21 +97,9 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         EventObjectRepository repository = objectRepository();
 
         repository.setStatus(eventStatus);
-        assertThat(repository.get().status(), is(eventStatus));
+        assertThat(repository.blockingGet().status(), is(eventStatus));
 
-        repository.delete();
-    }
-
-    @Test
-    public void update_coordinate() throws D2Error {
-        Coordinates coordinate = Coordinates.create(10.00, 11.00);
-
-        EventObjectRepository repository = objectRepository();
-
-        repository.setCoordinate(coordinate);
-        assertThat(repository.get().coordinate(), is(coordinate));
-
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -117,9 +109,9 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         EventObjectRepository repository = objectRepository();
 
         repository.setCompletedDate(completedDate);
-        assertThat(repository.get().completedDate(), is(completedDate));
+        assertThat(repository.blockingGet().completedDate(), is(completedDate));
 
-        repository.delete();
+        repository.blockingDelete();
     }
 
     @Test
@@ -129,15 +121,58 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         EventObjectRepository repository = objectRepository();
 
         repository.setDueDate(dueDate);
-        assertThat(repository.get().dueDate(), is(dueDate));
+        assertThat(repository.blockingGet().dueDate(), is(dueDate));
+
+        repository.blockingDelete();
+    }
+
+    @Test
+    public void update_geometry() throws D2Error {
+        Geometry geometry = Geometry.builder()
+                .type(FeatureType.POINT)
+                .coordinates("[10.00, 11.00]")
+                .build();
+
+        EventObjectRepository repository = objectRepository();
+
+        repository.setGeometry(geometry);
+        assertThat(repository.blockingGet().geometry(), is(geometry));
+
+        repository.blockingDelete();
+    }
+
+    @Test
+    public void update_attribute_option_combo() throws D2Error {
+        String attributeOptionCombo = "new_att_opt_comb";
+        CategoryOptionComboStoreImpl.create(databaseAdapter)
+                .insert(CategoryOptionCombo.builder().uid(attributeOptionCombo).build());
+
+        EventObjectRepository repository = objectRepository();
+
+        repository.setAttributeOptionComboUid(attributeOptionCombo);
+        assertThat(repository.blockingGet().attributeOptionCombo(), is(attributeOptionCombo));
 
         repository.delete();
+        CategoryOptionComboStoreImpl.create(databaseAdapter).delete(attributeOptionCombo);
+    }
+
+    @Test(expected = D2Error.class)
+    public void not_update_attribute_option_combo_if_not_exists() throws D2Error {
+        String attributeOptionCombo = "new_att_opt_comb";
+
+        EventObjectRepository repository = objectRepository();
+
+        try {
+            repository.setAttributeOptionComboUid(attributeOptionCombo);
+        } finally {
+            repository.delete();
+        }
     }
 
     private EventObjectRepository objectRepository() throws D2Error {
-        String eventUid = d2.eventModule().events.add(
+        String eventUid = d2.eventModule().events().blockingAdd(
                 EventCreateProjection.create("enroll1", "lxAQ7Zs9VYR", "dBwrot7S420",
                         "DiszpKrYNg8", "bRowv6yZOF2"));
-        return d2.eventModule().events.uid(eventUid);
+        return d2.eventModule().events().uid(eventUid);
     }
 }

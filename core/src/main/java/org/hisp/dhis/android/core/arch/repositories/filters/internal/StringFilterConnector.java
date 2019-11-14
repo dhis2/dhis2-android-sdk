@@ -28,24 +28,25 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 
-public final class StringFilterConnector<R extends ReadOnlyCollectionRepository<?>>
-        extends BaseFilterConnector<R, String> {
+public final class StringFilterConnector<R extends BaseRepository>
+        extends BaseAbstractFilterConnector<R, String> {
 
-    StringFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
+    StringFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
                           RepositoryScope scope,
                           String key) {
         super(repositoryFactory, scope, key);
     }
 
     public R like(String value) {
-        return newWithWrappedScope("LIKE", value);
+        return newWithWrappedScope(FilterItemOperator.LIKE, "%" + value + "%");
     }
 
     String wrapValue(String value) {
-        return "'" + value + "'";
+        return "'" + escapeQuotes(value) + "'";
     }
 }

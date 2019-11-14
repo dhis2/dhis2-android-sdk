@@ -44,33 +44,35 @@ Logout method removes user credentials, so a new login is required before any in
 
 <!--DHIS2-SECTION-ID:metadata_sync-->
 
-Command to launch metadata synchronization:
+Metadata synchronization is usually the first step after login. It fetches and persists the metadata needed by the current user. To launch metadata synchronization we must execute:
 
 ```java
-d2.syncMetaData()
+d2.metadataModule().download();
 ```
 
 In order to save bandwidth usage and storage space, the SDK does not synchronize all the metadata in the server but a subset. This subset is defined as the metadata required by the user in order to perform data entry tasks: render programs and datasets, execute program rules, evaluate in-line program indicators, etc.
 
 Based on that, metadata sync includes the following elements:
 
-|   Element             |   Condition |
+|   Element             |   Condition or scope |
 |-----------------------|-------------|
-| System info           | - |
+| System info           | All |
 | System settings       | KeyFlag, KeyStyle |
 | User                  | Only authenticated user |
 | UserRole              | Roles assigned to authenticated user |
 | Authority             | Authorities assigned to authenticated user |
 | Program               | Programs that user has (at least) read data access to and that are assigned to any orgunit visible by the user |
-| RelationshipTypes     | - |
-| OptionGroups          | Server is greater than 2.29 |
+| RelationshipTypes     | All |
+| OptionGroups          | Only if server is greater than 2.29 |
 | DataSet               | DataSets that user has (at least) read data access to and that are assigned to any orgunit visible by the user |
 | Indicators            | Indicators assigned to any dataSet |
-| OrganisationUnit      | OrganisationUnits in CAPTURE or SEARCH scope (include descendants) |
+| OrganisationUnit      | OrganisationUnits in CAPTURE or SEARCH scope (descendants included) |
 | OrganisationUnitGroup | Groups assigned to downloaded organisationUnits |
 | OrganisationUnitLevel | - |
 | Constant              | - |
 | SMS Module metadata   | Only if SMS module enabled |
+
+In the case of Programs and DataSets, metadata sync includes all the metadata related to them: stages, sections, dataElements, options, categories, etc. Those elements that are not related to any Program or DataSet are not included.
 
 #### Corrupted configurations
 
@@ -93,9 +95,15 @@ The possible states are:
 - `SYNCED`. The element is synced with the server. There are no local changes for this value.
 - `TO_POST`. Data created locally that does not exist in the server yet.
 - `TO_UPDATE`. Data modified locally that exists in the server.
-- `TO_DELETE`. Data deleted locally that still exists in the server.
+- `UPLOADING`. Data is being uploaded. If it is modified before receiving any server response, its state is back to `TO_UPDATE`. When the server response arrives, its state does not change to `SYNCED`, but it remains in `TO_UPDATE` to indicate that there are local changes.
+- `SENT_BY_SMS`. Data is sent by sms and there is no server response yet. Some servers does not have the capability to send a response, so this state means that data has been sent, but we do not know if it has been correctly imported in the server or not.
+- `SYNCED_BY_SMS`. Data is sent by sms and there is a successful response from the server.
 - `ERROR`. Data that received an error from the server after the last upload.
 - `WARNING`. Data that received a warning from the server after the last upload.
+
+Additionally, in `TrackedEntityInstance` we might have:
+
+- `RELATIONSHIP`. This TrackedEntityInstance has been downloaded with the sole purpose of fulfilling a relationship to another TEI. This `RELATIONSHIP` TEI only has basic information (uid, type, etc) and the list of TrackedEntityAttributes to be able to print meaningful information about the relationship. Other data such enrollments, events or relationships is not downloaded for this TEI. Also, this TEI cannot be modified or uploaded to the server.
 
 ### Tracker data
 

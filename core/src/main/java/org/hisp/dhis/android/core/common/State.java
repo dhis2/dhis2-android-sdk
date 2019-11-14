@@ -29,5 +29,41 @@
 package org.hisp.dhis.android.core.common;
 
 public enum State {
-    TO_POST, TO_UPDATE, ERROR, SYNCED, WARNING, UPLOADING, RELATIONSHIP, SENT_VIA_SMS, SYNCED_VIA_SMS
+    /** Data created locally that does not exist in the server yet. */
+    TO_POST,
+
+    /** Data modified locally that exists in the server. */
+    TO_UPDATE,
+
+    /** Data that received an error from the server after the last upload. */
+    ERROR,
+
+    /** The element is synced with the server. There are no local changes for this value. */
+    SYNCED,
+
+    /** Data that received a warning from the server after the last upload. */
+    WARNING,
+
+    /** Data is being uploaded. If it is modified before receiving any server response, its state is back to
+     * <b>TO_UPDATE</b>. When the server response arrives, its state does not change to <b>SYNCED</b>,
+     * but it remains in <b>TO_UPDATE</b> to indicate that there are local changes.
+     */
+    UPLOADING,
+
+    /** This TrackedEntityInstance has been downloaded with the sole purpose of fulfilling a relationship to another
+     * TEI. This <b>RELATIONSHIP</b> TEI only has basic information (uid, type, etc) and the list of
+     * TrackedEntityAttributes to be able to print meaningful information about the relationship. Other data such
+     * enrollments, events or relationships is not downloaded for this TEI.
+     * Also, this TEI cannot be modified or uploaded to the server.
+     */
+    RELATIONSHIP,
+
+    /** Data is sent by sms and there is no server response yet. Some servers does not have the capability to send a
+     * response, so this state means that data has been sent, but we do not know if it has been correctly
+     * imported in the server or not.
+     */
+    SENT_VIA_SMS,
+
+    /** Data is sent by sms and there is a successful response from the server. */
+    SYNCED_VIA_SMS
 }

@@ -107,8 +107,6 @@ By default, the SDK only downloads TrackedEntityInstances and Events
 that are located in user capture scope, but it is also possible to
 download TrackedEntityInstances in search scope.
 
-##### Capture scope
-
 The tracked entity module contains the
 `TrackedEntityInstanceDownloader`. The downloader follows a builder
 pattern which allows the download of tracked entity instances filtering by
@@ -139,7 +137,9 @@ Currently it is possible to specify the next filters:
 - `byProgramUid()`. Filters by program uid and downloads the not synced
   objects inside the program.
 - `byUid()`. Filters by the tracked entity instance uid and downloads a
-  unique object. (Only for tracked entity instances).
+  unique object. This filter can be used to download the tracked entity
+  instances found within search scope. (Only for tracked entity
+  instances).
 
 The downloader also allows to limit the number of downloaded objects.
 These limits can also be combined with each other.
@@ -165,7 +165,7 @@ d2.trackedEntityModule().trackedEntityInstanceDownloader()
     .download()
 ```
 
-##### Search scope
+#### Tracker data search
 
 DHIS2 has a functionality to filter TrackedEntityInstances by related
 properties, like attributes, organisation units, programs or enrollment
@@ -264,6 +264,11 @@ d2.trackedEntityModule().trackedEntityInstanceQuery()
                 .byAttribute("attributeUid").like("value")
                 .offlineFirst()
 ```
+
+After finding the tracked entity instances by searching it is possible
+to fully download them using the `byUid()` filter of the
+`TrackedEntityInstanceDownloader` within the tracked entity instance
+module.
 
 [//]: # (Include glass protected download)
 

@@ -369,7 +369,7 @@ complete registration values** and **approvals** corresponding to:
   - Yearly: last 5 years (including financial year variants).
   
   In addition, if any dataset allows data entry for **future periods**,
-  the Sdk will download these and store them. 
+  the Sdk will download the data for those open periods and store them. 
 
 The Sdk also keeps track of the latest successful download in order to
 avoid downloading unmodified server data.
@@ -378,6 +378,7 @@ In the download of **data approvals**, workflow and attribute option
 combination identifiers will be considered in addition to the
 organisation units and periods. The different possible states for data
 approval are:
+
 - `UNAPPROVABLE`. Data approval does not apply to this selection. (Data
   is neither *approved* nor *unapproved*).
 - `UNAPPROVED_WAITING`. Data could be approved for this selection, but

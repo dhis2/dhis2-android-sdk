@@ -33,7 +33,7 @@ After a logout the SDK keeps track of the last logged user so that it is able to
   - If server is different (even if the user is the same): wipe DB and try **login online**.
   - If user account has been disabled in server: wipe DB and throw an error.
 - If Offline:
-  - If the user has been ever authenticated:
+  - If the user has ever been authenticated:
     - If server is the same: try **login offline**.
     - If server is different: throw an error.
   - If the user has not been authenticated before: throw an error.
@@ -111,41 +111,180 @@ Additionally, in `TrackedEntityInstance` we might have:
 
 #### Tracker data download
 
-By default, the SDK only downloads TrackedEntityInstances and Events that are located in user capture scope.
+By default, the SDK only downloads TrackedEntityInstances and Events
+that are located in user capture scope, but it is also possible to
+download TrackedEntityInstances in search scope.
 
+The tracked entity module contains the
+`TrackedEntityInstanceDownloader`. The downloader follows a builder
+pattern which allows the download of tracked entity instances filtering by
+**different parameters** as well as define some **limits**. The same
+behavior can be found within the event module for events.
+
+The downloader track the latest successful download in order to avoid
+downloading unmodified data. It makes use of paging with a best effort
+strategy: in case a page fails to be downloaded or persisted, it is
+skipped but it will continue with the next pages.
+
+This is an example of how it can be used.
 ```java
-d2.trackedEntityModule().downloadTrackedEntityInstances(500, false, false)
+d2.trackedEntityModule().trackedEntityInstanceDownloader()
+    .[filters]
+    .[limits]
+    .download()
+```
+```java
+d2.eventModule().eventDownloader()
+    .[filters]
+    .[limits]
+    .download()
 ```
 
-It keeps track of the latest successful download in order to void downloading unmodified data. It makes use of paging with a best effort strategy: in case a page fails to be downloaded or persisted, it is skipped and the rest of pages are persisted.
+Currently it is possible to specify the next filters:
 
-Currently it is possible to specify the maximum number of TEIs to download and apply this limit globally, per program and/or per orgunit. For example:
+- `byProgramUid()`. Filters by program uid and downloads the not synced
+  objects inside the program.
+- `byUid()`. Filters by the tracked entity instance uid and downloads a
+  unique object. This filter can be used to download the tracked entity
+  instances found within search scope. (Only for tracked entity
+  instances).
 
-- Given a max number N, we can download the following number of TEIs in total:
-  - Globally: N
-  - Per orgunit: N x (Number of orgunits)
-  - Per program: N x (Number of programs)
-  - Per orgunit AND per program: N x (Number of combinations orgunit-program)
+The downloader also allows to limit the number of downloaded objects.
+These limits can also be combined with each other.
 
-TrackedEntityInstances located in search scope can be downloaded by using a different method. In this case it is required to provide the TEI uid, which might be obtained with a search query.
+- `limit()`. Limit the maximum number of objects to download.
+- `limitByProgram()`. Take the established limit and apply it for each
+  program. The number of objects that will be downloaded will be the one
+  obtained by multiplying the limit set by the number of user programs.
+- `limitByOrgunit()`. Take the established limit and apply it for each
+  organisation unit. The number of objects that will be downloaded will
+  be the one obtained by multiplying the limit set by the number of user
+  organisation units.
+
+The next snippet of code shows an example of the
+TrackedEntityInstanceDownloader usage.
 
 ```java
-d2.downloadTrackedEntityInstancesByUid(uid-list)
+d2.trackedEntityModule().trackedEntityInstanceDownloader()
+    .byProgramUid("program-uid")
+    .limitByOrgunit(true)
+    .limitByProgram(true)
+    .limit(50)
+    .download()
 ```
+
+#### Tracker data search
+
+DHIS2 has a functionality to filter TrackedEntityInstances by related
+properties, like attributes, organisation units, programs or enrollment
+dates. The Sdk provides the the `TrackedEntityInstanceQueryCollectionRepository` 
+with methods that allow the download of tracked entity
+instances within the search scope. It can be found inside the tracked entity instance module.
+
+The tracked entity instance query is a powerful tool that follows a
+builder pattern and allows the download of tracked entity instances
+filtering by **different parameters**.
+
+```java
+d2.trackedEntityModule().trackedEntityInstanceQuery()
+    .[repository mode]
+    .[filters]
+    .download()
+```
+
+The source where the TEIs are retrieved from is defined by the **repository mode**.
+These are the different repository modes available:
+
+- `onlineOnly()`. Only TrackedEntityInstances coming from the server are
+  returned in the list. Internet connection is required to use this mode.
+- `offlineOnly()`. Only TrackedEntityInstances coming from local
+  database are returned in the list.
+- `onlineFirst()`. TrackedEntityInstances coming from the server are
+  returned in first place. Once there are no more results online, it
+  continues with TrackedEntityInstances in the local database. Internet
+  connection is required to use this mode.
+- `offlineFirst()`. TrackedEntityInstances coming from local database
+  are returned in first place. Once there are no more results, it continues
+  with TrackedEntityInstances coming from the server. This method may
+  speed up the initial load. Internet connection is required to use this
+  mode.
+
+This repository follows the same syntax as other repositories.
+Additionally, the repository offers different strategies to fetch data:
+
+- `byAttribute()`. This method adds an *attribute* filter to the query.
+  If this method is called several times, conditions are appended with an AND
+  connector. For example:
+    ```java
+    d2.trackedEntityModule().trackedEntityInstanceQuery()
+        .byAttribute("uid1").eq("value1")
+        .byAttribute("uid2").eq("value2")
+        .download()
+    ```
+    That means that the instance must have attribute `uid1` with value
+    `value1` **AND** attribute `uid2` with value `value2`.
+- `byFilter()`. This method adds a *filter* to the query. If this
+  method is called several times, conditions are appended with an AND
+  connector. For example:
+    ```java
+    d2.trackedEntityModule().trackedEntityInstanceQuery()
+        .byFilter("uid1").eq("value1")
+        .byFilter("uid2").eq("value2")
+        .download()
+    ```
+    That means that the instance must have attribute `uid1` with value
+    `value1` **AND** attribute `uid2` with value `value2`.
+- `byQuery()`. Search tracked entity instances with **any** attribute
+  matching the query.
+- `byProgram()`. Filter by enrollment program. Only one program can be
+  specified.
+- `byOrgUnits()`. Filter by tracked entity instance organisation units.
+  More than one organisation unit can be specified.
+- `byOrgUnitMode()`. Define the organisation unit mode. The possible
+  modes are the next:
+  - **SELECTED**. Specified units only.
+  - **CHILDREN**. Immediate children of specified units, including
+    specified units.
+  - **DESCENDANTS**. All units in sub-hierarchy of specified units,
+    including specified units.
+  - **ACCESSIBLE**. All organisation units accessible by the user
+    (search scope).
+  - **ALL**. All units in system.
+- `byProgramStartDate()`. Define an enrollment start date. It only
+  applies if a program has been specified.
+- `byProgramEndDate()`. Define an enrollment end date. It only applies
+  if a program has been specified.
+- `byTrackedEntityType()`. Filter by TrackedEntityType. Only one type
+  can be specified.
+- `byIncludeDeleted()`. Whether to include or not deleted tracked entity
+  instances. Currently this filter only applies to **offline**
+  instances.
+- `byStates()`. Filter by sync status. Using this filter forces
+  **offline only** mode.
+
+Example:
+
+```java
+d2.trackedEntityModule().trackedEntityInstanceQuery()
+                .byOrgUnits().eq("orgunitUid")
+                .byOrgUnitMode().eq(OrganisationUnitMode.DESCENDANTS)
+                .byProgram().eq("programUid")
+                .byAttribute("attributeUid").like("value")
+                .offlineFirst()
+```
+
+After finding the tracked entity instances by searching it is possible
+to fully download them using the `byUid()` filter of the
+`TrackedEntityInstanceDownloader` within the tracked entity instance
+module.
 
 [//]: # (Include glass protected download)
-
-There is a similar method for Events with the same behavior.
-
-```java
-d2.eventModule().downloadSingleEvents(500, false, false)
-```
 
 #### Tracker data write
 
 In general, there are two different cases to manage data creation/edition/deletion: the case where the object is identifiable (that is, it has an `uid` property) and the case where the object is not identifiable.
 
-**Identifiable objects** (TrackedEntityInstance, Enrollment, Event). These repositories have an `uid()` method that gives you access to edition methods for a single object. In case the object does not exist yet, it is required to create it first. A typical workflow to create/edit an object would be:
+**Identifiable objects** (TrackedEntityInstance, Enrollment, Event). These repositories have a `uid()` method that gives you access to edition methods for a single object. In case the object does not exist yet, it is required to create it first. A typical workflow to create/edit an object would be:
 
 - Use the `CreateProjection` class to add a new instance in the repository.
 - Save the uid returned by this method.
@@ -155,7 +294,7 @@ And in code this would look like:
 
 ```java
 String eventUid = d2.eventModule().events().add(
-    EventCreateProjection.create("enrollent", "program", "programStage", "orgUnit", "attCombo"));
+    EventCreateProjection.create("enrollment", "program", "programStage", "orgUnit", "attCombo"));
 
 d2.eventModule().events().uid(eventUid).setStatus(COMPLETED);
 ```
@@ -186,29 +325,8 @@ Server response is parsed to ensure that data has been correctly uploaded to the
 d2.importModule().trackerImportConflicts()
 ```
 
-Conflicts linked to a TrackedEntityInstance, Enrollment or Event are automatically removed after a successful upload of the object.
-
-#### Tracker data query (search)
-
-DHIS2 has a functionality to filter TrackedEntityInstances by related properties, like attributes, orgunits, programs or enrollment dates. In the SDK, this functionality is exposed in the `TrackedEntityInstanceQueryCollectionRepository`.
-
-This repository follows the same syntax as other repositories. Additionally it repository offers different strategies to fetch data:
-
-- **Offline only**: show only TEIs stored locally.
-- **Offline first**: show TEIs stored locally in first place; then show TEIs in the server (duplicated TEIs are not shown).
-- **Online only**: show only TEIs in the server.
-- **Online fist**: show TEIs in the server in first place; then show TEIs stored locally.
-
-Example:
-
-```java
-d2.trackedEntityModule().trackedEntityInstanceQuery()
-                .byOrgUnits().eq("orgunitUid")
-                .byOrgUnitMode().eq(OrganisationUnitMode.DESCENDANTS)
-                .byProgram().eq("programUid")
-                .byAttribute("attributeUid").like("value")
-                .offlineFirst()
-```
+Conflicts linked to a TrackedEntityInstance, Enrollment or Event are
+automatically removed after a successful upload of the object.
 
 #### Tracker data: reserved values
 
@@ -244,7 +362,7 @@ d2.aggregatedModule().data().download()
 
 By default, the SDK downloads aggregated data values and dataset complete registration values corresponding to:
 
-- **DataSets**: all available dataSets (those the use has at least read data access to).
+- **DataSets**: all available dataSets (those the user has at least read data access to).
 - **OrganisationUnits**: capture scope.
 - **Periods**: all available periods, which means at least:
   - Days: last 60 days.
@@ -256,7 +374,8 @@ By default, the SDK downloads aggregated data values and dataset complete regist
   - Sixmonthly: last 5 six-months (starting in January and April).
   - Yearly: last 5 years (including financial year variants).
 
-It keeps track of the latest successful download in order to void downloading unmodified server data.
+It keeps track of the latest successful download in order to avoid
+downloading unmodified server data.
 
 #### Aggregated data write
 
@@ -279,7 +398,7 @@ d2.dataValueModule().dataValues().upload();
 
 #### DataSet reports
 
-A DataSetReport in the SDK is a handy representation of the existing aggregated data. It would the equivalent of some kind of DataSet instance: a DataSetReport represents a unique combination of DataSet - Period - Orgunit - AttributeOptionCombo and includes extra information like sync state, value count or displayName for some properties.
+A DataSetReport in the SDK is a handy representation of the existing aggregated data. It would be the equivalent of a DataSet instance: a DataSetReport represents a unique combination of DataSet - Period - Orgunit - AttributeOptionCombo and includes extra information like sync state, value count or displayName for some properties.
 
 ```java
 d2.dataValueModule().dataSetReports

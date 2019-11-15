@@ -410,14 +410,49 @@ Data approvals are downloaded only for versions greater than 2.29.
 
 #### Aggregated data write
 
+##### Data value
+
 DataValueCollectionRepository has a `value()` method that gives access to edition methods. The parameters accepted by this method are the parameters that unambiguosly identify a value.
 
 ```java
-DataValueObjectRepository valueRepository =
-    d2.dataValueModule().dataValues().value("periodId", "orgunitId", "dataElementId", "categoryOptionComboId", "attributeOptionComboId");
+DataValueObjectRepository valueRepository = d2.dataValueModule().dataValues()
+    .value("periodId", "orgunitId", "dataElementId", "categoryOptionComboId", "attributeOptionComboId");
 
 valueRepository.set("value")
 ```
+
+The data values of type `Image` have associated file resources to them.
+The Sdk provides a repository to sync them, the **File resource
+collection repository**. You can find more information about it in the
+[*Dealing with FileResources*](#dealing-with-fileresources) section
+below.
+
+##### Data set complete registration
+
+The Sdk provides within the data set module a collection repository for
+data set complete registrations. This repository contains methods to add
+new completions and delete them.
+
+To add a new data set complete registration is available an `add()`
+method:
+
+```java
+d2.dataSetModule().dataSetCompleteRegistrations()
+    .add(dataSetCompleteRegistration);
+```
+
+In order to remove them from the database the repository has a `value()`
+method that gives access to deletion methods (`delete()` and
+`deleteIfExist()`). The parameters accepted by this method are the
+parameters that unambiguosly identify the data set complete
+registration.
+
+```java
+d2.dataSetModule().dataSetCompleteRegistrations()
+    .value("periodId", "orgunitId", "dataSetUid","attributeOptionCombo")
+    .delete()
+```
+
 
 #### Aggregated data upload
 

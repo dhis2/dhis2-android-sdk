@@ -1,4 +1,4 @@
-## Error management
+# Error management
 
 <!--DHIS2-SECTION-ID:error_management-->
 

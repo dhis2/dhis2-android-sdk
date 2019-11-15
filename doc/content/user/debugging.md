@@ -1,4 +1,4 @@
-## Debugging
+# Debugging
 
 <!--DHIS2-SECTION-ID:debugging-->
 

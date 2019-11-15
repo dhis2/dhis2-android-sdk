@@ -1,4 +1,4 @@
-## Direct database interaction
+# Direct database interaction
 
 <!--DHIS2-SECTION-ID:db_interaction-->
 

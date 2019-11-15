@@ -1,4 +1,4 @@
-## Program indicator engine
+# Program indicator engine
 
 <!--DHIS2-SECTION-ID:program_indicator_engine-->
 

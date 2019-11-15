@@ -462,18 +462,22 @@ DataValueCollectionRepository has an `uplaod()` method to upload aggregated data
 d2.dataValueModule().dataValues().upload();
 ```
 
-### DataSet reports
+### DataSet instances
 
-A DataSetReport in the SDK is a handy representation of the existing aggregated data. It would be the equivalent of a DataSet instance: a DataSetReport represents a unique combination of DataSet - Period - Orgunit - AttributeOptionCombo and includes extra information like sync state, value count or displayName for some properties.
+A DataSetInstance in the SDK is a handy representation of the existing aggregated data. A DataSetInstance represents a unique combination of DataSet - Period - Orgunit - AttributeOptionCombo and includes extra information like sync state, value count or displayName for some properties.
 
 ```java
-d2.dataValueModule().dataSetReports
-    .byDataSetUid().eq("dataSetUid")
+d2.dataSetModule().dataSetInstances()
     .[ filters ]
     .get()
-```
 
-**Important**: a Data set report in the SDK is not the same as a Data set report in Web UI. In Web UI, DataSetReports have a sense of aggregation of data values over time and hierarchy.
+// For example
+d2.dataSetModule().dataSetInstances()
+    .byDataSetUid().eq("datasetUid")
+    .byOrganisationUnitUid().eq("orgunitUid")
+    .byPeriod().in("201901", "201902")
+    .get();
+```
 
 ## Dealing with FileResources
 

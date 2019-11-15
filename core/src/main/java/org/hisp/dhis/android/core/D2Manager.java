@@ -48,6 +48,10 @@ import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
+/**
+ * Helper class that offers static methods to setup and initialize the D2 instance. Also, it ensures that D2 is a
+ * singleton across the application.
+ */
 public final class D2Manager {
 
     private static String databaseName = "dhis.db";
@@ -60,6 +64,12 @@ public final class D2Manager {
     private D2Manager() {
     }
 
+    /**
+     * Returns the D2 instance, given that it has already been initialized using the
+     * {@link D2Manager#instantiateD2(D2Configuration)} method.
+     * @return the D2 instance
+     * @throws IllegalStateException if the D2 object wasn't instantiated
+     */
     public static D2 getD2() throws IllegalStateException {
         if (d2 == null) {
             throw new IllegalStateException("D2 is not instantiated yet");
@@ -68,10 +78,20 @@ public final class D2Manager {
         }
     }
 
+    /**
+     * Returns if D2 has already been instantiated using the {@link D2Manager#instantiateD2(D2Configuration)} method.
+     * @return if D2 has already been instantiated
+     */
     public static boolean isD2Instantiated() {
         return d2 != null;
     }
 
+    /**
+     * Instantiates D2 with the provided configuration. If you are not using RxJava,
+     * use {@link D2Manager#blockingInstantiateD2(D2Configuration)} instead.
+     * @param d2Config the configuration
+     * @return the D2 instance wrapped in a RxJava Single
+     */
     public static Single<D2> instantiateD2(@NonNull D2Configuration d2Config) {
         return Single.fromCallable(() -> {
             setUp(d2Config);
@@ -103,6 +123,12 @@ public final class D2Manager {
         });
     }
 
+    /**
+     * Instantiates D2 with the provided configuration. This is a blocking method. If you are using RxJava,
+     * use {@link D2Manager#instantiateD2(D2Configuration)} instead.
+     * @param d2Config the configuration
+     * @return the D2 instance
+     */
     public static D2 blockingInstantiateD2(@NonNull D2Configuration d2Config) {
         return instantiateD2(d2Config).blockingGet();
     }

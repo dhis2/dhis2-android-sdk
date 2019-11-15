@@ -352,9 +352,11 @@ d2.trackedEntityModule().reservedValueManager().getValue("attributeUid", "orguni
 d2.aggregatedModule().data().download()
 ```
 
-By default, the SDK downloads aggregated data values and dataset complete registration values corresponding to:
+By default, the SDK downloads **aggregated data values**, **dataset
+complete registration values** and **approvals** corresponding to:
 
-- **DataSets**: all available dataSets (those the user has at least read data access to).
+- **DataSets**: all available dataSets (those the user has at least read
+  data access to).
 - **OrganisationUnits**: capture scope.
 - **Periods**: all available periods, which means at least:
   - Days: last 60 days.
@@ -365,9 +367,37 @@ By default, the SDK downloads aggregated data values and dataset complete regist
   - Quarters: last 5 quarters.
   - Sixmonthly: last 5 six-months (starting in January and April).
   - Yearly: last 5 years (including financial year variants).
+  
+  In addition, if any dataset allows data entry for **future periods**,
+  the Sdk will download these and store them. 
 
-It keeps track of the latest successful download in order to avoid
-downloading unmodified server data.
+The Sdk also keeps track of the latest successful download in order to
+avoid downloading unmodified server data.
+
+In the download of **data approvals**, workflow and attribute option
+combination identifiers will be considered in addition to the
+organisation units and periods. The different possible states for data
+approval are:
+- `UNAPPROVABLE`. Data approval does not apply to this selection. (Data
+  is neither *approved* nor *unapproved*).
+- `UNAPPROVED_WAITING`. Data could be approved for this selection, but
+  is waiting for some lower-level approval before it is ready to be
+  approved.
+- `UNAPPROVED_ELSEWHERE`. Data is unapproved, and is waiting for
+  approval somewhere else (can not be approved here).
+- `UNAPPROVED_READY`. Data is unapproved, and is ready to be approved
+  for this selection.
+- `UNAPPROVED_ABOVE`. Data is unapproved above.
+- `APPROVED_HERE`. Data is approved, and was approved here (so could be
+  unapproved here).
+- `APPROVED_ELSEWHERE`. Data is approved, but was not approved here (so
+  cannot be unapproved here).
+- `APPROVED_ABOVE`. Data is approved above.
+- `ACCEPTED_HERE`. Data is approved and accepted here (so could be
+  unapproved here).
+- `ACCEPTED_ELSEWHERE`. Data is approved and accepted, but elsewhere.
+
+Data approvals are downloaded only for versions greater than 2.29.
 
 #### Aggregated data write
 

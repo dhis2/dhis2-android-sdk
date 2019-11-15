@@ -42,6 +42,13 @@ public final class StringFilterConnector<R extends BaseRepository>
         super(repositoryFactory, scope, key);
     }
 
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The like filter checks if the given field has a value which contains the value provided. The comparison
+     * is case insensitive.
+     * @param value value to compare with the target field
+     * @return the new repository
+     */
     public R like(String value) {
         return newWithWrappedScope(FilterItemOperator.LIKE, "%" + value + "%");
     }

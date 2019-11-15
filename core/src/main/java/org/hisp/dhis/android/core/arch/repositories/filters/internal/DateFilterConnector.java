@@ -51,18 +51,44 @@ public final class DateFilterConnector<R extends BaseRepository> extends BaseAbs
         super(repositoryFactory, scope, key);
     }
 
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The before filter checks if the given field has a date value which is before to the one provided.
+     * @param value value to compare with the target field
+     * @return the new repository
+     */
     public R before(Date value) {
         return newWithWrappedScope(FilterItemOperator.LT, value);
     }
 
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The after filter checks if the given field has a date value which is after to the one provided.
+     * @param value value to compare with the target field
+     * @return the new repository
+     */
     public R after(Date value) {
         return newWithWrappedScope(FilterItemOperator.GT, value);
     }
 
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The inDatePeriods filter checks if the given field has a date value which is within one of the provided
+     * DatePeriods.
+     * @param datePeriods date periods to compare with the target field
+     * @return the new repository
+     */
     public R inDatePeriods(@NonNull List<DatePeriod> datePeriods) {
         return newWithWrappedScope(InPeriodQueryHelper.buildInPeriodsQuery(key, datePeriods));
     }
 
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The inDatePeriods filter checks if the given field has a date value which is within one of the provided
+     * Periods.
+     * @param periods periods to compare with the target field
+     * @return the new repository
+     */
     public R inPeriods(@NonNull List<Period> periods) {
         List<DatePeriod> datePeriods = new ArrayList<>();
         for (Period period : periods) {

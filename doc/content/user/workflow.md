@@ -421,6 +421,12 @@ DataValueObjectRepository valueRepository = d2.dataValueModule().dataValues()
 valueRepository.set("value")
 ```
 
+The data values of type `Image` have associated file resources to them.
+The Sdk provides a repository to sync them, the **File resource
+collection repository**. You can find more information about it in the
+[*Dealing with FileResources*](#dealing-with-fileresources) section
+below.
+
 ##### Data set complete registration
 
 The Sdk provides within the data set module a collection repository for

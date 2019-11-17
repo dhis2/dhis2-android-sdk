@@ -1,4 +1,4 @@
-## Program rule engine
+# Program rule engine
 
 <!--DHIS2-SECTION-ID:program_rule_engine-->
 

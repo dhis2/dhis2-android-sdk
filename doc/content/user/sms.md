@@ -1,4 +1,4 @@
-## SMS module
+# SMS module
 
 <!--DHIS2-SECTION-ID:sms_module-->
 
@@ -14,7 +14,7 @@ There are 3 classes that give access to modules features.
 - SmsSubmitCase
 - QrCodeCase
 
-### ConfigCase
+## ConfigCase
 
 Used to configure fields like gateway numbers, timeout, execute downloading of metadata ids object.
 
@@ -22,7 +22,7 @@ Used to configure fields like gateway numbers, timeout, execute downloading of m
 d2.smsModule().configCase()
 ```
 
-### QrCodeCase
+## QrCodeCase
 
 Used to convert data item to String
 
@@ -34,7 +34,7 @@ d2.smsModule().qrCodeCase()
 Single<String> convertTask = d2.smsModule().qrCodeCase().generateEnrollmentCode(enrollmentUid);
 ```
 
-### SmsSubmitCase
+## SmsSubmitCase
 
 ```java
 d2.smsModule().smsSubmitCase()

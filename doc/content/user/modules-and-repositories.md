@@ -1,4 +1,4 @@
-## Modules and repositories
+# Modules and repositories
 
 <!--DHIS2-SECTION-ID:modules_and_repositories-->
 
@@ -8,7 +8,7 @@ Modules are the layer below `D2`. They act as a wrapper for related functionalit
 
 Repositories act as a facade for the DB (or web API in some cases). They offer read capabilities for metadata and read/write for data.
 
-### Dealing with return types: RxJava
+## Dealing with return types: RxJava
 
 <!--DHIS2-SECTION-ID:dealing_with_rxjava-->
 
@@ -45,7 +45,7 @@ new AsyncTask<Void, Void, List<Program>>() {
 }.execute();
 ```
 
-### Query building
+## Query building
 
 <!--DHIS2-SECTION-ID:query_building-->
 
@@ -66,7 +66,7 @@ d2.eventModule().events()
     .get();
 ```
 
-#### Filters
+### Filters
 
 <!--DHIS2-SECTION-ID:filters-->
 
@@ -83,7 +83,7 @@ d2.eventModule().events()
 
 will return the events assigned to the orgunit "DiszpKrYNg8" **AND** whose eventDate is after "2019-05-05".
 
-#### Order by
+### Order by
 
 <!--DHIS2-SECTION-ID:order_by-->
 
@@ -100,7 +100,7 @@ d2.eventModule().events()
 
 will order by EventDate descendant in first place, and then by LastUpdated descendant.
 
-#### Include nested fields
+### Include nested fields
 
 <!--DHIS2-SECTION-ID:nested_fields-->
 
@@ -118,7 +118,7 @@ d2.programModule().programs()
 
 will return a nested `TrackedEntityType` object.
 
-### Module list
+## Module list
 
 <!--DHIS2-SECTION-ID:module_list-->
 

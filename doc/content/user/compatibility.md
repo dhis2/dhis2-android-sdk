@@ -1,4 +1,4 @@
-## Compatibility: SDK / core / Android
+# Compatibility: SDK / core / Android
 
 <!--DHIS2-SECTION-ID:compatibility-->
 

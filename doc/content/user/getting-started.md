@@ -1,8 +1,8 @@
-## Getting started
+# Getting started
 
 <!--DHIS2-SECTION-ID:getting_started-->
 
-### Installation
+## Installation
 
 <!--DHIS2-SECTION-ID:installation-->
 
@@ -15,7 +15,7 @@ dependencies {
 }
 ```
 
-### D2 initialization
+## D2 initialization
 
 <!--TODO-->
 

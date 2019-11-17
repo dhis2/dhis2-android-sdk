@@ -42,10 +42,22 @@ public final class DoubleFilterConnector<R extends BaseRepository>
         super(repositoryFactory, scope, key);
     }
 
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The smallerThan filter checks if the given field has a value which is smaller than the one provided.
+     * @param value value to compare with the target field
+     * @return the new repository
+     */
     public R smallerThan(double value) {
         return newWithWrappedScope(FilterItemOperator.LT, value);
     }
 
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The biggerThan filter checks if the given field has a value which is bigger than the one provided.
+     * @param value value to compare with the target field
+     * @return the new repository
+     */
     public R biggerThan(double value) {
         return newWithWrappedScope(FilterItemOperator.GT, value);
     }

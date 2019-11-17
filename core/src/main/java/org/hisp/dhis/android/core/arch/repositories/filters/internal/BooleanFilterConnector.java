@@ -40,10 +40,21 @@ public final class BooleanFilterConnector<R extends BaseRepository> extends Base
         super(repositoryFactory, scope, key);
     }
 
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The isTrue filter checks if the given field has a true value.
+     * @return the new repository
+     */
     public R isTrue() {
         return eq(true);
     }
 
+
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The isFalse filter checks if the given field has a false value.
+     * @return the new repository
+     */
     public R isFalse() {
         return eq(false);
     }

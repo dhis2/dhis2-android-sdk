@@ -44,36 +44,83 @@ abstract class BaseAbstractFilterConnector<R extends BaseRepository, V> extends 
         super(repositoryFactory, scope, key);
     }
 
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The eq filter checks if the given field has a value which is equal to the one provided.
+     * @param value value to compare with the target field
+     * @return the new repository
+     */
     public R eq(V value) {
         return newWithWrappedScope(FilterItemOperator.EQ, value);
     }
 
+
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The neq filter checks if the given field has a value which is not equal to the one provided.
+     * @param value value to compare with the target field
+     * @return the new repository
+     */
     public R neq(V value) {
         return newWithWrappedScope(FilterItemOperator.NOT_EQ, value);
     }
 
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The in filter checks if the given field has a value which is equal to one of the provided values.
+     * @param values list of values to compare with the target field
+     * @return the new repository
+     */
     public R in(Collection<V> values) {
         return newWithUnwrappedScope(FilterItemOperator.IN, "(" + getCommaSeparatedValues(values) + ")");
     }
 
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The in filter checks if the given field has a value which is equal to one of the provided values.
+     * @param values list of values to compare with the target field
+     * @return the new repository
+     */
     @SafeVarargs
     public final R in(V... values) {
         return in(Arrays.asList(values));
     }
 
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The notIn filter checks if the given field has a value which is not equal to any of the provided values.
+     * @param values list of values to compare with the target field
+     * @return the new repository
+     */
     public R notIn(Collection<V> values) {
         return newWithUnwrappedScope(FilterItemOperator.NOT_IN, "(" + getCommaSeparatedValues(values) + ")");
     }
 
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The notIn filter checks if the given field has a value which is not equal to any of the provided values.
+     * @param values list of values to compare with the target field
+     * @return the new repository
+     */
     @SafeVarargs
     public final R notIn(V... values) {
         return notIn(Arrays.asList(values));
     }
 
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The isNull filter checks if the given field has a null value.
+     * @return the new repository
+     */
     public final R isNull() {
         return newWithUnwrappedScope(FilterItemOperator.VOID, "IS NULL");
     }
 
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The isNotNull filter checks if the given field has a non-null value.
+     * @return the new repository
+     */
     public final R isNotNull() {
         return newWithUnwrappedScope(FilterItemOperator.VOID, "IS NOT NULL");
     }

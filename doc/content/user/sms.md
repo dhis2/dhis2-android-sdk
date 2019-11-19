@@ -11,8 +11,8 @@ d2.smsModule()
 There are 3 classes that give access to modules features.
 
 - ConfigCase
-- SmsSubmitCase
 - QrCodeCase
+- SmsSubmitCase
 
 ## ConfigCase
 
@@ -63,11 +63,38 @@ d2.smsModule().configCase()
 
 ## QrCodeCase
 
-Used to convert data item to String
+The `QrCodeCase` is used to convert *DHIS2* data to String. This String
+is a compressed representation of the *DHIS2* data. This is useful to
+avoid send large content on SMSes.
+
+The next code snippet shows how to access to the `QrCodeCase` object:
 
 ```java
 d2.smsModule().qrCodeCase()
 ```
+
+`QrCodeCase` can convert the next type of *DHIS2* objects:
+
+- **Simple events**. Using the `generateSimpleEventCode()` method and
+  passing an event uid.
+- **Tracker events**. Using the `generateTrackerEventCode()` method and
+  passing an event uid. 
+- **Enrollments**. Using the `generateEnrollmentCode()` method and
+  passing an enrollment uid.
+- **Relationships**. Using the `generateRelationshipCode()` method and
+  passing a relationship uid.
+- **Data sets**. Using the `generateDataSetCode()` method and passing a
+  data set uid, an organisation unit uid, an attribute option combo and
+  a period id.
+  
+Also it is possible to get compressed strings that can be used to delete
+identifiable objects:
+
+- **Deletions**. Using the `generateDeletionCode()` method and passing
+  the uid of the identifiable object to delete.
+  
+These methods returns a `Single` with the compressed data. The next code
+snippet shows an example of how it can be used.
 
 ```java
 Single<String> convertTask = d2.smsModule().qrCodeCase().generateEnrollmentCode(enrollmentUid);

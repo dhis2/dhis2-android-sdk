@@ -16,11 +16,50 @@ There are 3 classes that give access to modules features.
 
 ## ConfigCase
 
-Used to configure fields like gateway numbers, timeout, execute downloading of metadata ids object.
+The `ConfigCase` class is used to set initial data that is common for
+all sms sending tasks like gateway numbers, timeout, execute downloading
+of metadata ids object.
 
 ```java
 d2.smsModule().configCase()
 ```
+
+`ConfigCase` contains the next methods:
+
+- `setModuleEnabled()`. Enable the sms module. 
+- `getSmsModuleConfig()`. Returns a single which contains a the
+  `SmsConfig` object with the next properties:
+  - ModuleEnabled.
+  - Gateway
+  - WaitingForResult
+  - ResultSender
+  - ResultWaitingTimeout
+- `setMetadataDownloadConfig()`. Configure the metadata download. This
+  method accepts a `GetMetadataIdsConfig` object which contains a the
+  next list of booleans:
+  - DataElements.
+  - CategoryOptionCombos.
+  - OrganisationUnits.
+  - Users.
+  - TrackedEntityTypes.
+  - TrackedEntityAttributes.
+  - Programs.
+- `getMetadataDownloadConfig()`. Returns the `GetMetadataIdsConfig`
+  object.
+- `getDefaultMetadataDownloadConfig()`. Returns the default
+  `GetMetadataIdsConfig` object. By default all booleans are true.
+- `refreshMetadataIds()`. If the sms module is enabled, the Sdk tries to
+  set the `SMSMetadata` with the actual configuration, if there is no
+  configuration, the Sdk uses the default configuration.
+- `refreshMetadataIdsCallable()`. Encapsulates the method
+  `refreshMetadataIds()` above in a `Callable` object.
+- `setWaitingForResultEnabled()`. Configure the Sdk to wait for the
+  result.
+- `setConfirmationSenderNumber()`. Configure the sender number to which
+  the confirmation will be sent.  
+- `setWaitingResultTimeout()`. Configure the maximum time in seconds to
+  wait for the result.
+- `setGatewayNumber()`. Configure the gateway number.
 
 ## QrCodeCase
 

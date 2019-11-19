@@ -2,17 +2,18 @@
 
 <!--DHIS2-SECTION-ID:sms_module-->
 
-To get SMS module object.
+The SMS module can be accessed from `D2`. 
 
 ```java
 d2.smsModule()
 ```
 
-There are 3 classes that give access to modules features.
+Inside the module it is possible to find three classes that give
+access to modules features.
 
 - ConfigCase
-- QrCodeCase
 - SmsSubmitCase
+- QrCodeCase
 
 ## ConfigCase
 
@@ -61,6 +62,65 @@ d2.smsModule().configCase()
   wait for the result.
 - `setGatewayNumber()`. Configure the gateway number.
 
+## SmsSubmitCase
+
+The `SmsSubmitCase` class is used to convert the *DHIS2* data that will
+be sent by the Sdk, to send it by SMS and to check the progress of the
+submission and his result. It is accessible from the sms module.
+
+```java
+d2.smsModule().smsSubmitCase()
+```
+
+The next methods can be used to set the *DHIS2* data to send:
+
+- `convertSimpleEvent()´. To set a simple event.
+- `convertTrackerEvent()´. To set a tracker event.
+- `convertEnrollment()´. To set an enrollment.
+- `convertDataSet()´. To set a data set.
+- `convertRelationship()´. To set a relationship.
+- `convertDeletion()´. To delete an identifiable *DHIS2* object.
+
+The methods above returns a single with the number of messages that the
+items takes up. An example of the use of these methods is shown in the
+next snippet.
+
+```java
+Single<Integer> convertTask = d2.smsModule().smsSubmitCase()
+    .convertEnrollment("enrollment_uid")
+```
+
+To send the data converted earlier the Sdk provides a `send()` method
+that returns a stream of the current states. Also it is possible to get
+the submission id by calling the method `getSubmissionId()`.
+
+```java
+d2.smsModule().smsSubmitCase().send()
+```
+
+It is also possible to wait for the SMS result by calling the
+`checkConfirmationSms()` method. It returns a `Completable` object where
+completion means that the SMS was received successfully. In case that
+the result cannot be found, it returns an error. The date accepted is
+the minimum date for which confirmation is going to be checked, this is
+used to skip old messages that may have the same submission id.
+
+```java
+d2.smsModule().smsSubmitCase().checkConfirmationSms(new Date());
+```
+
+These methods can fail and return a `PreconditionFailed` object if some
+conditions are not satisfied. The preconditions errors are:
+
+- `NO_NETWORK`.
+- `NO_CHECK_NETWORK_PERMISSION`.
+- `NO_RECEIVE_SMS_PERMISSION`.
+- `NO_SEND_SMS_PERMISSION`.
+- `NO_GATEWAY_NUMBER_SET`.
+- `NO_USER_LOGGED_IN`.
+- `NO_METADATA_DOWNLOADED`.
+- `SMS_MODULE_DISABLED`.
+
 ## QrCodeCase
 
 The `QrCodeCase` is used to convert *DHIS2* data to String. This String
@@ -98,28 +158,4 @@ snippet shows an example of how it can be used.
 
 ```java
 Single<String> convertTask = d2.smsModule().qrCodeCase().generateEnrollmentCode(enrollmentUid);
-```
-
-## SmsSubmitCase
-
-```java
-d2.smsModule().smsSubmitCase()
-```
-
-Used to send SMS and to check result response.
-
-```java
-// get sender
-SmsSubmitCase smsSender = d2.smsModule().smsSubmitCase();
-
-// convert data, returns a number of messages, so app can continue or not
-Single<Integer> convertTask = smsSender.convertEnrollment(inputArguments.getEnrollmentId())
-
-// send data converted earlier, returns stream of current states
-Observable<SmsRepository.SmsSendingState> sendingTask = smsSender.send();
-
-// wait for result sms, completion means it was received successfully
-// in case if result not found, returns error
-// given date is a minimum date, when message should be received, used to skip old messages that may have the same submission id
-Completable checkResultTask = smsSender.checkConfirmationSms(new Date());
 ```

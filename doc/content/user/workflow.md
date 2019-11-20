@@ -7,8 +7,8 @@ Currently, the SDK is primarily oriented to build apps that work most of the tim
 A typical workflow would be like this:
 
 1. Login
-2. Sync metadata: the SDK the metadata so it is available to be used at any time. Metadata sync is totally user-dependent (see [Synchronization](...) for more details)
-3. Download data:
+2. Sync metadata: the SDK downloads a subset of the server metadata so it is available to be used at any time. Metadata sync is totally user-dependent (see [Synchronization](#metadata-synchronization) for more details)
+3. Download data: if you want to have existing data available in the device even when offline, the SDK allows to download aggregated and tracker data.
 4. Do the work: at this point the app is able to create the data entry forms and show some existing data. Then the user can edit/delete/update data.
 5. Upload data: from time to time, the work done in the local database instance is sent to the server.
 6. Sync metadata: it is recommended to sync metadata quite often to detect changes in metadata configuration.
@@ -28,11 +28,11 @@ d2.userModule().logOut()
 After a logout the SDK keeps track of the last logged user so that it is able to differentiate recurring and new users. It also keeps a hash of the user credentials in order to authenticate the user even when there is no connectivity. Given that said, the login method will:
 
 - If an authenticated user already exists: throw an error.
-- If Online:
+- If *Online*:
   - If user is different than last logged user: wipe DB and try **login online**.
   - If server is different (even if the user is the same): wipe DB and try **login online**.
   - If user account has been disabled in server: wipe DB and throw an error.
-- If Offline:
+- If *Offline*:
   - If the user has ever been authenticated:
     - If server is the same: try **login offline**.
     - If server is different: throw an error.
@@ -42,7 +42,7 @@ Logout method removes user credentials, so a new login is required before any in
 
 ## Metadata synchronization
 
-<!--DHIS2-SECTION-ID:metadata_sync-->
+<!--DHIS2-SECTION-ID:metadata_synchronization-->
 
 Metadata synchronization is usually the first step after login. It fetches and persists the metadata needed by the current user. To launch metadata synchronization we must execute:
 
@@ -127,12 +127,14 @@ strategy: in case a page fails to be downloaded or persisted, it is
 skipped but it will continue with the next pages.
 
 This is an example of how it can be used.
+
 ```java
 d2.trackedEntityModule().trackedEntityInstanceDownloader()
     .[filters]
     .[limits]
     .download()
 ```
+
 ```java
 d2.eventModule().eventDownloader()
     .[filters]
@@ -177,7 +179,7 @@ d2.trackedEntityModule().trackedEntityInstanceDownloader()
 
 DHIS2 has a functionality to filter TrackedEntityInstances by related
 properties, like attributes, organisation units, programs or enrollment
-dates. The Sdk provides the the `TrackedEntityInstanceQueryCollectionRepository` 
+dates. The Sdk provides the `TrackedEntityInstanceQueryCollectionRepository` 
 with methods that allow the download of tracked entity
 instances within the search scope. It can be found inside the tracked entity instance module.
 
@@ -452,7 +454,6 @@ d2.dataSetModule().dataSetCompleteRegistrations()
     .value("periodId", "orgunitId", "dataSetUid","attributeOptionCombo")
     .delete()
 ```
-
 
 ### Aggregated data upload
 

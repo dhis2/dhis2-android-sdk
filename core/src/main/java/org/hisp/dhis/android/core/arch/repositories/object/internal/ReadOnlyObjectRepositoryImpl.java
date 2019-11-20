@@ -54,21 +54,39 @@ public abstract class ReadOnlyObjectRepositoryImpl<M extends CoreObject, R exten
 
     abstract M getWithoutChildren();
 
+    /**
+     * Returns the object in an asynchronous way, returning a {@link Single<M>}.
+     * @return A {@link Single} object with the object
+     */
     @Override
     public final Single<M> get() {
         return Single.fromCallable(this::blockingGet);
     }
 
+    /**
+     * Returns the object in a synchronous way. Important: this is a blocking method and it should not be
+     * executed in the main thread. Consider the asynchronous version {@link #get()}.
+     * @return the object
+     */
     @Override
     public final M blockingGet() {
         return ChildrenAppenderExecutor.appendInObject(getWithoutChildren(), childrenAppenders, scope.children());
     }
 
+    /**
+     * Returns if the object exists in an asynchronous way, returning a {@link Single<Boolean>}.
+     * @return if the object exists, wrapped in a {@link Single}
+     */
     @Override
     public final Single<Boolean> exists() {
         return Single.fromCallable(this::blockingExists);
     }
 
+    /**
+     * Returns if the object exists in a synchronous way. Important: this is a blocking method and it should not be
+     * executed in the main thread. Consider the asynchronous version {@link #exists()}.
+     * @return if the object exists
+     */
     @Override
     public boolean blockingExists() {
         return getWithoutChildren() != null;

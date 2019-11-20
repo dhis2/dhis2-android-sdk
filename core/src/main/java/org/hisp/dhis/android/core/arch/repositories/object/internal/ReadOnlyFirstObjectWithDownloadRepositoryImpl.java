@@ -53,11 +53,23 @@ public class ReadOnlyFirstObjectWithDownloadRepositoryImpl<M extends CoreObject,
         this.downloadCompletableProvider = downloadCompletableProvider;
     }
 
+    /**
+     * Downloads the resource in scope in an asynchronous way. As soon as it's downloaded and processed, the
+     * {@link Completable} is completed.
+     * @param storeError whether to store errors in the database
+     * @return a {@link Completable} that completes when the download and processing is finished
+     */
     @Override
     public Completable download(boolean storeError) {
         return downloadCompletableProvider.getCompletable(storeError);
     }
 
+    /**
+     * Downloads the resource in scope in a synchronous way. The method will finish
+     * as soon as the whole download and processing is finished. Important: this is a blocking method and it should
+     * not be executed in the main thread. Consider the asynchronous version {@link #download}.
+     * @param storeError whether to store errors in the database
+     */
     @Override
     public void blockingDownload(boolean storeError) {
         download(storeError).blockingAwait();

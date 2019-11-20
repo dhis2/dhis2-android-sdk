@@ -34,5 +34,11 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 public interface ReadOnlyWithUidCollectionRepository<M extends CoreObject & ObjectWithUidInterface>
         extends ReadOnlyCollectionRepository<M> {
 
+    /**
+     * Returns a new {@link ReadOnlyObjectRepository} whose scope is the one of the current repository plus the
+     * equal filter applied to the uid. This method is equivalent to byUid().eq(uid).one().
+     * @param uid to compare
+     * @return the {@link ReadOnlyObjectRepository}
+     */
     ReadOnlyObjectRepository<M> uid(String uid);
 }

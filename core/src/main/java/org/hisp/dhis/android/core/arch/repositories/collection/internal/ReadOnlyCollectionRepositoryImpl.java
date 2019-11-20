@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
 import org.hisp.dhis.android.core.arch.repositories.paging.internal.RepositoryDataSource;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
@@ -71,22 +72,44 @@ public class ReadOnlyCollectionRepositoryImpl<M extends CoreObject, R extends Re
                 scope.pagingKey()));
     }
 
+    /**
+     * Get a {@link ReadOnlyObjectRepository} pointing to the first element in the list.
+     *
+     * @return Object repository
+     */
     @Override
     public ReadOnlyOneObjectRepositoryFinalImpl<M> one() {
         return new ReadOnlyOneObjectRepositoryFinalImpl<>(store, childrenAppenders, scope);
     }
 
+    /**
+     * Get the list of objects in a synchronous way. Important: this is a blocking method and it should not be
+     * executed in the main thread. Consider the asynchronous version {@link #get()}.
+     *
+     * @return List of objects
+     */
     @Override
     public List<M> blockingGet() {
         return ChildrenAppenderExecutor.appendInObjectCollection(getWithoutChildren(),
                 childrenAppenders, scope.children());
     }
 
+    /**
+     * Get the objects in scope in an asynchronous way, returning a {@link Single<List>}.
+     *
+     * @return A {@link Single} object with the list of objects.
+     */
     @Override
     public Single<List<M>> get() {
         return Single.fromCallable(this::blockingGet);
     }
 
+    /**
+     * Handy method to use in conjunction with PagedListAdapter to build paged lists.
+     *
+     * @param pageSize Length of the page
+     * @return A LiveData object of PagedList of elements
+     */
     @Override
     public LiveData<PagedList<M>> getPaged(int pageSize) {
         DataSource.Factory<M, M> factory = new DataSource.Factory<M, M>() {
@@ -103,21 +126,43 @@ public class ReadOnlyCollectionRepositoryImpl<M extends CoreObject, R extends Re
         return new RepositoryDataSource<>(store, scope, childrenAppenders);
     }
 
+    /**
+     * Get the count of elements in an asynchronous way, returning a {@link Single}.
+     * @return A {@link Single} object with the element count
+     */
     @Override
     public Single<Integer> count() {
         return Single.fromCallable(this::blockingCount);
     }
 
+    /**
+     * Get the count of elements. Important: this is a blocking method and it should not be
+     * executed in the main thread. Consider the asynchronous version {@link #count()}.
+     *
+     * @return Element count
+     */
     @Override
     public int blockingCount() {
         return store.countWhere(getWhereClause());
     }
 
+    /**
+     * Check if selection of objects in current scope with applied filters is empty in an asynchronous way,
+     * returning a {@link Single}.
+     * @return If selection is empty
+     */
     @Override
     public Single<Boolean> isEmpty() {
         return Single.fromCallable(this::blockingIsEmpty);
     }
 
+    /**
+     * Check if selection of objects with applied filters is empty in a synchronous way.
+     * Important: this is a blocking method and it should not be executed in the main thread.
+     * Consider the asynchronous version {@link #isEmpty()}.
+     *
+     * @return If selection is empty
+     */
     @Override
     public boolean blockingIsEmpty() {
         return blockingCount() == 0;

@@ -32,8 +32,30 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import io.reactivex.Single;
 
 public interface ReadOnlyObjectRepository<M extends CoreObject> {
+
+    /**
+     * Returns the object in an asynchronous way, returning a {@link Single<M>}.
+     * @return A {@link Single} object with the object
+     */
     Single<M> get();
+
+    /**
+     * Returns the object in a synchronous way. Important: this is a blocking method and it should not be
+     * executed in the main thread. Consider the asynchronous version {@link #get()}.
+     * @return the object
+     */
     M blockingGet();
+
+    /**
+     * Returns if the object exists in an asynchronous way, returning a {@link Single<Boolean>}.
+     * @return if the object exists, wrapped in a {@link Single}
+     */
     Single<Boolean> exists();
+
+    /**
+     * Returns if the object exists in a synchronous way. Important: this is a blocking method and it should not be
+     * executed in the main thread. Consider the asynchronous version {@link #exists()}.
+     * @return if the object exists
+     */
     boolean blockingExists();
 }

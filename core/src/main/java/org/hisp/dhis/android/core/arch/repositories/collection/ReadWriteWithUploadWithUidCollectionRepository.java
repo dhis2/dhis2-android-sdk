@@ -27,14 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-import io.reactivex.Observable;
-
 public interface ReadWriteWithUploadWithUidCollectionRepository<M extends CoreObject & ObjectWithUidInterface, C>
-        extends ReadWriteWithUidCollectionRepository<M, C> {
-    Observable<D2Progress> upload();
-    void blockingUpload();
+        extends ReadWriteWithUidCollectionRepository<M, C>, CollectionRepositoryUpload {
 }

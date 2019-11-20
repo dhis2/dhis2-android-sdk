@@ -35,10 +35,10 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -65,13 +65,28 @@ public abstract class ReadWriteWithUidCollectionRepositoryImpl
         this.transformer = transformer;
     }
 
-    public abstract ReadOnlyObjectRepository<M> uid(String uid);
-
+    /**
+     * Adds a new object to the given collection in an asynchronous way based on the provided CreateProjection.
+     * It returns a {@link Single<String>} with the generated UID, which is completed when the object is added to the
+     * database. It adds an object with a {@link State#TO_POST}, which will be uploaded to the server in the next
+     * upload.
+     * @param projection the CreateProjection of the object to add
+     * @return the Single with the UID
+     */
     @Override
     public Single<String> add(P projection) {
         return Single.fromCallable(() -> blockingAdd(projection));
     }
 
+    /**
+     * Adds a new object to the given collection in a synchronous way based on the provided CreateProjection.
+     * It blocks the current thread and returns the generated UID.
+     * It adds an object with a {@link State#TO_POST}, which will be uploaded to the server in the next
+     * upload. Important: this is a blocking method and it should not be executed in the main thread. Consider the
+     * asynchronous version {@link #add}.
+     * @param projection the CreateProjection of the object to add
+     * @return the UID
+     */
     @SuppressWarnings({"PMD.PreserveStackTrace"})
     @Override
     public String blockingAdd(P projection) throws D2Error {

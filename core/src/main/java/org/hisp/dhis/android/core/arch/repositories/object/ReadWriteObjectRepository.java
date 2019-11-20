@@ -35,8 +35,35 @@ import io.reactivex.Completable;
 
 
 public interface ReadWriteObjectRepository<M extends CoreObject> extends ReadOnlyObjectRepository<M> {
+
+    /**
+     * Removes the object in scope in an asynchronous way. See the implementation JavaDoc for details on how deletion
+     * is performed. It returns a {@link Completable} that completes as soon as the object is deleted in the database.
+     * The {@link Completable} fails if the object doesn't exist.
+     * @return the {@link Completable} which notifies the completion
+     */
     Completable delete();
+
+    /**
+     * Removes the object in scope in a synchronous way. See the implementation JavaDoc for details on how deletion
+     * is performed. It blocks the thread and finishes as soon as the object is deleted in the database.
+     * It throws an exception if the object doesn't exist.
+     * @throws D2Error if any errors occur, including when the object doesn't exist.
+     */
     void blockingDelete() throws D2Error;
+
+    /**
+     * Removes the object in scope in a synchronous way. See the implementation JavaDoc for details on how deletion
+     * is performed. Unlike {@link #delete()}, it doesn't throw an exception if the object doesn't exist.
+     * It returns a {@link Completable} that completes as soon as the object is deleted in the database.
+     * @return the {@link Completable} which notifies the completion
+     */
     Completable deleteIfExist();
+
+    /**
+     * Removes the object in scope in an asynchronous way. See the implementation JavaDoc for details on how deletion
+     * is performed. Unlike {@link #blockingDelete()}, it doesn't throw an exception if the object doesn't exist.
+     * It blocks the thread and finishes as soon as the object is deleted in the database.
+     */
     void blockingDeleteIfExist();
 }

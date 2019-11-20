@@ -54,12 +54,22 @@ public class ReadOnlyFirstObjectWithDownloadRepositoryImpl<M extends CoreObject,
     }
 
     @Override
-    public Completable download(boolean storeError) {
-        return downloadCompletableProvider.getCompletable(storeError);
+    public Completable download() {
+        return downloadCompletableProvider.getCompletable(true);
     }
 
     @Override
-    public void blockingDownload(boolean storeError) {
-        download(storeError).blockingAwait();
+    public void blockingDownload() {
+        download().blockingAwait();
+    }
+
+    @Override
+    public Completable downloadWithoutStoreErrors() {
+        return downloadCompletableProvider.getCompletable(false);
+    }
+
+    @Override
+    public void blockingDownloadWithoutStoreErrors() {
+        downloadWithoutStoreErrors().blockingAwait();
     }
 }

@@ -34,6 +34,8 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import io.reactivex.Completable;
 
 public interface ReadOnlyWithDownloadObjectRepository<M extends CoreObject> extends ReadOnlyObjectRepository<M> {
-    Completable download(boolean storeError);
-    void blockingDownload(boolean storeError);
+    Completable download();
+    void blockingDownload();
+    Completable downloadWithoutStoreErrors();
+    void blockingDownloadWithoutStoreErrors();
 }

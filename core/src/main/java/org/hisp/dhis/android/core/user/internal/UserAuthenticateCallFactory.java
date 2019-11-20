@@ -165,7 +165,7 @@ public final class UserAuthenticateCallFactory {
             authenticatedUserStore.updateOrInsertWhere(authenticatedUserToStore);
             credentialsSecureStore.setCredentials(Credentials.create(username, password));
 
-            systemInfoRepository.download(true).blockingAwait();
+            systemInfoRepository.download().blockingAwait();
 
             handleUser(authenticatedUser);
             transaction.setSuccessful();

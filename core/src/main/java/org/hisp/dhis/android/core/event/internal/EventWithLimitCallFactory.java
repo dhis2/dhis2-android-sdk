@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine;
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
@@ -50,7 +52,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
 
@@ -172,7 +173,7 @@ public final class EventWithLimitCallFactory {
     }
 
     private Observable<D2Progress> downloadSystemInfo(D2ProgressManager progressManager) {
-        return systemInfoRepository.download(true)
+        return systemInfoRepository.download()
                 .toSingle(() -> progressManager.increaseProgress(SystemInfo.class, false))
                 .toObservable();
     }

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
@@ -62,7 +64,6 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
@@ -110,7 +111,7 @@ final class AggregatedDataCall {
     Observable<D2Progress> download() {
         D2ProgressManager progressManager = new D2ProgressManager(null);
 
-        Observable<D2Progress> observable = systemInfoRepository.download(true)
+        Observable<D2Progress> observable = systemInfoRepository.download()
                 .toSingle(() -> progressManager.increaseProgress(SystemInfo.class, false))
                 .flatMapObservable(progress -> selectDataSetsAndDownload(progressManager, progress));
         return rxCallExecutor.wrapObservableTransactionally(observable, true);

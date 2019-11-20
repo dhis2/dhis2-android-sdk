@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
@@ -55,6 +56,12 @@ public class ReadOnlyWithUidCollectionRepositoryImpl<M extends CoreObject & Obje
         this.store = store;
     }
 
+    /**
+     * Returns a new {@link ReadOnlyObjectRepository} whose scope is the one of the current repository plus the
+     * equal filter applied to the uid. This method is equivalent to byUid().eq(uid).one().
+     * @param uid to compare
+     * @return the ReadOnlyObjectRepository
+     */
     @Override
     public ReadOnlyOneObjectRepositoryFinalImpl<M> uid(String uid) {
         RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);

@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectReposit
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.DataObject;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -58,21 +59,59 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends CoreObject, R exte
         this.store = store;
     }
 
+    /**
+     * Removes the object in scope in an asynchronous way. It removes the value in the database and propagates
+     * the changes to modify the {@link DataObject#state()} of the parent, so it's updated in the server in
+     * the next upload.
+     * It returns a {@link Completable} that completes as soon as the object is deleted in the database.
+     * The {@link Completable} fails if the object doesn't exist.
+     * @return the {@link Completable} which notifies the completion
+     */
     @Override
     public Completable delete() {
         return Completable.fromAction(this::blockingDelete);
     }
 
+    /**
+     * Removes the object in scope in a synchronous way. It removes the value in the database and propagates
+     * the changes to modify the {@link DataObject#state()} of the parent, so it's updated in the server in
+     * the next upload.
+     * It blocks the thread and finishes as soon as the object is deleted in the database.
+     *
+     * Important: this is a blocking method and it should not be executed in the main thread. Consider the
+     * asynchronous version {@link #delete()}.
+     *
+     * It throws an exception if the object doesn't exist.
+     */
     @Override
     public void blockingDelete() throws D2Error {
         delete(getWithoutChildren());
     }
 
+    /**
+     * Removes the object in scope in an asynchronous way. It removes the value in the database and propagates
+     * the changes to modify the {@link DataObject#state()} of the parent, so it's updated in the server in
+     * the next upload.
+     * It returns a {@link Completable} that completes as soon as the object is deleted in the database.
+     * Unlike {@link #delete()}, it doesn't throw an exception if the object doesn't exist.
+     * It returns a {@link Completable} that completes as soon as the object is deleted in the database.
+     * @return the {@link Completable} which notifies the completion
+     */
     @Override
     public Completable deleteIfExist() {
         return Completable.fromAction(this::blockingDeleteIfExist);
     }
 
+    /**
+     * Removes the object in scope in a synchronous way. It removes the value in the database and propagates
+     * the changes to modify the {@link DataObject#state()} of the parent, so it's updated in the server in
+     * the next upload.
+     * Unlike {@link #blockingDelete()}, it doesn't throw an exception if the object doesn't exist.
+     * It blocks the thread and finishes as soon as the object is deleted in the database.
+     *
+     * Important: this is a blocking method and it should not be executed in the main thread. Consider the
+     * asynchronous version {@link #deleteIfExist()}.
+     */
     @Override
     public void blockingDeleteIfExist() {
         try {

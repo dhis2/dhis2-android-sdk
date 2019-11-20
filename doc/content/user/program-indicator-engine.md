@@ -12,7 +12,7 @@ In order to trigger the Program Indicator Engine, just execute:
 
 ```java
 d2.programModule()
-    .programIndicatorEngine
+    .programIndicatorEngine()
     .getProgramIndicatorValue(<enrollment-uid>, <event-uid>, <program-indicator-uid>);
 ```
 

@@ -2,16 +2,16 @@
 
 <!--DHIS2-SECTION-ID:workflow-->
 
-Currently, the SDK is primarily oriented to build apps that work most of the time in an offline mode. In short, the SDK maintains a local database instance that is used to get the work done locally (create forms, manage data, ...). From time to time, this local database is synchronized with the server.
+Currently, the SDK is primarily oriented to build apps that work in an offline mode. In short, the SDK maintains a local database instance that is used to get the work done locally (create forms, manage data, ...). From time to time, this local database is synchronized with the server.
 
 A typical workflow would be like this:
 
-1. Login
-2. Sync metadata: the SDK downloads a subset of the server metadata so it is available to be used at any time. Metadata sync is totally user-dependent (see [Synchronization](#metadata-synchronization) for more details)
-3. Download data: if you want to have existing data available in the device even when offline, the SDK allows to download aggregated and tracker data.
-4. Do the work: at this point the app is able to create the data entry forms and show some existing data. Then the user can edit/delete/update data.
-5. Upload data: from time to time, the work done in the local database instance is sent to the server.
-6. Sync metadata: it is recommended to sync metadata quite often to detect changes in metadata configuration.
+1. **Login**
+2. **Sync metadata:** the SDK downloads a subset of the server metadata so it is available to be used at any time. Metadata sync is totally user-dependent (see [Synchronization](#metadata-synchronization) for more details)
+3. **Download data:** if you want to have existing data available in the device even when offline, you can download and save existing tracker and aggregated data in the device.
+4. **Do the work:** at this point the app is able to create the data entry forms and show some existing data. Then the user can edit/delete/update data.
+5. **Upload data:** from time to time, the work done in the local database instance is sent to the server.
+6. **Sync metadata:** it is recommended to sync metadata quite often to detect changes in metadata configuration.
 
 ## Login/Logout
 
@@ -25,12 +25,12 @@ d2.userModule().logIn(username, password, serverUrl)
 d2.userModule().logOut()
 ```
 
-After a logout the SDK keeps track of the last logged user so that it is able to differentiate recurring and new users. It also keeps a hash of the user credentials in order to authenticate the user even when there is no connectivity. Given that said, the login method will:
+After a logout, the SDK keeps track of the last logged user so that it is able to differentiate recurring and new users. It also keeps a hash of the user credentials in order to authenticate the user even when there is no connectivity. Given that said, the login method will:
 
 - If an authenticated user already exists: throw an error.
 - If *Online*:
-  - If user is different than last logged user: wipe DB and try **login online**.
-  - If server is different (even if the user is the same): wipe DB and try **login online**.
+  - If user is different than last logged user: try **login online** and wipe DB if successful.
+  - If server is different (even if the user is the same): try **login online** and wipe DB if successful.
   - If user account has been disabled in server: wipe DB and throw an error.
 - If *Offline*:
   - If the user has ever been authenticated:
@@ -65,11 +65,11 @@ Based on that, metadata sync includes the following elements:
 | RelationshipTypes     | All |
 | OptionGroups          | Only if server is greater than 2.29 |
 | DataSet               | DataSets that user has (at least) read data access to and that are assigned to any orgunit visible by the user |
-| Indicators            | Indicators assigned to any dataSet |
+| Indicators            | Indicators assigned to downloaded dataSets |
 | OrganisationUnit      | OrganisationUnits in CAPTURE or SEARCH scope (descendants included) |
 | OrganisationUnitGroup | Groups assigned to downloaded organisationUnits |
-| OrganisationUnitLevel | - |
-| Constant              | - |
+| OrganisationUnitLevel | All |
+| Constant              | All |
 | SMS Module metadata   | Only if SMS module enabled |
 
 In the case of Programs and DataSets, metadata sync includes all the metadata related to them: stages, sections, dataElements, options, categories, etc. Those elements that are not related to any Program or DataSet are not included.
@@ -78,7 +78,7 @@ In the case of Programs and DataSets, metadata sync includes all the metadata re
 
 This partial metadata synchronization may expose server-side misconfiguration issues. For example, a ProgramRuleVariable pointing to a DataElement that does not belong to the program anymore. Due to the use of database-level constraints, this misconfiguration will appear as a Foreign Key error.
 
-The SDK does not fail the synchronization, but it stores the errors in a table for inspection. They can be accessed by:
+The SDK does not fail the synchronization, but it stores the errors in a table for inspection. These errors can be accessed by:
 
 ```java
 d2.maintenanceModule().foreignKeyViolations()
@@ -92,18 +92,18 @@ Data objects have a read-only `state` property that indicates the current state 
 
 The possible states are:
 
-- `SYNCED`. The element is synced with the server. There are no local changes for this value.
-- `TO_POST`. Data created locally that does not exist in the server yet.
-- `TO_UPDATE`. Data modified locally that exists in the server.
-- `UPLOADING`. Data is being uploaded. If it is modified before receiving any server response, its state is back to `TO_UPDATE`. When the server response arrives, its state does not change to `SYNCED`, but it remains in `TO_UPDATE` to indicate that there are local changes.
-- `SENT_BY_SMS`. Data is sent by sms and there is no server response yet. Some servers does not have the capability to send a response, so this state means that data has been sent, but we do not know if it has been correctly imported in the server or not.
-- `SYNCED_BY_SMS`. Data is sent by sms and there is a successful response from the server.
-- `ERROR`. Data that received an error from the server after the last upload.
-- `WARNING`. Data that received a warning from the server after the last upload.
+- **SYNCED**. The element is synced with the server. There are no local changes for this value.
+- **TO_POST**. Data created locally that does not exist in the server yet.
+- **TO_UPDATE**. Data modified locally that exists in the server.
+- **UPLOADING**. Data is being uploaded. If it is modified before receiving any server response, its state is back to `TO_UPDATE`. When the server response arrives, its state does not change to `SYNCED`, but it remains in `TO_UPDATE` to indicate that there are local changes.
+- **SENT_BY_SMS**. Data is sent by sms and there is no server response yet. Some servers does not have the capability to send a response, so this state means that data has been sent, but we do not know if it has been correctly imported in the server or not.
+- **SYNCED_BY_SMS**. Data is sent by sms and there is a successful response from the server.
+- **ERROR**. Data that received an error from the server after the last upload.
+- **WARNING**. Data that received a warning from the server after the last upload.
 
 Additionally, in `TrackedEntityInstance` we might have:
 
-- `RELATIONSHIP`. This TrackedEntityInstance has been downloaded with the sole purpose of fulfilling a relationship to another TEI. This `RELATIONSHIP` TEI only has basic information (uid, type, etc) and the list of TrackedEntityAttributes to be able to print meaningful information about the relationship. Other data such enrollments, events or relationships is not downloaded for this TEI. Also, this TEI cannot be modified or uploaded to the server.
+- **RELATIONSHIP**. This TrackedEntityInstance has been downloaded with the sole purpose of fulfilling a relationship to another TEI. This `RELATIONSHIP` TEI only has basic information (uid, type, etc) and the list of TrackedEntityAttributes to be able to print meaningful information about the relationship. Other data such enrollments, events or relationships is not downloaded for this TEI. Also, this TEI cannot be modified or uploaded to the server.
 
 ## Tracker data
 
@@ -118,13 +118,13 @@ download TrackedEntityInstances in search scope.
 The tracked entity module contains the
 `TrackedEntityInstanceDownloader`. The downloader follows a builder
 pattern which allows the download of tracked entity instances filtering by
-**different parameters** as well as define some **limits**. The same
+**different parameters** as well as defining some **limits**. The same
 behavior can be found within the event module for events.
 
-The downloader track the latest successful download in order to avoid
+The downloader tracks the latest successful download in order to avoid
 downloading unmodified data. It makes use of paging with a best effort
 strategy: in case a page fails to be downloaded or persisted, it is
-skipped but it will continue with the next pages.
+skipped and it will continue with the next pages.
 
 This is an example of how it can be used.
 
@@ -175,6 +175,8 @@ d2.trackedEntityModule().trackedEntityInstanceDownloader()
     .download()
 ```
 
+Additionally, if you want the images associated to `Image` data values available to be downloaded in the device, you must download them. See [*Dealing with FileResources*](#dealing-with-fileresources) section for more details.
+
 ### Tracker data search
 
 DHIS2 has a functionality to filter TrackedEntityInstances by related
@@ -191,7 +193,7 @@ filtering by **different parameters**.
 d2.trackedEntityModule().trackedEntityInstanceQuery()
     .[repository mode]
     .[filters]
-    .download()
+    .get()
 ```
 
 The source where the TEIs are retrieved from is defined by the **repository mode**.
@@ -217,25 +219,29 @@ Additionally, the repository offers different strategies to fetch data:
 - `byAttribute()`. This method adds an *attribute* filter to the query.
   If this method is called several times, conditions are appended with an AND
   connector. For example:
-    ```java
-    d2.trackedEntityModule().trackedEntityInstanceQuery()
-        .byAttribute("uid1").eq("value1")
-        .byAttribute("uid2").eq("value2")
-        .download()
-    ```
-    That means that the instance must have attribute `uid1` with value
-    `value1` **AND** attribute `uid2` with value `value2`.
+  
+  ```java
+  d2.trackedEntityModule().trackedEntityInstanceQuery()
+      .byAttribute("uid1").eq("value1")
+      .byAttribute("uid2").eq("value2")
+      .get()
+  ```
+
+  That means that the instance must have attribute `uid1` with value
+  `value1` **AND** attribute `uid2` with value `value2`.
 - `byFilter()`. This method adds a *filter* to the query. If this
   method is called several times, conditions are appended with an AND
   connector. For example:
-    ```java
-    d2.trackedEntityModule().trackedEntityInstanceQuery()
-        .byFilter("uid1").eq("value1")
-        .byFilter("uid2").eq("value2")
-        .download()
-    ```
-    That means that the instance must have attribute `uid1` with value
-    `value1` **AND** attribute `uid2` with value `value2`.
+  
+  ```java
+  d2.trackedEntityModule().trackedEntityInstanceQuery()
+      .byFilter("uid1").eq("value1")
+      .byFilter("uid2").eq("value2")
+      .get()
+  ```
+  
+  That means that the instance must have attribute `uid1` with value
+  `value1` **AND** attribute `uid2` with value `value2`.
 - `byQuery()`. Search tracked entity instances with **any** attribute
   matching the query.
 - `byProgram()`. Filter by enrollment program. Only one program can be
@@ -251,7 +257,7 @@ Additionally, the repository offers different strategies to fetch data:
     including specified units.
   - **ACCESSIBLE**. All organisation units accessible by the user
     (search scope).
-  - **ALL**. All units in system.
+  - **ALL**. All units in system. Requires authority.
 - `byProgramStartDate()`. Define an enrollment start date. It only
   applies if a program has been specified.
 - `byProgramEndDate()`. Define an enrollment end date. It only applies
@@ -275,10 +281,7 @@ d2.trackedEntityModule().trackedEntityInstanceQuery()
                 .offlineFirst()
 ```
 
-After finding the tracked entity instances by searching it is possible
-to fully download them using the `byUid()` filter of the
-`TrackedEntityInstanceDownloader` within the tracked entity instance
-module.
+> ***Important***: trackedEntityInstances retrieved using this repository are not persisted in the database. It is possibleto fully download them using the `byUid()` filter of the `TrackedEntityInstanceDownloader` within the tracked entity instance module.
 
 [//]: # (Include glass protected download)
 
@@ -309,6 +312,8 @@ For example, writing a TrackedEntityDataValue would be like:
 d2.trackedEntityModule().trackedEntityDataValues().value(eventUid, dataElementid).set(“5”);
 ```
 
+Data values of type `Image` involve an additional step to create/update/read the associated file resource. More details in the [*Dealing with FileResources*](#dealing-with-fileresources) section below.
+
 ### Tracker data upload
 
 TrackedEntityInstance and Event repositories have an `upload()` method to upload Tracker data and Event data (without registration) respectively. If the repository scope has been reduced by filter methods, only filtered objects will be uploaded.
@@ -318,6 +323,8 @@ d2.( trackedEntityModule() | eventModule() )
     .[ filters ]
     .upload();
 ```
+
+Data whose state is `ERROR` or `WARNING` cannot be uploaded. It is required to solve the conflicts before attempting a new upload: this means to do a modification in the problematic data, which forces their state back to `TO_UPDATE`.
 
 #### Tracker conflicts
 
@@ -344,7 +351,7 @@ d2.trackedEntityModule().reservedValueManager().downloadAllReservedValues(numVal
 d2.trackedEntityModule().reservedValueManager().downloadReservedValues("attributeUid", numValuesToFillUp)
 ```
 
-Depending on the time the app expects to be offline, it can decide the quantity of values to reserve. In case the attribute pattern is dependant on the orgunit code, the SDK will reserve values for all the relevant orgunits. More details about the logic in Javadoc.
+Depending on how long the app expects to be offline, it can decide the quantity of values to reserve. In case the attribute pattern is dependant on the orgunit code, the SDK will reserve values for all the relevant orgunits. More details about the logic in Javadoc.
 
 Reserved values can be obtained by:
 
@@ -423,12 +430,6 @@ DataValueObjectRepository valueRepository = d2.dataValueModule().dataValues()
 valueRepository.set("value")
 ```
 
-The data values of type `Image` have associated file resources to them.
-The Sdk provides a repository to sync them, the **File resource
-collection repository**. You can find more information about it in the
-[*Dealing with FileResources*](#dealing-with-fileresources) section
-below.
-
 #### Data set complete registration
 
 The Sdk provides within the data set module a collection repository for
@@ -493,35 +494,40 @@ This module contains methods to download the file resources associated with the 
 - **File resources download**.
 The `download()` method will search for the tracked entity attribute values ​​and tracked entity data values ​​whose tracked entity attribute type and data element type are of the image type and whose file resource has not been previously downloaded and the method will download the file resources associated.
 
-    ```
-    d2.fileResourceModule().download();
-    ```
+  ```java
+  d2.fileResourceModule().download();
+  ```
 
-    After downloading the files, you can obtain the different file resources downloaded through the repository.
+  After downloading the files, you can obtain the different file resources downloaded through the repository.
 
 - **File resource collection repository**.
 Through this repository it is possible to request files, save new ones and upload them to the server. 
 
-    - **Get**. It behaves in a similiar fashion to any other Sdk repository. It allows to get collections by applying different filters if desired.
-        ```
-        d2.fileResourceModule().fileResources()
-            .[ filters ]
-            .get()
-        ```
-    - **Add**. To save a file you have to add it using the `add()` method of the repository by providing an object of type `File`. The `add()` method will return the uid that was generated when adding the file. This uid should be used to update the tracked entity attribute value or the tracked entity data value associated with the file resource.
-        ```
-        d2.fileResourceModule().fileResources()
-            .add(file);
-        ```
-    - **Upload**. Calling the `upload()` method will trigger a series of successive calls in which all non-synchronized files will be sent to the server. After each upload, the server response will be processed. The server will provide a new uid to the file resource and the Sdk will automatically rename the file and update the `FileResource` object and the tracked entity attribute values ​​or tracked entity data values ​​associated with it.
-        ```
-        d2.fileResourceModule().fileResources()
-            .upload()
-        ```
+  - **Get**. It behaves in a similiar fashion to any other Sdk repository. It allows to get collections by applying different filters if desired.
+  
+    ```java
+    d2.fileResourceModule().fileResources()
+        .[ filters ]
+        .get()
+    ```
+
+  - **Add**. To save a file you have to add it using the `add()` method of the repository by providing an object of type `File`. The `add()` method will return the uid that was generated when adding the file. This uid should be used to update the tracked entity attribute value or the tracked entity data value associated with the file resource.
+
+    ```java
+    d2.fileResourceModule().fileResources()
+        .add(file); // Single<String> The fileResource uid
+    ```
+
+  - **Upload**. Calling the `upload()` method will trigger a series of successive calls in which all non-synchronized files will be sent to the server. After each upload, the server response will be processed. The server will provide a new uid to the file resource and the Sdk will automatically rename the file and update the `FileResource` object and the tracked entity attribute values ​​or tracked entity data values ​​associated with it.
+  
+    ```java
+    d2.fileResourceModule().fileResources()
+        .upload()
+    ```
 
 ### File resizer helper
 
-The Sdk provides a helper to resize image files (`FileResizerHelper`). The helper is located in the `core.arch.helpers` package of the Sdk. This helper contains a static `resizeFile()` method that accepts the file you want to reduce and the dimension to which you want to reduce it.
+The Sdk provides a helper to resize image files (`FileResizerHelper`). This helper contains a `resizeFile()` method that accepts the file you want to reduce and the dimension to which you want to reduce it.
 
 The possible dimensions are in the following table.
 
@@ -537,7 +543,7 @@ The `resizeFile()` method will return a new file located in the same parent dire
 
 ### File resource directory helper
 
-Contained in the `core.arch.helpers` package of the Sdk is the `FileResourceDirectoryHelper`. This helper provides two methods.
+The `FileResourceDirectoryHelper` helper class provides two methods.
 
 - `getFileResourceDirectory()`. This method returns a `File` object whose path points to the `sdk_resources` directory where the Sdk will save the files associated with the file resources.
 

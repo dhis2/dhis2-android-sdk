@@ -16,23 +16,23 @@ Any operation requested to the SDK can throw an error. For operations returing R
 
 ```java
 d2.userModule().logIn(username, password)
-                .subscribe(
-                        user -> { },
-                        error -> {
-                            if (error instanceof D2Error) {
-                                D2Error d2Error = (D2Error) error;
-                                Log.e("LOGIN", d2Error.errorComponent() + " " + d2Error.httpErrorCode() + " " + d2Error.errorCode());
-                            }
-                        }
-                );
+    .subscribe(
+        user -> { },
+        error -> {
+            if (error instanceof D2Error) {
+                D2Error d2Error = (D2Error) error;
+                Log.e("LOGIN", d2Error.errorComponent() + " " + d2Error.httpErrorCode() + " " + d2Error.errorCode());
+            }
+        }
+    );
 ```
 
-D2Errors are persisted in the Database when they ocurr, so they can be analized afterwards and diagnose possible problems. They can be accessed through it's own repository: 
+D2Errors are persisted in the Database when they ocurr, so they can be analized afterwards and diagnose possible problems. They can be accessed through it's own repository:
 
 ```java
 d2.maintenanceModule().d2Errors()
-                .byD2ErrorComponent().eq(D2ErrorComponent.Server)
-                .get();
+    .byD2ErrorComponent().eq(D2ErrorComponent.Server)
+    .get();
 ```
 
 The SDK team is now working together with the core team in order to provide a full list of common error codes, but it's still a work in progress.

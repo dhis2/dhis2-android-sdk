@@ -14,10 +14,10 @@ Repositories act as a facade for the DB (or web API in some cases). They offer r
 
 The SDK uses RxJava classes (Observable, Single, Completable, Flowable) as the preferred return type for all the methods. The reasons for choosing RxJava classes are mainly two:
 
-- **To facilitate the asynchronous treatment of returned objects.** Most of the actions in the SDK are time consuming and must be executed in a secondary thread. These return types force the app to deal with the asynchronous behavior.
-- **To notify about progress.** Methods like metadata or data sync might take several minutes to finish. From user experience it is very helpful to have a sense of progress.
+- **To facilitate the asynchronous treatment of returned objects.** Most of the actions in the SDK are time consuming and must be executed in a secondary thread. These return types force the app to deal with this asynchronous behavior.
+- **To notify about progress.** Methods like metadata or data sync might take several minutes to finish. From a user perspective, it is very helpful to have a sense of progress.
 
-This does not mean that applications are forced to use RxJava in their code: they are only forced to deal with their asynchronous behavior. RxJava classes include built-in methods to make them synchronous.
+This does not mean that applications are forced to use RxJava in their code: they are only forced to deal with the asynchronous behavior of some methods. The SDK usually exposes *blocking* version of every method.
 
 For example, the same query using RxJava and AsyncTask:
 
@@ -123,6 +123,7 @@ will return a nested `TrackedEntityType` object.
 <!--DHIS2-SECTION-ID:module_list-->
 
 System modules:
+
 - importModule
 - maintenanceModule
 - systemInfoModule
@@ -130,10 +131,12 @@ System modules:
 - wipeModule
 
 Big block modules:
+
 - metadataModule
 - aggregatedDataModule
 
 Concrete modules:
+
 - categoryModule
 - constantModule
 - dataElementModule

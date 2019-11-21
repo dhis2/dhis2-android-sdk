@@ -419,6 +419,21 @@ Data approvals are downloaded only for versions greater than 2.29.
 
 ### Aggregated data write
 
+#### Periods
+
+In order to write data values or data set complete registrations, it's mandatory to provide a period id. Periods are stored in a table in the database and
+the provided period ids must be already present in that table, otherwise a Foreign Key error will be thrown. To prevent that situation, the `PeriodHelper` is
+exposed inside the `PeriodModule`. Before adding aggregated data related to a dataSet, the following method must be called:
+
+```java
+Single<List<Period>> periods = d2.periodModule().periodHelper().getPeriodsForDataSet("dataSetUid");
+```
+
+This will ensure that: 
+1. The app will pick one of the given periods, preventing malformed or wrong periods.
+2. The app will only be able to pick the future periods defined by the field `DataSet.openFuturePeriods`.
+3. The app will only be able to pick the past periods defined based on the limits declared on the section Aggregated Data Download.
+
 #### Data value
 
 DataValueCollectionRepository has a `value()` method that gives access to edition methods. The parameters accepted by this method are the parameters that unambiguosly identify a value.

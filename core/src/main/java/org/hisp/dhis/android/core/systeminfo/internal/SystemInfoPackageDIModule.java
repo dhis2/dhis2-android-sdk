@@ -26,49 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.systeminfo.internal;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.di.internal.ObjectWithoutUidEntityDIModule;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-
-import java.util.Collections;
-import java.util.Map;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
+import retrofit2.Retrofit;
 
-@Module
-public final class SystemInfoEntityDIModule implements ObjectWithoutUidEntityDIModule<SystemInfo> {
+@Module(includes = {SystemInfoEntityDIModule.class})
+public final class SystemInfoPackageDIModule {
 
-    @Override
     @Provides
     @Reusable
-    public ObjectWithoutUidStore<SystemInfo> store(DatabaseAdapter databaseAdapter) {
-        return SystemInfoStore.create(databaseAdapter);
-    }
-
-    @Override
-    @Provides
-    @Reusable
-    public Handler<SystemInfo> handler(ObjectWithoutUidStore<SystemInfo> store) {
-        return new ObjectWithoutUidHandlerImpl<>(store);
+    SystemInfoService service(Retrofit retrofit) {
+        return retrofit.create(SystemInfoService.class);
     }
 
     @Provides
     @Reusable
-    ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository(SystemInfoObjectRepository impl) {
+    SystemInfoModule systemInfoModule(SystemInfoModuleImpl impl) {
         return impl;
     }
 
     @Provides
     @Reusable
-    Map<String, ChildrenAppender<SystemInfo>> childrenAppenders() {
-        return Collections.emptyMap();
+    DHISVersionManager versionManager(DHISVersionManagerImpl impl) {
+        return impl;
     }
 }

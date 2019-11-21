@@ -27,9 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
@@ -38,7 +35,6 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.helpers.internal.BooleanWrapper;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -48,7 +44,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueQuery;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStoreInterface;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
@@ -59,6 +55,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import dagger.Reusable;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -78,7 +76,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     private final LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final D2CallExecutor executor;
-    private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
+    private final SystemInfoCall systemInfoCall;
     private final QueryCallFactory<TrackedEntityAttributeReservedValue,
             TrackedEntityAttributeReservedValueQuery> reservedValueQueryCallFactory;
 
@@ -87,7 +85,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     @Inject
     TrackedEntityAttributeReservedValueManager(
             D2CallExecutor executor,
-            ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
+            SystemInfoCall systemInfoCall,
             TrackedEntityAttributeReservedValueStoreInterface store,
             IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
             IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore,
@@ -97,7 +95,7 @@ public final class TrackedEntityAttributeReservedValueManager {
             QueryCallFactory<TrackedEntityAttributeReservedValue,
                     TrackedEntityAttributeReservedValueQuery> reservedValueQueryCallFactory) {
         this.executor = executor;
-        this.systemInfoRepository = systemInfoRepository;
+        this.systemInfoCall = systemInfoCall;
         this.store = store;
         this.organisationUnitStore = organisationUnitStore;
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
@@ -292,7 +290,7 @@ public final class TrackedEntityAttributeReservedValueManager {
                                        boolean storeError) {
 
         Completable downloadSystemInfo = systemInfoDownloaded.get() ? Completable.complete() :
-                systemInfoRepository.download(storeError).andThen(
+                systemInfoCall.getCompletable(storeError).andThen(
                         Completable.fromAction(() -> systemInfoDownloaded.set(true)));
 
         return downloadSystemInfo.andThen(Completable.fromAction(() -> {

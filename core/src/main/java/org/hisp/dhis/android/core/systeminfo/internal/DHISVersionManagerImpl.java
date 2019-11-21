@@ -25,30 +25,61 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.systeminfo.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyFirstObjectWithDownloadRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall;
-
-import java.util.Map;
+import org.hisp.dhis.android.core.systeminfo.DHISVersion;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
-import dagger.Reusable;
+@Singleton
+public class DHISVersionManagerImpl implements DHISVersionManager {
 
-@Reusable
-public final class SystemInfoObjectRepository
-        extends ReadOnlyFirstObjectWithDownloadRepositoryImpl<SystemInfo, SystemInfoObjectRepository> {
+    private DHISVersion version;
 
     @Inject
-    SystemInfoObjectRepository(ObjectWithoutUidStore<SystemInfo> store,
-                               Map<String, ChildrenAppender<SystemInfo>> childrenAppenders,
-                               RepositoryScope scope,
-                               SystemInfoCall systemInfoCall) {
-        super(store, childrenAppenders, scope, systemInfoCall,
-                cs -> new SystemInfoObjectRepository(store, childrenAppenders, cs, systemInfoCall));
+    DHISVersionManagerImpl(ObjectWithoutUidStore<SystemInfo> systemInfoStore) {
+        SystemInfo systemInfoModel = systemInfoStore.selectFirst();
+
+        if (systemInfoModel != null && systemInfoModel.version() != null) {
+            version = DHISVersion.getValue(systemInfoModel.version());
+        }
+    }
+
+    @Override
+    public DHISVersion getVersion() {
+        return version;
+    }
+
+    @Override
+    public boolean is2_29() {
+        return version == DHISVersion.V2_29;
+    }
+
+    @Override
+    public boolean is2_30() {
+        return version == DHISVersion.V2_30;
+    }
+
+    @Override
+    public boolean is2_31() {
+        return version == DHISVersion.V2_31;
+    }
+
+    @Override
+    public boolean is2_32() {
+        return version == DHISVersion.V2_32;
+    }
+
+    @Override
+    public boolean is2_33() {
+        return version == DHISVersion.V2_33;
+    }
+
+    void setVersion(String versionStr) {
+        this.version = DHISVersion.getValue(versionStr);
     }
 }

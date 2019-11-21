@@ -42,6 +42,12 @@ public final class CoordinateHelper {
 
     private CoordinateHelper() {}
 
+    /**
+     * Converts a {@link Geometry} object of type point in a {@link Coordinates} object.
+     *
+     * @param geometry Geometry of type point with non null coordinates.
+     * @return The converted {@link Coordinates} object.
+     */
     public static Coordinates getCoordinatesFromGeometry(Geometry geometry) {
         if (geometry.type() == FeatureType.POINT && geometry.coordinates() != null) {
             ObjectMapper mapper = new ObjectMapper();
@@ -59,6 +65,12 @@ public final class CoordinateHelper {
         }
     }
 
+    /**
+     * Converts a {@link Coordinates} object in a {@link Geometry} object of type point.
+     *
+     * @param coordinates Coordinates to convert.
+     * @return The converted {@link Geometry} object.
+     */
     public static Geometry getGeometryFromCoordinates(Coordinates coordinates) {
         if (coordinates == null || coordinates.longitude() == null || coordinates.latitude() == null) {
             return null;

@@ -52,7 +52,7 @@ public abstract class ReadOnlyObjectRepositoryImpl<M extends CoreObject, R exten
         this.repositoryFactory = repositoryFactory;
     }
 
-    abstract M getWithoutChildren();
+    abstract M blockingGetWithoutChildren();
 
     /**
      * Returns the object in an asynchronous way, returning a {@link Single<M>}.
@@ -70,7 +70,8 @@ public abstract class ReadOnlyObjectRepositoryImpl<M extends CoreObject, R exten
      */
     @Override
     public final M blockingGet() {
-        return ChildrenAppenderExecutor.appendInObject(getWithoutChildren(), childrenAppenders, scope.children());
+        return ChildrenAppenderExecutor.appendInObject(blockingGetWithoutChildren(), childrenAppenders,
+                scope.children());
     }
 
     /**
@@ -89,6 +90,6 @@ public abstract class ReadOnlyObjectRepositoryImpl<M extends CoreObject, R exten
      */
     @Override
     public boolean blockingExists() {
-        return getWithoutChildren() != null;
+        return blockingGetWithoutChildren() != null;
     }
 }

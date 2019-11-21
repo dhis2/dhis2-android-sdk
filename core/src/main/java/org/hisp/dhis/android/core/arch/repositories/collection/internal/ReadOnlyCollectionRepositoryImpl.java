@@ -67,7 +67,7 @@ public class ReadOnlyCollectionRepositoryImpl<M extends CoreObject, R extends Re
         this.childrenAppenders = childrenAppenders;
     }
 
-    protected List<M> getWithoutChildren() {
+    protected List<M> blockingGetWithoutChildren() {
         return store.selectWhere(getWhereClause(), OrderByClauseBuilder.orderByFromItems(scope.orderBy(),
                 scope.pagingKey()));
     }
@@ -90,7 +90,7 @@ public class ReadOnlyCollectionRepositoryImpl<M extends CoreObject, R extends Re
      */
     @Override
     public List<M> blockingGet() {
-        return ChildrenAppenderExecutor.appendInObjectCollection(getWithoutChildren(),
+        return ChildrenAppenderExecutor.appendInObjectCollection(blockingGetWithoutChildren(),
                 childrenAppenders, scope.children());
     }
 

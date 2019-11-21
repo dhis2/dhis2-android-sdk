@@ -76,7 +76,7 @@ public final class TrackedEntityDataValueObjectRepository
     private TrackedEntityDataValue.Builder setBuilder() {
         Date date = new Date();
         if (blockingExists()) {
-            return getWithoutChildren().toBuilder()
+            return blockingGetWithoutChildren().toBuilder()
                     .lastUpdated(date);
         } else {
             return TrackedEntityDataValue.builder()

@@ -93,7 +93,7 @@ public final class FileResourceCollectionRepository
     @Override
     public Observable<D2Progress> upload() {
         return Observable.fromCallable(() -> byState().in(State.TO_POST, State.TO_UPDATE)
-                .getWithoutChildren())
+                .blockingGetWithoutChildren())
                 .flatMap(postCall::uploadFileResources);
     }
 

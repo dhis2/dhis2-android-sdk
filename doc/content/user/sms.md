@@ -2,24 +2,55 @@
 
 <!--DHIS2-SECTION-ID:sms_module-->
 
-The SMS module can be accessed from `D2`. 
+SMS Module can be used as a fallback method to upload data when an Internet connection is not available. It requires an additional setup in the server: an SMS gateway must be configured in the server to be able to receive SMS; optionally, the server might have the capability to send SMS back to the clients with the response.
+
+Depending on the mobile provider, sending SMS might imply an extra cost. For this reason, SMS Module is only intended for **granular data upload**. It is not used for metadata download or bulk data download/upload. Additionally, the data is compressed by using the [SMS compression library](https://github.com/dhis2/sms-compression) so the content can fit in a lower number of messages. This library is shared with the backend.
+
+For testing purposes you can use the [DHIS2 Android SMS Gateway](https://github.com/dhis2/dhis2-sms-android-gateway).
+
+In the SDK, the SMS module can be accessed from `D2`.
 
 ```java
 d2.smsModule()
 ```
 
-Inside the module it is possible to find three classes that give
-access to modules features.
+This module is **disabled by default** and it must be explicitly enabled and configured. It includes three components that give access to module features.
 
-- ConfigCase
-- SmsSubmitCase
-- QrCodeCase
+- ConfigCase: it is used to set initial data that is common for all sms sending tasks like gateway numbers, timeout, execute downloading
+of metadata ids object.
+- SmsSubmitCase. it is used to convert the *DHIS2* data that will be sent by the Sdk, to send it by SMS and to check the progress of the submission and his result.
+- QrCodeCase: it is used to convert *DHIS2* data to String. This String is a compressed representation of the *DHIS2* data. This is useful to avoid send large content on SMSes.
+
+A typical workflow to use the SMS Module would be like:
+
+- Enable the SMS module.
+- Sync metadata. The SMS Module downloads additional metadata from the server, so this step must be done while Internet connection is available and **after** the module is enabled.
+- Send data using SMS Module.
+
+This a code example of a typical workflow (it used blocking methods for code simplicity):
+
+```java
+// Enable SMS Module
+d2.smsModule().configCase().setModuleEnabled(true).blockingAwait();
+
+// Sync SMS Module metadata using SMS Module
+d2.smsModule().configCase().refreshMetadataIds().blockingAwait();
+// or using metadata module
+d2.metadataModule().blockingDownload();
+
+// Configure, at least, the gateway number. See ConfigCase for more parameters
+d2.smsModule().configCase().setGatewayNumber("gateway-number").blockingAwait();
+
+// Send data. For example a tracker event:
+SmsSubmitCase case = d2.smsModule().smsSubmitCase();
+Integer numSMSs = case.convertTrackerEvent("event-uid").blockingGet();
+
+case.send().blockingSubscribe();
+```
+
+> *Important*: the app is responsible for asking the user for permissions (READ_PHONE_STATE, SEND_SMS, READ_SMS, RECEIVE_SMS). Otherwise, SMS module will fail.
 
 ## ConfigCase
-
-The `ConfigCase` class is used to set initial data that is common for
-all sms sending tasks like gateway numbers, timeout, execute downloading
-of metadata ids object.
 
 ```java
 d2.smsModule().configCase()
@@ -63,10 +94,6 @@ d2.smsModule().configCase()
 - `setGatewayNumber()`. Configure the gateway number.
 
 ## SmsSubmitCase
-
-The `SmsSubmitCase` class is used to convert the *DHIS2* data that will
-be sent by the Sdk, to send it by SMS and to check the progress of the
-submission and his result. It is accessible from the sms module.
 
 ```java
 d2.smsModule().smsSubmitCase()
@@ -122,12 +149,6 @@ conditions are not satisfied. The preconditions errors are:
 - `SMS_MODULE_DISABLED`.
 
 ## QrCodeCase
-
-The `QrCodeCase` is used to convert *DHIS2* data to String. This String
-is a compressed representation of the *DHIS2* data. This is useful to
-avoid send large content on SMSes.
-
-The next code snippet shows how to access to the `QrCodeCase` object:
 
 ```java
 d2.smsModule().qrCodeCase()

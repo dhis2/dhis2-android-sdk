@@ -85,7 +85,7 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends CoreObject, R exte
      */
     @Override
     public void blockingDelete() throws D2Error {
-        delete(getWithoutChildren());
+        delete(blockingGetWithoutChildren());
     }
 
     /**

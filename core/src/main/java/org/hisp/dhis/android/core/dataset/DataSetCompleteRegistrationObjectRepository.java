@@ -76,7 +76,7 @@ public final class DataSetCompleteRegistrationObjectRepository
 
     @Override
     public void blockingDelete() throws D2Error {
-        DataSetCompleteRegistration dataSetCompleteRegistration = getWithoutChildren();
+        DataSetCompleteRegistration dataSetCompleteRegistration = blockingGetWithoutChildren();
         if (dataSetCompleteRegistration == null) {
             throw D2Error
                     .builder()

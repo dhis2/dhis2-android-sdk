@@ -94,7 +94,7 @@ public final class DataValueObjectRepository
 
     @Override
     public void blockingDelete() throws D2Error {
-        DataValue dataValue = getWithoutChildren();
+        DataValue dataValue = blockingGetWithoutChildren();
         if (dataValue.state() == State.TO_POST) {
             super.delete(dataValue);
         } else {
@@ -105,7 +105,7 @@ public final class DataValueObjectRepository
     private DataValue.Builder setBuilder() {
         Date date = new Date();
         if (blockingExists()) {
-            DataValue dataValue = getWithoutChildren();
+            DataValue dataValue = blockingGetWithoutChildren();
             State state = dataValue.state() == State.TO_POST ? State.TO_POST : State.TO_UPDATE;
             return dataValue.toBuilder()
                     .state(state)

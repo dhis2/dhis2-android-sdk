@@ -94,7 +94,7 @@ public final class DataSetCompleteRegistrationCollectionRepository
     @Override
     public Observable<D2Progress> upload() {
         return Observable.fromCallable(() ->
-                byState().in(State.TO_POST, State.TO_UPDATE).getWithoutChildren()
+                byState().in(State.TO_POST, State.TO_UPDATE).blockingGetWithoutChildren()
         ).flatMap(postCall::uploadDataSetCompleteRegistrations);
     }
 

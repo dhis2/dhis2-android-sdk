@@ -52,61 +52,53 @@ case.send().blockingSubscribe();
 
 ## ConfigCase
 
+<!--DHIS2-SECTION-ID:sms_module_config_case-->
+
 ```java
 d2.smsModule().configCase()
 ```
 
-`ConfigCase` contains the next methods:
+Use this case to configure the SMS Module before using it. It is required, at least, to:
 
-- `setModuleEnabled()`. Enable the sms module. 
-- `getSmsModuleConfig()`. Returns a single which contains a the
-  `SmsConfig` object with the next properties:
-  - ModuleEnabled.
-  - Gateway
-  - WaitingForResult
-  - ResultSender
-  - ResultWaitingTimeout
-- `setMetadataDownloadConfig()`. Configure the metadata download. This
-  method accepts a `GetMetadataIdsConfig` object which contains a the
-  next list of booleans:
-  - DataElements.
-  - CategoryOptionCombos.
-  - OrganisationUnits.
-  - Users.
-  - TrackedEntityTypes.
-  - TrackedEntityAttributes.
-  - Programs.
-- `getMetadataDownloadConfig()`. Returns the `GetMetadataIdsConfig`
-  object.
-- `getDefaultMetadataDownloadConfig()`. Returns the default
-  `GetMetadataIdsConfig` object. By default all booleans are true.
-- `refreshMetadataIds()`. If the sms module is enabled, the Sdk tries to
-  set the `SMSMetadata` with the actual configuration, if there is no
-  configuration, the Sdk uses the default configuration.
-- `refreshMetadataIdsCallable()`. Encapsulates the method
-  `refreshMetadataIds()` above in a `Callable` object.
-- `setWaitingForResultEnabled()`. Configure the Sdk to wait for the
-  result.
-- `setConfirmationSenderNumber()`. Configure the sender number to which
-  the confirmation will be sent.  
-- `setWaitingResultTimeout()`. Configure the maximum time in seconds to
-  wait for the result.
-- `setGatewayNumber()`. Configure the gateway number.
+- Enable the module.
+- Set a gateway number.
+- Download the metadata ids.
+
+There are other optional parameters to control if the SDK should wait a response from the server or not and the response timeout. Also, it is possible to specify the sender number so messages received from other senders are ignored.
 
 ## SmsSubmitCase
 
+<!--DHIS2-SECTION-ID:sms_module_submit_case-->
+
+Use this case to create a new submission and send it. Submission cases are not reusable and can only be sent once. To create a new submission case call the method:
+
 ```java
-d2.smsModule().smsSubmitCase()
+SmsSubmitCase case = d2.smsModule().smsSubmitCase();
+```
+
+A submission involve the following steps:
+
+- Specify the data to submit. This means to call a method like `convert*()`.
+- Send the message.
+- Optionally check for confirmation SMS.
+
+As an example, sending a tracker event will be like:
+
+```java
+SmsSubmitCase case = d2.smsModule().smsSubmitCase();
+Integer numSMSs = case.convertTrackerEvent("event-uid").blockingGet();
+
+case.send().blockingSubscribe();
 ```
 
 The next methods can be used to set the *DHIS2* data to send:
 
-- `convertSimpleEvent()´. To set a simple event.
-- `convertTrackerEvent()´. To set a tracker event.
-- `convertEnrollment()´. To set an enrollment.
-- `convertDataSet()´. To set a data set.
-- `convertRelationship()´. To set a relationship.
-- `convertDeletion()´. To delete an identifiable *DHIS2* object.
+- `convertSimpleEvent()`. To set a simple event.
+- `convertTrackerEvent()`. To set a tracker event.
+- `convertEnrollment()`. To set an enrollment.
+- `convertDataSet()`. To set a data set.
+- `convertRelationship()`. To set a relationship.
+- `convertDeletion()`. To delete an event.
 
 The methods above returns a single with the number of messages that the
 items takes up. An example of the use of these methods is shown in the
@@ -150,32 +142,27 @@ conditions are not satisfied. The preconditions errors are:
 
 ## QrCodeCase
 
+<!--DHIS2-SECTION-ID:sms_module_qr_code_case-->
+
 ```java
 d2.smsModule().qrCodeCase()
 ```
 
+Use this method to obtain a compressed representation of the data.
+
 `QrCodeCase` can convert the next type of *DHIS2* objects:
 
-- **Simple events**. Using the `generateSimpleEventCode()` method and
-  passing an event uid.
-- **Tracker events**. Using the `generateTrackerEventCode()` method and
-  passing an event uid. 
-- **Enrollments**. Using the `generateEnrollmentCode()` method and
-  passing an enrollment uid.
-- **Relationships**. Using the `generateRelationshipCode()` method and
-  passing a relationship uid.
-- **Data sets**. Using the `generateDataSetCode()` method and passing a
-  data set uid, an organisation unit uid, an attribute option combo and
-  a period id.
+- **Simple events**. Using the `generateSimpleEventCode()` method and passing an event uid.
+- **Tracker events**. Using the `generateTrackerEventCode()` method and passing an event uid. 
+- **Enrollments**. Using the `generateEnrollmentCode()` method and passing an enrollment uid.
+- **Relationships**. Using the `generateRelationshipCode()` method and passing a relationship uid.
+- **Data sets**. Using the `generateDataSetCode()` method and passing a data set uid, an organisation unit uid, an attribute option combo and a period id.
   
-Also it is possible to get compressed strings that can be used to delete
-identifiable objects:
+Also it is possible to get compressed strings that can be used to delete events:
 
-- **Deletions**. Using the `generateDeletionCode()` method and passing
-  the uid of the identifiable object to delete.
+- **Deletions**. Using the `generateDeletionCode()` method and passing the uid of the event.
   
-These methods returns a `Single` with the compressed data. The next code
-snippet shows an example of how it can be used.
+These methods returns a `Single` with the compressed data. The next code snippet shows an example of how it can be used.
 
 ```java
 Single<String> convertTask = d2.smsModule().qrCodeCase().generateEnrollmentCode(enrollmentUid);

@@ -2,7 +2,7 @@
 
 <!--DHIS2-SECTION-ID:workflow-->
 
-Currently, the SDK is primarily oriented to build apps that work in an offline mode. In short, the SDK maintains a local database instance that is used to get the work done locally (create forms, manage data, ...). From time to time, this local database is synchronized with the server.
+Currently, the SDK is primarily oriented to build apps that work in an offline mode. In short, the SDK maintains a local database instance that is used to get the work done locally (create forms, manage data, ...). When requested by the client, this local database is synchronized with the server.
 
 A typical workflow would be like this:
 
@@ -96,14 +96,14 @@ The possible states are:
 - **TO_POST**. Data created locally that does not exist in the server yet.
 - **TO_UPDATE**. Data modified locally that exists in the server.
 - **UPLOADING**. Data is being uploaded. If it is modified before receiving any server response, its state is back to `TO_UPDATE`. When the server response arrives, its state does not change to `SYNCED`, but it remains in `TO_UPDATE` to indicate that there are local changes.
-- **SENT_BY_SMS**. Data is sent by sms and there is no server response yet. Some servers does not have the capability to send a response, so this state means that data has been sent, but we do not know if it has been correctly imported in the server or not.
+- **SENT_BY_SMS**. Data is sent by sms and there is no server response yet. Some servers do not have the capability to send a response, so this state means that data has been sent, but we do not know if it has been correctly imported in the server or not.
 - **SYNCED_BY_SMS**. Data is sent by sms and there is a successful response from the server.
 - **ERROR**. Data that received an error from the server after the last upload.
 - **WARNING**. Data that received a warning from the server after the last upload.
 
 Additionally, in `TrackedEntityInstance` we might have:
 
-- **RELATIONSHIP**. This TrackedEntityInstance has been downloaded with the sole purpose of fulfilling a relationship to another TEI. This `RELATIONSHIP` TEI only has basic information (uid, type, etc) and the list of TrackedEntityAttributes to be able to print meaningful information about the relationship. Other data such enrollments, events or relationships is not downloaded for this TEI. Also, this TEI cannot be modified or uploaded to the server.
+- **RELATIONSHIP**. This TrackedEntityInstance has been downloaded with the sole purpose of fulfilling a relationship to another TEI. This `RELATIONSHIP` TEI only has basic information (uid, type, etc) and the list of TrackedEntityAttributes to be able to print meaningful information about the relationship. Other data such as enrollments, events or relationships is not downloaded for this TEI. Also, this TEI cannot be modified or uploaded to the server.
 
 ## Tracker data
 
@@ -229,6 +229,7 @@ Additionally, the repository offers different strategies to fetch data:
 
   That means that the instance must have attribute `uid1` with value
   `value1` **AND** attribute `uid2` with value `value2`.
+
 - `byFilter()`. This method adds a *filter* to the query. If this
   method is called several times, conditions are appended with an AND
   connector. For example:
@@ -242,6 +243,7 @@ Additionally, the repository offers different strategies to fetch data:
   
   That means that the instance must have attribute `uid1` with value
   `value1` **AND** attribute `uid2` with value `value2`.
+
 - `byQuery()`. Search tracked entity instances with **any** attribute
   matching the query.
 - `byProgram()`. Filter by enrollment program. Only one program can be
@@ -281,7 +283,8 @@ d2.trackedEntityModule().trackedEntityInstanceQuery()
                 .offlineFirst()
 ```
 
-> ***Important***: trackedEntityInstances retrieved using this repository are not persisted in the database. It is possibleto fully download them using the `byUid()` filter of the `TrackedEntityInstanceDownloader` within the tracked entity instance module.
+> ***Important***: trackedEntityInstances retrieved using this repository are not persisted in the database. It is possible
+to fully download them using the `byUid()` filter of the `TrackedEntityInstanceDownloader` within the tracked entity instance module.
 
 [//]: # (Include glass protected download)
 
@@ -419,6 +422,21 @@ Data approvals are downloaded only for versions greater than 2.29.
 
 ### Aggregated data write
 
+#### Periods
+
+In order to write data values or data set complete registrations, it's mandatory to provide a period id. Periods are stored in a table in the database and
+the provided period ids must be already present in that table, otherwise a Foreign Key error will be thrown. To prevent that situation, the `PeriodHelper` is
+exposed inside the `PeriodModule`. Before adding aggregated data related to a dataSet, the following method must be called:
+
+```java
+Single<List<Period>> periods = d2.periodModule().periodHelper().getPeriodsForDataSet("dataSetUid");
+```
+
+This will ensure that: 
+1. The app will pick one of the given periods, preventing malformed or wrong periods.
+2. The app will only be able to pick the future periods defined by the field `DataSet.openFuturePeriods`.
+3. The app will only be able to pick the past periods defined based on the limits declared on the section Aggregated Data Download.
+
 #### Data value
 
 DataValueCollectionRepository has a `value()` method that gives access to edition methods. The parameters accepted by this method are the parameters that unambiguosly identify a value.
@@ -458,7 +476,7 @@ d2.dataSetModule().dataSetCompleteRegistrations()
 
 ### Aggregated data upload
 
-DataValueCollectionRepository has an `uplaod()` method to upload aggregated data values.
+DataValueCollectionRepository has an `upload()` method to upload aggregated data values.
 
 ```java
 d2.dataValueModule().dataValues().upload();

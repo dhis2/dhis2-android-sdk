@@ -24,17 +24,17 @@ Since features in DHIS2 (API resources) usually share common characteristics and
 Feature packages contain at least:
 
 - A main Model class.
-- `*EntityDIModule`: Dagger class exposing the feature store, handler and service. Optionally it includes other auxiliary classes.
-- `*PackageDIModule`: when features are very related to each other the are grouped in the same package. This Dagger classes is used to group them.
 - `*Module`: exposes the public functionality of the feature.
 - `*ModuleWiper`: defines the logic to remove database tables related to the feature.
-- `*CollectionRepository`:
-- `*Store`:
+- `*CollectionRepository`: allows the database access of objects of a given type. They are exposed so the client can't use them to access the database.
+- `*Store`: allows the database access of objecs of a given type. They meant for internal use only during synchronization and are not exposed.
 - `*TableInfo`: defines the table structure. It is used by the `*Store`.
-- `*Handler`: receives a list of Model objects and uses the `*Store` to persist them in the database.
+- `*Handler`: manages de synchronization of objects of a given type. It receives a list of Model objects and uses the `*Store` to persist them in the database. It also calls the handler of child objects.
 - `*Fields`: API fields.
 - `*Service`: Retrofit service defining the API calls. Methods in this file usually receive a list of fields, which is defined in `*Fields`. And they usually return a List or a Payload of Model objects.
 - `*Call`/ `*CallFactory`: defines the call. It usually links the service and the handler.
+- `*EntityDIModule`: Dagger class that injects the classes related to a concrete type, like store, handler and service. It optionally includes other auxiliary classes.
+- `*PackageDIModule`: Dagger class that injects the classes related to a given package. This typically wraps several `*EntityDIModule` classes.
 
 ## Local database
 

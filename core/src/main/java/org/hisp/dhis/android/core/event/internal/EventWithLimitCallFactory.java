@@ -172,7 +172,7 @@ public final class EventWithLimitCallFactory {
     }
 
     private Observable<D2Progress> downloadSystemInfo(D2ProgressManager progressManager) {
-        return systemInfoRepository.download(true)
+        return systemInfoRepository.download()
                 .toSingle(() -> progressManager.increaseProgress(SystemInfo.class, false))
                 .toObservable();
     }

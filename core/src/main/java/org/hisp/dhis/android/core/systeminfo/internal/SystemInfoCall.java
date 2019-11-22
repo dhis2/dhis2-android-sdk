@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.systeminfo.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider;
@@ -38,6 +38,8 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
+import org.hisp.dhis.android.core.systeminfo.DHISVersion;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 
 import javax.inject.Inject;
 
@@ -45,12 +47,12 @@ import dagger.Reusable;
 import io.reactivex.Completable;
 
 @Reusable
-class SystemInfoCall implements CompletableProvider {
+public class SystemInfoCall implements CompletableProvider {
     private final DatabaseAdapter databaseAdapter;
     private final Handler<SystemInfo> systemInfoHandler;
     private final SystemInfoService systemInfoService;
     private final ResourceHandler resourceHandler;
-    private final DHISVersionManager versionManager;
+    private final DHISVersionManagerImpl versionManager;
     private final RxAPICallExecutor apiCallExecutor;
 
     @Inject
@@ -58,7 +60,7 @@ class SystemInfoCall implements CompletableProvider {
                    Handler<SystemInfo> systemInfoHandler,
                    SystemInfoService systemInfoService,
                    ResourceHandler resourceHandler,
-                   DHISVersionManager versionManager,
+                   DHISVersionManagerImpl versionManager,
                    RxAPICallExecutor apiCallExecutor) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoHandler = systemInfoHandler;

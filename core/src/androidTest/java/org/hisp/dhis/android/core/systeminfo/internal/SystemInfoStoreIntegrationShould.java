@@ -26,23 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.systeminfo.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoTableInfo.Columns;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-final class SystemInfoFields {
+@RunWith(D2JunitRunner.class)
+public class SystemInfoStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<SystemInfo> {
 
-    private static FieldsHelper<SystemInfo> fh = new FieldsHelper<>();
-    static final Fields<SystemInfo> allFields = Fields.<SystemInfo>builder().fields(
-            fh.<String>field(Columns.SERVER_DATE),
-            fh.<String>field(Columns.DATE_FORMAT),
-            fh.<String>field(Columns.VERSION),
-            fh.<String>field(Columns.CONTEXT_PATH),
-            fh.<String>field(Columns.SYSTEM_NAME)
-    ).build();
+    public SystemInfoStoreIntegrationShould() {
+        super(SystemInfoStore.create(DatabaseAdapterFactory.get()), SystemInfoTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get());
+    }
 
-    private SystemInfoFields() {
+    @Override
+    protected SystemInfo buildObject() {
+        return SystemInfoSamples.get1();
+    }
+
+    @Override
+    protected SystemInfo buildObjectToUpdate() {
+        return SystemInfoSamples.get2();
     }
 }

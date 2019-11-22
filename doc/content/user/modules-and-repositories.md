@@ -45,6 +45,10 @@ new AsyncTask<Void, Void, List<Program>>() {
 }.execute();
 ```
 
+Accessing the database is time consuming and it's recommended to do it in a separate thread using any of the recommended
+methods. However, procedures that involve accessing the web API, like log in, metadata or data download or upload **must**
+run in a separate thread, otherwise Android will throw an error.
+
 ## Query building
 
 <!--DHIS2-SECTION-ID:query_building-->

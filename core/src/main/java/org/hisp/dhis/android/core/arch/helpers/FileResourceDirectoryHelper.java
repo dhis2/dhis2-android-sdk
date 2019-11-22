@@ -36,6 +36,13 @@ public final class FileResourceDirectoryHelper {
 
     private FileResourceDirectoryHelper() {}
 
+    /**
+     * This method returns a {@link File} object whose path points to the Sdk resources directory where the Sdk will
+     * save the files associated with the file resources.
+     *
+     * @param context The application context.
+     * @return A {@link File} object whose path points to the Sdk resources directory.
+     */
     public static File getFileResourceDirectory(Context context) {
         File file = new File(context.getFilesDir(), "sdk_resources");
         if (!file.exists() && file.mkdirs()) {
@@ -44,6 +51,18 @@ public final class FileResourceDirectoryHelper {
         return file;
     }
 
+    /**
+     * This method returns a {@link File} object whose path points to the Sdk cache resources directory. This should be
+     * the place where volatile files are stored, such as camera photos or images to be resized. Since the directory
+     * is contained in the cache directory, Android may auto-delete the files in the cache directory once the system
+     * is about to run out of memory. Third party applications can also delete files from the cache directory.
+     * Even the user can manually clear the cache from Settings. However, the fact that the cache can be cleared in
+     * the methods explained above should not mean that the cache will automatically get cleared; therefore, the
+     * cache will need to be tidied up from time to time proactively.
+     *
+     * @param context The application context.
+     * @return A {@link File} object whose path points to the Sdk cache resources directory.
+     */
     public static File getFileCacheResourceDirectory(Context context) {
         File file = new File(context.getCacheDir(), "sdk_cache_resources");
         if (!file.exists() && file.mkdirs()) {

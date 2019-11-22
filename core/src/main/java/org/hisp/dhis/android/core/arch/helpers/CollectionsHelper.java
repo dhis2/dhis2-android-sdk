@@ -65,16 +65,34 @@ public final class CollectionsHelper {
         return null;
     }
 
+    /**
+     * A Null-safe deleted method.
+     *
+     * @param object object with deleted() method.
+     * @return A boolean with the response of the deleted() method.
+     */
     public static boolean isDeleted(@NonNull ObjectWithDeleteInterface object) {
         return object.deleted() != null && object.deleted();
     }
 
+    /**
+     * Throws an illegal argument exception if an object is null.
+     *
+     * @param object Object to validate.
+     */
     public static <T> void isNull(T object) {
         if (object == null) {
             throw new IllegalArgumentException("Object must not be null");
         }
     }
 
+    /**
+     * Appends objects to an array in a new array.
+     *
+     * @param first Object array.
+     * @param rest Objects to append.
+     * @return An new array with the all the objects.
+     */
     @SafeVarargs
     public static <T> T[] appendInNewArray(T[] first, T... rest) {
         int totalLength = first.length + rest.length;
@@ -85,15 +103,33 @@ public final class CollectionsHelper {
         return result;
     }
 
+    /**
+     * Build a {@link String} with the values separated by commas and spaces.
+     *
+     * @param values Array with the values to concatenate.
+     * @return A {@link String} with the concatenated values.
+     */
     public static String commaAndSpaceSeparatedArrayValues(String... values) {
         String withBrackets = Arrays.toString(values);
         return withBrackets.substring(1, withBrackets.length() - 1);
     }
 
+    /**
+     * Build a {@link String} with the values separated by commas and spaces.
+     *
+     * @param values Collection with the values to concatenate.
+     * @return A {@link String} with the concatenated values.
+     */
     public static String commaAndSpaceSeparatedCollectionValues(Collection<String> values) {
         return commaAndSpaceSeparatedArrayValues(values.toArray(new String[values.size()]));
     }
 
+    /**
+     * Put in single quotes the string values inside a collection.
+     *
+     * @param objects Collection with the values to put in single quotes.
+     * @return A {@link String[]} with the single quoted values.
+     */
     public static String[] withSingleQuotationMarksArray(Collection<String> objects) {
         String[] withSingleQuotationMarksArray = new String[objects.size()];
         int i = 0;
@@ -103,26 +139,64 @@ public final class CollectionsHelper {
         return withSingleQuotationMarksArray;
     }
 
+    /**
+     * Put in single quotes a value.
+     *
+     * @param value Value to put in single quotes.
+     * @return The single quote {@link String} value.
+     */
     public static String withSingleQuotationMarks(String value) {
         return "'" + value + "'";
     }
 
+    /**
+     * Build a {@link String} with the values separated by commas.
+     *
+     * @param values Array with the values to concatenate.
+     * @return A {@link String} with the concatenated values.
+     */
     private static String commaSeparatedArrayValues(String... values) {
         return commaAndSpaceSeparatedArrayValues(values).replace(", ", ",");
     }
 
+    /**
+     * Build a {@link String} with the values separated by commas.
+     *
+     * @param values Collection with the values to concatenate.
+     * @return A {@link String} with the concatenated values.
+     */
     public static String commaSeparatedCollectionValues(Collection<String> values) {
         return commaSeparatedArrayValues(values.toArray(new String[values.size()]));
     }
 
+    /**
+     * Build a {@link String} with the values separated by semicolons.
+     *
+     * @param values Collection with the values to concatenate.
+     * @return A {@link String} with the concatenated values.
+     */
     public static String semicolonSeparatedCollectionValues(Collection<String> values) {
         return joinCollectionWithSeparator(values, ";");
     }
 
+    /**
+     * Build a {@link String} with the values separated by custom separators.
+     *
+     * @param values    Collection with the values to concatenate.
+     * @param separator Customizable separator.
+     * @return A {@link String} with the concatenated values.
+     */
     public static String joinCollectionWithSeparator(Collection<String> values, String separator) {
         return commaSeparatedCollectionValues(values).replace(",", separator);
     }
 
+    /**
+     * Divide a {@link Collection} in a {@link List} of sets with a maximum size.
+     *
+     * @param originalSet The collection to divide.
+     * @param size The maximum size of the partitions.
+     * @return A {@link List} with the partitions of the given collection.
+     */
     @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
     public static <T> List<Set<T>> setPartition(Collection<T> originalSet, int size) {
         int setCount = (int) Math.ceil((double) originalSet.size() / size);

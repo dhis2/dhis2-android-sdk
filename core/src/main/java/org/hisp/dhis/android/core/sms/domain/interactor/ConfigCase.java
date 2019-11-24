@@ -36,18 +36,38 @@ public class ConfigCase {
         );
     }
 
+    /**
+     * Set if the SDK has to wait for the result or not.
+     * @param enabled
+     * @return {@link Completable} that completes when the configuration is changed.
+     */
     public Completable setWaitingForResultEnabled(boolean enabled) {
         return localDbRepository.setWaitingForResultEnabled(enabled);
     }
 
+    /**
+     * Set the number to receive messages from. Messages from other senders will not be read.
+     * @param number The sender number.
+     * @return {@link Completable} that completes when the configuration is changed.
+     */
     public Completable setConfirmationSenderNumber(String number) {
         return localDbRepository.setConfirmationSenderNumber(number);
     }
 
+    /**
+     * Set the time in seconds to wait for the result.
+     * @param timeoutSeconds Time in seconds.
+     * @return {@link Completable} that completes when the configuration is changed.
+     */
     public Completable setWaitingResultTimeout(int timeoutSeconds) {
         return localDbRepository.setWaitingResultTimeout(timeoutSeconds);
     }
 
+    /**
+     * Set the gateway number to send the SMS. This is a required parameter before sending SMS.
+     * @param gatewayNumber The gateway numberf
+     * @return {@link Completable} that completes when the configuration is changed.
+     */
     public Completable setGatewayNumber(String gatewayNumber) {
         if (gatewayNumber == null || gatewayNumber.isEmpty()) {
             return Completable.error(new IllegalArgumentException("Gateway number can't be empty"));
@@ -55,10 +75,20 @@ public class ConfigCase {
         return localDbRepository.setGatewayNumber(gatewayNumber);
     }
 
+    /**
+     * Set if SMS Module is enabled or not. It is required to enable it before using it.
+     * @param enabled If the module is enabled or not
+     * @return {@link Completable} that completes when the configuration is changed.
+     */
     public Completable setModuleEnabled(boolean enabled) {
         return localDbRepository.setModuleEnabled(enabled);
     }
 
+    /**
+     * Set a new MetadataDownload configuration.
+     * @param metadataIdsConfig Configuration with the metadata ids.
+     * @return {@link Completable} that completes when the configuration is changed.
+     */
     public Completable setMetadataDownloadConfig(WebApiRepository.GetMetadataIdsConfig metadataIdsConfig) {
         if (metadataIdsConfig == null) {
             return Completable.error(new IllegalArgumentException("Received null config"));
@@ -66,10 +96,18 @@ public class ConfigCase {
         return localDbRepository.setMetadataDownloadConfig(metadataIdsConfig);
     }
 
+    /**
+     * Get the metadata download configuration.
+     * @return {@link Single with the} metadata download configuration.
+     */
     public Single<WebApiRepository.GetMetadataIdsConfig> getMetadataDownloadConfig() {
         return localDbRepository.getMetadataDownloadConfig();
     }
 
+    /**
+     * Method to download metadata ids. This is required before using the SMS module.
+     * @return {@link Completable} that completes when the metadata ids are downloaded.
+     */
     public Completable refreshMetadataIds() {
         Completable refreshTask = getMetadataDownloadConfig().onErrorReturn(throwable -> {
             Log.d(TAG, "Can't read saved SMS metadata download config. Using default.");
@@ -87,6 +125,10 @@ public class ConfigCase {
         });
     }
 
+    /**
+     * Callable that triggers the method {@link #refreshMetadataIds()}.
+     * @return Callable object to refresh metadata ids.
+     */
     public Callable<Void> refreshMetadataIdsCallable() {
         return () -> {
             refreshMetadataIds().subscribe(new CompletableObserver() {

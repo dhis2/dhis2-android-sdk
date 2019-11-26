@@ -32,8 +32,8 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
-import org.hisp.dhis.android.core.arch.helpers.CodeGenerator;
-import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.arch.helpers.UidGenerator;
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
@@ -96,7 +96,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
 
     private TrackedEntityInstanceService trackedEntityInstanceService;
 
-    private CodeGenerator codeGenerator = new CodeGeneratorImpl();
+    private UidGenerator uidGenerator = new UidGeneratorImpl();
 
     @Before
     public void setUp() throws IOException {
@@ -236,7 +236,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
     private TrackedEntityInstance validTei() {
         return TrackedEntityInstanceInternalAccessor
                 .insertEnrollments(TrackedEntityInstance.builder(), Arrays.asList(validEnrollment()))
-                .uid(codeGenerator.generate())
+                .uid(uidGenerator.generate())
                 .organisationUnit(captureOrgunit)
                 .trackedEntityType(trackedEntityType)
                 .trackedEntityAttributeValues(Arrays.asList(
@@ -254,7 +254,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
 
     private Enrollment validEnrollment() {
         return EnrollmentInternalAccessor.insertEvents(Enrollment.builder(), Arrays.asList(validEvent()))
-                .uid(codeGenerator.generate())
+                .uid(uidGenerator.generate())
                 .organisationUnit(captureOrgunit)
                 .program(program)
                 .status(EnrollmentStatus.ACTIVE)
@@ -263,7 +263,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
 
     private Event validEvent() {
         return Event.builder()
-                .uid(codeGenerator.generate())
+                .uid(uidGenerator.generate())
                 .organisationUnit(captureOrgunit)
                 .programStage(programStage1)
                 .attributeOptionCombo(attributeOptionCombo)

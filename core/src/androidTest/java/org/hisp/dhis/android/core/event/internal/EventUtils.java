@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.event.internal;
 
 import com.google.common.collect.Lists;
 
-import org.hisp.dhis.android.core.arch.helpers.CodeGenerator;
-import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.arch.helpers.UidGenerator;
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.imports.ImportStatus;
@@ -45,7 +45,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 class EventUtils {
 
-    private static CodeGenerator codeGenerator = new CodeGeneratorImpl();
+    private static UidGenerator uidGenerator = new UidGeneratorImpl();
 
     private static String validEnrollmentUid = "Lo3SHzCnMSm"; // Contraceptives Voucher Program
 
@@ -63,7 +63,7 @@ class EventUtils {
                                      String attributeOptionComboUid) {
 
         return Event.builder()
-                .uid(codeGenerator.generate()).enrollment(enrollmentUid).created(date).lastUpdated(date)
+                .uid(uidGenerator.generate()).enrollment(enrollmentUid).created(date).lastUpdated(date)
                 .program(programUid).programStage(programStageUid).organisationUnit(orgunitUid)
                 .eventDate(date).status(EventStatus.ACTIVE).trackedEntityDataValues(dataValues)
                 .attributeOptionCombo(attributeOptionComboUid).build();

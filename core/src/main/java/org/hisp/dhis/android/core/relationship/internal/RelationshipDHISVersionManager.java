@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.relationship.internal;
 
-import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.relationship.BaseRelationship;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
@@ -98,7 +98,7 @@ public class RelationshipDHISVersionManager {
 
         if (versionManager.is2_29()) {
             return builder
-                    .uid(new CodeGeneratorImpl().generate())
+                    .uid(new UidGeneratorImpl().generate())
                     .relationshipType(relationship229Compatible.uid())
                     .from(RelationshipHelper.teiItem(relationship229Compatible.trackedEntityInstanceA()))
                     .to(RelationshipHelper.teiItem(relationship229Compatible.trackedEntityInstanceB()))

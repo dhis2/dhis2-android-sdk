@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.arch.helpers;
 
 import androidx.annotation.NonNull;
 
-public interface CodeGenerator {
+public interface UidGenerator {
 
     /**
-     * Generates a pseudo random string using the allowed characters. Code is
+     * Generates a pseudo random string using the allowed characters. Uid is
      * 11 characters long.
      */
     @NonNull

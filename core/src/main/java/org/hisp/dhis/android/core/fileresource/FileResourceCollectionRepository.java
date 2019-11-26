@@ -34,7 +34,7 @@ import android.database.sqlite.SQLiteConstraintException;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
@@ -111,7 +111,7 @@ public final class FileResourceCollectionRepository
     @Override
     public String blockingAdd(File file) throws D2Error {
         try {
-            String generatedUid = new CodeGeneratorImpl().generate();
+            String generatedUid = new UidGeneratorImpl().generate();
             File dstFile = FileResourceUtil.saveFile(file, generatedUid, context);
             FileResource fileResource = transformer.transform(dstFile).toBuilder().uid(generatedUid).build();
             store.insert(fileResource);

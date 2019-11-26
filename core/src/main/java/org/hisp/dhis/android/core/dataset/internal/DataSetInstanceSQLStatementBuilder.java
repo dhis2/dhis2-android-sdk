@@ -46,7 +46,7 @@ import org.hisp.dhis.android.core.period.PeriodTableInfo;
 
 public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementBuilder {
 
-    private static final String AS = " AS ";
+    static final String AS = " AS ";
     private static final String INNER_JOIN = " INNER JOIN ";
     private static final String LEFT_JOIN = " LEFT JOIN ";
     private static final String ON = " ON ";
@@ -63,9 +63,9 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
     private static final String AOC_TABLE_ALIAS = "aoc";
     private static final String COMPLETE_TABLE_ALIAS = "dscr";
 
-    private static final String VALUE_COUNT_ALIAS = "valueCount";
+    static final String VALUE_COUNT_ALIAS = "valueCount";
     public static final String DATASET_UID_ALIAS = "dataSetUid";
-    private static final String DATASET_NAME_ALIAS = "dataSetDisplayName";
+    static final String DATASET_NAME_ALIAS = "dataSetDisplayName";
     public static final String PERIOD_ALIAS = "period";
     public static final String PERIOD_TYPE_ALIAS = "periodType";
     public static final String PERIOD_START_DATE_ALIAS = "periodStartDate";

@@ -43,4 +43,10 @@ public final class DataSetInstanceEntityDIModule {
         return DataSetInstanceStore.create(databaseAdapter);
     }
 
+    @Provides
+    @Reusable
+    DataSetInstanceSummaryStore summaryStore(DatabaseAdapter databaseAdapter) {
+        return DataSetInstanceSummaryStore.create(databaseAdapter);
+    }
+
 }

@@ -26,16 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.dataset.internal;
 
-import org.hisp.dhis.android.core.dataapproval.DataApprovalCollectionRepository;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStoreImpl;
+import org.hisp.dhis.android.core.dataset.DataSetInstanceSummary;
 
-public interface DataSetModule {
+public final class DataSetInstanceSummaryStore extends ReadableStoreImpl<DataSetInstanceSummary> {
 
-    DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations();
-    DataSetCollectionRepository dataSets();
-    SectionCollectionRepository sections();
-    DataApprovalCollectionRepository dataApprovals();
-    DataSetInstanceCollectionRepository dataSetInstances();
-    DataSetInstanceSummaryCollectionRepository dataSetInstanceSummaries();
+    private DataSetInstanceSummaryStore(DatabaseAdapter databaseAdapter,
+                                        ReadOnlySQLStatementBuilder builder,
+                                        ObjectFactory<DataSetInstanceSummary> objectFactory) {
+        super(databaseAdapter, builder, objectFactory);
+    }
+
+    static DataSetInstanceSummaryStore create(DatabaseAdapter databaseAdapter) {
+        return new DataSetInstanceSummaryStore(
+                databaseAdapter,
+                new DataSetInstanceSummarySQLStatementBuilder(),
+                DataSetInstanceSummary::create);
+    }
 }

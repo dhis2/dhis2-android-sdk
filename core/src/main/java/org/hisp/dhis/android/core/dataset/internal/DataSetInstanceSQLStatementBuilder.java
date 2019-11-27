@@ -77,9 +77,9 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
     public static final String ATTRIBUTE_OPTION_COMBO_UID_ALIAS = "attributeOptionComboUid";
     private static final String ATTRIBUTE_OPTION_COMBO_NAME_ALIAS = "attributeOptionComboDisplayName";
     private static final String COMPLETION_DATE_ALIAS = "completionDate";
-    private static final String VALUE_STATE_ALIAS = "dataValueState";
-    private static final String COMPLETION_STATE_ALIAS = "completionState";
-    private static final String STATE_ALIAS = "state";
+    public static final String VALUE_STATE_ALIAS = "dataValueState";
+    public static final String COMPLETION_STATE_ALIAS = "completionState";
+    public static final String STATE_ALIAS = "state";
 
     public static final String DATAVALUE_ID = DATAVALUE_TABLE_ALIAS + "." + DeletableDataColumns.ID;
     private static final String DATASET_UID = DATASET_TABLE_ALIAS + "." + IdentifiableColumns.UID;
@@ -111,14 +111,19 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
             "ELSE 3 END)";
 
     private static final String SELECT_STATE = "CASE" +
-            " WHEN " + inState(COMPLETION_STATE_ALIAS, State.ERROR) + OR + inState(VALUE_STATE_ALIAS, State.ERROR) +
+            " WHEN " + eq(COMPLETION_STATE, State.ERROR) + OR + eq(VALUE_STATE, State.ERROR) +
                 " THEN " + quotes(State.ERROR) +
-            " WHEN " + inState(COMPLETION_STATE_ALIAS, State.WARNING) + OR + inState(VALUE_STATE_ALIAS, State.WARNING) +
+            " WHEN " + eq(COMPLETION_STATE, State.WARNING) + OR + eq(VALUE_STATE, State.WARNING) +
                 " THEN " + quotes(State.WARNING) +
-            " WHEN " + inState(COMPLETION_STATE_ALIAS, State.TO_POST, State.TO_UPDATE) + OR +
-                        inState(VALUE_STATE_ALIAS, State.TO_POST, State.TO_UPDATE) +
+            " WHEN " + eq(COMPLETION_STATE, State.TO_UPDATE) + OR + eq(VALUE_STATE, State.TO_UPDATE) +
                 " THEN " + quotes(State.TO_UPDATE) +
-            " WHEN " + inState(COMPLETION_STATE_ALIAS, State.SYNCED) + OR + inState(VALUE_STATE_ALIAS, State.SYNCED) +
+            " WHEN " + eq(COMPLETION_STATE, State.TO_POST) + OR + eq(VALUE_STATE, State.TO_POST) +
+                " THEN " + quotes(State.TO_POST) +
+            " WHEN " + eq(COMPLETION_STATE, State.SENT_VIA_SMS) + OR + eq(VALUE_STATE, State.SENT_VIA_SMS) +
+                " THEN " + quotes(State.SENT_VIA_SMS) +
+            " WHEN " + eq(COMPLETION_STATE, State.SYNCED_VIA_SMS) + OR + eq(VALUE_STATE, State.SYNCED_VIA_SMS) +
+                " THEN " + quotes(State.SYNCED_VIA_SMS) +
+            " WHEN " + eq(COMPLETION_STATE, State.SYNCED) + OR + eq(VALUE_STATE, State.SYNCED) +
                 " THEN " + quotes(State.SYNCED) +
             " ELSE " + quotes(State.SYNCED) + " END" +
             AS + STATE_ALIAS;
@@ -151,7 +156,8 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
             VALUE_STATE + AS + VALUE_STATE_ALIAS + "," +
             // Auxiliary field to order the 'state' column and to prioritize TO_POST and TO_UPDATE
             SELECT_VALUE_STATE_ORDERING + "," +
-            COMPLETION_STATE + AS + COMPLETION_STATE_ALIAS +
+            COMPLETION_STATE + AS + COMPLETION_STATE_ALIAS + "," +
+            SELECT_STATE +
             FROM_CLAUSE;
 
     private static final String COC_BY_DATASET_WHERE_CLAUSE = " WHERE " +
@@ -166,7 +172,7 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
             ATTRIBUTE_OPTION_COMBO_UID;
 
     private static final String SELECT_CLAUSE =
-            "SELECT *," + SELECT_STATE  +
+            "SELECT *" +
                     " FROM (" + INNER_SELECT_CLAUSE + COC_BY_DATASET_WHERE_CLAUSE + GROUP_BY_CLAUSE +")";
 
     @Override
@@ -262,12 +268,8 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
                     COMPLETE_TABLE_ALIAS + "." + DataSetCompleteRegistrationTableInfo.Columns.ATTRIBUTE_OPTION_COMBO;
     }
 
-    private static String inState(String column, State... states) {
-        StringBuilder clause = new StringBuilder().append(column).append(" IN(");
-        for (State state : states) {
-            clause.append("'").append(state).append("'");
-        }
-        return clause.append(")").toString();
+    private static String eq(String column, State state) {
+       return column + " = " + quotes(state);
     }
 
     private static String quotes(State value) {

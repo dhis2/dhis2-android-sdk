@@ -5,6 +5,7 @@
 !INCLUDE "content/user/workflow.md"
 !INCLUDE "content/user/error-management.md"
 !INCLUDE "content/user/sms.md"
+!INCLUDE "content/user/object-style.md"
 !INCLUDE "content/user/compatibility-strategy.md"
 !INCLUDE "content/user/db-interaction.md"
 !INCLUDE "content/user/program-rule-engine.md"

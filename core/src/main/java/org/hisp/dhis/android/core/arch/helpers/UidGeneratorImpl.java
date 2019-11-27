@@ -33,7 +33,7 @@ import java.util.Random;
 
 import androidx.annotation.NonNull;
 
-public final class CodeGeneratorImpl implements CodeGenerator {
+public final class UidGeneratorImpl implements UidGenerator {
     private static final String LETTERS = "abcdefghijklmnopqrstuvwxyz"
             + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 

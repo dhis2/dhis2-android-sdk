@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventCreateProjection;
@@ -41,7 +41,7 @@ final class EventProjectionTransformer implements Transformer<EventCreateProject
 
     @Override
     public Event transform(EventCreateProjection projection) {
-        String generatedUid = new CodeGeneratorImpl().generate();
+        String generatedUid = new UidGeneratorImpl().generate();
         Date creationDate = new Date();
 
         return Event.builder()

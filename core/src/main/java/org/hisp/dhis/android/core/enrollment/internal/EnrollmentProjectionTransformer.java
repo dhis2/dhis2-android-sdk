@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.enrollment.internal;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
@@ -41,7 +41,7 @@ final class EnrollmentProjectionTransformer implements Transformer<EnrollmentCre
 
     @Override
     public Enrollment transform(EnrollmentCreateProjection projection) {
-        String generatedUid = new CodeGeneratorImpl().generate();
+        String generatedUid = new UidGeneratorImpl().generate();
         Date creationDate = new Date();
 
         return Enrollment.builder()

@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -136,8 +137,11 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
                     .build();
         }
 
-        for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
-            handle(trackedEntityInstance, transformer);
+        Collection<TrackedEntityInstance> preHandledCollection = beforeCollectionHandled(trackedEntityInstances);
+        List<TrackedEntityInstance> transformedCollection = new ArrayList<>(preHandledCollection.size());
+
+        for (TrackedEntityInstance trackedEntityInstance : preHandledCollection) {
+            handle(trackedEntityInstance, transformer, transformedCollection);
 
             if (isFullUpdate) {
                 enrollmentOrphanCleaner.deleteOrphan(
@@ -145,6 +149,8 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
                         TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance));
             }
         }
+
+        afterCollectionHandled(transformedCollection);
 
     }
 

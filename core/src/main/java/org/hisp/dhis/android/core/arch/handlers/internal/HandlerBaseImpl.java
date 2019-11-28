@@ -51,7 +51,7 @@ abstract class HandlerBaseImpl<O> implements HandlerWithTransformer<O> {
         handleInternal(o, transformer);
     }
 
-    private void handle(O o, Transformer<O, O> transformer, List<O> oTransformedCollection) {
+    protected void handle(O o, Transformer<O, O> transformer, List<O> oTransformedCollection) {
         if (o == null) {
             return;
         }

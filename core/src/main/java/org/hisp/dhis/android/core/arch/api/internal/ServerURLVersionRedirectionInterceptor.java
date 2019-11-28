@@ -26,35 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.arch.api.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory;
-import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory;
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
-import org.hisp.dhis.android.core.configuration.ServerUrlParser;
+import java.io.IOException;
 
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.jackson.JacksonConverterFactory;
+import okhttp3.Interceptor;
+import okhttp3.Response;
 
-final class RetrofitFactory {
+public class ServerURLVersionRedirectionInterceptor implements Interceptor {
 
-    static Retrofit retrofit(OkHttpClient okHttpClient) {
-        return new Retrofit.Builder()
-                // Actual baseUrl will be set later during logIn through DynamicServerURLInterceptor. But it's mandatory
-                // to create Retrofit
-                .baseUrl(ServerUrlParser.parse("https://temporary-dhis-url.org/"))
-
-                .client(okHttpClient)
-                .addConverterFactory(JacksonConverterFactory.create(ObjectMapperFactory.objectMapper()))
-                .addConverterFactory(FilterConverterFactory.create())
-                .addConverterFactory(FieldsConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .validateEagerly(true)
-                .build();
-    }
-
-    private RetrofitFactory() {
+    @Override
+    public Response intercept(Chain chain) throws IOException {
+        Response response = chain.proceed(chain.request());
+        if (response.code() == 302) {
+            ServerURLWrapper.setServerUrl(response.header("Location"));
+        }
+        return response;
     }
 }

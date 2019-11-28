@@ -26,35 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.arch.api.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory;
-import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory;
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
-import org.hisp.dhis.android.core.configuration.ServerUrlParser;
+public final class ServerURLWrapper {
 
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.jackson.JacksonConverterFactory;
+    private static String baseUrlUpToAPI;
 
-final class RetrofitFactory {
-
-    static Retrofit retrofit(OkHttpClient okHttpClient) {
-        return new Retrofit.Builder()
-                // Actual baseUrl will be set later during logIn through DynamicServerURLInterceptor. But it's mandatory
-                // to create Retrofit
-                .baseUrl(ServerUrlParser.parse("https://temporary-dhis-url.org/"))
-
-                .client(okHttpClient)
-                .addConverterFactory(JacksonConverterFactory.create(ObjectMapperFactory.objectMapper()))
-                .addConverterFactory(FilterConverterFactory.create())
-                .addConverterFactory(FieldsConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .validateEagerly(true)
-                .build();
+    public static void setServerUrl(String newHost) {
+        baseUrlUpToAPI = extractBeforeAPI(newHost);
+    }
+    
+    public static String getServerUrl() {
+        return baseUrlUpToAPI;
     }
 
-    private RetrofitFactory() {
+    private static String extractBeforeAPI(String url) {
+        return url.split("/api/")[0];
+    }
+
+    static String extractAfterAPI(String url) {
+        return url.split("/api/")[1];
+    }
+
+    private ServerURLWrapper() {
     }
 }

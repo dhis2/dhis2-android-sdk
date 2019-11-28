@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core;
 
 import android.content.Context;
 
-import androidx.test.InstrumentationRegistry;
-
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
@@ -40,6 +38,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreIm
 
 import java.util.Collections;
 
+import androidx.test.InstrumentationRegistry;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 public class D2Factory {
@@ -84,7 +83,7 @@ public class D2Factory {
         CredentialsSecureStore credentialsSecureStore = new CredentialsSecureStoreImpl(context);
         return new D2(
                 RetrofitFactory.retrofit(
-                        OkHttpClientFactory.okHttpClient(d2Configuration(context), databaseAdapter, credentialsSecureStore)),
+                        OkHttpClientFactory.okHttpClient(d2Configuration(context), credentialsSecureStore)),
                 databaseAdapter,
                 context,
                 credentialsSecureStore

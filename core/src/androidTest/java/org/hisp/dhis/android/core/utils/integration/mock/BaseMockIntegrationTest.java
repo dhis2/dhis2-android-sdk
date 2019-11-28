@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.utils.integration.mock;
 import android.database.sqlite.SQLiteDatabase;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.arch.api.internal.ServerUrlInterceptor;
+import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 
@@ -50,7 +50,7 @@ public abstract class BaseMockIntegrationTest {
         database = objects.database;
         databaseAdapter = objects.databaseAdapter;
         dhis2MockServer = objects.dhis2MockServer;
-        ServerUrlInterceptor.setServerUrl(dhis2MockServer.getBaseEndpoint());
+        ServerURLWrapper.setServerUrl(dhis2MockServer.getBaseEndpoint());
         return tuple.isNewInstance;
     }
 }

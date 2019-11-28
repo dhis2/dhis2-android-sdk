@@ -36,7 +36,7 @@ import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
-import org.hisp.dhis.android.core.arch.api.internal.ServerUrlInterceptor;
+import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
@@ -93,7 +93,7 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
         super.setUp();
 
         dhis2MockServer = new Dhis2MockServer();
-        ServerUrlInterceptor.setServerUrl(dhis2MockServer.getBaseEndpoint() + "api/");
+        ServerURLWrapper.setServerUrl(dhis2MockServer.getBaseEndpoint() + "api/");
 
         d2 = D2Factory.forDatabaseAdapter(databaseAdapter());
     }

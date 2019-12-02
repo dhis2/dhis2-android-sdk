@@ -47,6 +47,25 @@ import org.hisp.dhis.android.core.period.PeriodTableInfo;
 
 public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementBuilder {
 
+    /**
+     * Builder class that creates a complex query as the result of the join of several tables. The purpose is to
+     * obtain an overview of the datavalues associated to a dataset.
+     *
+     * - Discriminate the values associated to a dataSet using the DataSetElement table. The difficult part is to
+     * know valid the attributeOptionCombos for the dataElements in that particular dataSet. Clause
+     * COC_BY_DATASET_WHERE_CLAUSE
+     *
+     * - Prioritize data states. When grouping by dataset-orgunit-period-aoc, data values states must be prioritize.
+     * In order to do that, an auxiliary column is used. This column is assigend a numeric value (1, 2, 3 or 4)
+     * depending on the data value state (SYNCED lower, ERROR higher). Then, the aggregation function MAX is used to
+     * get the highest value. Clause SELECT_VALUE_STATE_ORDERING
+     *
+     * - There is value state and a completion state. An extra column "state" is added to have a single state for the
+     * dataSetInstance. Prioritization is respected. Clause SELECT_STATE.
+     *
+     * - The "where" clause is build as usual by using the collection repository scope.
+     */
+
     static final String AS = " AS ";
     private static final String INNER_JOIN = " INNER JOIN ";
     private static final String LEFT_JOIN = " LEFT JOIN ";
@@ -106,9 +125,10 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
     private static final String COMPLETION_STATE = COMPLETE_TABLE_ALIAS + "." + DataColumns.STATE;
 
     private static final String SELECT_VALUE_STATE_ORDERING = " MAX(CASE " +
-            "WHEN " + VALUE_STATE + " = '" + State.SYNCED + "' THEN 1 " +
-            "WHEN " + VALUE_STATE + " IN ('" + State.TO_POST + "','" + State.TO_UPDATE + "') THEN 2 " +
-            "ELSE 3 END)";
+            "WHEN " + VALUE_STATE + " IN ('" + State.SYNCED + "','" + State.SYNCED_VIA_SMS + "') THEN 1 " +
+            "WHEN " + VALUE_STATE + " = '" + State.SENT_VIA_SMS + "' THEN 2 " +
+            "WHEN " + VALUE_STATE + " IN ('" + State.TO_POST + "','" + State.TO_UPDATE + "') THEN 3 " +
+            "ELSE 4 END)";
 
     private static final String SELECT_STATE = "CASE" +
             " WHEN " + eq(COMPLETION_STATE, State.ERROR) + OR + eq(VALUE_STATE, State.ERROR) +
@@ -172,8 +192,7 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
             ATTRIBUTE_OPTION_COMBO_UID;
 
     private static final String SELECT_CLAUSE =
-            "SELECT *" +
-                    " FROM (" + INNER_SELECT_CLAUSE + COC_BY_DATASET_WHERE_CLAUSE + GROUP_BY_CLAUSE +")";
+            "SELECT * FROM (" + INNER_SELECT_CLAUSE + COC_BY_DATASET_WHERE_CLAUSE + GROUP_BY_CLAUSE +")";
 
     @Override
     public String selectWhere(String whereClause) {

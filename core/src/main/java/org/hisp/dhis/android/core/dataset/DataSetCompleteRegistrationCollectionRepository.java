@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
@@ -50,17 +49,14 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 @Reusable
 public final class DataSetCompleteRegistrationCollectionRepository
         extends ReadOnlyCollectionRepositoryImpl<DataSetCompleteRegistration,
         DataSetCompleteRegistrationCollectionRepository>
-        implements ReadWriteCollectionRepository<DataSetCompleteRegistration>,
-        ReadOnlyWithUploadCollectionRepository<DataSetCompleteRegistration> {
+        implements ReadOnlyWithUploadCollectionRepository<DataSetCompleteRegistration> {
 
-    private final Handler<DataSetCompleteRegistration> handler;
     private final DataSetCompleteRegistrationPostCall postCall;
     private final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
 
@@ -76,7 +72,6 @@ public final class DataSetCompleteRegistrationCollectionRepository
                 s -> new DataSetCompleteRegistrationCollectionRepository(store, childrenAppenders,
                         s, handler, postCall)));
 
-        this.handler = handler;
         this.postCall = postCall;
         this.dataSetCompleteRegistrationStore = store;
     }

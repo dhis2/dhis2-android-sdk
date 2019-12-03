@@ -81,6 +81,22 @@ public final class DataSetCompleteRegistrationCollectionRepository
         this.dataSetCompleteRegistrationStore = store;
     }
 
+    public DataSetCompleteRegistrationObjectRepository value(final String period,
+                                                             final String organisationUnit,
+                                                             final String dataSet,
+                                                             final String attributeOptionCombo) {
+
+        RepositoryScope updatedScope = byPeriod().eq(period)
+                .byOrganisationUnitUid().eq(organisationUnit)
+                .byDataSetUid().eq(dataSet)
+                .byAttributeOptionComboUid().eq(attributeOptionCombo)
+                .scope;
+
+        return new DataSetCompleteRegistrationObjectRepository(
+                dataSetCompleteRegistrationStore, childrenAppenders,
+                updatedScope, period, organisationUnit, dataSet, attributeOptionCombo);
+    }
+
     @Override
     public Completable add(DataSetCompleteRegistration dataSetCompleteRegistration) {
         return Completable.fromAction(() -> blockingAdd(dataSetCompleteRegistration));
@@ -103,21 +119,6 @@ public final class DataSetCompleteRegistrationCollectionRepository
         upload().blockingSubscribe();
     }
 
-    public DataSetCompleteRegistrationObjectRepository value(final String period,
-                                             final String organisationUnit,
-                                             final String dataSet,
-                                             final String attributeOptionCombo) {
-
-        RepositoryScope updatedScope = byPeriod().eq(period)
-                .byOrganisationUnitUid().eq(organisationUnit)
-                .byDataSetUid().eq(dataSet)
-                .byAttributeOptionComboUid().eq(attributeOptionCombo)
-                .scope;
-
-        return new DataSetCompleteRegistrationObjectRepository(
-                dataSetCompleteRegistrationStore, childrenAppenders,
-                updatedScope, period, organisationUnit, dataSet, attributeOptionCombo);
-    }
 
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byPeriod() {
         return cf.string(Columns.PERIOD);

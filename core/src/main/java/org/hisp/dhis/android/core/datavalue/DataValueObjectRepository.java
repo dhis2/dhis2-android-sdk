@@ -79,19 +79,11 @@ public final class DataValueObjectRepository
         setObject(objectWithValue);
     }
 
-    public Completable setFollowUp(Boolean followUp) {
-        return Completable.fromAction(() -> blockingSetFollowUp(followUp));
-    }
-
-    public void blockingSetFollowUp(Boolean followUp) throws D2Error {
+    public void setFollowUp(Boolean followUp) throws D2Error {
         setObject(setBuilder().followUp(followUp).build());
     }
 
-    public Completable setComment(String comment) {
-        return Completable.fromAction(() -> blockingSetComment(comment));
-    }
-
-    public void blockingSetComment(String comment) throws D2Error {
+    public void setComment(String comment) throws D2Error {
         setObject(setBuilder().comment(comment).build());
     }
 

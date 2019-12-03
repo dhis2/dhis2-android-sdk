@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
@@ -50,17 +49,14 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 @Reusable
 public final class DataSetCompleteRegistrationCollectionRepository
         extends ReadOnlyCollectionRepositoryImpl<DataSetCompleteRegistration,
         DataSetCompleteRegistrationCollectionRepository>
-        implements ReadWriteCollectionRepository<DataSetCompleteRegistration>,
-        ReadOnlyWithUploadCollectionRepository<DataSetCompleteRegistration> {
+        implements ReadOnlyWithUploadCollectionRepository<DataSetCompleteRegistration> {
 
-    private final Handler<DataSetCompleteRegistration> handler;
     private final DataSetCompleteRegistrationPostCall postCall;
     private final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
 
@@ -76,19 +72,24 @@ public final class DataSetCompleteRegistrationCollectionRepository
                 s -> new DataSetCompleteRegistrationCollectionRepository(store, childrenAppenders,
                         s, handler, postCall)));
 
-        this.handler = handler;
         this.postCall = postCall;
         this.dataSetCompleteRegistrationStore = store;
     }
 
-    @Override
-    public Completable add(DataSetCompleteRegistration dataSetCompleteRegistration) {
-        return Completable.fromAction(() -> blockingAdd(dataSetCompleteRegistration));
-    }
+    public DataSetCompleteRegistrationObjectRepository value(final String period,
+                                                             final String organisationUnit,
+                                                             final String dataSet,
+                                                             final String attributeOptionCombo) {
 
-    @Override
-    public void blockingAdd(DataSetCompleteRegistration dataSetCompleteRegistration) {
-        handler.handle(dataSetCompleteRegistration.toBuilder().state(State.TO_POST).build());
+        RepositoryScope updatedScope = byPeriod().eq(period)
+                .byOrganisationUnitUid().eq(organisationUnit)
+                .byDataSetUid().eq(dataSet)
+                .byAttributeOptionComboUid().eq(attributeOptionCombo)
+                .scope;
+
+        return new DataSetCompleteRegistrationObjectRepository(
+                dataSetCompleteRegistrationStore, childrenAppenders,
+                updatedScope, period, organisationUnit, dataSet, attributeOptionCombo);
     }
 
     @Override
@@ -103,21 +104,6 @@ public final class DataSetCompleteRegistrationCollectionRepository
         upload().blockingSubscribe();
     }
 
-    public DataSetCompleteRegistrationObjectRepository value(final String period,
-                                             final String organisationUnit,
-                                             final String dataSet,
-                                             final String attributeOptionCombo) {
-
-        RepositoryScope updatedScope = byPeriod().eq(period)
-                .byOrganisationUnitUid().eq(organisationUnit)
-                .byDataSetUid().eq(dataSet)
-                .byAttributeOptionComboUid().eq(attributeOptionCombo)
-                .scope;
-
-        return new DataSetCompleteRegistrationObjectRepository(
-                dataSetCompleteRegistrationStore, childrenAppenders,
-                updatedScope, period, organisationUnit, dataSet, attributeOptionCombo);
-    }
 
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byPeriod() {
         return cf.string(Columns.PERIOD);

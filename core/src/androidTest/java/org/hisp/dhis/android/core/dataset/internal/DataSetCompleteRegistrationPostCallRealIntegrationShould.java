@@ -71,7 +71,10 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
 
         DataSetCompleteRegistrationCollectionRepository repository
                 = d2.dataSetModule().dataSetCompleteRegistrations();
-        repository.blockingAdd(dataSetCompleteRegistration);
+        repository.value(dataSetCompleteRegistration.period(),
+                dataSetCompleteRegistration.organisationUnit(),
+                dataSetCompleteRegistration.dataSet(),
+                dataSetCompleteRegistration.attributeOptionCombo()).blockingSet();
 
         repository.blockingUpload();
 
@@ -116,8 +119,14 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
                 = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2018");
 
         DataSetCompleteRegistrationCollectionRepository repository = d2.dataSetModule().dataSetCompleteRegistrations();
-        repository.blockingAdd(toDeleteDataSetCompleteRegistration);
-        repository.blockingAdd(dataSetCompleteRegistration);
+        repository.value(toDeleteDataSetCompleteRegistration.period(),
+                toDeleteDataSetCompleteRegistration.organisationUnit(),
+                toDeleteDataSetCompleteRegistration.dataSet(),
+                toDeleteDataSetCompleteRegistration.attributeOptionCombo()).blockingSet();
+        repository.value(dataSetCompleteRegistration.period(),
+                dataSetCompleteRegistration.organisationUnit(),
+                dataSetCompleteRegistration.dataSet(),
+                dataSetCompleteRegistration.attributeOptionCombo()).blockingSet();
         dataSetCompleteRegistrationStore.setDeleted(toDeleteDataSetCompleteRegistration);
         dataSetCompleteRegistrationStore.setState(toDeleteDataSetCompleteRegistration, State.TO_UPDATE);
 
@@ -141,7 +150,10 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
 
         DataSetCompleteRegistrationCollectionRepository repository
                 = d2.dataSetModule().dataSetCompleteRegistrations();
-        repository.blockingAdd(dataSetCompleteRegistration);
+        repository.value(dataSetCompleteRegistration.period(),
+                dataSetCompleteRegistration.organisationUnit(),
+                dataSetCompleteRegistration.dataSet(),
+                dataSetCompleteRegistration.attributeOptionCombo()).blockingSet();
         dataSetCompleteRegistrationStore.setDeleted(dataSetCompleteRegistration);
         dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, State.TO_UPDATE);
 

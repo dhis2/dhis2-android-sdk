@@ -51,22 +51,54 @@ public final class DataSetCompleteRegistrationObjectRepository
 
     private final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
 
+    private final String period;
+    private final String dataSet;
+    private final String organisationUnit;
+    private final String attributeOptionCombo;
 
     DataSetCompleteRegistrationObjectRepository(
             final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore,
             final Map<String, ChildrenAppender<DataSetCompleteRegistration>> childrenAppenders,
             final RepositoryScope scope,
             final String period,
-            final String organisationUnit,
             final String dataSet,
+            final String organisationUnit,
             final String attributeOptionCombo
             ) {
         super(dataSetCompleteRegistrationStore, childrenAppenders, scope,
                 s -> new DataSetCompleteRegistrationObjectRepository(
                         dataSetCompleteRegistrationStore, childrenAppenders, s,
-                period, organisationUnit, dataSet, attributeOptionCombo));
+                period, dataSet, organisationUnit, attributeOptionCombo));
 
         this.dataSetCompleteRegistrationStore = dataSetCompleteRegistrationStore;
+
+        this.period = period;
+        this.dataSet = dataSet;
+        this.organisationUnit = organisationUnit;
+        this.attributeOptionCombo = attributeOptionCombo;
+    }
+
+    public Completable set() {
+        return Completable.fromAction(() -> blockingSet());
+    }
+
+    public void blockingSet() {
+        DataSetCompleteRegistration dataSetCompleteRegistration = blockingGetWithoutChildren();
+
+        if (dataSetCompleteRegistration == null) {
+            dataSetCompleteRegistrationStore.insert(
+                    DataSetCompleteRegistration.builder()
+                            .state(State.TO_POST)
+                            .deleted(false)
+                            .period(period)
+                            .dataSet(dataSet)
+                            .organisationUnit(organisationUnit)
+                            .attributeOptionCombo(attributeOptionCombo)
+                            .build());
+        } else {
+            dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration,
+                    dataSetCompleteRegistration.state() == State.TO_POST ? State.TO_POST : State.TO_UPDATE);
+        }
     }
 
     @Override

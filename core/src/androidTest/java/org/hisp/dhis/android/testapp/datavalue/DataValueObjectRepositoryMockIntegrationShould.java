@@ -61,7 +61,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
 
         DataValueObjectRepository repository = objectRepository();
 
-        repository.blockingSetFollowUp(followUp);
+        repository.setFollowUp(followUp);
         assertThat(repository.blockingGet().followUp(), is(followUp));
 
         repository.blockingDelete();
@@ -73,7 +73,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
 
         DataValueObjectRepository repository = objectRepository();
 
-        repository.blockingSetComment(comment);
+        repository.setComment(comment);
         assertThat(repository.blockingGet().comment(), is(comment));
 
         repository.blockingDelete();

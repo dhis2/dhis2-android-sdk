@@ -32,13 +32,10 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetTableInfo.Columns;
 
 public final class OptionSetFields {
-
-    public final static String OPTIONS = "options";
 
     private static final FieldsHelper<OptionSet> fh = new FieldsHelper<>();
 
@@ -50,9 +47,7 @@ public final class OptionSetFields {
             .fields(fh.getIdentifiableFields())
             .fields(
                     version,
-                    fh.<ValueType>field(Columns.VALUE_TYPE),
-                    fh.<Option>nestedField(OPTIONS)
-                            .with(OptionFields.allFields)
+                    fh.<ValueType>field(Columns.VALUE_TYPE)
             ).build();
 
     private OptionSetFields() {

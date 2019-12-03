@@ -98,16 +98,6 @@ public final class DataSetCompleteRegistrationCollectionRepository
     }
 
     @Override
-    public Completable add(DataSetCompleteRegistration dataSetCompleteRegistration) {
-        return Completable.fromAction(() -> blockingAdd(dataSetCompleteRegistration));
-    }
-
-    @Override
-    public void blockingAdd(DataSetCompleteRegistration dataSetCompleteRegistration) {
-        handler.handle(dataSetCompleteRegistration.toBuilder().state(State.TO_POST).build());
-    }
-
-    @Override
     public Observable<D2Progress> upload() {
         return Observable.fromCallable(() ->
                 byState().in(State.TO_POST, State.TO_UPDATE).blockingGetWithoutChildren()

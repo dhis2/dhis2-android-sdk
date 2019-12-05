@@ -18,32 +18,33 @@ env:
   global:
   - secure: DFhca9ZcFpfnotvD+wjzZIJz0Fa/vv6fIfcaMOpRXNd/I1Xk5Rslb5q5Xzs/wrWkqaOVXvWPH0Nsm23vxuuuMlKdT1YuiAGZLcSeuwmtM21Q2xlVHLBWg5/T/3lVBIDdaW+XD1XM8TfbaZL8rtsjbbXQoZyiPZIGN2Nj9PmnDxs=
   - secure: RAMZy2zxizEnH7Tl0qeBGruJr66kpFvFXh5z/6KX+YhXW1phU9J2BccdttiD/sWU7Y4v2mEnrGWv4iO58L8Icqqe78dsHKUs8af1FTU+pk2T9wntwbCf/L9F8q5FaHsTfUTsM0kH4ROiwsPNGybKBeXracboV3QyBHJFR5f91bw=
-
+    # GPG key
+  - secure: kMeb3dGwIL22+xMEjNKly5J+LTSEXhWwxp4BRQGPzmOgttDU1CCy4+fc7WCmAIkQXeKmnhoUbgymlcQoibmCKhsIMt/xCYxpkLvFGA593jXlA0Aj9NpoDK2tL6z5AxB8AI2SfWbreksb0tSULGLFxVtlaF5byEweweWpEIgCK2k=
+    # GPG passphrase
+  - secure: dbu8iizAWBA5uPCO/qNrfi4ITP3wD4VLVBuZDEJl+PGG6Wrb+bHGImp+qWKqJN5MeXTAOPkwtc8JjJaJDrG3CnKgohWKo3ptEPQBlMHtmWTmLTJAGSKDnyE4qjVGoTZFCuWGS5GNX13lTWJyNgQ8DikTDxdIsHIVeVqfwTJ/D4E=
+  - GPG_KEY_LOCATION=".travis/secret.gpg"
+  - ENCRYPTED_GPG_KEY_LOCATION=".travis/secret.gpg.enc"
 branches:
   only:
   - master
   - develop
   - master-sms
   - master-dev
-
+  - build-fixes
 script:
 - travis_wait 70 "./build.sh"
-
 before_script:
 - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
 - emulator -avd test -no-audio -no-window &
 - android-wait-for-emulator
 - adb devices
 - adb shell input keyevent 82 &
-
 after_success:
-  - .buildscript/deploy.sh
-
+- ".buildscript/deploy.sh"
 notifications:
   slack:
     secure: AkHqcKUwKfSfljvrHXkSaYwjLfLiiqdwRL3zqim9EMIA+AoqW9dhkwoegbeSr44plK82KJsVgo7UrSDLSiJR3UCXtjgkYwwf+hqOM7BVbIK/uTglrjhrDeJ4ZrE/W/FP1O4oeFYE1QZFeAFEb9yLtKBG8rfoQNDl4t83auWuehA=
   email: true
-
 cache:
   directories:
   - "$HOME/.m2"

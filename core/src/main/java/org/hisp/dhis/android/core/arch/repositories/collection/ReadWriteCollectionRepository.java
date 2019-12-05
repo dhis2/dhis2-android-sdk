@@ -36,11 +36,11 @@ import io.reactivex.Completable;
 public interface ReadWriteCollectionRepository<M extends CoreObject> extends ReadOnlyCollectionRepository<M> {
 
     /**
-     * Adds a new object to the given collection in an asynchronous way. It returns a {@link Completable} which
+     * Adds a new object to the given collection in an asynchronous way. It returns a {@code Completable} which
      * is completed when the object is added to the database. It adds an object with a {@link State#TO_POST},
      * which will be uploaded to the server in the next upload.
      * @param m the object to add
-     * @return the {@link Completable} which notifies the completion
+     * @return the {@code Completable} which notifies the completion
      */
     Completable add(M m);
 

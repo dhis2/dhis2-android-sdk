@@ -55,8 +55,8 @@ public abstract class ReadOnlyObjectRepositoryImpl<M extends CoreObject, R exten
     abstract M blockingGetWithoutChildren();
 
     /**
-     * Returns the object in an asynchronous way, returning a {@link Single<M>}.
-     * @return A {@link Single} object with the object
+     * Returns the object in an asynchronous way, returning a {@code Single<M>}.
+     * @return A {@code Single} object with the object
      */
     @Override
     public final Single<M> get() {
@@ -75,8 +75,8 @@ public abstract class ReadOnlyObjectRepositoryImpl<M extends CoreObject, R exten
     }
 
     /**
-     * Returns if the object exists in an asynchronous way, returning a {@link Single<Boolean>}.
-     * @return if the object exists, wrapped in a {@link Single}
+     * Returns if the object exists in an asynchronous way, returning a {@code Single<Boolean>}.
+     * @return if the object exists, wrapped in a {@code Single}
      */
     @Override
     public final Single<Boolean> exists() {

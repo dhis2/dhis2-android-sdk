@@ -38,7 +38,7 @@ public interface ReadOnlyWithDownloadObjectRepository<M extends CoreObject> exte
     /**
      * Downloads the resource in scope in an asynchronous way. As soon as it's downloaded and processed, the Completable
      * is completed.
-     * @return a {@link Completable} that completes when the download and processing is finished
+     * @return a {@code Completable} that completes when the download and processing is finished
      */
     Completable download();
 

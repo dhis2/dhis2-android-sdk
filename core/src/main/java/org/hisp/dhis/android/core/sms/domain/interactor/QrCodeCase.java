@@ -20,7 +20,7 @@ public class QrCodeCase {
     /**
      * Get a compressed representation of a simple event.
      * @param eventUid Event uid.
-     * @return {@link Single} with the compressed representation.
+     * @return {@code Single} with the compressed representation.
      */
     public Single<String> generateSimpleEventCode(String eventUid) {
         return new SimpleEventConverter(localDbRepository, eventUid).readAndConvert();
@@ -29,7 +29,7 @@ public class QrCodeCase {
     /**
      * Get a compressed representation of a tracker event.
      * @param eventUid Event uid.
-     * @return {@link Single} with the compressed representation.
+     * @return {@code Single} with the compressed representation.
      */
     public Single<String> generateTrackerEventCode(String eventUid) {
         return new TrackerEventConverter(localDbRepository, eventUid).readAndConvert();
@@ -38,7 +38,7 @@ public class QrCodeCase {
     /**
      * Get a compressed representation of an enrollment.
      * @param enrollmentUid Enrollment uid.
-     * @return {@link Single} with the compressed representation.
+     * @return {@code Single} with the compressed representation.
      */
     public Single<String> generateEnrollmentCode(String enrollmentUid) {
         return new EnrollmentConverter(localDbRepository, enrollmentUid).readAndConvert();
@@ -50,7 +50,7 @@ public class QrCodeCase {
      * @param orgUnit Organisation unit uid.
      * @param period Period identifier.
      * @param attributeOptionComboUid Attribute option combo uid.
-     * @return {@link Single} with the compressed representation.
+     * @return {@code Single} with the compressed representation.
      */
     public Single<String> generateDataSetCode(String dataSet,
                                               String orgUnit,
@@ -67,7 +67,7 @@ public class QrCodeCase {
     /**
      * Get a compressed representation of a relationship.
      * @param relationshipUid Relationship uid.
-     * @return {@link Single} with the compressed representation.
+     * @return {@code Single} with the compressed representation.
      */
     public Single<String> generateRelationshipCode(String relationshipUid) {
         return new RelationshipConverter(localDbRepository, relationshipUid).readAndConvert();
@@ -76,7 +76,7 @@ public class QrCodeCase {
     /**
      * Get a compressed representation of the deletion of an event.
      * @param itemToDeleteUid Event uid.
-     * @return {@link Single} with the compressed representation.
+     * @return {@code Single} with the compressed representation.
      */
     public Single<String> generateDeletionCode(String itemToDeleteUid) {
         return new DeletionConverter(localDbRepository, itemToDeleteUid).readAndConvert();

@@ -55,8 +55,8 @@ public class ReadOnlyFirstObjectWithDownloadRepositoryImpl<M extends CoreObject,
 
     /**
      * Downloads the resource in scope in an asynchronous way. As soon as it's downloaded and processed, the
-     * {@link Completable} is completed.
-     * @return a {@link Completable} that completes when the download and processing is finished
+     * {@code Completable} is completed.
+     * @return a {@code Completable} that completes when the download and processing is finished
      */
     @Override
     public Completable download() {

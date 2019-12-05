@@ -66,9 +66,9 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
     /**
      * Removes the object in scope in an asynchronous way. Field {@link DataObject#state()} is marked as
      * {@link State#TO_UPDATE} and {@link DeletableDataObject#deleted()} as true. In the next upload, it will be deleted
-     * in the server. It returns a {@link Completable} that completes as soon as the object is deleted in the database.
-     * The {@link Completable} fails if the object doesn't exist.
-     * @return the {@link Completable} which notifies the completion
+     * in the server. It returns a {@code Completable} that completes as soon as the object is deleted in the database.
+     * The {@code Completable} fails if the object doesn't exist.
+     * @return the {@code Completable} which notifies the completion
      */
     @Override
     public Completable delete() {
@@ -111,8 +111,8 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
      * Removes the object in scope in a synchronous way. Field {@link DataObject#state()} is marked as
      * {@link State#TO_POST} and {@link DeletableDataObject#deleted()} as true. Unlike {@link #delete()},
      * it doesn't throw an exception if the object doesn't exist.
-     * It returns a {@link Completable} that completes as soon as the object is deleted in the database.
-     * @return the {@link Completable} which notifies the completion
+     * It returns a {@code Completable} that completes as soon as the object is deleted in the database.
+     * @return the {@code Completable} which notifies the completion
      */
     @Override
     public Completable deleteIfExist() {

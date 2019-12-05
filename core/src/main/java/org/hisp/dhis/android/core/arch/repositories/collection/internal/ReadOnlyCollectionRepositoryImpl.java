@@ -95,9 +95,9 @@ public class ReadOnlyCollectionRepositoryImpl<M extends CoreObject, R extends Re
     }
 
     /**
-     * Get the objects in scope in an asynchronous way, returning a {@link Single<List>}.
+     * Get the objects in scope in an asynchronous way, returning a {@code Single<List>}.
      *
-     * @return A {@link Single} object with the list of objects.
+     * @return A {@code Single} object with the list of objects.
      */
     @Override
     public Single<List<M>> get() {
@@ -127,8 +127,8 @@ public class ReadOnlyCollectionRepositoryImpl<M extends CoreObject, R extends Re
     }
 
     /**
-     * Get the count of elements in an asynchronous way, returning a {@link Single}.
-     * @return A {@link Single} object with the element count
+     * Get the count of elements in an asynchronous way, returning a {@code Single}.
+     * @return A {@code Single} object with the element count
      */
     @Override
     public Single<Integer> count() {
@@ -148,7 +148,7 @@ public class ReadOnlyCollectionRepositoryImpl<M extends CoreObject, R extends Re
 
     /**
      * Check if selection of objects in current scope with applied filters is empty in an asynchronous way,
-     * returning a {@link Single}.
+     * returning a {@code Single}.
      * @return If selection is empty
      */
     @Override

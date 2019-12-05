@@ -63,9 +63,9 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends CoreObject, R exte
      * Removes the object in scope in an asynchronous way. It removes the value in the database and propagates
      * the changes to modify the {@link DataObject#state()} of the parent, so it's updated in the server in
      * the next upload.
-     * It returns a {@link Completable} that completes as soon as the object is deleted in the database.
-     * The {@link Completable} fails if the object doesn't exist.
-     * @return the {@link Completable} which notifies the completion
+     * It returns a {@code Completable} that completes as soon as the object is deleted in the database.
+     * The {@code Completable} fails if the object doesn't exist.
+     * @return the {@code Completable} which notifies the completion
      */
     @Override
     public Completable delete() {
@@ -92,10 +92,10 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends CoreObject, R exte
      * Removes the object in scope in an asynchronous way. It removes the value in the database and propagates
      * the changes to modify the {@link DataObject#state()} of the parent, so it's updated in the server in
      * the next upload.
-     * It returns a {@link Completable} that completes as soon as the object is deleted in the database.
+     * It returns a {@code Completable} that completes as soon as the object is deleted in the database.
      * Unlike {@link #delete()}, it doesn't throw an exception if the object doesn't exist.
-     * It returns a {@link Completable} that completes as soon as the object is deleted in the database.
-     * @return the {@link Completable} which notifies the completion
+     * It returns a {@code Completable} that completes as soon as the object is deleted in the database.
+     * @return the {@code Completable} which notifies the completion
      */
     @Override
     public Completable deleteIfExist() {

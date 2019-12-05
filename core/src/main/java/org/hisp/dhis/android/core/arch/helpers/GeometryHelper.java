@@ -77,32 +77,32 @@ public final class GeometryHelper {
     }
 
     /**
-     * Converts a {@link Geometry} object of type point in a List<Double> object with the point coordinates.
+     * Converts a {@link Geometry} object of type point in a {@code List<Double>} object with the point coordinates.
      *
      * @param geometry Geometry of type point.
-     * @return The converted List<Double> object.
+     * @return The converted {@code List<Double>} object.
      */
     public static List<Double> getPoint(Geometry geometry) throws D2Error {
         return getGeometryObject(geometry, FeatureType.POINT, new TypeReference<List<Double>>(){});
     }
 
     /**
-     * Converts a {@link Geometry} object of type polygon in a List<List<List<Double>>> object with the
+     * Converts a {@link Geometry} object of type polygon in a {@code List<List<List<Double>>>} object with the
      * polygon coordinates.
      *
      * @param geometry Geometry of type polygon.
-     * @return The converted List<List<List<Double>>> object.
+     * @return The converted {@code List<List<List<Double>>>} object.
      */
     public static List<List<List<Double>>> getPolygon(Geometry geometry) throws D2Error {
         return getGeometryObject(geometry, FeatureType.POLYGON, new TypeReference<List<List<List<Double>>>>(){});
     }
 
     /**
-     * Converts a {@link Geometry} object of type polygon in a List<List<List<List<Double>>>> object with the
+     * Converts a {@link Geometry} object of type polygon in a {@code List<List<List<List<Double>>>>} object with the
      * multi polygon coordinates.
      *
      * @param geometry Geometry of type multi polygon.
-     * @return The converted List<List<List<List<Double>>>> object.
+     * @return The converted {@code List<List<List<List<Double>>>>} object.
      */
     public static List<List<List<List<Double>>>> getMultiPolygon(Geometry geometry) throws D2Error {
         return getGeometryObject(geometry, FeatureType.MULTI_POLYGON,
@@ -123,7 +123,7 @@ public final class GeometryHelper {
     }
 
     /**
-     * Build a {@link Geometry} object of type point from a List<Double> object with the point coordinate.
+     * Build a {@link Geometry} object of type point from a {@code List<Double>} object with the point coordinate.
      *
      * @param point The point coordinate.
      * @return The {@link Geometry} object of type point created.
@@ -136,7 +136,7 @@ public final class GeometryHelper {
     }
 
     /**
-     * Build a {@link Geometry} object of type polygon from a List<List<List<Double>>> object with the polygon
+     * Build a {@link Geometry} object of type polygon from a {@code List<List<List<Double>>>} object with the polygon
      * coordinates.
      *
      * @param polygon The polygon coordinates.
@@ -150,8 +150,8 @@ public final class GeometryHelper {
     }
 
     /**
-     * Build a {@link Geometry} object of type multi polygon from a List<List<List<List<Double>>>> object with the
-     * multi polygon coordinates.
+     * Build a {@link Geometry} object of type multi polygon from a {@code List<List<List<List<Double>>>>} object with
+     * the multi polygon coordinates.
      *
      * @param multiPolygon The mulit polygon coordinates.
      * @return The {@link Geometry} object of type multi polygon created.

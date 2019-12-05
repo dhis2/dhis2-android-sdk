@@ -35,9 +35,9 @@ import io.reactivex.Observable;
 public interface CollectionRepositoryUpload {
 
     /**
-     * Uploads the resources in scope in an asynchronous way. An {@link Observable<D2Progress>} is returned, which
-     * will emit progress until the whole upload is finished and the {@link Observable} is completed.
-     * @return the {@link Observable<D2Progress>} emitting the progress
+     * Uploads the resources in scope in an asynchronous way. An {@code Observable<D2Progress>} is returned, which
+     * will emit progress until the whole upload is finished and the {@code Observable} is completed.
+     * @return the {@code Observable<D2Progress>} emitting the progress
      */
     Observable<D2Progress> upload();
 

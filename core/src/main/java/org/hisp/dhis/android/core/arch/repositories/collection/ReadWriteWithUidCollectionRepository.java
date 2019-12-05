@@ -39,7 +39,7 @@ public interface ReadWriteWithUidCollectionRepository<M extends CoreObject & Obj
 
     /**
      * Adds a new object to the given collection in an asynchronous way based on the provided CreateProjection.
-     * It returns a {@link Single<String>} with the generated UID, which is completed when the object is added to the
+     * It returns a {@code Single<String>} with the generated UID, which is completed when the object is added to the
      * database. It adds an object with a {@link State#TO_POST}, which will be uploaded to the server in the next
      * upload.
      * @param c the CreateProjection of the object to add

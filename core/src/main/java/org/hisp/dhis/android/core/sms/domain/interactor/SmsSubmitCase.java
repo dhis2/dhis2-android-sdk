@@ -41,7 +41,7 @@ public class SmsSubmitCase {
     /**
      * Set a tracker event to send by SMS.
      * @param eventUid Event uid.
-     * @return {@link Single} with the number of SMS to send.
+     * @return {@code Single} with the number of SMS to send.
      */
     public Single<Integer> convertTrackerEvent(String eventUid) {
         return convert(new TrackerEventConverter(localDbRepository, eventUid));
@@ -50,7 +50,7 @@ public class SmsSubmitCase {
     /**
      * Set a simple event to send by SMS.
      * @param eventUid Event uid.
-     * @return {@link Single} with the number of SMS to send.
+     * @return {@code Single} with the number of SMS to send.
      */
     public Single<Integer> convertSimpleEvent(String eventUid) {
         return convert(new SimpleEventConverter(localDbRepository, eventUid));
@@ -59,7 +59,7 @@ public class SmsSubmitCase {
     /**
      * Set an enrollment to send by SMS.
      * @param enrollmentUid Enrollment uid.
-     * @return {@link Single} with the number of SMS to send.
+     * @return {@code Single} with the number of SMS to send.
      */
     public Single<Integer> convertEnrollment(String enrollmentUid) {
         return convert(new EnrollmentConverter(localDbRepository, enrollmentUid));
@@ -71,7 +71,7 @@ public class SmsSubmitCase {
      * @param orgUnit Organisation unit uid.
      * @param period Period identifier.
      * @param attributeOptionComboUid Attribute option combo uid.
-     * @return {@link Single} with the number of SMS to send.
+     * @return {@code Single} with the number of SMS to send.
      */
     public Single<Integer> convertDataSet(String dataSet,
                                           String orgUnit,
@@ -88,7 +88,7 @@ public class SmsSubmitCase {
     /**
      * Set a relationship to send by SMS.
      * @param relationshipUid Relationship uid.
-     * @return {@link Single} with the number of SMS to send.
+     * @return {@code Single} with the number of SMS to send.
      */
     public Single<Integer> convertRelationship(String relationshipUid) {
         return convert(new RelationshipConverter(localDbRepository, relationshipUid));
@@ -97,7 +97,7 @@ public class SmsSubmitCase {
     /**
      * Set an event to delete by SMS.
      * @param itemToDeleteUid Event uid.
-     * @return {@link Single} with the number of SMS to send.
+     * @return {@code Single} with the number of SMS to send.
      */
     public Single<Integer> convertDeletion(String itemToDeleteUid) {
         return convert(new DeletionConverter(localDbRepository, itemToDeleteUid));
@@ -123,7 +123,7 @@ public class SmsSubmitCase {
      * Call this method to send the SMS. You must call a "convert" method before to specify the data to send. This
      * method will fail if the app is not granted the permissions required to use SMS in the device: READ_PHONE_STATE,
      * SEND_SMS, READ_SMS and RECEIVE_SMS.
-     * @return {@link Observable} emitting the sending states.
+     * @return {@code Observable} emitting the sending states.
      */
     public Observable<SmsRepository.SmsSendingState> send() {
         if (smsParts == null || smsParts.isEmpty()) {
@@ -180,7 +180,7 @@ public class SmsSubmitCase {
     /**
      * Observe incoming SMS waiting for a response to this submission case.
      * @param fromDate Starting date to listen for messages.
-     * @return {@link Completable} that completes when a confirmation is received for this case.
+     * @return {@code Completable} that completes when a confirmation is received for this case.
      */
     public Completable checkConfirmationSms(final Date fromDate) {
         return Single.zip(

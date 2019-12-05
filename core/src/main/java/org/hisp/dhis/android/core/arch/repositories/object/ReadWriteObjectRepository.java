@@ -38,9 +38,9 @@ public interface ReadWriteObjectRepository<M extends CoreObject> extends ReadOnl
 
     /**
      * Removes the object in scope in an asynchronous way. See the implementation JavaDoc for details on how deletion
-     * is performed. It returns a {@link Completable} that completes as soon as the object is deleted in the database.
-     * The {@link Completable} fails if the object doesn't exist.
-     * @return the {@link Completable} which notifies the completion
+     * is performed. It returns a {@code Completable} that completes as soon as the object is deleted in the database.
+     * The {@code Completable} fails if the object doesn't exist.
+     * @return the {@code Completable} which notifies the completion
      */
     Completable delete();
 
@@ -55,8 +55,8 @@ public interface ReadWriteObjectRepository<M extends CoreObject> extends ReadOnl
     /**
      * Removes the object in scope in a synchronous way. See the implementation JavaDoc for details on how deletion
      * is performed. Unlike {@link #delete()}, it doesn't throw an exception if the object doesn't exist.
-     * It returns a {@link Completable} that completes as soon as the object is deleted in the database.
-     * @return the {@link Completable} which notifies the completion
+     * It returns a {@code Completable} that completes as soon as the object is deleted in the database.
+     * @return the {@code Completable} which notifies the completion
      */
     Completable deleteIfExist();
 

@@ -50,7 +50,7 @@ public class ReadOnlyOneObjectRepositoryImpl<M extends CoreObject, R extends Rea
         this.store = store;
     }
 
-    public M getWithoutChildren() {
+    protected M blockingGetWithoutChildren() {
         WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
         return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope));
     }

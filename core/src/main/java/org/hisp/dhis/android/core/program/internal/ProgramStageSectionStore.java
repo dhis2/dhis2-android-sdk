@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableSt
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
 import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo;
@@ -57,9 +56,6 @@ final class ProgramStageSectionStore {
             sqLiteBind(sqLiteStatement, 10, ProgramStageSectionRenderingHelper.mobileRenderType(o.renderType()));
         }
     };
-
-    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            ProgramStageSectionTableInfo.TABLE_INFO, ProgramStageSectionTableInfo.Columns.PROGRAM_STAGE);
 
     private ProgramStageSectionStore() {}
 

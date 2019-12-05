@@ -30,9 +30,6 @@ package org.hisp.dhis.android.core.user;
 
 import android.database.Cursor;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -45,6 +42,9 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_User.Builder.class)
@@ -89,15 +89,9 @@ public abstract class User extends BaseIdentifiableObject implements CoreObject 
     @Nullable
     public abstract String nationality();
 
-    /**
-     * @deprecated use d2.userModule().userCredentials() instead
-     *
-     * @return
-     */
-    @Deprecated
     @Nullable
     @ColumnAdapter(IgnoreUserCredentialsAdapter.class)
-    public abstract UserCredentials userCredentials();
+    abstract UserCredentials userCredentials();
 
     @Nullable
     @ColumnAdapter(IgnoreOrganisationUnitListAdapter.class)
@@ -150,13 +144,7 @@ public abstract class User extends BaseIdentifiableObject implements CoreObject 
 
         public abstract Builder nationality(String nationality);
 
-        /**
-         * @deprecated will be package-private in SDK 1.0
-         *
-         * @return
-         */
-        @Deprecated
-        public abstract Builder userCredentials(UserCredentials userCredentials);
+        abstract Builder userCredentials(UserCredentials userCredentials);
 
         abstract Builder organisationUnits(List<OrganisationUnit> organisationUnits);
 

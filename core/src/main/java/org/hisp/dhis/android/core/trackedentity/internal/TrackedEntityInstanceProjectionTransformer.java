@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
@@ -41,7 +41,7 @@ final class TrackedEntityInstanceProjectionTransformer
 
     @Override
     public TrackedEntityInstance transform(TrackedEntityInstanceCreateProjection projection) {
-        String generatedUid = new CodeGeneratorImpl().generate();
+        String generatedUid = new UidGeneratorImpl().generate();
         Date creationDate = new Date();
 
         return TrackedEntityInstance.builder()

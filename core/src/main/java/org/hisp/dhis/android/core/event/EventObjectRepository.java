@@ -85,7 +85,7 @@ public final class EventObjectRepository
     }
 
     private Event.Builder updateBuilder() {
-        Event event = getWithoutChildren();
+        Event event = blockingGetWithoutChildren();
         Date updateDate = new Date();
         State state = event.state();
         state = state == State.TO_POST ? state : State.TO_UPDATE;

@@ -30,9 +30,6 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 
-import androidx.annotation.Nullable;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -48,10 +45,8 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColu
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.TrackedEntityTypeWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramIndicatorListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramRuleListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramRuleVariableListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramSectionListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramStageListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramTrackedEntityAttributeListColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.category.CategoryCombo;
@@ -66,6 +61,8 @@ import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_Program.Builder.class)
@@ -135,16 +132,10 @@ public abstract class Program extends BaseNameableObject
     @ColumnAdapter(DbProgramTypeColumnAdapter.class)
     public abstract ProgramType programType();
 
-    /**
-     * @deprecated use d2.programModule().programTrackedEntityAttributes instead
-     *
-     * @return
-    */
-    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramTrackedEntityAttributeListColumnAdapter.class)
-    public abstract List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes();
+    abstract List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes();
 
     @Nullable
     @JsonProperty()
@@ -170,49 +161,15 @@ public abstract class Program extends BaseNameableObject
     @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
 
-    /**
-     * @deprecated use d2.programModule().programIndicators instead
-     *
-     * @return
-     */
-    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramIndicatorListColumnAdapter.class)
-    public abstract List<ProgramIndicator> programIndicators();
+    abstract List<ProgramIndicator> programIndicators();
 
-    /**
-     * @deprecated use d2.programModule().programStages() instead
-     *
-     * @return
-     */
-    @Deprecated
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(IgnoreProgramStageListColumnAdapter.class)
-    public abstract List<ProgramStage> programStages();
-
-    /**
-     * @deprecated use d2.programModule().programRules() instead. This will be removed in SDK 1.0
-     *
-     * @return
-     */
-    @Deprecated
-    @Nullable
-    @JsonIgnore()
-    @ColumnAdapter(IgnoreProgramRuleListColumnAdapter.class)
-    public abstract List<ProgramRule> programRules();
-
-    /**
-     * @deprecated use d2.programModule().programRuleVariables instead
-     *
-     * @return
-     */
-    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramRuleVariableListColumnAdapter.class)
-    public abstract List<ProgramRuleVariable> programRuleVariables();
+    abstract List<ProgramRuleVariable> programRuleVariables();
 
     @Nullable
     @JsonProperty()
@@ -235,12 +192,6 @@ public abstract class Program extends BaseNameableObject
     @JsonProperty()
     public abstract Integer maxTeiCountToReturn();
 
-    /**
-     * @deprecated use d2.programModule().programSections instead
-     *
-     * @return
-     */
-    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramSectionListColumnAdapter.class)
@@ -305,13 +256,7 @@ public abstract class Program extends BaseNameableObject
 
         public abstract Builder programType(ProgramType programType);
 
-        /**
-         * @deprecated will be package-private in SDK 1.0
-         *
-         * @return
-         */
-        @Deprecated
-        public abstract Builder programTrackedEntityAttributes(List<ProgramTrackedEntityAttribute>
+        abstract Builder programTrackedEntityAttributes(List<ProgramTrackedEntityAttribute>
                                                                        programTrackedEntityAttributes);
 
         public abstract Builder relatedProgram(ObjectWithUid relatedProgram);
@@ -322,37 +267,9 @@ public abstract class Program extends BaseNameableObject
 
         public abstract Builder access(Access access);
 
-        /**
-         * @deprecated will be package-private in SDK 1.0
-         *
-         * @return
-         */
-        @Deprecated
-        public abstract Builder programIndicators(List<ProgramIndicator> programIndicators);
+        abstract Builder programIndicators(List<ProgramIndicator> programIndicators);
 
-        /**
-         * @deprecated will be removed in SDK 1.0
-         *
-         * @return
-         */
-        @Deprecated
-        public abstract Builder programStages(List<ProgramStage> programStages);
-
-        /**
-         * @deprecated will be removed in SDK 1.0
-         *
-         * @return
-         */
-        @Deprecated
-        public abstract Builder programRules(List<ProgramRule> programRules);
-
-        /**
-         * @deprecated will be package-private in SDK 1.0
-         *
-         * @return
-         */
-        @Deprecated
-        public abstract Builder programRuleVariables(List<ProgramRuleVariable> programRuleVariables);
+        abstract Builder programRuleVariables(List<ProgramRuleVariable> programRuleVariables);
 
         public abstract Builder expiryDays(Integer expiryDays);
 
@@ -364,13 +281,7 @@ public abstract class Program extends BaseNameableObject
 
         public abstract Builder maxTeiCountToReturn(Integer maxTeiCountToReturn);
 
-        /**
-         * @deprecated will be package-private in SDK 1.0
-         *
-         * @return
-         */
-        @Deprecated
-        public abstract Builder programSections(List<ProgramSection> programSections);
+        abstract Builder programSections(List<ProgramSection> programSections);
 
         public abstract Builder featureType(FeatureType featureType);
 

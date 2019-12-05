@@ -62,6 +62,16 @@ public final class FileResizerHelper {
 
     private FileResizerHelper() {}
 
+    /**
+     * Resize an image file to a given dimension. The possible dimensions are small (256px), medium (512px) and
+     * large (1024px). The method will scale the largest between height and width to the given dimension
+     * without change the relation between them. In case both height and width are smaller than the given dimension
+     * the method will return the given file without modifications.
+     *
+     * @param fileToResize  Image file to resize.
+     * @param dimension     The dimension to resize.
+     * @return The resized {@link File}.
+     */
     public static File resizeFile(File fileToResize, Dimension dimension) throws D2Error {
         Bitmap bitmap = BitmapFactory.decodeFile(fileToResize.getAbsolutePath());
         Float width = ((Integer) bitmap.getWidth()).floatValue();

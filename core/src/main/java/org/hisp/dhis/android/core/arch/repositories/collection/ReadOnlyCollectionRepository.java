@@ -27,37 +27,34 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import androidx.lifecycle.LiveData;
-import androidx.paging.PagedList;
-
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.List;
 
+import androidx.lifecycle.LiveData;
+import androidx.paging.PagedList;
 import io.reactivex.Single;
 
 public interface ReadOnlyCollectionRepository<M extends CoreObject> extends BaseRepository {
 
     /**
-     * Query returning a Single object. As querying might be a
-     * time-consuming task, this method facilitates dealing with asynchronous behavior.
+     * Get the objects in scope in an asynchronous way, returning a {@link Single<List>}.
      *
-     * @return A Single object emitting a list of elements.
+     * @return A {@link Single} object with the list of objects.
      */
     Single<List<M>> get();
 
     /**
-     * Get the list of elements. Important: this is blocking method and it should be executed in a
-     * separated thread. Use get when possible.
+     * Get the list of objects in a synchronous way. Important: this is a blocking method and it should not be
+     * executed in the main thread. Consider the asynchronous version {@link #get()}.
      *
-     * @return List of elements
+     * @return List of objects
      */
     List<M> blockingGet();
 
     /**
-     * Handy method to use in conjunction with PagedListAdapter to build
-     * paged lists.
+     * Handy method to use in conjunction with PagedListAdapter to build paged lists.
      *
      * @param pageSize Length of the page
      * @return A LiveData object of PagedList of elements
@@ -65,29 +62,30 @@ public interface ReadOnlyCollectionRepository<M extends CoreObject> extends Base
     LiveData<PagedList<M>> getPaged(int pageSize);
 
     /**
-     * Get the count of elements.
-     * @return Element count
+     * Get the count of elements in an asynchronous way, returning a {@link Single}.
+     * @return A {@link Single} object with the element count
      */
     Single<Integer> count();
 
     /**
-     * Get the count of elements. Important: this is a blocking method and it should be executed in
-     * a separated thread.
+     * Get the count of elements. Important: this is a blocking method and it should not be
+     * executed in the main thread. Consider the asynchronous version {@link #count()}.
      *
      * @return Element count
      */
     int blockingCount();
 
     /**
-     * Check if selection of objects with applied filters is empty.
+     * Check if selection of objects in current scope with applied filters is empty in an asynchronous way,
+     * returning a {@link Single}.
      * @return If selection is empty
      */
     Single<Boolean> isEmpty();
 
     /**
-     * Check if selection of objects with applied filters is empty.
-     * Important: this is a blocking method and it should be executed in a separated thread.
-     * Use isEmpty when possible.
+     * Check if selection of objects with applied filters is empty in a synchronous way.
+     * Important: this is a blocking method and it should not be executed in the main thread.
+     * Consider the asynchronous version {@link #isEmpty()}.
      *
      * @return If selection is empty
      */

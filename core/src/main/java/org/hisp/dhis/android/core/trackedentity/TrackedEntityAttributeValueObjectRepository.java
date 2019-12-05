@@ -76,7 +76,7 @@ public final class TrackedEntityAttributeValueObjectRepository extends ReadWrite
     private TrackedEntityAttributeValue.Builder setBuilder() {
         Date date = new Date();
         if (blockingExists()) {
-            return getWithoutChildren().toBuilder()
+            return blockingGetWithoutChildren().toBuilder()
                     .lastUpdated(date);
         } else {
             return TrackedEntityAttributeValue.builder()

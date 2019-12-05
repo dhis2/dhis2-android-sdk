@@ -30,24 +30,20 @@ package org.hisp.dhis.android.core.option.internal;
 
 import android.database.sqlite.SQLiteStatement;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableWithStyleStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionTableInfo;
 
+import androidx.annotation.NonNull;
+
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
 final class OptionStore {
-
-    static final SingleParentChildProjection CHILD_PROJECTION =
-            new SingleParentChildProjection(OptionTableInfo.TABLE_INFO, OptionTableInfo.Columns.OPTION_SET);
 
     private OptionStore() {}
 

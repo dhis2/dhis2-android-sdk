@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.ProgramStageTableInfo.Columns;
-import org.hisp.dhis.android.core.program.internal.ProgramStageFields;
 
 import java.util.Map;
 
@@ -156,26 +155,6 @@ public final class ProgramStageCollectionRepository
 
     public StringFilterConnector<ProgramStageCollectionRepository> byIcon() {
         return cf.string(Columns.ICON);
-    }
-
-    /**
-     * @deprecated use d2.programModule().programStageDataElements().byProgramStage() instead
-     *
-     * @return
-     */
-    @Deprecated
-    public ProgramStageCollectionRepository withProgramStageDataElements() {
-        return cf.withChild(ProgramStageFields.PROGRAM_STAGE_DATA_ELEMENTS);
-    }
-
-    /**
-     * @deprecated use d2.programModule().programStageSections().byProgramStageUid() instead
-     *
-     * @return
-     */
-    @Deprecated
-    public ProgramStageCollectionRepository withProgramStageSections() {
-        return cf.withChild(ProgramStageFields.PROGRAM_STAGE_SECTIONS);
     }
 
     public ProgramStageCollectionRepository orderBySortOrder(RepositoryScope.OrderByDirection direction) {

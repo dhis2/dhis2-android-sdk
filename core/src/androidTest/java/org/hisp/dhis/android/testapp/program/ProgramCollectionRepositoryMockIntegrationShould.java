@@ -294,54 +294,6 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     }
 
     @Test
-    public void include_program_stages_as_children_when_all_selected() {
-        Program program = d2.programModule().programs()
-                .withProgramStages().one().blockingGet();
-        assertThat(program.programStages().size(), is(2));
-        assertThat(program.programStages().get(0).name(), is("Antenatal care visit - Program rules demo"));
-    }
-
-    @Test
-    public void include_program_stages_as_children_when_explicitly_selected() {
-        Program program = d2.programModule().programs()
-                .withProgramStages().one().blockingGet();
-        assertThat(program.programStages().size(), is(2));
-        assertThat(program.programStages().get(0).name(), is("Antenatal care visit - Program rules demo"));
-    }
-
-    @Test
-    public void include_program_rule_variables_as_children() {
-        Program program = d2.programModule().programs()
-                .withProgramRuleVariables().one().blockingGet();
-        assertThat(program.programRuleVariables().size(), is(2));
-        assertThat(program.programRuleVariables().get(0).name(), is("hemoglobin"));
-    }
-
-    @Test
-    public void include_program_indicators_as_children() {
-        Program program = d2.programModule().programs()
-                .withProgramIndicators().one().blockingGet();
-        assertThat(program.programIndicators().size(), is(2));
-        assertThat(program.programIndicators().get(0).name(), is("Age at visit"));
-    }
-
-    @Test
-    public void include_program_tracked_entity_attributes_as_children() {
-        Program program = d2.programModule().programs()
-                .withProgramTrackedEntityAttributes().one().blockingGet();
-        assertThat(program.programTrackedEntityAttributes().size(), is(2));
-        assertThat(program.programTrackedEntityAttributes().get(0).name(), is("Child Programme Gender"));
-    }
-
-    @Test
-    public void include_program_sections_as_children() {
-        Program program = d2.programModule().programs()
-                .withProgramSections().one().blockingGet();
-        assertThat(program.programSections().size(), is(2));
-        assertThat(program.programSections().get(0).name(), is("My Program Section"));
-    }
-
-    @Test
     public void include_tracked_entity_type_as_children() {
         Program program = d2.programModule().programs()
                 .withTrackedEntityType().one().blockingGet();

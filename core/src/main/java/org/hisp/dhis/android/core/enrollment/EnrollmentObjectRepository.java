@@ -81,7 +81,7 @@ public final class EnrollmentObjectRepository
     }
 
     private Enrollment.Builder updateBuilder() {
-        Enrollment enrollment = getWithoutChildren();
+        Enrollment enrollment = blockingGetWithoutChildren();
         Date updateDate = new Date();
         State state = enrollment.state();
         state = state == State.TO_POST ? state : State.TO_UPDATE;

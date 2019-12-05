@@ -51,11 +51,11 @@ public final class SystemInfoTableInfo {
     };
 
     public static class Columns extends CoreColumns {
-        static String SERVER_DATE = "serverDate";
-        static String DATE_FORMAT = "dateFormat";
-        static String VERSION = "version";
-        static String CONTEXT_PATH = "contextPath";
-        static String SYSTEM_NAME = "systemName";
+        public static final String SERVER_DATE = "serverDate";
+        public static final String DATE_FORMAT = "dateFormat";
+        public static final String VERSION = "version";
+        public static final String CONTEXT_PATH = "contextPath";
+        public static final String SYSTEM_NAME = "systemName";
 
         @Override
         public String[] all() {

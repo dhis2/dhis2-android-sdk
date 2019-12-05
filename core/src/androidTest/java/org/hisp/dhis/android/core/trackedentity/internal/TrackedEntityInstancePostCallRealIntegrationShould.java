@@ -32,8 +32,8 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.helpers.CodeGenerator;
-import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.arch.helpers.UidGenerator;
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
@@ -77,7 +77,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
-    private CodeGenerator codeGenerator;
+    private UidGenerator uidGenerator;
 
     private TrackedEntityInstanceStore trackedEntityInstanceStore;
     private EnrollmentStore enrollmentStore;
@@ -116,7 +116,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         trackedEntityAttributeValueStore = TrackedEntityAttributeValueStoreImpl.create(databaseAdapter());
         trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter());
 
-        codeGenerator = new CodeGeneratorImpl();
+        uidGenerator = new UidGeneratorImpl();
         orgUnitUid = "DiszpKrYNg8";
         programUid = "IpHINAT79UW";
         programStageUid = "A03MvHHogjR";
@@ -128,13 +128,13 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         geometry = Geometry.builder().type(FeatureType.POINT).coordinates("[-11.96, 9.49]").build();
 
         categoryComboOptionUid = "HllvX50cXC0";
-        eventUid = codeGenerator.generate();
-        enrollmentUid = codeGenerator.generate();
-        trackedEntityInstanceUid = codeGenerator.generate();
+        eventUid = uidGenerator.generate();
+        enrollmentUid = uidGenerator.generate();
+        trackedEntityInstanceUid = uidGenerator.generate();
 
-        event1Uid = codeGenerator.generate();
-        enrollment1Uid = codeGenerator.generate();
-        trackedEntityInstance1Uid = codeGenerator.generate();
+        event1Uid = uidGenerator.generate();
+        enrollment1Uid = uidGenerator.generate();
+        trackedEntityInstance1Uid = uidGenerator.generate();
     }
 
     /*
@@ -206,7 +206,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         Geometry geometry = Geometry.builder().type(FeatureType.POINT).coordinates("[98.54, 4.65]").build();
 
-        String newUid = codeGenerator.generate();
+        String newUid = uidGenerator.generate();
 
         insertATei(newUid, tei, geometry);
 
@@ -231,8 +231,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
-        String newUid1 = codeGenerator.generate();
-        String newUid2 = codeGenerator.generate();
+        String newUid1 = uidGenerator.generate();
+        String newUid2 = uidGenerator.generate();
 
         insertATei(newUid1, tei, tei.geometry());
         insertATei(newUid2, tei, tei.geometry());
@@ -256,8 +256,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
-        String newUid1 = codeGenerator.generate();
-        String newUid2 = codeGenerator.generate();
+        String newUid1 = uidGenerator.generate();
+        String newUid2 = uidGenerator.generate();
 
         insertATei(newUid1, tei, tei.geometry());
         insertATei(newUid2, tei, tei.geometry());
@@ -292,7 +292,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         Geometry geometry = Geometry.builder().type(FeatureType.POINT).coordinates("[98.54, 4.65]").build();
 
-        String newUid = codeGenerator.generate();
+        String newUid = uidGenerator.generate();
 
         insertATei(newUid, tei, geometry);
 
@@ -327,7 +327,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         Geometry geometry = Geometry.builder().type(FeatureType.MULTI_POLYGON).coordinates("[98.54, 4.65]").build();
 
         // Create a TEI by copying an existing one
-        String teiBUid = codeGenerator.generate();
+        String teiBUid = uidGenerator.generate();
         insertATei(teiBUid, teiA, geometry);
 
         trackedEntityInstanceStore.setState(teiA.uid(), State.TO_POST);

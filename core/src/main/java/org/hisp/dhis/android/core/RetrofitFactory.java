@@ -42,7 +42,7 @@ final class RetrofitFactory {
 
     static Retrofit retrofit(OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
-                // Actual baseUrl will be set later during logIn through ServerUrlInterceptor. But it's mandatory
+                // Actual baseUrl will be set later during logIn through DynamicServerURLInterceptor. But it's mandatory
                 // to create Retrofit
                 .baseUrl(ServerUrlParser.parse("https://temporary-dhis-url.org/"))
 

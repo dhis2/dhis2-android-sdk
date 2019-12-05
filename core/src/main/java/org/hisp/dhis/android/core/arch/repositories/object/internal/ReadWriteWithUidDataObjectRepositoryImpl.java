@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectReposit
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.DataObject;
 import org.hisp.dhis.android.core.common.DeletableDataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
@@ -62,11 +63,29 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
         this.store = store;
     }
 
+    /**
+     * Removes the object in scope in an asynchronous way. Field {@link DataObject#state()} is marked as
+     * {@link State#TO_UPDATE} and {@link DeletableDataObject#deleted()} as true. In the next upload, it will be deleted
+     * in the server. It returns a {@link Completable} that completes as soon as the object is deleted in the database.
+     * The {@link Completable} fails if the object doesn't exist.
+     * @return the {@link Completable} which notifies the completion
+     */
     @Override
     public Completable delete() {
         return Completable.fromAction(this::blockingDelete);
     }
 
+    /**
+     * Removes the object in scope in a synchronous way. Field {@link DataObject#state()} is marked as
+     * {@link State#TO_UPDATE} and {@link DeletableDataObject#deleted()} as true. In the next upload, it will be deleted
+     * in the server. It blocks the thread and finishes as soon as the object is deleted in the database.
+     * It throws an exception if the object doesn't exist.
+     *
+     * Important: this is a blocking method and it should not be executed in the main thread. Consider the
+     * asynchronous version {@link #delete()}.
+     *
+     * @throws D2Error if any errors occur, including when the object doesn't exist.
+     */
     @Override
     public void blockingDelete() throws D2Error {
         M object = blockingGet();
@@ -88,11 +107,27 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
         }
     }
 
+    /**
+     * Removes the object in scope in a synchronous way. Field {@link DataObject#state()} is marked as
+     * {@link State#TO_POST} and {@link DeletableDataObject#deleted()} as true. Unlike {@link #delete()},
+     * it doesn't throw an exception if the object doesn't exist.
+     * It returns a {@link Completable} that completes as soon as the object is deleted in the database.
+     * @return the {@link Completable} which notifies the completion
+     */
     @Override
     public Completable deleteIfExist() {
         return Completable.fromAction(this::blockingDeleteIfExist);
     }
 
+    /**
+     * Removes the object in scope in an asynchronous way. Field {@link DataObject#state()} is marked as
+     * {@link State#TO_POST} and {@link DeletableDataObject#deleted()} as true.
+     * Unlike {@link #blockingDelete()}, it doesn't throw an exception if the object doesn't exist.
+     * It blocks the thread and finishes as soon as the object is deleted in the database.
+     *
+     * Important: this is a blocking method and it should not be executed in the main thread. Consider the
+     * asynchronous version {@link #delete()}.
+     */
     @Override
     public void blockingDeleteIfExist() {
         try {

@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableSt
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.dataset.Section;
 import org.hisp.dhis.android.core.dataset.SectionTableInfo;
@@ -57,9 +56,6 @@ final class SectionStore {
             sqLiteBind(sqLiteStatement, 11, o.showColumnTotals());
         }
     };
-
-    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            SectionTableInfo.TABLE_INFO, SectionTableInfo.Columns.DATA_SET);
 
     private SectionStore() {}
 

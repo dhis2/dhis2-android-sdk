@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.ProgramStage;
-import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
@@ -54,27 +53,6 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .blockingGet();
 
         assertThat(programStages.size(), is(2));
-    }
-
-    @Test
-    public void include_program_stage_data_elements_as_children() {
-        ProgramStage programStage =
-                d2.programModule().programStages()
-                        .withProgramStageDataElements()
-                        .one().blockingGet();
-
-        assertThat(ProgramStageInternalAccessor.accessProgramStageDataElements(programStage).size(), is(3));
-    }
-
-    @Test
-    public void include_program_stage_section_as_children() {
-        ProgramStage programStage =
-                d2.programModule().programStages()
-                        .withProgramStageSections()
-                        .one()
-                        .blockingGet();
-
-        assertThat(ProgramStageInternalAccessor.accessProgramStageSections(programStage).size(), is(1));
     }
 
     @Test

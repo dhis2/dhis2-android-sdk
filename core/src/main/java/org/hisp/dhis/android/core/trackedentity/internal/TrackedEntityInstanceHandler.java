@@ -38,13 +38,14 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
+import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -136,8 +137,11 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
                     .build();
         }
 
-        for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
-            handle(trackedEntityInstance, transformer);
+        Collection<TrackedEntityInstance> preHandledCollection = beforeCollectionHandled(trackedEntityInstances);
+        List<TrackedEntityInstance> transformedCollection = new ArrayList<>(preHandledCollection.size());
+
+        for (TrackedEntityInstance trackedEntityInstance : preHandledCollection) {
+            handle(trackedEntityInstance, transformer, transformedCollection);
 
             if (isFullUpdate) {
                 enrollmentOrphanCleaner.deleteOrphan(
@@ -145,6 +149,8 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
                         TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance));
             }
         }
+
+        afterCollectionHandled(transformedCollection);
 
     }
 

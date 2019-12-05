@@ -27,50 +27,16 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+public interface DHISVersionManager {
+    DHISVersion getVersion();
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+    boolean is2_29();
 
-@Singleton
-public class DHISVersionManager {
+    boolean is2_30();
 
-    private DHISVersion version;
+    boolean is2_31();
 
-    @Inject
-    DHISVersionManager(ObjectWithoutUidStore<SystemInfo> systemInfoStore) {
-        SystemInfo systemInfoModel = systemInfoStore.selectFirst();
+    boolean is2_32();
 
-        if (systemInfoModel != null && systemInfoModel.version() != null) {
-            version = DHISVersion.getValue(systemInfoModel.version());
-        }
-    }
-
-    public DHISVersion getVersion() {
-        return version;
-    }
-
-    public boolean is2_29() {
-        return version == DHISVersion.V2_29;
-    }
-
-    public boolean is2_30() {
-        return version == DHISVersion.V2_30;
-    }
-
-    public boolean is2_31() {
-        return version == DHISVersion.V2_31;
-    }
-
-    public boolean is2_32() {
-        return version == DHISVersion.V2_32;
-    }
-
-    public boolean is2_33() {
-        return version == DHISVersion.V2_33;
-    }
-
-    void setVersion(String versionStr) {
-        this.version = DHISVersion.getValue(versionStr);
-    }
+    boolean is2_33();
 }

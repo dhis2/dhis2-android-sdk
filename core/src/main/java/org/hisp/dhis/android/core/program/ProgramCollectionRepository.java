@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns;
-import org.hisp.dhis.android.core.program.internal.ProgramFields;
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
 
 import java.util.Collections;
@@ -177,42 +176,6 @@ public final class ProgramCollectionRepository
                 OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
                 OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
                 uids);
-    }
-
-    /**
-     * @deprecated use d2.programModule().programStages().byProgramUid() instead
-     *
-     * @return
-     */
-    @Deprecated
-    public ProgramCollectionRepository withProgramStages() {
-        return cf.withChild(ProgramFields.PROGRAM_STAGES);
-    }
-
-    public ProgramCollectionRepository withProgramRuleVariables() {
-        return cf.withChild(ProgramFields.PROGRAM_RULE_VARIABLES);
-    }
-
-    public ProgramCollectionRepository withProgramIndicators() {
-        return cf.withChild(ProgramFields.PROGRAM_INDICATORS);
-    }
-
-    /**
-     * @deprecated use d2.programModule().programRules().byProgramUid() instead
-     *
-     * @return
-     */
-    @Deprecated
-    public ProgramCollectionRepository withProgramRules() {
-        return cf.withChild(ProgramFields.PROGRAM_RULES);
-    }
-
-    public ProgramCollectionRepository withProgramTrackedEntityAttributes() {
-        return cf.withChild(ProgramFields.PROGRAM_TRACKED_ENTITY_ATTRIBUTES);
-    }
-
-    public ProgramCollectionRepository withProgramSections() {
-        return cf.withChild(ProgramFields.PROGRAM_SECTIONS);
     }
 
     public ProgramCollectionRepository withTrackedEntityType() {

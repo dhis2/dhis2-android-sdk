@@ -30,9 +30,7 @@ package org.hisp.dhis.android.core;
 
 import android.util.Log;
 
-import androidx.annotation.VisibleForTesting;
-
-import org.hisp.dhis.android.core.arch.api.internal.ServerUrlInterceptor;
+import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
@@ -44,10 +42,15 @@ import org.hisp.dhis.android.core.configuration.ConfigurationManager;
 import org.hisp.dhis.android.core.configuration.ConfigurationManagerFactory;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
+import androidx.annotation.VisibleForTesting;
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
+/**
+ * Helper class that offers static methods to setup and initialize the D2 instance. Also, it ensures that D2 is a
+ * singleton across the application.
+ */
 public final class D2Manager {
 
     private static String databaseName = "dhis.db";
@@ -60,6 +63,12 @@ public final class D2Manager {
     private D2Manager() {
     }
 
+    /**
+     * Returns the D2 instance, given that it has already been initialized using the
+     * {@link D2Manager#instantiateD2(D2Configuration)} method.
+     * @return the D2 instance
+     * @throws IllegalStateException if the D2 object wasn't instantiated
+     */
     public static D2 getD2() throws IllegalStateException {
         if (d2 == null) {
             throw new IllegalStateException("D2 is not instantiated yet");
@@ -68,10 +77,20 @@ public final class D2Manager {
         }
     }
 
+    /**
+     * Returns if D2 has already been instantiated using the {@link D2Manager#instantiateD2(D2Configuration)} method.
+     * @return if D2 has already been instantiated
+     */
     public static boolean isD2Instantiated() {
         return d2 != null;
     }
 
+    /**
+     * Instantiates D2 with the provided configuration. If you are not using RxJava,
+     * use {@link D2Manager#blockingInstantiateD2(D2Configuration)} instead.
+     * @param d2Config the configuration
+     * @return the D2 instance wrapped in a RxJava Single
+     */
     public static Single<D2> instantiateD2(@NonNull D2Configuration d2Config) {
         return Single.fromCallable(() -> {
             setUp(d2Config);
@@ -90,7 +109,7 @@ public final class D2Manager {
 
             d2 = new D2(
                     RetrofitFactory.retrofit(
-                            OkHttpClientFactory.okHttpClient(d2Configuration, databaseAdapter, credentialsSecureStore)),
+                            OkHttpClientFactory.okHttpClient(d2Configuration, credentialsSecureStore)),
                     databaseAdapter,
                     d2Configuration.context(),
                     credentialsSecureStore
@@ -103,6 +122,12 @@ public final class D2Manager {
         });
     }
 
+    /**
+     * Instantiates D2 with the provided configuration. This is a blocking method. If you are using RxJava,
+     * use {@link D2Manager#instantiateD2(D2Configuration)} instead.
+     * @param d2Config the configuration
+     * @return the D2 instance
+     */
     public static D2 blockingInstantiateD2(@NonNull D2Configuration d2Config) {
         return instantiateD2(d2Config).blockingGet();
     }
@@ -116,7 +141,7 @@ public final class D2Manager {
         Configuration configuration = configurationManager.get();
 
         if (configuration != null) {
-            ServerUrlInterceptor.setServerUrl(configuration.serverUrl().toString());
+            ServerURLWrapper.setServerUrl(configuration.serverUrl().toString());
         }
 
         long setUpTime = System.currentTimeMillis() - startTime;

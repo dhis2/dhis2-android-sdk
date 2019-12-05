@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.option;
 
 import android.database.Cursor;
 
-import androidx.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -39,12 +37,11 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbValueTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOptionListAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ValueType;
 
-import java.util.List;
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_OptionSet.Builder.class)
@@ -58,17 +55,6 @@ public abstract class OptionSet extends BaseIdentifiableObject implements CoreOb
     @JsonProperty()
     @ColumnAdapter(DbValueTypeColumnAdapter.class)
     public abstract ValueType valueType();
-
-    /**
-     * @deprecated use d2.optionModule().options() instead
-     *
-     * @return
-     */
-    @Deprecated
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(IgnoreOptionListAdapter.class)
-    public abstract List<Option> options();
 
     public static Builder builder() {
         return new $$AutoValue_OptionSet.Builder();
@@ -88,8 +74,6 @@ public abstract class OptionSet extends BaseIdentifiableObject implements CoreOb
         public abstract Builder version(@Nullable Integer version);
 
         public abstract Builder valueType(@Nullable ValueType valueType);
-
-        public abstract Builder options(@Nullable List<Option> options);
 
         public abstract OptionSet build();
     }

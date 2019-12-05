@@ -62,31 +62,4 @@ public class OptionSetCollectionRepositoryMockIntegrationShould extends BaseMock
                 .byValueType().eq(ValueType.TEXT).blockingGet();
         assertThat(optionSets.size(), is(1));
     }
-
-    @Test
-    public void include_options_as_children() {
-        OptionSet optionSet = d2.optionModule().optionSets()
-                .withOptions()
-                .uid("VQ2lai3OfVG")
-                .blockingGet();
-        assertThat(optionSet.options().get(0).name(), is("0-14 years"));
-    }
-
-    @Test
-    public void include_options_as_children_in_collection_repository_when_all_selected() {
-        OptionSet optionSet = d2.optionModule().optionSets()
-                .withOptions()
-                .uid("VQ2lai3OfVG")
-                .blockingGet();
-        assertThat(optionSet.options().get(0).name(), is("0-14 years"));
-    }
-
-    @Test
-    public void include_options_as_children_in_object_repository_when_all_selected() {
-        OptionSet optionSet = d2.optionModule().optionSets()
-                .withOptions()
-                .uid("VQ2lai3OfVG")
-                .blockingGet();
-        assertThat(optionSet.options().get(0).name(), is("0-14 years"));
-    }
 }

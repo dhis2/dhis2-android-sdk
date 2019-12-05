@@ -44,7 +44,7 @@ import org.hisp.dhis.android.core.program.ProgramStageSection;
 import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo;
 import org.hisp.dhis.android.core.program.ProgramStageTableInfo;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import dagger.Module;
@@ -92,13 +92,7 @@ public final class ProgramStageEntityDIModule implements IdentifiableStoreProvid
 
     @Provides
     @Reusable
-    @SuppressWarnings("PMD.NonStaticInitializer")
-    Map<String, ChildrenAppender<ProgramStage>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-
-        return new HashMap<String, ChildrenAppender<ProgramStage>>() {{
-            put(ProgramStageFields.PROGRAM_STAGE_DATA_ELEMENTS,
-                    ProgramStageDataElementChildrenAppender.create(databaseAdapter));
-            put(ProgramStageFields.PROGRAM_STAGE_SECTIONS, ProgramStageSectionChildrenAppender.create(databaseAdapter));
-        }};
+    Map<String, ChildrenAppender<ProgramStage>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

@@ -28,11 +28,29 @@
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import io.reactivex.Completable;
 
 public interface ReadWriteCollectionRepository<M extends CoreObject> extends ReadOnlyCollectionRepository<M> {
+
+    /**
+     * Adds a new object to the given collection in an asynchronous way. It returns a {@link Completable} which
+     * is completed when the object is added to the database. It adds an object with a {@link State#TO_POST},
+     * which will be uploaded to the server in the next upload.
+     * @param m the object to add
+     * @return the {@link Completable} which notifies the completion
+     */
     Completable add(M m);
+
+    /**
+     * Adds a new object to the given collection in a synchronous way. Important: this is a blocking method and it
+     * should not be executed in the main thread. Consider the asynchronous version {@link #add}.I t finishes with as
+     * soon as the object is added to the database. It adds an object with a {@link State#TO_POST},
+     * which will be uploaded to the server in the next upload.
+     * @param m the object to add
+     * @throws D2Error a D2Error wrapping any possible error
+     */
     void blockingAdd(M m) throws D2Error;
 }

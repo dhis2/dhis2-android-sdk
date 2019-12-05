@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity.api;
 
-import org.hisp.dhis.android.core.arch.helpers.CodeGenerator;
-import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.arch.helpers.UidGenerator;
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.imports.internal.BaseImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
 import org.hisp.dhis.android.core.imports.internal.TEIImportSummary;
-import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
+import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -57,7 +57,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 class TrackedEntityInstanceUtils {
 
-    private static CodeGenerator codeGenerator = new CodeGeneratorImpl();
+    private static UidGenerator uidGenerator = new UidGeneratorImpl();
 
     private static String validOrgUnitUid = "DiszpKrYNg8"; // Ngelehun CHC
     private static String validProgramUid = "IpHINAT79UW"; // Child Programme
@@ -102,7 +102,7 @@ class TrackedEntityInstanceUtils {
 
     static TrackedEntityInstance createValidTrackedEntityInstance() {
         return createTrackedEntityInstance(
-                codeGenerator.generate(),
+                uidGenerator.generate(),
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
                 Collections.emptyList(),
@@ -111,7 +111,7 @@ class TrackedEntityInstanceUtils {
 
     static TrackedEntityInstance createTrackedEntityInstanceWithInvalidAttribute() {
         return createTrackedEntityInstance(
-                codeGenerator.generate(),
+                uidGenerator.generate(),
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue("invalid_uid", "9")),
                 Collections.emptyList(),
@@ -120,7 +120,7 @@ class TrackedEntityInstanceUtils {
 
     static TrackedEntityInstance createTrackedEntityInstanceWithInvalidOrgunit() {
         return createTrackedEntityInstance(
-                codeGenerator.generate(),
+                uidGenerator.generate(),
                 "invalid_ou_uid",
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
                 Collections.emptyList(),
@@ -128,7 +128,7 @@ class TrackedEntityInstanceUtils {
     }
 
     static TrackedEntityInstance createValidTrackedEntityInstanceAndEnrollment() {
-        String teiUid = codeGenerator.generate();
+        String teiUid = uidGenerator.generate();
         return createTrackedEntityInstance(
                 teiUid,
                 validOrgUnitUid,
@@ -138,7 +138,7 @@ class TrackedEntityInstanceUtils {
     }
 
     static TrackedEntityInstance createTrackedEntityInstanceAndTwoActiveEnrollment() {
-        String teiUid = codeGenerator.generate();
+        String teiUid = uidGenerator.generate();
         return createTrackedEntityInstance(
                 teiUid,
                 validOrgUnitUid,
@@ -148,7 +148,7 @@ class TrackedEntityInstanceUtils {
     }
 
     static TrackedEntityInstance createValidTrackedEntityInstanceWithFutureEnrollment() {
-        String teiUid = codeGenerator.generate();
+        String teiUid = uidGenerator.generate();
         return createTrackedEntityInstance(
                 teiUid,
                 validOrgUnitUid,
@@ -158,7 +158,7 @@ class TrackedEntityInstanceUtils {
     }
 
     static TrackedEntityInstance createValidTrackedEntityInstanceWithEnrollmentAndEvent() {
-        String teiUid = codeGenerator.generate();
+        String teiUid = uidGenerator.generate();
         return createTrackedEntityInstance(
                 teiUid,
                 validOrgUnitUid,
@@ -168,7 +168,7 @@ class TrackedEntityInstanceUtils {
     }
 
     static TrackedEntityInstance createTrackedEntityInstanceWithEnrollmentAndFutureEvent() {
-        String teiUid = codeGenerator.generate();
+        String teiUid = uidGenerator.generate();
         return createTrackedEntityInstance(
                 teiUid,
                 validOrgUnitUid,
@@ -178,7 +178,7 @@ class TrackedEntityInstanceUtils {
     }
 
     static TrackedEntityInstance createTrackedEntityInstanceWithInvalidDataElement() {
-        String teiUid = codeGenerator.generate();
+        String teiUid = uidGenerator.generate();
         return createTrackedEntityInstance(
                 teiUid,
                 validOrgUnitUid,
@@ -188,7 +188,7 @@ class TrackedEntityInstanceUtils {
     }
 
     static TrackedEntityInstance createTrackedEntityInstanceWithValidAndInvalidDataValue() {
-        String teiUid = codeGenerator.generate();
+        String teiUid = uidGenerator.generate();
         return createTrackedEntityInstance(
                 teiUid,
                 validOrgUnitUid,
@@ -198,7 +198,7 @@ class TrackedEntityInstanceUtils {
     }
 
     static TrackedEntityInstance createTrackedEntityInstanceWithCompletedEnrollmentAndEvent() {
-        String teiUid = codeGenerator.generate();
+        String teiUid = uidGenerator.generate();
         return createTrackedEntityInstance(
                 teiUid,
                 validOrgUnitUid,
@@ -209,21 +209,21 @@ class TrackedEntityInstanceUtils {
 
     private static Enrollment createValidEnrollment(String teiUid) {
         Date refDate = getValidDate();
-        String enrollmentUid = codeGenerator.generate();
+        String enrollmentUid = uidGenerator.generate();
 
         return getEnrollment(enrollmentUid, teiUid, refDate).toBuilder().build();
     }
 
     private static Enrollment createFutureEnrollment(String teiUid) {
         Date refDate = getFutureDate();
-        String enrollmentUid = codeGenerator.generate();
+        String enrollmentUid = uidGenerator.generate();
 
         return getEnrollment(enrollmentUid, teiUid, refDate).toBuilder().build();
     }
 
     private static Enrollment createValidEnrollmentAndEvent(String teiUid) {
         Date refDate = getValidDate();
-        String enrollmentUid = codeGenerator.generate();
+        String enrollmentUid = uidGenerator.generate();
         Event event = createValidEvent(enrollmentUid);
 
         return EnrollmentInternalAccessor.insertEvents(getEnrollment(enrollmentUid, teiUid, refDate).toBuilder(),
@@ -233,7 +233,7 @@ class TrackedEntityInstanceUtils {
 
     private static Enrollment createEnrollmentAndFutureEvent(String teiUid) {
         Date refDate = getValidDate();
-        String enrollmentUid = codeGenerator.generate();
+        String enrollmentUid = uidGenerator.generate();
         Event event = createFutureEvent(enrollmentUid);
 
         return EnrollmentInternalAccessor.insertEvents(getEnrollment(enrollmentUid, teiUid, refDate).toBuilder(),
@@ -243,7 +243,7 @@ class TrackedEntityInstanceUtils {
 
     private static Enrollment createEnrollmentAndEventWithInvalidDataElement(String teiUid) {
         Date refDate = getValidDate();
-        String enrollmentUid = codeGenerator.generate();
+        String enrollmentUid = uidGenerator.generate();
         Event event = createEventWithInvalidDataElement(enrollmentUid);
 
         return EnrollmentInternalAccessor.insertEvents(getEnrollment(enrollmentUid, teiUid, refDate).toBuilder(),
@@ -253,7 +253,7 @@ class TrackedEntityInstanceUtils {
 
     private static Enrollment createEnrollmentAndEventWithValidAndInvalidDataValue(String teiUid) {
         Date refDate = getValidDate();
-        String enrollmentUid = codeGenerator.generate();
+        String enrollmentUid = uidGenerator.generate();
         Event event = createEventWithValidAndInvalidDataValue(enrollmentUid);
 
         return EnrollmentInternalAccessor.insertEvents(getEnrollment(enrollmentUid, teiUid, refDate).toBuilder(),
@@ -263,7 +263,7 @@ class TrackedEntityInstanceUtils {
 
     private static Enrollment createCompletedEnrollmentWithEvent(String teiUid) {
         Date refDate = getValidDate();
-        String enrollmentUid = codeGenerator.generate();
+        String enrollmentUid = uidGenerator.generate();
         Event event = createValidCompletedEvent(enrollmentUid);
 
         return EnrollmentInternalAccessor.insertEvents(getEnrollment(enrollmentUid, teiUid, refDate).toBuilder(),
@@ -307,7 +307,7 @@ class TrackedEntityInstanceUtils {
                 .providedElsewhere(false)
                 .build());
 
-        return Event.builder().uid(codeGenerator.generate()).enrollment(enrollmentUid)
+        return Event.builder().uid(uidGenerator.generate()).enrollment(enrollmentUid)
                 .created(refDate).lastUpdated(refDate).program(validProgramUid).programStage(validProgramStageUid)
                 .organisationUnit(validOrgUnitUid).eventDate(refDate).status(EventStatus.COMPLETED).deleted(false)
                 .trackedEntityDataValues(values).attributeOptionCombo(validCategoryComboOptionUid)
@@ -345,7 +345,7 @@ class TrackedEntityInstanceUtils {
     private static Event createEvent(String enrollmentUid, Date refDate,
                                      List<TrackedEntityDataValue> values) {
 
-        return Event.builder().uid(codeGenerator.generate()).enrollment(enrollmentUid)
+        return Event.builder().uid(uidGenerator.generate()).enrollment(enrollmentUid)
                 .created(refDate).lastUpdated(refDate).program(validProgramUid).programStage(validProgramStageUid)
                 .organisationUnit(validOrgUnitUid).eventDate(refDate).status(EventStatus.ACTIVE).deleted(false)
                 .trackedEntityDataValues(values).attributeOptionCombo(validCategoryComboOptionUid)

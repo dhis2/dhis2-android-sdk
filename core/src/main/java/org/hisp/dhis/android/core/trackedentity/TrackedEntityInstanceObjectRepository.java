@@ -62,7 +62,7 @@ public final class TrackedEntityInstanceObjectRepository
     }
 
     private TrackedEntityInstance.Builder updateBuilder() throws D2Error {
-        TrackedEntityInstance trackedEntityInstance = getWithoutChildren();
+        TrackedEntityInstance trackedEntityInstance = blockingGetWithoutChildren();
         State state = trackedEntityInstance.state();
         if (state == State.RELATIONSHIP) {
             throw D2Error

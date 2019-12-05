@@ -46,37 +46,88 @@ public final class GeometryHelper {
     private GeometryHelper() {
     }
 
+    /**
+     * Checks if the geometry contains a point.
+     *
+     * @param geometry The {@link Geometry} to check.
+     * @return A boolean that indicates if the geometry contains a point.
+     */
     public static boolean containsAPoint(Geometry geometry) {
         return geometry != null && geometry.type() == FeatureType.POINT;
     }
 
+    /**
+     * Checks if the geometry contains a polygon.
+     *
+     * @param geometry The {@link Geometry} to check.
+     * @return A boolean that indicates if the geometry contains a polygon.
+     */
     public static boolean containsAPolygon(Geometry geometry) {
         return geometry != null && geometry.type() == FeatureType.POLYGON;
     }
 
-    public static boolean containtsAMultiPolygon(Geometry geometry) {
+    /**
+     * Checks if the geometry contains a multi polygon.
+     *
+     * @param geometry The {@link Geometry} to check.
+     * @return A boolean that indicates if the geometry contains a multi polygon.
+     */
+    public static boolean containsAMultiPolygon(Geometry geometry) {
         return geometry != null && geometry.type() == FeatureType.MULTI_POLYGON;
     }
 
+    /**
+     * Converts a {@link Geometry} object of type point in a List<Double> object with the point coordinates.
+     *
+     * @param geometry Geometry of type point.
+     * @return The converted List<Double> object.
+     */
     public static List<Double> getPoint(Geometry geometry) throws D2Error {
         return getGeometryObject(geometry, FeatureType.POINT, new TypeReference<List<Double>>(){});
     }
 
+    /**
+     * Converts a {@link Geometry} object of type polygon in a List<List<List<Double>>> object with the
+     * polygon coordinates.
+     *
+     * @param geometry Geometry of type polygon.
+     * @return The converted List<List<List<Double>>> object.
+     */
     public static List<List<List<Double>>> getPolygon(Geometry geometry) throws D2Error {
         return getGeometryObject(geometry, FeatureType.POLYGON, new TypeReference<List<List<List<Double>>>>(){});
     }
 
+    /**
+     * Converts a {@link Geometry} object of type polygon in a List<List<List<List<Double>>>> object with the
+     * multi polygon coordinates.
+     *
+     * @param geometry Geometry of type multi polygon.
+     * @return The converted List<List<List<List<Double>>>> object.
+     */
     public static List<List<List<List<Double>>>> getMultiPolygon(Geometry geometry) throws D2Error {
         return getGeometryObject(geometry, FeatureType.MULTI_POLYGON,
                 new TypeReference<List<List<List<List<Double>>>>>(){});
     }
 
+    /**
+     * Build a {@link Geometry} object of type point from a longitude and a latitude.
+     *
+     * @param longitude The longitude of a coordinate.
+     * @param latitude The latitude of a coordinate.
+     * @return The {@link Geometry} object of type point created.
+     */
     public static Geometry createPointGeometry(Double longitude, Double latitude) {
         ArrayList<Double> point = new ArrayList<>();
         Collections.addAll(point, longitude, latitude);
         return createPointGeometry(point);
     }
 
+    /**
+     * Build a {@link Geometry} object of type point from a List<Double> object with the point coordinate.
+     *
+     * @param point The point coordinate.
+     * @return The {@link Geometry} object of type point created.
+     */
     public static Geometry createPointGeometry(List<Double> point) {
         return Geometry.builder()
                 .type(FeatureType.POINT)
@@ -84,6 +135,13 @@ public final class GeometryHelper {
                 .build();
     }
 
+    /**
+     * Build a {@link Geometry} object of type polygon from a List<List<List<Double>>> object with the polygon
+     * coordinates.
+     *
+     * @param polygon The polygon coordinates.
+     * @return The {@link Geometry} object of type polygon created.
+     */
     public static Geometry createPolygonGeometry(List<List<List<Double>>> polygon) {
         return Geometry.builder()
                 .type(FeatureType.POLYGON)
@@ -91,6 +149,13 @@ public final class GeometryHelper {
                 .build();
     }
 
+    /**
+     * Build a {@link Geometry} object of type multi polygon from a List<List<List<List<Double>>>> object with the
+     * multi polygon coordinates.
+     *
+     * @param multiPolygon The mulit polygon coordinates.
+     * @return The {@link Geometry} object of type multi polygon created.
+     */
     public static Geometry createMultiPolygonGeometry(List<List<List<List<Double>>>> multiPolygon) {
         return Geometry.builder()
                 .type(FeatureType.MULTI_POLYGON)

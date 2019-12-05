@@ -74,7 +74,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipPackageDIMod
 import org.hisp.dhis.android.core.resource.internal.ResourcePackageDIModule;
 import org.hisp.dhis.android.core.settings.internal.SystemSettingPackageDIModule;
 import org.hisp.dhis.android.core.sms.internal.SmsDIModule;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoPackageDIModule;
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.user.internal.UserPackageDIModule;

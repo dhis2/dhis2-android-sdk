@@ -61,14 +61,14 @@ public final class DataSetCompleteRegistrationObjectRepository
             final Map<String, ChildrenAppender<DataSetCompleteRegistration>> childrenAppenders,
             final RepositoryScope scope,
             final String period,
-            final String dataSet,
             final String organisationUnit,
+            final String dataSet,
             final String attributeOptionCombo
             ) {
         super(dataSetCompleteRegistrationStore, childrenAppenders, scope,
                 s -> new DataSetCompleteRegistrationObjectRepository(
                         dataSetCompleteRegistrationStore, childrenAppenders, s,
-                period, dataSet, organisationUnit, attributeOptionCombo));
+                period, organisationUnit, dataSet, attributeOptionCombo));
 
         this.dataSetCompleteRegistrationStore = dataSetCompleteRegistrationStore;
 

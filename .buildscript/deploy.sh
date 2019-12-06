@@ -22,6 +22,12 @@ elif [ "$TRAVIS_BRANCH" != "$MASTER_BRANCH" ] && [ "$TRAVIS_BRANCH" != "$MASTERD
   echo "Skipping snapshot deployment: wrong branch. Expected '$MASTER_BRANCH' or '$MASTERDEV_BRANCH' but was '$TRAVIS_BRANCH'."
 else
   echo "Deploying snapshot..."
-  ./gradlew uploadArchives -PNEXUS_USERNAME="${NEXUS_USERNAME}" -PNEXUS_PASSWORD="${NEXUS_PASSWORD}"
+
+  # Ids used to decrypt the secret file located at Travis.
+  chmod -R ug+x .travis
+  openssl aes-256-cbc -K $encrypted_4e8719c171e4_key -iv $encrypted_4e8719c171e4_iv -in $ENCRYPTED_GPG_KEY_LOCATION -out $GPG_KEY_LOCATION -d
+  ABSOLUTE_GPG_KEY_LOCATION=$PWD/$GPG_KEY_LOCATION
+
+  ./gradlew uploadArchives publishToNexus -PNEXUS_USERNAME="${NEXUS_USERNAME}" -PNEXUS_PASSWORD="${NEXUS_PASSWORD}" -PGPG_KEY_ID="${GPG_KEY_ID}" -PGPG_KEY_LOCATION="${ABSOLUTE_GPG_KEY_LOCATION}" -PGPG_PASSPHRASE="${GPG_PASSPHRASE}"
   echo "Snapshot deployed!"
 fi

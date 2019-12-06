@@ -20,8 +20,6 @@ buildscript {
 
         // enables cloud features of gradle plugin
         classpath "com.gradle:build-scan-plugin:2.0.2"
-
-        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.8.0'
     }
 }
 

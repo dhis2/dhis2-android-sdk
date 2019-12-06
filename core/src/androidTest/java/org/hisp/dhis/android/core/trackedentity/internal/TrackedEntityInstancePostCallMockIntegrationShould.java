@@ -222,7 +222,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         List<List<TrackedEntityInstance>> partitions = trackedEntityInstancePostCall.getPartitionsToSync(
                 d2.trackedEntityModule().trackedEntityInstances().byUid().eq(tei1)
-                .byState().in(State.TO_POST, State.TO_UPDATE).blockingGet());
+                .byState().in(State.uploadableStates()).blockingGet());
 
         assertThat(partitions.size()).isEqualTo(1);
         assertThat(partitions.get(0).size()).isEqualTo(3);

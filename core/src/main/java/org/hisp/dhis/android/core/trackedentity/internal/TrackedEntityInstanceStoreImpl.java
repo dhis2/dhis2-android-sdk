@@ -34,12 +34,12 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
+import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
@@ -71,9 +71,7 @@ public final class TrackedEntityInstanceStoreImpl
     @Override
     public List<TrackedEntityInstance> queryTrackedEntityInstancesToSync() {
         String whereToSyncClause = new WhereClauseBuilder()
-                .appendInKeyStringValues(DataColumns.STATE, Arrays.asList(
-                        State.TO_POST.name(),
-                        State.TO_UPDATE.name()))
+                .appendInKeyStringValues(DataColumns.STATE, EnumHelper.asStringList(State.uploadableStates()))
                 .build();
 
         return selectWhere(whereToSyncClause);

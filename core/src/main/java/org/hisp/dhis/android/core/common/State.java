@@ -65,5 +65,17 @@ public enum State {
     SENT_VIA_SMS,
 
     /** Data is sent by sms and there is a successful response from the server. */
-    SYNCED_VIA_SMS
+    SYNCED_VIA_SMS;
+
+    public static State[] uploadableStates() {
+        return new State[] {
+                TO_POST, TO_UPDATE, SENT_VIA_SMS, SYNCED_VIA_SMS
+        };
+    }
+
+    public static State[] uploadableStatesIncludingError() {
+        return new State[] {
+                TO_POST, TO_UPDATE, SENT_VIA_SMS, SYNCED_VIA_SMS, ERROR, WARNING
+        };
+    }
 }

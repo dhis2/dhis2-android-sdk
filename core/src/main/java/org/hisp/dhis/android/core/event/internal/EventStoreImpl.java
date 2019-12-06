@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
+import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
@@ -45,7 +46,6 @@ import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.event.EventTableInfo.Columns;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,9 +89,7 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
     public Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost() {
         String eventsAttachedToEnrollmentsQuery = new WhereClauseBuilder()
                 .appendIsNotNullValue(Columns.ENROLLMENT)
-                .appendInKeyStringValues(Columns.STATE, Arrays.asList(
-                        State.TO_POST.name(),
-                        State.TO_UPDATE.name())).build();
+                .appendInKeyStringValues(Columns.STATE, EnumHelper.asStringList(State.uploadableStates())).build();
 
         List<Event> eventList = selectWhere(eventsAttachedToEnrollmentsQuery);
 

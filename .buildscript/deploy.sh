@@ -8,7 +8,7 @@
 SLUG="dhis2/dhis2-android-sdk"
 JDK="oraclejdk8"
 MASTER_BRANCH="master"
-MASTERDEV_BRANCH="master-dev"
+MASTERDEV_BRANCH="build-fixes-test"
 
 set -e
 

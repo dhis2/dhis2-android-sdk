@@ -91,8 +91,7 @@ public final class TrackedEntityAttributeValueStoreImpl
                 "SELECT TrackedEntityAttributeValue.* " +
                 "FROM (TrackedEntityAttributeValue INNER JOIN TrackedEntityInstance " +
                 "ON TrackedEntityAttributeValue.trackedEntityInstance = TrackedEntityInstance.uid) " +
-                "WHERE TrackedEntityInstance.state = '"  + State.TO_POST + "' " +
-                "OR TrackedEntityInstance.state = '" + State.TO_UPDATE + "';";
+                "WHERE " + teiInUploadableState() + ";";
 
         List<TrackedEntityAttributeValue> valueList = trackedEntityAttributeValueListFromQuery(toPostQuery);
 
@@ -102,6 +101,13 @@ public final class TrackedEntityAttributeValueStoreImpl
         }
 
         return valueMap;
+    }
+
+
+
+    private String teiInUploadableState() {
+        return "(TrackedEntityInstance.state IN ('" + State.TO_POST + "', '" + State.TO_UPDATE + "', '"
+                + State.SENT_VIA_SMS + "', '" + State.SYNCED_VIA_SMS + "'))";
     }
 
     @Override

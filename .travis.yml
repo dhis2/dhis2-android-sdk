@@ -30,7 +30,6 @@ branches:
   - develop
   - master-sms
   - master-dev
-  - build-fixes
 script:
 - travis_wait 70 "./build.sh"
 before_script:

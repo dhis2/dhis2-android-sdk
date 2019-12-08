@@ -103,8 +103,7 @@ public final class TrackedEntityAttributeValueStoreImpl
         return valueMap;
     }
 
-
-
+    // TODO Could we reuse EnumHelper.asStringList(State.uploadableStates())?
     private String teiInUploadableState() {
         return "(TrackedEntityInstance.state IN ('" + State.TO_POST + "', '" + State.TO_UPDATE + "', '"
                 + State.SENT_VIA_SMS + "', '" + State.SYNCED_VIA_SMS + "'))";

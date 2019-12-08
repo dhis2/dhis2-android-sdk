@@ -119,6 +119,7 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
         return queryTrackedEntityDataValues(queryStatement);
     }
 
+    // TODO Could we reuse EnumHelper.asStringList(State.uploadableStates())?
     private String eventInUploadableState() {
         return "(Event.state IN ('" + State.TO_POST + "', '" + State.TO_UPDATE + "', '"
                 + State.SENT_VIA_SMS + "', '" + State.SYNCED_VIA_SMS + "'))";

@@ -114,9 +114,15 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
         String queryStatement = "SELECT TrackedEntityDataValue.* " +
                 " FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid)" +
                 " WHERE Event.enrollment ISNULL " +
-                "AND (Event.state = '" + State.TO_POST + "' OR Event.state = '" + State.TO_UPDATE + "');";
+                "AND " + eventInUploadableState() + ";";
 
         return queryTrackedEntityDataValues(queryStatement);
+    }
+
+    // TODO Could we reuse EnumHelper.asStringList(State.uploadableStates())?
+    private String eventInUploadableState() {
+        return "(Event.state IN ('" + State.TO_POST + "', '" + State.TO_UPDATE + "', '"
+                + State.SENT_VIA_SMS + "', '" + State.SYNCED_VIA_SMS + "'))";
     }
 
     @Override
@@ -125,7 +131,7 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
         String queryStatement = "SELECT TrackedEntityDataValue.* " +
                 " FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid) " +
                 " WHERE Event.enrollment IS NOT NULL " +
-                "AND (Event.state = '" + State.TO_POST + "' OR Event.state = '" + State.TO_UPDATE + "');";
+                "AND " + eventInUploadableState() + ";";
 
         return queryTrackedEntityDataValues(queryStatement);
     }

@@ -20,6 +20,7 @@ import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.smscompression.models.SMSMetadata;
 
@@ -53,6 +54,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     private final OngoingSubmissionsStore ongoingSubmissionsStore;
     private final RelationshipStore relationshipStore;
     private final DataSetsStore dataSetsStore;
+    private final TrackedEntityInstanceStore trackedEntityInstanceStore;
 
     @Inject
     LocalDbRepositoryImpl(Context ctx,
@@ -63,7 +65,8 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
                           EventStore eventStore,
                           EnrollmentStore enrollmentStore,
                           RelationshipStore relationshipStore,
-                          DataSetsStore dataSetsStore) {
+                          DataSetsStore dataSetsStore,
+                          TrackedEntityInstanceStore trackedEntityInstanceStore) {
         this.context = ctx;
         this.userModule = userModule;
         this.trackedEntityModule = trackedEntityModule;
@@ -73,6 +76,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
         this.enrollmentStore = enrollmentStore;
         this.relationshipStore = relationshipStore;
         this.dataSetsStore = dataSetsStore;
+        this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         metadataIdsStore = new MetadataIdsStore(context);
         ongoingSubmissionsStore = new OngoingSubmissionsStore(context);
     }
@@ -184,7 +188,11 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     @Override
     public Completable updateEnrollmentSubmissionState(String enrollmentUid, State state) {
-        return Completable.fromAction(() -> enrollmentStore.setState(enrollmentUid, state));
+        return Completable.fromAction(() -> {
+            enrollmentStore.setState(enrollmentUid, state);
+            Enrollment enrollment = enrollmentStore.selectByUid(enrollmentUid);
+            trackedEntityInstanceStore.setState(enrollment.trackedEntityInstance(), state);
+        });
     }
 
     @Override

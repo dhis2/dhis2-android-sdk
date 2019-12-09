@@ -38,7 +38,7 @@ class DataSetsStore {
                 .byOrganisationUnitUid().eq(orgUnit)
                 .byPeriod().eq(period)
                 .byAttributeOptionComboUid().eq(attributeOptionComboUid)
-                .byState().in(Arrays.asList(State.TO_POST, State.TO_UPDATE))
+                .byState().in(Arrays.asList(State.uploadableStates()))
                 .blockingGet());
     }
 

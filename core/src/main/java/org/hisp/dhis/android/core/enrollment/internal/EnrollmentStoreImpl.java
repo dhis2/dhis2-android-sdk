@@ -35,13 +35,13 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
+import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,9 +81,7 @@ public final class EnrollmentStoreImpl
     @Override
     public Map<String, List<Enrollment>> queryEnrollmentsToPost() {
         String enrollmentsToPostQuery = new WhereClauseBuilder()
-                .appendInKeyStringValues(DataColumns.STATE, Arrays.asList(
-                        State.TO_POST.name(),
-                        State.TO_UPDATE.name())).build();
+                .appendInKeyStringValues(DataColumns.STATE, EnumHelper.asStringList(State.uploadableStates())).build();
 
         List<Enrollment> enrollmentList = selectWhere(enrollmentsToPostQuery);
 

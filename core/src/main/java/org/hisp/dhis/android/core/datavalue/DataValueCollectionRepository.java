@@ -73,7 +73,7 @@ public final class DataValueCollectionRepository
     @Override
     public Observable<D2Progress> upload() {
         return Observable.fromCallable(() ->
-                byState().in(State.TO_POST, State.TO_UPDATE, State.WARNING, State.ERROR).blockingGetWithoutChildren()
+                byState().in(State.uploadableStatesIncludingError()).blockingGetWithoutChildren()
         ).flatMap(postCall::uploadDataValues);
     }
 

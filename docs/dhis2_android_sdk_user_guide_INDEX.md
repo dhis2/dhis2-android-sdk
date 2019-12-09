@@ -4,7 +4,7 @@ author: 'DHIS 2'
 date:
 year: 2019
 month: December
-keywords: [DHIS2, HISP]
+keywords: [DHIS2, Android]
 commit:
 version: master
 applicable_txt: 'Applicable to version master'

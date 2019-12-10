@@ -30,9 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
-
-import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
@@ -72,6 +69,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -273,7 +272,7 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
 
     }
 
-    @Test(expected = SQLiteConstraintException.class)
+    @Test(expected = RuntimeException.class)
     public void throw_illegal_argument_exception_when_insert_tracked_entity_data_value_with_invalid_event() {
         trackedEntityDataValueStore.insert(trackedEntityDataValue.toBuilder().event("wrong").build());
     }

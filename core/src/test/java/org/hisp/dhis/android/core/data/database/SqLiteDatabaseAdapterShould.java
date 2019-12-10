@@ -29,10 +29,10 @@
 package org.hisp.dhis.android.core.data.database;
 
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
 
 import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
 import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -53,9 +53,9 @@ public class SqLiteDatabaseAdapterShould {
     DbOpenHelper dbOpenHelper;
 
     @Mock
-    SQLiteStatement sqLiteStatement;
+    StatementWrapper sqLiteStatement;
 
-    SqLiteDatabaseAdapter sqLiteDatabaseAdapter; // the class we are testing
+    private SqLiteDatabaseAdapter sqLiteDatabaseAdapter; // the class we are testing
 
     @Before
     public void setup() {

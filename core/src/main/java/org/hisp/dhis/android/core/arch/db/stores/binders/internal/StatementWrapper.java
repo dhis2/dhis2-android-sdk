@@ -87,4 +87,19 @@ public interface StatementWrapper {
      * @param arg
      */
     void bind(int index, Long arg);
+
+    /**
+     * Clear statement bindings
+     */
+    void clearBindings();
+
+    /**
+     * Execute insert statement
+     */
+    long executeInsert();
+
+    /**
+     * Execute delete update statement
+     */
+    int executeUpdateDelete();
 }

@@ -42,22 +42,20 @@ import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class PeriodStoreImpl extends ObjectWithoutUidStoreImpl<Period> implements PeriodStore {
 
-    private static final StatementBinder<Period> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.periodId());
-        sqLiteBind(sqLiteStatement, 2, o.periodType());
-        sqLiteBind(sqLiteStatement, 3, o.startDate());
-        sqLiteBind(sqLiteStatement, 4, o.endDate());
+    private static final StatementBinder<Period> BINDER = (o, w) -> {
+        w.bind(1, o.periodId());
+        w.bind(2, o.periodType());
+        w.bind(3, o.startDate());
+        w.bind(4, o.endDate());
     };
 
     private static final WhereStatementBinder<Period> WHERE_UPDATE_BINDER
-            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 5, o.periodId());
+            = (o, w) -> w.bind(5, o.periodId());
 
     private static final WhereStatementBinder<Period> WHERE_DELETE_BINDER
-            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.periodId());
+            = (o, w) -> w.bind(1, o.periodId());
 
     private PeriodStoreImpl(DatabaseAdapter databaseAdapter,
                             SQLStatementBuilderImpl builder) {

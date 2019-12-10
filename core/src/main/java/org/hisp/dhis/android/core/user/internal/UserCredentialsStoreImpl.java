@@ -28,22 +28,19 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserCredentialsTableInfo;
 
 import androidx.annotation.NonNull;
-
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
 public final class UserCredentialsStoreImpl extends IdentifiableObjectStoreImpl<UserCredentials>
         implements UserCredentialsStore {
@@ -64,10 +61,10 @@ public final class UserCredentialsStoreImpl extends IdentifiableObjectStoreImpl<
 
     private static StatementBinder<UserCredentials> BINDER = new IdentifiableStatementBinder<UserCredentials>() {
         @Override
-        public void bindToStatement(@NonNull UserCredentials o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.username());
-            sqLiteBind(sqLiteStatement, 8, UidsHelper.getUidOrNull(o.user()));
+        public void bindToStatement(@NonNull UserCredentials o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(7, o.username());
+            w.bind(8, UidsHelper.getUidOrNull(o.user()));
         }
     };
 

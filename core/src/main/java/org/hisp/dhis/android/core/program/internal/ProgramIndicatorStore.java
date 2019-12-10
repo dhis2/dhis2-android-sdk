@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
@@ -42,8 +41,6 @@ import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo;
 import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo.Columns;
 
 import androidx.annotation.NonNull;
-
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
 public final class ProgramIndicatorStore {
 
@@ -55,15 +52,15 @@ public final class ProgramIndicatorStore {
 
         @Override
         public void bindToStatement(@NonNull ProgramIndicator o,
-                                    @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 11, o.displayInForm());
-            sqLiteBind(sqLiteStatement, 12, o.expression());
-            sqLiteBind(sqLiteStatement, 13, o.dimensionItem());
-            sqLiteBind(sqLiteStatement, 14, o.filter());
-            sqLiteBind(sqLiteStatement, 15, o.decimals());
-            sqLiteBind(sqLiteStatement, 16, o.aggregationType());
-            sqLiteBind(sqLiteStatement, 17, UidsHelper.getUidOrNull(o.program()));
+                                    @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(11, o.displayInForm());
+            w.bind(12, o.expression());
+            w.bind(13, o.dimensionItem());
+            w.bind(14, o.filter());
+            w.bind(15, o.decimals());
+            w.bind(16, o.aggregationType());
+            w.bind(17, UidsHelper.getUidOrNull(o.program()));
         }
     };
 

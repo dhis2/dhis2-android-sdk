@@ -33,28 +33,25 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class ProgramOrganisationUnitLastUpdatedStore
         extends ObjectWithoutUidStoreImpl<ProgramOrganisationUnitLastUpdated> {
 
-    private static final StatementBinder<ProgramOrganisationUnitLastUpdated> BINDER =
-            (o, sqLiteStatement) -> {
-                sqLiteBind(sqLiteStatement, 1, o.program());
-                sqLiteBind(sqLiteStatement, 2, o.organisationUnit());
-                sqLiteBind(sqLiteStatement, 3, o.lastSynced());
+    private static final StatementBinder<ProgramOrganisationUnitLastUpdated> BINDER = (o, w) -> {
+                w.bind(1, o.program());
+                w.bind(2, o.organisationUnit());
+                w.bind(3, o.lastSynced());
             };
 
     private static final WhereStatementBinder<ProgramOrganisationUnitLastUpdated>
-            WHERE_UPDATE_BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 4, o.program());
-        sqLiteBind(sqLiteStatement, 5, o.organisationUnit());
+            WHERE_UPDATE_BINDER = (o, w) -> {
+        w.bind(4, o.program());
+        w.bind(5, o.organisationUnit());
     };
 
     private static final WhereStatementBinder<ProgramOrganisationUnitLastUpdated>
-            WHERE_DELETE_BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.program());
-        sqLiteBind(sqLiteStatement, 2, o.organisationUnit());
+            WHERE_DELETE_BINDER = (o, w) -> {
+        w.bind(1, o.program());
+        w.bind(2, o.organisationUnit());
     };
 
     private ProgramOrganisationUnitLastUpdatedStore(DatabaseAdapter databaseAdapter,

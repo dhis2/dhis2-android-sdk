@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.indicator.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
@@ -41,23 +40,21 @@ import org.hisp.dhis.android.core.indicator.IndicatorTableInfo;
 
 import androidx.annotation.NonNull;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class IndicatorStore {
 
     private IndicatorStore() {}
 
     private static StatementBinder<Indicator> BINDER = new NameableStatementBinder<Indicator>() {
         @Override
-        public void bindToStatement(@NonNull Indicator o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 11, o.annualized());
-            sqLiteBind(sqLiteStatement, 12, UidsHelper.getUidOrNull(o.indicatorType()));
-            sqLiteBind(sqLiteStatement, 13, o.numerator());
-            sqLiteBind(sqLiteStatement, 14, o.numeratorDescription());
-            sqLiteBind(sqLiteStatement, 15, o.denominator());
-            sqLiteBind(sqLiteStatement, 16, o.denominatorDescription());
-            sqLiteBind(sqLiteStatement, 17, o.url());
+        public void bindToStatement(@NonNull Indicator o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(11, o.annualized());
+            w.bind(12, UidsHelper.getUidOrNull(o.indicatorType()));
+            w.bind(13, o.numerator());
+            w.bind(14, o.numeratorDescription());
+            w.bind(15, o.denominator());
+            w.bind(16, o.denominatorDescription());
+            w.bind(17, o.url());
         }
     };
 

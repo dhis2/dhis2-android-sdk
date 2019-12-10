@@ -28,12 +28,11 @@
 
 package org.hisp.dhis.android.core.organisationunit.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringArrayColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
@@ -42,22 +41,20 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 
 import androidx.annotation.NonNull;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class OrganisationUnitStore {
 
     private OrganisationUnitStore() {}
 
     private static final StatementBinder<OrganisationUnit> BINDER = new NameableStatementBinder<OrganisationUnit>() {
         @Override
-        public void bindToStatement(@NonNull OrganisationUnit o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 11, o.path());
-            sqLiteBind(sqLiteStatement, 12, o.openingDate());
-            sqLiteBind(sqLiteStatement, 13, o.closedDate());
-            sqLiteBind(sqLiteStatement, 14, o.level());
-            sqLiteBind(sqLiteStatement, 15, UidsHelper.getUidOrNull(o.parent()));
-            sqLiteBind(sqLiteStatement, 16, StringArrayColumnAdapter.serialize(o.displayNamePath()));
+        public void bindToStatement(@NonNull OrganisationUnit o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(11, o.path());
+            w.bind(12, o.openingDate());
+            w.bind(13, o.closedDate());
+            w.bind(14, o.level());
+            w.bind(15, UidsHelper.getUidOrNull(o.parent()));
+            w.bind(16, StringArrayColumnAdapter.serialize(o.displayNamePath()));
         }
     };
 

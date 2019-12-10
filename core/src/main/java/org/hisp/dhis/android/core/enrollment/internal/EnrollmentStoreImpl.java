@@ -46,28 +46,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class EnrollmentStoreImpl
         extends IdentifiableDeletableDataObjectStoreImpl<Enrollment> implements EnrollmentStore {
 
-    private static final StatementBinder<Enrollment> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.uid());
-        sqLiteBind(sqLiteStatement, 2, o.created());
-        sqLiteBind(sqLiteStatement, 3, o.lastUpdated());
-        sqLiteBind(sqLiteStatement, 4, o.createdAtClient());
-        sqLiteBind(sqLiteStatement, 5, o.lastUpdatedAtClient());
-        sqLiteBind(sqLiteStatement, 6, o.organisationUnit());
-        sqLiteBind(sqLiteStatement, 7, o.program());
-        sqLiteBind(sqLiteStatement, 8, o.enrollmentDate());
-        sqLiteBind(sqLiteStatement, 9, o.incidentDate());
-        sqLiteBind(sqLiteStatement, 10, o.followUp());
-        sqLiteBind(sqLiteStatement, 11, o.status());
-        sqLiteBind(sqLiteStatement, 12, o.trackedEntityInstance());
-        sqLiteBind(sqLiteStatement, 13, o.geometry() == null ? null : o.geometry().type());
-        sqLiteBind(sqLiteStatement, 14, o.geometry() == null ? null : o.geometry().coordinates());
-        sqLiteBind(sqLiteStatement, 15, o.state());
-        sqLiteBind(sqLiteStatement, 16, o.deleted());
+    private static final StatementBinder<Enrollment> BINDER = (o, w) -> {
+        w.bind(1, o.uid());
+        w.bind(2, o.created());
+        w.bind(3, o.lastUpdated());
+        w.bind(4, o.createdAtClient());
+        w.bind(5, o.lastUpdatedAtClient());
+        w.bind(6, o.organisationUnit());
+        w.bind(7, o.program());
+        w.bind(8, o.enrollmentDate());
+        w.bind(9, o.incidentDate());
+        w.bind(10, o.followUp());
+        w.bind(11, o.status());
+        w.bind(12, o.trackedEntityInstance());
+        w.bind(13, o.geometry() == null ? null : o.geometry().type());
+        w.bind(14, o.geometry() == null ? null : o.geometry().coordinates());
+        w.bind(15, o.state());
+        w.bind(16, o.deleted());
     };
 
     private EnrollmentStoreImpl(DatabaseAdapter databaseAdapter,

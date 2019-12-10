@@ -37,33 +37,29 @@ import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SinglePare
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.note.NoteTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class NoteStore {
 
-    private static final StatementBinder<Note> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.enrollment());
-        sqLiteBind(sqLiteStatement, 2, o.value());
-        sqLiteBind(sqLiteStatement, 3, o.storedBy());
-        sqLiteBind(sqLiteStatement, 4, o.storedDate());
-        sqLiteBind(sqLiteStatement, 5, o.uid());
-        sqLiteBind(sqLiteStatement, 6, o.state());
+    private static final StatementBinder<Note> BINDER = (o, w) -> {
+        w.bind(1, o.enrollment());
+        w.bind(2, o.value());
+        w.bind(3, o.storedBy());
+        w.bind(4, o.storedDate());
+        w.bind(5, o.uid());
+        w.bind(6, o.state());
     };
 
-    private static final WhereStatementBinder<Note> WHERE_UPDATE_BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 7, o.enrollment());
-        sqLiteBind(sqLiteStatement, 8, o.value());
-        sqLiteBind(sqLiteStatement, 9, o.storedBy());
-        sqLiteBind(sqLiteStatement, 10, o.storedDate());
+    private static final WhereStatementBinder<Note> WHERE_UPDATE_BINDER = (o, w) -> {
+        w.bind(7, o.enrollment());
+        w.bind(8, o.value());
+        w.bind(9, o.storedBy());
+        w.bind(10, o.storedDate());
     };
 
-    private static final WhereStatementBinder<Note> WHERE_DELETE_BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.enrollment());
-        sqLiteBind(sqLiteStatement, 2, o.value());
-        sqLiteBind(sqLiteStatement, 3, o.storedBy());
-        sqLiteBind(sqLiteStatement, 4, o.storedDate());
+    private static final WhereStatementBinder<Note> WHERE_DELETE_BINDER = (o, w) -> {
+        w.bind(1, o.enrollment());
+        w.bind(2, o.value());
+        w.bind(3, o.storedBy());
+        w.bind(4, o.storedDate());
     };
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(

@@ -43,7 +43,6 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.List;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isNull;
 
 public class IdentifiableObjectStoreImpl<M extends CoreObject & ObjectWithUidInterface>
@@ -69,7 +68,7 @@ public class IdentifiableObjectStoreImpl<M extends CoreObject & ObjectWithUidInt
     @Override
     public final void delete(@NonNull String uid) throws RuntimeException {
         isNull(uid);
-        sqLiteBind(statements.deleteById, 1, uid);
+        statements.deleteById.bind(1, uid);
         executeUpdateDelete(statements.deleteById);
     }
 
@@ -88,7 +87,7 @@ public class IdentifiableObjectStoreImpl<M extends CoreObject & ObjectWithUidInt
     public final void update(@NonNull M m) throws RuntimeException {
         isNull(m);
         binder.bindToStatement(m, statements.update);
-        sqLiteBind(statements.update, builder.getColumns().length + 1, m.uid());
+        statements.update.bind(builder.getColumns().length + 1, m.uid());
         executeUpdateDelete(statements.update);
     }
 

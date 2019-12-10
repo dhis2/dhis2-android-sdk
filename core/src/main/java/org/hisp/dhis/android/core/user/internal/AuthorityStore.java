@@ -36,15 +36,13 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.user.Authority;
 import org.hisp.dhis.android.core.user.AuthorityTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class AuthorityStore {
 
     private static final StatementBinder<Authority> BINDER
-            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.name());
+            = (o, w) -> w.bind(1, o.name());
 
     private static final WhereStatementBinder<Authority> WHERE_BINDER
-            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.name());
+            = (o, w) -> w.bind(1, o.name());
 
     private AuthorityStore() {}
 

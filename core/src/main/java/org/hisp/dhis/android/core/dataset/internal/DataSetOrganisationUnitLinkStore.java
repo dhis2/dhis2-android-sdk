@@ -35,14 +35,11 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class DataSetOrganisationUnitLinkStore {
 
-    private static final StatementBinder<DataSetOrganisationUnitLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.dataSet());
-        sqLiteBind(sqLiteStatement, 2, o.organisationUnit());
+    private static final StatementBinder<DataSetOrganisationUnitLink> BINDER = (o, w) -> {
+        w.bind(1, o.dataSet());
+        w.bind(2, o.organisationUnit());
     };
 
     private DataSetOrganisationUnitLinkStore() {}

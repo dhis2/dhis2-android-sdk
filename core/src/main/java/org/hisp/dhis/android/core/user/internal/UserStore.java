@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.user.User;
@@ -40,29 +39,27 @@ import org.hisp.dhis.android.core.user.UserTableInfo;
 
 import androidx.annotation.NonNull;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class UserStore {
     private UserStore() {}
 
     private static StatementBinder<User> BINDER = new IdentifiableStatementBinder<User>() {
 
         @Override
-        public void bindToStatement(@NonNull User o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.birthday());
-            sqLiteBind(sqLiteStatement, 8, o.education());
-            sqLiteBind(sqLiteStatement, 9, o.gender());
-            sqLiteBind(sqLiteStatement, 10, o.jobTitle());
-            sqLiteBind(sqLiteStatement, 11, o.surname());
-            sqLiteBind(sqLiteStatement, 12, o.firstName());
-            sqLiteBind(sqLiteStatement, 13, o.introduction());
-            sqLiteBind(sqLiteStatement, 14, o.employer());
-            sqLiteBind(sqLiteStatement, 15, o.interests());
-            sqLiteBind(sqLiteStatement, 16, o.languages());
-            sqLiteBind(sqLiteStatement, 17, o.email());
-            sqLiteBind(sqLiteStatement, 18, o.phoneNumber());
-            sqLiteBind(sqLiteStatement, 19, o.nationality());
+        public void bindToStatement(@NonNull User o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(7, o.birthday());
+            w.bind(8, o.education());
+            w.bind(9, o.gender());
+            w.bind(10, o.jobTitle());
+            w.bind(11, o.surname());
+            w.bind(12, o.firstName());
+            w.bind(13, o.introduction());
+            w.bind(14, o.employer());
+            w.bind(15, o.interests());
+            w.bind(16, o.languages());
+            w.bind(17, o.email());
+            w.bind(18, o.phoneNumber());
+            w.bind(19, o.nationality());
         }
     };
 

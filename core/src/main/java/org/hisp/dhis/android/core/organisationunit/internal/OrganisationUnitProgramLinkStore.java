@@ -34,14 +34,11 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class OrganisationUnitProgramLinkStore {
 
-    private static final StatementBinder<OrganisationUnitProgramLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.program());
-        sqLiteBind(sqLiteStatement, 2, o.organisationUnit());
+    private static final StatementBinder<OrganisationUnitProgramLink> BINDER = (o, w) -> {
+        w.bind(1, o.program());
+        w.bind(2, o.organisationUnit());
     };
 
     private OrganisationUnitProgramLinkStore() {}

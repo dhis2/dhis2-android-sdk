@@ -28,28 +28,25 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableWithStyleStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
+import androidx.annotation.NonNull;
 
 public final class TrackedEntityTypeStore {
 
     private static StatementBinder<TrackedEntityType> BINDER =
             new NameableWithStyleStatementBinder<TrackedEntityType>() {
         @Override
-        public void bindToStatement(@NonNull TrackedEntityType o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 13, o.featureType());
+        public void bindToStatement(@NonNull TrackedEntityType o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(13, o.featureType());
         }
     };
 

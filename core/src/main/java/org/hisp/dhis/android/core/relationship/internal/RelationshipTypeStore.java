@@ -28,19 +28,16 @@
 
 package org.hisp.dhis.android.core.relationship.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
+import androidx.annotation.NonNull;
 
 public final class RelationshipTypeStore {
 
@@ -49,12 +46,12 @@ public final class RelationshipTypeStore {
     private static StatementBinder<RelationshipType> BINDER = new IdentifiableStatementBinder<RelationshipType>() {
 
         @Override
-        public void bindToStatement(@NonNull RelationshipType o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.fromToName());
-            sqLiteBind(sqLiteStatement, 8, o.toFromName());
-            sqLiteBind(sqLiteStatement, 9, o.bidirectional());
-            sqLiteBind(sqLiteStatement, 10, o.access().data().write());
+        public void bindToStatement(@NonNull RelationshipType o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(7, o.fromToName());
+            w.bind(8, o.toFromName());
+            w.bind(9, o.bidirectional());
+            w.bind(10, o.access().data().write());
         }
     };
 

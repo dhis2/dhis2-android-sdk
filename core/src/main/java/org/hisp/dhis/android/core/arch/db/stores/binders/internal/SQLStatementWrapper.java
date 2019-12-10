@@ -37,72 +37,87 @@ import java.util.Date;
 
 public class SQLStatementWrapper implements StatementWrapper {
 
-    private final SQLiteStatement sqLiteStatement;
+    private final SQLiteStatement s;
 
-    public SQLStatementWrapper(SQLiteStatement sqLiteStatement) {
-        this.sqLiteStatement = sqLiteStatement;
+    public SQLStatementWrapper(SQLiteStatement s) {
+        this.s = s;
     }
 
     @Override
     public void bind(int index, String arg) {
         if (arg == null) {
-            sqLiteStatement.bindNull(index);
+            s.bindNull(index);
         } else {
-            sqLiteStatement.bindString(index, arg);
+            s.bindString(index, arg);
         }
     }
 
     @Override
     public void bind(int index, Boolean arg) {
         if (arg == null) {
-            sqLiteStatement.bindNull(index);
+            s.bindNull(index);
         } else {
-            sqLiteStatement.bindLong(index, arg ? 1 : 0);
+            s.bindLong(index, arg ? 1 : 0);
         }
     }
 
     @Override
     public void bind(int index, Integer arg) {
         if (arg == null) {
-            sqLiteStatement.bindNull(index);
+            s.bindNull(index);
         } else {
-            sqLiteStatement.bindLong(index, arg);
+            s.bindLong(index, arg);
         }
     }
 
     @Override
     public void bind(int index, Date arg) {
         if (arg == null) {
-            sqLiteStatement.bindNull(index);
+            s.bindNull(index);
         } else {
-            sqLiteStatement.bindString(index, BaseIdentifiableObject.DATE_FORMAT.format(arg));
+            s.bindString(index, BaseIdentifiableObject.DATE_FORMAT.format(arg));
         }
     }
 
     @Override
     public void bind(int index, Enum arg) {
         if (arg == null) {
-            sqLiteStatement.bindNull(index);
+            s.bindNull(index);
         } else {
-            sqLiteStatement.bindString(index, arg.name());
+            s.bindString(index, arg.name());
         }
     }
 
     @Override
     public void bind(int index, Double arg) {
         if (arg == null) {
-            sqLiteStatement.bindNull(index);
+            s.bindNull(index);
         } else {
-            sqLiteStatement.bindDouble(index, arg);
+            s.bindDouble(index, arg);
         }
     }
 
     @Override
     public void bind(int index, Long arg) {
         if (arg == null) {
-            sqLiteStatement.bindNull(index);
+            s.bindNull(index);
         } else {
-            sqLiteStatement.bindLong(index, arg);
+            s.bindLong(index, arg);
         }
+    }
+
+    @Override
+    public void clearBindings() {
+        s.clearBindings();
+    }
+
+    @Override
+    public long executeInsert() {
+        return s.executeInsert();
+    }
+
+    @Override
+    public int executeUpdateDelete() {
+        return s.executeUpdateDelete();
     }
 }

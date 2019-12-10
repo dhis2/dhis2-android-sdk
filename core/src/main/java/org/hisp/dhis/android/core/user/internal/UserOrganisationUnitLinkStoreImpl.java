@@ -28,12 +28,11 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
@@ -42,20 +41,18 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo.Columns
 
 import java.util.List;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class UserOrganisationUnitLinkStoreImpl extends LinkStoreImpl<UserOrganisationUnitLink>
         implements UserOrganisationUnitLinkStore {
 
-    private static final StatementBinder<UserOrganisationUnitLink> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.user());
-        sqLiteBind(sqLiteStatement, 2, o.organisationUnit());
-        sqLiteBind(sqLiteStatement, 3, o.organisationUnitScope());
-        sqLiteBind(sqLiteStatement, 4, o.root());
+    private static final StatementBinder<UserOrganisationUnitLink> BINDER = (o, w) -> {
+        w.bind(1, o.user());
+        w.bind(2, o.organisationUnit());
+        w.bind(3, o.organisationUnitScope());
+        w.bind(4, o.root());
     };
 
     private UserOrganisationUnitLinkStoreImpl(DatabaseAdapter databaseAdapter,
-                                              SQLiteStatement insertStatement,
+                                              StatementWrapper insertStatement,
                                               String masterColumn,
                                               SQLStatementBuilderImpl builder,
                                               StatementBinder<UserOrganisationUnitLink> binder) {

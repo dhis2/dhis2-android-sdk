@@ -30,7 +30,8 @@ package org.hisp.dhis.android.core.arch.db.access;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
+
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 
 @SuppressWarnings("PMD.UseVarargs")
 public interface DatabaseAdapter {
@@ -42,14 +43,12 @@ public interface DatabaseAdapter {
      * and SQLiteProgram.bindLong each time you want to run the
      * statement. Statements may not return result sets larger than 1x1.
      * <p>
-     * No two threads should be using the same {@link SQLiteStatement} at the same time.
      *
      * @param sql The raw SQL statement, may contain ? for unknown values to be
      *            bound later.
-     * @return A pre-compiled {@link SQLiteStatement} object. Note that
-     * {@link SQLiteStatement}s are not synchronized, see the documentation for more details.
+     * @return A pre-compiled {@link StatementWrapper} object. Note that
      */
-    SQLiteStatement compileStatement(String sql);
+    StatementWrapper compileStatement(String sql);
 
     /**
      * Runs the provided SQL and returns a {@link Cursor} over the result set.
@@ -71,9 +70,8 @@ public interface DatabaseAdapter {
      * @param sqLiteStatement The SQL statement to execute
      * @return the row ID of the last row inserted, if this insert is successful. -1 otherwise.
      * @throws android.database.SQLException If the SQL string is invalid
-     * @see SQLiteStatement#executeInsert()
      */
-    long executeInsert(String table, SQLiteStatement sqLiteStatement);
+    long executeInsert(String table, StatementWrapper sqLiteStatement);
 
     /**
      * Execute this SQL statement, if the the number of rows affected by execution of this SQL
@@ -85,7 +83,7 @@ public interface DatabaseAdapter {
      * @throws android.database.SQLException If the SQL string is invalid for
      *                                       some reason
      */
-    int executeUpdateDelete(String table, SQLiteStatement sqLiteStatement);
+    int executeUpdateDelete(String table, StatementWrapper sqLiteStatement);
 
     /**
      * Convenience method for deleting rows in the database.

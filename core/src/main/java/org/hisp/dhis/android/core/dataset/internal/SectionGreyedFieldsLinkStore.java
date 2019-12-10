@@ -35,15 +35,12 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink;
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class SectionGreyedFieldsLinkStore {
 
-    private static final StatementBinder<SectionGreyedFieldsLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.section());
-        sqLiteBind(sqLiteStatement, 2, o.dataElementOperand());
-        sqLiteBind(sqLiteStatement, 3, o.categoryOptionCombo());
+    private static final StatementBinder<SectionGreyedFieldsLink> BINDER = (o, w) -> {
+        w.bind(1, o.section());
+        w.bind(2, o.dataElementOperand());
+        w.bind(3, o.categoryOptionCombo());
     };
 
     private SectionGreyedFieldsLinkStore() {}

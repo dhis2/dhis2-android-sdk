@@ -30,9 +30,6 @@ package org.hisp.dhis.android.core.arch.db.stores.internal;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-
-import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
@@ -40,13 +37,15 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBui
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.common.DataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 
 import java.util.List;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
+import androidx.annotation.NonNull;
+
 import static org.hisp.dhis.android.core.common.DataColumns.STATE;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 
@@ -59,8 +58,8 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
 
     private final String selectStateQuery;
     private final String existsQuery;
-    private final SQLiteStatement setStateStatement;
-    private final SQLiteStatement setStateForUpdateStatement;
+    private final StatementWrapper setStateStatement;
+    private final StatementWrapper setStateForUpdateStatement;
     final String tableName;
 
     public IdentifiableDataObjectStoreImpl(DatabaseAdapter databaseAdapter,
@@ -92,10 +91,10 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
 
     @Override
     public int setState(@NonNull String uid, @NonNull State state) {
-        sqLiteBind(setStateStatement, 1, state);
+        setStateStatement.bind(1, state);
 
         // bind the where argument
-        sqLiteBind(setStateStatement, 2, uid);
+        setStateStatement.bind(2, uid);
 
         int updatedRow = databaseAdapter.executeUpdateDelete(tableName, setStateStatement);
         setStateStatement.clearBindings();
@@ -117,7 +116,7 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
 
     @Override
     public int setStateForUpdate(@NonNull String uid) {
-        sqLiteBind(setStateForUpdateStatement, 1, uid);
+        setStateForUpdateStatement.bind(1, uid);
 
         int updatedRow = databaseAdapter.executeUpdateDelete(tableName, setStateForUpdateStatement);
         setStateForUpdateStatement.clearBindings();

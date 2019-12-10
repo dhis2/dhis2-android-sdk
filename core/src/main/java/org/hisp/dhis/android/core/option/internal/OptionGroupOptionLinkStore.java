@@ -35,14 +35,11 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.option.OptionGroupOptionLink;
 import org.hisp.dhis.android.core.option.OptionGroupOptionLinkTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class OptionGroupOptionLinkStore {
 
-    private static final StatementBinder<OptionGroupOptionLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.optionGroup());
-        sqLiteBind(sqLiteStatement, 2, o.option());
+    private static final StatementBinder<OptionGroupOptionLink> BINDER = (o, w) -> {
+        w.bind(1, o.optionGroup());
+        w.bind(2, o.option());
     };
 
     private OptionGroupOptionLinkStore() {}

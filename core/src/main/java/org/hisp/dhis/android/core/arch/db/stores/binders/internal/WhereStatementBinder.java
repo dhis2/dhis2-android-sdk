@@ -28,10 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.db.stores.binders.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import androidx.annotation.NonNull;
 
 public interface WhereStatementBinder<M> {
-    void bindWhereStatement(@NonNull M m, @NonNull SQLiteStatement sqLiteStatement);
+    void bindWhereStatement(@NonNull M m, @NonNull StatementWrapper w);
 }

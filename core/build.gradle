@@ -54,6 +54,7 @@ ext {
             duktape         : "1.1.0",
             dagger          : "2.14.1",
             rxjava          : "2.2.8",
+            rxandroid       : "2.1.1",
 
             // code checks
             findbugs        : "3.0.0",
@@ -73,8 +74,8 @@ ext {
             // plugins
             errorpronecore  : "2.0.15",
 
-            //database
-            sqlbritemigrations  : "v1.0.1",
+            //migrations
+            snakeyaml  : "1.25",
 
             // google
             safetynet  : "16.0.0",
@@ -149,11 +150,9 @@ android {
 dependencies {
 
     api "io.reactivex.rxjava2:rxjava:${libraries.rxjava}"
+    api "io.reactivex.rxjava2:rxandroid:${libraries.rxandroid}"
 
-    // sqlbrite-migrations library
-    api ("com.github.lykmapipo:sqlbrite-migrations:${libraries.sqlbritemigrations}") {
-        exclude group: 'io.reactivex.rxjava2', module: 'rxjava'
-    }
+    api "org.yaml:snakeyaml:${libraries.snakeyaml}"
 
     // Support libraries
     api "androidx.annotation:annotation:${libraries.support}"

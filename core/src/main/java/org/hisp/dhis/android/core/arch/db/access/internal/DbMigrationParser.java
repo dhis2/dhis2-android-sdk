@@ -26,57 +26,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access;
+package org.hisp.dhis.android.core.arch.db.access.internal;
 
-import android.content.Context;
 import android.content.res.AssetManager;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Build;
 
-import org.hisp.dhis.android.core.arch.db.access.internal.DbMigrationExecutor;
+import org.yaml.snakeyaml.Yaml;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-public class DbOpenHelper extends SQLiteOpenHelper {
-
-    public static final int VERSION = 64;
+class DbMigrationParser {
 
     private final AssetManager assetManager;
-    private final int targetVersion;
 
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        this(context, databaseName, VERSION);
+    DbMigrationParser(AssetManager assetManager) {
+        this.assetManager = assetManager;
     }
 
-    @VisibleForTesting
-    public DbOpenHelper(Context context, String databaseName, int targetVersion) {
-        super(context, databaseName, null, targetVersion);
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
+    List<Map<String, List<String>>> parseList(int oldVersion, int newVersion) throws IOException {
+        List<Map<String, List<String>>> scripts = new ArrayList<>();
 
-    @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
-
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            db.setForeignKeyConstraintsEnabled(true);
+        int startVersion = oldVersion + 1;
+        for (int i = startVersion; i <= newVersion; i++) {
+            Map<String, List<String>> script = this.parse(i);
+            scripts.add(script);
         }
 
-        db.enableWriteAheadLogging();
+        return scripts;
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        new DbMigrationExecutor(db, assetManager).upgradeFromTo(0, targetVersion);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        new DbMigrationExecutor(db, assetManager).upgradeFromTo(oldVersion, newVersion);
+    private Map<String, List<String>> parse(int newVersion) throws IOException {
+        String fileName = "migrations/" + newVersion + ".yaml";
+        InputStream inputStream = assetManager.open(fileName);
+        return new Yaml().load(inputStream);
     }
 }

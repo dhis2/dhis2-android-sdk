@@ -46,20 +46,28 @@ class DbMigrationParser {
         this.assetManager = assetManager;
     }
 
-    List<Map<String, List<String>>> parseList(int oldVersion, int newVersion) throws IOException {
+    List<Map<String, List<String>>> parseMigrations(int oldVersion, int newVersion) throws IOException {
         List<Map<String, List<String>>> scripts = new ArrayList<>();
 
         int startVersion = oldVersion + 1;
         for (int i = startVersion; i <= newVersion; i++) {
-            Map<String, List<String>> script = this.parse(i);
+            Map<String, List<String>> script = this.parseMigration(i);
             scripts.add(script);
         }
 
         return scripts;
     }
 
-    private Map<String, List<String>> parse(int newVersion) throws IOException {
-        String fileName = "migrations/" + newVersion + ".yaml";
+    Map<String, List<String>> parseSnapshot(int version) throws IOException {
+        return parseFile("snapshots", version);
+    }
+
+    Map<String, List<String>> parseMigration(int version) throws IOException {
+        return parseFile("migrations", version);
+    }
+
+    private Map<String, List<String>> parseFile(String directory, int newVersion) throws IOException {
+        String fileName = directory + "/" + newVersion + ".yaml";
         InputStream inputStream = assetManager.open(fileName);
         return new Yaml().load(inputStream);
     }

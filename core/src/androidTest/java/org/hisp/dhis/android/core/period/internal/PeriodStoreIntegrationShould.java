@@ -69,8 +69,7 @@ public class PeriodStoreIntegrationShould extends ObjectWithoutUidStoreAbstractI
 
     @Test
     public void select_correct_period_passing_period_type_and_a_date() throws ParseException {
-        // Update date and periodId if they are outdated
-        new PeriodHandler(periodStore, ParentPeriodGeneratorImpl.create()).generateAndPersist();
+        new PeriodHandler(periodStore, ParentPeriodGeneratorImpl.create(CalendarProviderFactory.createFixed())).generateAndPersist();
 
         Period period = periodStore.selectPeriodByTypeAndDate(PeriodType.SixMonthly,
                 BaseIdentifiableObject.DATE_FORMAT.parse("2019-03-02T12:24:25.319"));

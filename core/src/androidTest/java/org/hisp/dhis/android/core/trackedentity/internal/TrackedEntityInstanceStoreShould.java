@@ -100,8 +100,8 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
         trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter());
         OrganisationUnit organisationUnit = OrganisationUnitSamples.getOrganisationUnit(ORGANISATION_UNIT);
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, TRACKED_ENTITY);
-        database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
-        database().insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType);
+        databaseAdapter().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
+        databaseAdapter().insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType);
         trackedEntityInstance = TrackedEntityInstance.builder()
                 .uid(UID)
                 .created(date)
@@ -149,7 +149,7 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
         trackedEntityInstance.put(Columns.TRACKED_ENTITY_TYPE, TRACKED_ENTITY);
         trackedEntityInstance.put(DataColumns.STATE, STATE.name());
 
-        database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstance);
+        databaseAdapter().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstance);
 
         String[] projection = {
                 Columns.UID,
@@ -177,7 +177,7 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
         trackedEntityInstanceContentValues.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
         trackedEntityInstanceContentValues.put(Columns.TRACKED_ENTITY_TYPE, TRACKED_ENTITY);
         trackedEntityInstanceContentValues.put(DataColumns.STATE, State.TO_POST.name());
-        database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstanceContentValues);
+        databaseAdapter().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstanceContentValues);
 
         String[] projection = {Columns.UID};
         Cursor cursor = database().query(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), projection, null, null, null, null, null);

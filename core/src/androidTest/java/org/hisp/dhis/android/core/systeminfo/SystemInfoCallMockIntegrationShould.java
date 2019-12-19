@@ -70,7 +70,7 @@ public class SystemInfoCallMockIntegrationShould extends BaseMockIntegrationTest
 
     @Test
     public void update_system_info_when_call() {
-        database.insert(tableInfo.name(), null, systemInfoFromDB.toContentValues());
+        databaseAdapter.insert(tableInfo.name(), null, systemInfoFromDB.toContentValues());
         isSystemInfoInDb(systemInfoFromDB);
 
         systemInfoRepository.blockingDownload();

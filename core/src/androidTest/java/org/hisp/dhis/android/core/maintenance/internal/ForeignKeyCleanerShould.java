@@ -136,7 +136,7 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
                     .sortOrder(2)
                     .build();
 
-            d2.databaseAdapter().database().insert(CategoryCategoryComboLinkTableInfo.TABLE_INFO.name(),
+            d2.databaseAdapter().insert(CategoryCategoryComboLinkTableInfo.TABLE_INFO.name(),
                     null, categoryCategoryComboLink.toContentValues());
 
             ForeignKeyCleanerImpl.create(d2.databaseAdapter()).cleanForeignKeyErrors();

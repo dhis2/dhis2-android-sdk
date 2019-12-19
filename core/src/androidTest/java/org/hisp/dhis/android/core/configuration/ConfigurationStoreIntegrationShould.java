@@ -79,8 +79,7 @@ public class ConfigurationStoreIntegrationShould {
 
     @Test
     public void insert_as_content_values_and_select_first_object() {
-        long rowsInserted = databaseAdapter.database()
-                .insert(tableInfo.name(), null, configuration.toContentValues());
+        long rowsInserted = databaseAdapter.insert(tableInfo.name(), null, configuration.toContentValues());
         assertThat(rowsInserted).isEqualTo(1);
         Configuration objectFromDb = store.selectFirst();
         assertThat(objectFromDb).isEqualTo(configuration);

@@ -64,11 +64,11 @@ public class UserCallMockIntegrationShould extends BaseMockIntegrationTestEmptyE
         ContentValues program4 = CreateProgramUtils.create(4L, "WSGAb5XwJ3Y", null, null);
         ContentValues program5 = CreateProgramUtils.create(5L, "IpHINAT79UW", null, null);
 
-        database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program1);
-        database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program2);
-        database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program3);
-        database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program4);
-        database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program5);
+        databaseAdapter.insert(ProgramTableInfo.TABLE_INFO.name(), null, program1);
+        databaseAdapter.insert(ProgramTableInfo.TABLE_INFO.name(), null, program2);
+        databaseAdapter.insert(ProgramTableInfo.TABLE_INFO.name(), null, program3);
+        databaseAdapter.insert(ProgramTableInfo.TABLE_INFO.name(), null, program4);
+        databaseAdapter.insert(ProgramTableInfo.TABLE_INFO.name(), null, program5);
     }
 
     @Test

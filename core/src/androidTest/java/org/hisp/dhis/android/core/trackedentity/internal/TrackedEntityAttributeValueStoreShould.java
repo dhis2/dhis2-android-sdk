@@ -107,12 +107,12 @@ public class TrackedEntityAttributeValueStoreShould extends BaseRealIntegrationT
         ContentValues trackedEntityAttribute2 = CreateTrackedEntityAttributeUtils
                 .create(2L, TRACKED_ENTITY_ATTRIBUTE_2, null);
 
-        database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
-        database().insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType);
-        database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstance);
-        database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstance_2);
-        database().insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute);
-        database().insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute2);
+        databaseAdapter().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
+        databaseAdapter().insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType);
+        databaseAdapter().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstance);
+        databaseAdapter().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstance_2);
+        databaseAdapter().insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute);
+        databaseAdapter().insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute2);
 
         trackedEntityAttributeValue = TrackedEntityAttributeValue.builder()
                 .value(VALUE).created(date).lastUpdated(date).trackedEntityAttribute(TRACKED_ENTITY_ATTRIBUTE)
@@ -147,8 +147,8 @@ public class TrackedEntityAttributeValueStoreShould extends BaseRealIntegrationT
                 deferredTrackedEntityInstance, ORGANIZATION_UNIT, TRACKED_ENTITY);
         ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.create(3L,
                 deferredTrackedEntityAttribute, null);
-        database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstance);
-        database().insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute);
+        databaseAdapter().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstance);
+        databaseAdapter().insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute);
         database().setTransactionSuccessful();
         database().endTransaction();
 

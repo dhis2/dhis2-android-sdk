@@ -151,20 +151,20 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
         ContentValues dataElement1 = CreateDataElementUtils.create(1L, DATA_ELEMENT_1, CategoryCombo.DEFAULT_UID, null);
         ContentValues dataElement2 = CreateDataElementUtils.create(2L, DATA_ELEMENT_2, CategoryCombo.DEFAULT_UID, null);
 
-        database().insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType);
-        database().insert(RelationshipTypeTableInfo.TABLE_INFO.name(), null,
+        databaseAdapter().insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType);
+        databaseAdapter().insert(RelationshipTypeTableInfo.TABLE_INFO.name(), null,
                 relationshipType);
-        database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program);
-        database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
-        database().insert(ProgramStageTableInfo.TABLE_INFO.name(), null, programStage);
-        database().insert(CategoryComboTableInfo.TABLE_INFO.name(), null, defaultCategoryCombo);
-        database().insert(DataElementTableInfo.TABLE_INFO.name(), null, dataElement1);
-        database().insert(DataElementTableInfo.TABLE_INFO.name(), null, dataElement2);
-        database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null,
+        databaseAdapter().insert(ProgramTableInfo.TABLE_INFO.name(), null, program);
+        databaseAdapter().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
+        databaseAdapter().insert(ProgramStageTableInfo.TABLE_INFO.name(), null, programStage);
+        databaseAdapter().insert(CategoryComboTableInfo.TABLE_INFO.name(), null, defaultCategoryCombo);
+        databaseAdapter().insert(DataElementTableInfo.TABLE_INFO.name(), null, dataElement1);
+        databaseAdapter().insert(DataElementTableInfo.TABLE_INFO.name(), null, dataElement2);
+        databaseAdapter().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null,
                 trackedEntityInstance);
-        database().insert(EnrollmentTableInfo.TABLE_INFO.name(), null, enrollment);
-        database().insert(EventTableInfo.TABLE_INFO.name(), null, event1);
-        database().insert(EventTableInfo.TABLE_INFO.name(), null, event2);
+        databaseAdapter().insert(EnrollmentTableInfo.TABLE_INFO.name(), null, enrollment);
+        databaseAdapter().insert(EventTableInfo.TABLE_INFO.name(), null, event1);
+        databaseAdapter().insert(EventTableInfo.TABLE_INFO.name(), null, event2);
 
         trackedEntityDataValue = TrackedEntityDataValue.builder()
                 .event(EVENT_1)

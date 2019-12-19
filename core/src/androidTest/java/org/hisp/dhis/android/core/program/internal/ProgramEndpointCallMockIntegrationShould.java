@@ -102,24 +102,24 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
         BaseMockIntegrationTestEmptyEnqueable.setUpClass();
 
         ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, "nM3u9s5a52V");
-        database.insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo);
+        databaseAdapter.insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo);
 
         ContentValues categoryCombo2 = CreateCategoryComboUtils.create(2L, "x31y45jvIQL");
-        database.insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo2);
+        databaseAdapter.insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo2);
 
         // inserting tracked entity
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
-        database.insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType);
+        databaseAdapter.insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType);
 
         // inserting tracked entity attributes
         ContentValues trackedEntityAttribute1 = CreateTrackedEntityAttributeUtils.create(1L, "w75KJ2mc4zz", null);
-        database.insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute1);
+        databaseAdapter.insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute1);
 
         ContentValues trackedEntityAttribute2 = CreateTrackedEntityAttributeUtils.create(2L, "zDhUuAYrxNC", null);
-        database.insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute2);
+        databaseAdapter.insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute2);
 
         ContentValues trackedEntityAttribute3 = CreateTrackedEntityAttributeUtils.create(3L, "cejWyOfXge6", null);
-        database.insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute3);
+        databaseAdapter.insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute3);
 
         programEndpointCall = objects.d2DIComponent.programCallFactory().create();
     }

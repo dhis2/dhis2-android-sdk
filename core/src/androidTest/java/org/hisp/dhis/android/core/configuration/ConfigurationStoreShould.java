@@ -75,7 +75,7 @@ public class ConfigurationStoreShould extends BaseRealIntegrationTest {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConfigurationTableInfo.Columns.SERVER_URL, URL1);
 
-        database().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
+        databaseAdapter().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
 
         // trying to configure configuration with server url (which is set to be unique in the table)
         store.save(Configuration.builder().serverUrl(HttpUrl.parse(URL1)).build());
@@ -92,7 +92,7 @@ public class ConfigurationStoreShould extends BaseRealIntegrationTest {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConfigurationTableInfo.Columns.SERVER_URL, URL1);
 
-        database().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
+        databaseAdapter().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
 
         HttpUrl url = HttpUrl.parse(URL2);
         store.save(Configuration.builder().serverUrl(url).build());
@@ -109,7 +109,7 @@ public class ConfigurationStoreShould extends BaseRealIntegrationTest {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConfigurationTableInfo.Columns.SERVER_URL, URL1);
 
-        database().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
+        databaseAdapter().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
 
         long deleted = store.delete();
 
@@ -130,7 +130,7 @@ public class ConfigurationStoreShould extends BaseRealIntegrationTest {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConfigurationTableInfo.Columns.SERVER_URL, URL1);
 
-        database().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
+        databaseAdapter().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
 
         HttpUrl url = HttpUrl.parse(URL2);
         store.save(Configuration.builder().serverUrl(url).build());

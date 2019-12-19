@@ -242,7 +242,7 @@ public class TrackedEntityAttributeValueStoreShould extends BaseRealIntegrationT
     public void delete_tracked_entity_attribute_value_in_data_base_when_delete_tracked_entity_attribute() {
         insert_nullable_tracked_entity_attribute_value_in_data_base_when_insert_nullable_tracked_entity_attribute_value();
 
-        database().delete(TrackedEntityAttributeTableInfo.TABLE_INFO.name(),
+        databaseAdapter().delete(TrackedEntityAttributeTableInfo.TABLE_INFO.name(),
                 IdentifiableColumns.UID + "=?",
                 new String[]{TRACKED_ENTITY_ATTRIBUTE});
 
@@ -255,7 +255,7 @@ public class TrackedEntityAttributeValueStoreShould extends BaseRealIntegrationT
     public void delete_tracked_entity_attribute_value_in_data_base_when_delete_tracked_entity_instance() {
         insert_nullable_tracked_entity_attribute_value_in_data_base_when_insert_nullable_tracked_entity_attribute_value();
 
-        database().delete(TrackedEntityInstanceTableInfo.TABLE_INFO.name(),
+        databaseAdapter().delete(TrackedEntityInstanceTableInfo.TABLE_INFO.name(),
                 TrackedEntityInstanceTableInfo.Columns.UID + "=?",
                 new String[]{TRACKED_ENTITY_INSTANCE});
 

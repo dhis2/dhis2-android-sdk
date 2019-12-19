@@ -217,7 +217,7 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
     public void delete_tracked_entity_data_value_when_delete_event_foreign_key() {
         trackedEntityDataValueStore.insert(trackedEntityDataValue);
 
-        database().delete(EventTableInfo.TABLE_INFO.name(), EventTableInfo.Columns.UID + "=?",
+        databaseAdapter().delete(EventTableInfo.TABLE_INFO.name(), EventTableInfo.Columns.UID + "=?",
                 new String[]{EVENT_1});
 
         Cursor cursor = database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
@@ -231,7 +231,7 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
     public void delete_tracked_entity_data_value_when_delete_data_element_foreign_key() {
         trackedEntityDataValueStore.insert(trackedEntityDataValue);
 
-        database().delete(DataElementTableInfo.TABLE_INFO.name(),
+        databaseAdapter().delete(DataElementTableInfo.TABLE_INFO.name(),
                 IdentifiableColumns.UID + "=?",
                 new String[]{DATA_ELEMENT_1});
 

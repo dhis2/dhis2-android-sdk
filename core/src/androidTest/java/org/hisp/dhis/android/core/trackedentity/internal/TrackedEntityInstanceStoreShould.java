@@ -119,7 +119,7 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
     public void delete_tei_in_data_base_when_delete_organisation_unit_foreign_key() {
         trackedEntityInstanceStore.insert(trackedEntityInstance);
 
-        database().delete(OrganisationUnitTableInfo.TABLE_INFO.name(),
+        databaseAdapter().delete(OrganisationUnitTableInfo.TABLE_INFO.name(),
                 IdentifiableColumns.UID + "=?",
                 new String[]{ ORGANISATION_UNIT });
 
@@ -132,7 +132,7 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
     public void delete_tracked_entity_instance_in_data_base_when_delete_tracked_entity_foreign_key() {
         trackedEntityInstanceStore.insert(trackedEntityInstance);
 
-        database().delete(TrackedEntityTypeTableInfo.TABLE_INFO.name(),
+        databaseAdapter().delete(TrackedEntityTypeTableInfo.TABLE_INFO.name(),
                 TrackedEntityTypeTableInfo.Columns.UID + "=?",
                 new String[]{ TRACKED_ENTITY} );
 

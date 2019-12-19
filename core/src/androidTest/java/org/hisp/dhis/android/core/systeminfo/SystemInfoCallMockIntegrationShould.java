@@ -59,7 +59,7 @@ public class SystemInfoCallMockIntegrationShould extends BaseMockIntegrationTest
     @Before
     public void setUp() {
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
-        database.delete(tableInfo.name(), "1", new String[]{});
+        databaseAdapter.delete(tableInfo.name(), "1", new String[]{});
     }
 
     @Test

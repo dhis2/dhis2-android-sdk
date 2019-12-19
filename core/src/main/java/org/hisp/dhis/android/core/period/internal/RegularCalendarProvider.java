@@ -26,32 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.runner;
+package org.hisp.dhis.android.core.period.internal;
 
-import android.util.Log;
+import java.util.Calendar;
 
-import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestObjectsFactory;
-import org.junit.runner.Description;
-import org.junit.runner.Result;
-import org.junit.runner.notification.RunListener;
-
-public class D2JunitTestListener extends RunListener {
-
+class RegularCalendarProvider implements CalendarProvider {
 
     @Override
-    public void testRunStarted(Description description) {
-        Log.e("D2JunitTestListener", "Test run started");
-        CalendarProviderFactory.setFixed();
-        DatabaseAdapterFactory.setUp();
-    }
-
-    @Override
-    public void testRunFinished(Result result) throws Exception {
-        Log.i("D2JunitTestListener", "Test run finished");
-        DatabaseAdapterFactory.tearDown();
-        CalendarProviderFactory.setRegular();
-        MockIntegrationTestObjectsFactory.tearDown();
+    public Calendar getCalendar() {
+        return Calendar.getInstance();
     }
 }

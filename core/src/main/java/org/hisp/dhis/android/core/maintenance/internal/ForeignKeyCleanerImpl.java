@@ -113,7 +113,7 @@ public final class ForeignKeyCleanerImpl implements ForeignKeyCleaner {
 
     private ForeignKeyViolation getForeignKeyViolation(String foreignKeyIdNumber, String fromTable, String toTable,
                                                        String rowId) {
-        Cursor listCursor = databaseAdapter.query("PRAGMA foreign_key_list(" + fromTable + ");");
+        Cursor listCursor = databaseAdapter.rawQuery("PRAGMA foreign_key_list(" + fromTable + ");");
 
         ForeignKeyViolation foreignKeyViolation = null;
 
@@ -142,7 +142,7 @@ public final class ForeignKeyCleanerImpl implements ForeignKeyCleaner {
         String fromColumn = listCursor.getString(3);
         String selectStatement = "SELECT * FROM " + fromTable + " WHERE ROWID = " + rowId + ";";
 
-        try (Cursor objectCursor = databaseAdapter.query(selectStatement)) {
+        try (Cursor objectCursor = databaseAdapter.rawQuery(selectStatement)) {
             if (objectCursor.getCount() > 0) {
                 objectCursor.moveToFirst();
 
@@ -201,7 +201,7 @@ public final class ForeignKeyCleanerImpl implements ForeignKeyCleaner {
     }
 
     private Cursor getForeignKeyErrorsCursor() {
-        Cursor cursor = databaseAdapter.query("PRAGMA foreign_key_check;");
+        Cursor cursor = databaseAdapter.rawQuery("PRAGMA foreign_key_check;");
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
             return cursor;

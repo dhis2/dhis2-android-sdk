@@ -126,7 +126,7 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
 
     @Override
     public State getState(@NonNull String uid) {
-        Cursor cursor = databaseAdapter.query(selectStateQuery, uid);
+        Cursor cursor = databaseAdapter.rawQuery(selectStateQuery, uid);
         State state = null;
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
@@ -139,7 +139,7 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
 
     @Override
     public Boolean exists(@NonNull String uid) {
-        Cursor cursor = databaseAdapter.query(existsQuery, uid);
+        Cursor cursor = databaseAdapter.rawQuery(existsQuery, uid);
         int count = cursor.getCount();
         cursor.close();
         return count > 0;

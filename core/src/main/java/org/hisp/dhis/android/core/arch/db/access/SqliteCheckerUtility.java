@@ -37,7 +37,7 @@ final public class SqliteCheckerUtility {
 
     public static boolean isTableEmpty(DatabaseAdapter databaseAdapter, String table) {
         boolean isTableEmpty = true;
-        Cursor cursor = databaseAdapter.query(" SELECT * FROM "+table);
+        Cursor cursor = databaseAdapter.rawQuery(" SELECT * FROM "+table);
         int value = cursor.getCount();
         if (value > 0) {
             isTableEmpty = false;
@@ -48,13 +48,13 @@ final public class SqliteCheckerUtility {
 
     public static boolean isDatabaseEmpty(DatabaseAdapter databaseAdapter) {
         boolean isDatabaseEmpty = true;
-        Cursor cursor = databaseAdapter.query(" SELECT name FROM sqlite_master WHERE "
+        Cursor cursor = databaseAdapter.rawQuery(" SELECT name FROM sqlite_master WHERE "
                 + "type='table' and name!='android_metadata' and name!='sqlite_sequence'");
         int value = cursor.getColumnIndex("name");
         if (value != -1) {
             while (cursor.moveToNext()){
                 String tableName = cursor.getString(value);
-                Cursor resTable = databaseAdapter.query("SELECT * from " + tableName);
+                Cursor resTable = databaseAdapter.rawQuery("SELECT * from " + tableName);
                 if (resTable.getCount() > 0) {
                     isDatabaseEmpty = false;
                     break;
@@ -67,7 +67,7 @@ final public class SqliteCheckerUtility {
 
     public static boolean ifTableExist(String table, DatabaseAdapter db) {
         boolean isExist = false;
-        Cursor cursor = db.query("PRAGMA table_info(" + table + ")");
+        Cursor cursor = db.rawQuery("PRAGMA table_info(" + table + ")");
         int itemsCount = cursor.getCount();
         if (itemsCount > 0) {
             isExist = true;

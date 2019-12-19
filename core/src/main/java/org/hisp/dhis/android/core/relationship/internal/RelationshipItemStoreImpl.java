@@ -146,7 +146,7 @@ public final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<R
                 "FROM " + RelationshipItemTableInfo.TABLE_INFO.name() +
                 " GROUP BY " + RelationshipItemTableInfo.Columns.RELATIONSHIP;
 
-        return this.databaseAdapter.query(query);
+        return this.databaseAdapter.rawQuery(query);
     }
 
     private String getItemElementColumn(RelationshipItem item) {

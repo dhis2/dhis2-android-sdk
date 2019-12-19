@@ -80,7 +80,7 @@ public class SqLiteDatabaseAdapterShould {
     @Test
     public void verify_query_on_readable_data_base_when_set_query_in_data_base_adapter() throws Exception {
         String sql = "SELECT * FROM TABLE";
-        sqLiteDatabaseAdapter.query(sql, (String[]) null);
+        sqLiteDatabaseAdapter.rawQuery(sql, (String[]) null);
         verify(readableDatabase).rawQuery(sql, null);
     }
 

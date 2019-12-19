@@ -127,7 +127,7 @@ public final class TrackedEntityAttributeValueStoreImpl
 
     private List<TrackedEntityAttributeValue> trackedEntityAttributeValueListFromQuery(String query) {
         List<TrackedEntityAttributeValue> trackedEntityAttributeValueList = new ArrayList<>();
-        Cursor cursor = databaseAdapter.query(query);
+        Cursor cursor = databaseAdapter.rawQuery(query);
         addObjectsToCollection(cursor, trackedEntityAttributeValueList);
         return trackedEntityAttributeValueList;
     }

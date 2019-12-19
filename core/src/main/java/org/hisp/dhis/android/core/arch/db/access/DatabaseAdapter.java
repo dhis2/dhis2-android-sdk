@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.db.access;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -60,9 +61,13 @@ public interface DatabaseAdapter {
      * @return A {@link Cursor} object, which is positioned before the first entry. Note that
      * {@link Cursor}s are not synchronized, see the documentation for more details.
      */
-    Cursor query(String sql, String... selectionArgs);
 
-    /**
+    Cursor rawQuery(String sql, String... selectionArgs);
+
+    Cursor query(String sql, String... columns);
+
+    Cursor query(String table, String[] columns, String selection, String[] selectionArgs);
+                               /**
      * Execute {@code statement} and return the ID of the row inserted due to this call.
      * The SQL statement should be an INSERT for this to be a useful call.
      *
@@ -108,6 +113,13 @@ public interface DatabaseAdapter {
      */
     int delete(String table);
 
+    long insert(String table, String nullColumnHack, ContentValues values);
+
+    int update(String table, ContentValues values, String whereClause, String[] whereArgs);
+
+    void setForeignKeyConstraintsEnabled(boolean enable);
+
+    void close();
 
     /**
      * @return A newly started {@link Transaction}

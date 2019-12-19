@@ -65,9 +65,9 @@ final public class SqliteCheckerUtility {
         return isDatabaseEmpty;
     }
 
-    public static boolean ifTableExist(String table, DatabaseAdapter db) {
+    public static boolean ifTableExist(String table, DatabaseAdapter databaseAdapter) {
         boolean isExist = false;
-        Cursor cursor = db.rawQuery("PRAGMA table_info(" + table + ")");
+        Cursor cursor = databaseAdapter.rawQuery("PRAGMA table_info(" + table + ")");
         int itemsCount = cursor.getCount();
         if (itemsCount > 0) {
             isExist = true;

@@ -135,8 +135,7 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
         // Fake call to api
         programEndpointCall.call();
 
-        Cursor programCursor = database.query(ProgramTableInfo.TABLE_INFO.name(), PROGRAM_PROJECTION,
-                null, null, null, null, null);
+        Cursor programCursor = databaseAdapter.query(ProgramTableInfo.TABLE_INFO.name(), PROGRAM_PROJECTION);
 
         assertThatCursor(programCursor).hasRow(
                 "IpHINAT79UW",
@@ -188,8 +187,8 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
                 ProgramRuleVariableTableInfo.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
         };
 
-        Cursor programRuleVariableCursor = database.query(ProgramRuleVariableTableInfo.TABLE_INFO.name(), projection,
-                UID + "=?", new String[]{"g2GooOydipB"}, null, null, null);
+        Cursor programRuleVariableCursor = databaseAdapter.query(ProgramRuleVariableTableInfo.TABLE_INFO.name(), projection,
+                UID + "=?", new String[]{"g2GooOydipB"});
 
         assertThatCursor(programRuleVariableCursor).hasRow(
                 "g2GooOydipB",
@@ -229,12 +228,11 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
                 ProgramTrackedEntityAttributeTableInfo.Columns.SORT_ORDER
         };
 
-        Cursor programTrackedEntityAttributeCursor = database.query(
+        Cursor programTrackedEntityAttributeCursor = databaseAdapter.query(
                 ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name(),
                 projection,
                 UID + "=?",
-                new String[]{"l2T72XzBCLd"},
-                null, null, null);
+                new String[]{"l2T72XzBCLd"});
 
         assertThatCursor(programTrackedEntityAttributeCursor).hasRow(
                 "l2T72XzBCLd",
@@ -260,10 +258,10 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
     public void persist_program_indicators_when_call() throws Exception {
         programEndpointCall.call();
 
-        Cursor programIndicatorCursor = database.query(
+        Cursor programIndicatorCursor = databaseAdapter.query(
                 ProgramIndicatorTableInfo.TABLE_INFO.name(),
                 ProgramIndicatorTableInfo.TABLE_INFO.columns().all(),
-                UID + "=?", new String[]{"rXoaHGAXWy9"}, null, null, null);
+                UID + "=?", new String[]{"rXoaHGAXWy9"});
         assertThatCursor(programIndicatorCursor).hasRow(
                 "rXoaHGAXWy9",
                 null,
@@ -292,10 +290,10 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
     public void persist_legend_sets_when_call() throws Exception {
         programEndpointCall.call();
 
-        Cursor programIndicatorCursor = database.query(
+        Cursor programIndicatorCursor = databaseAdapter.query(
                 LegendSetTableInfo.TABLE_INFO.name(),
                 LegendSetTableInfo.TABLE_INFO.columns().all(),
-                UID + "=?", new String[]{"TiOkbpGEud4"}, null, null, null);
+                UID + "=?", new String[]{"TiOkbpGEud4"});
         assertThatCursor(programIndicatorCursor).hasRow(
                 "TiOkbpGEud4",
                 "AGE15YINT",
@@ -311,10 +309,10 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
     public void persist_legends_when_call() throws Exception {
         programEndpointCall.call();
 
-        Cursor programIndicatorCursor = database.query(
+        Cursor programIndicatorCursor = databaseAdapter.query(
                 LegendTableInfo.TABLE_INFO.name(),
                 LegendTableInfo.TABLE_INFO.columns().all(),
-                UID + "=?", new String[]{"ZUUGJnvX40X"}, null, null, null);
+                UID + "=?", new String[]{"ZUUGJnvX40X"});
         assertThatCursor(programIndicatorCursor).hasRow(
                 "ZUUGJnvX40X",
                 null,
@@ -339,8 +337,7 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
     public void not_persist_relationship_type_when_call() throws Exception {
         programEndpointCall.call();
 
-        Cursor relationshipTypeCursor = database.query(RelationshipTypeTableInfo.TABLE_INFO.name(), RelationshipTypeTableInfo.TABLE_INFO.columns().all(),
-                null, null, null, null, null);
+        Cursor relationshipTypeCursor = databaseAdapter.query(RelationshipTypeTableInfo.TABLE_INFO.name(), RelationshipTypeTableInfo.TABLE_INFO.columns().all());
 
         assertThatCursor(relationshipTypeCursor).isExhausted();
     }

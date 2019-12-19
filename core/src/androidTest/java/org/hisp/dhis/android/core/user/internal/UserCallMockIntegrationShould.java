@@ -77,7 +77,7 @@ public class UserCallMockIntegrationShould extends BaseMockIntegrationTestEmptyE
 
         userCall.call();
 
-        Cursor userCursor = database.query(UserTableInfo.TABLE_INFO.name(), UserTableInfo.TABLE_INFO.columns().all(), null, null, null, null, null);
+        Cursor userCursor = databaseAdapter.query(UserTableInfo.TABLE_INFO.name(), UserTableInfo.TABLE_INFO.columns().all());
 
         assertThatCursor(userCursor).hasRow(
                 "DXyJmlo9rge",
@@ -120,8 +120,7 @@ public class UserCallMockIntegrationShould extends BaseMockIntegrationTestEmptyE
         };
 
 
-        Cursor userCredentialsCursor = database.query(UserCredentialsTableInfo.TABLE_INFO.name(), projection,
-                null, null, null, null, null);
+        Cursor userCredentialsCursor = databaseAdapter.query(UserCredentialsTableInfo.TABLE_INFO.name(), projection);
 
         assertThatCursor(userCredentialsCursor).hasRow(
                 "M0fCOxtkURr",

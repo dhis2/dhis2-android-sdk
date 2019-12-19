@@ -119,8 +119,6 @@ public interface DatabaseAdapter {
 
     void setForeignKeyConstraintsEnabled(boolean enable);
 
-    void close();
-
     /**
      * @return A newly started {@link Transaction}
      */

@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.utils.integration.real;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.facebook.stetho.Stetho;
@@ -97,11 +96,6 @@ public abstract class BaseRealIntegrationTest {
     protected GenericCallData getGenericCallData(D2 d2) {
         return GenericCallData.create(
                 databaseAdapter(), d2.retrofit(), resourceHandler, d2.systemInfoModule().versionManager());
-    }
-
-    protected Cursor getCursor(String table, String[] columns) {
-        return sqLiteDatabase.query(table, columns,
-                null, null, null, null, null);
     }
 
     protected D2DIComponent getD2DIComponent(D2 d2) {

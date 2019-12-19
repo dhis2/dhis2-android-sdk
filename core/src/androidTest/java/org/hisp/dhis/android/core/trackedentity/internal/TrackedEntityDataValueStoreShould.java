@@ -180,8 +180,7 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
     @Test
     public void insert_tracked_entity_data_value_in_data_base_when_insert() {
         long rowId = trackedEntityDataValueStore.insert(trackedEntityDataValue);
-        Cursor cursor = database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
-                PROJECTION, null, null, null, null, null);
+        Cursor cursor = databaseAdapter().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(), PROJECTION);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(
                 EVENT_1,
@@ -204,8 +203,7 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
                 .value(null)
                 .providedElsewhere(null).build());
 
-        Cursor cursor = database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
-                PROJECTION, null, null, null, null, null);
+        Cursor cursor = databaseAdapter().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(), PROJECTION);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(EVENT_1, null, null, DATA_ELEMENT_1, null, null,
@@ -220,8 +218,7 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
         databaseAdapter().delete(EventTableInfo.TABLE_INFO.name(), EventTableInfo.Columns.UID + "=?",
                 new String[]{EVENT_1});
 
-        Cursor cursor = database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
-                PROJECTION, null, null, null, null, null);
+        Cursor cursor = databaseAdapter().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(), PROJECTION);
         assertThatCursor(cursor).isExhausted();
         cursor.close();
     }
@@ -235,8 +232,7 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
                 IdentifiableColumns.UID + "=?",
                 new String[]{DATA_ELEMENT_1});
 
-        Cursor cursor = database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
-                PROJECTION, null, null, null, null, null);
+        Cursor cursor = databaseAdapter().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(), PROJECTION);
         assertThatCursor(cursor).isExhausted();
         cursor.close();
     }
@@ -247,10 +243,10 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
 
         String[] projection = {Columns.EVENT};
         Cursor cursor =
-                database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
+                databaseAdapter().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
                         projection,
                 Columns.EVENT + "=?",
-                new String[]{EVENT_1}, null, null, null);
+                new String[]{EVENT_1});
         assertThatCursor(cursor).hasRow(EVENT_1).isExhausted();
         cursor.close();
 
@@ -294,8 +290,7 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
 
         trackedEntityDataValueStore.updateWhere(trackedEntityDataValue);
 
-        Cursor cursor = database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
-                PROJECTION, null, null, null, null, null);
+        Cursor cursor = databaseAdapter().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(), PROJECTION);
 
         assertThatCursor(cursor).hasRow(EVENT_1,
                 dateString,

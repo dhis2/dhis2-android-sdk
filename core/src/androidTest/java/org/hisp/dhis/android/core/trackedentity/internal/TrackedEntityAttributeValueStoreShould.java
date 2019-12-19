@@ -124,8 +124,7 @@ public class TrackedEntityAttributeValueStoreShould extends BaseRealIntegrationT
     public void insert_tracked_entity_attribute_value_in_data_base_when_insert() {
         long rowId = trackedEntityAttributeValueStore.insert(trackedEntityAttributeValue);
 
-        Cursor cursor = database().query(TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
-                PROJECTION, null, null, null, null, null);
+        Cursor cursor = databaseAdapter().query(TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), PROJECTION);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor)
@@ -152,8 +151,7 @@ public class TrackedEntityAttributeValueStoreShould extends BaseRealIntegrationT
         database().setTransactionSuccessful();
         database().endTransaction();
 
-        Cursor cursor = database().query(TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
-                PROJECTION, null, null, null, null, null);
+        Cursor cursor = databaseAdapter().query(TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), PROJECTION);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor)
@@ -166,9 +164,7 @@ public class TrackedEntityAttributeValueStoreShould extends BaseRealIntegrationT
     public void insert_nullable_tracked_entity_attribute_value_in_data_base_when_insert_nullable_tracked_entity_attribute_value() {
         long rowId = trackedEntityAttributeValueStore.insert(trackedEntityAttributeValue.toBuilder().value(null).build());
 
-        Cursor cursor = database().query(TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
-                PROJECTION,
-                null, null, null, null, null);
+        Cursor cursor = databaseAdapter().query(TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), PROJECTION);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor)
@@ -182,9 +178,7 @@ public class TrackedEntityAttributeValueStoreShould extends BaseRealIntegrationT
         trackedEntityAttributeValueStore.insert(trackedEntityAttributeValue.toBuilder().value("0").build());
         trackedEntityAttributeValueStore.updateOrInsertWhere(trackedEntityAttributeValue.toBuilder().value("4").build());
 
-        Cursor cursor = database().query(TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), PROJECTION, null,
-                null, null,
-                null, null);
+        Cursor cursor = databaseAdapter().query(TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), PROJECTION);
 
         assertThatCursor(cursor).hasRow(
                 "4",
@@ -246,8 +240,7 @@ public class TrackedEntityAttributeValueStoreShould extends BaseRealIntegrationT
                 IdentifiableColumns.UID + "=?",
                 new String[]{TRACKED_ENTITY_ATTRIBUTE});
 
-        Cursor cursor = database().query(TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
-                PROJECTION, null, null, null, null, null);
+        Cursor cursor = databaseAdapter().query(TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), PROJECTION);
         assertThatCursor(cursor).isExhausted();
     }
 
@@ -259,8 +252,7 @@ public class TrackedEntityAttributeValueStoreShould extends BaseRealIntegrationT
                 TrackedEntityInstanceTableInfo.Columns.UID + "=?",
                 new String[]{TRACKED_ENTITY_INSTANCE});
 
-        Cursor cursor = database().query(TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
-                PROJECTION, null, null, null, null, null);
+        Cursor cursor = databaseAdapter().query(TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), PROJECTION);
         assertThatCursor(cursor).isExhausted();
     }
 

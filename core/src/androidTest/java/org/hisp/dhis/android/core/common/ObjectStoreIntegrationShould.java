@@ -62,7 +62,7 @@ public class ObjectStoreIntegrationShould extends BaseRealIntegrationTest {
     @Test
     public void insert_option_set() {
         store.insert(optionSet);
-        Cursor cursor = getCursor(OptionSetTableInfo.TABLE_INFO.name(), OptionSetTableInfo.TABLE_INFO.columns().all());
+        Cursor cursor = databaseAdapter().query(OptionSetTableInfo.TABLE_INFO.name(), OptionSetTableInfo.TABLE_INFO.columns().all());
         optionSetCursorAssert(cursor, optionSet);
     }
 

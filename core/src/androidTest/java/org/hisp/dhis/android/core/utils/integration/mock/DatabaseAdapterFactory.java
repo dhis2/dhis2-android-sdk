@@ -45,7 +45,7 @@ public class DatabaseAdapterFactory {
     public static void setUp() {
         if (databaseAdapter == null) {
             databaseAdapter = create();
-            databaseAdapter.database().setForeignKeyConstraintsEnabled(false);
+            databaseAdapter.setForeignKeyConstraintsEnabled(false);
         }
     }
 

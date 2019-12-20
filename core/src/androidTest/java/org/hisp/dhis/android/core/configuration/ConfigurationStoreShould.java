@@ -62,8 +62,7 @@ public class ConfigurationStoreShould extends BaseRealIntegrationTest {
     public void persist_row_in_database_when_save() {
         store.save(Configuration.builder().serverUrl(HttpUrl.parse(URL1)).build());
 
-        Cursor cursor = database().query(ConfigurationTableInfo.TABLE_INFO.name(),
-                PROJECTION, null, null, null, null, null);
+        Cursor cursor = databaseAdapter().query(ConfigurationTableInfo.TABLE_INFO.name(), PROJECTION);
 
         assertThatCursor(cursor)
                 .hasRow(1L, URL1)
@@ -75,13 +74,12 @@ public class ConfigurationStoreShould extends BaseRealIntegrationTest {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConfigurationTableInfo.Columns.SERVER_URL, URL1);
 
-        database().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
+        databaseAdapter().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
 
         // trying to configure configuration with server url (which is set to be unique in the table)
         store.save(Configuration.builder().serverUrl(HttpUrl.parse(URL1)).build());
 
-        Cursor cursor = database().query(ConfigurationTableInfo.TABLE_INFO.name(),
-                PROJECTION, null, null, null, null, null);
+        Cursor cursor = databaseAdapter().query(ConfigurationTableInfo.TABLE_INFO.name(), PROJECTION);
         assertThatCursor(cursor)
                 .hasRow(2L, URL1)
                 .isExhausted();
@@ -92,13 +90,12 @@ public class ConfigurationStoreShould extends BaseRealIntegrationTest {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConfigurationTableInfo.Columns.SERVER_URL, URL1);
 
-        database().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
+        databaseAdapter().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
 
         HttpUrl url = HttpUrl.parse(URL2);
         store.save(Configuration.builder().serverUrl(url).build());
 
-        Cursor cursor = database().query(ConfigurationTableInfo.TABLE_INFO.name(),
-                PROJECTION, null, null, null, null, null);
+        Cursor cursor = databaseAdapter().query(ConfigurationTableInfo.TABLE_INFO.name(), PROJECTION);
         assertThatCursor(cursor)
                 .hasRow(2L, URL2)
                 .isExhausted();
@@ -109,12 +106,11 @@ public class ConfigurationStoreShould extends BaseRealIntegrationTest {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConfigurationTableInfo.Columns.SERVER_URL, URL1);
 
-        database().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
+        databaseAdapter().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
 
         long deleted = store.delete();
 
-        Cursor cursor = database().query(ConfigurationTableInfo.TABLE_INFO.name(),
-                PROJECTION, null, null, null, null, null);
+        Cursor cursor = databaseAdapter().query(ConfigurationTableInfo.TABLE_INFO.name(), PROJECTION);
         assertThat(deleted).isEqualTo(1);
         assertThatCursor(cursor).isExhausted();
     }
@@ -130,7 +126,7 @@ public class ConfigurationStoreShould extends BaseRealIntegrationTest {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConfigurationTableInfo.Columns.SERVER_URL, URL1);
 
-        database().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
+        databaseAdapter().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
 
         HttpUrl url = HttpUrl.parse(URL2);
         store.save(Configuration.builder().serverUrl(url).build());

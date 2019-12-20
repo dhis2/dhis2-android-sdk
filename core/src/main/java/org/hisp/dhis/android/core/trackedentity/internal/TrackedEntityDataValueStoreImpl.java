@@ -134,7 +134,7 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
     private Map<String, List<TrackedEntityDataValue>> queryTrackedEntityDataValues(String queryStatement) {
 
         List<TrackedEntityDataValue> dataValueList = new ArrayList<>();
-        Cursor cursor = databaseAdapter.query(queryStatement);
+        Cursor cursor = databaseAdapter.rawQuery(queryStatement);
         addObjectsToCollection(cursor, dataValueList);
 
         Map<String, List<TrackedEntityDataValue>> dataValuesMap = new HashMap<>();

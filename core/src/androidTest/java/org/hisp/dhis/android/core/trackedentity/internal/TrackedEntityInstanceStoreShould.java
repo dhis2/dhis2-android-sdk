@@ -100,8 +100,8 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
         trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter());
         OrganisationUnit organisationUnit = OrganisationUnitSamples.getOrganisationUnit(ORGANISATION_UNIT);
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, TRACKED_ENTITY);
-        database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
-        database().insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType);
+        databaseAdapter().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
+        databaseAdapter().insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType);
         trackedEntityInstance = TrackedEntityInstance.builder()
                 .uid(UID)
                 .created(date)
@@ -119,12 +119,11 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
     public void delete_tei_in_data_base_when_delete_organisation_unit_foreign_key() {
         trackedEntityInstanceStore.insert(trackedEntityInstance);
 
-        database().delete(OrganisationUnitTableInfo.TABLE_INFO.name(),
+        databaseAdapter().delete(OrganisationUnitTableInfo.TABLE_INFO.name(),
                 IdentifiableColumns.UID + "=?",
                 new String[]{ ORGANISATION_UNIT });
 
-        Cursor cursor = database().query(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), PROJECTION, null, null,
-                null, null, null);
+        Cursor cursor = databaseAdapter().query(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), PROJECTION);
         assertThatCursor(cursor).isExhausted();
     }
 
@@ -132,12 +131,11 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
     public void delete_tracked_entity_instance_in_data_base_when_delete_tracked_entity_foreign_key() {
         trackedEntityInstanceStore.insert(trackedEntityInstance);
 
-        database().delete(TrackedEntityTypeTableInfo.TABLE_INFO.name(),
+        databaseAdapter().delete(TrackedEntityTypeTableInfo.TABLE_INFO.name(),
                 TrackedEntityTypeTableInfo.Columns.UID + "=?",
                 new String[]{ TRACKED_ENTITY} );
 
-        Cursor cursor = database().query(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), PROJECTION, null, null,
-                null, null, null);
+        Cursor cursor = databaseAdapter().query(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), PROJECTION);
         assertThatCursor(cursor).isExhausted();
     }
 
@@ -149,7 +147,7 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
         trackedEntityInstance.put(Columns.TRACKED_ENTITY_TYPE, TRACKED_ENTITY);
         trackedEntityInstance.put(DataColumns.STATE, STATE.name());
 
-        database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstance);
+        databaseAdapter().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstance);
 
         String[] projection = {
                 Columns.UID,
@@ -158,13 +156,13 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
                 DataColumns.STATE
         };
 
-        Cursor cursor = database().query(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), projection, null, null, null, null, null);
+        Cursor cursor = databaseAdapter().query(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), projection);
         // check that tracked entity instance was successfully inserted
         assertThatCursor(cursor).hasRow(UID, ORGANISATION_UNIT, TRACKED_ENTITY, STATE).isExhausted();
         State updatedState = State.SYNCED;
         trackedEntityInstanceStore.setState(UID, updatedState);
 
-        cursor = database().query(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), projection, null, null, null, null, null);
+        cursor = databaseAdapter().query(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), projection);
 
         // check that trackedEntityInstance is updated with updated state
         assertThatCursor(cursor).hasRow(UID, ORGANISATION_UNIT, TRACKED_ENTITY, updatedState).isExhausted();
@@ -177,10 +175,10 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
         trackedEntityInstanceContentValues.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
         trackedEntityInstanceContentValues.put(Columns.TRACKED_ENTITY_TYPE, TRACKED_ENTITY);
         trackedEntityInstanceContentValues.put(DataColumns.STATE, State.TO_POST.name());
-        database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstanceContentValues);
+        databaseAdapter().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstanceContentValues);
 
         String[] projection = {Columns.UID};
-        Cursor cursor = database().query(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), projection, null, null, null, null, null);
+        Cursor cursor = databaseAdapter().query(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), projection);
         // verify that tei was successfully inserted into database
         assertThatCursor(cursor).hasRow(UID).isExhausted();
 

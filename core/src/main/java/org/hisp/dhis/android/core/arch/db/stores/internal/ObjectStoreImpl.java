@@ -71,7 +71,7 @@ public class ObjectStoreImpl<M extends CoreObject> extends ReadableStoreImpl<M> 
 
     @Override
     public List<String> selectStringColumnsWhereClause(String column, String clause) {
-        Cursor cursor = databaseAdapter.query(builder.selectColumnWhere(column, clause));
+        Cursor cursor = databaseAdapter.rawQuery(builder.selectColumnWhere(column, clause));
         return mapStringColumnSetFromCursor(cursor);
     }
 
@@ -107,7 +107,7 @@ public class ObjectStoreImpl<M extends CoreObject> extends ReadableStoreImpl<M> 
 
     @Override
     public boolean deleteWhere(String clause) {
-        return databaseAdapter.database().delete(builder.getTableName(), clause, null) > 0;
+        return databaseAdapter.delete(builder.getTableName(), clause, null) > 0;
     }
 
     @Override

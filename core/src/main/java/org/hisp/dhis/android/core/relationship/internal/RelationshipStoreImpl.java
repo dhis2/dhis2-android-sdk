@@ -72,7 +72,7 @@ public final class RelationshipStoreImpl extends IdentifiableObjectStoreImpl<Rel
                 "WHERE " + whereClause + ";";
 
         List<Relationship> relationships = new ArrayList<>();
-        addObjectsToCollection(databaseAdapter.query(queryStatement), relationships);
+        addObjectsToCollection(databaseAdapter.rawQuery(queryStatement), relationships);
 
         return relationships;
     }

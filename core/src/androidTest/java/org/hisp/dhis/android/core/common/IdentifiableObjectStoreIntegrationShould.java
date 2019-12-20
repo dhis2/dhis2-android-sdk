@@ -63,7 +63,7 @@ public class IdentifiableObjectStoreIntegrationShould extends BaseRealIntegratio
     }
 
     private Cursor getCursor() {
-        return getCursor(OptionSetTableInfo.TABLE_INFO.name(), OptionSetTableInfo.TABLE_INFO.columns().all());
+        return databaseAdapter().query(OptionSetTableInfo.TABLE_INFO.name(), OptionSetTableInfo.TABLE_INFO.columns().all());
     }
 
     @Test

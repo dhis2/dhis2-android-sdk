@@ -140,12 +140,12 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
                     " FROM " + EventTableInfo.TABLE_INFO.name() + whereStatement + ") b " +
                 "ON a." + IdentifiableColumns.UID + " = b." + Columns.ENROLLMENT;
 
-        return processCount(databaseAdapter.query(query));
+        return processCount(databaseAdapter.rawQuery(query));
     }
 
     private List<Event> eventListFromQuery(String query) {
         List<Event> eventList = new ArrayList<>();
-        Cursor cursor = databaseAdapter.query(query);
+        Cursor cursor = databaseAdapter.rawQuery(query);
         addObjectsToCollection(cursor, eventList);
         return eventList;
     }

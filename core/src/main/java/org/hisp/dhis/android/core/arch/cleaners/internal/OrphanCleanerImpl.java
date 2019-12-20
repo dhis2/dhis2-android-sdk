@@ -58,6 +58,6 @@ public class OrphanCleanerImpl<P extends ObjectWithUidInterface, C extends Objec
                 parentColumn + "='" + parent.uid() + "'"
                 + " AND "
                 + IdentifiableColumns.UID + " NOT IN (" + childrenUids + ");";
-        return databaseAdapter.database().delete(tableName, clause, null) > 0;
+        return databaseAdapter.delete(tableName, clause, null) > 0;
     }
 }

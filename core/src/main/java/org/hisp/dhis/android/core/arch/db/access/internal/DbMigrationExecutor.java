@@ -41,32 +41,42 @@ public class DbMigrationExecutor {
     private final SQLiteDatabase database;
     private final DbMigrationParser parser;
 
+    private static final int SNAPSHOT_VERSION = 64;
+
     public DbMigrationExecutor(SQLiteDatabase database, AssetManager assetManager) {
         this.database = database;
         this.parser = new DbMigrationParser(assetManager);
     }
 
     public void upgradeFromTo(int oldVersion, int newVersion) {
-        try {
-            upgradeList(parser.parseList(oldVersion, newVersion));
-        } catch (IOException e) {
-            Log.e("Database Error:", e.getMessage());
-        }
-    }
-
-    private void upgradeList(List<Map<String, List<String>>> scripts) {
         database.beginTransaction();
         try {
-            for (Map<String, List<String>> script : scripts) {
-                upgradeVersion(database, script);
-            }
+            int initialMigrationVersion = performSnapshotIfRequired(oldVersion, newVersion);
+            executeFilesSQL(parser.parseMigrations(initialMigrationVersion, newVersion));
             database.setTransactionSuccessful();
+        } catch (IOException e) {
+            Log.e("Database Error:", e.getMessage());
         } finally {
             database.endTransaction();
         }
     }
 
-    private void upgradeVersion(SQLiteDatabase database, Map<String, List<String>> scripts) {
+    private int performSnapshotIfRequired(int oldVersion, int newVersion) throws IOException {
+        if (oldVersion == 0 && newVersion >= SNAPSHOT_VERSION) {
+            executeFileSQL(parser.parseSnapshot(SNAPSHOT_VERSION));
+            return SNAPSHOT_VERSION;
+        } else {
+            return oldVersion;
+        }
+    }
+
+    private void executeFilesSQL(List<Map<String, List<String>>> scripts) {
+        for (Map<String, List<String>> script : scripts) {
+            executeFileSQL(script);
+        }
+    }
+
+    private void executeFileSQL(Map<String, List<String>> scripts) {
         List<String> ups = scripts.get("up");
         if (ups != null) {
             for (String script : ups) {

@@ -26,57 +26,52 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access;
+package org.hisp.dhis.android.core.arch.db.access.internal;
 
-import android.content.Context;
 import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Build;
+import android.util.Log;
 
-import org.hisp.dhis.android.core.arch.db.access.internal.DbMigrationExecutor;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
+public class DbMigrationExecutor {
 
-public class DbOpenHelper extends SQLiteOpenHelper {
+    private final SQLiteDatabase database;
+    private final DbMigrationParser parser;
 
-    public static final int VERSION = 64;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        this(context, databaseName, VERSION);
+    public DbMigrationExecutor(SQLiteDatabase database, AssetManager assetManager) {
+        this.database = database;
+        this.parser = new DbMigrationParser(assetManager);
     }
 
-    @VisibleForTesting
-    public DbOpenHelper(Context context, String databaseName, int targetVersion) {
-        super(context, databaseName, null, targetVersion);
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
-
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            db.setForeignKeyConstraintsEnabled(true);
+    public void upgradeFromTo(int oldVersion, int newVersion) {
+        try {
+            upgradeList(parser.parseList(oldVersion, newVersion));
+        } catch (IOException e) {
+            Log.e("Database Error:", e.getMessage());
         }
-
-        db.enableWriteAheadLogging();
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        new DbMigrationExecutor(db, assetManager).upgradeFromTo(0, targetVersion);
+    private void upgradeList(List<Map<String, List<String>>> scripts) {
+        database.beginTransaction();
+        try {
+            for (Map<String, List<String>> script : scripts) {
+                upgradeVersion(database, script);
+            }
+            database.setTransactionSuccessful();
+        } finally {
+            database.endTransaction();
+        }
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        new DbMigrationExecutor(db, assetManager).upgradeFromTo(oldVersion, newVersion);
+    private void upgradeVersion(SQLiteDatabase database, Map<String, List<String>> scripts) {
+        List<String> ups = scripts.get("up");
+        if (ups != null) {
+            for (String script : ups) {
+                database.execSQL(script);
+            }
+        }
     }
 }

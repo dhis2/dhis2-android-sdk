@@ -30,9 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
-
-import androidx.test.runner.AndroidJUnit4;
 
 import com.google.common.collect.Lists;
 
@@ -58,6 +55,8 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -232,7 +231,7 @@ public class TrackedEntityAttributeValueStoreShould extends BaseRealIntegrationT
         trackedEntityAttributeValueStore.insert(trackedEntityAttributeValue.toBuilder().trackedEntityAttribute("wrong").build());
     }
 
-    @Test(expected = SQLiteConstraintException.class)
+    @Test(expected = RuntimeException.class)
     public void
     throw_sqlite_constraint_exception_when_insert_tracked_entity_attribute_value_with_invalid_tracked_entity_instance() {
         trackedEntityAttributeValueStore.insert(trackedEntityAttributeValue.toBuilder().trackedEntityInstance("wrong").build());
@@ -266,12 +265,12 @@ public class TrackedEntityAttributeValueStoreShould extends BaseRealIntegrationT
     }
 
 
-    @Test(expected = SQLiteConstraintException.class)
+    @Test(expected = RuntimeException.class)
     public void throw_illegal_argument_exception_when_insert_null_tracked_entity_attribute() {
         trackedEntityAttributeValueStore.insert(trackedEntityAttributeValue.toBuilder().trackedEntityAttribute(null).build());
     }
 
-    @Test(expected = SQLiteConstraintException.class)
+    @Test(expected = RuntimeException.class)
     public void throw_illegal_argument_exception_when_insert_null_tracked_entity_instance() {
         trackedEntityAttributeValueStore.insert(trackedEntityAttributeValue.toBuilder().trackedEntityInstance(null).build());
     }

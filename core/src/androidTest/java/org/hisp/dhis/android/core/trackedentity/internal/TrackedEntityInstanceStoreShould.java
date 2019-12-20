@@ -30,9 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
-
-import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.FeatureType;
@@ -56,6 +53,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -200,12 +199,12 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
 
     }
 
-    @Test(expected = SQLiteConstraintException.class)
+    @Test(expected = RuntimeException.class)
     public void throw_sqlite_constraint_exception_when_insert_tracked_entity_instance_with_invalid_org_unit_foreign_key() {
         trackedEntityInstanceStore.insert(trackedEntityInstance.toBuilder().organisationUnit("wrong").build());
     }
 
-    @Test(expected = SQLiteConstraintException.class)
+    @Test(expected = RuntimeException.class)
     public void throw_sqlite_constraint_exception_when_insert_tracked_entity_instance_with_invalid_tracked_entity_foreign_key() {
         trackedEntityInstanceStore.insert(trackedEntityInstance.toBuilder().trackedEntityType("wrong").build());
     }

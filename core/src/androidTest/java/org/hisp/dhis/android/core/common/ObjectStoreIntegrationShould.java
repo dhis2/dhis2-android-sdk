@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.common;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.option.OptionSet;
@@ -72,7 +71,7 @@ public class ObjectStoreIntegrationShould extends BaseRealIntegrationTest {
         store.insert(null);
     }
 
-    @Test(expected = SQLiteConstraintException.class)
+    @Test(expected = RuntimeException.class)
     public void throw_exception_for_second_identical_insertion() {
         store.insert(this.optionSet);
         store.insert(this.optionSet);

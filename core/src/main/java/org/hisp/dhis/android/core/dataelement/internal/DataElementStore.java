@@ -28,19 +28,16 @@
 
 package org.hisp.dhis.android.core.dataelement.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableWithStyleStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
+import androidx.annotation.NonNull;
 
 public final class DataElementStore {
 
@@ -48,17 +45,17 @@ public final class DataElementStore {
 
     private static StatementBinder<DataElement> BINDER = new NameableWithStyleStatementBinder<DataElement>() {
         @Override
-        public void bindToStatement(@NonNull DataElement o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 13, o.valueType());
-            sqLiteBind(sqLiteStatement, 14, o.zeroIsSignificant());
-            sqLiteBind(sqLiteStatement, 15, o.aggregationType());
-            sqLiteBind(sqLiteStatement, 16, o.formName());
-            sqLiteBind(sqLiteStatement, 17, o.domainType());
-            sqLiteBind(sqLiteStatement, 18, o.displayFormName());
-            sqLiteBind(sqLiteStatement, 19, o.optionSetUid());
-            sqLiteBind(sqLiteStatement, 20, o.categoryComboUid());
-            sqLiteBind(sqLiteStatement, 21, o.fieldMask());
+        public void bindToStatement(@NonNull DataElement o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(13, o.valueType());
+            w.bind(14, o.zeroIsSignificant());
+            w.bind(15, o.aggregationType());
+            w.bind(16, o.formName());
+            w.bind(17, o.domainType());
+            w.bind(18, o.displayFormName());
+            w.bind(19, o.optionSetUid());
+            w.bind(20, o.categoryComboUid());
+            w.bind(21, o.fieldMask());
         }
     };
 

@@ -41,17 +41,15 @@ import org.hisp.dhis.android.core.relationship.RelationshipTableInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class RelationshipStoreImpl extends IdentifiableObjectStoreImpl<Relationship>
         implements RelationshipStore {
 
-    private static StatementBinder<Relationship> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.uid());
-        sqLiteBind(sqLiteStatement, 2, o.name());
-        sqLiteBind(sqLiteStatement, 3, o.created());
-        sqLiteBind(sqLiteStatement, 4, o.lastUpdated());
-        sqLiteBind(sqLiteStatement, 5, o.relationshipType());
+    private static StatementBinder<Relationship> BINDER = (o, w) -> {
+        w.bind(1, o.uid());
+        w.bind(2, o.name());
+        w.bind(3, o.created());
+        w.bind(4, o.lastUpdated());
+        w.bind(5, o.relationshipType());
     };
 
     private RelationshipStoreImpl(DatabaseAdapter databaseAdapter,

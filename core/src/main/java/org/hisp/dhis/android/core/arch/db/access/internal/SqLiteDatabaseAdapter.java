@@ -30,11 +30,12 @@ package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.SQLStatementWrapper;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 
 import androidx.annotation.NonNull;
 
@@ -58,8 +59,8 @@ public class SqLiteDatabaseAdapter implements DatabaseAdapter {
     }
 
     @Override
-    public SQLiteStatement compileStatement(String sql) {
-        return database().compileStatement(sql);
+    public StatementWrapper compileStatement(String sql) {
+        return new SQLStatementWrapper(database().compileStatement(sql));
     }
 
     @Override
@@ -68,12 +69,12 @@ public class SqLiteDatabaseAdapter implements DatabaseAdapter {
     }
 
     @Override
-    public long executeInsert(String table, SQLiteStatement sqLiteStatement) {
+    public long executeInsert(String table, StatementWrapper sqLiteStatement) {
         return sqLiteStatement.executeInsert();
     }
 
     @Override
-    public int executeUpdateDelete(String table, SQLiteStatement sqLiteStatement) {
+    public int executeUpdateDelete(String table, StatementWrapper sqLiteStatement) {
         return sqLiteStatement.executeUpdateDelete();
     }
 

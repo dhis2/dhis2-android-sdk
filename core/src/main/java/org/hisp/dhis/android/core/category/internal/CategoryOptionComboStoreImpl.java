@@ -28,14 +28,13 @@
 
 package org.hisp.dhis.android.core.category.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
@@ -44,8 +43,6 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
 public final class CategoryOptionComboStoreImpl extends IdentifiableObjectStoreImpl<CategoryOptionCombo>
         implements CategoryOptionComboStore {
@@ -68,9 +65,9 @@ public final class CategoryOptionComboStoreImpl extends IdentifiableObjectStoreI
             = new IdentifiableStatementBinder<CategoryOptionCombo>() {
 
         @Override
-        public void bindToStatement(@NonNull CategoryOptionCombo o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, UidsHelper.getUidOrNull(o.categoryCombo()));
+        public void bindToStatement(@NonNull CategoryOptionCombo o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(7, UidsHelper.getUidOrNull(o.categoryCombo()));
         }
     };
 

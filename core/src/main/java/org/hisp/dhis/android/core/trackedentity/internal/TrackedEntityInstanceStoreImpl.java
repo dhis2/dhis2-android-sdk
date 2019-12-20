@@ -42,24 +42,22 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 
 import java.util.List;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class TrackedEntityInstanceStoreImpl
         extends IdentifiableDeletableDataObjectStoreImpl<TrackedEntityInstance>
         implements TrackedEntityInstanceStore {
 
-    private static final StatementBinder<TrackedEntityInstance> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.uid());
-        sqLiteBind(sqLiteStatement, 2, o.created());
-        sqLiteBind(sqLiteStatement, 3, o.lastUpdated());
-        sqLiteBind(sqLiteStatement, 4, o.createdAtClient());
-        sqLiteBind(sqLiteStatement, 5, o.lastUpdatedAtClient());
-        sqLiteBind(sqLiteStatement, 6, o.organisationUnit());
-        sqLiteBind(sqLiteStatement, 7, o.trackedEntityType());
-        sqLiteBind(sqLiteStatement, 8, o.geometry() == null ? null : o.geometry().type());
-        sqLiteBind(sqLiteStatement, 9, o.geometry() == null ? null : o.geometry().coordinates());
-        sqLiteBind(sqLiteStatement, 10, o.state());
-        sqLiteBind(sqLiteStatement, 11, o.deleted());
+    private static final StatementBinder<TrackedEntityInstance> BINDER = (o, w) -> {
+        w.bind(1, o.uid());
+        w.bind(2, o.created());
+        w.bind(3, o.lastUpdated());
+        w.bind(4, o.createdAtClient());
+        w.bind(5, o.lastUpdatedAtClient());
+        w.bind(6, o.organisationUnit());
+        w.bind(7, o.trackedEntityType());
+        w.bind(8, o.geometry() == null ? null : o.geometry().type());
+        w.bind(9, o.geometry() == null ? null : o.geometry().coordinates());
+        w.bind(10, o.state());
+        w.bind(11, o.deleted());
     };
 
     public TrackedEntityInstanceStoreImpl(DatabaseAdapter databaseAdapter,

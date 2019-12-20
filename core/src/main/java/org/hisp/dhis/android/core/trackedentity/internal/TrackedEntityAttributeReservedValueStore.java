@@ -44,36 +44,31 @@ import java.util.Date;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class TrackedEntityAttributeReservedValueStore
         extends ObjectWithoutUidStoreImpl<TrackedEntityAttributeReservedValue>
         implements TrackedEntityAttributeReservedValueStoreInterface {
 
-    private static final StatementBinder<TrackedEntityAttributeReservedValue> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.ownerObject());
-        sqLiteBind(sqLiteStatement, 2, o.ownerUid());
-        sqLiteBind(sqLiteStatement, 3, o.key());
-        sqLiteBind(sqLiteStatement, 4, o.value());
-        sqLiteBind(sqLiteStatement, 5, o.created());
-        sqLiteBind(sqLiteStatement, 6, o.expiryDate());
-        sqLiteBind(sqLiteStatement, 7, o.organisationUnit());
-        sqLiteBind(sqLiteStatement, 8, o.temporalValidityDate());
+    private static final StatementBinder<TrackedEntityAttributeReservedValue> BINDER = (o, w) -> {
+        w.bind(1, o.ownerObject());
+        w.bind(2, o.ownerUid());
+        w.bind(3, o.key());
+        w.bind(4, o.value());
+        w.bind(5, o.created());
+        w.bind(6, o.expiryDate());
+        w.bind(7, o.organisationUnit());
+        w.bind(8, o.temporalValidityDate());
     };
 
-    private static final WhereStatementBinder<TrackedEntityAttributeReservedValue> WHERE_UPDATE_BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 9, o.ownerUid());
-        sqLiteBind(sqLiteStatement, 10, o.value());
-        sqLiteBind(sqLiteStatement, 11, o.organisationUnit());
+    private static final WhereStatementBinder<TrackedEntityAttributeReservedValue> WHERE_UPDATE_BINDER = (o, w) -> {
+        w.bind(9, o.ownerUid());
+        w.bind(10, o.value());
+        w.bind(11, o.organisationUnit());
     };
 
-    private static final WhereStatementBinder<TrackedEntityAttributeReservedValue> WHERE_DELETE_BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.ownerUid());
-        sqLiteBind(sqLiteStatement, 2, o.value());
-        sqLiteBind(sqLiteStatement, 3, o.organisationUnit());
+    private static final WhereStatementBinder<TrackedEntityAttributeReservedValue> WHERE_DELETE_BINDER = (o, w) -> {
+        w.bind(1, o.ownerUid());
+        w.bind(2, o.value());
+        w.bind(3, o.organisationUnit());
     };
 
     private TrackedEntityAttributeReservedValueStore(

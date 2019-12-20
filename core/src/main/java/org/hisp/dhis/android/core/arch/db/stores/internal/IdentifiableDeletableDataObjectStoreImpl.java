@@ -28,22 +28,20 @@
 
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.DeletableDataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
+import androidx.annotation.NonNull;
+
 import static org.hisp.dhis.android.core.common.DataColumns.STATE;
 import static org.hisp.dhis.android.core.common.DeletableDataColumns.DELETED;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
@@ -53,8 +51,8 @@ public class IdentifiableDeletableDataObjectStoreImpl<M extends ObjectWithUidInt
 
     private final static String EQ = " = ";
 
-    private final SQLiteStatement setStateIfUploadingStatement;
-    private final SQLiteStatement setDeletedStatement;
+    private final StatementWrapper setStateIfUploadingStatement;
+    private final StatementWrapper setDeletedStatement;
 
     public IdentifiableDeletableDataObjectStoreImpl(DatabaseAdapter databaseAdapter,
                                                     SQLStatementWrapper statements,
@@ -96,10 +94,10 @@ public class IdentifiableDeletableDataObjectStoreImpl<M extends ObjectWithUidInt
     }
 
     private void setStateIfUploading(@NonNull String uid, @NonNull State state) {
-        sqLiteBind(setStateIfUploadingStatement, 1, state);
+        setStateIfUploadingStatement.bind(1, state);
 
         // bind the where argument
-        sqLiteBind(setStateIfUploadingStatement, 2, uid);
+        setStateIfUploadingStatement.bind(2, uid);
 
         databaseAdapter.executeUpdateDelete(tableName, setStateIfUploadingStatement);
         setStateIfUploadingStatement.clearBindings();
@@ -107,7 +105,7 @@ public class IdentifiableDeletableDataObjectStoreImpl<M extends ObjectWithUidInt
 
     @Override
     public int setDeleted(@NonNull String uid) {
-        sqLiteBind(setDeletedStatement, 1, uid);
+        setDeletedStatement.bind(1, uid);
 
         int updatedRow = databaseAdapter.executeUpdateDelete(tableName, setDeletedStatement);
         setDeletedStatement.clearBindings();

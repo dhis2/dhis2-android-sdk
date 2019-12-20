@@ -28,24 +28,23 @@
 
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.CoreObject;
+
+import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isNull;
 
 public class ObjectWithoutUidStoreImpl<M extends CoreObject>
         extends ObjectStoreImpl<M> implements ObjectWithoutUidStore<M> {
-    private final SQLiteStatement updateWhereStatement;
-    private final SQLiteStatement deleteWhereStatement;
+    private final StatementWrapper updateWhereStatement;
+    private final StatementWrapper deleteWhereStatement;
     private final WhereStatementBinder<M> whereUpdateBinder;
     private final WhereStatementBinder<M> whereDeleteBinder;
 

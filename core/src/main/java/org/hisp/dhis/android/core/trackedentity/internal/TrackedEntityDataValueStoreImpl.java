@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 
 import android.database.Cursor;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
@@ -49,32 +47,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
+import androidx.annotation.NonNull;
 
 public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStoreImpl<TrackedEntityDataValue>
         implements TrackedEntityDataValueStore {
 
-    private static final StatementBinder<TrackedEntityDataValue> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.event());
-        sqLiteBind(sqLiteStatement, 2, o.created());
-        sqLiteBind(sqLiteStatement, 3, o.lastUpdated());
-        sqLiteBind(sqLiteStatement, 4, o.dataElement());
-        sqLiteBind(sqLiteStatement, 5, o.storedBy());
-        sqLiteBind(sqLiteStatement, 6, o.value());
-        sqLiteBind(sqLiteStatement, 7, o.providedElsewhere());
+    private static final StatementBinder<TrackedEntityDataValue> BINDER = (o, w) -> {
+        w.bind(1, o.event());
+        w.bind(2, o.created());
+        w.bind(3, o.lastUpdated());
+        w.bind(4, o.dataElement());
+        w.bind(5, o.storedBy());
+        w.bind(6, o.value());
+        w.bind(7, o.providedElsewhere());
     };
 
-    private static final WhereStatementBinder<TrackedEntityDataValue> WHERE_UPDATE_BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 8, o.event());
-        sqLiteBind(sqLiteStatement, 9, o.dataElement());
+    private static final WhereStatementBinder<TrackedEntityDataValue> WHERE_UPDATE_BINDER = (o, w) -> {
+        w.bind(8, o.event());
+        w.bind(9, o.dataElement());
     };
 
-    private static final WhereStatementBinder<TrackedEntityDataValue> WHERE_DELETE_BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.event());
-        sqLiteBind(sqLiteStatement, 2, o.dataElement());
+    private static final WhereStatementBinder<TrackedEntityDataValue> WHERE_DELETE_BINDER = (o, w) -> {
+        w.bind(1, o.event());
+        w.bind(2, o.dataElement());
     };
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(

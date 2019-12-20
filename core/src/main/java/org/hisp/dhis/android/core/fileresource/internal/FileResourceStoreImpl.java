@@ -37,19 +37,17 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObject
 import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class FileResourceStoreImpl extends IdentifiableDataObjectStoreImpl<FileResource> {
 
-    private static final StatementBinder<FileResource> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.uid());
-        sqLiteBind(sqLiteStatement, 2, o.name());
-        sqLiteBind(sqLiteStatement, 3, o.created());
-        sqLiteBind(sqLiteStatement, 4, o.lastUpdated());
-        sqLiteBind(sqLiteStatement, 5, o.contentType());
-        sqLiteBind(sqLiteStatement, 6, o.contentLength());
-        sqLiteBind(sqLiteStatement, 7, o.path());
-        sqLiteBind(sqLiteStatement, 8, o.state());
+    private static final StatementBinder<FileResource> BINDER = (o, w) -> {
+        w.bind(1, o.uid());
+        w.bind(2, o.name());
+        w.bind(3, o.created());
+        w.bind(4, o.lastUpdated());
+        w.bind(5, o.contentType());
+        w.bind(6, o.contentLength());
+        w.bind(7, o.path());
+        w.bind(8, o.state());
     };
 
     private FileResourceStoreImpl(DatabaseAdapter databaseAdapter,

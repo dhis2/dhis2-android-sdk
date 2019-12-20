@@ -28,23 +28,19 @@
 
 package org.hisp.dhis.android.core.arch.db.stores.binders.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.common.IdentifiableObject;
 
 import androidx.annotation.NonNull;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public abstract class IdentifiableStatementBinder<O extends IdentifiableObject> implements StatementBinder<O> {
 
     @Override
-    public void bindToStatement(@NonNull O o, @NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, o.uid());
-        sqLiteBind(sqLiteStatement, 2, o.code());
-        sqLiteBind(sqLiteStatement, 3, o.name());
-        sqLiteBind(sqLiteStatement, 4, o.displayName());
-        sqLiteBind(sqLiteStatement, 5, o.created());
-        sqLiteBind(sqLiteStatement, 6, o.lastUpdated());
+    public void bindToStatement(@NonNull O o, @NonNull StatementWrapper w) {
+        w.bind(1, o.uid());
+        w.bind(2, o.code());
+        w.bind(3, o.name());
+        w.bind(4, o.displayName());
+        w.bind(5, o.created());
+        w.bind(6, o.lastUpdated());
     }
 }

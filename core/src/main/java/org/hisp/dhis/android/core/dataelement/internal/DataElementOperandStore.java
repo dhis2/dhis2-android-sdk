@@ -36,15 +36,12 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class DataElementOperandStore {
 
-    private static final StatementBinder<DataElementOperand> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.uid());
-        sqLiteBind(sqLiteStatement, 2, UidsHelper.getUidOrNull(o.dataElement()));
-        sqLiteBind(sqLiteStatement, 3, UidsHelper.getUidOrNull(o.categoryOptionCombo()));
+    private static final StatementBinder<DataElementOperand> BINDER = (o, w) -> {
+        w.bind(1, o.uid());
+        w.bind(2, UidsHelper.getUidOrNull(o.dataElement()));
+        w.bind(3, UidsHelper.getUidOrNull(o.categoryOptionCombo()));
     };
 
     private DataElementOperandStore() {}

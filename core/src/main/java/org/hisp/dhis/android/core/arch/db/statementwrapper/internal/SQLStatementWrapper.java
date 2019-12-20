@@ -28,15 +28,14 @@
 
 package org.hisp.dhis.android.core.arch.db.statementwrapper.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 
 public class SQLStatementWrapper {
-    public final SQLiteStatement insert;
-    public final SQLiteStatement update;
-    public final SQLiteStatement deleteById;
+    public final StatementWrapper insert;
+    public final StatementWrapper update;
+    public final StatementWrapper deleteById;
     public final String selectUids;
 
     public SQLStatementWrapper(SQLStatementBuilder builder, DatabaseAdapter databaseAdapter) {

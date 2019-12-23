@@ -61,7 +61,6 @@ public class MockIntegrationTestObjects {
     public final Dhis2MockServer dhis2MockServer;
     public final MockIntegrationTestDatabaseContent content;
     private final String dbName;
-    private final CredentialsSecureStore credentialsSecureStore;
 
     MockIntegrationTestObjects(MockIntegrationTestDatabaseContent content) throws Exception {
         this.content = content;
@@ -79,7 +78,7 @@ public class MockIntegrationTestObjects {
 
         database = d2.databaseAdapter().database();
         databaseAdapter = d2.databaseAdapter();
-        credentialsSecureStore = new CredentialsSecureStoreImpl(context);
+        CredentialsSecureStore credentialsSecureStore = new CredentialsSecureStoreImpl(context);
 
         d2DIComponent = D2DIComponent.create(context, d2.retrofit(), databaseAdapter, credentialsSecureStore);
 

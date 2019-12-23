@@ -62,7 +62,7 @@ class DbMigrationParser {
         return parseFile("snapshots", version);
     }
 
-    Map<String, List<String>> parseMigration(int version) throws IOException {
+    private Map<String, List<String>> parseMigration(int version) throws IOException {
         return parseFile("migrations", version);
     }
 

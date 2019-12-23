@@ -38,19 +38,19 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public class DbMigrationExecutor {
+class DbMigrationExecutor {
 
     private final DatabaseAdapter databaseAdapter;
     private final DbMigrationParser parser;
 
     private static final int SNAPSHOT_VERSION = 64;
 
-    public DbMigrationExecutor(DatabaseAdapter databaseAdapter, AssetManager assetManager) {
+    DbMigrationExecutor(DatabaseAdapter databaseAdapter, AssetManager assetManager) {
         this.databaseAdapter = databaseAdapter;
         this.parser = new DbMigrationParser(assetManager);
     }
 
-    public void upgradeFromTo(int oldVersion, int newVersion) {
+    void upgradeFromTo(int oldVersion, int newVersion) {
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
             int initialMigrationVersion = performSnapshotIfRequired(oldVersion, newVersion);

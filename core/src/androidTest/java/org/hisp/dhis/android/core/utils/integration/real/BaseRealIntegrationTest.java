@@ -68,7 +68,7 @@ public abstract class BaseRealIntegrationTest {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
 
         DbOpenHelper dbOpenHelper = new DbOpenHelper(context, null);
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper.getWritableDatabase());
         credentialsSecureStore = new CredentialsSecureStoreImpl(context);
         resourceHandler = ResourceHandler.create(databaseAdapter);
         resourceHandler.setServerDate(serverDate);

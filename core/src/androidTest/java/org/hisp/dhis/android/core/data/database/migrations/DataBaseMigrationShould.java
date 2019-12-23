@@ -93,7 +93,7 @@ public class DataBaseMigrationShould {
         dbOpenHelper = new DbOpenHelper(
                 InstrumentationRegistry.getTargetContext().getApplicationContext()
                 , dbName, databaseVersion);
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper.getWritableDatabase());
         return databaseAdapter;
     }
 }

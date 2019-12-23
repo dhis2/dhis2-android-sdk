@@ -150,7 +150,7 @@ public final class D2Manager {
 
     private static DatabaseAdapter newDatabaseAdapter() {
         DbOpenHelper dbOpenHelper = new DbOpenHelper(d2Configuration.context(), databaseName);
-        return new SqLiteDatabaseAdapter(dbOpenHelper);
+        return new SqLiteDatabaseAdapter(dbOpenHelper.getWritableDatabase());
     }
 
     @VisibleForTesting

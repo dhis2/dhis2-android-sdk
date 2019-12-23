@@ -32,7 +32,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
@@ -41,50 +40,54 @@ import androidx.annotation.NonNull;
 
 public class SqLiteDatabaseAdapter implements DatabaseAdapter {
 
-    private final DbOpenHelper dbOpenHelper;
+    private final SQLiteDatabase database;
 
-    public SqLiteDatabaseAdapter(@NonNull DbOpenHelper dbOpenHelper) {
-        if (dbOpenHelper == null) {
-            throw new IllegalArgumentException("dbOpenHelper == null");
+    public SqLiteDatabaseAdapter(@NonNull SQLiteDatabase database) {
+        if (database == null) {
+            throw new IllegalArgumentException("database == null");
         }
-        dbOpenHelper.getWritableDatabase();
-        this.dbOpenHelper = dbOpenHelper;
+        this.database = database;
     }
 
     @Override
     public Transaction beginNewTransaction() {
-        database().beginTransaction();
+        database.beginTransaction();
         return new SqLiteTransaction(this);
     }
 
     @Override
     public void setTransactionSuccessful() {
-        database().setTransactionSuccessful();
+        database.setTransactionSuccessful();
     }
 
     @Override
     public void endTransaction() {
-        database().endTransaction();
+        database.endTransaction();
+    }
+
+    @Override
+    public void execSQL(String sql) {
+        database.execSQL(sql);
     }
 
     @Override
     public StatementWrapper compileStatement(String sql) {
-        return new SQLStatementWrapper(database().compileStatement(sql));
+        return new SQLStatementWrapper(database.compileStatement(sql));
     }
 
     @Override
     public Cursor rawQuery(String sql, String... selectionArgs) {
-        return readableDatabase().rawQuery(sql, selectionArgs);
+        return database.rawQuery(sql, selectionArgs);
     }
 
     @Override
     public Cursor query(String sql, String[] columns) {
-        return readableDatabase().query(sql, columns, null, null, null, null, null);
+        return database.query(sql, columns, null, null, null, null, null);
     }
 
     @Override
     public Cursor query(String table, String[] columns, String selection, String[] selectionArgs) {
-        return readableDatabase().query(table, columns, selection, selectionArgs, null, null, null);
+        return database.query(table, columns, selection, selectionArgs, null, null, null);
     }
 
     @Override
@@ -99,7 +102,7 @@ public class SqLiteDatabaseAdapter implements DatabaseAdapter {
 
     @Override
     public int delete(String table, String whereClause, String[] whereArgs) {
-        return database().delete(table, whereClause, whereArgs);
+        return database.delete(table, whereClause, whereArgs);
     }
 
     @Override
@@ -109,30 +112,26 @@ public class SqLiteDatabaseAdapter implements DatabaseAdapter {
 
     @Override
     public long insert(String table, String nullColumnHack, ContentValues values) {
-        return database().insert(table, nullColumnHack, values);
+        return database.insert(table, nullColumnHack, values);
     }
 
     @Override
     public int update(String table, ContentValues values, String whereClause, String[] whereArgs) {
-        return database().update(table, values, whereClause, whereArgs);
+        return database.update(table, values, whereClause, whereArgs);
     }
 
     @Override
     public void setForeignKeyConstraintsEnabled(boolean enable) {
-        database().setForeignKeyConstraintsEnabled(enable);
+        database.setForeignKeyConstraintsEnabled(enable);
     }
 
     @Override
     public void close() {
-        database().close();
+        database.close();
     }
 
     @Override
     public SQLiteDatabase database() {
-        return dbOpenHelper.getWritableDatabase();
-    }
-
-    private SQLiteDatabase readableDatabase() {
-        return dbOpenHelper.getReadableDatabase();
+        return database;
     }
 }

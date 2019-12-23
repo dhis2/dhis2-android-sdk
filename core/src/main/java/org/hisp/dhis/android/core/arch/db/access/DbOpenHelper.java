@@ -35,6 +35,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
 
 import org.hisp.dhis.android.core.arch.db.access.internal.DbMigrationExecutor;
+import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -72,11 +73,15 @@ public class DbOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        new DbMigrationExecutor(db, assetManager).upgradeFromTo(0, targetVersion);
+        executor(db).upgradeFromTo(0, targetVersion);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        new DbMigrationExecutor(db, assetManager).upgradeFromTo(oldVersion, newVersion);
+        executor(db).upgradeFromTo(oldVersion, newVersion);
+    }
+
+    private DbMigrationExecutor executor(SQLiteDatabase db) {
+        return new DbMigrationExecutor(new SqLiteDatabaseAdapter(db), assetManager);
     }
 }

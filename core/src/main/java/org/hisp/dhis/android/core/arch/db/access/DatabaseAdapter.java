@@ -146,6 +146,8 @@ public interface DatabaseAdapter {
 
     void endTransaction();
 
+    void execSQL(String sql);
+
     void close();
 
     SQLiteDatabase database();

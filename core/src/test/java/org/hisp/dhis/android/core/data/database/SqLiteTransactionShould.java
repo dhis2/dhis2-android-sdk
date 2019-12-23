@@ -52,11 +52,6 @@ public class SqLiteTransactionShould {
     }
 
     @Test
-    public void verify_transaction_is_running_on_database_when_begin_in_transaction() {
-        verify(databaseAdapter).beginNewTransaction();
-    }
-
-    @Test
     public void verify_transaction_is_successful_when_transaction_is_set_as_successful() {
         transaction.setSuccessful();
         verify(databaseAdapter).setTransactionSuccessful();

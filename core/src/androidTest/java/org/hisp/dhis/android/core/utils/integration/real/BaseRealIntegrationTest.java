@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.utils.integration.real;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 
 import com.facebook.stetho.Stetho;
 
@@ -54,7 +53,6 @@ import androidx.test.InstrumentationRegistry;
 import static com.google.common.truth.Truth.assertThat;
 
 public abstract class BaseRealIntegrationTest {
-    private SQLiteDatabase sqLiteDatabase;
     private DatabaseAdapter databaseAdapter;
 
     protected Date serverDate = new Date();
@@ -70,7 +68,6 @@ public abstract class BaseRealIntegrationTest {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
 
         DbOpenHelper dbOpenHelper = new DbOpenHelper(context, null);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
         databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
         credentialsSecureStore = new CredentialsSecureStoreImpl(context);
         resourceHandler = ResourceHandler.create(databaseAdapter);
@@ -80,8 +77,8 @@ public abstract class BaseRealIntegrationTest {
 
     @After
     public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
+        assertThat(databaseAdapter).isNotNull();
+        databaseAdapter.close();
     }
 
     protected DatabaseAdapter databaseAdapter() {

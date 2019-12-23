@@ -56,7 +56,6 @@ import static com.google.common.truth.Truth.assertThat;
 public abstract class BaseRealIntegrationTest {
     private SQLiteDatabase sqLiteDatabase;
     private DatabaseAdapter databaseAdapter;
-    private Context context;
 
     protected Date serverDate = new Date();
     protected ResourceHandler resourceHandler;
@@ -68,7 +67,7 @@ public abstract class BaseRealIntegrationTest {
 
     @Before
     public void setUp() throws IOException {
-        context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
 
         DbOpenHelper dbOpenHelper = new DbOpenHelper(context, null);
         sqLiteDatabase = dbOpenHelper.getWritableDatabase();

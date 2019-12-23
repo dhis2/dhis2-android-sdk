@@ -26,20 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.stores.binders.internal;
+package org.hisp.dhis.android.core.arch.db.access.internal;
 
 
 import android.database.sqlite.SQLiteStatement;
 
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
 import java.util.Date;
 
-public class SQLStatementWrapper implements StatementWrapper {
+class SQLStatementWrapper implements StatementWrapper {
 
     private final SQLiteStatement s;
 
-    public SQLStatementWrapper(SQLiteStatement s) {
+    SQLStatementWrapper(SQLiteStatement s) {
         this.s = s;
     }
 

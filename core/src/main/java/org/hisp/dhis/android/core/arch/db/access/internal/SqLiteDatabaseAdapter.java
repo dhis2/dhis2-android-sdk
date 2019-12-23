@@ -33,16 +33,15 @@ import android.database.sqlite.SQLiteDatabase;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 
 import androidx.annotation.NonNull;
 
-public class SqLiteDatabaseAdapter implements DatabaseAdapter {
+class SqLiteDatabaseAdapter implements DatabaseAdapter {
 
     private final SQLiteDatabase database;
 
-    public SqLiteDatabaseAdapter(@NonNull SQLiteDatabase database) {
+    SqLiteDatabaseAdapter(@NonNull SQLiteDatabase database) {
         if (database == null) {
             throw new IllegalArgumentException("database == null");
         }

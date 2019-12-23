@@ -129,9 +129,4 @@ public class SqLiteDatabaseAdapter implements DatabaseAdapter {
     public void close() {
         database.close();
     }
-
-    @Override
-    public SQLiteDatabase database() {
-        return database;
-    }
 }

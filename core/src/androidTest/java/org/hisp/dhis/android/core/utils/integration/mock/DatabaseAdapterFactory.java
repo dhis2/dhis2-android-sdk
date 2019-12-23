@@ -55,7 +55,7 @@ public class DatabaseAdapterFactory {
 
     public static void tearDown() {
         if (databaseAdapter != null) {
-            databaseAdapter.database().close();
+            databaseAdapter.close();
             databaseAdapter = null;
         }
     }

@@ -35,14 +35,14 @@ import androidx.annotation.VisibleForTesting;
 
 public final class DatabaseAdapterFactory {
     public static DatabaseAdapter getDatabaseAdapter(Context context, String databaseName) {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(context, databaseName);
-        return new SqLiteDatabaseAdapter(dbOpenHelper.getWritableDatabase());
+        UnencryptedDatabaseOpenHelper openHelper = new UnencryptedDatabaseOpenHelper(context, databaseName);
+        return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
     }
 
     @VisibleForTesting
     public static DatabaseAdapter getDatabaseAdapter(Context context, String databaseName, int version) {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(context, databaseName, version);
-        return new SqLiteDatabaseAdapter(dbOpenHelper.getWritableDatabase());
+        UnencryptedDatabaseOpenHelper openHelper = new UnencryptedDatabaseOpenHelper(context, databaseName, version);
+        return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
     }
 
     private DatabaseAdapterFactory() {

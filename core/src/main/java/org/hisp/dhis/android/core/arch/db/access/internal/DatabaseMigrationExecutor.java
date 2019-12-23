@@ -38,16 +38,16 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-class DbMigrationExecutor {
+class DatabaseMigrationExecutor {
 
     private final DatabaseAdapter databaseAdapter;
-    private final DbMigrationParser parser;
+    private final DatabaseMigrationParser parser;
 
     private static final int SNAPSHOT_VERSION = 64;
 
-    DbMigrationExecutor(DatabaseAdapter databaseAdapter, AssetManager assetManager) {
+    DatabaseMigrationExecutor(DatabaseAdapter databaseAdapter, AssetManager assetManager) {
         this.databaseAdapter = databaseAdapter;
-        this.parser = new DbMigrationParser(assetManager);
+        this.parser = new DatabaseMigrationParser(assetManager);
     }
 
     void upgradeFromTo(int oldVersion, int newVersion) {

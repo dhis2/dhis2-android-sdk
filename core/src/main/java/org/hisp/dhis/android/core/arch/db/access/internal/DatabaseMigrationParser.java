@@ -38,11 +38,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-class DbMigrationParser {
+class DatabaseMigrationParser {
 
     private final AssetManager assetManager;
 
-    DbMigrationParser(AssetManager assetManager) {
+    DatabaseMigrationParser(AssetManager assetManager) {
         this.assetManager = assetManager;
     }
 

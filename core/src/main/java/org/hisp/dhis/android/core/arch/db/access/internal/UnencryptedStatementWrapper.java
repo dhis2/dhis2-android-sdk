@@ -36,11 +36,11 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
 import java.util.Date;
 
-class SQLStatementWrapper implements StatementWrapper {
+class UnencryptedStatementWrapper implements StatementWrapper {
 
     private final SQLiteStatement s;
 
-    SQLStatementWrapper(SQLiteStatement s) {
+    UnencryptedStatementWrapper(SQLiteStatement s) {
         this.s = s;
     }
 

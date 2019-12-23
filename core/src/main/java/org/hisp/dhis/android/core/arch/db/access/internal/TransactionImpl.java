@@ -29,37 +29,42 @@
 package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.hisp.dhis.android.core.arch.db.access.Transaction;
 
-import static org.mockito.Mockito.verify;
+import androidx.annotation.NonNull;
 
-public class SqLiteTransactionShould {
+class TransactionImpl implements Transaction {
 
-    @Mock
-    DatabaseAdapter databaseAdapter;
+    private final DatabaseAdapter databaseAdapter;
 
-    private SqLiteTransaction transaction; // The class we are testing
-
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
-        transaction = new SqLiteTransaction(databaseAdapter);
+    TransactionImpl(@NonNull DatabaseAdapter databaseAdapter) {
+        if (databaseAdapter == null) {
+            throw new IllegalArgumentException("databaseAdapter == null");
+        }
+        this.databaseAdapter = databaseAdapter;
     }
 
-    @Test
-    public void verify_transaction_is_successful_when_transaction_is_set_as_successful() {
-        transaction.setSuccessful();
-        verify(databaseAdapter).setTransactionSuccessful();
+    /**
+     * Marks the current transaction as successful. Do not do any more database work between
+     * calling this and calling end. Do as little non-database work as possible in that
+     * situation too. If any errors are encountered between this and end the transaction
+     * will still be committed.
+     *
+     * @throws IllegalStateException if the current thread is not in a transaction or the
+     *                               transaction is already marked as successful.
+     */
+    @Override
+    public void setSuccessful() {
+        databaseAdapter.setTransactionSuccessful();
     }
 
-    @Test
-    public void verify_transaction_is_end_when_transaction_is_set_as_end() {
-        transaction.end();
-        verify(databaseAdapter).endTransaction();
+    /**
+     * End a transaction. See @{@link DatabaseAdapter#beginNewTransaction()} for notes about how to use this and
+     * when transactions are committed and rolled back.
+     */
+    @Override
+    public void end() {
+        databaseAdapter.endTransaction();
     }
-
 }
+

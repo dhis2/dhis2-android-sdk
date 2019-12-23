@@ -37,11 +37,11 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 
 import androidx.annotation.NonNull;
 
-class SqLiteDatabaseAdapter implements DatabaseAdapter {
+class UnencryptedDatabaseAdapter implements DatabaseAdapter {
 
     private final SQLiteDatabase database;
 
-    SqLiteDatabaseAdapter(@NonNull SQLiteDatabase database) {
+    UnencryptedDatabaseAdapter(@NonNull SQLiteDatabase database) {
         if (database == null) {
             throw new IllegalArgumentException("database == null");
         }
@@ -51,7 +51,7 @@ class SqLiteDatabaseAdapter implements DatabaseAdapter {
     @Override
     public Transaction beginNewTransaction() {
         database.beginTransaction();
-        return new SqLiteTransaction(this);
+        return new TransactionImpl(this);
     }
 
     @Override
@@ -71,7 +71,7 @@ class SqLiteDatabaseAdapter implements DatabaseAdapter {
 
     @Override
     public StatementWrapper compileStatement(String sql) {
-        return new SQLStatementWrapper(database.compileStatement(sql));
+        return new UnencryptedStatementWrapper(database.compileStatement(sql));
     }
 
     @Override

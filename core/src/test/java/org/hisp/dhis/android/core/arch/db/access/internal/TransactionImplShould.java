@@ -28,55 +28,38 @@
 
 package org.hisp.dhis.android.core.arch.db.access.internal;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Build;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import static org.mockito.Mockito.verify;
 
-class DbOpenHelper extends SQLiteOpenHelper {
+public class TransactionImplShould {
 
-    public static final int VERSION = 64;
+    @Mock
+    DatabaseAdapter databaseAdapter;
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
+    private TransactionImpl transaction; // The class we are testing
 
-    DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        this(context, databaseName, VERSION);
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+
+        transaction = new TransactionImpl(databaseAdapter);
     }
 
-    DbOpenHelper(Context context, String databaseName, int targetVersion) {
-        super(context, databaseName, null, targetVersion);
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @Test
+    public void verify_transaction_is_successful_when_transaction_is_set_as_successful() {
+        transaction.setSuccessful();
+        verify(databaseAdapter).setTransactionSuccessful();
     }
 
-    @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
-
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            db.setForeignKeyConstraintsEnabled(true);
-        }
-
-        db.enableWriteAheadLogging();
+    @Test
+    public void verify_transaction_is_end_when_transaction_is_set_as_end() {
+        transaction.end();
+        verify(databaseAdapter).endTransaction();
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        executor(db).upgradeFromTo(0, targetVersion);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        executor(db).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DbMigrationExecutor executor(SQLiteDatabase db) {
-        return new DbMigrationExecutor(new SqLiteDatabaseAdapter(db), assetManager);
-    }
 }

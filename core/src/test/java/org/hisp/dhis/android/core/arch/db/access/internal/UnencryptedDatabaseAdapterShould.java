@@ -39,7 +39,7 @@ import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Mockito.verify;
 
-public class SqLiteDatabaseAdapterShould {
+public class UnencryptedDatabaseAdapterShould {
 
     @Mock
     SQLiteDatabase database;
@@ -52,12 +52,12 @@ public class SqLiteDatabaseAdapterShould {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        sqLiteDatabaseAdapter = new SqLiteDatabaseAdapter(database);
+        sqLiteDatabaseAdapter = new UnencryptedDatabaseAdapter(database);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void throw_illegal_argument_exception_when_provide_null_db_open_helper() {
-        new SqLiteDatabaseAdapter(null);
+        new UnencryptedDatabaseAdapter(null);
     }
 
     @Test

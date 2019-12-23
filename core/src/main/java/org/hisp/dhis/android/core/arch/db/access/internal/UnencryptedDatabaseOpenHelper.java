@@ -28,43 +28,55 @@
 
 package org.hisp.dhis.android.core.arch.db.access.internal;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.Transaction;
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-class SqLiteTransaction implements Transaction {
+class UnencryptedDatabaseOpenHelper extends SQLiteOpenHelper {
 
-    private final DatabaseAdapter databaseAdapter;
+    public static final int VERSION = 64;
 
-    SqLiteTransaction(@NonNull DatabaseAdapter databaseAdapter) {
-        if (databaseAdapter == null) {
-            throw new IllegalArgumentException("databaseAdapter == null");
+    private final AssetManager assetManager;
+    private final int targetVersion;
+
+    UnencryptedDatabaseOpenHelper(@NonNull Context context, @Nullable String databaseName) {
+        this(context, databaseName, VERSION);
+    }
+
+    UnencryptedDatabaseOpenHelper(Context context, String databaseName, int targetVersion) {
+        super(context, databaseName, null, targetVersion);
+        this.assetManager = context.getAssets();
+        this.targetVersion = targetVersion;
+    }
+
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // enable foreign key support in database only for lollipop and newer versions
+            db.setForeignKeyConstraintsEnabled(true);
         }
-        this.databaseAdapter = databaseAdapter;
+
+        db.enableWriteAheadLogging();
     }
 
-    /**
-     * Marks the current transaction as successful. Do not do any more database work between
-     * calling this and calling end. Do as little non-database work as possible in that
-     * situation too. If any errors are encountered between this and end the transaction
-     * will still be committed.
-     *
-     * @throws IllegalStateException if the current thread is not in a transaction or the
-     *                               transaction is already marked as successful.
-     */
     @Override
-    public void setSuccessful() {
-        databaseAdapter.setTransactionSuccessful();
+    public void onCreate(SQLiteDatabase db) {
+        executor(db).upgradeFromTo(0, targetVersion);
     }
 
-    /**
-     * End a transaction. See @{@link DatabaseAdapter#beginNewTransaction()} for notes about how to use this and
-     * when transactions are committed and rolled back.
-     */
     @Override
-    public void end() {
-        databaseAdapter.endTransaction();
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        executor(db).upgradeFromTo(oldVersion, newVersion);
+    }
+
+    private DatabaseMigrationExecutor executor(SQLiteDatabase db) {
+        return new DatabaseMigrationExecutor(new UnencryptedDatabaseAdapter(db), assetManager);
     }
 }
-

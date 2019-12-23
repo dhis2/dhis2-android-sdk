@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.utils.integration.mock;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.facebook.stetho.Stetho;
@@ -50,7 +49,6 @@ import java.util.Date;
 import androidx.test.InstrumentationRegistry;
 
 public class MockIntegrationTestObjects {
-    public final SQLiteDatabase database;
     public final DatabaseAdapter databaseAdapter;
 
     public Date serverDate = new Date();
@@ -76,7 +74,6 @@ public class MockIntegrationTestObjects {
 
         d2 = D2Factory.forDatabaseName(dbName);
 
-        database = d2.databaseAdapter().database();
         databaseAdapter = d2.databaseAdapter();
         CredentialsSecureStore credentialsSecureStore = new CredentialsSecureStoreImpl(context);
 
@@ -93,7 +90,7 @@ public class MockIntegrationTestObjects {
 
     public void tearDown() throws IOException {
         Log.i("MockIntegrationTestObjects", "Objects teardown: " + content);
-        database.close();
+        databaseAdapter.close();
         deleteDatabase();
         dhis2MockServer.shutdown();
     }

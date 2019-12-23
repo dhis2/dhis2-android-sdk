@@ -53,9 +53,18 @@ public class SqLiteDatabaseAdapter implements DatabaseAdapter {
 
     @Override
     public Transaction beginNewTransaction() {
-        Transaction transaction = new SqLiteTransaction(dbOpenHelper);
-        transaction.begin();
-        return transaction;
+        database().beginTransaction();
+        return new SqLiteTransaction(this);
+    }
+
+    @Override
+    public void setTransactionSuccessful() {
+        database().setTransactionSuccessful();
+    }
+
+    @Override
+    public void endTransaction() {
+        database().endTransaction();
     }
 
     @Override

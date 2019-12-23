@@ -100,9 +100,8 @@ public abstract class BaseCallShould {
         when(endpointCall.call()).thenThrow(new Exception());
     }
 
-    protected void verifyNoTransactionStarted() {
+    protected void verifyNoTransactionCompleted() {
         verify(databaseAdapter, never()).beginNewTransaction();
-        verify(transaction, never()).begin();
         verify(transaction, never()).setSuccessful();
         verify(transaction, never()).end();
     }
@@ -110,7 +109,6 @@ public abstract class BaseCallShould {
     protected void verifyTransactionComplete() {
         InOrder transactionMethodsOrder = inOrder(databaseAdapter);
         transactionMethodsOrder.verify(databaseAdapter).beginNewTransaction();
-        verify(transaction).begin();
         verify(transaction).setSuccessful();
         verify(transaction).end();
     }

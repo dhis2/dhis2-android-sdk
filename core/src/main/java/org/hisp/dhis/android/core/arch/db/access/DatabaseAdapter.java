@@ -120,9 +120,31 @@ public interface DatabaseAdapter {
     void setForeignKeyConstraintsEnabled(boolean enable);
 
     /**
-     * @return A newly started {@link Transaction}
+     * Begins a transaction in EXCLUSIVE mode.
+     * <p>
+     * Transactions can be nested.
+     * When the outer transaction is ended all of
+     * the work done in that transaction and all of the nested transactions will be committed or
+     * rolled back. The changes will be rolled back if any transaction is ended without being
+     * marked as clean (by calling setTransactionSuccessful). Otherwise they will be committed.
+     * </p>
+     * <p>Here is the standard idiom for transactions:
+     * <p>
+     * <pre>
+     *   Transaction t = databaseAdapter.beginNewTransaction();
+     *   try {
+     *     ...
+     *     transaction.setSuccessful();
+     *   } finally {
+     *     transaction.end();
+     *   }
+     * </pre>
      */
     Transaction beginNewTransaction();
+
+    void setTransactionSuccessful();
+
+    void endTransaction();
 
     void close();
 

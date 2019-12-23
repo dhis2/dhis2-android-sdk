@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.user.internal;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.db.access.Transaction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
@@ -55,7 +54,6 @@ import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.stubbing.Answer;
 import org.mockito.stubbing.OngoingStubbing;
 
 import io.reactivex.Completable;
@@ -175,10 +173,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(userStore.selectFirst()).thenReturn(loggedUser);
         when(systemInfoRepository.blockingGet()).thenReturn(systemInfoFromDb);
 
-        when(databaseAdapter.beginNewTransaction()).then((Answer<Transaction>) invocation -> {
-            transaction.begin();
-            return transaction;
-        });
+        when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 
         when(d2Error.errorCode()).thenReturn(D2ErrorCode.SOCKET_TIMEOUT);
 
@@ -235,7 +230,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         assertThat(testObserver.errorCount()).isEqualTo(1);
         testObserver.dispose();
 
-        verifyNoTransactionStarted();
+        verifyNoTransactionCompleted();
 
         // stores must not be invoked
         verify(authenticatedUserStore, never()).updateOrInsertWhere(any(AuthenticatedUser.class));
@@ -254,7 +249,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         testObserver.dispose();
 
-        verifyNoTransactionStarted();
+        verifyNoTransactionCompleted();
 
         // stores must not be invoked
         verify(credentialsSecureStore).getCredentials();

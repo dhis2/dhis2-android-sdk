@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import android.database.sqlite.SQLiteDatabase;
-
-import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteTransaction;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,15 +36,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class SqLiteTransactionShould {
 
     @Mock
-    DbOpenHelper dbOpenHelper;
-
-    @Mock
-    SQLiteDatabase database;
+    DatabaseAdapter databaseAdapter;
 
     private SqLiteTransaction transaction; // The class we are testing
 
@@ -54,27 +48,24 @@ public class SqLiteTransactionShould {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        when(dbOpenHelper.getWritableDatabase()).thenReturn(database);
-
-        transaction = new SqLiteTransaction(dbOpenHelper);
+        transaction = new SqLiteTransaction(databaseAdapter);
     }
 
     @Test
-    public void verify_transaction_is_running_on_database_when_begin_in_transaction() throws Exception {
-        transaction.begin();
-        verify(database).beginTransaction();
+    public void verify_transaction_is_running_on_database_when_begin_in_transaction() {
+        verify(databaseAdapter).beginNewTransaction();
     }
 
     @Test
-    public void verify_transaction_is_successful_when_transaction_is_set_as_successful() throws Exception {
+    public void verify_transaction_is_successful_when_transaction_is_set_as_successful() {
         transaction.setSuccessful();
-        verify(database).setTransactionSuccessful();
+        verify(databaseAdapter).setTransactionSuccessful();
     }
 
     @Test
-    public void verify_transaction_is_end_when_transaction_is_set_as_end() throws Exception {
+    public void verify_transaction_is_end_when_transaction_is_set_as_end() {
         transaction.end();
-        verify(database).endTransaction();
+        verify(databaseAdapter).endTransaction();
     }
 
 }

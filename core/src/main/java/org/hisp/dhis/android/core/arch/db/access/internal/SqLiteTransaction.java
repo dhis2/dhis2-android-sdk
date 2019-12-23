@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.db.access.Transaction;
 
 import androidx.annotation.NonNull;
 
-public class SqLiteTransaction implements Transaction {
+class SqLiteTransaction implements Transaction {
 
     private final DatabaseAdapter databaseAdapter;
 

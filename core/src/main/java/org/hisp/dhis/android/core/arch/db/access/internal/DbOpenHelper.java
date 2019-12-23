@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access;
+package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -34,26 +34,21 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
 
-import org.hisp.dhis.android.core.arch.db.access.internal.DbMigrationExecutor;
-import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
 
-public class DbOpenHelper extends SQLiteOpenHelper {
+class DbOpenHelper extends SQLiteOpenHelper {
 
     public static final int VERSION = 64;
 
     private final AssetManager assetManager;
     private final int targetVersion;
 
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
+    DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
         this(context, databaseName, VERSION);
     }
 
-    @VisibleForTesting
-    public DbOpenHelper(Context context, String databaseName, int targetVersion) {
+    DbOpenHelper(Context context, String databaseName, int targetVersion) {
         super(context, databaseName, null, targetVersion);
         this.assetManager = context.getAssets();
         this.targetVersion = targetVersion;

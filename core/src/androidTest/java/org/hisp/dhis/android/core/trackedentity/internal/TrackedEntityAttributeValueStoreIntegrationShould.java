@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractInt
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityAttributeValueSamples;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
@@ -41,8 +41,8 @@ public class TrackedEntityAttributeValueStoreIntegrationShould
         extends ObjectWithoutUidStoreAbstractIntegrationShould<TrackedEntityAttributeValue> {
 
     public TrackedEntityAttributeValueStoreIntegrationShould() {
-        super(TrackedEntityAttributeValueStoreImpl.create(DatabaseAdapterFactory.get()),
-                TrackedEntityAttributeValueTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+        super(TrackedEntityAttributeValueStoreImpl.create(TestDatabaseAdapterFactory.get()),
+                TrackedEntityAttributeValueTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
     @Override

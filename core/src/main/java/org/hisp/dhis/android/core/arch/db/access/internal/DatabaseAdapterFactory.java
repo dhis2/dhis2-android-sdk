@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
- *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,28 +25,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.access.internal;
 
-import android.database.sqlite.SQLiteDatabase;
+import android.content.Context;
 
-import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 
-import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.annotation.VisibleForTesting;
 
-import static com.google.common.truth.Truth.assertThat;
+public final class DatabaseAdapterFactory {
+    public static DatabaseAdapter getDatabaseAdapter(Context context, String databaseName) {
+        DbOpenHelper dbOpenHelper = new DbOpenHelper(context, databaseName);
+        return new SqLiteDatabaseAdapter(dbOpenHelper.getWritableDatabase());
+    }
 
-@RunWith(AndroidJUnit4.class)
-public class DbOpenHelperShould {
+    @VisibleForTesting
+    public static DatabaseAdapter getDatabaseAdapter(Context context, String databaseName, int version) {
+        DbOpenHelper dbOpenHelper = new DbOpenHelper(context, databaseName, version);
+        return new SqLiteDatabaseAdapter(dbOpenHelper.getWritableDatabase());
+    }
 
-    @Test
-    public void have_tests_on_database_versions() {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , null);
-        SQLiteDatabase database = dbOpenHelper.getWritableDatabase();
-        assertThat(dbOpenHelper.getWritableDatabase().getVersion()).isEqualTo(DbOpenHelper.VERSION);
-        database.close();
+    private DatabaseAdapterFactory() {
     }
 }

@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationSh
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
@@ -40,8 +40,8 @@ import org.junit.runner.RunWith;
 public class D2ErrorStoreIntegrationShould extends ObjectStoreAbstractIntegrationShould<D2Error> {
 
     public D2ErrorStoreIntegrationShould() {
-        super(D2ErrorStore.create(DatabaseAdapterFactory.get()),
-                D2ErrorTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+        super(D2ErrorStore.create(TestDatabaseAdapterFactory.get()),
+                D2ErrorTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
     @Override

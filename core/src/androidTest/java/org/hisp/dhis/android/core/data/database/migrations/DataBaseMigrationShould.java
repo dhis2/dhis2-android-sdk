@@ -29,8 +29,7 @@
 package org.hisp.dhis.android.core.data.database.migrations;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
-import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueTableInfo;
 import org.hisp.dhis.android.core.user.UserTableInfo;
 import org.junit.After;
@@ -48,13 +47,11 @@ import static org.junit.Assert.assertThat;
 @RunWith(AndroidJUnit4.class)
 public class DataBaseMigrationShould {
     private DatabaseAdapter databaseAdapter;
-    private DbOpenHelper dbOpenHelper;
     private String dbName = null;
 
     @Before
     public void deleteDB() {
         this.closeAndDeleteDatabase();
-        dbOpenHelper = null;
     }
 
     @After
@@ -90,10 +87,8 @@ public class DataBaseMigrationShould {
     }
 
     public DatabaseAdapter initCoreDataBase(int databaseVersion) {
-        dbOpenHelper = new DbOpenHelper(
-                InstrumentationRegistry.getTargetContext().getApplicationContext()
+        databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(InstrumentationRegistry.getTargetContext().getApplicationContext()
                 , dbName, databaseVersion);
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper.getWritableDatabase());
         return databaseAdapter;
     }
 }

@@ -36,8 +36,7 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
-import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
@@ -67,8 +66,7 @@ public abstract class BaseRealIntegrationTest {
     public void setUp() throws IOException {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
 
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(context, null);
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper.getWritableDatabase());
+        databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(context, null);
         credentialsSecureStore = new CredentialsSecureStoreImpl(context);
         resourceHandler = ResourceHandler.create(databaseAdapter);
         resourceHandler.setServerDate(serverDate);

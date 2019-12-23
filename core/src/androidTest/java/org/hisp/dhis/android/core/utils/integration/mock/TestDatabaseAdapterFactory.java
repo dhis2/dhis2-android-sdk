@@ -33,12 +33,11 @@ import android.content.Context;
 import com.facebook.stetho.Stetho;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
-import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 
 import androidx.test.InstrumentationRegistry;
 
-public class DatabaseAdapterFactory {
+public class TestDatabaseAdapterFactory {
     private static String dbName = null;
     private static DatabaseAdapter databaseAdapter = null;
 
@@ -62,8 +61,7 @@ public class DatabaseAdapterFactory {
 
     private static DatabaseAdapter create() {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(context, dbName);
         Stetho.initializeWithDefaults(context);
-        return new SqLiteDatabaseAdapter(dbOpenHelper.getWritableDatabase());
+        return DatabaseAdapterFactory.getDatabaseAdapter(context, dbName);
     }
 }

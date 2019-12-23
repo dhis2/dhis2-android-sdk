@@ -33,8 +33,7 @@ import android.util.Log;
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
-import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
 import org.hisp.dhis.android.core.configuration.Configuration;
@@ -135,7 +134,7 @@ public final class D2Manager {
     private static void setUp(@Nullable D2Configuration d2Config) throws D2Error {
         long startTime = System.currentTimeMillis();
         d2Configuration = D2ConfigurationValidator.validateAndSetDefaultValues(d2Config);
-        databaseAdapter = newDatabaseAdapter();
+        databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(d2Configuration.context(), databaseName);
 
         ConfigurationManager configurationManager = ConfigurationManagerFactory.create(databaseAdapter);
         Configuration configuration = configurationManager.get();
@@ -146,11 +145,6 @@ public final class D2Manager {
 
         long setUpTime = System.currentTimeMillis() - startTime;
         Log.i(D2Manager.class.getName(), "Set up took " + setUpTime + "ms");
-    }
-
-    private static DatabaseAdapter newDatabaseAdapter() {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(d2Configuration.context(), databaseName);
-        return new SqLiteDatabaseAdapter(dbOpenHelper.getWritableDatabase());
     }
 
     @VisibleForTesting

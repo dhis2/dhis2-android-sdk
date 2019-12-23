@@ -124,5 +124,7 @@ public interface DatabaseAdapter {
      */
     Transaction beginNewTransaction();
 
+    void close();
+
     SQLiteDatabase database();
 }

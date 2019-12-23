@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.data.database.migrations;
 
-import android.database.sqlite.SQLiteDatabase;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
 import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
@@ -52,13 +50,11 @@ public class DataBaseMigrationShould {
     private DatabaseAdapter databaseAdapter;
     private DbOpenHelper dbOpenHelper;
     private String dbName = null;
-    private SQLiteDatabase databaseInMemory;
 
     @Before
     public void deleteDB() {
         this.closeAndDeleteDatabase();
         dbOpenHelper = null;
-        databaseInMemory = null;
     }
 
     @After
@@ -67,8 +63,8 @@ public class DataBaseMigrationShould {
     }
 
     private void closeAndDeleteDatabase() {
-        if (databaseInMemory != null) {
-            databaseInMemory.close();
+        if (databaseAdapter != null) {
+            databaseAdapter.close();
         }
         if (dbName != null) {
             InstrumentationRegistry.getContext().deleteDatabase(dbName);
@@ -94,23 +90,10 @@ public class DataBaseMigrationShould {
     }
 
     public DatabaseAdapter initCoreDataBase(int databaseVersion) {
-        if (databaseAdapter == null) {
-            dbOpenHelper = new DbOpenHelper(
-                    InstrumentationRegistry.getTargetContext().getApplicationContext()
-                    , dbName, databaseVersion);
-            databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
-            databaseInMemory = databaseAdapter.database();
-        } else if (dbName == null) {
-            if (databaseInMemory.getVersion() < databaseVersion) {
-                dbOpenHelper.onUpgrade(databaseInMemory, databaseInMemory.getVersion(),
-                        databaseVersion);
-                databaseInMemory.setVersion(databaseVersion);
-            } else if (databaseInMemory.getVersion() > databaseVersion) {
-                dbOpenHelper.onDowngrade(databaseInMemory, databaseInMemory.getVersion(),
-                        databaseVersion);
-                databaseInMemory.setVersion(databaseVersion);
-            }
-        }
+        dbOpenHelper = new DbOpenHelper(
+                InstrumentationRegistry.getTargetContext().getApplicationContext()
+                , dbName, databaseVersion);
+        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
         return databaseAdapter;
     }
 }

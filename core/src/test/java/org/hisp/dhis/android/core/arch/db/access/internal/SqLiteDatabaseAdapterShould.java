@@ -26,12 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import android.database.sqlite.SQLiteDatabase;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.junit.Before;
 import org.junit.Test;

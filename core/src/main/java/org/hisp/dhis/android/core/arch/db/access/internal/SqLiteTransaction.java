@@ -37,7 +37,7 @@ public class SqLiteTransaction implements Transaction {
 
     private final DatabaseAdapter databaseAdapter;
 
-    public SqLiteTransaction(@NonNull DatabaseAdapter databaseAdapter) {
+    SqLiteTransaction(@NonNull DatabaseAdapter databaseAdapter) {
         if (databaseAdapter == null) {
             throw new IllegalArgumentException("databaseAdapter == null");
         }

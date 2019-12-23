@@ -207,12 +207,6 @@ public class TrackedEntityInstanceStoreShould extends BaseRealIntegrationTest {
         trackedEntityInstanceStore.insert(trackedEntityInstance.toBuilder().trackedEntityType("wrong").build());
     }
 
-    // ToDo: consider introducing conflict resolution strategy
-    @Test
-    public void not_close_data_base_on_close() {
-        assertThat(database().isOpen()).isTrue();
-    }
-
     @Test(expected = IllegalStateException.class)
     public void throw_sqlite_constraint_exception_when_insert_null_uid() {
         trackedEntityInstanceStore.insert(trackedEntityInstance.toBuilder().uid(null).build());

@@ -138,7 +138,7 @@ public class TrackedEntityAttributeValueStoreShould extends BaseRealIntegrationT
         final String deferredTrackedEntityAttribute = "deferredTrackedEntityAttribute";
         final String deferredTrackedEntityInstance = "deferredTrackedEntityInstance";
 
-        database().beginTransaction();
+        databaseAdapter().beginNewTransaction();
         long rowId = trackedEntityAttributeValueStore.insert(trackedEntityAttributeValue.toBuilder()
                 .trackedEntityAttribute(deferredTrackedEntityAttribute)
                 .trackedEntityInstance(deferredTrackedEntityInstance).build());
@@ -148,8 +148,8 @@ public class TrackedEntityAttributeValueStoreShould extends BaseRealIntegrationT
                 deferredTrackedEntityAttribute, null);
         databaseAdapter().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstance);
         databaseAdapter().insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute);
-        database().setTransactionSuccessful();
-        database().endTransaction();
+        databaseAdapter().setTransactionSuccessful();
+        databaseAdapter().endTransaction();
 
         Cursor cursor = databaseAdapter().query(TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), PROJECTION);
 

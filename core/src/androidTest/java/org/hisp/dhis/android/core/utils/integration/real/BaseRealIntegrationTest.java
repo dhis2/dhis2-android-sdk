@@ -84,10 +84,6 @@ public abstract class BaseRealIntegrationTest {
         sqLiteDatabase.close();
     }
 
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
-    }
-
     protected DatabaseAdapter databaseAdapter() {
         return databaseAdapter;
     }

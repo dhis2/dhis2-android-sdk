@@ -29,7 +29,8 @@ package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+
+import net.sqlcipher.database.SQLiteDatabase;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
@@ -37,11 +38,11 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 
 import androidx.annotation.NonNull;
 
-class UnencryptedDatabaseAdapter implements DatabaseAdapter {
+class EncryptedDatabaseAdapter implements DatabaseAdapter {
 
     private final SQLiteDatabase database;
 
-    UnencryptedDatabaseAdapter(@NonNull SQLiteDatabase database) {
+    EncryptedDatabaseAdapter(@NonNull SQLiteDatabase database) {
         if (database == null) {
             throw new IllegalArgumentException("database == null");
         }
@@ -71,7 +72,7 @@ class UnencryptedDatabaseAdapter implements DatabaseAdapter {
 
     @Override
     public StatementWrapper compileStatement(String sql) {
-        return new UnencryptedStatementWrapper(database.compileStatement(sql));
+        return new EncryptedStatementWrapper(database.compileStatement(sql));
     }
 
     @Override

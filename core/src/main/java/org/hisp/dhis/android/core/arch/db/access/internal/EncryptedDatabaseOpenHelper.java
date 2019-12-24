@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,41 +30,39 @@ package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import android.content.Context;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteOpenHelper;
 
-import androidx.annotation.VisibleForTesting;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-public final class DatabaseAdapterFactory {
+class EncryptedDatabaseOpenHelper extends SQLiteOpenHelper {
 
-    private static boolean encrypt;
-    private static String ENCRYPTION_PASSWORD = "dhis-password";
+    private final BaseDatabaseOpenHelper baseHelper;
 
-    public static void setExperimentalEncryption(boolean experimentalEncryption) {
-        encrypt = experimentalEncryption;
+    EncryptedDatabaseOpenHelper(@NonNull Context context, @Nullable String databaseName) {
+        this(context, databaseName, BaseDatabaseOpenHelper.VERSION);
     }
 
-    public static DatabaseAdapter getDatabaseAdapter(Context context, String databaseName) {
-        if (encrypt) {
-            EncryptedDatabaseOpenHelper openHelper = new EncryptedDatabaseOpenHelper(context, databaseName);
-            return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(ENCRYPTION_PASSWORD));
-        } else {
-            UnencryptedDatabaseOpenHelper openHelper = new UnencryptedDatabaseOpenHelper(context, databaseName);
-            return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
-        }
+    EncryptedDatabaseOpenHelper(Context context, String databaseName, int targetVersion) {
+        super(context, databaseName, null, targetVersion);
+        SQLiteDatabase.loadLibs(context);
+        this.baseHelper = new BaseDatabaseOpenHelper(context, targetVersion);
     }
 
-    @VisibleForTesting
-    public static DatabaseAdapter getDatabaseAdapter(Context context, String databaseName, int version) {
-        if (encrypt) {
-            EncryptedDatabaseOpenHelper openHelper = new EncryptedDatabaseOpenHelper(context, databaseName, version);
-            return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(ENCRYPTION_PASSWORD));
-        } else {
-            UnencryptedDatabaseOpenHelper openHelper
-                    = new UnencryptedDatabaseOpenHelper(context, databaseName, version);
-            return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
-        }
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        baseHelper.onOpen(new EncryptedDatabaseAdapter(db));
     }
 
-    private DatabaseAdapterFactory() {
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        baseHelper.onCreate(new EncryptedDatabaseAdapter(db));
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        baseHelper.onUpgrade(new EncryptedDatabaseAdapter(db), oldVersion, newVersion);
     }
 }

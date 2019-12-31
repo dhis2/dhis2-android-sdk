@@ -210,6 +210,7 @@ dependencies {
     testImplementation "androidx.test:runner:${libraries.testrunner}"
 
     // Android test dependencies
+    androidTestImplementation "commons-logging:commons-logging:1.2"
     androidTestImplementation "org.mockito:mockito-core:${libraries.mockito}"
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
     androidTestImplementation "android.arch.core:core-testing:${libraries.coretesting}"

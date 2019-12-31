@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 
 import java.io.IOException;
@@ -72,6 +73,7 @@ public class MockIntegrationTestObjects {
         Stetho.initializeWithDefaults(context);
 
         dhis2MockServer = new Dhis2MockServer();
+        CalendarProviderFactory.setFixed();
 
         d2 = D2Factory.forDatabaseName(dbName);
 

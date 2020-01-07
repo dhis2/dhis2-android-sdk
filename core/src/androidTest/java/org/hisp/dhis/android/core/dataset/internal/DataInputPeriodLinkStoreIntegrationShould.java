@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShou
 import org.hisp.dhis.android.core.data.dataset.DataInputPeriodSamples;
 import org.hisp.dhis.android.core.dataset.DataInputPeriod;
 import org.hisp.dhis.android.core.dataset.DataInputPeriodTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
@@ -42,7 +42,7 @@ public class DataInputPeriodLinkStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<DataInputPeriod> {
 
     public DataInputPeriodLinkStoreIntegrationShould() {
-        super(DataInputPeriodLinkStore.create(DatabaseAdapterFactory.get()), DataInputPeriodTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+        super(DataInputPeriodLinkStore.create(TestDatabaseAdapterFactory.get()), DataInputPeriodTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
     @Override

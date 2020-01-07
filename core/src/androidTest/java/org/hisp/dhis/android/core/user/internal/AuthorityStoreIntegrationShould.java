@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationSh
 import org.hisp.dhis.android.core.data.user.AuthoritySamples;
 import org.hisp.dhis.android.core.user.Authority;
 import org.hisp.dhis.android.core.user.AuthorityTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
@@ -40,8 +40,8 @@ import org.junit.runner.RunWith;
 public class AuthorityStoreIntegrationShould extends ObjectStoreAbstractIntegrationShould<Authority> {
 
     public AuthorityStoreIntegrationShould() {
-        super(AuthorityStore.create(DatabaseAdapterFactory.get()), AuthorityTableInfo.TABLE_INFO,
-                DatabaseAdapterFactory.get());
+        super(AuthorityStore.create(TestDatabaseAdapterFactory.get()), AuthorityTableInfo.TABLE_INFO,
+                TestDatabaseAdapterFactory.get());
     }
 
     @Override

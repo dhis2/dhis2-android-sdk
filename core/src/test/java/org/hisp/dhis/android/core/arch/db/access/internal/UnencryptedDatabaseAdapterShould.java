@@ -26,72 +26,62 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import android.database.sqlite.SQLiteDatabase;
 
-import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
-import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Mockito.verify;
 
-public class SqLiteDatabaseAdapterShould {
+public class UnencryptedDatabaseAdapterShould {
 
     @Mock
-    SQLiteDatabase writableDatabase;
-
-    @Mock
-    SQLiteDatabase readableDatabase;
-
-    @Mock
-    DbOpenHelper dbOpenHelper;
-
+    SQLiteDatabase database;
+    
     @Mock
     StatementWrapper sqLiteStatement;
 
-    private SqLiteDatabaseAdapter sqLiteDatabaseAdapter; // the class we are testing
+    private DatabaseAdapter sqLiteDatabaseAdapter; // the class we are testing
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        Mockito.when(dbOpenHelper.getWritableDatabase()).thenReturn(writableDatabase);
-        Mockito.when(dbOpenHelper.getReadableDatabase()).thenReturn(readableDatabase);
-        sqLiteDatabaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+        sqLiteDatabaseAdapter = new UnencryptedDatabaseAdapter(database);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void throw_illegal_argument_exception_when_provide_null_db_open_helper() throws Exception {
-        new SqLiteDatabaseAdapter(null);
+    public void throw_illegal_argument_exception_when_provide_null_db_open_helper() {
+        new UnencryptedDatabaseAdapter(null);
     }
 
     @Test
-    public void verify_statement_is_compiled_when_set_a_query_to_be_compiled_in_database_adapter() throws Exception {
+    public void verify_statement_is_compiled_when_set_a_query_to_be_compiled_in_database_adapter() {
         String sql = "INSERT VALUE INTO TABLE";
         sqLiteDatabaseAdapter.compileStatement(sql);
-        verify(writableDatabase).compileStatement(sql);
+        verify(database).compileStatement(sql);
     }
 
     @Test
-    public void verify_query_on_readable_data_base_when_set_query_in_data_base_adapter() throws Exception {
+    public void verify_query_on_readable_data_base_when_set_query_in_data_base_adapter() {
         String sql = "SELECT * FROM TABLE";
         sqLiteDatabaseAdapter.rawQuery(sql, (String[]) null);
-        verify(readableDatabase).rawQuery(sql, null);
+        verify(database).rawQuery(sql, null);
     }
 
     @Test
-    public void delete_in_data_base_when_delete_in_data_base_adapter() throws Exception {
+    public void delete_in_data_base_when_delete_in_data_base_adapter() {
         sqLiteDatabaseAdapter.delete(null, null, null);
-        verify(writableDatabase).delete(null, null, null);
+        verify(database).delete(null, null, null);
     }
 
     @Test
-    public void verify_the_statements_are_executed_in_data_base_when_execute_insert_in_data_base_adapter() throws Exception {
+    public void verify_the_statements_are_executed_in_data_base_when_execute_insert_in_data_base_adapter() {
         sqLiteDatabaseAdapter.executeInsert("TABLE", sqLiteStatement);
         verify(sqLiteStatement).executeInsert();
 
@@ -100,8 +90,8 @@ public class SqLiteDatabaseAdapterShould {
     }
 
     @Test
-    public void verify_the_transaction_begin_in_data_base_when_execute_begin_new_transaction_on_data_base_adapter() throws Exception {
+    public void verify_the_transaction_begin_in_data_base_when_execute_begin_new_transaction_on_data_base_adapter() {
         sqLiteDatabaseAdapter.beginNewTransaction();
-        verify(writableDatabase).beginTransaction();
+        verify(database).beginTransaction();
     }
 }

@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.data.period.PeriodSamples;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodTableInfo;
 import org.hisp.dhis.android.core.period.PeriodType;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,9 +50,9 @@ public class PeriodStoreIntegrationShould extends ObjectWithoutUidStoreAbstractI
     private PeriodStore periodStore;
 
     public PeriodStoreIntegrationShould() {
-        super(PeriodStoreImpl.create(DatabaseAdapterFactory.get()), PeriodTableInfo.TABLE_INFO,
-                DatabaseAdapterFactory.get());
-        this.periodStore = PeriodStoreImpl.create(DatabaseAdapterFactory.get());
+        super(PeriodStoreImpl.create(TestDatabaseAdapterFactory.get()), PeriodTableInfo.TABLE_INFO,
+                TestDatabaseAdapterFactory.get());
+        this.periodStore = PeriodStoreImpl.create(TestDatabaseAdapterFactory.get());
     }
 
     @Override

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.db.access;
 
 import android.database.Cursor;
 
-final public class SqliteCheckerUtility {
+public final class SqliteCheckerUtility {
 
     private SqliteCheckerUtility() {
     }

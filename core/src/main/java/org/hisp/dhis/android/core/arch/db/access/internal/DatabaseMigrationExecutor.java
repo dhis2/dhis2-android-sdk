@@ -29,35 +29,37 @@
 package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import android.content.res.AssetManager;
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.Transaction;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public class DbMigrationExecutor {
+class DatabaseMigrationExecutor {
 
-    private final SQLiteDatabase database;
-    private final DbMigrationParser parser;
+    private final DatabaseAdapter databaseAdapter;
+    private final DatabaseMigrationParser parser;
 
     private static final int SNAPSHOT_VERSION = 64;
 
-    public DbMigrationExecutor(SQLiteDatabase database, AssetManager assetManager) {
-        this.database = database;
-        this.parser = new DbMigrationParser(assetManager);
+    DatabaseMigrationExecutor(DatabaseAdapter databaseAdapter, AssetManager assetManager) {
+        this.databaseAdapter = databaseAdapter;
+        this.parser = new DatabaseMigrationParser(assetManager);
     }
 
-    public void upgradeFromTo(int oldVersion, int newVersion) {
-        database.beginTransaction();
+    void upgradeFromTo(int oldVersion, int newVersion) {
+        Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
             int initialMigrationVersion = performSnapshotIfRequired(oldVersion, newVersion);
             executeFilesSQL(parser.parseMigrations(initialMigrationVersion, newVersion));
-            database.setTransactionSuccessful();
+            transaction.setSuccessful();
         } catch (IOException e) {
             Log.e("Database Error:", e.getMessage());
         } finally {
-            database.endTransaction();
+            transaction.end();
         }
     }
 
@@ -80,7 +82,7 @@ public class DbMigrationExecutor {
         List<String> ups = scripts.get("up");
         if (ups != null) {
             for (String script : ups) {
-                database.execSQL(script);
+                databaseAdapter.execSQL(script);
             }
         }
     }

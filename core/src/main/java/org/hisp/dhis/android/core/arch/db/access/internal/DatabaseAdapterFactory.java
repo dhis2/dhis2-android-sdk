@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
- *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,55 +25,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.access.internal;
 
-import android.database.sqlite.SQLiteDatabase;
+import android.content.Context;
 
-import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
-import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteTransaction;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import androidx.annotation.VisibleForTesting;
 
-public class SqLiteTransactionShould {
-
-    @Mock
-    DbOpenHelper dbOpenHelper;
-
-    @Mock
-    SQLiteDatabase database;
-
-    private SqLiteTransaction transaction; // The class we are testing
-
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
-        when(dbOpenHelper.getWritableDatabase()).thenReturn(database);
-
-        transaction = new SqLiteTransaction(dbOpenHelper);
+public final class DatabaseAdapterFactory {
+    public static DatabaseAdapter getDatabaseAdapter(Context context, String databaseName) {
+        UnencryptedDatabaseOpenHelper openHelper = new UnencryptedDatabaseOpenHelper(context, databaseName);
+        return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
     }
 
-    @Test
-    public void verify_transaction_is_running_on_database_when_begin_in_transaction() throws Exception {
-        transaction.begin();
-        verify(database).beginTransaction();
+    @VisibleForTesting
+    public static DatabaseAdapter getDatabaseAdapter(Context context, String databaseName, int version) {
+        UnencryptedDatabaseOpenHelper openHelper = new UnencryptedDatabaseOpenHelper(context, databaseName, version);
+        return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
     }
 
-    @Test
-    public void verify_transaction_is_successful_when_transaction_is_set_as_successful() throws Exception {
-        transaction.setSuccessful();
-        verify(database).setTransactionSuccessful();
+    private DatabaseAdapterFactory() {
     }
-
-    @Test
-    public void verify_transaction_is_end_when_transaction_is_set_as_end() throws Exception {
-        transaction.end();
-        verify(database).endTransaction();
-    }
-
 }

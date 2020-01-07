@@ -26,49 +26,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.utils.integration.mock;
 
-import android.content.res.AssetManager;
+import android.content.Context;
 
-import org.yaml.snakeyaml.Yaml;
+import com.facebook.stetho.Stetho;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 
-class DbMigrationParser {
+import androidx.test.InstrumentationRegistry;
 
-    private final AssetManager assetManager;
+public class TestDatabaseAdapterFactory {
+    private static String dbName = null;
+    private static DatabaseAdapter databaseAdapter = null;
 
-    DbMigrationParser(AssetManager assetManager) {
-        this.assetManager = assetManager;
-    }
-
-    List<Map<String, List<String>>> parseMigrations(int oldVersion, int newVersion) throws IOException {
-        List<Map<String, List<String>>> scripts = new ArrayList<>();
-
-        int startVersion = oldVersion + 1;
-        for (int i = startVersion; i <= newVersion; i++) {
-            Map<String, List<String>> script = this.parseMigration(i);
-            scripts.add(script);
+    public static void setUp() {
+        if (databaseAdapter == null) {
+            databaseAdapter = create();
+            databaseAdapter.setForeignKeyConstraintsEnabled(false);
         }
-
-        return scripts;
     }
 
-    Map<String, List<String>> parseSnapshot(int version) throws IOException {
-        return parseFile("snapshots", version);
+    public static DatabaseAdapter get() {
+        return databaseAdapter;
     }
 
-    Map<String, List<String>> parseMigration(int version) throws IOException {
-        return parseFile("migrations", version);
+    public static void tearDown() {
+        if (databaseAdapter != null) {
+            databaseAdapter.close();
+            databaseAdapter = null;
+        }
     }
 
-    private Map<String, List<String>> parseFile(String directory, int newVersion) throws IOException {
-        String fileName = directory + "/" + newVersion + ".yaml";
-        InputStream inputStream = assetManager.open(fileName);
-        return new Yaml().load(inputStream);
+    private static DatabaseAdapter create() {
+        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        Stetho.initializeWithDefaults(context);
+        return DatabaseAdapterFactory.getDatabaseAdapter(context, dbName);
     }
 }

@@ -26,45 +26,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.integration.mock;
-
-import android.content.Context;
-
-import com.facebook.stetho.Stetho;
+package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
-import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import androidx.test.InstrumentationRegistry;
+import static org.mockito.Mockito.verify;
 
-public class DatabaseAdapterFactory {
-    private static String dbName = null;
-    private static DatabaseAdapter databaseAdapter = null;
+public class TransactionImplShould {
 
-    public static void setUp() {
-        if (databaseAdapter == null) {
-            databaseAdapter = create();
-            databaseAdapter.setForeignKeyConstraintsEnabled(false);
-        }
+    @Mock
+    DatabaseAdapter databaseAdapter;
+
+    private TransactionImpl transaction; // The class we are testing
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+
+        transaction = new TransactionImpl(databaseAdapter);
     }
 
-    public static DatabaseAdapter get() {
-        return databaseAdapter;
+    @Test
+    public void verify_transaction_is_successful_when_transaction_is_set_as_successful() {
+        transaction.setSuccessful();
+        verify(databaseAdapter).setTransactionSuccessful();
     }
 
-    public static void tearDown() {
-        if (databaseAdapter != null) {
-            databaseAdapter.database().close();
-            databaseAdapter = null;
-        }
+    @Test
+    public void verify_transaction_is_end_when_transaction_is_set_as_end() {
+        transaction.end();
+        verify(databaseAdapter).endTransaction();
     }
 
-    private static DatabaseAdapter create() {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(context, dbName);
-        dbOpenHelper.getWritableDatabase();
-        Stetho.initializeWithDefaults(context);
-        return new SqLiteDatabaseAdapter(dbOpenHelper);
-    }
 }

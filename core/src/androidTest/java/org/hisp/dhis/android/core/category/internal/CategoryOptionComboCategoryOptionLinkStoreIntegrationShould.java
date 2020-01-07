@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo;
 import org.hisp.dhis.android.core.data.category.CategoryOptionComboCategoryOptionLinkSamples;
 import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
@@ -41,9 +41,9 @@ public class CategoryOptionComboCategoryOptionLinkStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<CategoryOptionComboCategoryOptionLink> {
 
     public CategoryOptionComboCategoryOptionLinkStoreIntegrationShould() {
-        super(CategoryOptionComboCategoryOptionLinkStore.create(DatabaseAdapterFactory.get()),
+        super(CategoryOptionComboCategoryOptionLinkStore.create(TestDatabaseAdapterFactory.get()),
                 CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO,
-                DatabaseAdapterFactory.get());
+                TestDatabaseAdapterFactory.get());
     }
 
     @Override

@@ -28,48 +28,20 @@
 
 package org.hisp.dhis.android.core.arch.db.access.internal;
 
-import android.database.sqlite.SQLiteDatabase;
-
-import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
 
 import androidx.annotation.NonNull;
 
-public class SqLiteTransaction implements Transaction {
+class TransactionImpl implements Transaction {
 
-    private final DbOpenHelper dbOpenHelper;
+    private final DatabaseAdapter databaseAdapter;
 
-    public SqLiteTransaction(@NonNull DbOpenHelper dbOpenHelper) {
-        if (dbOpenHelper == null) {
-            throw new IllegalArgumentException("dbOpenHelper == null");
+    TransactionImpl(@NonNull DatabaseAdapter databaseAdapter) {
+        if (databaseAdapter == null) {
+            throw new IllegalArgumentException("databaseAdapter == null");
         }
-        this.dbOpenHelper = dbOpenHelper;
-    }
-
-    /**
-     * Begins a transaction in EXCLUSIVE mode.
-     * <p>
-     * Transactions can be nested.
-     * When the outer transaction is ended all of
-     * the work done in that transaction and all of the nested transactions will be committed or
-     * rolled back. The changes will be rolled back if any transaction is ended without being
-     * marked as clean (by calling setTransactionSuccessful). Otherwise they will be committed.
-     * </p>
-     * <p>Here is the standard idiom for transactions:
-     * <p>
-     * <pre>
-     *   db.beginTransaction();
-     *   try {
-     *     ...
-     *     db.setTransactionSuccessful();
-     *   } finally {
-     *     db.end();
-     *   }
-     * </pre>
-     */
-    @Override
-    public void begin() {
-        database().beginTransaction();
+        this.databaseAdapter = databaseAdapter;
     }
 
     /**
@@ -83,20 +55,16 @@ public class SqLiteTransaction implements Transaction {
      */
     @Override
     public void setSuccessful() {
-        database().setTransactionSuccessful();
+        databaseAdapter.setTransactionSuccessful();
     }
 
     /**
-     * End a transaction. See beginTransaction for notes about how to use this and when transactions
-     * are committed and rolled back.
+     * End a transaction. See @{@link DatabaseAdapter#beginNewTransaction()} for notes about how to use this and
+     * when transactions are committed and rolled back.
      */
     @Override
     public void end() {
-        database().endTransaction();
-    }
-
-    private SQLiteDatabase database() {
-        return dbOpenHelper.getWritableDatabase();
+        databaseAdapter.endTransaction();
     }
 }
 

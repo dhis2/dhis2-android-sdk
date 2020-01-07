@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.utils.integration.real;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 
 import com.facebook.stetho.Stetho;
 
@@ -37,8 +36,7 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
-import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
@@ -54,9 +52,7 @@ import androidx.test.InstrumentationRegistry;
 import static com.google.common.truth.Truth.assertThat;
 
 public abstract class BaseRealIntegrationTest {
-    private SQLiteDatabase sqLiteDatabase;
     private DatabaseAdapter databaseAdapter;
-    private Context context;
 
     protected Date serverDate = new Date();
     protected ResourceHandler resourceHandler;
@@ -68,11 +64,9 @@ public abstract class BaseRealIntegrationTest {
 
     @Before
     public void setUp() throws IOException {
-        context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
 
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(context, null);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+        databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(context, null);
         credentialsSecureStore = new CredentialsSecureStoreImpl(context);
         resourceHandler = ResourceHandler.create(databaseAdapter);
         resourceHandler.setServerDate(serverDate);
@@ -81,12 +75,8 @@ public abstract class BaseRealIntegrationTest {
 
     @After
     public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
-    }
-
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
+        assertThat(databaseAdapter).isNotNull();
+        databaseAdapter.close();
     }
 
     protected DatabaseAdapter databaseAdapter() {

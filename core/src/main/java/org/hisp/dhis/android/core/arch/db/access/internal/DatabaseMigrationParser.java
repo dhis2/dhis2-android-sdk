@@ -26,28 +26,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.access.internal;
 
-import android.database.sqlite.SQLiteDatabase;
+import android.content.res.AssetManager;
 
-import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.yaml.snakeyaml.Yaml;
 
-import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-import static com.google.common.truth.Truth.assertThat;
+class DatabaseMigrationParser {
 
-@RunWith(AndroidJUnit4.class)
-public class DbOpenHelperShould {
+    private final AssetManager assetManager;
 
-    @Test
-    public void have_tests_on_database_versions() {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , null);
-        SQLiteDatabase database = dbOpenHelper.getWritableDatabase();
-        assertThat(dbOpenHelper.getWritableDatabase().getVersion()).isEqualTo(DbOpenHelper.VERSION);
-        database.close();
+    DatabaseMigrationParser(AssetManager assetManager) {
+        this.assetManager = assetManager;
+    }
+
+    List<Map<String, List<String>>> parseMigrations(int oldVersion, int newVersion) throws IOException {
+        List<Map<String, List<String>>> scripts = new ArrayList<>();
+
+        int startVersion = oldVersion + 1;
+        for (int i = startVersion; i <= newVersion; i++) {
+            Map<String, List<String>> script = this.parseMigration(i);
+            scripts.add(script);
+        }
+
+        return scripts;
+    }
+
+    Map<String, List<String>> parseSnapshot(int version) throws IOException {
+        return parseFile("snapshots", version);
+    }
+
+    private Map<String, List<String>> parseMigration(int version) throws IOException {
+        return parseFile("migrations", version);
+    }
+
+    private Map<String, List<String>> parseFile(String directory, int newVersion) throws IOException {
+        String fileName = directory + "/" + newVersion + ".yaml";
+        InputStream inputStream = assetManager.open(fileName);
+        return new Yaml().load(inputStream);
     }
 }

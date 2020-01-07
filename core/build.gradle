@@ -55,6 +55,7 @@ ext {
             dagger          : "2.14.1",
             rxjava          : "2.2.8",
             rxandroid       : "2.1.1",
+            sqlcipher       : "4.2.0",
 
             // code checks
             findbugs        : "3.0.0",
@@ -197,6 +198,8 @@ dependencies {
     // Extension which generates mappers for work with cursor and content values
     api "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
     annotationProcessor "com.gabrielittner.auto.value:auto-value-cursor:${libraries.autovaluecursor}"
+
+    api "net.zetetic:android-database-sqlcipher:${libraries.sqlcipher}"
 
     api "com.google.code.findbugs:annotations:${libraries.findbugs}"
 

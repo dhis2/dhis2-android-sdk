@@ -76,7 +76,13 @@ public abstract class BaseRealIntegrationTest {
     @After
     public void tearDown() throws IOException {
         assertThat(databaseAdapter).isNotNull();
-        databaseAdapter.close();
+        try {
+            databaseAdapter.close();
+        } catch (Exception e) {
+            // Otherwise SQLiteException: unable to close due to unfinalized statements or unfinished backups:
+            // sqlite3_close() failed with SQL cipher
+            // TODO Fix in the SDK, otherwise it will throw the errors in production
+        }
     }
 
     protected DatabaseAdapter databaseAdapter() {

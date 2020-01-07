@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,42 +29,41 @@
 package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.os.Build;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 
-import androidx.annotation.VisibleForTesting;
+class BaseDatabaseOpenHelper {
 
-public final class DatabaseAdapterFactory {
+    static final int VERSION = 64;
 
-    private static boolean encrypt;
-    private static String ENCRYPTION_PASSWORD = "dhis-password";
+    private final AssetManager assetManager;
+    private final int targetVersion;
 
-    public static void setExperimentalEncryption(boolean experimentalEncryption) {
-        encrypt = experimentalEncryption;
+    BaseDatabaseOpenHelper(Context context, int targetVersion) {
+        this.assetManager = context.getAssets();
+        this.targetVersion = targetVersion;
     }
 
-    public static DatabaseAdapter getDatabaseAdapter(Context context, String databaseName) {
-        if (encrypt) {
-            EncryptedDatabaseOpenHelper openHelper = new EncryptedDatabaseOpenHelper(context, databaseName);
-            return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(ENCRYPTION_PASSWORD));
-        } else {
-            UnencryptedDatabaseOpenHelper openHelper = new UnencryptedDatabaseOpenHelper(context, databaseName);
-            return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
+    void onOpen(DatabaseAdapter databaseAdapter) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // enable foreign key support in database only for lollipop and newer versions
+            databaseAdapter.setForeignKeyConstraintsEnabled(true);
         }
+
+        databaseAdapter.enableWriteAheadLogging();
     }
 
-    @VisibleForTesting
-    public static DatabaseAdapter getDatabaseAdapter(Context context, String databaseName, int version) {
-        if (encrypt) {
-            EncryptedDatabaseOpenHelper openHelper = new EncryptedDatabaseOpenHelper(context, databaseName, version);
-            return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(ENCRYPTION_PASSWORD));
-        } else {
-            UnencryptedDatabaseOpenHelper openHelper
-                    = new UnencryptedDatabaseOpenHelper(context, databaseName, version);
-            return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
-        }
+    void onCreate(DatabaseAdapter databaseAdapter) {
+        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
     }
 
-    private DatabaseAdapterFactory() {
+    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
+        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
+    }
+
+    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
+        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
     }
 }

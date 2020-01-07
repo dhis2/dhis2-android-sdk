@@ -29,54 +29,38 @@
 package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 class UnencryptedDatabaseOpenHelper extends SQLiteOpenHelper {
 
-    public static final int VERSION = 64;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
+    private final BaseDatabaseOpenHelper baseHelper;
 
     UnencryptedDatabaseOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        this(context, databaseName, VERSION);
+        this(context, databaseName, BaseDatabaseOpenHelper.VERSION);
     }
 
     UnencryptedDatabaseOpenHelper(Context context, String databaseName, int targetVersion) {
         super(context, databaseName, null, targetVersion);
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+        this.baseHelper = new BaseDatabaseOpenHelper(context, targetVersion);
     }
 
     @Override
     public void onOpen(SQLiteDatabase db) {
         super.onOpen(db);
-
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            db.setForeignKeyConstraintsEnabled(true);
-        }
-
-        db.enableWriteAheadLogging();
+        baseHelper.onOpen(new UnencryptedDatabaseAdapter(db));
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        executor(db).upgradeFromTo(0, targetVersion);
+        baseHelper.onCreate(new UnencryptedDatabaseAdapter(db));
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        executor(db).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(SQLiteDatabase db) {
-        return new DatabaseMigrationExecutor(new UnencryptedDatabaseAdapter(db), assetManager);
+        baseHelper.onUpgrade(new UnencryptedDatabaseAdapter(db), oldVersion, newVersion);
     }
 }

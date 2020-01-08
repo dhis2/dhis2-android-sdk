@@ -36,7 +36,6 @@ public class ConfigurationSamples {
 
     public static Configuration getConfiguration() {
         return Configuration.builder()
-                .id(1L)
                 .serverUrl(HttpUrl.parse("http://testserver.org/api/"))
                 .build();
     }

@@ -26,45 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.testapp.arch;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
+import org.junit.Test;
 
-public final class ConfigurationTableInfo {
+public abstract class ObjectWithBuilderShould {
 
-    private ConfigurationTableInfo() {
-    }
+    @Test
+    public abstract void has_public_builder_method();
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "Configuration";
-        }
-
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends CoreColumns {
-        public static final String SERVER_URL = "serverUrl";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    SERVER_URL
-            );
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return CollectionsHelper.appendInNewArray(super.whereUpdate(),
-                    SERVER_URL
-            );
-        }
-    }
+    @Test(expected = NullPointerException.class)
+    public abstract void has_public_to_builder_method();
 }

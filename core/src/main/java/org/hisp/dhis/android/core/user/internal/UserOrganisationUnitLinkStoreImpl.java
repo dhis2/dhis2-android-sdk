@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
@@ -52,11 +51,10 @@ public final class UserOrganisationUnitLinkStoreImpl extends LinkStoreImpl<UserO
     };
 
     private UserOrganisationUnitLinkStoreImpl(DatabaseAdapter databaseAdapter,
-                                              StatementWrapper insertStatement,
                                               String masterColumn,
                                               SQLStatementBuilderImpl builder,
                                               StatementBinder<UserOrganisationUnitLink> binder) {
-        super(databaseAdapter, insertStatement, builder, masterColumn, binder, UserOrganisationUnitLink::create);
+        super(databaseAdapter, builder, masterColumn, binder, UserOrganisationUnitLink::create);
     }
 
     public static UserOrganisationUnitLinkStore create(DatabaseAdapter databaseAdapter) {
@@ -65,7 +63,6 @@ public final class UserOrganisationUnitLinkStoreImpl extends LinkStoreImpl<UserO
 
         return new UserOrganisationUnitLinkStoreImpl(
                 databaseAdapter,
-                databaseAdapter.compileStatement(statementBuilder.insert()),
                 Columns.ORGANISATION_UNIT_SCOPE,
                 statementBuilder,
                 BINDER);

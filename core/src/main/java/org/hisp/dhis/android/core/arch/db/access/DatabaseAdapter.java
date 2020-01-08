@@ -70,24 +70,22 @@ public interface DatabaseAdapter {
      * Execute {@code statement} and return the ID of the row inserted due to this call.
      * The SQL statement should be an INSERT for this to be a useful call.
      *
-     * @param table           The affected table
      * @param sqLiteStatement The SQL statement to execute
      * @return the row ID of the last row inserted, if this insert is successful. -1 otherwise.
      * @throws android.database.SQLException If the SQL string is invalid
      */
-    long executeInsert(String table, StatementWrapper sqLiteStatement);
+    long executeInsert(StatementWrapper sqLiteStatement);
 
     /**
      * Execute this SQL statement, if the the number of rows affected by execution of this SQL
      * statement is of any importance to the caller - for example, UPDATE / DELETE SQL statements.
      *
-     * @param table           The affected table
      * @param sqLiteStatement The SQL statement to execute
      * @return the number of rows affected by this SQL statement execution.
      * @throws android.database.SQLException If the SQL string is invalid for
      *                                       some reason
      */
-    int executeUpdateDelete(String table, StatementWrapper sqLiteStatement);
+    int executeUpdateDelete(StatementWrapper sqLiteStatement);
 
     /**
      * Convenience method for deleting rows in the database.

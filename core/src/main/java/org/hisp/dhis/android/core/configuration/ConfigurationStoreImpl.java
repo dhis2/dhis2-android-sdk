@@ -39,8 +39,7 @@ public final class ConfigurationStoreImpl extends ObjectStoreImpl<Configuration>
 
     private ConfigurationStoreImpl(DatabaseAdapter databaseAdapter,
                                    SQLStatementBuilderImpl builder) {
-        super(databaseAdapter, databaseAdapter.compileStatement(builder.insert()), builder, BINDER,
-                Configuration::create);
+        super(databaseAdapter, builder, BINDER, Configuration::create);
     }
 
     @Override

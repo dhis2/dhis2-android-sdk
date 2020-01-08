@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
@@ -76,11 +75,10 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
     };
 
     private EventStoreImpl(DatabaseAdapter databaseAdapter,
-                           SQLStatementWrapper statementWrapper,
                            SQLStatementBuilderImpl builder,
                            StatementBinder<Event> binder,
                            ObjectFactory<Event> objectFactory) {
-        super(databaseAdapter, statementWrapper, builder, binder, objectFactory);
+        super(databaseAdapter, builder, binder, objectFactory);
     }
 
     @Override
@@ -162,11 +160,9 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
         SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(
                 EventTableInfo.TABLE_INFO.name(),
                 EventTableInfo.TABLE_INFO.columns());
-        SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);
 
         return new EventStoreImpl(
                 databaseAdapter,
-                statementWrapper,
                 statementBuilder,
                 BINDER,
                 Event::create

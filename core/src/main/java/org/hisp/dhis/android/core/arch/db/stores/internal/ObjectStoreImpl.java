@@ -45,14 +45,13 @@ import androidx.annotation.NonNull;
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isNull;
 
 public class ObjectStoreImpl<M extends CoreObject> extends ReadableStoreImpl<M> implements ObjectStore<M> {
-    private final StatementWrapper insertStatement;
+    private StatementWrapper insertStatement;
     protected final SQLStatementBuilder builder;
     protected final StatementBinder<M> binder;
 
-    public ObjectStoreImpl(DatabaseAdapter databaseAdapter, StatementWrapper insertStatement,
-                           SQLStatementBuilder builder, StatementBinder<M> binder, ObjectFactory<M> objectFactory) {
+    public ObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLStatementBuilder builder, StatementBinder<M> binder,
+                           ObjectFactory<M> objectFactory) {
         super(databaseAdapter, builder, objectFactory);
-        this.insertStatement = insertStatement;
         this.builder = builder;
         this.binder = binder;
     }
@@ -60,8 +59,11 @@ public class ObjectStoreImpl<M extends CoreObject> extends ReadableStoreImpl<M> 
     @Override
     public long insert(@NonNull M m) throws RuntimeException {
         isNull(m);
+        if (insertStatement == null) {
+            insertStatement = databaseAdapter.compileStatement(builder.insert());
+        }
         binder.bindToStatement(m, insertStatement);
-        long insertedRowId = databaseAdapter.executeInsert(builder.getTableName(), insertStatement);
+        long insertedRowId = databaseAdapter.executeInsert(insertStatement);
         insertStatement.clearBindings();
         if (insertedRowId == -1) {
             throw new RuntimeException("Nothing was inserted.");
@@ -81,7 +83,7 @@ public class ObjectStoreImpl<M extends CoreObject> extends ReadableStoreImpl<M> 
     }
 
     void executeUpdateDelete(StatementWrapper statement) throws RuntimeException {
-        int numberOfAffectedRows = databaseAdapter.executeUpdateDelete(builder.getTableName(), statement);
+        int numberOfAffectedRows = databaseAdapter.executeUpdateDelete(statement);
         statement.clearBindings();
 
         if (numberOfAffectedRows == 0) {

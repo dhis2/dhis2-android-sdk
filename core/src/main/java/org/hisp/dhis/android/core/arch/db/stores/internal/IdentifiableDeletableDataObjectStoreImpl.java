@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
@@ -51,25 +50,30 @@ public class IdentifiableDeletableDataObjectStoreImpl<M extends ObjectWithUidInt
 
     private final static String EQ = " = ";
 
-    private final StatementWrapper setStateIfUploadingStatement;
-    private final StatementWrapper setDeletedStatement;
+    private StatementWrapper setStateIfUploadingStatement;
+    private StatementWrapper setDeletedStatement;
 
     public IdentifiableDeletableDataObjectStoreImpl(DatabaseAdapter databaseAdapter,
-                                                    SQLStatementWrapper statements,
                                                     SQLStatementBuilder builder, StatementBinder<M> binder,
                                                     ObjectFactory<M> objectFactory) {
-        super(databaseAdapter, statements, builder, binder, objectFactory);
-        String whereUid =  " WHERE " + UID + " =?";
+        super(databaseAdapter, builder, binder, objectFactory);
 
-        String setState = "UPDATE " + tableName + " SET " +
-                STATE + " =?" + whereUid;
+    }
 
-        String setStateIfUploading = setState + " AND " + STATE + EQ + "'" + State.UPLOADING + "'";
-        this.setStateIfUploadingStatement = databaseAdapter.compileStatement(setStateIfUploading);
+    private void compileStatements() {
+        if (setStateIfUploadingStatement == null) {
+            String whereUid =  " WHERE " + UID + " =?";
 
-        String setDeleted = "UPDATE " + tableName + " SET " +
-                DELETED + " = 1" + whereUid;
-        this.setDeletedStatement = databaseAdapter.compileStatement(setDeleted);
+            String setState = "UPDATE " + tableName + " SET " +
+                    STATE + " =?" + whereUid;
+
+            String setStateIfUploading = setState + " AND " + STATE + EQ + "'" + State.UPLOADING + "'";
+            this.setStateIfUploadingStatement = databaseAdapter.compileStatement(setStateIfUploading);
+
+            String setDeleted = "UPDATE " + tableName + " SET " +
+                    DELETED + " = 1" + whereUid;
+            this.setDeletedStatement = databaseAdapter.compileStatement(setDeleted);
+        }
     }
 
     @Override
@@ -94,20 +98,22 @@ public class IdentifiableDeletableDataObjectStoreImpl<M extends ObjectWithUidInt
     }
 
     private void setStateIfUploading(@NonNull String uid, @NonNull State state) {
+        compileStatements();
         setStateIfUploadingStatement.bind(1, state);
 
         // bind the where argument
         setStateIfUploadingStatement.bind(2, uid);
 
-        databaseAdapter.executeUpdateDelete(tableName, setStateIfUploadingStatement);
+        databaseAdapter.executeUpdateDelete(setStateIfUploadingStatement);
         setStateIfUploadingStatement.clearBindings();
     }
 
     @Override
     public int setDeleted(@NonNull String uid) {
+        compileStatements();
         setDeletedStatement.bind(1, uid);
 
-        int updatedRow = databaseAdapter.executeUpdateDelete(tableName, setDeletedStatement);
+        int updatedRow = databaseAdapter.executeUpdateDelete(setDeletedStatement);
         setDeletedStatement.clearBindings();
 
         return updatedRow;

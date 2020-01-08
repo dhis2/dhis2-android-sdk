@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import androidx.annotation.NonNull;
@@ -42,12 +41,11 @@ public class LinkStoreImpl<M extends CoreObject> extends ObjectStoreImpl<M> impl
     private final String masterColumn;
 
     protected LinkStoreImpl(DatabaseAdapter databaseAdapter,
-                            StatementWrapper insertStatement,
                             SQLStatementBuilder builder,
                             String masterColumn,
                             StatementBinder<M> binder,
                             ObjectFactory<M> objectFactory) {
-        super(databaseAdapter, insertStatement, builder, binder, objectFactory);
+        super(databaseAdapter, builder, binder, objectFactory);
         this.masterColumn = masterColumn;
     }
 

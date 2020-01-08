@@ -82,10 +82,10 @@ public class UnencryptedDatabaseAdapterShould {
 
     @Test
     public void verify_the_statements_are_executed_in_data_base_when_execute_insert_in_data_base_adapter() {
-        sqLiteDatabaseAdapter.executeInsert("TABLE", sqLiteStatement);
+        sqLiteDatabaseAdapter.executeInsert(sqLiteStatement);
         verify(sqLiteStatement).executeInsert();
 
-        sqLiteDatabaseAdapter.executeUpdateDelete("TABLE", sqLiteStatement);
+        sqLiteDatabaseAdapter.executeUpdateDelete(sqLiteStatement);
         verify(sqLiteStatement).executeUpdateDelete();
     }
 

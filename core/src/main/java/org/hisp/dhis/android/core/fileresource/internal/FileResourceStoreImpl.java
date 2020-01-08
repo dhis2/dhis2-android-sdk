@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.fileresource.internal;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
-import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.fileresource.FileResource;
@@ -51,22 +50,19 @@ public final class FileResourceStoreImpl extends IdentifiableDataObjectStoreImpl
     };
 
     private FileResourceStoreImpl(DatabaseAdapter databaseAdapter,
-                                  SQLStatementWrapper statementWrapper,
                                   SQLStatementBuilderImpl builder,
                                   StatementBinder<FileResource> binder,
                                   ObjectFactory<FileResource> objectFactory) {
-        super(databaseAdapter, statementWrapper, builder, binder, objectFactory);
+        super(databaseAdapter, builder, binder, objectFactory);
     }
 
     public static FileResourceStoreImpl create(DatabaseAdapter databaseAdapter) {
         SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(
                 FileResourceTableInfo.TABLE_INFO.name(),
                 FileResourceTableInfo.TABLE_INFO.columns());
-        SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);
 
         return new FileResourceStoreImpl(
                 databaseAdapter,
-                statementWrapper,
                 statementBuilder,
                 BINDER,
                 FileResource::create

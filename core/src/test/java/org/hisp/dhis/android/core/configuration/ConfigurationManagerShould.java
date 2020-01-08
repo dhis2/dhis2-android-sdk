@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.configuration;
 
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,9 +47,11 @@ import static org.mockito.Mockito.when;
 public class ConfigurationManagerShould {
 
     @Mock
-    private ConfigurationStore store;
+    private SecureStore store;
 
     private ConfigurationManager manager;
+
+    private final static String KEY = "server_url";
 
     private final String SERVER_URL = "http://testserver.org/";
 
@@ -62,12 +65,12 @@ public class ConfigurationManagerShould {
 
     @Test
     public void return_correct_values_when_configuration_manager_is_configured_with_saved_store() {
-        when(store.selectFirst()).thenReturn(configuration);
+        when(store.getData(KEY)).thenReturn(SERVER_URL);
 
         Configuration dbConfiguration = manager.get();
 
-        verify(store).selectFirst();
-        assertThat(dbConfiguration).isSameAs(configuration);
+        verify(store).getData(KEY);
+        assertThat(dbConfiguration).isEqualTo(configuration);
     }
 
     @Test
@@ -85,31 +88,27 @@ public class ConfigurationManagerShould {
     public void return_null_if_configuration_is_not_persisted() {
         Configuration configuration = manager.get();
 
-        verify(store).selectFirst();
+        verify(store).getData(KEY);
         assertThat(configuration).isNull();
     }
 
     @Test
     public void invoke_delete_and_return_zero_when_configuration_manager_is_persisted_and_remove_method_is_called() {
-        when(store.delete()).thenReturn(1);
+        manager.remove();
 
-        int removed = manager.remove();
-
-        verify(store).delete();
-        assertThat(removed).isEqualTo(1);
+        verify(store).removeData(KEY);
     }
 
     @Test
     public void invoke_delete_and_return_zero_when_configuration_manager_is_not_persisted_and_remove_method_is_called() {
-        int removed = manager.remove();
+        manager.remove();
 
-        verify(store).delete();
-        assertThat(removed).isEqualTo(0);
+        verify(store).removeData(KEY);
     }
 
     @Test
     public void invoke_save_configuration_store_when_configuring() {
         manager.configure(configuration);
-        verify(store).save(configuration);
+        verify(store).setData(KEY, SERVER_URL);
     }
 }

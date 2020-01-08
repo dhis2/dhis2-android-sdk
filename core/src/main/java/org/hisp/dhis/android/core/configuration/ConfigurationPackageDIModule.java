@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.configuration;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.constant.ConstantModule;
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleImpl;
 
@@ -41,8 +41,8 @@ public final class ConfigurationPackageDIModule {
 
     @Provides
     @Reusable
-    ConfigurationManager programCallFactory(DatabaseAdapter databaseAdapter) {
-        return ConfigurationManagerFactory.create(databaseAdapter);
+    ConfigurationManager configurationManager(SecureStore secureStore) {
+        return ConfigurationManagerFactory.create(secureStore);
     }
 
     @Provides

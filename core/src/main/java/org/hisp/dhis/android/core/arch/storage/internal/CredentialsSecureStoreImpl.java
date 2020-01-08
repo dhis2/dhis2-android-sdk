@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.storage.internal;
 
-import android.content.Context;
-
 public class CredentialsSecureStoreImpl implements CredentialsSecureStore {
 
     private static final String USERNAME_KEY = "username";
@@ -39,8 +37,8 @@ public class CredentialsSecureStoreImpl implements CredentialsSecureStore {
 
     private Credentials credentials;
 
-    public CredentialsSecureStoreImpl(Context context) {
-        this.secureStore = new AndroidSecureStore(context);
+    public CredentialsSecureStoreImpl(SecureStore secureStore) {
+        this.secureStore = secureStore;
     }
 
     public void setCredentials(Credentials credentials) {

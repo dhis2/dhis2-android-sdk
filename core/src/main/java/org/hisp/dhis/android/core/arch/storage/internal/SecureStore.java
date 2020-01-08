@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.storage.internal;
 
-interface SecureStore {
+public interface SecureStore {
 
     void setData(String key, String data);
 

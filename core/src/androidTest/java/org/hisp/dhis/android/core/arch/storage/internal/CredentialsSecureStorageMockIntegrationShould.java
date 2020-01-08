@@ -45,7 +45,8 @@ public class CredentialsSecureStorageMockIntegrationShould {
     @Before
     public void setUp() {
         credentialsSecureStore =
-                new CredentialsSecureStoreImpl(InstrumentationRegistry.getContext().getApplicationContext());
+                new CredentialsSecureStoreImpl(
+                        new AndroidSecureStore(InstrumentationRegistry.getContext().getApplicationContext()));
     }
 
     @Test

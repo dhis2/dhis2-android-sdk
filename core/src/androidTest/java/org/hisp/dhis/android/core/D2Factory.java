@@ -33,6 +33,7 @@ import android.content.Context;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
 
@@ -80,7 +81,7 @@ public class D2Factory {
     public static D2 forDatabaseAdapter(DatabaseAdapter databaseAdapter) {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
         NotClosedObjectsDetector.enableNotClosedObjectsDetection();
-        CredentialsSecureStore credentialsSecureStore = new CredentialsSecureStoreImpl(context);
+        CredentialsSecureStore credentialsSecureStore = new CredentialsSecureStoreImpl(new AndroidSecureStore(context));
         return new D2(
                 RetrofitFactory.retrofit(
                         OkHttpClientFactory.okHttpClient(d2Configuration(context), credentialsSecureStore)),

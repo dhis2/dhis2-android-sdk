@@ -31,33 +31,38 @@ package org.hisp.dhis.android.core.configuration;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
+
+import okhttp3.HttpUrl;
+
 final class ConfigurationManagerImpl implements ConfigurationManager {
 
-    @NonNull
-    private final ConfigurationStore configurationStore;
+    private static final String SERVER_URL = "server_url";
 
-    ConfigurationManagerImpl(@NonNull ConfigurationStore configurationStore) {
-        this.configurationStore = configurationStore;
+    private final SecureStore secureStore;
+
+    ConfigurationManagerImpl(@NonNull SecureStore secureStore) {
+        this.secureStore = secureStore;
     }
 
-    @NonNull
     @Override
     public void configure(@NonNull Configuration configuration) {
         if (configuration == null) {
             throw new IllegalArgumentException("configuration == null");
         }
 
-        configurationStore.save(configuration);
+        secureStore.setData(SERVER_URL, configuration.serverUrl().toString());
     }
 
     @Nullable
     @Override
     public Configuration get() {
-        return configurationStore.selectFirst();
+        String serverUrl = secureStore.getData(SERVER_URL);
+        return serverUrl == null ? null : Configuration.forServerUrl(HttpUrl.parse(serverUrl));
     }
 
     @Override
-    public int remove() {
-        return configurationStore.delete();
+    public void remove() {
+        secureStore.removeData(SERVER_URL);
     }
 }

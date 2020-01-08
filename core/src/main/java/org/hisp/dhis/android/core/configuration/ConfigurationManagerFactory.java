@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.configuration;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
 import androidx.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 
 public final class ConfigurationManagerFactory {
 
@@ -39,12 +39,11 @@ public final class ConfigurationManagerFactory {
     }
 
     @NonNull
-    public static ConfigurationManager create(@NonNull DatabaseAdapter databaseAdapter) {
-        if (databaseAdapter == null) {
-            throw new IllegalArgumentException("databaseAdapter == null");
+    public static ConfigurationManager create(@NonNull SecureStore secureStore) {
+        if (secureStore == null) {
+            throw new IllegalArgumentException("secureStore == null");
         }
 
-        ConfigurationStore configurationStore = ConfigurationStoreImpl.create(databaseAdapter);
-        return new ConfigurationManagerImpl(configurationStore);
+        return new ConfigurationManagerImpl(secureStore);
     }
 }

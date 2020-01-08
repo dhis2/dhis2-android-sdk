@@ -39,5 +39,5 @@ public interface ConfigurationManager {
     @Nullable
     Configuration get();
 
-    int remove();
+    void remove();
 }

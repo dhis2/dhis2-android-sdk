@@ -93,21 +93,13 @@ public class ConfigurationManagerShould {
     }
 
     @Test
-    public void invoke_delete_and_return_zero_when_configuration_manager_is_persisted_and_remove_method_is_called() {
+    public void invoke_remove_data_on_secure_store_when_remove_method_is_called() {
         manager.remove();
-
         verify(store).removeData(KEY);
     }
 
     @Test
-    public void invoke_delete_and_return_zero_when_configuration_manager_is_not_persisted_and_remove_method_is_called() {
-        manager.remove();
-
-        verify(store).removeData(KEY);
-    }
-
-    @Test
-    public void invoke_save_configuration_store_when_configuring() {
+    public void invoke_set_data_on_secure_store_when_configuring() {
         manager.configure(configuration);
         verify(store).setData(KEY, SERVER_URL);
     }

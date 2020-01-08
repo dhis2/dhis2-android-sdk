@@ -57,6 +57,8 @@ public final class OrganisationUnitTableInfo {
         public static final String OPENING_DATE = "openingDate";
         public static final String CLOSED_DATE = "closedDate";
         public static final String LEVEL = "level";
+        public static final String GEOMETRY_TYPE = "geometryType";
+        public static final String GEOMETRY_COORDINATES = "geometryCoordinates";
         public static final String DISPLAY_NAME_PATH = "displayNamePath";
 
         @Override
@@ -66,6 +68,8 @@ public final class OrganisationUnitTableInfo {
                     OPENING_DATE,
                     CLOSED_DATE,
                     LEVEL,
+                    GEOMETRY_TYPE,
+                    GEOMETRY_COORDINATES,
                     PARENT,
                     DISPLAY_NAME_PATH
             );

@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -75,6 +76,10 @@ public class OrganisationUnitShould {
         assertThat(organisationUnit.displayShortName()).isEqualTo("Baomahun CHC");
         assertThat(organisationUnit.parent().uid()).isEqualTo("npWGUj37qDe");
 
+        // geometry
+        assertThat(organisationUnit.geometry().type()).isEqualTo(FeatureType.POINT);
+        assertThat(organisationUnit.geometry().coordinates()).isEqualTo("[9.0, 9.0]");
+
         // checking programs
         assertThat(organisationUnit.programs().get(0).uid()).isEqualTo("uy2gU8kT1jF");
         assertThat(organisationUnit.programs().get(1).uid()).isEqualTo("q04UBOqq3rp");
@@ -94,5 +99,20 @@ public class OrganisationUnitShould {
         assertThat(organisationUnit.ancestors().get(0).displayName()).isEqualTo("Sierra Leone");
         assertThat(organisationUnit.ancestors().get(1).displayName()).isEqualTo("Bo");
         assertThat(organisationUnit.ancestors().get(2).displayName()).isEqualTo("Valunia");
+    }
+
+    @Test
+    public void map_coordinates_and_feature_type_to_geometry() throws IOException {
+        ObjectMapper objectMapper = Inject.objectMapper();
+        InputStream jsonStream = this.getClass().getClassLoader()
+                .getResourceAsStream("organisationunit/organisation_unit_with_feature_type_and_coordinates.json");
+
+        OrganisationUnit organisationUnit = objectMapper.readValue(jsonStream, OrganisationUnit.class);
+
+        assertThat(organisationUnit.uid()).isEqualTo("FLjwMPWLrL2");
+
+        // geometry
+        assertThat(organisationUnit.geometry().type()).isEqualTo(FeatureType.POINT);
+        assertThat(organisationUnit.geometry().coordinates()).isEqualTo("[-11.6677,8.4165]");
     }
 }

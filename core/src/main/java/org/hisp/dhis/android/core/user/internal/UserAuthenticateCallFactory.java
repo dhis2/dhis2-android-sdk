@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
@@ -37,7 +39,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.configuration.internal.Configuration;
 import org.hisp.dhis.android.core.configuration.internal.ConfigurationManager;
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser;
@@ -53,7 +55,6 @@ import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Single;
 import okhttp3.HttpUrl;
@@ -71,7 +72,7 @@ public final class UserAuthenticateCallFactory {
 
     private final UserService userService;
 
-    private final CredentialsSecureStore credentialsSecureStore;
+    private final ObjectSecureStore<Credentials> credentialsSecureStore;
 
     private final Handler<User> userHandler;
     private final ResourceHandler resourceHandler;
@@ -86,7 +87,7 @@ public final class UserAuthenticateCallFactory {
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull APICallExecutor apiCallExecutor,
             @NonNull UserService userService,
-            @NonNull CredentialsSecureStore credentialsSecureStore,
+            @NonNull ObjectSecureStore<Credentials> credentialsSecureStore,
             @NonNull Handler<User> userHandler,
             @NonNull ResourceHandler resourceHandler,
             @NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore,
@@ -162,7 +163,7 @@ public final class UserAuthenticateCallFactory {
             AuthenticatedUser authenticatedUserToStore = buildAuthenticatedUser(authenticatedUser.uid(),
                     username, password);
             authenticatedUserStore.updateOrInsertWhere(authenticatedUserToStore);
-            credentialsSecureStore.setCredentials(Credentials.create(username, password));
+            credentialsSecureStore.set(Credentials.create(username, password));
 
             systemInfoRepository.download().blockingAwait();
 
@@ -206,7 +207,7 @@ public final class UserAuthenticateCallFactory {
             AuthenticatedUser authenticatedUser = buildAuthenticatedUser(existingUser.user(),
                     username, password);
             authenticatedUserStore.updateOrInsertWhere(authenticatedUser);
-            credentialsSecureStore.setCredentials(Credentials.create(username, password));
+            credentialsSecureStore.set(Credentials.create(username, password));
             transaction.setSuccessful();
         } finally {
             transaction.end();
@@ -236,11 +237,11 @@ public final class UserAuthenticateCallFactory {
     }
 
     private void throwExceptionIfAlreadyAuthenticatedAndDbNotEmpty() throws D2Error {
-        Credentials credentials = credentialsSecureStore.getCredentials();
+        Credentials credentials = credentialsSecureStore.get();
         AuthenticatedUser existingUser = authenticatedUserStore.selectFirst();
         if (credentials != null) {
             if (existingUser == null) {
-                credentialsSecureStore.removeCredentials();
+                credentialsSecureStore.remove();
             } else {
                 throw D2Error.builder()
                         .errorCode(D2ErrorCode.ALREADY_AUTHENTICATED)

@@ -38,9 +38,9 @@ import dagger.Provides;
 @Module
 public class SecureStorageDIModule {
     private final SecureStore secureStore;
-    private final CredentialsSecureStore credentialsSecureStore;
+    private final ObjectSecureStore<Credentials> credentialsSecureStore;
 
-    public SecureStorageDIModule(Context context, CredentialsSecureStore credentialsSecureStore) {
+    public SecureStorageDIModule(Context context, ObjectSecureStore<Credentials> credentialsSecureStore) {
         this.secureStore = new AndroidSecureStore(context);
         this.credentialsSecureStore = credentialsSecureStore;
     }
@@ -53,7 +53,7 @@ public class SecureStorageDIModule {
 
     @Provides
     @Singleton
-    CredentialsSecureStore credentialsSecureStore() {
+    ObjectSecureStore<Credentials> credentialsSecureStore() {
         return credentialsSecureStore;
     }
 }

@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.arch.storage.internal;
 
-public interface CredentialsSecureStore {
+public interface ObjectSecureStore<O> {
 
-    void setCredentials(Credentials credentials);
+    void set(O o);
 
-    Credentials getCredentials();
+    O get();
 
-    void removeCredentials();
+    void remove();
 }

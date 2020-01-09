@@ -37,8 +37,9 @@ import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.configuration.internal.Configuration;
 import org.hisp.dhis.android.core.configuration.internal.ConfigurationManager;
@@ -108,7 +109,7 @@ public final class D2Manager {
             }
 
             SecureStore secureStore = new AndroidSecureStore(d2Configuration.context());
-            CredentialsSecureStore credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
+            ObjectSecureStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
             ConfigurationManager configurationManager = ConfigurationManagerFactory.create(secureStore);
             Configuration configuration = configurationManager.get();
 

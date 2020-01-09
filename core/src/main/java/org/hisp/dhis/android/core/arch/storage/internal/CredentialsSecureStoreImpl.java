@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.storage.internal;
 
-public class CredentialsSecureStoreImpl implements CredentialsSecureStore {
+public class CredentialsSecureStoreImpl implements ObjectSecureStore<Credentials> {
 
     private static final String USERNAME_KEY = "username";
     private static final String PASSWORD_KEY = "password";
@@ -41,13 +41,13 @@ public class CredentialsSecureStoreImpl implements CredentialsSecureStore {
         this.secureStore = secureStore;
     }
 
-    public void setCredentials(Credentials credentials) {
+    public void set(Credentials credentials) {
         this.credentials = credentials;
         this.secureStore.setData(USERNAME_KEY, credentials.username());
         this.secureStore.setData(PASSWORD_KEY, credentials.password());
     }
 
-    public Credentials getCredentials() {
+    public Credentials get() {
         if (this.credentials == null) {
             String password = this.secureStore.getData(PASSWORD_KEY);
             String username = this.secureStore.getData(USERNAME_KEY);
@@ -59,7 +59,7 @@ public class CredentialsSecureStoreImpl implements CredentialsSecureStore {
         return this.credentials;
     }
 
-    public void removeCredentials() {
+    public void remove() {
         this.credentials = null;
         this.secureStore.removeData(USERNAME_KEY);
         this.secureStore.removeData(PASSWORD_KEY);

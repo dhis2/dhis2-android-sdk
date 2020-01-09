@@ -40,8 +40,9 @@ import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.junit.After;
@@ -57,7 +58,7 @@ public abstract class BaseRealIntegrationTest {
 
     protected Date serverDate = new Date();
     protected ResourceHandler resourceHandler;
-    protected CredentialsSecureStore credentialsSecureStore;
+    protected ObjectSecureStore<Credentials> credentialsSecureStore;
 
     protected String username = RealServerMother.username;
     protected String password = RealServerMother.password;

@@ -73,6 +73,8 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
     private static final String EQ = " = ";
     private static final String AND = " AND ";
     private static final String OR = " OR ";
+    private static final String WHEN = " WHEN ";
+    private static final String THEN = " THEN ";
 
     private static final String DATAVALUE_TABLE_ALIAS = "dv";
     private static final String PERIOD_TABLE_ALIAS = "pe";
@@ -131,20 +133,20 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
             "ELSE 4 END)";
 
     private static final String SELECT_STATE = "CASE" +
-            " WHEN " + eq(COMPLETION_STATE, State.ERROR) + OR + eq(VALUE_STATE, State.ERROR) +
-                " THEN " + quotes(State.ERROR) +
-            " WHEN " + eq(COMPLETION_STATE, State.WARNING) + OR + eq(VALUE_STATE, State.WARNING) +
-                " THEN " + quotes(State.WARNING) +
-            " WHEN " + eq(COMPLETION_STATE, State.TO_UPDATE) + OR + eq(VALUE_STATE, State.TO_UPDATE) +
-                " THEN " + quotes(State.TO_UPDATE) +
-            " WHEN " + eq(COMPLETION_STATE, State.TO_POST) + OR + eq(VALUE_STATE, State.TO_POST) +
-                " THEN " + quotes(State.TO_POST) +
-            " WHEN " + eq(COMPLETION_STATE, State.SENT_VIA_SMS) + OR + eq(VALUE_STATE, State.SENT_VIA_SMS) +
-                " THEN " + quotes(State.SENT_VIA_SMS) +
-            " WHEN " + eq(COMPLETION_STATE, State.SYNCED_VIA_SMS) + OR + eq(VALUE_STATE, State.SYNCED_VIA_SMS) +
-                " THEN " + quotes(State.SYNCED_VIA_SMS) +
-            " WHEN " + eq(COMPLETION_STATE, State.SYNCED) + OR + eq(VALUE_STATE, State.SYNCED) +
-                " THEN " + quotes(State.SYNCED) +
+            WHEN + eq(COMPLETION_STATE, State.ERROR) + OR + eq(VALUE_STATE, State.ERROR) +
+                THEN + quotes(State.ERROR) +
+            WHEN + eq(COMPLETION_STATE, State.WARNING) + OR + eq(VALUE_STATE, State.WARNING) +
+                THEN + quotes(State.WARNING) +
+            WHEN + eq(COMPLETION_STATE, State.TO_UPDATE) + OR + eq(VALUE_STATE, State.TO_UPDATE) +
+                THEN + quotes(State.TO_UPDATE) +
+            WHEN + eq(COMPLETION_STATE, State.TO_POST) + OR + eq(VALUE_STATE, State.TO_POST) +
+                THEN + quotes(State.TO_POST) +
+            WHEN + eq(COMPLETION_STATE, State.SENT_VIA_SMS) + OR + eq(VALUE_STATE, State.SENT_VIA_SMS) +
+                THEN + quotes(State.SENT_VIA_SMS) +
+            WHEN + eq(COMPLETION_STATE, State.SYNCED_VIA_SMS) + OR + eq(VALUE_STATE, State.SYNCED_VIA_SMS) +
+                THEN + quotes(State.SYNCED_VIA_SMS) +
+            WHEN + eq(COMPLETION_STATE, State.SYNCED) + OR + eq(VALUE_STATE, State.SYNCED) +
+                THEN + quotes(State.SYNCED) +
             " ELSE " + quotes(State.SYNCED) + " END" +
             AS + STATE_ALIAS;
 

@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTa
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns;
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo;
 
 import java.util.Collections;

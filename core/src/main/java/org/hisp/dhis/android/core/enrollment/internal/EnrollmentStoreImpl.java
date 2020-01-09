@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
@@ -69,11 +68,10 @@ public final class EnrollmentStoreImpl
     };
 
     private EnrollmentStoreImpl(DatabaseAdapter databaseAdapter,
-                                SQLStatementWrapper statementWrapper,
                                 SQLStatementBuilderImpl builder,
                                 StatementBinder<Enrollment> binder,
                                 ObjectFactory<Enrollment> objectFactory) {
-        super(databaseAdapter, statementWrapper, builder, binder, objectFactory);
+        super(databaseAdapter, builder, binder, objectFactory);
     }
 
     @Override
@@ -103,11 +101,9 @@ public final class EnrollmentStoreImpl
         SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(
                 EnrollmentTableInfo.TABLE_INFO.name(),
                 EnrollmentTableInfo.TABLE_INFO.columns());
-        SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);
 
         return new EnrollmentStoreImpl(
                 databaseAdapter,
-                statementWrapper,
                 statementBuilder,
                 BINDER,
                 Enrollment::create

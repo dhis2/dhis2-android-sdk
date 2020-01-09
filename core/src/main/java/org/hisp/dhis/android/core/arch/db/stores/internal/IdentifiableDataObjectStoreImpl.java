@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.common.DataObject;
@@ -56,47 +55,52 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
     private final static String NE = " != ";
     private final static String AND = " AND ";
 
-    private final String selectStateQuery;
-    private final String existsQuery;
-    private final StatementWrapper setStateStatement;
-    private final StatementWrapper setStateForUpdateStatement;
+    private String selectStateQuery;
+    private String existsQuery;
+    private StatementWrapper setStateStatement;
+    private StatementWrapper setStateForUpdateStatement;
     final String tableName;
 
     public IdentifiableDataObjectStoreImpl(DatabaseAdapter databaseAdapter,
-                                           SQLStatementWrapper statements,
-                                           SQLStatementBuilder builder, StatementBinder<M> binder,
+                                           SQLStatementBuilder builder,
+                                           StatementBinder<M> binder,
                                            ObjectFactory<M> objectFactory) {
-        super(databaseAdapter, statements, builder, binder, objectFactory);
+        super(databaseAdapter, builder, binder, objectFactory);
         this.tableName = builder.getTableName();
-        String whereUid =  " WHERE " + UID + " =?";
+    }
 
-        String setState = "UPDATE " + tableName + " SET " +
-                STATE + " =?" + whereUid;
-        this.setStateStatement = databaseAdapter.compileStatement(setState);
+    private void compileStatements() {
+        if (selectStateQuery == null) {
+            String whereUid = " WHERE " + UID + " =?";
 
-        String setStateForUpdate = "UPDATE " + tableName + " SET " +
-                STATE + " = (case " +
+            String setState = "UPDATE " + tableName + " SET " +
+                    STATE + " =?" + whereUid;
+            this.setStateStatement = databaseAdapter.compileStatement(setState);
+
+            String setStateForUpdate = "UPDATE " + tableName + " SET " +
+                    STATE + " = (case " +
                     "when " + STATE + EQ + "'" + State.TO_POST + "' then '" + State.TO_POST + "' " +
                     "when " + STATE + NE + "'" + State.TO_POST + "'" + AND +
-                        STATE + NE + "'" + State.RELATIONSHIP + "' then '" + State.TO_UPDATE + "'" +
-                        " END)" +
-                    " where "  +
-                        UID + " =? ;";
-        this.setStateForUpdateStatement = databaseAdapter.compileStatement(setStateForUpdate);
+                    STATE + NE + "'" + State.RELATIONSHIP + "' then '" + State.TO_UPDATE + "'" +
+                    " END)" +
+                    " where " +
+                    UID + " =? ;";
+            this.setStateForUpdateStatement = databaseAdapter.compileStatement(setStateForUpdate);
 
-        this.selectStateQuery = "SELECT " + STATE + " FROM " + tableName + whereUid;
-        this.existsQuery = "SELECT 1 FROM " + tableName + whereUid;
-
+            this.selectStateQuery = "SELECT " + STATE + " FROM " + tableName + whereUid;
+            this.existsQuery = "SELECT 1 FROM " + tableName + whereUid;
+        }
     }
 
     @Override
     public int setState(@NonNull String uid, @NonNull State state) {
+        compileStatements();
         setStateStatement.bind(1, state);
 
         // bind the where argument
         setStateStatement.bind(2, uid);
 
-        int updatedRow = databaseAdapter.executeUpdateDelete(tableName, setStateStatement);
+        int updatedRow = databaseAdapter.executeUpdateDelete(setStateStatement);
         setStateStatement.clearBindings();
 
         return updatedRow;
@@ -116,9 +120,10 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
 
     @Override
     public int setStateForUpdate(@NonNull String uid) {
+        compileStatements();
         setStateForUpdateStatement.bind(1, uid);
 
-        int updatedRow = databaseAdapter.executeUpdateDelete(tableName, setStateForUpdateStatement);
+        int updatedRow = databaseAdapter.executeUpdateDelete(setStateForUpdateStatement);
         setStateForUpdateStatement.clearBindings();
 
         return updatedRow;
@@ -126,6 +131,7 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
 
     @Override
     public State getState(@NonNull String uid) {
+        compileStatements();
         Cursor cursor = databaseAdapter.rawQuery(selectStateQuery, uid);
         State state = null;
         if (cursor.getCount() > 0) {
@@ -139,6 +145,7 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
 
     @Override
     public Boolean exists(@NonNull String uid) {
+        compileStatements();
         Cursor cursor = databaseAdapter.rawQuery(existsQuery, uid);
         int count = cursor.getCount();
         cursor.close();

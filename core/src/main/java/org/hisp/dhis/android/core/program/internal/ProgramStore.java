@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableWithStyleStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
@@ -49,9 +48,8 @@ import androidx.annotation.NonNull;
 public final class ProgramStore extends IdentifiableObjectStoreImpl<Program> implements ProgramStoreInterface {
 
     private ProgramStore(DatabaseAdapter databaseAdapter,
-                         SQLStatementWrapper statementWrapper,
                          SQLStatementBuilderImpl statementBuilder) {
-        super(databaseAdapter, statementWrapper, statementBuilder, BINDER, Program::create);
+        super(databaseAdapter, statementBuilder, BINDER, Program::create);
     }
     
     private static StatementBinder<Program> BINDER = new NameableWithStyleStatementBinder<Program>() {
@@ -89,9 +87,8 @@ public final class ProgramStore extends IdentifiableObjectStoreImpl<Program> imp
     public static ProgramStoreInterface create(DatabaseAdapter databaseAdapter) {
         SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(ProgramTableInfo.TABLE_INFO.name(),
                 ProgramTableInfo.TABLE_INFO.columns());
-        SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);
 
-        return new ProgramStore(databaseAdapter, statementWrapper, statementBuilder);
+        return new ProgramStore(databaseAdapter, statementBuilder);
     }
 
     @Override

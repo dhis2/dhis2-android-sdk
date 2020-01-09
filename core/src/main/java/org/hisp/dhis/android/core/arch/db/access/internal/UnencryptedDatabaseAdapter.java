@@ -31,11 +31,11 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
-
-import androidx.annotation.NonNull;
 
 class UnencryptedDatabaseAdapter implements DatabaseAdapter {
 
@@ -90,12 +90,12 @@ class UnencryptedDatabaseAdapter implements DatabaseAdapter {
     }
 
     @Override
-    public long executeInsert(String table, StatementWrapper sqLiteStatement) {
+    public long executeInsert(StatementWrapper sqLiteStatement) {
         return sqLiteStatement.executeInsert();
     }
 
     @Override
-    public int executeUpdateDelete(String table, StatementWrapper sqLiteStatement) {
+    public int executeUpdateDelete(StatementWrapper sqLiteStatement) {
         return sqLiteStatement.executeUpdateDelete();
     }
 

@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorExecutorImpl;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
-import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
@@ -51,8 +50,7 @@ public final class StoreFactory {
             ObjectFactory<I> objectFactory) {
         SQLStatementBuilder statementBuilder =
                 new SQLStatementBuilderImpl(tableInfo.name(), tableInfo.columns().all(), new String[]{});
-        SQLStatementWrapper statements = new SQLStatementWrapper(statementBuilder, databaseAdapter);
-        return new IdentifiableObjectStoreImpl<>(databaseAdapter, statements, statementBuilder, binder, objectFactory);
+        return new IdentifiableObjectStoreImpl<>(databaseAdapter, statementBuilder, binder, objectFactory);
     }
 
     public static <I extends CoreObject> ObjectStore<I> objectStore(DatabaseAdapter databaseAdapter,
@@ -61,8 +59,7 @@ public final class StoreFactory {
                                                                     ObjectFactory<I> objectFactory) {
         SQLStatementBuilder statementBuilder =
                 new SQLStatementBuilderImpl(tableInfo.name(), tableInfo.columns().all(), new String[]{});
-        return new ObjectStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(statementBuilder.insert()),
-                statementBuilder, binder, objectFactory);
+        return new ObjectStoreImpl<>(databaseAdapter, statementBuilder, binder, objectFactory);
     }
 
     public static <I extends CoreObject> ObjectWithoutUidStore<I> objectWithoutUidStore(
@@ -81,8 +78,7 @@ public final class StoreFactory {
             ObjectFactory<I> objectFactory) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilderImpl(tableInfo.name(), tableInfo.columns().all(),
                 tableInfo.columns().whereUpdate());
-        return new LinkStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(statementBuilder.insert()),
-                statementBuilder, masterColumn, binder, objectFactory);
+        return new LinkStoreImpl<>(databaseAdapter, statementBuilder, masterColumn, binder, objectFactory);
     }
 
     public static <P extends ObjectWithUidInterface,

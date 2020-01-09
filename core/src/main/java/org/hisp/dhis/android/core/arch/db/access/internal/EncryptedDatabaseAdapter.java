@@ -30,13 +30,13 @@ package org.hisp.dhis.android.core.arch.db.access.internal;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
-
-import androidx.annotation.NonNull;
 
 class EncryptedDatabaseAdapter implements DatabaseAdapter {
 
@@ -91,12 +91,12 @@ class EncryptedDatabaseAdapter implements DatabaseAdapter {
     }
 
     @Override
-    public long executeInsert(String table, StatementWrapper sqLiteStatement) {
+    public long executeInsert(StatementWrapper sqLiteStatement) {
         return sqLiteStatement.executeInsert();
     }
 
     @Override
-    public int executeUpdateDelete(String table, StatementWrapper sqLiteStatement) {
+    public int executeUpdateDelete(StatementWrapper sqLiteStatement) {
         return sqLiteStatement.executeUpdateDelete();
     }
 

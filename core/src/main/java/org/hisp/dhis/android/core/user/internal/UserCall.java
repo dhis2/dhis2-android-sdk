@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.user.internal;
 
 
-import android.database.sqlite.SQLiteConstraintException;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
@@ -73,7 +72,7 @@ final class UserCall implements Callable<User> {
             genericCallData.resourceHandler().handleResource(Resource.Type.USER);
 
             transaction.setSuccessful();
-        } catch (SQLiteConstraintException constraintException) {
+        } catch (Exception constraintException) {
             // TODO review
             //constraintException.printStackTrace();
             Log.d("CAll", "call: constraintException");

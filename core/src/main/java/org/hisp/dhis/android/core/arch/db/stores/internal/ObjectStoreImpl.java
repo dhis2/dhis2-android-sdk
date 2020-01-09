@@ -29,30 +29,29 @@
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-
-import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.common.CoreColumns;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isNull;
 
 public class ObjectStoreImpl<M extends CoreObject> extends ReadableStoreImpl<M> implements ObjectStore<M> {
-    private final SQLiteStatement insertStatement;
+    private StatementWrapper insertStatement;
     protected final SQLStatementBuilder builder;
     protected final StatementBinder<M> binder;
 
-    public ObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
-                           SQLStatementBuilder builder, StatementBinder<M> binder, ObjectFactory<M> objectFactory) {
+    public ObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLStatementBuilder builder, StatementBinder<M> binder,
+                           ObjectFactory<M> objectFactory) {
         super(databaseAdapter, builder, objectFactory);
-        this.insertStatement = insertStatement;
         this.builder = builder;
         this.binder = binder;
     }
@@ -60,8 +59,11 @@ public class ObjectStoreImpl<M extends CoreObject> extends ReadableStoreImpl<M> 
     @Override
     public long insert(@NonNull M m) throws RuntimeException {
         isNull(m);
+        if (insertStatement == null) {
+            insertStatement = databaseAdapter.compileStatement(builder.insert());
+        }
         binder.bindToStatement(m, insertStatement);
-        Long insertedRowId = databaseAdapter.executeInsert(builder.getTableName(), insertStatement);
+        long insertedRowId = databaseAdapter.executeInsert(insertStatement);
         insertStatement.clearBindings();
         if (insertedRowId == -1) {
             throw new RuntimeException("Nothing was inserted.");
@@ -71,7 +73,7 @@ public class ObjectStoreImpl<M extends CoreObject> extends ReadableStoreImpl<M> 
 
     @Override
     public List<String> selectStringColumnsWhereClause(String column, String clause) {
-        Cursor cursor = databaseAdapter.query(builder.selectColumnWhere(column, clause));
+        Cursor cursor = databaseAdapter.rawQuery(builder.selectColumnWhere(column, clause));
         return mapStringColumnSetFromCursor(cursor);
     }
 
@@ -80,8 +82,8 @@ public class ObjectStoreImpl<M extends CoreObject> extends ReadableStoreImpl<M> 
         return databaseAdapter.delete(builder.getTableName());
     }
 
-    void executeUpdateDelete(SQLiteStatement statement) throws RuntimeException {
-        int numberOfAffectedRows = databaseAdapter.executeUpdateDelete(builder.getTableName(), statement);
+    void executeUpdateDelete(StatementWrapper statement) throws RuntimeException {
+        int numberOfAffectedRows = databaseAdapter.executeUpdateDelete(statement);
         statement.clearBindings();
 
         if (numberOfAffectedRows == 0) {
@@ -107,7 +109,7 @@ public class ObjectStoreImpl<M extends CoreObject> extends ReadableStoreImpl<M> 
 
     @Override
     public boolean deleteWhere(String clause) {
-        return databaseAdapter.database().delete(builder.getTableName(), clause, null) > 0;
+        return databaseAdapter.delete(builder.getTableName(), clause, null) > 0;
     }
 
     @Override

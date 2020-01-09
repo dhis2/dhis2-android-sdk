@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShou
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitOrganisationUnitGroupLinkSamples;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
@@ -41,8 +41,8 @@ public class OrganisationUnitOrganisationUnitGroupLinkStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<OrganisationUnitOrganisationUnitGroupLink> {
 
     public OrganisationUnitOrganisationUnitGroupLinkStoreIntegrationShould() {
-        super(OrganisationUnitOrganisationUnitGroupLinkStore.create(DatabaseAdapterFactory.get()),
-                OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+        super(OrganisationUnitOrganisationUnitGroupLinkStore.create(TestDatabaseAdapterFactory.get()),
+                OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
     @Override

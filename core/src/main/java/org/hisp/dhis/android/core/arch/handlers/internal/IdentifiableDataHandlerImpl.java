@@ -80,7 +80,7 @@ public class IdentifiableDataHandlerImpl<O extends DeletableDataObject & ObjectW
             String syncedObjectUidsWhereClause2 = new WhereClauseBuilder()
                     .appendInKeyStringValues(IdentifiableColumns.UID, storedObjectUids)
                     .appendInKeyStringValues(DataColumns.STATE,
-                            Arrays.asList(State.SYNCED.name(), State.RELATIONSHIP.name()))
+                            Arrays.asList(State.SYNCED.name(), State.RELATIONSHIP.name(), State.SYNCED_VIA_SMS.name()))
                     .build();
             return store.selectUidsWhere(syncedObjectUidsWhereClause2);
         }

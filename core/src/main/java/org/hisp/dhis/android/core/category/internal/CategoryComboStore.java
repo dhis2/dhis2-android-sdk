@@ -29,11 +29,10 @@
 package org.hisp.dhis.android.core.category.internal;
 
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.category.CategoryCombo;
@@ -41,17 +40,15 @@ import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 
 import androidx.annotation.NonNull;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class CategoryComboStore {
 
     private CategoryComboStore() {}
 
     private static StatementBinder<CategoryCombo> BINDER = new IdentifiableStatementBinder<CategoryCombo>() {
         @Override
-        public void bindToStatement(@NonNull CategoryCombo o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.isDefault());
+        public void bindToStatement(@NonNull CategoryCombo o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(7, o.isDefault());
         }
     };
 

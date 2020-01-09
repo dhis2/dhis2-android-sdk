@@ -66,7 +66,7 @@ class CategoryComboUidsSeeker {
         String query = new MultipleTableQueryBuilder()
                 .generateQuery(DataSetTableInfo.Columns.CATEGORY_COMBO, tableNames).build();
 
-        Cursor cursor = databaseAdapter.query(query);
+        Cursor cursor = databaseAdapter.rawQuery(query);
         Set<String> categoryCombos = new HashSet<>();
         try {
             if (cursor.getCount() > 0) {

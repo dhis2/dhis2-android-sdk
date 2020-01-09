@@ -48,31 +48,26 @@ import java.util.Map;
 
 import androidx.annotation.NonNull;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class TrackedEntityAttributeValueStoreImpl
         extends ObjectWithoutUidStoreImpl<TrackedEntityAttributeValue> implements TrackedEntityAttributeValueStore {
 
-    private static final StatementBinder<TrackedEntityAttributeValue> BINDER =
-            (o, sqLiteStatement) -> {
-                sqLiteBind(sqLiteStatement, 1, o.value());
-                sqLiteBind(sqLiteStatement, 2, o.created());
-                sqLiteBind(sqLiteStatement, 3, o.lastUpdated());
-                sqLiteBind(sqLiteStatement, 4, o.trackedEntityAttribute());
-                sqLiteBind(sqLiteStatement, 5, o.trackedEntityInstance());
-            };
+    private static final StatementBinder<TrackedEntityAttributeValue> BINDER = (o, w) -> {
+        w.bind(1, o.value());
+        w.bind(2, o.created());
+        w.bind(3, o.lastUpdated());
+        w.bind(4, o.trackedEntityAttribute());
+        w.bind(5, o.trackedEntityInstance());
+    };
 
-    private static final WhereStatementBinder<TrackedEntityAttributeValue> WHERE_UPDATE_BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 6, o.trackedEntityAttribute());
-        sqLiteBind(sqLiteStatement, 7, o.trackedEntityInstance());
+    private static final WhereStatementBinder<TrackedEntityAttributeValue> WHERE_UPDATE_BINDER = (o, w) -> {
+        w.bind(6, o.trackedEntityAttribute());
+        w.bind(7, o.trackedEntityInstance());
     };
 
 
-    private static final WhereStatementBinder<TrackedEntityAttributeValue> WHERE_DELETE_BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.trackedEntityAttribute());
-        sqLiteBind(sqLiteStatement, 2, o.trackedEntityInstance());
+    private static final WhereStatementBinder<TrackedEntityAttributeValue> WHERE_DELETE_BINDER = (o, w) -> {
+        w.bind(1, o.trackedEntityAttribute());
+        w.bind(2, o.trackedEntityInstance());
     };
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
@@ -80,7 +75,7 @@ public final class TrackedEntityAttributeValueStoreImpl
             TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE);
 
     private TrackedEntityAttributeValueStoreImpl(DatabaseAdapter databaseAdapter,
-                                SQLStatementBuilderImpl builder) {
+                                                 SQLStatementBuilderImpl builder) {
         super(databaseAdapter, builder, BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER,
                 TrackedEntityAttributeValue::create);
     }
@@ -89,10 +84,9 @@ public final class TrackedEntityAttributeValueStoreImpl
     public Map<String, List<TrackedEntityAttributeValue>> queryTrackedEntityAttributeValueToPost() {
         String toPostQuery =
                 "SELECT TrackedEntityAttributeValue.* " +
-                "FROM (TrackedEntityAttributeValue INNER JOIN TrackedEntityInstance " +
-                "ON TrackedEntityAttributeValue.trackedEntityInstance = TrackedEntityInstance.uid) " +
-                "WHERE TrackedEntityInstance.state = '"  + State.TO_POST + "' " +
-                "OR TrackedEntityInstance.state = '" + State.TO_UPDATE + "';";
+                        "FROM (TrackedEntityAttributeValue INNER JOIN TrackedEntityInstance " +
+                        "ON TrackedEntityAttributeValue.trackedEntityInstance = TrackedEntityInstance.uid) " +
+                        "WHERE " + teiInUploadableState() + ";";
 
         List<TrackedEntityAttributeValue> valueList = trackedEntityAttributeValueListFromQuery(toPostQuery);
 
@@ -102,6 +96,12 @@ public final class TrackedEntityAttributeValueStoreImpl
         }
 
         return valueMap;
+    }
+
+    // TODO Could we reuse EnumHelper.asStringList(State.uploadableStates())?
+    private String teiInUploadableState() {
+        return "(TrackedEntityInstance.state IN ('" + State.TO_POST + "', '" + State.TO_UPDATE + "', '"
+                + State.SENT_VIA_SMS + "', '" + State.SYNCED_VIA_SMS + "'))";
     }
 
     @Override
@@ -127,13 +127,13 @@ public final class TrackedEntityAttributeValueStoreImpl
 
     private List<TrackedEntityAttributeValue> trackedEntityAttributeValueListFromQuery(String query) {
         List<TrackedEntityAttributeValue> trackedEntityAttributeValueList = new ArrayList<>();
-        Cursor cursor = databaseAdapter.query(query);
+        Cursor cursor = databaseAdapter.rawQuery(query);
         addObjectsToCollection(cursor, trackedEntityAttributeValueList);
         return trackedEntityAttributeValueList;
     }
 
     private void addTrackedEntityAttributeValueToMap(Map<String, List<TrackedEntityAttributeValue>> valueMap,
-                                    TrackedEntityAttributeValue trackedEntityAttributeValue) {
+                                                     TrackedEntityAttributeValue trackedEntityAttributeValue) {
         if (valueMap.get(trackedEntityAttributeValue.trackedEntityInstance()) == null) {
             valueMap.put(trackedEntityAttributeValue.trackedEntityInstance(),
                     new ArrayList<>());

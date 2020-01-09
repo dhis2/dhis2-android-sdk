@@ -36,33 +36,28 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class ValueTypeDeviceRenderingStore {
 
-    private static final StatementBinder<ValueTypeDeviceRendering> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.uid());
-        sqLiteBind(sqLiteStatement, 2, o.objectTable());
-        sqLiteBind(sqLiteStatement, 3, o.deviceType());
-        sqLiteBind(sqLiteStatement, 4, o.type());
-        sqLiteBind(sqLiteStatement, 5, o.min());
-        sqLiteBind(sqLiteStatement, 6, o.max());
-        sqLiteBind(sqLiteStatement, 7, o.step());
-        sqLiteBind(sqLiteStatement, 8, o.decimalPoints());
+    private static final StatementBinder<ValueTypeDeviceRendering> BINDER = (o, w) -> {
+        w.bind(1, o.uid());
+        w.bind(2, o.objectTable());
+        w.bind(3, o.deviceType());
+        w.bind(4, o.type());
+        w.bind(5, o.min());
+        w.bind(6, o.max());
+        w.bind(7, o.step());
+        w.bind(8, o.decimalPoints());
     };
 
-    private static final WhereStatementBinder<ValueTypeDeviceRendering> WHERE_UPDATE_BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 9, o.uid());
-        sqLiteBind(sqLiteStatement, 10, o.deviceType());
+    private static final WhereStatementBinder<ValueTypeDeviceRendering> WHERE_UPDATE_BINDER = (o, w) -> {
+        w.bind(9, o.uid());
+        w.bind(10, o.deviceType());
     };
 
 
-    private static final WhereStatementBinder<ValueTypeDeviceRendering> WHERE_DELETE_BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.uid());
-        sqLiteBind(sqLiteStatement, 2, o.deviceType());
+    private static final WhereStatementBinder<ValueTypeDeviceRendering> WHERE_DELETE_BINDER = (o, w) -> {
+        w.bind(1, o.uid());
+        w.bind(2, o.deviceType());
     };
 
     private ValueTypeDeviceRenderingStore() {}

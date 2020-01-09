@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.configuration;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.data.configuration.ConfigurationSamples;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.After;
 import org.junit.Before;
@@ -54,10 +54,10 @@ public class ConfigurationStoreIntegrationShould {
     private final DatabaseAdapter databaseAdapter;
 
     public ConfigurationStoreIntegrationShould() {
-        this.store = ConfigurationStoreImpl.create(DatabaseAdapterFactory.get());
+        this.store = ConfigurationStoreImpl.create(TestDatabaseAdapterFactory.get());
         this.configuration = buildObject();
         this.tableInfo = ConfigurationTableInfo.TABLE_INFO;
-        this.databaseAdapter = DatabaseAdapterFactory.get();
+        this.databaseAdapter = TestDatabaseAdapterFactory.get();
     }
 
     @Before
@@ -67,7 +67,7 @@ public class ConfigurationStoreIntegrationShould {
 
     @After
     public void tearDown() {
-        // DatabaseAdapterFactory.get().database().close();
+        // TestDatabaseAdapterFactory.get().database().close();
     }
 
     @Test
@@ -79,8 +79,7 @@ public class ConfigurationStoreIntegrationShould {
 
     @Test
     public void insert_as_content_values_and_select_first_object() {
-        long rowsInserted = databaseAdapter.database()
-                .insert(tableInfo.name(), null, configuration.toContentValues());
+        long rowsInserted = databaseAdapter.insert(tableInfo.name(), null, configuration.toContentValues());
         assertThat(rowsInserted).isEqualTo(1);
         Configuration objectFromDb = store.selectFirst();
         assertThat(objectFromDb).isEqualTo(configuration);

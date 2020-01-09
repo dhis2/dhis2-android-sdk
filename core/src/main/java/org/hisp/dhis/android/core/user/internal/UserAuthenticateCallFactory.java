@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.user.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.internal.ServerUrlInterceptor;
+import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
@@ -126,7 +126,7 @@ public final class UserAuthenticateCallFactory {
         throwExceptionIfAlreadyAuthenticatedAndDbNotEmpty();
 
         HttpUrl httpServerUrl = ServerUrlParser.parse(serverUrl);
-        ServerUrlInterceptor.setServerUrl(httpServerUrl.toString());
+        ServerURLWrapper.setServerUrl(httpServerUrl.toString());
         configurationManager.configure(Configuration.forServerUrl(httpServerUrl));
 
         Call<User> authenticateCall =

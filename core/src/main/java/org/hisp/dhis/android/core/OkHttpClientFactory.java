@@ -33,9 +33,9 @@ import android.util.Log;
 
 import org.hisp.dhis.android.BuildConfig;
 import org.hisp.dhis.android.core.arch.api.authentication.internal.BasicAuthenticatorFactory;
+import org.hisp.dhis.android.core.arch.api.internal.ServerURLVersionRedirectionInterceptor;
 import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor;
-import org.hisp.dhis.android.core.arch.api.internal.ServerUrlInterceptor;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.api.internal.DynamicServerURLInterceptor;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 
 import java.security.KeyStore;
@@ -58,10 +58,11 @@ import okhttp3.TlsVersion;
 
 final class OkHttpClientFactory {
 
-    static OkHttpClient okHttpClient(D2Configuration d2Configuration, DatabaseAdapter databaseAdapter,
-                                     CredentialsSecureStore credentialsSecureStore) {
+    static OkHttpClient okHttpClient(D2Configuration d2Configuration, CredentialsSecureStore credentialsSecureStore) {
 
         OkHttpClient.Builder client = new OkHttpClient.Builder()
+                .addInterceptor(new DynamicServerURLInterceptor())
+                .addNetworkInterceptor(new ServerURLVersionRedirectionInterceptor())
                 .addInterceptor(BasicAuthenticatorFactory.create(credentialsSecureStore))
                 .addInterceptor(new PreventURLDecodeInterceptor())
                 .addInterceptor(chain -> {
@@ -71,7 +72,6 @@ final class OkHttpClientFactory {
                             .build();
                     return chain.proceed(withUserAgent);
                 })
-                .addInterceptor(new ServerUrlInterceptor())
                 .readTimeout(d2Configuration.readTimeoutInSeconds(), TimeUnit.SECONDS)
                 .connectTimeout(d2Configuration.connectTimeoutInSeconds(), TimeUnit.SECONDS)
                 .writeTimeout(d2Configuration.writeTimeoutInSeconds(), TimeUnit.SECONDS);

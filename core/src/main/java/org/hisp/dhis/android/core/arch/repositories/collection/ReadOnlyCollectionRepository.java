@@ -39,9 +39,9 @@ import io.reactivex.Single;
 public interface ReadOnlyCollectionRepository<M extends CoreObject> extends BaseRepository {
 
     /**
-     * Get the objects in scope in an asynchronous way, returning a {@link Single<List>}.
+     * Get the objects in scope in an asynchronous way, returning a {@code Single<List>}.
      *
-     * @return A {@link Single} object with the list of objects.
+     * @return A {@code Single} object with the list of objects.
      */
     Single<List<M>> get();
 
@@ -62,8 +62,8 @@ public interface ReadOnlyCollectionRepository<M extends CoreObject> extends Base
     LiveData<PagedList<M>> getPaged(int pageSize);
 
     /**
-     * Get the count of elements in an asynchronous way, returning a {@link Single}.
-     * @return A {@link Single} object with the element count
+     * Get the count of elements in an asynchronous way, returning a {@code Single}.
+     * @return A {@code Single} object with the element count
      */
     Single<Integer> count();
 
@@ -77,7 +77,7 @@ public interface ReadOnlyCollectionRepository<M extends CoreObject> extends Base
 
     /**
      * Check if selection of objects in current scope with applied filters is empty in an asynchronous way,
-     * returning a {@link Single}.
+     * returning a {@code Single}.
      * @return If selection is empty
      */
     Single<Boolean> isEmpty();

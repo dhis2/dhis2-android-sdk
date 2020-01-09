@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractI
 import org.hisp.dhis.android.core.data.fileresource.FileResourceSamples;
 import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
@@ -41,8 +41,8 @@ public class FileResourceStoreIntegrationShould
         extends IdentifiableObjectStoreAbstractIntegrationShould<FileResource> {
 
     public FileResourceStoreIntegrationShould() {
-        super(FileResourceStoreImpl.create(DatabaseAdapterFactory.get()),
-                FileResourceTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+        super(FileResourceStoreImpl.create(TestDatabaseAdapterFactory.get()),
+                FileResourceTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
     @Override

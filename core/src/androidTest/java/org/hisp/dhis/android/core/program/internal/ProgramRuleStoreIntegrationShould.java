@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractI
 import org.hisp.dhis.android.core.data.program.ProgramRuleSamples;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
@@ -41,8 +41,8 @@ public class ProgramRuleStoreIntegrationShould
         extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramRule> {
 
     public ProgramRuleStoreIntegrationShould() {
-        super(ProgramRuleStore.create(DatabaseAdapterFactory.get()),
-                ProgramRuleTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+        super(ProgramRuleStore.create(TestDatabaseAdapterFactory.get()),
+                ProgramRuleTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
     @Override

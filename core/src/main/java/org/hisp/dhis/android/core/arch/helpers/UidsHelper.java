@@ -134,7 +134,7 @@ public final class UidsHelper {
      * Map a {@link Collection} with the a custom key extracted from the parentExtractor.
      *
      * @param objects           A collection of objects with uid.
-     * @param parentExtractor   A {@link Transformer} that extracts the parent property of the object.
+     * @param parentExtractor   A {@code Transformer} that extracts the parent property of the object.
      * @return A {@link Map} with a custom parent as key of the objects from the collection.
      */
     @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})

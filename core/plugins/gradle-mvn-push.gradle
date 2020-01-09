@@ -39,8 +39,34 @@ def getRepositoryPassword() {
     return hasProperty("NEXUS_PASSWORD") ? NEXUS_PASSWORD : ""
 }
 
+def gpgKeyId() {
+    return hasProperty("GPG_KEY_ID") ? GPG_KEY_ID : ""
+}
+
+def gpgKeyLocation() {
+    return hasProperty("GPG_KEY_LOCATION") ? GPG_KEY_LOCATION : ""
+}
+
+def gpgPassphrase() {
+    return hasProperty("GPG_PASSPHRASE") ? GPG_PASSPHRASE : ""
+}
+
+def tempBuildFolder = "$rootDir/build/deploy"
+
+gradle.taskGraph.whenReady { taskGraph ->
+    if (taskGraph.allTasks.any { it instanceof Sign }) {
+        allprojects { ext."signing.keyId" = gpgKeyId() }
+        allprojects { ext."signing.secretKeyRingFile" = gpgKeyLocation() }
+        allprojects { ext."signing.password" = gpgPassphrase() }
+    }
+}
+
 afterEvaluate { project ->
+
     uploadArchives {
+        doFirst {
+            mkdir "file:/$tempBuildFolder"
+        }
         repositories {
             mavenDeployer {
                 beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
@@ -49,7 +75,8 @@ afterEvaluate { project ->
                 pom.artifactId = POM_ARTIFACT_ID
                 pom.version = VERSION_NAME
 
-                repository(url: getReleaseRepositoryUrl()) {
+                // Hack: Deploy to a local repository first, then upload to Sonatype using scripts.
+                repository(url: "file://localhost/$tempBuildFolder") {
                     authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
                 }
                 snapshotRepository(url: getSnapshotRepositoryUrl()) {
@@ -205,5 +232,22 @@ afterEvaluate { project ->
             archives sourcesJar
             archives javadocJar
         }
+    }
+
+}
+
+// Scripted hack, inpired from:
+// https://github.com/osmlab/atlas/blob/dev/gradle/deployment.gradle
+def uploadToNexusStaging(def username, def password, def repoDir) {
+    def proc = ['./uploadToNexusStaging.sh', username, password, repoDir].execute([], file("${rootDir.toString()}/core/plugins"))
+    proc.waitForProcessOutput(System.out, System.err)
+}
+
+task publishToNexus(dependsOn: 'uploadArchives') {
+    doLast {
+        if (isReleaseBuild()) {
+            uploadToNexusStaging(getRepositoryUsername(), getRepositoryPassword(), tempBuildFolder)
+        }
+        // If is not a release build, artifacts are deployed in uploadArchives directive
     }
 }

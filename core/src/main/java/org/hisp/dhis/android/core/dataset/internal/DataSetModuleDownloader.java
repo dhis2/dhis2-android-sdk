@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.indicator.IndicatorType;
+import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.period.internal.PeriodHandler;
 
@@ -52,6 +53,7 @@ public class DataSetModuleDownloader implements MetadataModuleDownloader<List<Da
     private final UidsCallFactory<Indicator> indicatorCallFactory;
     private final UidsCallFactory<IndicatorType> indicatorTypeCallFactory;
     private final UidsCallFactory<OptionSet> optionSetCallFactory;
+    private final UidsCallFactory<Option> optionCallFactory;
     private final PeriodHandler periodHandler;
 
     @Inject
@@ -60,12 +62,14 @@ public class DataSetModuleDownloader implements MetadataModuleDownloader<List<Da
                             UidsCallFactory<Indicator> indicatorCallFactory,
                             UidsCallFactory<IndicatorType> indicatorTypeCallFactory,
                             UidsCallFactory<OptionSet> optionSetCallFactory,
+                            UidsCallFactory<Option> optionCallFactory,
                             PeriodHandler periodHandler) {
         this.dataSetCallFactory = dataSetCallFactory;
         this.dataElementCallFactory = dataElementCallFactory;
         this.indicatorCallFactory = indicatorCallFactory;
         this.indicatorTypeCallFactory = indicatorTypeCallFactory;
         this.optionSetCallFactory = optionSetCallFactory;
+        this.optionCallFactory = optionCallFactory;
         this.periodHandler = periodHandler;
     }
 
@@ -86,6 +90,8 @@ public class DataSetModuleDownloader implements MetadataModuleDownloader<List<Da
 
             Set<String> optionSetUids = DataSetParentUidsHelper.getAssignedOptionSetUids(dataElements);
             optionSetCallFactory.create(optionSetUids).call();
+
+            optionCallFactory.create(optionSetUids).call();
 
             periodHandler.generateAndPersist();
 

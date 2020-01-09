@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.note.internal;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
@@ -55,7 +55,7 @@ final class NoteProjectionTransformer implements Transformer<NoteCreateProjectio
     @Override
     public Note transform(NoteCreateProjection projection) {
         return Note.builder()
-                .uid(new CodeGeneratorImpl().generate())
+                .uid(new UidGeneratorImpl().generate())
                 .state(State.TO_POST)
                 .enrollment(projection.enrollment())
                 .value(projection.value())

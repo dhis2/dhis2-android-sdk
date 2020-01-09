@@ -40,44 +40,43 @@ import org.hisp.dhis.android.core.datavalue.DataValueTableInfo;
 
 import java.util.Collection;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns;
 
 @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
 
-    private static final StatementBinder<DataValue> BINDER = (dataValue, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, dataValue.dataElement());
-        sqLiteBind(sqLiteStatement, 2, dataValue.period());
-        sqLiteBind(sqLiteStatement, 3, dataValue.organisationUnit());
-        sqLiteBind(sqLiteStatement, 4, dataValue.categoryOptionCombo());
-        sqLiteBind(sqLiteStatement, 5, dataValue.attributeOptionCombo());
-        sqLiteBind(sqLiteStatement, 6, dataValue.value());
-        sqLiteBind(sqLiteStatement, 7, dataValue.storedBy());
-        sqLiteBind(sqLiteStatement, 8, dataValue.created());
-        sqLiteBind(sqLiteStatement, 9, dataValue.lastUpdated());
-        sqLiteBind(sqLiteStatement, 10, dataValue.comment());
-        sqLiteBind(sqLiteStatement, 11, dataValue.followUp());
-        sqLiteBind(sqLiteStatement, 12, dataValue.state());
-        sqLiteBind(sqLiteStatement, 13, dataValue.deleted());
+    private static final StatementBinder<DataValue> BINDER = (dataValue, w) -> {
+        w.bind(1, dataValue.dataElement());
+        w.bind(2, dataValue.period());
+        w.bind(3, dataValue.organisationUnit());
+        w.bind(4, dataValue.categoryOptionCombo());
+        w.bind(5, dataValue.attributeOptionCombo());
+        w.bind(6, dataValue.value());
+        w.bind(7, dataValue.storedBy());
+        w.bind(8, dataValue.created());
+        w.bind(9, dataValue.lastUpdated());
+        w.bind(10, dataValue.comment());
+        w.bind(11, dataValue.followUp());
+        w.bind(12, dataValue.state());
+        w.bind(13, dataValue.deleted());
     };
 
     private static final WhereStatementBinder<DataValue> WHERE_UPDATE_BINDER
-            = (dataValue, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 14, dataValue.dataElement());
-        sqLiteBind(sqLiteStatement, 15, dataValue.period());
-        sqLiteBind(sqLiteStatement, 16, dataValue.organisationUnit());
-        sqLiteBind(sqLiteStatement, 17, dataValue.categoryOptionCombo());
-        sqLiteBind(sqLiteStatement, 18, dataValue.attributeOptionCombo());
+            = (dataValue, w) -> {
+        w.bind(14, dataValue.dataElement());
+        w.bind(15, dataValue.period());
+        w.bind(16, dataValue.organisationUnit());
+        w.bind(17, dataValue.categoryOptionCombo());
+        w.bind(18, dataValue.attributeOptionCombo());
     };
 
     private static final WhereStatementBinder<DataValue> WHERE_DELETE_BINDER
-            = (dataValue, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, dataValue.dataElement());
-        sqLiteBind(sqLiteStatement, 2, dataValue.period());
-        sqLiteBind(sqLiteStatement, 3, dataValue.organisationUnit());
-        sqLiteBind(sqLiteStatement, 4, dataValue.categoryOptionCombo());
-        sqLiteBind(sqLiteStatement, 5, dataValue.attributeOptionCombo());
+            = (dataValue, w) -> {
+        w.bind(1, dataValue.dataElement());
+        w.bind(2, dataValue.period());
+        w.bind(3, dataValue.organisationUnit());
+        w.bind(4, dataValue.categoryOptionCombo());
+        w.bind(5, dataValue.attributeOptionCombo());
     };
 
     private DataValueStore(DatabaseAdapter databaseAdapter, SQLStatementBuilderImpl builder) {

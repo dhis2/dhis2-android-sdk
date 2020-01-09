@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
-import android.database.sqlite.SQLiteConstraintException;
-
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
@@ -67,7 +65,7 @@ public abstract class ReadWriteWithUidCollectionRepositoryImpl
 
     /**
      * Adds a new object to the given collection in an asynchronous way based on the provided CreateProjection.
-     * It returns a {@link Single<String>} with the generated UID, which is completed when the object is added to the
+     * It returns a {@code Single<String>} with the generated UID, which is completed when the object is added to the
      * database. It adds an object with a {@link State#TO_POST}, which will be uploaded to the server in the next
      * upload.
      * @param projection the CreateProjection of the object to add
@@ -95,20 +93,12 @@ public abstract class ReadWriteWithUidCollectionRepositoryImpl
             store.insert(object);
             propagateState(object);
             return object.uid();
-        } catch (SQLiteConstraintException e) {
+        } catch (Exception e) {
             throw D2Error
                     .builder()
                     .errorComponent(D2ErrorComponent.SDK)
                     .errorCode(D2ErrorCode.OBJECT_CANT_BE_INSERTED)
                     .errorDescription("Object can't be inserted")
-                    .originalException(e)
-                    .build();
-        } catch (Exception e) {
-            throw D2Error
-                    .builder()
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .errorCode(D2ErrorCode.UNEXPECTED)
-                    .errorDescription("Unexpected exception on property update")
                     .originalException(e)
                     .build();
         }

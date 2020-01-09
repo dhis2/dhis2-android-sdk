@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationSh
 import org.hisp.dhis.android.core.data.maintenance.ForeignKeyViolationSamples;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
@@ -41,8 +41,8 @@ public class ForeignKeyViolationStoreIntegrationShould
         extends ObjectStoreAbstractIntegrationShould<ForeignKeyViolation> {
 
     public ForeignKeyViolationStoreIntegrationShould() {
-        super(ForeignKeyViolationStore.create(DatabaseAdapterFactory.get()),
-                ForeignKeyViolationTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+        super(ForeignKeyViolationStore.create(TestDatabaseAdapterFactory.get()),
+                ForeignKeyViolationTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
     @Override

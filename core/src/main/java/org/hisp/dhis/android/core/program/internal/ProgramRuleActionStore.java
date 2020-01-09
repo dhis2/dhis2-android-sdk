@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
@@ -42,26 +41,24 @@ import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo;
 
 import androidx.annotation.NonNull;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class ProgramRuleActionStore {
 
     private static StatementBinder<ProgramRuleAction> BINDER = new IdentifiableStatementBinder<ProgramRuleAction>() {
         @Override
-        public void bindToStatement(@NonNull ProgramRuleAction o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.data());
-            sqLiteBind(sqLiteStatement, 8, o.content());
-            sqLiteBind(sqLiteStatement, 9, o.location());
-            sqLiteBind(sqLiteStatement, 10, UidsHelper.getUidOrNull(o.trackedEntityAttribute()));
-            sqLiteBind(sqLiteStatement, 11, UidsHelper.getUidOrNull(o.programIndicator()));
-            sqLiteBind(sqLiteStatement, 12, UidsHelper.getUidOrNull(o.programStageSection()));
-            sqLiteBind(sqLiteStatement, 13, o.programRuleActionType());
-            sqLiteBind(sqLiteStatement, 14, UidsHelper.getUidOrNull(o.programStage()));
-            sqLiteBind(sqLiteStatement, 15, UidsHelper.getUidOrNull(o.dataElement()));
-            sqLiteBind(sqLiteStatement, 16, UidsHelper.getUidOrNull(o.programRule()));
-            sqLiteBind(sqLiteStatement, 17, UidsHelper.getUidOrNull(o.option()));
-            sqLiteBind(sqLiteStatement, 18, UidsHelper.getUidOrNull(o.optionGroup()));
+        public void bindToStatement(@NonNull ProgramRuleAction o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(7, o.data());
+            w.bind(8, o.content());
+            w.bind(9, o.location());
+            w.bind(10, UidsHelper.getUidOrNull(o.trackedEntityAttribute()));
+            w.bind(11, UidsHelper.getUidOrNull(o.programIndicator()));
+            w.bind(12, UidsHelper.getUidOrNull(o.programStageSection()));
+            w.bind(13, o.programRuleActionType());
+            w.bind(14, UidsHelper.getUidOrNull(o.programStage()));
+            w.bind(15, UidsHelper.getUidOrNull(o.dataElement()));
+            w.bind(16, UidsHelper.getUidOrNull(o.programRule()));
+            w.bind(17, UidsHelper.getUidOrNull(o.option()));
+            w.bind(18, UidsHelper.getUidOrNull(o.optionGroup()));
         }
     };
 

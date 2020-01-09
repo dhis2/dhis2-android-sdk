@@ -32,17 +32,14 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBui
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStoreImpl;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class ConfigurationStoreImpl extends ObjectStoreImpl<Configuration> implements ConfigurationStore {
 
-    private static final StatementBinder<Configuration> BINDER = (configuration, sqLiteStatement) ->
-            sqLiteBind(sqLiteStatement, 1, configuration.serverUrl().toString());
+    private static final StatementBinder<Configuration> BINDER = (configuration, w) ->
+            w.bind(1, configuration.serverUrl().toString());
 
     private ConfigurationStoreImpl(DatabaseAdapter databaseAdapter,
                                    SQLStatementBuilderImpl builder) {
-        super(databaseAdapter,  databaseAdapter.compileStatement(builder.insert()), builder, BINDER,
-                Configuration::create);
+        super(databaseAdapter, builder, BINDER, Configuration::create);
     }
 
     @Override

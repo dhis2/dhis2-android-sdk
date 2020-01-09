@@ -59,9 +59,5 @@ public class OptionSetShould extends BaseObjectShould implements ObjectShould {
                 BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-06T14:23:38.789"));
         assertThat(optionSet.version()).isEqualTo(1);
         assertThat(optionSet.valueType()).isEqualTo(ValueType.TEXT);
-        assertThat(optionSet.options().get(0).uid()).isEqualTo("Y1ILwhy5VDY");
-        assertThat(optionSet.options().get(1).uid()).isEqualTo("egT1YqFWsVk");
-        assertThat(optionSet.options().get(2).uid()).isEqualTo("WckXGsyYola");
-        assertThat(optionSet.options().get(3).uid()).isEqualTo("EmQGvSlg0GD");
     }
 }

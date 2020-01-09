@@ -36,7 +36,7 @@ import io.reactivex.Completable;
 public interface ReadWriteValueObjectRepository<M extends CoreObject> extends ReadWriteObjectRepository<M> {
 
     /**
-     * Sets the object in scope in an asynchronous way. It returns a {@link Completable} which
+     * Sets the object in scope in an asynchronous way. It returns a {@code Completable} which
      * is completed when the object is updated to the database. It adds an object with a ASDASDASDASDASD
      * which will be uploaded to the server in the next upload.
      * @param value the object to add

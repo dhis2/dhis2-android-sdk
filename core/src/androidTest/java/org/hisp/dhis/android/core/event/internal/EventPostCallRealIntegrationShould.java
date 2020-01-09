@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
-import org.hisp.dhis.android.core.arch.helpers.CodeGenerator;
-import org.hisp.dhis.android.core.arch.helpers.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.arch.helpers.UidGenerator;
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
@@ -54,7 +54,7 @@ import static junit.framework.Assert.assertTrue;
 public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     private D2 d2;
-    private CodeGenerator codeGenerator;
+    private UidGenerator uidGenerator;
 
 
     private EventStore eventStore;
@@ -84,10 +84,10 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
         programStageUid = "aNLq9ZYoy9W";
         dataElementUid = "b6dOUjAarHD";
         attributeOptionCombo = "nvLjum6Xbv5";
-        codeGenerator = new CodeGeneratorImpl();
+        uidGenerator = new UidGeneratorImpl();
 
-        eventUid1 = codeGenerator.generate();
-        eventUid2 = codeGenerator.generate();
+        eventUid1 = uidGenerator.generate();
+        eventUid2 = uidGenerator.generate();
     }
 
     // commented out since it is a flaky test that works against a real server.

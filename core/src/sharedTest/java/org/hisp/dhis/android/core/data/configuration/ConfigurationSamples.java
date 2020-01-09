@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.data.configuration;
 
-import org.hisp.dhis.android.core.configuration.Configuration;
+import org.hisp.dhis.android.core.configuration.internal.Configuration;
 
 import okhttp3.HttpUrl;
 

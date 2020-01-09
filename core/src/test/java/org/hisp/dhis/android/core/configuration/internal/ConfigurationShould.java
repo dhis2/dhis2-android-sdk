@@ -26,18 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.configuration.internal;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.junit.Test;
 
-public interface ConfigurationManager {
+import static junit.framework.Assert.fail;
 
-    @NonNull
-    void configure(@NonNull Configuration configuration);
+public class ConfigurationShould {
 
-    @Nullable
-    Configuration get();
+    @Test
+    public void thrown_illegal_state_exception_when_build_configuration_with_null_url() {
+        try {
+            Configuration.builder().build();
 
-    void remove();
+            fail("IllegalStateException was expected but nothing was thrown");
+        } catch (IllegalStateException illegalStateException) {
+            // swallow exception
+        }
+    }
 }

@@ -25,23 +25,54 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.configuration.internal;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import static junit.framework.Assert.fail;
+import okhttp3.HttpUrl;
 
-public class ConfigurationShould {
+import static org.assertj.core.api.Assertions.assertThat;
+
+
+@RunWith(JUnit4.class)
+public class ServerUrlParserShould {
+
+    private final HttpUrl EXPECTED = HttpUrl.parse("http://dhis2.org/api/");
+
+    @Test(expected = IllegalArgumentException.class)
+    public void return_error_empty_string() {
+        ServerUrlParser.parse("");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void return_error_null_string() {
+        ServerUrlParser.parse(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void return_error_malformed_url() {
+        ServerUrlParser.parse("malformed url");
+    }
 
     @Test
-    public void thrown_illegal_state_exception_when_build_configuration_with_null_url() {
-        try {
-            Configuration.builder().build();
+    public void parse_url_with_no_api_no_slash() {
+        assertThat(ServerUrlParser.parse("http://dhis2.org")).isEqualTo(EXPECTED);
+    }
 
-            fail("IllegalStateException was expected but nothing was thrown");
-        } catch (IllegalStateException illegalStateException) {
-            // swallow exception
-        }
+    @Test
+    public void parse_url_slash() {
+        assertThat(ServerUrlParser.parse("http://dhis2.org/")).isEqualTo(EXPECTED);
+    }
+
+    @Test
+    public void parse_url_slash_api() {
+        assertThat(ServerUrlParser.parse("http://dhis2.org/api")).isEqualTo(EXPECTED);
+    }
+
+    @Test
+    public void parse_url_slash_api_slash() {
+        assertThat(ServerUrlParser.parse("http://dhis2.org/api/")).isEqualTo(EXPECTED);
     }
 }

@@ -45,7 +45,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.SecureStorageDIModule;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.internal.CategoryPackageDIModule;
 import org.hisp.dhis.android.core.common.internal.CommonPackageDIModule;
-import org.hisp.dhis.android.core.configuration.ConfigurationPackageDIModule;
+import org.hisp.dhis.android.core.configuration.internal.ConfigurationPackageDIModule;
 import org.hisp.dhis.android.core.constant.internal.ConstantPackageDIModule;
 import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalPackageDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElement;

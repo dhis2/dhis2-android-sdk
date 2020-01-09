@@ -40,9 +40,9 @@ import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
-import org.hisp.dhis.android.core.configuration.Configuration;
-import org.hisp.dhis.android.core.configuration.ConfigurationManager;
-import org.hisp.dhis.android.core.configuration.ConfigurationManagerFactory;
+import org.hisp.dhis.android.core.configuration.internal.Configuration;
+import org.hisp.dhis.android.core.configuration.internal.ConfigurationManager;
+import org.hisp.dhis.android.core.configuration.internal.ConfigurationManagerFactory;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import io.reactivex.Single;

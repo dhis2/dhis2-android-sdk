@@ -25,34 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.configuration;
 
-import androidx.annotation.NonNull;
-import okhttp3.HttpUrl;
+package org.hisp.dhis.android.core.configuration.internal;
 
-public final class ServerUrlParser {
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
+import org.hisp.dhis.android.core.constant.ConstantModule;
+import org.hisp.dhis.android.core.constant.internal.ConstantModuleImpl;
 
-    private ServerUrlParser() {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+
+@Module
+public final class ConfigurationPackageDIModule {
+
+    @Provides
+    @Reusable
+    ConfigurationManager configurationManager(SecureStore secureStore) {
+        return ConfigurationManagerFactory.create(secureStore);
     }
 
-    private static String appendSlashAndAPI(@NonNull String url) {
-        String trimmedUrl = url.trim();
-        trimmedUrl = trimmedUrl.replace(" ", "");
-
-        String withSlash = trimmedUrl.endsWith("/") ? trimmedUrl : trimmedUrl + "/";
-        return withSlash.endsWith("api/") ? withSlash : withSlash + "api/";
-    }
-
-    public static HttpUrl parse(@NonNull String url) {
-        if (url == null) {
-            throw new IllegalArgumentException("URL is null");
-        }
-        String urlWithSlashAndAPI = appendSlashAndAPI(url);
-        HttpUrl httpUrl = HttpUrl.parse(ServerUrlParser.appendSlashAndAPI(urlWithSlashAndAPI));
-        if (httpUrl == null) {
-            throw new IllegalArgumentException("Malformed HTTP or HTTPS URL");
-        } else {
-            return httpUrl;
-        }
+    @Provides
+    @Reusable
+    ConstantModule module(ConstantModuleImpl impl) {
+        return impl;
     }
 }

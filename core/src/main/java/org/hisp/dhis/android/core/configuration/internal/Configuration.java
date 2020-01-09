@@ -26,24 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.configuration.internal;
 
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
+import com.google.auto.value.AutoValue;
 
-public final class ConfigurationManagerFactory {
+import okhttp3.HttpUrl;
 
-    private ConfigurationManagerFactory() {
-        // no instances
-    }
+@AutoValue
+public abstract class Configuration {
 
     @NonNull
-    public static ConfigurationManager create(@NonNull SecureStore secureStore) {
-        if (secureStore == null) {
-            throw new IllegalArgumentException("secureStore == null");
-        }
+    public abstract HttpUrl serverUrl();
 
-        return new ConfigurationManagerImpl(secureStore);
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_Configuration.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder serverUrl(HttpUrl serverUrl);
+
+        public abstract Configuration build();
+    }
+
+    public static Configuration forServerUrl(HttpUrl url) {
+        return Configuration.builder().serverUrl(url).build();
     }
 }

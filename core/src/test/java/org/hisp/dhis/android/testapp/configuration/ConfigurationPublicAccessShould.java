@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.testapp.configuration;
 
-import org.hisp.dhis.android.core.configuration.Configuration;
+import org.hisp.dhis.android.core.configuration.internal.Configuration;
 import org.hisp.dhis.android.testapp.arch.ObjectWithBuilderShould;
 import org.mockito.Mock;
 

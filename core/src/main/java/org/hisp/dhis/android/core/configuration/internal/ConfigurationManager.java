@@ -26,34 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.configuration.internal;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.google.auto.value.AutoValue;
-
-import okhttp3.HttpUrl;
-
-@AutoValue
-public abstract class Configuration {
+public interface ConfigurationManager {
 
     @NonNull
-    public abstract HttpUrl serverUrl();
+    void configure(@NonNull Configuration configuration);
 
-    public abstract Builder toBuilder();
+    @Nullable
+    Configuration get();
 
-    public static Builder builder() {
-        return new AutoValue_Configuration.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder serverUrl(HttpUrl serverUrl);
-
-        public abstract Configuration build();
-    }
-
-    public static Configuration forServerUrl(HttpUrl url) {
-        return Configuration.builder().serverUrl(url).build();
-    }
+    void remove();
 }

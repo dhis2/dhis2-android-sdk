@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownl
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.configuration.ConfigurationManager;
+import org.hisp.dhis.android.core.configuration.internal.ConfigurationManager;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;

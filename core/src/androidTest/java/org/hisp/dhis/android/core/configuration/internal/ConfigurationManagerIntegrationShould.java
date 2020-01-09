@@ -26,13 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.configuration.internal;
 
 import android.content.Context;
 
 import androidx.test.InstrumentationRegistry;
 
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
+import org.hisp.dhis.android.core.configuration.internal.Configuration;
+import org.hisp.dhis.android.core.configuration.internal.ConfigurationManager;
+import org.hisp.dhis.android.core.configuration.internal.ConfigurationManagerFactory;
 import org.hisp.dhis.android.core.data.configuration.ConfigurationSamples;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Before;

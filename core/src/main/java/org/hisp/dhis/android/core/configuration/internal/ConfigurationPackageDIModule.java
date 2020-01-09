@@ -42,7 +42,7 @@ public final class ConfigurationPackageDIModule {
 
     @Provides
     @Reusable
-    ObjectSecureStore<Configuration> configurationManager(SecureStore secureStore) {
+    ObjectSecureStore<Configuration> configurationSecureStore(SecureStore secureStore) {
         return new ConfigurationSecureStoreImpl(secureStore);
     }
 

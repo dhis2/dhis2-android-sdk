@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,12 +45,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class ConfigurationManagerShould {
+public class ConfigurationSecureStoreShould {
 
     @Mock
     private SecureStore store;
 
-    private ConfigurationManager manager;
+    private ObjectSecureStore<Configuration> configurationSecureStore;
 
     private final static String KEY = "server_url";
 
@@ -60,14 +61,14 @@ public class ConfigurationManagerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        manager = new ConfigurationManagerImpl(store);
+        configurationSecureStore = new ConfigurationSecureStoreImpl(store);
     }
 
     @Test
     public void return_correct_values_when_configuration_manager_is_configured_with_saved_store() {
         when(store.getData(KEY)).thenReturn(SERVER_URL);
 
-        Configuration dbConfiguration = manager.get();
+        Configuration dbConfiguration = configurationSecureStore.get();
 
         verify(store).getData(KEY);
         assertThat(dbConfiguration).isEqualTo(configuration);
@@ -76,7 +77,7 @@ public class ConfigurationManagerShould {
     @Test
     public void thrown_illegal_argument_exception_after_configure_with_null_argument() {
         try {
-            manager.configure(null);
+            configurationSecureStore.set(null);
 
             fail("IllegalArgumentException was not thrown");
         } catch (IllegalArgumentException illegalArgumentException) {
@@ -86,7 +87,7 @@ public class ConfigurationManagerShould {
 
     @Test
     public void return_null_if_configuration_is_not_persisted() {
-        Configuration configuration = manager.get();
+        Configuration configuration = configurationSecureStore.get();
 
         verify(store).getData(KEY);
         assertThat(configuration).isNull();
@@ -94,13 +95,13 @@ public class ConfigurationManagerShould {
 
     @Test
     public void invoke_remove_data_on_secure_store_when_remove_method_is_called() {
-        manager.remove();
+        configurationSecureStore.remove();
         verify(store).removeData(KEY);
     }
 
     @Test
     public void invoke_set_data_on_secure_store_when_configuring() {
-        manager.configure(configuration);
+        configurationSecureStore.set(configuration);
         verify(store).setData(KEY, SERVER_URL);
     }
 }

@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownl
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.configuration.internal.ConfigurationManager;
+import org.hisp.dhis.android.core.configuration.internal.Configuration;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
@@ -133,7 +133,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private WipeModule wipeModule;
 
     @Mock
-    private ConfigurationManager configurationManager;
+    private ObjectSecureStore<Configuration> configurationSecureStore;
 
     // call we are testing
     private Single<User> logInSingle;
@@ -183,7 +183,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private Single<User> instantiateCall(String username, String password, String serverUrl) {
         return new UserAuthenticateCallFactory(databaseAdapter, apiCallExecutor,
                 userService, credentialsSecureStore, userHandler, resourceHandler, authenticatedUserStore,
-                systemInfoRepository, userStore, wipeModule, configurationManager).logIn(username, password, serverUrl);
+                systemInfoRepository, userStore, wipeModule, configurationSecureStore).logIn(username, password, serverUrl);
     }
 
     private OngoingStubbing<User> whenAPICall() throws D2Error {

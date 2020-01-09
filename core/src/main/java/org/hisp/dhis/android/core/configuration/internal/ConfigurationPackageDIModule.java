@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.constant.ConstantModule;
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleImpl;
@@ -41,8 +42,8 @@ public final class ConfigurationPackageDIModule {
 
     @Provides
     @Reusable
-    ConfigurationManager configurationManager(SecureStore secureStore) {
-        return ConfigurationManagerFactory.create(secureStore);
+    ObjectSecureStore<Configuration> configurationManager(SecureStore secureStore) {
+        return new ConfigurationSecureStoreImpl(secureStore);
     }
 
     @Provides

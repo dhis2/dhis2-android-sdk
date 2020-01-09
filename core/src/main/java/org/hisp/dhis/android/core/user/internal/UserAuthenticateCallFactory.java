@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownl
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.configuration.internal.Configuration;
-import org.hisp.dhis.android.core.configuration.internal.ConfigurationManager;
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -80,7 +79,7 @@ public final class UserAuthenticateCallFactory {
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final IdentifiableObjectStore<User> userStore;
     private final WipeModule wipeModule;
-    private final ConfigurationManager configurationManager;
+    private final ObjectSecureStore<Configuration> configurationSecureStore;
 
     @Inject
     UserAuthenticateCallFactory(
@@ -94,7 +93,7 @@ public final class UserAuthenticateCallFactory {
             @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             @NonNull IdentifiableObjectStore<User> userStore,
             @NonNull WipeModule wipeModule,
-            @NonNull ConfigurationManager configurationManager) {
+            @NonNull ObjectSecureStore<Configuration> configurationSecureStore) {
         this.databaseAdapter = databaseAdapter;
         this.apiCallExecutor = apiCallExecutor;
 
@@ -108,7 +107,7 @@ public final class UserAuthenticateCallFactory {
         this.systemInfoRepository = systemInfoRepository;
         this.userStore = userStore;
         this.wipeModule = wipeModule;
-        this.configurationManager = configurationManager;
+        this.configurationSecureStore = configurationSecureStore;
     }
 
     public Single<User> logIn(final String username, final String password, final String serverUrl) {
@@ -128,7 +127,7 @@ public final class UserAuthenticateCallFactory {
 
         HttpUrl httpServerUrl = ServerUrlParser.parse(serverUrl);
         ServerURLWrapper.setServerUrl(httpServerUrl.toString());
-        configurationManager.configure(Configuration.forServerUrl(httpServerUrl));
+        configurationSecureStore.set(Configuration.forServerUrl(httpServerUrl));
 
         Call<User> authenticateCall =
                 userService.authenticate(basic(username, password), UserFields.allFieldsWithoutOrgUnit);

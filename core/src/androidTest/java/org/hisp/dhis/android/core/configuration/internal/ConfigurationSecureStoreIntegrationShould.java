@@ -33,9 +33,7 @@ import android.content.Context;
 import androidx.test.InstrumentationRegistry;
 
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
-import org.hisp.dhis.android.core.configuration.internal.Configuration;
-import org.hisp.dhis.android.core.configuration.internal.ConfigurationManager;
-import org.hisp.dhis.android.core.configuration.internal.ConfigurationManagerFactory;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.data.configuration.ConfigurationSamples;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Before;
@@ -49,41 +47,41 @@ import okhttp3.HttpUrl;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
-public class ConfigurationManagerIntegrationShould {
+public class ConfigurationSecureStoreIntegrationShould {
 
     private final Configuration configuration;
-    private final ConfigurationManager manager;
+    private final ObjectSecureStore<Configuration> configurationSecureStore;
 
-    public ConfigurationManagerIntegrationShould() {
+    public ConfigurationSecureStoreIntegrationShould() {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        this.manager = ConfigurationManagerFactory.create(new AndroidSecureStore(context));
+        this.configurationSecureStore = new ConfigurationSecureStoreImpl(new AndroidSecureStore(context));
         this.configuration = buildObject();
     }
 
     @Before
     public void setUp() throws IOException {
-        manager.remove();
+        configurationSecureStore.remove();
     }
 
     @Test
     public void configure_and_get() {
-        manager.configure(configuration);
-        Configuration objectFromDb = manager.get();
+        configurationSecureStore.set(configuration);
+        Configuration objectFromDb = configurationSecureStore.get();
         assertThat(objectFromDb.serverUrl()).isEqualTo(HttpUrl.parse("http://testserver.org/api/"));
     }
 
     @Test
     public void configure_and_remove() {
-        manager.configure(configuration);
-        manager.remove();
-        assertThat(manager.get()).isNull();
+        configurationSecureStore.set(configuration);
+        configurationSecureStore.remove();
+        assertThat(configurationSecureStore.get()).isNull();
     }
 
     @Test
     public void overwrite_and_not_fail_in_a_consecutive_configuration() {
-        manager.configure(configuration);
-        manager.configure(configuration);
-        assertThat(manager.get()).isNotNull();
+        configurationSecureStore.set(configuration);
+        configurationSecureStore.set(configuration);
+        assertThat(configurationSecureStore.get()).isNotNull();
     }
 
     protected Configuration buildObject() {

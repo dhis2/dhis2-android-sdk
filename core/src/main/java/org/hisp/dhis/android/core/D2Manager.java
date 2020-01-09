@@ -42,8 +42,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreIm
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.configuration.internal.Configuration;
-import org.hisp.dhis.android.core.configuration.internal.ConfigurationManager;
-import org.hisp.dhis.android.core.configuration.internal.ConfigurationManagerFactory;
+import org.hisp.dhis.android.core.configuration.internal.ConfigurationSecureStoreImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import io.reactivex.Single;
@@ -110,8 +109,8 @@ public final class D2Manager {
 
             SecureStore secureStore = new AndroidSecureStore(d2Configuration.context());
             ObjectSecureStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
-            ConfigurationManager configurationManager = ConfigurationManagerFactory.create(secureStore);
-            Configuration configuration = configurationManager.get();
+            ObjectSecureStore<Configuration> configurationSecureStore = new ConfigurationSecureStoreImpl(secureStore);
+            Configuration configuration = configurationSecureStore.get();
 
             if (configuration != null) {
                 ServerURLWrapper.setServerUrl(configuration.serverUrl().toString());

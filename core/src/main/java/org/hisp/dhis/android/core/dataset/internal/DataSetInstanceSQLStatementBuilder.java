@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.DeletableDataColumns;
@@ -46,12 +47,34 @@ import org.hisp.dhis.android.core.period.PeriodTableInfo;
 
 public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementBuilder {
 
-    private static final String AS = " AS ";
+    /**
+     * Builder class that creates a complex query as the result of the join of several tables. The purpose is to
+     * obtain an overview of the datavalues associated to a dataset.
+     *
+     * - Discriminate the values associated to a dataSet using the DataSetElement table. The difficult part is to
+     * know valid the attributeOptionCombos for the dataElements in that particular dataSet. Clause
+     * COC_BY_DATASET_WHERE_CLAUSE
+     *
+     * - Prioritize data states. When grouping by dataset-orgunit-period-aoc, data values states must be prioritize.
+     * In order to do that, an auxiliary column is used. This column is assigend a numeric value (1, 2, 3 or 4)
+     * depending on the data value state (SYNCED lower, ERROR higher). Then, the aggregation function MAX is used to
+     * get the highest value. Clause SELECT_VALUE_STATE_ORDERING
+     *
+     * - There is value state and a completion state. An extra column "state" is added to have a single state for the
+     * dataSetInstance. Prioritization is respected. Clause SELECT_STATE.
+     *
+     * - The "where" clause is build as usual by using the collection repository scope.
+     */
+
+    static final String AS = " AS ";
     private static final String INNER_JOIN = " INNER JOIN ";
     private static final String LEFT_JOIN = " LEFT JOIN ";
     private static final String ON = " ON ";
     private static final String EQ = " = ";
     private static final String AND = " AND ";
+    private static final String OR = " OR ";
+    private static final String WHEN = " WHEN ";
+    private static final String THEN = " THEN ";
 
     private static final String DATAVALUE_TABLE_ALIAS = "dv";
     private static final String PERIOD_TABLE_ALIAS = "pe";
@@ -63,9 +86,9 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
     private static final String AOC_TABLE_ALIAS = "aoc";
     private static final String COMPLETE_TABLE_ALIAS = "dscr";
 
-    private static final String VALUE_COUNT_ALIAS = "valueCount";
+    static final String VALUE_COUNT_ALIAS = "valueCount";
     public static final String DATASET_UID_ALIAS = "dataSetUid";
-    private static final String DATASET_NAME_ALIAS = "dataSetDisplayName";
+    static final String DATASET_NAME_ALIAS = "dataSetDisplayName";
     public static final String PERIOD_ALIAS = "period";
     public static final String PERIOD_TYPE_ALIAS = "periodType";
     public static final String PERIOD_START_DATE_ALIAS = "periodStartDate";
@@ -75,6 +98,9 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
     public static final String ATTRIBUTE_OPTION_COMBO_UID_ALIAS = "attributeOptionComboUid";
     private static final String ATTRIBUTE_OPTION_COMBO_NAME_ALIAS = "attributeOptionComboDisplayName";
     private static final String COMPLETION_DATE_ALIAS = "completionDate";
+    public static final String VALUE_STATE_ALIAS = "dataValueState";
+    public static final String COMPLETION_STATE_ALIAS = "completionState";
+    public static final String STATE_ALIAS = "state";
 
     public static final String DATAVALUE_ID = DATAVALUE_TABLE_ALIAS + "." + DeletableDataColumns.ID;
     private static final String DATASET_UID = DATASET_TABLE_ALIAS + "." + IdentifiableColumns.UID;
@@ -97,12 +123,32 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
     private static final String DSE_CATEGORY_COMBO =
             DATASETELEMENT_TABLE_ALIAS + "." + DataSetElementLinkTableInfo.Columns.CATEGORY_COMBO;
 
-    private static final String STATE = DATAVALUE_TABLE_ALIAS + "." + DataColumns.STATE;
+    private static final String VALUE_STATE = DATAVALUE_TABLE_ALIAS + "." + DataColumns.STATE;
+    private static final String COMPLETION_STATE = COMPLETE_TABLE_ALIAS + "." + DataColumns.STATE;
 
-    private static final String SELECT_STATE_ORDERING = " MAX(CASE " +
-            "WHEN " + STATE + " = '" + State.SYNCED + "' THEN 1 " +
-            "WHEN " + STATE + " IN ('" + State.TO_POST + "','" + State.TO_UPDATE + "') THEN 2 " +
-            "ELSE 3 END)";
+    private static final String SELECT_VALUE_STATE_ORDERING = " MAX(CASE " +
+            "WHEN " + VALUE_STATE + " IN ('" + State.SYNCED + "','" + State.SYNCED_VIA_SMS + "') THEN 1 " +
+            "WHEN " + VALUE_STATE + " = '" + State.SENT_VIA_SMS + "' THEN 2 " +
+            "WHEN " + VALUE_STATE + " IN ('" + State.TO_POST + "','" + State.TO_UPDATE + "') THEN 3 " +
+            "ELSE 4 END)";
+
+    private static final String SELECT_STATE = "CASE" +
+            WHEN + eq(COMPLETION_STATE, State.ERROR) + OR + eq(VALUE_STATE, State.ERROR) +
+                THEN + quotes(State.ERROR) +
+            WHEN + eq(COMPLETION_STATE, State.WARNING) + OR + eq(VALUE_STATE, State.WARNING) +
+                THEN + quotes(State.WARNING) +
+            WHEN + eq(COMPLETION_STATE, State.TO_UPDATE) + OR + eq(VALUE_STATE, State.TO_UPDATE) +
+                THEN + quotes(State.TO_UPDATE) +
+            WHEN + eq(COMPLETION_STATE, State.TO_POST) + OR + eq(VALUE_STATE, State.TO_POST) +
+                THEN + quotes(State.TO_POST) +
+            WHEN + eq(COMPLETION_STATE, State.SENT_VIA_SMS) + OR + eq(VALUE_STATE, State.SENT_VIA_SMS) +
+                THEN + quotes(State.SENT_VIA_SMS) +
+            WHEN + eq(COMPLETION_STATE, State.SYNCED_VIA_SMS) + OR + eq(VALUE_STATE, State.SYNCED_VIA_SMS) +
+                THEN + quotes(State.SYNCED_VIA_SMS) +
+            WHEN + eq(COMPLETION_STATE, State.SYNCED) + OR + eq(VALUE_STATE, State.SYNCED) +
+                THEN + quotes(State.SYNCED) +
+            " ELSE " + quotes(State.SYNCED) + " END" +
+            AS + STATE_ALIAS;
 
     private static final String FROM_CLAUSE =
             " FROM " + DataValueTableInfo.TABLE_INFO.name() + AS + DATAVALUE_TABLE_ALIAS +
@@ -129,9 +175,11 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
             ATTRIBUTE_OPTION_COMBO_NAME + AS + ATTRIBUTE_OPTION_COMBO_NAME_ALIAS + "," +
             "COUNT(*)" + AS + VALUE_COUNT_ALIAS + "," +
             COMPLETION_DATE + AS + COMPLETION_DATE_ALIAS + "," +
-            STATE + ", " +
+            VALUE_STATE + AS + VALUE_STATE_ALIAS + "," +
             // Auxiliary field to order the 'state' column and to prioritize TO_POST and TO_UPDATE
-            SELECT_STATE_ORDERING +
+            SELECT_VALUE_STATE_ORDERING + "," +
+            COMPLETION_STATE + AS + COMPLETION_STATE_ALIAS + "," +
+            SELECT_STATE +
             FROM_CLAUSE;
 
     private static final String COC_BY_DATASET_WHERE_CLAUSE = " WHERE " +
@@ -239,5 +287,13 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
                     COMPLETE_TABLE_ALIAS + "." + DataSetCompleteRegistrationTableInfo.Columns.ORGANISATION_UNIT +
                 AND + ATTRIBUTE_OPTION_COMBO_UID + EQ +
                     COMPLETE_TABLE_ALIAS + "." + DataSetCompleteRegistrationTableInfo.Columns.ATTRIBUTE_OPTION_COMBO;
+    }
+
+    private static String eq(String column, State state) {
+       return column + " = " + quotes(state);
+    }
+
+    private static String quotes(State value) {
+        return CollectionsHelper.withSingleQuotationMarks(value.name());
     }
 }

@@ -34,22 +34,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.IsColumnNotNullColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.period.PeriodType;
-
-import java.util.Date;
 
 @AutoValue
-public abstract class DataSetInstance implements CoreObject {
+public abstract class DataSetInstanceSummary implements CoreObject {
 
     @NonNull
     public abstract String dataSetUid();
@@ -58,57 +51,24 @@ public abstract class DataSetInstance implements CoreObject {
     public abstract String dataSetDisplayName();
 
     @NonNull
-    public abstract String period();
-
-    @NonNull
-    @ColumnAdapter(PeriodTypeColumnAdapter.class)
-    public abstract PeriodType periodType();
-
-    @NonNull
-    public abstract String organisationUnitUid();
-
-    @NonNull
-    public abstract String organisationUnitDisplayName();
-
-    @NonNull
-    public abstract String attributeOptionComboUid();
-
-    @NonNull
-    public abstract String attributeOptionComboDisplayName();
-
-    @NonNull
     public abstract Integer valueCount();
 
     @NonNull
-    @ColumnName("completionDate")
-    @ColumnAdapter(IsColumnNotNullColumnAdapter.class)
-    public abstract Boolean completed();
-
-    @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date completionDate();
-
-    @Nullable
-    @ColumnAdapter(StateColumnAdapter.class)
-    public abstract State dataValueState();
-
-    @Nullable
-    @ColumnAdapter(StateColumnAdapter.class)
-    public abstract State completionState();
+    public abstract Integer dataSetInstanceCount();
 
     @Nullable
     @ColumnAdapter(StateColumnAdapter.class)
     public abstract State state();
 
     @NonNull
-    public static DataSetInstance create(Cursor cursor) {
-        return AutoValue_DataSetInstance.createFromCursor(cursor);
+    public static DataSetInstanceSummary create(Cursor cursor) {
+        return AutoValue_DataSetInstanceSummary.createFromCursor(cursor);
     }
 
-    public abstract DataSetInstance.Builder toBuilder();
+    public abstract DataSetInstanceSummary.Builder toBuilder();
 
-    public static DataSetInstance.Builder builder() {
-        return new $$AutoValue_DataSetInstance.Builder();
+    public static DataSetInstanceSummary.Builder builder() {
+        return new $$AutoValue_DataSetInstanceSummary.Builder();
     }
 
     @AutoValue.Builder
@@ -119,30 +79,12 @@ public abstract class DataSetInstance implements CoreObject {
 
         public abstract Builder dataSetDisplayName(String dataSetDisplayName);
 
-        public abstract Builder period(String period);
-
-        public abstract Builder periodType(PeriodType periodType);
-
-        public abstract Builder organisationUnitUid(String organisationUnitUid);
-
-        public abstract Builder organisationUnitDisplayName(String organisationUnitDisplayName);
-
-        public abstract Builder attributeOptionComboUid(String attributeOptionComboUid);
-
-        public abstract Builder attributeOptionComboDisplayName(String attributeOptionComboDisplayName);
-
         public abstract Builder valueCount(Integer valueCount);
 
-        public abstract Builder completed(Boolean completed);
-
-        public abstract Builder completionDate(Date completionDate);
-
-        public abstract Builder dataValueState(State dataValueState);
-
-        public abstract Builder completionState(State completitionState);
+        public abstract Builder dataSetInstanceCount(Integer dataSetInstanceCount);
 
         public abstract Builder state(State state);
 
-        public abstract DataSetInstance build();
+        public abstract DataSetInstanceSummary build();
     }
 }

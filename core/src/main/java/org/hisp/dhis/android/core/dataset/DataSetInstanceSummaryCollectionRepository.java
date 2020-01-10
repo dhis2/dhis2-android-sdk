@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.internal.DataSetInstanceSQLStatementBuilder;
-import org.hisp.dhis.android.core.dataset.internal.DataSetInstanceStore;
+import org.hisp.dhis.android.core.dataset.internal.DataSetInstanceSummaryStore;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Collections;
@@ -46,45 +46,45 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public final class DataSetInstanceCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl<DataSetInstance, DataSetInstanceCollectionRepository> {
+public final class DataSetInstanceSummaryCollectionRepository
+        extends ReadOnlyCollectionRepositoryImpl<DataSetInstanceSummary, DataSetInstanceSummaryCollectionRepository> {
 
     @Inject
-    public DataSetInstanceCollectionRepository(final DataSetInstanceStore store,
+    DataSetInstanceSummaryCollectionRepository(final DataSetInstanceSummaryStore store,
                                                final RepositoryScope scope) {
         super(store, Collections.emptyMap(), scope, new FilterConnectorFactory<>(scope,
-                s -> new DataSetInstanceCollectionRepository(store, s)));
+                s -> new DataSetInstanceSummaryCollectionRepository(store, s)));
     }
 
-    public StringFilterConnector<DataSetInstanceCollectionRepository> byDataSetUid() {
+    public StringFilterConnector<DataSetInstanceSummaryCollectionRepository> byDataSetUid() {
         return cf.string(DataSetInstanceSQLStatementBuilder.DATASET_UID_ALIAS);
     }
 
-    public StringFilterConnector<DataSetInstanceCollectionRepository> byPeriod() {
+    public StringFilterConnector<DataSetInstanceSummaryCollectionRepository> byPeriod() {
         return cf.string(DataSetInstanceSQLStatementBuilder.PERIOD_ALIAS);
     }
 
-    public EnumFilterConnector<DataSetInstanceCollectionRepository, PeriodType> byPeriodType() {
+    public EnumFilterConnector<DataSetInstanceSummaryCollectionRepository, PeriodType> byPeriodType() {
         return cf.enumC(DataSetInstanceSQLStatementBuilder.PERIOD_TYPE_ALIAS);
     }
 
-    public DateFilterConnector<DataSetInstanceCollectionRepository> byPeriodStartDate() {
+    public DateFilterConnector<DataSetInstanceSummaryCollectionRepository> byPeriodStartDate() {
         return cf.date(DataSetInstanceSQLStatementBuilder.PERIOD_START_DATE_ALIAS);
     }
 
-    public DateFilterConnector<DataSetInstanceCollectionRepository> byPeriodEndDate() {
+    public DateFilterConnector<DataSetInstanceSummaryCollectionRepository> byPeriodEndDate() {
         return cf.date(DataSetInstanceSQLStatementBuilder.PERIOD_END_DATE_ALIAS);
     }
 
-    public StringFilterConnector<DataSetInstanceCollectionRepository> byOrganisationUnitUid() {
+    public StringFilterConnector<DataSetInstanceSummaryCollectionRepository> byOrganisationUnitUid() {
         return cf.string(DataSetInstanceSQLStatementBuilder.ORGANISATION_UNIT_UID_ALIAS);
     }
 
-    public StringFilterConnector<DataSetInstanceCollectionRepository> byAttributeOptionComboUid() {
+    public StringFilterConnector<DataSetInstanceSummaryCollectionRepository> byAttributeOptionComboUid() {
         return cf.string(DataSetInstanceSQLStatementBuilder.ATTRIBUTE_OPTION_COMBO_UID_ALIAS);
     }
 
-    public EnumFilterConnector<DataSetInstanceCollectionRepository, State> byState() {
+    public EnumFilterConnector<DataSetInstanceSummaryCollectionRepository, State> byState() {
         return cf.enumC(DataSetInstanceSQLStatementBuilder.STATE_ALIAS);
     }
 

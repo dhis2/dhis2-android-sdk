@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.dataapproval.DataApprovalCollectionRepository;
 import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCollectionRepository;
 import org.hisp.dhis.android.core.dataset.DataSetInstanceCollectionRepository;
+import org.hisp.dhis.android.core.dataset.DataSetInstanceSummaryCollectionRepository;
 import org.hisp.dhis.android.core.dataset.DataSetModule;
 import org.hisp.dhis.android.core.dataset.SectionCollectionRepository;
 
@@ -47,18 +48,21 @@ public final class DataSetModuleImpl implements DataSetModule {
     private final SectionCollectionRepository sections;
     private final DataApprovalCollectionRepository dataApprovals;
     private final DataSetInstanceCollectionRepository dataSetInstances;
+    private final DataSetInstanceSummaryCollectionRepository dataSetInstanceSummaries;
 
     @Inject
     DataSetModuleImpl(DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations,
                       DataSetCollectionRepository dataSets,
                       SectionCollectionRepository sections,
                       DataApprovalCollectionRepository dataApprovalCollectionRepository,
-                      DataSetInstanceCollectionRepository dataSetInstanceCollectionRepository) {
+                      DataSetInstanceCollectionRepository dataSetInstanceCollectionRepository,
+                      DataSetInstanceSummaryCollectionRepository dataSetInstanceSummaries) {
         this.dataSetCompleteRegistrations = dataSetCompleteRegistrations;
         this.dataSets = dataSets;
         this.sections = sections;
         this.dataApprovals = dataApprovalCollectionRepository;
         this.dataSetInstances = dataSetInstanceCollectionRepository;
+        this.dataSetInstanceSummaries = dataSetInstanceSummaries;
     }
 
     @Override
@@ -84,5 +88,10 @@ public final class DataSetModuleImpl implements DataSetModule {
     @Override
     public DataSetInstanceCollectionRepository dataSetInstances() {
         return dataSetInstances;
+    }
+
+    @Override
+    public DataSetInstanceSummaryCollectionRepository dataSetInstanceSummaries() {
+        return dataSetInstanceSummaries;
     }
 }

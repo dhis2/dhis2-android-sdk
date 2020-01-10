@@ -89,6 +89,7 @@ public class DataBaseMigrationShould {
     public DatabaseAdapter initCoreDataBase(int databaseVersion) {
         databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(InstrumentationRegistry.getTargetContext().getApplicationContext()
                 , dbName, databaseVersion);
+        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter);
         return databaseAdapter;
     }
 }

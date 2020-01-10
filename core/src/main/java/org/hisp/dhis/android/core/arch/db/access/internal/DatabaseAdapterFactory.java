@@ -29,37 +29,57 @@ package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import android.content.Context;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
 import androidx.annotation.VisibleForTesting;
+
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 
 public final class DatabaseAdapterFactory {
 
     private static boolean encrypt;
     private static String ENCRYPTION_PASSWORD = "dhis-password";
+    private static String databaseName;
+    private static Integer version;
+    private static Context context;
 
     public static void setExperimentalEncryption(boolean experimentalEncryption) {
         encrypt = experimentalEncryption;
     }
 
     public static DatabaseAdapter getDatabaseAdapter(Context context, String databaseName) {
-        if (encrypt) {
-            EncryptedDatabaseOpenHelper openHelper = new EncryptedDatabaseOpenHelper(context, databaseName);
-            return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(ENCRYPTION_PASSWORD));
-        } else {
-            UnencryptedDatabaseOpenHelper openHelper = new UnencryptedDatabaseOpenHelper(context, databaseName);
-            return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
-        }
+        DatabaseAdapterFactory.context = context;
+        DatabaseAdapterFactory.databaseName = databaseName;
+        DatabaseAdapterFactory.version = null;
+        return new ParentDatabaseAdapter();
     }
 
     @VisibleForTesting
     public static DatabaseAdapter getDatabaseAdapter(Context context, String databaseName, int version) {
+        DatabaseAdapterFactory.context = context;
+        DatabaseAdapterFactory.databaseName = databaseName;
+        DatabaseAdapterFactory.version = version;
+        return new ParentDatabaseAdapter();
+    }
+
+    public static void createOrOpenDatabase(DatabaseAdapter adapter) {
+        try {
+            ParentDatabaseAdapter parentDatabaseAdapter = (ParentDatabaseAdapter) adapter;
+            if (!parentDatabaseAdapter.isAdapterSet()) {
+                parentDatabaseAdapter.setAdapter(instantiateAdapter());
+            }
+        } catch (ClassCastException cce) {
+            // This ensures tests that mock DatabaseAdapter pass
+        }
+    }
+
+    private static DatabaseAdapter instantiateAdapter() {
+        int actualVersion = version == null ? BaseDatabaseOpenHelper.VERSION : version;
         if (encrypt) {
-            EncryptedDatabaseOpenHelper openHelper = new EncryptedDatabaseOpenHelper(context, databaseName, version);
+            EncryptedDatabaseOpenHelper openHelper = new EncryptedDatabaseOpenHelper(context, databaseName,
+                    actualVersion);
             return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(ENCRYPTION_PASSWORD));
         } else {
             UnencryptedDatabaseOpenHelper openHelper
-                    = new UnencryptedDatabaseOpenHelper(context, databaseName, version);
+                    = new UnencryptedDatabaseOpenHelper(context, databaseName, actualVersion);
             return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
         }
     }

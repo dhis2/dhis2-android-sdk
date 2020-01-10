@@ -252,8 +252,8 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         verifyNoTransactionCompleted();
 
         // stores must not be invoked
-        verify(credentialsSecureStore).get();
-        verify(authenticatedUserStore).selectFirst();
+        verify(credentialsSecureStore, never()).get();
+        verify(authenticatedUserStore, never()).selectFirst();
         verifyNoMoreInteractions(userHandler);
     }
 

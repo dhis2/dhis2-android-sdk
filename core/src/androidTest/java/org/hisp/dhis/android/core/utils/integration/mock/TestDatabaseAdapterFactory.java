@@ -44,7 +44,7 @@ public class TestDatabaseAdapterFactory {
     public static void setUp() {
         if (databaseAdapter == null) {
             databaseAdapter = create();
-            databaseAdapter.setForeignKeyConstraintsEnabled(false);
+            // TODO restore somehow in tests databaseAdapter.setForeignKeyConstraintsEnabled(false);
         }
     }
 
@@ -62,6 +62,9 @@ public class TestDatabaseAdapterFactory {
     private static DatabaseAdapter create() {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
         Stetho.initializeWithDefaults(context);
-        return DatabaseAdapterFactory.getDatabaseAdapter(context, dbName);
+        DatabaseAdapter parentDatabaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(context, dbName);
+        DatabaseAdapterFactory.createOrOpenDatabase(parentDatabaseAdapter);
+        parentDatabaseAdapter.setForeignKeyConstraintsEnabled(false);
+        return parentDatabaseAdapter;
     }
 }

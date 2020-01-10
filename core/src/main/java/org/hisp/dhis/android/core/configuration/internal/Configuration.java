@@ -26,38 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.configuration.internal;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-final class ConfigurationManagerImpl implements ConfigurationManager {
+import com.google.auto.value.AutoValue;
 
-    @NonNull
-    private final ConfigurationStore configurationStore;
+import okhttp3.HttpUrl;
 
-    ConfigurationManagerImpl(@NonNull ConfigurationStore configurationStore) {
-        this.configurationStore = configurationStore;
-    }
+@AutoValue
+public abstract class Configuration {
 
     @NonNull
-    @Override
-    public void configure(@NonNull Configuration configuration) {
-        if (configuration == null) {
-            throw new IllegalArgumentException("configuration == null");
-        }
+    public abstract HttpUrl serverUrl();
 
-        configurationStore.save(configuration);
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_Configuration.Builder();
     }
 
-    @Nullable
-    @Override
-    public Configuration get() {
-        return configurationStore.selectFirst();
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder serverUrl(HttpUrl serverUrl);
+
+        public abstract Configuration build();
     }
 
-    @Override
-    public int remove() {
-        return configurationStore.delete();
+    public static Configuration forServerUrl(HttpUrl url) {
+        return Configuration.builder().serverUrl(url).build();
     }
 }

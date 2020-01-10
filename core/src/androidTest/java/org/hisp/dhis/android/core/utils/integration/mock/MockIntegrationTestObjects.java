@@ -31,22 +31,24 @@ package org.hisp.dhis.android.core.utils.integration.mock;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.test.InstrumentationRegistry;
+
 import com.facebook.stetho.Stetho;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 
 import java.io.IOException;
 import java.util.Date;
-
-import androidx.test.InstrumentationRegistry;
 
 public class MockIntegrationTestObjects {
     public final DatabaseAdapter databaseAdapter;
@@ -75,7 +77,7 @@ public class MockIntegrationTestObjects {
         d2 = D2Factory.forDatabaseName(dbName);
 
         databaseAdapter = d2.databaseAdapter();
-        CredentialsSecureStore credentialsSecureStore = new CredentialsSecureStoreImpl(context);
+        ObjectSecureStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(new AndroidSecureStore(context));
 
         d2DIComponent = D2DIComponent.create(context, d2.retrofit(), databaseAdapter, credentialsSecureStore);
 

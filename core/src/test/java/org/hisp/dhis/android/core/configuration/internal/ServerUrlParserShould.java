@@ -25,14 +25,54 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal;
 
-package org.hisp.dhis.android.core.arch.storage.internal;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public interface CredentialsSecureStore {
+import okhttp3.HttpUrl;
 
-    void setCredentials(Credentials credentials);
+import static org.assertj.core.api.Assertions.assertThat;
 
-    Credentials getCredentials();
 
-    void removeCredentials();
+@RunWith(JUnit4.class)
+public class ServerUrlParserShould {
+
+    private final HttpUrl EXPECTED = HttpUrl.parse("http://dhis2.org/api/");
+
+    @Test(expected = IllegalArgumentException.class)
+    public void return_error_empty_string() {
+        ServerUrlParser.parse("");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void return_error_null_string() {
+        ServerUrlParser.parse(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void return_error_malformed_url() {
+        ServerUrlParser.parse("malformed url");
+    }
+
+    @Test
+    public void parse_url_with_no_api_no_slash() {
+        assertThat(ServerUrlParser.parse("http://dhis2.org")).isEqualTo(EXPECTED);
+    }
+
+    @Test
+    public void parse_url_slash() {
+        assertThat(ServerUrlParser.parse("http://dhis2.org/")).isEqualTo(EXPECTED);
+    }
+
+    @Test
+    public void parse_url_slash_api() {
+        assertThat(ServerUrlParser.parse("http://dhis2.org/api")).isEqualTo(EXPECTED);
+    }
+
+    @Test
+    public void parse_url_slash_api_slash() {
+        assertThat(ServerUrlParser.parse("http://dhis2.org/api/")).isEqualTo(EXPECTED);
+    }
 }

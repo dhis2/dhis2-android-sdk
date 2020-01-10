@@ -36,9 +36,9 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.configuration.ConfigurationManager;
+import org.hisp.dhis.android.core.configuration.internal.Configuration;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
@@ -91,7 +91,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
 
     @Mock
-    private CredentialsSecureStore credentialsSecureStore;
+    private ObjectSecureStore<Credentials> credentialsSecureStore;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<User> authenticateAPICall;
@@ -133,7 +133,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private WipeModule wipeModule;
 
     @Mock
-    private ConfigurationManager configurationManager;
+    private ObjectSecureStore<Configuration> configurationSecureStore;
 
     // call we are testing
     private Single<User> logInSingle;
@@ -183,7 +183,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private Single<User> instantiateCall(String username, String password, String serverUrl) {
         return new UserAuthenticateCallFactory(databaseAdapter, apiCallExecutor,
                 userService, credentialsSecureStore, userHandler, resourceHandler, authenticatedUserStore,
-                systemInfoRepository, userStore, wipeModule, configurationManager).logIn(username, password, serverUrl);
+                systemInfoRepository, userStore, wipeModule, configurationSecureStore).logIn(username, password, serverUrl);
     }
 
     private OngoingStubbing<User> whenAPICall() throws D2Error {
@@ -252,7 +252,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         verifyNoTransactionCompleted();
 
         // stores must not be invoked
-        verify(credentialsSecureStore).getCredentials();
+        verify(credentialsSecureStore).get();
         verify(authenticatedUserStore).selectFirst();
         verifyNoMoreInteractions(userHandler);
     }
@@ -313,7 +313,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Test
     public void throw_d2_call_exception_state_exception_if_user_already_signed_in() {
-        when(credentialsSecureStore.getCredentials()).thenReturn(credentials);
+        when(credentialsSecureStore.get()).thenReturn(credentials);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
         TestObserver<User> testObserver = logInSingle.test();
         assertD2Error(testObserver);
@@ -323,7 +323,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Test
     public void continue_if_user_has_logged_out() {
-        when(credentialsSecureStore.getCredentials()).thenReturn(null);
+        when(credentialsSecureStore.get()).thenReturn(null);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
         logInSingle.blockingGet();
         verifySuccess();
@@ -333,7 +333,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     public void user_login_offline_if_previously_logged() throws Exception {
         whenAPICall().thenThrow(d2Error);
 
-        when(credentialsSecureStore.getCredentials()).thenReturn(null);
+        when(credentialsSecureStore.get()).thenReturn(null);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
         logInSingle.test().awaitTerminalEvent();
@@ -359,7 +359,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     public void throw_d2_exception_if_different_authenticated_user_offline() throws Exception {
         whenAPICall().thenThrow(d2Error);
 
-        when(credentialsSecureStore.getCredentials()).thenReturn(null);
+        when(credentialsSecureStore.get()).thenReturn(null);
         when(authenticatedUser.hash()).thenReturn("different_hash");
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 

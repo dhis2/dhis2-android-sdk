@@ -30,18 +30,21 @@ package org.hisp.dhis.android.core;
 
 import android.util.Log;
 
+import androidx.annotation.VisibleForTesting;
+
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
-import org.hisp.dhis.android.core.configuration.Configuration;
-import org.hisp.dhis.android.core.configuration.ConfigurationManager;
-import org.hisp.dhis.android.core.configuration.ConfigurationManagerFactory;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
+import org.hisp.dhis.android.core.configuration.internal.Configuration;
+import org.hisp.dhis.android.core.configuration.internal.ConfigurationSecureStoreImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
-import androidx.annotation.VisibleForTesting;
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
@@ -104,7 +107,14 @@ public final class D2Manager {
                 SSLContextInitializer.initializeSSLContext(d2Configuration.context());
             }
 
-            CredentialsSecureStore credentialsSecureStore = new CredentialsSecureStoreImpl(d2Configuration.context());
+            SecureStore secureStore = new AndroidSecureStore(d2Configuration.context());
+            ObjectSecureStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
+            ObjectSecureStore<Configuration> configurationSecureStore = new ConfigurationSecureStoreImpl(secureStore);
+            Configuration configuration = configurationSecureStore.get();
+
+            if (configuration != null) {
+                ServerURLWrapper.setServerUrl(configuration.serverUrl().toString());
+            }
 
             d2 = new D2(
                     RetrofitFactory.retrofit(
@@ -135,13 +145,6 @@ public final class D2Manager {
         long startTime = System.currentTimeMillis();
         d2Configuration = D2ConfigurationValidator.validateAndSetDefaultValues(d2Config);
         databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(d2Configuration.context(), databaseName);
-
-        ConfigurationManager configurationManager = ConfigurationManagerFactory.create(databaseAdapter);
-        Configuration configuration = configurationManager.get();
-
-        if (configuration != null) {
-            ServerURLWrapper.setServerUrl(configuration.serverUrl().toString());
-        }
 
         long setUpTime = System.currentTimeMillis() - startTime;
         Log.i(D2Manager.class.getName(), "Set up took " + setUpTime + "ms");

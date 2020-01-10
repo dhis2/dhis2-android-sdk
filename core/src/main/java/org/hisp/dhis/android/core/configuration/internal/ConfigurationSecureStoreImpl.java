@@ -26,47 +26,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration;
-
-import android.database.Cursor;
+package org.hisp.dhis.android.core.configuration.internal;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 
 import okhttp3.HttpUrl;
 
-@AutoValue
-public abstract class Configuration implements CoreObject {
+public final class ConfigurationSecureStoreImpl implements ObjectSecureStore<Configuration> {
 
-    @NonNull
-    @ColumnAdapter(HttpUrlColumnAdapter.class)
-    public abstract HttpUrl serverUrl();
+    private static final String SERVER_URL = "server_url";
 
-    public static Configuration create(Cursor cursor) {
-        return $AutoValue_Configuration.createFromCursor(cursor);
+    private final SecureStore secureStore;
+
+    public ConfigurationSecureStoreImpl(@NonNull SecureStore secureStore) {
+        this.secureStore = secureStore;
     }
 
-    public abstract Builder toBuilder();
+    @Override
+    public void set(@NonNull Configuration configuration) {
+        if (configuration == null) {
+            throw new IllegalArgumentException("configuration == null");
+        }
 
-    public static Builder builder() {
-        return new AutoValue_Configuration.Builder();
+        secureStore.setData(SERVER_URL, configuration.serverUrl().toString());
     }
 
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
-        public abstract Builder serverUrl(HttpUrl serverUrl);
-
-        public abstract Configuration build();
+    @Nullable
+    @Override
+    public Configuration get() {
+        String serverUrl = secureStore.getData(SERVER_URL);
+        return serverUrl == null ? null : Configuration.forServerUrl(HttpUrl.parse(serverUrl));
     }
 
-    public static Configuration forServerUrl(HttpUrl url) {
-        return Configuration.builder().serverUrl(url).build();
+    @Override
+    public void remove() {
+        secureStore.removeData(SERVER_URL);
     }
 }

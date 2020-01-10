@@ -26,45 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.configuration.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
+import org.junit.Test;
 
-public final class ConfigurationTableInfo {
+import static junit.framework.Assert.fail;
 
-    private ConfigurationTableInfo() {
-    }
+public class ConfigurationShould {
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    @Test
+    public void thrown_illegal_state_exception_when_build_configuration_with_null_url() {
+        try {
+            Configuration.builder().build();
 
-        @Override
-        public String name() {
-            return "Configuration";
-        }
-
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends CoreColumns {
-        public static final String SERVER_URL = "serverUrl";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    SERVER_URL
-            );
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return CollectionsHelper.appendInNewArray(super.whereUpdate(),
-                    SERVER_URL
-            );
+            fail("IllegalStateException was expected but nothing was thrown");
+        } catch (IllegalStateException illegalStateException) {
+            // swallow exception
         }
     }
 }

@@ -64,7 +64,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.security.auth.x500.X500Principal;
 
 @SuppressWarnings({"PMD.EmptyCatchBlock", "PMD.ExcessiveImports"})
-final class AndroidSecureStore implements SecureStore {
+public final class AndroidSecureStore implements SecureStore {
 
     private static final String KEY_ALGORITHM_RSA = "RSA";
 
@@ -77,7 +77,7 @@ final class AndroidSecureStore implements SecureStore {
 
     private final SharedPreferences preferences;
 
-    AndroidSecureStore(Context context) {
+    public AndroidSecureStore(Context context) {
         preferences = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
 
         KeyStore ks;

@@ -26,8 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.configuration.internal;
 
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,12 +45,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class ConfigurationManagerShould {
+public class ConfigurationSecureStoreShould {
 
     @Mock
-    private ConfigurationStore store;
+    private SecureStore store;
 
-    private ConfigurationManager manager;
+    private ObjectSecureStore<Configuration> configurationSecureStore;
+
+    private final static String KEY = "server_url";
 
     private final String SERVER_URL = "http://testserver.org/";
 
@@ -57,23 +61,23 @@ public class ConfigurationManagerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        manager = new ConfigurationManagerImpl(store);
+        configurationSecureStore = new ConfigurationSecureStoreImpl(store);
     }
 
     @Test
     public void return_correct_values_when_configuration_manager_is_configured_with_saved_store() {
-        when(store.selectFirst()).thenReturn(configuration);
+        when(store.getData(KEY)).thenReturn(SERVER_URL);
 
-        Configuration dbConfiguration = manager.get();
+        Configuration dbConfiguration = configurationSecureStore.get();
 
-        verify(store).selectFirst();
-        assertThat(dbConfiguration).isSameAs(configuration);
+        verify(store).getData(KEY);
+        assertThat(dbConfiguration).isEqualTo(configuration);
     }
 
     @Test
     public void thrown_illegal_argument_exception_after_configure_with_null_argument() {
         try {
-            manager.configure(null);
+            configurationSecureStore.set(null);
 
             fail("IllegalArgumentException was not thrown");
         } catch (IllegalArgumentException illegalArgumentException) {
@@ -83,33 +87,21 @@ public class ConfigurationManagerShould {
 
     @Test
     public void return_null_if_configuration_is_not_persisted() {
-        Configuration configuration = manager.get();
+        Configuration configuration = configurationSecureStore.get();
 
-        verify(store).selectFirst();
+        verify(store).getData(KEY);
         assertThat(configuration).isNull();
     }
 
     @Test
-    public void invoke_delete_and_return_zero_when_configuration_manager_is_persisted_and_remove_method_is_called() {
-        when(store.delete()).thenReturn(1);
-
-        int removed = manager.remove();
-
-        verify(store).delete();
-        assertThat(removed).isEqualTo(1);
+    public void invoke_remove_data_on_secure_store_when_remove_method_is_called() {
+        configurationSecureStore.remove();
+        verify(store).removeData(KEY);
     }
 
     @Test
-    public void invoke_delete_and_return_zero_when_configuration_manager_is_not_persisted_and_remove_method_is_called() {
-        int removed = manager.remove();
-
-        verify(store).delete();
-        assertThat(removed).isEqualTo(0);
-    }
-
-    @Test
-    public void invoke_save_configuration_store_when_configuring() {
-        manager.configure(configuration);
-        verify(store).save(configuration);
+    public void invoke_set_data_on_secure_store_when_configuring() {
+        configurationSecureStore.set(configuration);
+        verify(store).setData(KEY, SERVER_URL);
     }
 }

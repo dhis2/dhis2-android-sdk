@@ -26,22 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.arch.storage.internal;
 
-import org.junit.Test;
+public interface ObjectSecureStore<O> {
 
-import static junit.framework.Assert.fail;
+    void set(O o);
 
-public class ConfigurationShould {
+    O get();
 
-    @Test
-    public void thrown_illegal_state_exception_when_build_configuration_with_null_url() {
-        try {
-            Configuration.builder().build();
-
-            fail("IllegalStateException was expected but nothing was thrown");
-        } catch (IllegalStateException illegalStateException) {
-            // swallow exception
-        }
-    }
+    void remove();
 }

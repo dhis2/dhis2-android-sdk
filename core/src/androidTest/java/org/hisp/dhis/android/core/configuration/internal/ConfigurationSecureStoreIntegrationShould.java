@@ -26,50 +26,65 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.storage.internal;
+package org.hisp.dhis.android.core.configuration.internal;
+
+import android.content.Context;
 
 import androidx.test.InstrumentationRegistry;
 
+import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.data.configuration.ConfigurationSamples;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
+
+import okhttp3.HttpUrl;
+
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
-public class CredentialsSecureStorageMockIntegrationShould {
+public class ConfigurationSecureStoreIntegrationShould {
 
-    private ObjectSecureStore<Credentials> credentialsSecureStore;
+    private final Configuration configuration;
+    private final ObjectSecureStore<Configuration> configurationSecureStore;
+
+    public ConfigurationSecureStoreIntegrationShould() {
+        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        this.configurationSecureStore = new ConfigurationSecureStoreImpl(new AndroidSecureStore(context));
+        this.configuration = buildObject();
+    }
 
     @Before
-    public void setUp() {
-        credentialsSecureStore =
-                new CredentialsSecureStoreImpl(
-                        new AndroidSecureStore(InstrumentationRegistry.getContext().getApplicationContext()));
+    public void setUp() throws IOException {
+        configurationSecureStore.remove();
     }
 
     @Test
-    public void credentials_are_correctly_stored() {
-        Credentials credentials = Credentials.create("username", "password");
-        credentialsSecureStore.set(credentials);
-
-        Credentials retrievedCredentials = credentialsSecureStore.get();
-
-        assertThat(retrievedCredentials.username()).isEqualTo(credentials.username());
-        assertThat(retrievedCredentials.password()).isEqualTo(credentials.password());
+    public void configure_and_get() {
+        configurationSecureStore.set(configuration);
+        Configuration objectFromDb = configurationSecureStore.get();
+        assertThat(objectFromDb.serverUrl()).isEqualTo(HttpUrl.parse("http://testserver.org/api/"));
     }
 
     @Test
-    public void credentials_are_correctly_removed() {
-        Credentials credentials = Credentials.create("username", "password");
-        credentialsSecureStore.set(credentials);
-
-        credentialsSecureStore.remove();
-
-        Credentials retrievedCredentials = credentialsSecureStore.get();
-
-        assertThat(retrievedCredentials).isNull();
+    public void configure_and_remove() {
+        configurationSecureStore.set(configuration);
+        configurationSecureStore.remove();
+        assertThat(configurationSecureStore.get()).isNull();
     }
 
+    @Test
+    public void overwrite_and_not_fail_in_a_consecutive_configuration() {
+        configurationSecureStore.set(configuration);
+        configurationSecureStore.set(configuration);
+        assertThat(configurationSecureStore.get()).isNotNull();
+    }
+
+    protected Configuration buildObject() {
+        return ConfigurationSamples.getConfiguration();
+    }
 }

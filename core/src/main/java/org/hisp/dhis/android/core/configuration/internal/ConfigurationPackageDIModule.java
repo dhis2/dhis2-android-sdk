@@ -26,18 +26,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.configuration.internal;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
+import org.hisp.dhis.android.core.constant.ConstantModule;
+import org.hisp.dhis.android.core.constant.internal.ConstantModuleImpl;
 
-public interface ConfigurationManager {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    @NonNull
-    void configure(@NonNull Configuration configuration);
+@Module
+public final class ConfigurationPackageDIModule {
 
-    @Nullable
-    Configuration get();
+    @Provides
+    @Reusable
+    ObjectSecureStore<Configuration> configurationSecureStore(SecureStore secureStore) {
+        return new ConfigurationSecureStoreImpl(secureStore);
+    }
 
-    int remove();
+    @Provides
+    @Reusable
+    ConstantModule module(ConstantModuleImpl impl) {
+        return impl;
+    }
 }

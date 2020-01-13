@@ -63,9 +63,10 @@ public final class EventFields {
                     fh.<String>field(ORGANISATION_UNIT),
                     fh.<String>field(Columns.EVENT_DATE),
                     fh.<String>field(Columns.COMPLETE_DATE),
-                    fh.<Boolean>field(DELETED),
+                    fh.<Boolean>field(Columns.DELETED),
                     fh.<String>field(Columns.DUE_DATE),
                     fh.<String>field(Columns.ATTRIBUTE_OPTION_COMBO),
+                    fh.<String>field(Columns.ASSIGNED_USER),
                     fh.<TrackedEntityDataValue>nestedField(TRACKED_ENTITY_DATA_VALUES)
                             .with(TrackedEntityDataValueFields.allFields)
     ).build();

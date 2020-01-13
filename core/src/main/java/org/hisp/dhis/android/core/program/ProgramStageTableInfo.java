@@ -74,6 +74,7 @@ public final class ProgramStageTableInfo {
         public static final String PROGRAM = "program";
         public static final String REMIND_COMPLETED = "remindCompleted";
         public static final String ACCESS_DATA_WRITE = "accessDataWrite";
+        public static final String ENABLE_USER_ASSIGNMENT = "enableUserAssignment";
 
         @Override
         public String[] all() {
@@ -99,7 +100,8 @@ public final class ProgramStageTableInfo {
                     PERIOD_TYPE,
                     ACCESS_DATA_WRITE,
                     REMIND_COMPLETED,
-                    FEATURE_TYPE
+                    FEATURE_TYPE,
+                    ENABLE_USER_ASSIGNMENT
             );
         }
     }

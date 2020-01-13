@@ -283,7 +283,9 @@ public abstract class ProgramStage extends BaseIdentifiableObject
                 style(ObjectStyle.builder().build());
             }
 
-            if (enableUserAssignment() == null) enableUserAssignment(false);
+            if (enableUserAssignment() == null) {
+                enableUserAssignment(false);
+            }
 
             return autoBuild();
         }

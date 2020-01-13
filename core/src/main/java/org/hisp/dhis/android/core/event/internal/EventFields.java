@@ -44,7 +44,6 @@ public final class EventFields {
     public static final String UID = "event";
     private static final String COORDINATE = "coordinate";
     public static final String ORGANISATION_UNIT = "orgUnit";
-    public static final String DELETED = "deleted";
     public static final String TRACKED_ENTITY_DATA_VALUES = "dataValues";
     private final static String GEOMETRY = "geometry";
 

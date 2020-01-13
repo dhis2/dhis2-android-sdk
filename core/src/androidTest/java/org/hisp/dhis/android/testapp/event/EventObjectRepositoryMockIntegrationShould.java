@@ -169,6 +169,18 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         }
     }
 
+    @Test
+    public void update_assigned_user() throws D2Error {
+        String assignedUser = "aTwqot2S410";
+
+        EventObjectRepository repository = objectRepository();
+
+        repository.setAssignedUser(assignedUser);
+        assertThat(repository.blockingGet().assignedUser(), is(assignedUser));
+
+        repository.blockingDelete();
+    }
+
     private EventObjectRepository objectRepository() throws D2Error {
         String eventUid = d2.eventModule().events().blockingAdd(
                 EventCreateProjection.create("enroll1", "lxAQ7Zs9VYR", "dBwrot7S420",

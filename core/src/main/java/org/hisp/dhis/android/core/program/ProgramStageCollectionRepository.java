@@ -133,6 +133,10 @@ public final class ProgramStageCollectionRepository
         return cf.integer(Columns.STANDARD_INTERVAL);
     }
 
+    public BooleanFilterConnector<ProgramStageCollectionRepository> byEnableUserAssignment() {
+        return cf.bool(Columns.ENABLE_USER_ASSIGNMENT);
+    }
+
     public EnumFilterConnector<ProgramStageCollectionRepository, PeriodType> byPeriodType() {
         return cf.enumC(Columns.PERIOD_TYPE);
     }

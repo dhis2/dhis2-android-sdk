@@ -72,6 +72,7 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
         w.bind(16, o.state());
         w.bind(17, o.attributeOptionCombo());
         w.bind(18, o.deleted());
+        w.bind(19, o.assignedUser());
     };
 
     private EventStoreImpl(DatabaseAdapter databaseAdapter,

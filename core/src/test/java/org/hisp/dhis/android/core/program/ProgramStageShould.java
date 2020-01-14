@@ -82,6 +82,7 @@ public class ProgramStageShould  extends BaseObjectShould implements ObjectShoul
         assertThat(programStage.periodType()).isEqualTo(PeriodType.Monthly);
         assertThat(programStage.remindCompleted()).isEqualTo(false);
         assertThat(programStage.featureType()).isEqualTo(FeatureType.POINT);
+        assertThat(programStage.enableUserAssignment()).isEqualTo(true);
 
         List<ProgramStageDataElement> dataElements =
                 ProgramStageInternalAccessor.accessProgramStageDataElements(programStage);

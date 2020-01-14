@@ -183,6 +183,10 @@ public final class EventCollectionRepository
         );
     }
 
+    public StringFilterConnector<EventCollectionRepository> byAssignedUser() {
+        return cf.string(Columns.ASSIGNED_USER);
+    }
+
     public EventCollectionRepository withTrackedEntityDataValues() {
         return cf.withChild(EventFields.TRACKED_ENTITY_DATA_VALUES);
     }

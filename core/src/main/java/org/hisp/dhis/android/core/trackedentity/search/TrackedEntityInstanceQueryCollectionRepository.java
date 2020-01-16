@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilte
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
@@ -264,6 +265,17 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope, State> byStates() {
         return connectorFactory.listConnector(states -> scope.toBuilder().states(states).build());
+    }
+
+    /**
+     * Filter by assigned user mode.
+     * <br><b>IMPORTANT:</b> this filter has effect if DHIS2 version is 2.32 or later. Otherwise, it is ignored.
+     *
+     * @return Repository connector
+     */
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, AssignedUserMode> byAssignedUserMode() {
+        return connectorFactory.eqConnector(mode -> scope.toBuilder().assignedUserMode(mode).build());
     }
 
     @Override

@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -77,10 +78,13 @@ class TrackedEntityInstanceQueryCallFactory {
         OrganisationUnitMode mode = query.orgUnitMode();
         String orgUnitModeStr = mode == null ? null : mode.toString();
 
+        AssignedUserMode assignedUserMode = query.assignedUserMode();
+        String assignedUserModeStr = assignedUserMode == null ? null : assignedUserMode.toString();
+
         String orgUnits = CollectionsHelper.joinCollectionWithSeparator(query.orgUnits(), ";");
         Call<SearchGrid> searchGridCall = service.query(orgUnits,
                 orgUnitModeStr, query.program(), query.formattedProgramStartDate(), query.formattedProgramEndDate(),
-                query.trackedEntityType(), query.query(), query.attribute(), query.filter(),
+                query.trackedEntityType(), query.query(), query.attribute(), query.filter(), assignedUserModeStr,
                 query.paging(), query.page(), query.pageSize());
 
         SearchGrid searchGrid;

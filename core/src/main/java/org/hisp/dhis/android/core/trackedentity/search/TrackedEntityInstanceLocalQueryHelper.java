@@ -31,14 +31,17 @@ package org.hisp.dhis.android.core.trackedentity.search;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
+import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo.Columns;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
+import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo;
 
 import java.util.List;
 
@@ -48,6 +51,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
 
     private static String TEI_ALIAS = "tei";
     private static String ENROLLMENT_ALIAS = "en";
+    private static String EVENT_ALIAS = "ev";
     private static String ORGUNIT_ALIAS = "ou";
     private static String TEAV_ALIAS = "teav";
 
@@ -74,19 +78,28 @@ final class TrackedEntityInstanceLocalQueryHelper {
 
         WhereClauseBuilder where = new WhereClauseBuilder();
 
-        if (hasProgram(scope)) {
+        if (hasProgram(scope) || hasEvent(scope)) {
             queryStr += String.format(" JOIN %s %s ON %s = %s",
                     EnrollmentTableInfo.TABLE_INFO.name(), ENROLLMENT_ALIAS,
                     dot(TEI_ALIAS, UID),
-                    dot(ENROLLMENT_ALIAS, "trackedentityinstance"));
+                    dot(ENROLLMENT_ALIAS, EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE));
 
             appendProgramWhere(where, scope);
+
+            if (hasEvent(scope)) {
+                queryStr += String.format(" JOIN %s %s ON %s = %s",
+                        EventTableInfo.TABLE_INFO.name(), EVENT_ALIAS,
+                        dot(ENROLLMENT_ALIAS, UID),
+                        dot(EVENT_ALIAS, EventTableInfo.Columns.ENROLLMENT));
+
+                appendAssignedUserMode(where, scope);
+            }
         }
 
         if (hasOrgunits(scope)) {
             queryStr += String.format(" JOIN %s %s ON %s = %s",
                     OrganisationUnitTableInfo.TABLE_INFO.name(), ORGUNIT_ALIAS,
-                    dot(TEI_ALIAS, "organisationUnit"),
+                    dot(TEI_ALIAS, TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT),
                     dot(ORGUNIT_ALIAS, UID));
 
             appendOrgunitWhere(where, scope);
@@ -129,6 +142,10 @@ final class TrackedEntityInstanceLocalQueryHelper {
 
     private static boolean hasProgram(TrackedEntityInstanceQueryRepositoryScope scope) {
         return scope.program() != null;
+    }
+
+    private static boolean hasEvent(TrackedEntityInstanceQueryRepositoryScope scope) {
+        return scope.assignedUserMode() != null;
     }
 
     private static void appendProgramWhere(WhereClauseBuilder where, TrackedEntityInstanceQueryRepositoryScope scope) {
@@ -225,6 +242,31 @@ final class TrackedEntityInstanceLocalQueryHelper {
     private static void appendExcludeList(WhereClauseBuilder where, List<String> excludeList) {
         if (excludeList != null && !excludeList.isEmpty()) {
             where.appendNotInKeyStringValues(TEI_UID, excludeList);
+        }
+    }
+
+    private static void appendAssignedUserMode(WhereClauseBuilder where, TrackedEntityInstanceQueryRepositoryScope scope) {
+        AssignedUserMode mode = scope.assignedUserMode();
+        String assignedUserColumn = dot(EVENT_ALIAS, EventTableInfo.Columns.ASSIGNED_USER);
+
+        if (mode == null) {
+            return;
+        }
+
+        switch (mode) {
+            case CURRENT:
+                String subquery = String.format("(SELECT %s FROM %s LIMIT 1)",
+                        AuthenticatedUserTableInfo.Columns.USER,
+                        AuthenticatedUserTableInfo.TABLE_INFO.name());
+                where.appendKeyOperatorValue(assignedUserColumn, "IN", subquery);
+            case ANY:
+                where.appendIsNotNullValue(assignedUserColumn);
+                break;
+            case NONE:
+                where.appendIsNullValue(assignedUserColumn);
+                break;
+            default:
+                break;
         }
     }
 

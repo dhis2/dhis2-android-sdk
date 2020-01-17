@@ -33,13 +33,15 @@ public enum DHISVersion {
     V2_30,
     V2_31,
     V2_32,
-    V2_33;
+    V2_33,
+    V2_34;
 
     private static final String V2_29_STR = "2.29";
     private static final String V2_30_STR = "2.30";
     private static final String V2_31_STR = "2.31";
     private static final String V2_32_STR = "2.32";
     private static final String V2_33_STR = "2.33";
+    private static final String V2_34_STR = "2.34";
 
     public static DHISVersion getValue(String versionStr) {
         if (versionStr.startsWith(V2_29_STR)) {
@@ -52,6 +54,8 @@ public enum DHISVersion {
             return V2_32;
         } else if (versionStr.startsWith(V2_33_STR)) {
             return V2_33;
+        } else if (versionStr.startsWith(V2_34_STR)) {
+            return V2_34;
         } else {
             return null;
         }
@@ -62,6 +66,6 @@ public enum DHISVersion {
     }
 
     public static String[] allowedVersionsAsStr() {
-        return new String[]{V2_29_STR, V2_30_STR, V2_31_STR, V2_32_STR, V2_33_STR};
+        return new String[]{V2_29_STR, V2_30_STR, V2_31_STR, V2_32_STR, V2_33_STR, V2_34_STR};
     }
 }

@@ -72,6 +72,7 @@ class TrackedEntityInstanceQueryCallFactory {
         return () -> queryTrackedEntityInstances(query);
     }
 
+    @SuppressWarnings({"PMD.NPathComplexity"})
     private List<TrackedEntityInstance> queryTrackedEntityInstances(TrackedEntityInstanceQueryOnline query)
             throws D2Error {
 

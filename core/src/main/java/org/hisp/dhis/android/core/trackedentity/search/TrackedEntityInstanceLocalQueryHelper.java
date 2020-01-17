@@ -47,6 +47,7 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 
+@SuppressWarnings({"PMD.GodClass"})
 final class TrackedEntityInstanceLocalQueryHelper {
 
     private static String TEI_ALIAS = "tei";
@@ -70,7 +71,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
 
     private TrackedEntityInstanceLocalQueryHelper() { }
 
-    @SuppressWarnings({"PMD.UseStringBufferForStringAppends"})
+    @SuppressWarnings({"PMD.UseStringBufferForStringAppends", "PMD.CyclomaticComplexity", "PMD.NPathComplexity"})
     static String getSqlQuery(TrackedEntityInstanceQueryRepositoryScope scope, List<String> excludeList, int limit) {
 
         String queryStr = "SELECT DISTINCT " + TEI_ALL + " FROM " +
@@ -245,20 +246,21 @@ final class TrackedEntityInstanceLocalQueryHelper {
         }
     }
 
-    private static void appendAssignedUserMode(WhereClauseBuilder where, TrackedEntityInstanceQueryRepositoryScope scope) {
+    private static void appendAssignedUserMode(WhereClauseBuilder where,
+                                               TrackedEntityInstanceQueryRepositoryScope scope) {
         AssignedUserMode mode = scope.assignedUserMode();
-        String assignedUserColumn = dot(EVENT_ALIAS, EventTableInfo.Columns.ASSIGNED_USER);
-
         if (mode == null) {
             return;
         }
 
+        String assignedUserColumn = dot(EVENT_ALIAS, EventTableInfo.Columns.ASSIGNED_USER);
         switch (mode) {
             case CURRENT:
                 String subquery = String.format("(SELECT %s FROM %s LIMIT 1)",
                         AuthenticatedUserTableInfo.Columns.USER,
                         AuthenticatedUserTableInfo.TABLE_INFO.name());
                 where.appendKeyOperatorValue(assignedUserColumn, "IN", subquery);
+                break;
             case ANY:
                 where.appendIsNotNullValue(assignedUserColumn);
                 break;

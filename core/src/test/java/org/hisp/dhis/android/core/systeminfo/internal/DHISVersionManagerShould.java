@@ -25,75 +25,50 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.systeminfo.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.systeminfo.DHISVersion;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import java.io.IOException;
 
-@Singleton
-public class DHISVersionManagerImpl implements DHISVersionManager {
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
-    private DHISVersion version;
-    private final ObjectWithoutUidStore<SystemInfo> systemInfoStore;
+public class DHISVersionManagerShould {
 
-    @Inject
-    DHISVersionManagerImpl(ObjectWithoutUidStore<SystemInfo> systemInfoStore) {
-        this.systemInfoStore = systemInfoStore;
+    @Mock
+    private ObjectWithoutUidStore<SystemInfo> systemInfoStore;
+
+    @Mock
+    private SystemInfo systemInfo;
+
+    // Object to test
+    private DHISVersionManager dhisVersionManager;
+
+    @Before
+    public void setUp() throws IOException {
+        MockitoAnnotations.initMocks(this);
+        when(systemInfoStore.selectFirst()).thenReturn(systemInfo);
+
+        this.dhisVersionManager = new DHISVersionManagerImpl(systemInfoStore);
     }
 
-    @Override
-    public DHISVersion getVersion() {
-        if (version == null) {
-            SystemInfo systemInfo = systemInfoStore.selectFirst();
+    @Test
+    public void compare_version_when_not_null() {
+        when(systemInfo.version()).thenReturn("2.31.2");
 
-            if (systemInfo != null && systemInfo.version() != null) {
-                version = DHISVersion.getValue(systemInfo.version());
-            }
-        }
-        return version;
-    }
-
-    @Override
-    public boolean is2_29() {
-        return version == DHISVersion.V2_29;
-    }
-
-    @Override
-    public boolean is2_30() {
-        return version == DHISVersion.V2_30;
-    }
-
-    @Override
-    public boolean is2_31() {
-        return version == DHISVersion.V2_31;
-    }
-
-    @Override
-    public boolean is2_32() {
-        return version == DHISVersion.V2_32;
-    }
-
-    @Override
-    public boolean is2_33() {
-        return version == DHISVersion.V2_33;
-    }
-
-    @Override
-    public boolean is2_34() {
-        return version == DHISVersion.V2_34;
-    }
-
-    @Override
-    public boolean isGreaterThan(DHISVersion version) {
-        return version.compareTo(getVersion()) < 0;
-    }
-
-    void setVersion(String versionStr) {
-        this.version = DHISVersion.getValue(versionStr);
+        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_29)).isTrue();
+        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_30)).isTrue();
+        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_31)).isFalse();
+        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_32)).isFalse();
+        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).isFalse();
     }
 }

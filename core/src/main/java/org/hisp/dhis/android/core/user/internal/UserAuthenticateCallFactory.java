@@ -257,8 +257,13 @@ public final class UserAuthenticateCallFactory {
     }
 
     private boolean wasLoggedAndServerIsNew(String serverUrl) {
+        String baseServerUrl = ServerUrlParser.removeTrailingSlash(serverUrl);
+
         SystemInfo lastSystemInfo = systemInfoRepository.blockingGet();
-        return lastSystemInfo != null && !serverUrl.equals(lastSystemInfo.contextPath());
+        String existingServerUrl = lastSystemInfo == null ? null :
+                ServerUrlParser.removeTrailingSlash(lastSystemInfo.contextPath());
+
+        return !baseServerUrl.equals(existingServerUrl);
     }
 
     private void handleUser(User user) {

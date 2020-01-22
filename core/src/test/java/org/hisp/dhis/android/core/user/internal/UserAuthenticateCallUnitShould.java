@@ -341,6 +341,19 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     }
 
     @Test
+    public void user_login_offline_if_server_url_has_trailing_slash() throws Exception {
+        whenAPICall().thenThrow(d2Error);
+        
+        when(credentialsSecureStore.get()).thenReturn(null);
+        when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
+
+        Single<User> loginCall = instantiateCall(USERNAME, PASSWORD, serverUrl + "/");
+
+        loginCall.test().awaitTerminalEvent();
+        verifySuccessOffline();
+    }
+
+    @Test
     public void throw_d2_exception_if_no_previous_authenticated_user_offline() throws Exception {
         whenAPICall().thenThrow(d2Error);
 

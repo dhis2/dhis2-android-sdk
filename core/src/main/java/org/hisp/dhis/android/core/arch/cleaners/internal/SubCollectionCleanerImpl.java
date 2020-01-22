@@ -71,7 +71,7 @@ public class SubCollectionCleanerImpl<P extends ObjectWithUidInterface> implemen
                             + " AND "
                             + IdentifiableColumns.UID + " NOT IN (" + childrenUids + ");";
 
-            result = result || databaseAdapter.database().delete(tableName, clause, null) > 0;
+            result = result || databaseAdapter.delete(tableName, clause, null) > 0;
         }
 
         return result;

@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
@@ -42,8 +41,6 @@ import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
 
 import androidx.annotation.NonNull;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class ProgramTrackedEntityAttributeStore {
 
     private static StatementBinder<ProgramTrackedEntityAttribute> BINDER
@@ -51,15 +48,15 @@ public final class ProgramTrackedEntityAttributeStore {
 
         @Override
         public void bindToStatement(@NonNull ProgramTrackedEntityAttribute o,
-                                    @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 11, o.mandatory());
-            sqLiteBind(sqLiteStatement, 12, UidsHelper.getUidOrNull(o.trackedEntityAttribute()));
-            sqLiteBind(sqLiteStatement, 13, o.allowFutureDate());
-            sqLiteBind(sqLiteStatement, 14, o.displayInList());
-            sqLiteBind(sqLiteStatement, 15, UidsHelper.getUidOrNull(o.program()));
-            sqLiteBind(sqLiteStatement, 16, o.sortOrder());
-            sqLiteBind(sqLiteStatement, 17, o.searchable());
+                                    @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(11, o.mandatory());
+            w.bind(12, UidsHelper.getUidOrNull(o.trackedEntityAttribute()));
+            w.bind(13, o.allowFutureDate());
+            w.bind(14, o.displayInList());
+            w.bind(15, UidsHelper.getUidOrNull(o.program()));
+            w.bind(16, o.sortOrder());
+            w.bind(17, o.searchable());
         }
     };
 

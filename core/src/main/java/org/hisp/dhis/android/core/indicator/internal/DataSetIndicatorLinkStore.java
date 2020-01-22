@@ -35,14 +35,11 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class DataSetIndicatorLinkStore {
 
-    private static final StatementBinder<DataSetIndicatorLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.dataSet());
-        sqLiteBind(sqLiteStatement, 2, o.indicator());
+    private static final StatementBinder<DataSetIndicatorLink> BINDER = (o, w) -> {
+        w.bind(1, o.dataSet());
+        w.bind(2, o.indicator());
     };
 
     private DataSetIndicatorLinkStore() {}

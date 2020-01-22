@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractI
 import org.hisp.dhis.android.core.data.program.ProgramSamples;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 public class ProgramStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Program> {
 
     public ProgramStoreIntegrationShould() {
-        super(ProgramStore.create(DatabaseAdapterFactory.get()), ProgramTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+        super(ProgramStore.create(TestDatabaseAdapterFactory.get()), ProgramTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
     @Override

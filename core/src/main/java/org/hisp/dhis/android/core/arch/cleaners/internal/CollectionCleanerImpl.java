@@ -53,6 +53,6 @@ public class CollectionCleanerImpl<P extends ObjectWithUidInterface> implements 
 
         String objectUids = UidsHelper.commaSeparatedUidsWithSingleQuotationMarks(objects);
         String clause = IdentifiableColumns.UID + " NOT IN (" + objectUids + ");";
-        return databaseAdapter.database().delete(tableName, clause, null) > 0;
+        return databaseAdapter.delete(tableName, clause, null) > 0;
     }
 }

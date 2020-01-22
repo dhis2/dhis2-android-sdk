@@ -136,7 +136,7 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
                     .sortOrder(2)
                     .build();
 
-            d2.databaseAdapter().database().insert(CategoryCategoryComboLinkTableInfo.TABLE_INFO.name(),
+            d2.databaseAdapter().insert(CategoryCategoryComboLinkTableInfo.TABLE_INFO.name(),
                     null, categoryCategoryComboLink.toContentValues());
 
             ForeignKeyCleanerImpl.create(d2.databaseAdapter()).cleanForeignKeyErrors();
@@ -268,18 +268,15 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
     }
 
     private Cursor getUserCredentialsCursor() {
-        return database().query(UserCredentialsTableInfo.TABLE_INFO.name(), USER_CREDENTIALS_PROJECTION,
-                null, null, null, null, null);
+        return databaseAdapter().query(UserCredentialsTableInfo.TABLE_INFO.name(), USER_CREDENTIALS_PROJECTION);
     }
 
     private Cursor getProgramRuleCursor() {
-        return database().query(ProgramRuleTableInfo.TABLE_INFO.name(), PROGRAM_RULE_PROJECTION,
-                null, null, null, null, null);
+        return databaseAdapter().query(ProgramRuleTableInfo.TABLE_INFO.name(), PROGRAM_RULE_PROJECTION);
     }
 
     private Cursor getProgramRuleActionCursor() {
-        return database().query(ProgramRuleActionTableInfo.TABLE_INFO.name(), PROGRAM_RULE_ACTION_PROJECTION,
-                null, null, null, null, null);
+        return databaseAdapter().query(ProgramRuleActionTableInfo.TABLE_INFO.name(), PROGRAM_RULE_ACTION_PROJECTION);
     }
 
     private void assertThatCursorHasRowCount(Cursor cursor, int rowCount) {

@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.user.internal;
 
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.junit.Before;
@@ -51,7 +51,7 @@ import static org.mockito.Mockito.when;
 public class LogOutCallFactoryShould {
 
     @Mock
-    private CredentialsSecureStore credentialsSecureStore;
+    private ObjectSecureStore<Credentials> credentialsSecureStore;
 
     @Mock
     private Credentials credentials;
@@ -70,16 +70,16 @@ public class LogOutCallFactoryShould {
 
     @Test
     public void clear_user_credentials() {
-        when(credentialsSecureStore.getCredentials()).thenReturn(credentials);
+        when(credentialsSecureStore.get()).thenReturn(credentials);
 
         logOutCompletable.blockingAwait();
 
-        verify(credentialsSecureStore, times(1)).removeCredentials();
+        verify(credentialsSecureStore, times(1)).remove();
     }
 
     @Test
     public void throw_d2_exception_if_no_authenticated_user() {
-        when(credentialsSecureStore.getCredentials()).thenReturn(null);
+        when(credentialsSecureStore.get()).thenReturn(null);
 
         TestObserver<Void> testObserver = logOutCompletable.test();
         testObserver.awaitTerminalEvent();

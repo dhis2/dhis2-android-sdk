@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.user.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +48,7 @@ import static org.mockito.Mockito.when;
 public class IsUserLoggedInCallableShould {
 
     @Mock
-    private CredentialsSecureStore credentialsSecureStore;
+    private ObjectSecureStore<Credentials> credentialsSecureStore;
 
     @Mock
     private ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
@@ -73,7 +73,7 @@ public class IsUserLoggedInCallableShould {
 
     @Test
     public void return_true_if_any_users_are_persisted_after_call() {
-        when(credentialsSecureStore.getCredentials()).thenReturn(credentials);
+        when(credentialsSecureStore.get()).thenReturn(credentials);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
         Boolean isUserLoggedIn = isUserLoggedInSingle.blockingGet();
@@ -83,7 +83,7 @@ public class IsUserLoggedInCallableShould {
 
     @Test
     public void return_false_if_any_users_are_not_persisted_after_call() {
-        when(credentialsSecureStore.getCredentials()).thenReturn(null);
+        when(credentialsSecureStore.get()).thenReturn(null);
         when(authenticatedUserStore.selectFirst()).thenReturn(null);
 
         Boolean isUserLoggedIn = isUserLoggedInSingle.blockingGet();
@@ -93,7 +93,7 @@ public class IsUserLoggedInCallableShould {
 
     @Test
     public void return_false_if_credentials_are_persisted_but_not_authenticated_user() {
-        when(credentialsSecureStore.getCredentials()).thenReturn(credentials);
+        when(credentialsSecureStore.get()).thenReturn(credentials);
         when(authenticatedUserStore.selectFirst()).thenReturn(null);
 
         Boolean isUserLoggedIn = isUserLoggedInSingle.blockingGet();
@@ -103,7 +103,7 @@ public class IsUserLoggedInCallableShould {
 
     @Test
     public void return_false_if_authenticated_user_is_persisted_but_not_credentials() {
-        when(credentialsSecureStore.getCredentials()).thenReturn(null);
+        when(credentialsSecureStore.get()).thenReturn(null);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
         Boolean isUserLoggedIn = isUserLoggedInSingle.blockingGet();

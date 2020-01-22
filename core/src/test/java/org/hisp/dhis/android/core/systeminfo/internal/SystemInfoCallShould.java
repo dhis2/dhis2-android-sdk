@@ -132,7 +132,6 @@ public class SystemInfoCallShould {
         systemInfoSyncCall.getCompletable(true).subscribe();
 
         verify(databaseAdapter, never()).beginNewTransaction();
-        verify(transaction, never()).begin();
         verify(transaction, never()).setSuccessful();
         verify(transaction, never()).end();
 

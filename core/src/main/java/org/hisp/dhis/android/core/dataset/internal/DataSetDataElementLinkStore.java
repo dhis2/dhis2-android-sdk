@@ -36,14 +36,12 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.dataset.DataSetElement;
 import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class DataSetDataElementLinkStore {
 
-    private static final StatementBinder<DataSetElement> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull(o.dataSet()));
-        sqLiteBind(sqLiteStatement, 2, UidsHelper.getUidOrNull(o.dataElement()));
-        sqLiteBind(sqLiteStatement, 3, UidsHelper.getUidOrNull(o.categoryCombo()));
+    private static final StatementBinder<DataSetElement> BINDER = (o, w) -> {
+        w.bind(1, UidsHelper.getUidOrNull(o.dataSet()));
+        w.bind(2, UidsHelper.getUidOrNull(o.dataElement()));
+        w.bind(3, UidsHelper.getUidOrNull(o.categoryCombo()));
     };
 
     private DataSetDataElementLinkStore() {}

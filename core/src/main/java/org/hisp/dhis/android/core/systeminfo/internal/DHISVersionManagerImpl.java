@@ -39,18 +39,22 @@ import javax.inject.Singleton;
 public class DHISVersionManagerImpl implements DHISVersionManager {
 
     private DHISVersion version;
+    private final ObjectWithoutUidStore<SystemInfo> systemInfoStore;
 
     @Inject
     DHISVersionManagerImpl(ObjectWithoutUidStore<SystemInfo> systemInfoStore) {
-        SystemInfo systemInfoModel = systemInfoStore.selectFirst();
-
-        if (systemInfoModel != null && systemInfoModel.version() != null) {
-            version = DHISVersion.getValue(systemInfoModel.version());
-        }
+        this.systemInfoStore = systemInfoStore;
     }
 
     @Override
     public DHISVersion getVersion() {
+        if (version == null) {
+            SystemInfo systemInfo = systemInfoStore.selectFirst();
+
+            if (systemInfo != null && systemInfo.version() != null) {
+                version = DHISVersion.getValue(systemInfo.version());
+            }
+        }
         return version;
     }
 
@@ -77,6 +81,16 @@ public class DHISVersionManagerImpl implements DHISVersionManager {
     @Override
     public boolean is2_33() {
         return version == DHISVersion.V2_33;
+    }
+
+    @Override
+    public boolean is2_34() {
+        return version == DHISVersion.V2_34;
+    }
+
+    @Override
+    public boolean isGreaterThan(DHISVersion version) {
+        return version.compareTo(getVersion()) < 0;
     }
 
     void setVersion(String versionStr) {

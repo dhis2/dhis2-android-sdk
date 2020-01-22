@@ -1,7 +1,4 @@
 up:
-#Init transaction
-- BEGIN TRANSACTION;
-
 #Related to TrackedEntityInstance
 - CREATE TABLE TrackedEntityInstance_temp (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, created TEXT, lastUpdated TEXT, createdAtClient TEXT, lastUpdatedAtClient TEXT, organisationUnit TEXT, trackedEntityType TEXT, geometryType TEXT, geometryCoordinates TEXT, state TEXT, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (trackedEntityType) REFERENCES TrackedEntityType (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 - INSERT INTO TrackedEntityInstance_temp (_id, uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient, organisationUnit, trackedEntityType, geometryType, geometryCoordinates, state) SELECT _id, uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient, organisationUnit, trackedEntityType, CASE WHEN coordinates IS NOT NULL THEN CASE WHEN LENGTH(coordinates) - LENGTH( REPLACE ( coordinates, ',', '')) = 1 THEN 'POINT' ELSE CASE WHEN LENGTH(coordinates) - LENGTH( REPLACE ( coordinates, '[[[[', '')) = 0 THEN 'POLYGON' ELSE 'MULTI_POLYGON' END END ELSE NULL END, CASE WHEN coordinates IS NOT NULL THEN coordinates ELSE NULL END, state FROM TrackedEntityInstance;
@@ -34,6 +31,3 @@ up:
 - CREATE TABLE Event (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, enrollment TEXT, created TEXT, lastUpdated TEXT, createdAtClient TEXT, lastUpdatedAtClient TEXT, status TEXT, geometryType TEXT, geometryCoordinates TEXT, program TEXT NOT NULL, programStage TEXT NOT NULL, organisationUnit TEXT NOT NULL, eventDate TEXT, completedDate TEXT, dueDate TEXT, state TEXT, attributeOptionCombo TEXT, FOREIGN KEY (program) REFERENCES Program (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (programStage) REFERENCES ProgramStage (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (enrollment) REFERENCES Enrollment (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (attributeOptionCombo) REFERENCES CategoryOptionCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 - INSERT INTO Event (_id, uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient, status, geometryType, geometryCoordinates, program, programStage, organisationUnit, eventDate, completedDate, dueDate, state, attributeOptionCombo) SELECT _id, uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient, status, CASE WHEN longitude IS NOT NULL THEN 'POINT' ELSE NULL END, CASE WHEN longitude IS NOT NULL THEN '[' || longitude || ', ' || latitude || ']' ELSE NULL END, program, programStage, organisationUnit, eventDate, completedDate, dueDate, state, attributeOptionCombo FROM Event_temp;
 - DROP TABLE Event_temp;
-
-#Commit transaction
-- COMMIT;

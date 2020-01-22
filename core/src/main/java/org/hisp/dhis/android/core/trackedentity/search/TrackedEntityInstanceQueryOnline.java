@@ -36,6 +36,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 import java.util.ArrayList;
@@ -80,6 +81,9 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     @NonNull
     abstract Boolean includeDeleted();
 
+    @Nullable
+    abstract AssignedUserMode assignedUserMode();
+
     String formattedProgramStartDate() {
         return programStartDate() == null ? null : QUERY_FORMAT.format(programStartDate());
     }
@@ -111,6 +115,7 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
                 .programEndDate(scope.programEndDate())
                 .trackedEntityType(scope.trackedEntityType())
                 .includeDeleted(false)
+                .assignedUserMode(scope.assignedUserMode())
                 .page(1)
                 .pageSize(50)
                 .paging(true)
@@ -155,6 +160,8 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         abstract Builder trackedEntityType(String trackedEntityType);
 
         abstract Builder includeDeleted(Boolean includeDeleted);
+
+        abstract Builder assignedUserMode(AssignedUserMode assignedUserMode);
 
         abstract TrackedEntityInstanceQueryOnline build();
     }

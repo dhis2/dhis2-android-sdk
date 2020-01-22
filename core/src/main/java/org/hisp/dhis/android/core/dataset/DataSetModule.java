@@ -37,4 +37,5 @@ public interface DataSetModule {
     SectionCollectionRepository sections();
     DataApprovalCollectionRepository dataApprovals();
     DataSetInstanceCollectionRepository dataSetInstances();
+    DataSetInstanceSummaryCollectionRepository dataSetInstanceSummaries();
 }

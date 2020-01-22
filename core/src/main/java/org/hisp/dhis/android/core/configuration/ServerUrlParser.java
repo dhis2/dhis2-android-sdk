@@ -55,4 +55,12 @@ public final class ServerUrlParser {
             return httpUrl;
         }
     }
+
+    public static String removeTrailingSlash(String url) {
+        if (url != null && url.endsWith("/")) {
+            return removeTrailingSlash(url.substring(0, url.length() - 1));
+        } else {
+            return url;
+        }
+    }
 }

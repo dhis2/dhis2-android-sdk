@@ -28,35 +28,9 @@
 
 package org.hisp.dhis.android.core.configuration;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-@JsonDeserialize(builder = AutoValue_DataSetSettingsItem.Builder.class)
-public abstract class DataSetSettingsItem {
-
-    @JsonProperty()
-    public abstract String lastUpdated();
-
-    @JsonProperty()
-    public abstract DownloadPeriod periodDSDownload();
-
-    @JsonProperty()
-    public abstract DownloadPeriod periodDSDBTrimming();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetSettingsItem.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder lastUpdated(String lastUpdated);
-        public abstract Builder periodDSDownload(DownloadPeriod periodDSDownload);
-        public abstract Builder periodDSDBTrimming(DownloadPeriod periodDSDBTrimming);
-
-        public abstract DataSetSettingsItem build();
-    }
+public enum LimitScope {
+    GLOBAL,
+    PER_ORG_UNIT,
+    PER_PROGRAM,
+    PER_OU_AND_PROGRAM
 }

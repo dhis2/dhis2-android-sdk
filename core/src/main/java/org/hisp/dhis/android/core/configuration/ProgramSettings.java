@@ -33,30 +33,29 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
+import java.util.Map;
+
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DataSetSettingsItem.Builder.class)
-public abstract class DataSetSettingsItem {
+@JsonDeserialize(builder = AutoValue_ProgramSettings.Builder.class)
+public abstract class ProgramSettings {
 
     @JsonProperty()
-    public abstract String lastUpdated();
+    public abstract ProgramSettingsItem globalSettings();
 
     @JsonProperty()
-    public abstract DownloadPeriod periodDSDownload();
-
-    @JsonProperty()
-    public abstract DownloadPeriod periodDSDBTrimming();
+    public abstract Map<String, ProgramSettingsItem> specificSettings();
 
     public static Builder builder() {
-        return new AutoValue_DataSetSettingsItem.Builder();
+        return new AutoValue_ProgramSettings.Builder();
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
-        public abstract Builder lastUpdated(String lastUpdated);
-        public abstract Builder periodDSDownload(DownloadPeriod periodDSDownload);
-        public abstract Builder periodDSDBTrimming(DownloadPeriod periodDSDBTrimming);
+        public abstract Builder globalSettings(ProgramSettingsItem globalSettings);
 
-        public abstract DataSetSettingsItem build();
+        public abstract Builder specificSettings(Map<String, ProgramSettingsItem> specificSettings);
+
+        public abstract ProgramSettings build();
     }
 }

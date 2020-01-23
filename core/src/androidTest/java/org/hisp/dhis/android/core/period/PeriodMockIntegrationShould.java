@@ -66,6 +66,8 @@ public class PeriodMockIntegrationShould extends BaseMockIntegrationTestFullDisp
 
         periodInDb = periodStore.selectPeriodByTypeAndDate(PeriodType.Monthly, date);
         assertThat(periodInDb).isNotNull();
+
+        periodStore.deleteWhere(period);
     }
 
     @Test

@@ -93,6 +93,28 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
         return periods;
     }
 
+    @Override
+    public final Period generatePeriod(Date date) {
+        this.calendar = (Calendar) initialCalendar.clone();
+
+        calendar.setTime(date);
+        setCalendarToStartTimeOfADay(calendar);
+        moveToStartOfCurrentPeriod();
+
+        Date startDate = calendar.getTime();
+        String periodId = generateId();
+        this.movePeriods(1);
+        calendar.add(Calendar.MILLISECOND, -1);
+        Date endDate = calendar.getTime();
+
+        return Period.builder()
+                .periodType(periodType)
+                .startDate(startDate)
+                .periodId(periodId)
+                .endDate(endDate)
+                .build();
+    }
+
     static void setCalendarToStartTimeOfADay(Calendar calendar) {
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);

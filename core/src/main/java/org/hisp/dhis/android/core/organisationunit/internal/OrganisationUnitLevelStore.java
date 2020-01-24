@@ -28,19 +28,16 @@
 
 package org.hisp.dhis.android.core.organisationunit.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo;
 
 import androidx.annotation.NonNull;
-
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
 final class OrganisationUnitLevelStore {
 
@@ -50,9 +47,9 @@ final class OrganisationUnitLevelStore {
             = new IdentifiableStatementBinder<OrganisationUnitLevel>() {
         @Override
         public void bindToStatement(@NonNull OrganisationUnitLevel organisationUnitLevel,
-                                    @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(organisationUnitLevel, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, organisationUnitLevel.level());
+                                    @NonNull StatementWrapper w) {
+            super.bindToStatement(organisationUnitLevel, w);
+            w.bind(7, organisationUnitLevel.level());
         }
     };
 

@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -57,10 +59,8 @@ import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.List;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramStage.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_ProgramStage.Builder.class)
 @SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.GodClass"})
 public abstract class ProgramStage extends BaseIdentifiableObject
         implements ObjectWithStyle<ProgramStage, ProgramStage.Builder>, CoreObject {
@@ -150,6 +150,10 @@ public abstract class ProgramStage extends BaseIdentifiableObject
 
     @Nullable
     @JsonProperty()
+    public abstract Boolean enableUserAssignment();
+
+    @Nullable
+    @JsonProperty()
     @ColumnAdapter(IgnoreProgramStageSectionListColumnAdapter.class)
     abstract List<ProgramStageSection> programStageSections();
 
@@ -177,7 +181,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     public abstract Boolean remindCompleted();
 
     public static Builder builder() {
-        return new AutoValue_ProgramStage.Builder();
+        return new $$AutoValue_ProgramStage.Builder();
     }
 
     public static ProgramStage create(Cursor cursor) {
@@ -234,6 +238,8 @@ public abstract class ProgramStage extends BaseIdentifiableObject
 
         public abstract Builder standardInterval(Integer standardInterval);
 
+        public abstract Builder enableUserAssignment(Boolean enableUserAssignment);
+
         abstract Builder programStageSections(List<ProgramStageSection> programStageSections);
 
         abstract Builder programStageDataElements(List<ProgramStageDataElement> programStageDataElements);
@@ -253,6 +259,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
         abstract FeatureType featureType();
         abstract Access access();
         abstract ObjectStyle style();
+        abstract Boolean enableUserAssignment();
         public ProgramStage build() {
             if (featureType() == null) {
                 if (captureCoordinates() != null) {
@@ -274,6 +281,10 @@ public abstract class ProgramStage extends BaseIdentifiableObject
                 style();
             } catch (IllegalStateException e) {
                 style(ObjectStyle.builder().build());
+            }
+
+            if (enableUserAssignment() == null) {
+                enableUserAssignment(false);
             }
 
             return autoBuild();

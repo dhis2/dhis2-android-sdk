@@ -35,14 +35,11 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLink;
 import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLinkTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class DataSetCompulsoryDataElementOperandLinkStore {
 
-    private static final StatementBinder<DataSetCompulsoryDataElementOperandLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.dataSet());
-        sqLiteBind(sqLiteStatement, 2, o.dataElementOperand());
+    private static final StatementBinder<DataSetCompulsoryDataElementOperandLink> BINDER = (o, w) -> {
+        w.bind(1, o.dataSet());
+        w.bind(2, o.dataElementOperand());
     };
 
     private DataSetCompulsoryDataElementOperandLinkStore() {

@@ -37,6 +37,8 @@ public abstract class BaseMockIntegrationTestMetadataDispatcher extends BaseMock
         boolean isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.MetadataDispatcher);
         if (isNewInstance) {
             objects.dhis2MockServer.setRequestDispatcher();
+            objects.d2.userModule().blockingLogIn("android", "Android123",
+                    objects.dhis2MockServer.getBaseEndpoint());
             objects.d2.metadataModule().blockingDownload();
         }
     }

@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.legendset.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
@@ -41,8 +40,6 @@ import org.hisp.dhis.android.core.legendset.Legend;
 import org.hisp.dhis.android.core.legendset.LegendTableInfo;
 
 import androidx.annotation.NonNull;
-
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
 public final class LegendStore {
 
@@ -53,12 +50,12 @@ public final class LegendStore {
 
     private static StatementBinder<Legend> BINDER = new IdentifiableStatementBinder<Legend>() {
         @Override
-        public void bindToStatement(@NonNull Legend o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.startValue());
-            sqLiteBind(sqLiteStatement, 8, o.endValue());
-            sqLiteBind(sqLiteStatement, 9, o.color());
-            sqLiteBind(sqLiteStatement, 10, UidsHelper.getUidOrNull(o.legendSet()));
+        public void bindToStatement(@NonNull Legend o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(7, o.startValue());
+            w.bind(8, o.endValue());
+            w.bind(9, o.color());
+            w.bind(10, UidsHelper.getUidOrNull(o.legendSet()));
         }
     };
 

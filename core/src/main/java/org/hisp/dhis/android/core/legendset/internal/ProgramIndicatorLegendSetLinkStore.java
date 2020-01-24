@@ -35,14 +35,11 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class ProgramIndicatorLegendSetLinkStore {
 
-    private static final StatementBinder<ProgramIndicatorLegendSetLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.programIndicator());
-        sqLiteBind(sqLiteStatement, 2, o.legendSet());
+    private static final StatementBinder<ProgramIndicatorLegendSetLink> BINDER = (o, w) -> {
+        w.bind(1, o.programIndicator());
+        w.bind(2, o.legendSet());
     };
 
     private ProgramIndicatorLegendSetLinkStore() {}

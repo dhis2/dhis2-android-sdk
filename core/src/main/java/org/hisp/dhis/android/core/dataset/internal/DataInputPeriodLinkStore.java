@@ -37,16 +37,14 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.dataset.DataInputPeriod;
 import org.hisp.dhis.android.core.dataset.DataInputPeriodTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class DataInputPeriodLinkStore {
 
     private static final StatementBinder<DataInputPeriod> BINDER =
-            (dataInputPeriod, sqLiteStatement) -> {
-                sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull(dataInputPeriod.dataSet()));
-                sqLiteBind(sqLiteStatement, 2, UidsHelper.getUidOrNull(dataInputPeriod.period()));
-                sqLiteBind(sqLiteStatement, 3, dataInputPeriod.openingDate());
-                sqLiteBind(sqLiteStatement, 4, dataInputPeriod.closingDate());
+            (dataInputPeriod, w) -> {
+                w.bind(1, UidsHelper.getUidOrNull(dataInputPeriod.dataSet()));
+                w.bind(2, UidsHelper.getUidOrNull(dataInputPeriod.period()));
+                w.bind(3, dataInputPeriod.openingDate());
+                w.bind(4, dataInputPeriod.closingDate());
             };
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(

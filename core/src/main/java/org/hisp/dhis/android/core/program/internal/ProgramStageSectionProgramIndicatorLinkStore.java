@@ -35,14 +35,11 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLink;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class ProgramStageSectionProgramIndicatorLinkStore {
 
-    private static final StatementBinder<ProgramStageSectionProgramIndicatorLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.programStageSection());
-        sqLiteBind(sqLiteStatement, 2, o.programIndicator());
+    private static final StatementBinder<ProgramStageSectionProgramIndicatorLink> BINDER = (o, w) -> {
+        w.bind(1, o.programStageSection());
+        w.bind(2, o.programIndicator());
     };
 
     private ProgramStageSectionProgramIndicatorLinkStore() {}

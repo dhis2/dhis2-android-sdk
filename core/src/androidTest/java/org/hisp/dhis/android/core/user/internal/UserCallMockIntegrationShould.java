@@ -64,11 +64,11 @@ public class UserCallMockIntegrationShould extends BaseMockIntegrationTestEmptyE
         ContentValues program4 = CreateProgramUtils.create(4L, "WSGAb5XwJ3Y", null, null);
         ContentValues program5 = CreateProgramUtils.create(5L, "IpHINAT79UW", null, null);
 
-        database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program1);
-        database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program2);
-        database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program3);
-        database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program4);
-        database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program5);
+        databaseAdapter.insert(ProgramTableInfo.TABLE_INFO.name(), null, program1);
+        databaseAdapter.insert(ProgramTableInfo.TABLE_INFO.name(), null, program2);
+        databaseAdapter.insert(ProgramTableInfo.TABLE_INFO.name(), null, program3);
+        databaseAdapter.insert(ProgramTableInfo.TABLE_INFO.name(), null, program4);
+        databaseAdapter.insert(ProgramTableInfo.TABLE_INFO.name(), null, program5);
     }
 
     @Test
@@ -77,7 +77,7 @@ public class UserCallMockIntegrationShould extends BaseMockIntegrationTestEmptyE
 
         userCall.call();
 
-        Cursor userCursor = database.query(UserTableInfo.TABLE_INFO.name(), UserTableInfo.TABLE_INFO.columns().all(), null, null, null, null, null);
+        Cursor userCursor = databaseAdapter.query(UserTableInfo.TABLE_INFO.name(), UserTableInfo.TABLE_INFO.columns().all());
 
         assertThatCursor(userCursor).hasRow(
                 "DXyJmlo9rge",
@@ -120,8 +120,7 @@ public class UserCallMockIntegrationShould extends BaseMockIntegrationTestEmptyE
         };
 
 
-        Cursor userCredentialsCursor = database.query(UserCredentialsTableInfo.TABLE_INFO.name(), projection,
-                null, null, null, null, null);
+        Cursor userCredentialsCursor = databaseAdapter.query(UserCredentialsTableInfo.TABLE_INFO.name(), projection);
 
         assertThatCursor(userCredentialsCursor).hasRow(
                 "M0fCOxtkURr",

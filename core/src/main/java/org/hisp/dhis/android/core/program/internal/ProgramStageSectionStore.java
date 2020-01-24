@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
@@ -41,19 +40,17 @@ import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo;
 
 import androidx.annotation.NonNull;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class ProgramStageSectionStore {
 
     private static StatementBinder<ProgramStageSection> BINDER =
             new IdentifiableStatementBinder<ProgramStageSection>() {
         @Override
-        public void bindToStatement(@NonNull ProgramStageSection o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.sortOrder());
-            sqLiteBind(sqLiteStatement, 8, UidsHelper.getUidOrNull(o.programStage()));
-            sqLiteBind(sqLiteStatement, 9, ProgramStageSectionRenderingHelper.desktopRenderType(o.renderType()));
-            sqLiteBind(sqLiteStatement, 10, ProgramStageSectionRenderingHelper.mobileRenderType(o.renderType()));
+        public void bindToStatement(@NonNull ProgramStageSection o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(7, o.sortOrder());
+            w.bind(8, UidsHelper.getUidOrNull(o.programStage()));
+            w.bind(9, ProgramStageSectionRenderingHelper.desktopRenderType(o.renderType()));
+            w.bind(10, ProgramStageSectionRenderingHelper.mobileRenderType(o.renderType()));
         }
     };
 

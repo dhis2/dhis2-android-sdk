@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core;
 import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory;
 import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory;
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
-import org.hisp.dhis.android.core.configuration.ServerUrlParser;
+import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;

@@ -1,0 +1,89 @@
+{
+  "code": "OU_1126",
+  "lastUpdated": "2014-11-25T09:37:54.154",
+  "id": "FLjwMPWLrL2",
+  "level": 4,
+  "created": "2012-02-17T15:54:39.987",
+  "name": "Baomahun CHC",
+  "shortName": "Baomahun CHC",
+  "displayName": "Baomahun CHC",
+  "displayShortName": "Baomahun CHC",
+  "externalAccess": false,
+  "deleted": false,
+  "path": "/ImspTQPwCqd/O6uvpzGd5pu/npWGUj37qDe/FLjwMPWLrL2",
+  "featureType": "POINT",
+  "coordinates": "[-11.6677,8.4165]",
+  "openingDate": "1970-01-01T00:00:00.000",
+  "closedDate": "1971-01-01T00:00:00.000",
+  "dimensionItem": "FLjwMPWLrL2",
+  "dimensionItemType": "ORGANISATION_UNIT",
+  "parent": {
+    "id": "npWGUj37qDe"
+  },
+  "access": {
+    "read": true,
+    "updateWithSection": true,
+    "externalize": false,
+    "delete": true,
+    "write": true,
+    "manage": false
+  },
+  "children": [ ],
+  "ancestors": [
+    {
+      "id": "ImspTQPwCqd",
+      "displayName": "Sierra Leone"
+    },
+    {
+      "id": "O6uvpzGd5pu",
+      "displayName": "Bo"
+    },
+    {
+      "id": "npWGUj37qDe",
+      "displayName": "Valunia"
+    }
+  ],
+  "organisationUnitGroups": [
+    {
+      "id": "GGghZsfu7qV"
+    },
+    {
+      "id": "CXw2yu5fodb"
+    },
+    {
+      "id": "oRVt7g429ZO"
+    }
+  ],
+  "userGroupAccesses": [ ],
+  "attributeValues": [ ],
+  "users": [ ],
+  "dataSets": [
+    {
+      "id": "EDzMBk0RRji"
+    },
+    {
+      "id": "VTdjfLXXmoi"
+    },
+    {
+      "id": "aLpVgfXiz0f"
+    },
+    {
+      "id": "N4fIX1HL3TQ"
+    }
+  ],
+  "programs": [
+    {
+      "id": "uy2gU8kT1jF"
+    },
+    {
+      "id": "q04UBOqq3rp"
+    },
+    {
+      "id": "VBqh0ynB2wv"
+    },
+    {
+      "id": "eBAyeGv0exc"
+    }
+  ]
+
+}

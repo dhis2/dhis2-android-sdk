@@ -36,20 +36,18 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.settings.SystemSetting;
 import org.hisp.dhis.android.core.settings.SystemSettingTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class SystemSettingStore {
 
-    private static final StatementBinder<SystemSetting> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.key());
-        sqLiteBind(sqLiteStatement, 2, o.value());
+    private static final StatementBinder<SystemSetting> BINDER = (o, w) -> {
+        w.bind(1, o.key());
+        w.bind(2, o.value());
     };
 
     private static final WhereStatementBinder<SystemSetting> WHERE_UPDATE_BINDER
-            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 3, o.key());
+            = (o, w) -> w.bind(3, o.key());
 
     private static final WhereStatementBinder<SystemSetting> WHERE_DELETE_BINDER
-            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.key());
+            = (o, w) -> w.bind(1, o.key());
 
     private SystemSettingStore() {}
 

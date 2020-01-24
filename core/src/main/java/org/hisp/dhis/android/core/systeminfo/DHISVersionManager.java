@@ -39,4 +39,14 @@ public interface DHISVersionManager {
     boolean is2_32();
 
     boolean is2_33();
+
+    boolean is2_34();
+
+    /**
+     * Check if the current version is strictly greater than the parameter.
+     *
+     * @param version Version to compare to
+     * @return True if current version is strictly greater than the parameter.
+     */
+    boolean isGreaterThan(DHISVersion version);
 }

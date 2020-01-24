@@ -36,14 +36,11 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class CategoryOptionComboCategoryOptionLinkStore {
 
-    private static final StatementBinder<CategoryOptionComboCategoryOptionLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.categoryOptionCombo());
-        sqLiteBind(sqLiteStatement, 2, o.categoryOption());
+    private static final StatementBinder<CategoryOptionComboCategoryOptionLink> BINDER = (o, w) -> {
+        w.bind(1, o.categoryOptionCombo());
+        w.bind(2, o.categoryOption());
     };
 
     private CategoryOptionComboCategoryOptionLinkStore() {}

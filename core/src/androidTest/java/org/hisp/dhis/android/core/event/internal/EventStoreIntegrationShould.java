@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.data.trackedentity.EventSamples;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.event.EventTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
@@ -42,8 +42,8 @@ import org.junit.runner.RunWith;
 public class EventStoreIntegrationShould extends IdentifiableDataObjectStoreAbstractIntegrationShould<Event> {
 
     public EventStoreIntegrationShould() {
-        super(EventStoreImpl.create(DatabaseAdapterFactory.get()),
-                EventTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+        super(EventStoreImpl.create(TestDatabaseAdapterFactory.get()),
+                EventTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
     @Override

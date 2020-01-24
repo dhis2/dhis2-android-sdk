@@ -254,6 +254,16 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
     }
 
     @Test
+    public void filter_by_enable_user_assignment() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages()
+                        .byEnableUserAssignment().isFalse()
+                        .blockingGet();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
     public void filter_by_period_type() {
         List<ProgramStage> programStages =
                 d2.programModule().programStages()

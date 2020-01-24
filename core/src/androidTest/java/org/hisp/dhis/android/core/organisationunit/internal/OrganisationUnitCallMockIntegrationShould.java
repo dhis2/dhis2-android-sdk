@@ -89,11 +89,11 @@ public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrati
         User user = UserInternalAccessor.insertOrganisationUnits(User.builder(), organisationUnits)
                 .uid("user_uid").build();
 
-        database.insert(UserTableInfo.TABLE_INFO.name(), null, user.toContentValues());
+        databaseAdapter.insert(UserTableInfo.TABLE_INFO.name(), null, user.toContentValues());
 
         ContentValues userContentValues = new ContentValues();
         userContentValues.put(IdentifiableColumns.UID, "user_uid");
-        database.insert(UserTableInfo.TABLE_INFO.name(), null, userContentValues);
+        databaseAdapter.insert(UserTableInfo.TABLE_INFO.name(), null, userContentValues);
 
         // inserting programs for creating OrgUnitProgramLinks
         String programUid = "lxAQ7Zs9VYR";
@@ -114,7 +114,7 @@ public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrati
     private void insertProgramWithUid(String uid) {
         ContentValues program = new ContentValues();
         program.put(IdentifiableColumns.UID, uid);
-        database.insert(ProgramTableInfo.TABLE_INFO.name(), null, program);
+        databaseAdapter.insert(ProgramTableInfo.TABLE_INFO.name(), null, program);
     }
 
     @Test

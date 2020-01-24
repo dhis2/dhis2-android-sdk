@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.testapp.option;
 
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -77,5 +78,15 @@ public class OptionCollectionRepositoryMockIntegrationShould extends BaseMockInt
                 .byIcon().eq("woman_negative")
                 .blockingGet();
         assertThat(options.size(), is(1));
+    }
+
+    @Test
+    public void order_by_sort_order() {
+        List<Option> options = d2.optionModule().options()
+                .byOptionSetUid().eq("VQ2lai3OfVG")
+                .orderBySortOrder(RepositoryScope.OrderByDirection.DESC)
+                .blockingGet();
+        assertThat(options.get(0).sortOrder(), is(2));
+        assertThat(options.get(1).sortOrder(), is(1));
     }
 }

@@ -47,34 +47,30 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<RelationshipItem>
         implements RelationshipItemStore {
 
-    private static final StatementBinder<RelationshipItem> BINDER = (o, sqLiteStatement) -> {
+    private static final StatementBinder<RelationshipItem> BINDER = (o, w) -> {
         String trackedEntityInstance = o.trackedEntityInstance() == null ? null :
                 o.trackedEntityInstance().trackedEntityInstance();
         String enrollment = o.enrollment() == null ? null : o.enrollment().enrollment();
         String event = o.event() == null ? null : o.event().event();
 
-        sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull(o.relationship()));
-        sqLiteBind(sqLiteStatement, 2, o.relationshipItemType());
-        sqLiteBind(sqLiteStatement, 3, trackedEntityInstance);
-        sqLiteBind(sqLiteStatement, 4, enrollment);
-        sqLiteBind(sqLiteStatement, 5, event);
+        w.bind(1, UidsHelper.getUidOrNull(o.relationship()));
+        w.bind(2, o.relationshipItemType());
+        w.bind(3, trackedEntityInstance);
+        w.bind(4, enrollment);
+        w.bind(5, event);
     };
 
-    private static final WhereStatementBinder<RelationshipItem> WHERE_UPDATE_BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 6, UidsHelper.getUidOrNull(o.relationship()));
-        sqLiteBind(sqLiteStatement, 7, o.relationshipItemType());
+    private static final WhereStatementBinder<RelationshipItem> WHERE_UPDATE_BINDER = (o, w) -> {
+        w.bind(6, UidsHelper.getUidOrNull(o.relationship()));
+        w.bind(7, o.relationshipItemType());
     };
 
-    private static final WhereStatementBinder<RelationshipItem> WHERE_DELETE_BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull(o.relationship()));
-        sqLiteBind(sqLiteStatement, 2, o.relationshipItemType());
+    private static final WhereStatementBinder<RelationshipItem> WHERE_DELETE_BINDER = (o, w) -> {
+        w.bind(1, UidsHelper.getUidOrNull(o.relationship()));
+        w.bind(2, o.relationshipItemType());
     };
 
     private RelationshipItemStoreImpl(DatabaseAdapter databaseAdapter,
@@ -150,7 +146,7 @@ public final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<R
                 "FROM " + RelationshipItemTableInfo.TABLE_INFO.name() +
                 " GROUP BY " + RelationshipItemTableInfo.Columns.RELATIONSHIP;
 
-        return this.databaseAdapter.query(query);
+        return this.databaseAdapter.rawQuery(query);
     }
 
     private String getItemElementColumn(RelationshipItem item) {

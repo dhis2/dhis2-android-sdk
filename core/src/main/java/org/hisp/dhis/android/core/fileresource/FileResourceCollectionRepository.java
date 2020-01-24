@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.fileresource;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteConstraintException;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
@@ -116,14 +115,6 @@ public final class FileResourceCollectionRepository
             FileResource fileResource = transformer.transform(dstFile).toBuilder().uid(generatedUid).build();
             store.insert(fileResource);
             return fileResource.uid();
-        } catch (SQLiteConstraintException e) {
-            throw D2Error
-                    .builder()
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .errorCode(D2ErrorCode.OBJECT_CANT_BE_INSERTED)
-                    .errorDescription("File resource can't be inserted")
-                    .originalException(e)
-                    .build();
         } catch (Exception e) {
             throw D2Error
                     .builder()

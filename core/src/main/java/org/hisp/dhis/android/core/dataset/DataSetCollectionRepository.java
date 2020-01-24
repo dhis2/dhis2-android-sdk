@@ -39,7 +39,9 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.dataset.internal.DataSetFields;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo;
 
 import java.util.Collections;
 import java.util.List;
@@ -145,6 +147,18 @@ public final class DataSetCollectionRepository
                 DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET,
                 DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
                 uids);
+    }
+
+    public DataSetCollectionRepository byOrganisationUnitScope(OrganisationUnit.Scope scope) {
+        return cf.subQuery(IdentifiableColumns.UID).inTwoLinkTable(
+                DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
+                DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET,
+                DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
+                UserOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
+                UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
+                UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
+                Collections.singletonList(scope.name())
+        );
     }
 
     public DataSetCollectionRepository withCompulsoryDataElementOperands() {

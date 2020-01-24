@@ -30,8 +30,10 @@ package org.hisp.dhis.android.core.period.internal;
 
 import org.hisp.dhis.android.core.period.Period;
 
+import java.util.Date;
 import java.util.List;
 
 interface PeriodGenerator {
     List<Period> generatePeriods(int past, int future) throws RuntimeException;
+    Period generatePeriod(Date date);
 }

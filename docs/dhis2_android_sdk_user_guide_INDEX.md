@@ -1,5 +1,5 @@
 ---
-title: 'DHIS 2 Android SDK User Guide'
+title: 'DHIS 2 Android SDK Developer Guide'
 author: 'DHIS 2'
 date:
 year: 2019
@@ -11,6 +11,7 @@ applicable_txt: 'Applicable to version 1.0.0'
 ---
 <!--DHIS2-SECTION-ID:index-->
 
+!INCLUDE "content/user/about-this-android-guide.md"
 !INCLUDE "content/user/compatibility.md"
 !INCLUDE "content/user/overview.md"
 !INCLUDE "content/user/getting-started.md"

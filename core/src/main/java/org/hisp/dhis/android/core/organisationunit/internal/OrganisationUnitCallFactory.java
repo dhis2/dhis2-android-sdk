@@ -31,14 +31,18 @@ import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserInternalAccessor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -58,18 +62,25 @@ class OrganisationUnitCallFactory {
 
     private final APICallExecutor apiCallExecutor;
     private final ResourceHandler resourceHandler;
+    private final ProgramStoreInterface programStore;
+    private final IdentifiableObjectStore<DataSet> dataSetStore;
 
     @Inject
     OrganisationUnitCallFactory(@NonNull OrganisationUnitService organisationUnitService,
                                 @NonNull OrganisationUnitHandler handler,
                                 @NonNull OrganisationUnitDisplayPathTransformer pathTransformer,
                                 @NonNull APICallExecutor apiCallExecutor,
-                                @NonNull ResourceHandler resourceHandler) {
+                                @NonNull ResourceHandler resourceHandler,
+                                @NonNull ProgramStoreInterface programStore,
+                                @NonNull IdentifiableObjectStore<DataSet> dataSetStore) {
+
         this.organisationUnitService = organisationUnitService;
         this.handler = handler;
         this.pathTransformer = pathTransformer;
         this.apiCallExecutor = apiCallExecutor;
         this.resourceHandler = resourceHandler;
+        this.programStore = programStore;
+        this.dataSetStore = dataSetStore;
     }
 
     public Callable<Unit> create(final User user,
@@ -82,8 +93,7 @@ class OrganisationUnitCallFactory {
             downloadCaptureOrgunits(user, programUids, dataSetUids);
             downloadSearchOrgunits(user, programUids, dataSetUids);
 
-            // TODO Build a mechanism to remove unused (not assigned to any orgunit) Programs,
-            //  Datasets and OrgunitGroups
+            removeNotLinkedProgramsAndDataSets(programUids, dataSetUids);
 
             resourceHandler.handleResource(Resource.Type.ORGANISATION_UNIT);
 
@@ -129,6 +139,25 @@ class OrganisationUnitCallFactory {
                 queryBuilder.page(pageQuery.page() + 1);
             }
             while (pageOrgunits.size() == pageQuery.pageSize());
+        }
+    }
+
+    private void removeNotLinkedProgramsAndDataSets(final Set<String> programUids,
+                                                    final Set<String> dataSetUids) {
+
+        List<String> programsLinked = new ArrayList<>();
+        List<String> dataSetsLinked = new ArrayList<>();
+
+        for (String programUid : programUids) {
+            if (!programsLinked.contains(programUid)) {
+                programStore.deleteIfExists(programUid);
+            }
+        }
+
+        for (String dataSetUid : dataSetUids) {
+            if (!dataSetsLinked.contains(dataSetUid)) {
+                dataSetStore.deleteIfExists(dataSetUid);
+            }
         }
     }
 

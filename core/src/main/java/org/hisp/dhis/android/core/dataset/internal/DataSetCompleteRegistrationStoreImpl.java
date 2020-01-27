@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 
-import java.util.List;
+import java.util.Collection;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
@@ -110,7 +110,9 @@ final class DataSetCompleteRegistrationStoreImpl extends
     }
 
     @Override
-    public boolean removeNotPresent(List<String> dataSetUids, List<String> periodIds, String rootOrgunitUid) {
+    public boolean removeNotPresentAndSynced(Collection<String> dataSetUids,
+                                             Collection<String> periodIds,
+                                             String rootOrgunitUid) {
         WhereClauseBuilder whereClause = new WhereClauseBuilder();
 
         whereClause.appendInKeyStringValues(DataSetCompleteRegistrationTableInfo.Columns.DATA_SET, dataSetUids);
@@ -122,6 +124,8 @@ final class DataSetCompleteRegistrationStoreImpl extends
                 OrganisationUnitTableInfo.Columns.PATH,
                 "%" + rootOrgunitUid + "%");
         whereClause.appendInSubQuery(DataSetCompleteRegistrationTableInfo.Columns.ORGANISATION_UNIT, subQuery);
+
+        whereClause.appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.STATE, State.SYNCED);
 
         return deleteWhere(whereClause.build());
     }

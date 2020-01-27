@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface DataSetCompleteRegistrationStore extends ObjectWithoutUidStore<DataSetCompleteRegistration> {
 
@@ -40,5 +40,7 @@ public interface DataSetCompleteRegistrationStore extends ObjectWithoutUidStore<
 
     void setDeleted(DataSetCompleteRegistration dataSetCompleteRegistration);
 
-    boolean removeNotPresent(List<String> dataSetUids, List<String> periodIds, String rootOrgunitUid);
+    boolean removeNotPresentAndSynced(Collection<String> dataSetUids,
+                                      Collection<String> periodIds,
+                                      String rootOrgunitUid);
 }

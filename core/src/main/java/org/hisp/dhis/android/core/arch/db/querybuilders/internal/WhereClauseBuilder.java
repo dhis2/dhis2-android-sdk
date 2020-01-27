@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.db.querybuilders.internal;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class WhereClauseBuilder {
@@ -100,7 +101,7 @@ public class WhereClauseBuilder {
         return appendKeyValue(column, valuesArray, AND, NOT_IN, PARENTHESES_END);
     }
 
-    public WhereClauseBuilder appendInKeyStringValues(String column, List<String> values) {
+    public WhereClauseBuilder appendInKeyStringValues(String column, Collection<String> values) {
         String valuesArray = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
                 CollectionsHelper.withSingleQuotationMarksArray(values));
         return appendKeyValue(column, valuesArray, AND, IN, PARENTHESES_END);

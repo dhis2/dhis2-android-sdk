@@ -32,9 +32,13 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 
+import java.util.List;
+
 public interface DataSetCompleteRegistrationStore extends ObjectWithoutUidStore<DataSetCompleteRegistration> {
 
     void setState(DataSetCompleteRegistration dataSetCompleteRegistration, State newState);
 
     void setDeleted(DataSetCompleteRegistration dataSetCompleteRegistration);
+
+    boolean removeNotPresent(List<String> dataSetUids, List<String> periodIds, String rootOrgunitUid);
 }

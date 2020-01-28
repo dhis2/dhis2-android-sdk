@@ -45,15 +45,34 @@ public class PeriodHelper {
 
     private final PeriodStore periodStore;
     private final PeriodForDataSetManager periodForDataSetManager;
+    private final ParentPeriodGenerator parentPeriodGenerator;
 
     @Inject
-    PeriodHelper(PeriodStore periodStore, PeriodForDataSetManager periodForDataSetManager) {
+    PeriodHelper(PeriodStore periodStore, PeriodForDataSetManager periodForDataSetManager,
+                 ParentPeriodGenerator parentPeriodGenerator) {
         this.periodStore = periodStore;
         this.periodForDataSetManager = periodForDataSetManager;
+        this.parentPeriodGenerator = parentPeriodGenerator;
     }
 
+    /**
+     * Get a period object specifying a periodType and a date in the period.
+     * If the period does not exist in the database, it is inserted.
+     *
+     * @param periodType Period type
+     * @param date Date contained in the period
+     * @return Period
+     */
     public Period getPeriod(@NonNull PeriodType periodType, @NonNull Date date) {
-        return periodStore.selectPeriodByTypeAndDate(periodType, date);
+        Period period = periodStore.selectPeriodByTypeAndDate(periodType, date);
+
+        if (period == null) {
+            Period newPeriod = parentPeriodGenerator.generatePeriod(periodType, date);
+            periodStore.updateOrInsertWhere(newPeriod);
+            return newPeriod;
+        } else {
+            return period;
+        }
     }
 
     public Single<List<Period>> getPeriodsForDataSet(String dataSetUid) {

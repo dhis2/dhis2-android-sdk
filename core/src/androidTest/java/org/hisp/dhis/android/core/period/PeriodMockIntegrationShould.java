@@ -29,15 +29,17 @@
 package org.hisp.dhis.android.core.period;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.period.internal.PeriodStore;
+import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.text.ParseException;
+import java.util.Date;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class PeriodMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -45,19 +47,38 @@ public class PeriodMockIntegrationShould extends BaseMockIntegrationTestFullDisp
     @Test
     public void get_period_passing_period_type_and_a_date() throws ParseException {
         Period period = d2.periodModule().periodHelper().getPeriod(PeriodType.BiWeekly,
-                BaseIdentifiableObject.DATE_FORMAT.parse("2019-06-24T12:24:25.319"));
-        assertThat(period.periodId(), is("2019BiW13"));
+                BaseIdentifiableObject.DATE_FORMAT.parse("2019-12-24T12:24:25.319"));
+        assertThat(period.periodId()).isEqualTo("2019BiW26");
+    }
+
+    @Test
+    public void create_period_in_database_if_not_exist() throws ParseException {
+        PeriodStore periodStore = PeriodStoreImpl.create(databaseAdapter);
+
+        Date date = BaseIdentifiableObject.DATE_FORMAT.parse("2010-12-24T12:24:25.319");
+
+        Period periodInDb = periodStore.selectPeriodByTypeAndDate(PeriodType.Monthly, date);
+        assertThat(periodInDb).isNull();
+
+        Period period = d2.periodModule().periodHelper().getPeriod(PeriodType.Monthly, date);
+        assertThat(period).isNotNull();
+        assertThat(period.periodId()).isEqualTo("201012");
+
+        periodInDb = periodStore.selectPeriodByTypeAndDate(PeriodType.Monthly, date);
+        assertThat(periodInDb).isNotNull();
+
+        periodStore.deleteWhere(period);
     }
 
     @Test
     public void get_periods() {
-        assertThat(d2.periodModule().periods().blockingCount(), is(193));
+        assertThat(d2.periodModule().periods().blockingCount()).isEqualTo(193);
     }
 
     @Test
     public void ensure_future_periods_are_downloaded() {
         int MONTHLY_PERIODS = 11; // Copy from ParentPeriodGeneratorImpl to keep it private
-        assertThat(d2.periodModule().periods().byPeriodType().eq(PeriodType.Monthly).blockingCount(),
-                is(MONTHLY_PERIODS + 3));
+        assertThat(d2.periodModule().periods().byPeriodType().eq(PeriodType.Monthly).blockingCount())
+                .isEqualTo(MONTHLY_PERIODS + 3);
     }
 }

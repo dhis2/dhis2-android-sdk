@@ -148,4 +148,9 @@ class ParentDatabaseAdapter implements DatabaseAdapter {
     public int hashCode() {
         return getAdapter().hashCode();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return getAdapter().equals(o);
+    }
 }

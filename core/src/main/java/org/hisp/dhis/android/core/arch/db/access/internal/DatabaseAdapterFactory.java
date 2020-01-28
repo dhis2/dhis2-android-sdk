@@ -69,6 +69,7 @@ public final class DatabaseAdapterFactory {
         return new ParentDatabaseAdapter();
     }
 
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public static void createOrOpenDatabase(DatabaseAdapter adapter) {
         try {
             ParentDatabaseAdapter parentDatabaseAdapter = (ParentDatabaseAdapter) adapter;
@@ -110,6 +111,7 @@ public final class DatabaseAdapterFactory {
         }
     }
 
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public static void removeDatabaseAdapter(DatabaseAdapter adapter) {
         try {
             ParentDatabaseAdapter parentDatabaseAdapter = (ParentDatabaseAdapter) adapter;

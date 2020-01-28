@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
@@ -123,18 +124,22 @@ public final class UserAuthenticateCallFactory {
     private User loginInternal(String username, String password, String serverUrl) throws D2Error {
         throwExceptionIfUsernameNull(username);
         throwExceptionIfPasswordNull(password);
-        throwExceptionIfAlreadyAuthenticatedAndDbNotEmpty();
-
-        HttpUrl httpServerUrl = ServerUrlParser.parse(serverUrl);
-        ServerURLWrapper.setServerUrl(httpServerUrl.toString());
-        configurationSecureStore.set(Configuration.forServerUrl(httpServerUrl));
 
         Call<User> authenticateCall =
                 userService.authenticate(basic(username, password), UserFields.allFieldsWithoutOrgUnit);
 
         try {
+            HttpUrl httpServerUrl = ServerUrlParser.parse(serverUrl);
+            ServerURLWrapper.setServerUrl(httpServerUrl.toString());
+            configurationSecureStore.set(Configuration.forServerUrl(httpServerUrl));
+
             User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,
                     new UserAuthenticateCallErrorCatcher());
+
+            DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter);
+
+            throwExceptionIfAlreadyAuthenticatedAndDbNotEmpty();
+
             return loginOnline(authenticatedUser, username, password, serverUrl);
         } catch (D2Error d2Error) {
             if (

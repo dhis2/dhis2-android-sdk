@@ -184,6 +184,11 @@ public class Dhis2MockServer {
         server.setDispatcher(dispatcher);
     }
 
+    public void enqueueLoginResponses() {
+        enqueueMockResponse(USER_JSON);
+        enqueueMockResponse(SYSTEM_INFO_JSON);
+    }
+
     public void enqueueMetadataResponses() {
         enqueueMockResponse(SYSTEM_INFO_JSON);
         enqueueMockResponse(SYSTEM_SETTINGS_JSON);

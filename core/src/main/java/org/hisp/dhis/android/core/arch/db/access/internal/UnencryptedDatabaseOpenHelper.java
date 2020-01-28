@@ -32,16 +32,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 class UnencryptedDatabaseOpenHelper extends SQLiteOpenHelper {
 
     private final BaseDatabaseOpenHelper baseHelper;
-
-    UnencryptedDatabaseOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        this(context, databaseName, BaseDatabaseOpenHelper.VERSION);
-    }
 
     UnencryptedDatabaseOpenHelper(Context context, String databaseName, int targetVersion) {
         super(context, databaseName, null, targetVersion);

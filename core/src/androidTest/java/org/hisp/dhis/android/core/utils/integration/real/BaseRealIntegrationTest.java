@@ -69,6 +69,7 @@ public abstract class BaseRealIntegrationTest {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
 
         databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(context, null);
+        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter);
         credentialsSecureStore = new CredentialsSecureStoreImpl(new AndroidSecureStore(context));
         resourceHandler = ResourceHandler.create(databaseAdapter);
         resourceHandler.setServerDate(serverDate);

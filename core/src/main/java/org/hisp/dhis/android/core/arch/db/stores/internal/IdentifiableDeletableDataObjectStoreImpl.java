@@ -53,6 +53,8 @@ public class IdentifiableDeletableDataObjectStoreImpl<M extends ObjectWithUidInt
     private StatementWrapper setStateIfUploadingStatement;
     private StatementWrapper setDeletedStatement;
 
+    private Integer adapterHashCode;
+
     public IdentifiableDeletableDataObjectStoreImpl(DatabaseAdapter databaseAdapter,
                                                     SQLStatementBuilder builder, StatementBinder<M> binder,
                                                     ObjectFactory<M> objectFactory) {
@@ -61,6 +63,7 @@ public class IdentifiableDeletableDataObjectStoreImpl<M extends ObjectWithUidInt
     }
 
     private void compileStatements() {
+        resetStatementsIfDbChanged();
         if (setStateIfUploadingStatement == null) {
             String whereUid =  " WHERE " + UID + " =?";
 
@@ -73,6 +76,21 @@ public class IdentifiableDeletableDataObjectStoreImpl<M extends ObjectWithUidInt
             String setDeleted = "UPDATE " + tableName + " SET " +
                     DELETED + " = 1" + whereUid;
             this.setDeletedStatement = databaseAdapter.compileStatement(setDeleted);
+        }
+    }
+
+    private boolean hasAdapterChanged() {
+        Integer oldCode = adapterHashCode;
+        adapterHashCode = databaseAdapter.hashCode();
+        return oldCode != null && databaseAdapter.hashCode() != oldCode;
+    }
+
+    private void resetStatementsIfDbChanged() {
+        if (hasAdapterChanged()) {
+            setStateIfUploadingStatement.close();
+            setDeletedStatement.close();
+            setStateIfUploadingStatement = null;
+            setDeletedStatement = null;
         }
     }
 

@@ -36,11 +36,19 @@ import com.google.common.collect.Sets;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
+import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
+import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkStore;
+import org.hisp.dhis.android.core.dataset.internal.DataSetStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
+import org.hisp.dhis.android.core.program.internal.ProgramStore;
+import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserInternalAccessor;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
@@ -107,8 +115,18 @@ public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrati
 
         OrganisationUnitDisplayPathTransformer pathTransformer = new OrganisationUnitDisplayPathTransformer();
 
+
+        ProgramStoreInterface programStore = ProgramStore.create(databaseAdapter);
+        IdentifiableObjectStore<DataSet> dataSetStore = DataSetStore.create(databaseAdapter);
+        LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore =
+                OrganisationUnitProgramLinkStore.create(databaseAdapter);
+        LinkStore<DataSetOrganisationUnitLink> dataSetOrganisationUnitLinkStore =
+                DataSetOrganisationUnitLinkStore.create(databaseAdapter);
+
         organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService,
-                organisationUnitHandler, pathTransformer, apiCallExecutor, objects.resourceHandler).create(user, programUids, null);
+                organisationUnitHandler, pathTransformer, apiCallExecutor, objects.resourceHandler, programStore,
+                dataSetStore, organisationUnitProgramLinkStore, dataSetOrganisationUnitLinkStore)
+                .create(user, programUids, null);
     }
 
     private void insertProgramWithUid(String uid) {

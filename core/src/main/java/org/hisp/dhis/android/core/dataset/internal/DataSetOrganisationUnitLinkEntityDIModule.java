@@ -28,59 +28,20 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
-import org.hisp.dhis.android.core.dataset.DataSetModule;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        DataInputPeriodEntityDIModule.class,
-        DataSetElementEntityDIModule.class,
-        DataSetCompulsoryDataElementOperandEntityDIModule.class,
-        DataSetEntityDIModule.class,
-        DataSetCompleteRegistrationEntityDIModule.class,
-        DataSetInstanceEntityDIModule.class,
-        DataSetOrganisationUnitLinkEntityDIModule.class,
-        SectionEntityDIModule.class,
-        SectionDataElementEntityDIModule.class,
-        SectionGreyedFieldsEntityDIModule.class
-})
-public final class DataSetPackageDIModule {
+@Module
+public final class DataSetOrganisationUnitLinkEntityDIModule {
 
     @Provides
     @Reusable
-    QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
-    dataSetCompleteRegistrationCallFactory(DataSetCompleteRegistrationCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    ListCallFactory<DataSet> dataSetEndpointCallFactory(DataSetEndpointCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    DataSetService dataSetService(Retrofit retrofit) {
-        return retrofit.create(DataSetService.class);
-    }
-
-    @Provides
-    @Reusable
-    DataSetCompleteRegistrationService dataSetCompleteRegistrationService(Retrofit retrofit) {
-        return retrofit.create(DataSetCompleteRegistrationService.class);
-    }
-
-    @Provides
-    @Reusable
-    DataSetModule module(DataSetModuleImpl impl) {
-        return impl;
+    LinkStore<DataSetOrganisationUnitLink> store(DatabaseAdapter databaseAdapter) {
+        return DataSetOrganisationUnitLinkStore.create(databaseAdapter);
     }
 }

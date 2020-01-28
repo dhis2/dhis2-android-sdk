@@ -46,6 +46,8 @@ public interface SQLStatementBuilder extends ReadOnlySQLStatementBuilder {
 
     String selectByUid();
 
+    String selectDistinct(String column);
+
     String insert();
 
     String update();

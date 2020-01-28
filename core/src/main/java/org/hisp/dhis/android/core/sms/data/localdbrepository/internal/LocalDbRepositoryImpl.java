@@ -3,9 +3,11 @@ package org.hisp.dhis.android.core.sms.data.localdbrepository.internal;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.datavalue.DataValue;
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo;
+import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
@@ -14,6 +16,7 @@ import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
+import org.hisp.dhis.android.core.sms.domain.model.internal.SMSDataValueSet;
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType;
@@ -26,7 +29,6 @@ import org.hisp.dhis.smscompression.models.SMSMetadata;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -55,6 +57,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     private final RelationshipStore relationshipStore;
     private final DataSetsStore dataSetsStore;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
+    private final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
 
     @Inject
     LocalDbRepositoryImpl(Context ctx,
@@ -66,7 +69,8 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
                           EnrollmentStore enrollmentStore,
                           RelationshipStore relationshipStore,
                           DataSetsStore dataSetsStore,
-                          TrackedEntityInstanceStore trackedEntityInstanceStore) {
+                          TrackedEntityInstanceStore trackedEntityInstanceStore,
+                          DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore) {
         this.context = ctx;
         this.userModule = userModule;
         this.trackedEntityModule = trackedEntityModule;
@@ -77,6 +81,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
         this.relationshipStore = relationshipStore;
         this.dataSetsStore = dataSetsStore;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
+        this.dataSetCompleteRegistrationStore = dataSetCompleteRegistrationStore;
         metadataIdsStore = new MetadataIdsStore(context);
         ongoingSubmissionsStore = new OngoingSubmissionsStore(context);
     }
@@ -277,8 +282,24 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
-    public Single<List<DataValue>> getDataValues(String orgUnit, String period, String attributeOptionComboUid) {
-        return dataSetsStore.getDataValues(orgUnit, period, attributeOptionComboUid);
+    public Single<SMSDataValueSet> getDataValueSet(String orgUnit, String period, String attributeOptionComboUid) {
+        return dataSetsStore.getDataValues(orgUnit, period, attributeOptionComboUid).map(values -> {
+            Boolean isCompleted = isDataValueSetCompleted(orgUnit, period, attributeOptionComboUid);
+            return SMSDataValueSet.builder()
+                    .dataValues(values)
+                    .completed(isCompleted)
+                    .build();
+        });
+    }
+
+    private Boolean isDataValueSetCompleted(String orgUnit, String period, String attributeOptionComboUid) {
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.ORGANISATION_UNIT, orgUnit)
+                .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.PERIOD, period)
+                .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.ATTRIBUTE_OPTION_COMBO,
+                        attributeOptionComboUid)
+                .build();
+        return dataSetCompleteRegistrationStore.countWhere(whereClause) > 0;
     }
 
     @Override

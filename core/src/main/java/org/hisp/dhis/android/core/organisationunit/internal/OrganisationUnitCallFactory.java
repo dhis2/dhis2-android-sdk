@@ -32,17 +32,21 @@ import androidx.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserInternalAccessor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -64,6 +68,8 @@ class OrganisationUnitCallFactory {
     private final ResourceHandler resourceHandler;
     private final ProgramStoreInterface programStore;
     private final IdentifiableObjectStore<DataSet> dataSetStore;
+    private final LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
+    private final LinkStore<DataSetOrganisationUnitLink> dataSetOrganisationUnitLinkStore;
 
     @Inject
     OrganisationUnitCallFactory(@NonNull OrganisationUnitService organisationUnitService,
@@ -72,7 +78,9 @@ class OrganisationUnitCallFactory {
                                 @NonNull APICallExecutor apiCallExecutor,
                                 @NonNull ResourceHandler resourceHandler,
                                 @NonNull ProgramStoreInterface programStore,
-                                @NonNull IdentifiableObjectStore<DataSet> dataSetStore) {
+                                @NonNull IdentifiableObjectStore<DataSet> dataSetStore,
+                                @NonNull LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore,
+                                @NonNull LinkStore<DataSetOrganisationUnitLink> dataSetOrganisationUnitLinkStore) {
 
         this.organisationUnitService = organisationUnitService;
         this.handler = handler;
@@ -81,6 +89,8 @@ class OrganisationUnitCallFactory {
         this.resourceHandler = resourceHandler;
         this.programStore = programStore;
         this.dataSetStore = dataSetStore;
+        this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
+        this.dataSetOrganisationUnitLinkStore = dataSetOrganisationUnitLinkStore;
     }
 
     public Callable<Unit> create(final User user,
@@ -145,8 +155,10 @@ class OrganisationUnitCallFactory {
     private void removeNotLinkedProgramsAndDataSets(final Set<String> programUids,
                                                     final Set<String> dataSetUids) {
 
-        List<String> programsLinked = new ArrayList<>();
-        List<String> dataSetsLinked = new ArrayList<>();
+        List<String> programsLinked = organisationUnitProgramLinkStore.selectDistinctSlaves(
+                OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM);
+        List<String> dataSetsLinked = dataSetOrganisationUnitLinkStore.selectDistinctSlaves(
+                DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET);
 
         for (String programUid : programUids) {
             if (!programsLinked.contains(programUid)) {

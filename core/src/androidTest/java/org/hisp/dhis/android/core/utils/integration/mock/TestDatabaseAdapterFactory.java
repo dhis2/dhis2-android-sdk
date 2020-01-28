@@ -44,7 +44,6 @@ public class TestDatabaseAdapterFactory {
     public static void setUp() {
         if (databaseAdapter == null) {
             databaseAdapter = create();
-            // TODO restore somehow in tests databaseAdapter.setForeignKeyConstraintsEnabled(false);
         }
     }
 

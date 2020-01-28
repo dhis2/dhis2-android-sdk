@@ -65,7 +65,7 @@ public class LinkStoreImpl<M extends CoreObject> extends ObjectStoreImpl<M> impl
 
     @Override
     public List<String> selectDistinctSlaves(@NonNull String slaveColumn) {
-        Cursor cursor = databaseAdapter.query(builder.selectDistinct(slaveColumn));
+        Cursor cursor = databaseAdapter.rawQuery(builder.selectDistinct(slaveColumn));
         return mapStringColumnSetFromCursor(cursor);
     }
 }

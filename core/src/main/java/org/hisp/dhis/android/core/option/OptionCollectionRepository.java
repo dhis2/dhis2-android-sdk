@@ -69,4 +69,8 @@ public final class OptionCollectionRepository
     public StringFilterConnector<OptionCollectionRepository> byIcon() {
         return cf.string(Columns.ICON);
     }
+
+    public OptionCollectionRepository orderBySortOrder(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.SORT_ORDER, direction);
+    }
 }

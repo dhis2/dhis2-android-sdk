@@ -28,13 +28,10 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableWithStyleStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
@@ -42,7 +39,7 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.program.ProgramSection;
 import org.hisp.dhis.android.core.program.ProgramSectionTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
+import androidx.annotation.NonNull;
 
 public final class ProgramSectionStore {
 
@@ -50,12 +47,12 @@ public final class ProgramSectionStore {
             = new IdentifiableWithStyleStatementBinder<ProgramSection>() {
 
         @Override
-        public void bindToStatement(@NonNull ProgramSection o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 9, o.description());
-            sqLiteBind(sqLiteStatement, 10, UidsHelper.getUidOrNull(o.program()));
-            sqLiteBind(sqLiteStatement, 11, o.sortOrder());
-            sqLiteBind(sqLiteStatement, 12, o.formName());
+        public void bindToStatement(@NonNull ProgramSection o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(9, o.description());
+            w.bind(10, UidsHelper.getUidOrNull(o.program()));
+            w.bind(11, o.sortOrder());
+            w.bind(12, o.formName());
         }
     };
 

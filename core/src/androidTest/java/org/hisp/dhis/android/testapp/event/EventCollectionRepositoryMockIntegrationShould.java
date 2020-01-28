@@ -251,6 +251,16 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     }
 
     @Test
+    public void filter_by_assigned_user() {
+        List<Event> events =
+                d2.eventModule().events()
+                        .byAssignedUser().eq("aTwqot2S410")
+                        .blockingGet();
+
+        assertThat(events.size(), is(1));
+    }
+
+    @Test
     public void count_tracked_entity_instances_unrestricted() {
         int count = d2.eventModule().events().countTrackedEntityInstances();
 

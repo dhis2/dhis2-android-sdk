@@ -31,7 +31,8 @@ package org.hisp.dhis.android.core.wipe.internal;
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,7 +61,7 @@ public class WipeModuleShould {
     @Mock
     private ModuleWiper moduleWiperB;
     @Mock
-    private CredentialsSecureStore credentialsSecureStore;
+    private ObjectSecureStore<Credentials> credentialsSecureStore;
 
     private WipeModule wipeModule;
 
@@ -81,7 +82,7 @@ public class WipeModuleShould {
 
         verify(moduleWiperA).wipeMetadata();
         verify(moduleWiperB).wipeMetadata();
-        verify(credentialsSecureStore).removeCredentials();
+        verify(credentialsSecureStore).remove();
 
         verify(moduleWiperA).wipeData();
         verify(moduleWiperB).wipeData();
@@ -93,7 +94,7 @@ public class WipeModuleShould {
 
         verify(moduleWiperA).wipeMetadata();
         verify(moduleWiperB).wipeMetadata();
-        verify(credentialsSecureStore).removeCredentials();
+        verify(credentialsSecureStore).remove();
 
         verify(moduleWiperA, never()).wipeData();
         verify(moduleWiperB, never()).wipeData();
@@ -105,7 +106,7 @@ public class WipeModuleShould {
 
         verify(moduleWiperA, never()).wipeMetadata();
         verify(moduleWiperB, never()).wipeMetadata();
-        verify(credentialsSecureStore, never()).removeCredentials();
+        verify(credentialsSecureStore, never()).remove();
 
         verify(moduleWiperA).wipeData();
         verify(moduleWiperB).wipeData();

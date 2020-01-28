@@ -40,13 +40,19 @@ public final class PeriodPackageDIModule {
 
     @Provides
     @Reusable
-    ParentPeriodGenerator parentPeriodGenerator() {
-        return ParentPeriodGeneratorImpl.create();
+    ParentPeriodGenerator parentPeriodGenerator(CalendarProvider calendarProvider) {
+        return ParentPeriodGeneratorImpl.create(calendarProvider);
     }
 
     @Provides
     @Reusable
     PeriodModule periodModule(PeriodModuleImpl impl) {
         return impl;
+    }
+
+    @Provides
+    @Reusable
+    CalendarProvider calendarProvider() {
+        return CalendarProviderFactory.getCalendarProvider();
     }
 }

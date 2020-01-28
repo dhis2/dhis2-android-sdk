@@ -81,7 +81,7 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
         AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
 
         assertThat(authenticatedUser).isNotNull();
-        assertThat(credentialsSecureStore.getCredentials()).isNull();
+        assertThat(credentialsSecureStore.get()).isNull();
     }
 
     //@Test
@@ -100,14 +100,14 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
         AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
 
         assertThat(authenticatedUser).isNotNull();
-        assertThat(credentialsSecureStore.getCredentials()).isNull();
+        assertThat(credentialsSecureStore.get()).isNull();
 
         d2.userModule().logIn(username, password, url).blockingGet();
 
         authenticatedUser = authenticatedUserStore.selectFirst();
 
         assertThat(authenticatedUser).isNotNull();
-        assertThat(credentialsSecureStore.getCredentials()).isNotNull();
+        assertThat(credentialsSecureStore.get()).isNotNull();
     }
 
     //@Test

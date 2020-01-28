@@ -36,23 +36,21 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class SystemInfoStore {
 
-    private static final StatementBinder<SystemInfo> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.serverDate());
-        sqLiteBind(sqLiteStatement, 2, o.dateFormat());
-        sqLiteBind(sqLiteStatement, 3, o.version());
-        sqLiteBind(sqLiteStatement, 4, o.contextPath());
-        sqLiteBind(sqLiteStatement, 5, o.systemName());
+    private static final StatementBinder<SystemInfo> BINDER = (o, w) -> {
+        w.bind(1, o.serverDate());
+        w.bind(2, o.dateFormat());
+        w.bind(3, o.version());
+        w.bind(4, o.contextPath());
+        w.bind(5, o.systemName());
     };
 
     private static final WhereStatementBinder<SystemInfo> WHERE_UPDATE_BINDER =
-            (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 6, o.contextPath());
+            (o, w) -> w.bind(6, o.contextPath());
 
     private static final WhereStatementBinder<SystemInfo> WHERE_DELETE_BINDER =
-            (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.contextPath());
+            (o, w) -> w.bind(1, o.contextPath());
 
     private SystemInfoStore() {
     }

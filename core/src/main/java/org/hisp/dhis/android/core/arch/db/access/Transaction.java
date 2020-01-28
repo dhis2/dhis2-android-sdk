@@ -29,9 +29,6 @@
 package org.hisp.dhis.android.core.arch.db.access;
 
 public interface Transaction {
-
-    void begin();
-
     void setSuccessful();
 
     void end();

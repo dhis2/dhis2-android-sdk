@@ -28,22 +28,18 @@
 
 package org.hisp.dhis.android.core.arch.db.stores.binders.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.common.NameableObject;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
+import androidx.annotation.NonNull;
 
 public abstract class NameableWithStyleStatementBinder<O extends NameableObject & ObjectWithStyle>
         extends NameableStatementBinder<O> {
 
     @Override
-    public void bindToStatement(@NonNull O o, @NonNull SQLiteStatement sqLiteStatement) {
-        super.bindToStatement(o, sqLiteStatement);
-        sqLiteBind(sqLiteStatement, 11, o.style().color());
-        sqLiteBind(sqLiteStatement, 12, o.style().icon());
+    public void bindToStatement(@NonNull O o, @NonNull StatementWrapper w) {
+        super.bindToStatement(o, w);
+        w.bind(11, o.style().color());
+        w.bind(12, o.style().icon());
     }
 }

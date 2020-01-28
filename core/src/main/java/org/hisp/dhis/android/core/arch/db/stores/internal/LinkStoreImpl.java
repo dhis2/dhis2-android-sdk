@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
 
 import androidx.annotation.NonNull;
 
@@ -46,12 +45,11 @@ public class LinkStoreImpl<M extends CoreObject> extends ObjectStoreImpl<M> impl
     private final String masterColumn;
 
     protected LinkStoreImpl(DatabaseAdapter databaseAdapter,
-                            SQLiteStatement insertStatement,
                             SQLStatementBuilder builder,
                             String masterColumn,
                             StatementBinder<M> binder,
                             ObjectFactory<M> objectFactory) {
-        super(databaseAdapter, insertStatement, builder, binder, objectFactory);
+        super(databaseAdapter, builder, binder, objectFactory);
         this.masterColumn = masterColumn;
     }
 

@@ -40,20 +40,21 @@ import static com.google.common.truth.Truth.assertThat;
 @RunWith(D2JunitRunner.class)
 public class CredentialsSecureStorageMockIntegrationShould {
 
-    private CredentialsSecureStore credentialsSecureStore;
+    private ObjectSecureStore<Credentials> credentialsSecureStore;
 
     @Before
     public void setUp() {
         credentialsSecureStore =
-                new CredentialsSecureStoreImpl(InstrumentationRegistry.getContext().getApplicationContext());
+                new CredentialsSecureStoreImpl(
+                        new AndroidSecureStore(InstrumentationRegistry.getContext().getApplicationContext()));
     }
 
     @Test
     public void credentials_are_correctly_stored() {
         Credentials credentials = Credentials.create("username", "password");
-        credentialsSecureStore.setCredentials(credentials);
+        credentialsSecureStore.set(credentials);
 
-        Credentials retrievedCredentials = credentialsSecureStore.getCredentials();
+        Credentials retrievedCredentials = credentialsSecureStore.get();
 
         assertThat(retrievedCredentials.username()).isEqualTo(credentials.username());
         assertThat(retrievedCredentials.password()).isEqualTo(credentials.password());
@@ -62,11 +63,11 @@ public class CredentialsSecureStorageMockIntegrationShould {
     @Test
     public void credentials_are_correctly_removed() {
         Credentials credentials = Credentials.create("username", "password");
-        credentialsSecureStore.setCredentials(credentials);
+        credentialsSecureStore.set(credentials);
 
-        credentialsSecureStore.removeCredentials();
+        credentialsSecureStore.remove();
 
-        Credentials retrievedCredentials = credentialsSecureStore.getCredentials();
+        Credentials retrievedCredentials = credentialsSecureStore.get();
 
         assertThat(retrievedCredentials).isNull();
     }

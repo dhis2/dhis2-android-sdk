@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.search;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
+import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -107,7 +108,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
                 orgUnits(orgUnits).orgUnitMode(OrganisationUnitMode.ACCESSIBLE).program("program")
                 .programStartDate(new Date()).programEndDate(new Date()).trackedEntityType("teiTypeStr")
                 .query("queryStr").attribute(attribute).filter(filter).includeDeleted(false)
-                .paging(false).page(2).pageSize(33).build();
+                .assignedUserMode(AssignedUserMode.ANY).paging(false).page(2).pageSize(33).build();
 
         whenServiceQuery().thenReturn(searchGridCall);
         when(apiCallExecutor.executeObjectCall(searchGridCall)).thenReturn(searchGrid);
@@ -144,6 +145,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
                 eq(query.query()),
                 eq(query.attribute()),
                 eq(query.filter()),
+                eq(query.assignedUserMode().toString()),
                 eq(query.paging()),
                 eq(query.page()),
                 eq(query.pageSize()));
@@ -177,6 +179,6 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
 
     private OngoingStubbing<Call<SearchGrid>> whenServiceQuery() {
         return when(service.query(anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyList(), anyList(), anyBoolean(), anyInt(), anyInt()));
+                anyString(), anyString(), anyList(), anyList(), anyString(), anyBoolean(), anyInt(), anyInt()));
     }
 }

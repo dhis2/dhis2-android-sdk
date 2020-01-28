@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.repositories.object.internal;
 
-import android.database.sqlite.SQLiteConstraintException;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
@@ -142,20 +141,12 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends CoreObject, R exte
         try {
             store.updateOrInsertWhere(m);
             propagateState(m);
-        } catch (SQLiteConstraintException e) {
+        } catch (Exception e) {
             throw D2Error
                     .builder()
                     .errorComponent(D2ErrorComponent.SDK)
                     .errorCode(D2ErrorCode.VALUE_CANT_BE_SET)
                     .errorDescription("Value can't be set")
-                    .originalException(e)
-                    .build();
-        } catch (Exception e) {
-            throw D2Error
-                    .builder()
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .errorCode(D2ErrorCode.UNEXPECTED)
-                    .errorDescription("Unexpected exception on value set")
                     .originalException(e)
                     .build();
         }

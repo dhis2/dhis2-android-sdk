@@ -86,7 +86,8 @@ public final class ProgramStageFields {
                     fh.<PeriodType>field(Columns.PERIOD_TYPE),
                     fh.<ObjectWithUid>field(Columns.PROGRAM),
                     fh.<Access>nestedField(ACCESS).with(AccessFields.data.with(DataAccessFields.write)),
-                    fh.<Boolean>field(Columns.REMIND_COMPLETED)
+                    fh.<Boolean>field(Columns.REMIND_COMPLETED),
+                    fh.<Boolean>field(Columns.ENABLE_USER_ASSIGNMENT)
             ).build();
 
     private ProgramStageFields() {

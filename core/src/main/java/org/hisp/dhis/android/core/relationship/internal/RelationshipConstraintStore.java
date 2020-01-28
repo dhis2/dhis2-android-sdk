@@ -37,30 +37,25 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint;
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class RelationshipConstraintStore {
 
-    private static final StatementBinder<RelationshipConstraint> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull(o.relationshipType()));
-        sqLiteBind(sqLiteStatement, 2, o.constraintType());
-        sqLiteBind(sqLiteStatement, 3, o.relationshipEntity());
-        sqLiteBind(sqLiteStatement, 4, UidsHelper.getUidOrNull(o.trackedEntityType()));
-        sqLiteBind(sqLiteStatement, 5, UidsHelper.getUidOrNull(o.program()));
-        sqLiteBind(sqLiteStatement, 6, UidsHelper.getUidOrNull(o.programStage()));
+    private static final StatementBinder<RelationshipConstraint> BINDER = (o, w) -> {
+        w.bind(1, UidsHelper.getUidOrNull(o.relationshipType()));
+        w.bind(2, o.constraintType());
+        w.bind(3, o.relationshipEntity());
+        w.bind(4, UidsHelper.getUidOrNull(o.trackedEntityType()));
+        w.bind(5, UidsHelper.getUidOrNull(o.program()));
+        w.bind(6, UidsHelper.getUidOrNull(o.programStage()));
     };
 
-    private static final WhereStatementBinder<RelationshipConstraint> WHERE_UPDATE_BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 7, UidsHelper.getUidOrNull(o.relationshipType()));
-        sqLiteBind(sqLiteStatement, 8, o.constraintType());
+    private static final WhereStatementBinder<RelationshipConstraint> WHERE_UPDATE_BINDER = (o, w) -> {
+        w.bind(7, UidsHelper.getUidOrNull(o.relationshipType()));
+        w.bind(8, o.constraintType());
     };
 
-    private static final WhereStatementBinder<RelationshipConstraint> WHERE_DELETE_BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull(o.relationshipType()));
-        sqLiteBind(sqLiteStatement, 2, o.constraintType());
+    private static final WhereStatementBinder<RelationshipConstraint> WHERE_DELETE_BINDER = (o, w) -> {
+        w.bind(1, UidsHelper.getUidOrNull(o.relationshipType()));
+        w.bind(2, o.constraintType());
     };
 
     private RelationshipConstraintStore() {}

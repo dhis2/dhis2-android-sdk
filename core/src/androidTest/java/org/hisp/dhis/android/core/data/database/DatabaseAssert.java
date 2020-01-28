@@ -74,7 +74,7 @@ public final class DatabaseAssert {
     private void verifyEmptyDatabase(boolean expectedEmpty) {
         boolean isEmpty = true;
 
-        Cursor cursor = databaseAdapter.query(" SELECT name FROM sqlite_master "
+        Cursor cursor = databaseAdapter.rawQuery(" SELECT name FROM sqlite_master "
                 + "WHERE type='table' and name!='android_metadata' and name!='sqlite_sequence'");
         int value = cursor.getColumnIndex("name");
         if (value != -1) {
@@ -98,7 +98,7 @@ public final class DatabaseAssert {
         int count;
 
         try {
-            cursor = databaseAdapter.query("SELECT COUNT(*) from " + tableName);
+            cursor = databaseAdapter.rawQuery("SELECT COUNT(*) from " + tableName);
             cursor.moveToFirst();
             count = cursor.getInt(0);
         } finally {

@@ -28,24 +28,14 @@
 
 package org.hisp.dhis.android.testapp.configuration;
 
-import org.hisp.dhis.android.core.configuration.Configuration;
-import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.hisp.dhis.android.core.configuration.internal.Configuration;
+import org.hisp.dhis.android.testapp.arch.ObjectWithBuilderShould;
 import org.mockito.Mock;
 
-public class ConfigurationPublicAccessShould extends BasePublicAccessShould<Configuration> {
+public class ConfigurationPublicAccessShould extends ObjectWithBuilderShould {
 
     @Mock
     private Configuration object;
-
-    @Override
-    public Configuration object() {
-        return object;
-    }
-
-    @Override
-    public void has_public_create_method() {
-        Configuration.create(null);
-    }
 
     @Override
     public void has_public_builder_method() {
@@ -54,6 +44,6 @@ public class ConfigurationPublicAccessShould extends BasePublicAccessShould<Conf
 
     @Override
     public void has_public_to_builder_method() {
-        object().toBuilder();
+        object.toBuilder();
     }
 }

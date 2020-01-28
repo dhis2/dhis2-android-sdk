@@ -29,7 +29,8 @@
 package org.hisp.dhis.android.core.wipe.internal;
 
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 
 import dagger.Module;
 import dagger.Provides;
@@ -42,7 +43,7 @@ public final class WipeDIModule {
     @Reusable
     WipeModule wipeModule(D2CallExecutor d2CallExecutor,
                           D2ModuleWipers moduleWipers,
-                          CredentialsSecureStore credentialsSecureStore) {
+                          ObjectSecureStore<Credentials> credentialsSecureStore) {
         return new WipeModuleImpl(d2CallExecutor, moduleWipers.wipers, credentialsSecureStore);
     }
 }

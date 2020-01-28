@@ -165,7 +165,7 @@ public class SQLStatementBuilderImpl implements SQLStatementBuilder {
 
     @Override
     public String selectDistinct(String column) {
-        return SELECT + "DISTINCT" + column + FROM + tableName;
+        return SELECT + "DISTINCT " + column + FROM + tableName;
     }
 
     @Override

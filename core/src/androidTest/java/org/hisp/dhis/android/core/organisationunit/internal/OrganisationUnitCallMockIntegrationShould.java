@@ -126,7 +126,7 @@ public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrati
         organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService,
                 organisationUnitHandler, pathTransformer, apiCallExecutor, objects.resourceHandler, programStore,
                 dataSetStore, organisationUnitProgramLinkStore, dataSetOrganisationUnitLinkStore)
-                .create(user, programUids, null);
+                .create(user, programUids, Sets.newHashSet());
     }
 
     private void insertProgramWithUid(String uid) {

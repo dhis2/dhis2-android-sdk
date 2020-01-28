@@ -102,4 +102,9 @@ public interface StatementWrapper {
      * Execute delete update statement
      */
     int executeUpdateDelete();
+
+    /**
+     * Close the statement
+     */
+    void close();
 }

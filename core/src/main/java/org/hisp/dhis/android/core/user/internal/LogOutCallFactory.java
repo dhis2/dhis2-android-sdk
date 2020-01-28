@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.user.internal;
 
 import androidx.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -42,11 +44,15 @@ import io.reactivex.Completable;
 
 public final class LogOutCallFactory {
 
+    private final DatabaseAdapter databaseAdapter;
+
     @NonNull
     private final ObjectSecureStore<Credentials> credentialsSecureStore;
 
     @Inject
-    LogOutCallFactory(@NonNull ObjectSecureStore<Credentials> credentialsSecureStore) {
+    LogOutCallFactory(@NonNull DatabaseAdapter databaseAdapter,
+                      @NonNull ObjectSecureStore<Credentials> credentialsSecureStore) {
+        this.databaseAdapter = databaseAdapter;
         this.credentialsSecureStore = credentialsSecureStore;
     }
 
@@ -61,6 +67,8 @@ public final class LogOutCallFactory {
                         .errorComponent(D2ErrorComponent.SDK)
                         .build();
             }
+
+            DatabaseAdapterFactory.removeDatabaseAdapter(databaseAdapter);
 
             this.credentialsSecureStore.remove();
             emitter.onComplete();

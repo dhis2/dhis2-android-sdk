@@ -48,9 +48,10 @@ public class ObjectStoreImpl<M extends CoreObject> extends ReadableStoreImpl<M> 
     private StatementWrapper insertStatement;
     protected final SQLStatementBuilder builder;
     protected final StatementBinder<M> binder;
+    private Integer adapterHashCode;
 
-    public ObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLStatementBuilder builder, StatementBinder<M> binder,
-                           ObjectFactory<M> objectFactory) {
+    ObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLStatementBuilder builder, StatementBinder<M> binder,
+                    ObjectFactory<M> objectFactory) {
         super(databaseAdapter, builder, objectFactory);
         this.builder = builder;
         this.binder = binder;
@@ -59,6 +60,7 @@ public class ObjectStoreImpl<M extends CoreObject> extends ReadableStoreImpl<M> 
     @Override
     public long insert(@NonNull M m) throws RuntimeException {
         isNull(m);
+        resetStatementsIfDbChanged();
         if (insertStatement == null) {
             insertStatement = databaseAdapter.compileStatement(builder.insert());
         }
@@ -69,6 +71,19 @@ public class ObjectStoreImpl<M extends CoreObject> extends ReadableStoreImpl<M> 
             throw new RuntimeException("Nothing was inserted.");
         }
         return insertedRowId;
+    }
+
+    private void resetStatementsIfDbChanged() {
+        if (hasAdapterChanged()) {
+            insertStatement.close();
+            insertStatement = null;
+        }
+    }
+
+    private boolean hasAdapterChanged() {
+        Integer oldCode = adapterHashCode;
+        adapterHashCode = databaseAdapter.hashCode();
+        return oldCode != null && databaseAdapter.hashCode() != oldCode;
     }
 
     @Override
@@ -121,5 +136,10 @@ public class ObjectStoreImpl<M extends CoreObject> extends ReadableStoreImpl<M> 
                 throw e;
             }
         }
+    }
+
+    @Override
+    public boolean isReady() {
+        return databaseAdapter.isReady();
     }
 }

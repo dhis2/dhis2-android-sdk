@@ -50,8 +50,8 @@ class ParentDatabaseAdapter implements DatabaseAdapter {
         this.adapter = adapter;
     }
 
-    boolean isAdapterSet() {
-        return this.adapter != null;
+    void removeAdapter() {
+        this.adapter = null;
     }
 
     @Override
@@ -137,5 +137,15 @@ class ParentDatabaseAdapter implements DatabaseAdapter {
     @Override
     public void close() {
         getAdapter().close();
+    }
+
+    @Override
+    public boolean isReady() {
+        return adapter != null;
+    }
+
+    @Override
+    public int hashCode() {
+        return getAdapter().hashCode();
     }
 }

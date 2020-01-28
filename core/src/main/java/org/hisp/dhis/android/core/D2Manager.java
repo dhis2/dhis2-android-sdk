@@ -55,7 +55,7 @@ import io.reactivex.annotations.Nullable;
  */
 public final class D2Manager {
 
-    private static String databaseName = "dhis.db";
+    private static String databaseName = "dhis";
 
     private static D2 d2;
     private static D2Configuration d2Configuration;

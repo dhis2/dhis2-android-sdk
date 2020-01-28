@@ -65,7 +65,7 @@ public class MockIntegrationTestObjects {
 
     MockIntegrationTestObjects(MockIntegrationTestDatabaseContent content) throws Exception {
         this.content = content;
-        dbName = content.toString().toLowerCase() + ".db";
+        dbName = content.toString().toLowerCase();
 
         deleteDatabase();
 

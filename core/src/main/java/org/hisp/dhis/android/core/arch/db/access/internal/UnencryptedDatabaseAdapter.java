@@ -130,6 +130,11 @@ class UnencryptedDatabaseAdapter implements DatabaseAdapter {
     }
 
     @Override
+    public boolean isReady() {
+        return true;
+    }
+
+    @Override
     public void close() {
         database.close();
     }

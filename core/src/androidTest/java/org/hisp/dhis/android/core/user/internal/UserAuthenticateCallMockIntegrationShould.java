@@ -50,8 +50,7 @@ public class UserAuthenticateCallMockIntegrationShould extends BaseMockIntegrati
 
     @Before
     public void setUp() throws D2Error {
-        dhis2MockServer.enqueueMockResponse("user/user.json");
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
+        dhis2MockServer.enqueueLoginResponses();
     }
 
     @After

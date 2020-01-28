@@ -33,6 +33,11 @@ import androidx.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public final class DatabaseAdapterFactory {
 
     private static boolean encrypt;
@@ -40,6 +45,10 @@ public final class DatabaseAdapterFactory {
     private static String databaseName;
     private static Integer version;
     private static Context context;
+
+    private static Map<String, UnencryptedDatabaseOpenHelper> unencryptedOpenHelpers = new HashMap<>();
+    private static Map<String, EncryptedDatabaseOpenHelper> encryptedOpenHelpers = new HashMap<>();
+    private static List<DatabaseAdapter> adaptersToPreventNotClosedError = new ArrayList<>();
 
     public static void setExperimentalEncryption(boolean experimentalEncryption) {
         encrypt = experimentalEncryption;
@@ -63,9 +72,7 @@ public final class DatabaseAdapterFactory {
     public static void createOrOpenDatabase(DatabaseAdapter adapter) {
         try {
             ParentDatabaseAdapter parentDatabaseAdapter = (ParentDatabaseAdapter) adapter;
-            if (!parentDatabaseAdapter.isAdapterSet()) {
-                parentDatabaseAdapter.setAdapter(instantiateAdapter());
-            }
+            parentDatabaseAdapter.setAdapter(instantiateAdapter());
         } catch (ClassCastException cce) {
             // This ensures tests that mock DatabaseAdapter pass
         }
@@ -74,13 +81,41 @@ public final class DatabaseAdapterFactory {
     private static DatabaseAdapter instantiateAdapter() {
         int actualVersion = version == null ? BaseDatabaseOpenHelper.VERSION : version;
         if (encrypt) {
-            EncryptedDatabaseOpenHelper openHelper = new EncryptedDatabaseOpenHelper(context, databaseName,
-                    actualVersion);
-            return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(ENCRYPTION_PASSWORD));
+            EncryptedDatabaseOpenHelper openHelper;
+            if (databaseName == null || !encryptedOpenHelpers.containsKey(databaseName)) {
+                openHelper = new EncryptedDatabaseOpenHelper(context, databaseName + "-enc.db", actualVersion);
+                if (databaseName != null) {
+                    encryptedOpenHelpers.put(databaseName, openHelper);
+                }
+            } else {
+                openHelper = encryptedOpenHelpers.get(databaseName);
+            }
+            DatabaseAdapter adapter = new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(ENCRYPTION_PASSWORD));
+            adaptersToPreventNotClosedError.add(adapter);
+            return adapter;
         } else {
-            UnencryptedDatabaseOpenHelper openHelper
-                    = new UnencryptedDatabaseOpenHelper(context, databaseName, actualVersion);
-            return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
+            UnencryptedDatabaseOpenHelper openHelper;
+            if (databaseName == null || !unencryptedOpenHelpers.containsKey(databaseName)) {
+                openHelper = new UnencryptedDatabaseOpenHelper(context, databaseName, actualVersion);
+                if (databaseName != null) {
+                    unencryptedOpenHelpers.put(databaseName + ".db", openHelper);
+                }
+            } else {
+                openHelper = unencryptedOpenHelpers.get(databaseName);
+            }
+
+            DatabaseAdapter adapter = new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
+            adaptersToPreventNotClosedError.add(adapter);
+            return adapter;
+        }
+    }
+
+    public static void removeDatabaseAdapter(DatabaseAdapter adapter) {
+        try {
+            ParentDatabaseAdapter parentDatabaseAdapter = (ParentDatabaseAdapter) adapter;
+            parentDatabaseAdapter.removeAdapter();
+        } catch (ClassCastException cce) {
+            // This ensures tests that mock DatabaseAdapter pass
         }
     }
 

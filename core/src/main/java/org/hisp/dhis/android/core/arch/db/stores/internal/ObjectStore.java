@@ -45,4 +45,6 @@ public interface ObjectStore<M> extends ReadableStore<M> {
     boolean deleteWhere(String whereClause);
 
     void deleteWhereIfExists(@NonNull String whereClause) throws RuntimeException;
+
+    boolean isReady();
 }

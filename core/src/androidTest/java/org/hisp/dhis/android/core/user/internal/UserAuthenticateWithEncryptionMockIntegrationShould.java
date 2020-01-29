@@ -42,6 +42,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import java.io.IOException;
 
+import static com.google.common.truth.Truth.assertThat;
+
 public class UserAuthenticateWithEncryptionMockIntegrationShould {
 
     private static D2 d2;
@@ -53,6 +55,23 @@ public class UserAuthenticateWithEncryptionMockIntegrationShould {
         d2 = D2Manager.blockingInstantiateD2(D2Factory.d2Configuration(context));
         dhis2MockServer = new Dhis2MockServer();
         dhis2MockServer.setRequestDispatcher();
+    }
+
+    @Test
+    public void return_false_for_blocking_is_logged_when_not_logged() {
+        assertThat(d2.userModule().blockingIsLogged()).isFalse();
+    }
+
+    @Test
+    public void return_false_for_is_logged_when_not_logged() {
+        assertThat(d2.userModule().isLogged().blockingGet()).isFalse();
+    }
+
+    @Test
+    public void return_true_for_blocking_is_logged_when_logged() {
+        logIn();
+        assertThat(d2.userModule().blockingIsLogged()).isTrue();
+        logOut();
     }
 
     @Test

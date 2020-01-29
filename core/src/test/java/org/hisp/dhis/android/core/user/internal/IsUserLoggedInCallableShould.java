@@ -74,11 +74,22 @@ public class IsUserLoggedInCallableShould {
     @Test
     public void return_true_if_any_users_are_persisted_after_call() {
         when(credentialsSecureStore.get()).thenReturn(credentials);
+        when(authenticatedUserStore.isReady()).thenReturn(true);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
         Boolean isUserLoggedIn = isUserLoggedInSingle.blockingGet();
 
         assertThat(isUserLoggedIn).isTrue();
+    }
+
+    @Test
+    public void return_false_if_database_is_not_ready() {
+        when(credentialsSecureStore.get()).thenReturn(credentials);
+        when(authenticatedUserStore.isReady()).thenReturn(false);
+
+        Boolean isUserLoggedIn = isUserLoggedInSingle.blockingGet();
+
+        assertThat(isUserLoggedIn).isFalse();
     }
 
     @Test

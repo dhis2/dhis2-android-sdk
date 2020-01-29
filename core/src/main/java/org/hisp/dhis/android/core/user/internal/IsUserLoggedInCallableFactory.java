@@ -56,10 +56,14 @@ final class IsUserLoggedInCallableFactory {
 
     Single<Boolean> isLogged() {
         return Single.create(emitter -> {
-            Credentials credentials = credentialsSecureStore.get();
-            AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
+            if (authenticatedUserStore.isReady()) {
+                Credentials credentials = credentialsSecureStore.get();
+                AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
 
-            emitter.onSuccess(credentials != null && authenticatedUser != null);
+                emitter.onSuccess(credentials != null && authenticatedUser != null);
+            } else {
+                emitter.onSuccess(false);
+            }
         });
     }
 }

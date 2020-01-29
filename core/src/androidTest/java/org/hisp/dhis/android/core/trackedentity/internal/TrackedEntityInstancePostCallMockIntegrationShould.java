@@ -191,7 +191,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         d2.trackedEntityModule().trackedEntityInstances().uid("teiId").blockingDelete();
 
-        dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
+        // There is no TEIs to upload, so there is no request to enqueue.
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
 
@@ -254,6 +254,33 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
                 assertThat(event.state()).isEqualTo(State.UPLOADING);
             } else {
                 assertThat(event.state()).isNotEqualTo(State.UPLOADING);
+            }
+        }
+    }
+
+    @Test
+    public void mark_payload_as_to_update_when_error_500() {
+        storeTrackedEntityInstance();
+
+        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
+        dhis2MockServer.enqueueMockResponse(500, "Internal Server Error");
+
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
+
+        TrackedEntityInstance instance = TrackedEntityInstanceStoreImpl.create(databaseAdapter).selectFirst();
+        assertThat(instance.state()).isEqualTo(State.TO_UPDATE);
+
+        List<Enrollment> enrollments = EnrollmentStoreImpl.create(databaseAdapter).selectAll();
+        for (Enrollment enrollment : enrollments) {
+            if ("enrollment1Id".equals(enrollment.uid()) || "enrollment2Id".equals(enrollment.uid())) {
+                assertThat(enrollment.state()).isEqualTo(State.TO_UPDATE);
+            }
+        }
+
+        List<Event> events = EventStoreImpl.create(databaseAdapter).selectAll();
+        for (Event event : events) {
+            if ("event1Id".equals(event.uid()) || "event2Id".equals(event.uid())) {
+                assertThat(event.state()).isEqualTo(State.TO_UPDATE);
             }
         }
     }

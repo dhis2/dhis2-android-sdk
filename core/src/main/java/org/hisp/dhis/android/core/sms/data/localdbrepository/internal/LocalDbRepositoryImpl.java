@@ -36,6 +36,7 @@ import javax.inject.Inject;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
+@SuppressWarnings("PMD.ExcessiveImports")
 public class LocalDbRepositoryImpl implements LocalDbRepository {
     private final Context context;
     private final UserModule userModule;

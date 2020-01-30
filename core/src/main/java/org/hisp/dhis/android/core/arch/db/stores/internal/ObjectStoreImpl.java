@@ -60,10 +60,7 @@ public class ObjectStoreImpl<M extends CoreObject> extends ReadableStoreImpl<M> 
     @Override
     public long insert(@NonNull M m) throws RuntimeException {
         isNull(m);
-        resetStatementsIfDbChanged();
-        if (insertStatement == null) {
-            insertStatement = databaseAdapter.compileStatement(builder.insert());
-        }
+        compileStatements();
         binder.bindToStatement(m, insertStatement);
         long insertedRowId = databaseAdapter.executeInsert(insertStatement);
         insertStatement.clearBindings();
@@ -71,6 +68,13 @@ public class ObjectStoreImpl<M extends CoreObject> extends ReadableStoreImpl<M> 
             throw new RuntimeException("Nothing was inserted.");
         }
         return insertedRowId;
+    }
+
+    private void compileStatements() {
+        resetStatementsIfDbChanged();
+        if (insertStatement == null) {
+            insertStatement = databaseAdapter.compileStatement(builder.insert());
+        }
     }
 
     private void resetStatementsIfDbChanged() {

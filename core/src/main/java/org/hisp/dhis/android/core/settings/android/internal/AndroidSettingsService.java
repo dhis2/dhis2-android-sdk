@@ -26,12 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.settings.android.internal;
 
-public enum DataSyncPeriod {
-    EVERY_30_MIN,
-    EVERY_HOUR,
-    EVERY_6_HOURS,
-    EVERY_12_HOURS,
-    EVERY_24_HOURS
+import org.hisp.dhis.android.core.settings.android.AndroidSettings;
+import org.hisp.dhis.android.core.settings.android.DataSetSettings;
+import org.hisp.dhis.android.core.settings.android.ProgramSettings;
+
+import io.reactivex.Single;
+import retrofit2.http.GET;
+
+interface AndroidSettingsService {
+
+    String NAMESPACE = "dataStore/ANDROID_SETTING_APP";
+
+    @GET(NAMESPACE + "/" + "android_settings")
+    Single<AndroidSettings> getAndroidSettings();
+
+    @GET(NAMESPACE + "/" + "dataSet_settings")
+    Single<DataSetSettings> getDataSetSettings();
+
+    @GET(NAMESPACE + "/" + "program_settings")
+    Single<ProgramSettings> getProgramSettings();
+
 }

@@ -26,37 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.settings.android;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_DataSetSettingsItem.Builder.class)
-public abstract class DataSetSettingsItem {
+import java.io.IOException;
+import java.text.ParseException;
 
-    @JsonProperty()
-    public abstract String lastUpdated();
+public class DataSetSettingsShould extends BaseObjectShould implements ObjectShould {
 
-    @JsonProperty()
-    public abstract DownloadPeriod periodDSDownload();
-
-    @JsonProperty()
-    public abstract DownloadPeriod periodDSDBTrimming();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetSettingsItem.Builder();
+    public DataSetSettingsShould() {
+        super("settings/android/dataset_settings.json");
     }
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder lastUpdated(String lastUpdated);
-        public abstract Builder periodDSDownload(DownloadPeriod periodDSDownload);
-        public abstract Builder periodDSDBTrimming(DownloadPeriod periodDSDBTrimming);
-
-        public abstract DataSetSettingsItem build();
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        DataSetSettings dataSetSettings = objectMapper.readValue(jsonStream, DataSetSettings.class);
     }
 }

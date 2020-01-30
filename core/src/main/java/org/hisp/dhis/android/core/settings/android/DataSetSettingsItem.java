@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.settings.android;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -34,66 +34,29 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_AndroidSettings.Builder.class)
-public abstract class AndroidSettings {
-
-    @JsonProperty()
-    public abstract Boolean loading();
-
-    @JsonProperty()
-    public abstract DataSyncPeriod dayaSync();
-
-    @JsonProperty()
-    public abstract Boolean encryptDB();
-
-    @JsonProperty()
-    public abstract Boolean isUpdated();
-
-    @JsonProperty()
-    public abstract Integer valuesTEI();
+@JsonDeserialize(builder = AutoValue_DataSetSettingsItem.Builder.class)
+public abstract class DataSetSettingsItem {
 
     @JsonProperty()
     public abstract String lastUpdated();
 
     @JsonProperty()
-    public abstract MetadataSyncPeriod metadataSync();
+    public abstract DownloadPeriod periodDSDownload();
 
     @JsonProperty()
-    public abstract String numberSmsToSend();
-
-    @JsonProperty()
-    public abstract Boolean errorConfirmation();
-
-    @JsonProperty()
-    public abstract String numberSmsConfirmation();
+    public abstract DownloadPeriod periodDSDBTrimming();
 
     public static Builder builder() {
-        return new AutoValue_AndroidSettings.Builder();
+        return new AutoValue_DataSetSettingsItem.Builder();
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
-        public abstract Builder loading(Boolean loading);
-
-        public abstract Builder dayaSync(DataSyncPeriod dayaSync);
-
-        public abstract Builder encryptDB(Boolean encryptDB);
-
-        public abstract Builder isUpdated(Boolean isUpdated);
-
-        public abstract Builder valuesTEI(Integer valuesTEI);
-
         public abstract Builder lastUpdated(String lastUpdated);
+        public abstract Builder periodDSDownload(DownloadPeriod periodDSDownload);
+        public abstract Builder periodDSDBTrimming(DownloadPeriod periodDSDBTrimming);
 
-        public abstract Builder metadataSync(MetadataSyncPeriod metadataSync);
-
-        public abstract Builder numberSmsToSend(String numberSmsToSend);
-
-        public abstract Builder errorConfirmation(Boolean errorConfirmation);
-
-        public abstract Builder numberSmsConfirmation(String numberSmsConfirmation);
-
-        public abstract AndroidSettings build();
+        public abstract DataSetSettingsItem build();
     }
 }

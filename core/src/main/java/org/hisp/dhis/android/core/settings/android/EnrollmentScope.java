@@ -26,36 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.settings.android;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
-import java.util.Map;
-
-@AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramSettings.Builder.class)
-public abstract class ProgramSettings {
-
-    @JsonProperty()
-    public abstract ProgramSettingsItem globalSettings();
-
-    @JsonProperty()
-    public abstract Map<String, ProgramSettingsItem> specificSettings();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramSettings.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder globalSettings(ProgramSettingsItem globalSettings);
-
-        public abstract Builder specificSettings(Map<String, ProgramSettingsItem> specificSettings);
-
-        public abstract ProgramSettings build();
-    }
+public enum EnrollmentScope {
+    ALL,
+    ONLY_ACTIVE
 }

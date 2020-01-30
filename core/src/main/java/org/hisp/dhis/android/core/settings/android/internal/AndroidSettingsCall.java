@@ -25,12 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.android.internal;
 
-package org.hisp.dhis.android.core.configuration;
+import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider;
 
-public enum DownloadPeriod {
-    ANY,
-    LAST_MONTH,
-    LAST_3_MONTHS,
-    LAST_12_MONTHS
+import javax.inject.Inject;
+
+import dagger.Reusable;
+import io.reactivex.Completable;
+
+@Reusable
+public class AndroidSettingsCall implements CompletableProvider {
+
+    @Inject
+    AndroidSettingsCall() {
+    }
+
+    @Override
+    public Completable getCompletable(boolean storeError) {
+        // TODO Implement download of android settings
+        return Completable.complete();
+    }
 }

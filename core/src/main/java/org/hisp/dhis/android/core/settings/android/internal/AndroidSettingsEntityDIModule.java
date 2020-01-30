@@ -26,9 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.settings.android.internal;
 
-public enum EnrollmentScope {
-    ALL,
-    ONLY_ACTIVE
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
+
+@Module
+public final class AndroidSettingsEntityDIModule {
+
+    @Provides
+    @Reusable
+    AndroidSettingsService service(Retrofit retrofit) {
+        return retrofit.create(AndroidSettingsService.class);
+    }
 }

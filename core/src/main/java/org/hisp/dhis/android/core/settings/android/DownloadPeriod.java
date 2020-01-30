@@ -26,24 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.settings.android;
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-public class DataSetSettingsShould extends BaseObjectShould implements ObjectShould {
-
-    public DataSetSettingsShould() {
-        super("configuration/dataset_settings.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        DataSetSettings dataSetSettings = objectMapper.readValue(jsonStream, DataSetSettings.class);
-    }
+public enum DownloadPeriod {
+    ANY,
+    LAST_MONTH,
+    LAST_3_MONTHS,
+    LAST_12_MONTHS
 }

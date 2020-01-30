@@ -26,31 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.settings.android;
 
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
-import org.hisp.dhis.android.core.settings.android.internal.AndroidSettingsEntityDIModule;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+import java.util.Map;
 
-@Module(includes = {
-        AndroidSettingsEntityDIModule.class,
-        SystemSettingEntityDIModule.class
-})
-public final class SystemSettingPackageDIModule {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_DataSetSettings.Builder.class)
+public abstract class DataSetSettings {
 
-    @Provides
-    @Reusable
-    SystemSettingService service(Retrofit retrofit) {
-        return retrofit.create(SystemSettingService.class);
+    @JsonProperty()
+    public abstract DataSetSettingsItem globalSettings();
+
+    @JsonProperty()
+    public abstract Map<String, DataSetSettingsItem> specificSettings();
+
+    public static Builder builder() {
+        return new AutoValue_DataSetSettings.Builder();
     }
 
-    @Provides
-    @Reusable
-    SystemSettingModule module(SystemSettingModuleImpl impl) {
-        return impl;
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+        public abstract Builder globalSettings(DataSetSettingsItem globalSettings);
+
+        public abstract Builder specificSettings(Map<String, DataSetSettingsItem> specificSettings);
+
+        public abstract DataSetSettings build();
     }
 }

@@ -26,31 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.settings.android;
 
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
-import org.hisp.dhis.android.core.settings.android.internal.AndroidSettingsEntityDIModule;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        AndroidSettingsEntityDIModule.class,
-        SystemSettingEntityDIModule.class
-})
-public final class SystemSettingPackageDIModule {
-
-    @Provides
-    @Reusable
-    SystemSettingService service(Retrofit retrofit) {
-        return retrofit.create(SystemSettingService.class);
-    }
-
-    @Provides
-    @Reusable
-    SystemSettingModule module(SystemSettingModuleImpl impl) {
-        return impl;
-    }
+public enum MetadataSyncPeriod {
+    EVERY_HOUR,
+    EVERY_12_HOURS,
+    EVERY_DAY,
+    EVERY_7_DAYS
 }

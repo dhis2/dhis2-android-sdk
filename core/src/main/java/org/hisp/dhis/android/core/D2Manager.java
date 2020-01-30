@@ -116,6 +116,11 @@ public final class D2Manager {
                 ServerURLWrapper.setServerUrl(configuration.serverUrl().toString());
             }
 
+            Credentials credentials = credentialsSecureStore.get();
+            if (credentials != null) {
+                DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter);
+            }
+
             d2 = new D2(
                     RetrofitFactory.retrofit(
                             OkHttpClientFactory.okHttpClient(d2Configuration, credentialsSecureStore)),

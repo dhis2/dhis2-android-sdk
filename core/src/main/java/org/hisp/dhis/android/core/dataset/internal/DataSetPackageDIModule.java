@@ -46,6 +46,7 @@ import retrofit2.Retrofit;
         DataSetEntityDIModule.class,
         DataSetCompleteRegistrationEntityDIModule.class,
         DataSetInstanceEntityDIModule.class,
+        DataSetOrganisationUnitLinkEntityDIModule.class,
         SectionEntityDIModule.class,
         SectionDataElementEntityDIModule.class,
         SectionGreyedFieldsEntityDIModule.class

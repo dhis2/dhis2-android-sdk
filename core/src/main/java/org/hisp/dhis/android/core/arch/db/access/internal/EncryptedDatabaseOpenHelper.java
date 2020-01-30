@@ -33,16 +33,9 @@ import android.content.Context;
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteOpenHelper;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 class EncryptedDatabaseOpenHelper extends SQLiteOpenHelper {
 
     private final BaseDatabaseOpenHelper baseHelper;
-
-    EncryptedDatabaseOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        this(context, databaseName, BaseDatabaseOpenHelper.VERSION);
-    }
 
     EncryptedDatabaseOpenHelper(Context context, String databaseName, int targetVersion) {
         super(context, databaseName, null, targetVersion);

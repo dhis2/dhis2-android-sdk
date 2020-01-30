@@ -147,5 +147,7 @@ public interface DatabaseAdapter {
 
     void enableWriteAheadLogging();
 
+    boolean isReady();
+
     void close();
 }

@@ -28,13 +28,17 @@
 
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
+import android.database.Cursor;
+
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.common.CoreObject;
 
-import androidx.annotation.NonNull;
+import java.util.List;
 
 public class LinkStoreImpl<M extends CoreObject> extends ObjectStoreImpl<M> implements LinkStore<M> {
 
@@ -57,5 +61,11 @@ public class LinkStoreImpl<M extends CoreObject> extends ObjectStoreImpl<M> impl
     @Override
     public int deleteAllLinks() {
         return delete();
+    }
+
+    @Override
+    public List<String> selectDistinctSlaves(@NonNull String slaveColumn) {
+        Cursor cursor = databaseAdapter.rawQuery(builder.selectDistinct(slaveColumn));
+        return mapStringColumnSetFromCursor(cursor);
     }
 }

@@ -26,16 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+package org.hisp.dhis.android.core.dataset.internal;
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
 
-import org.hisp.dhis.android.core.common.CoreObject;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-import java.util.List;
+@Module
+public final class DataSetOrganisationUnitLinkEntityDIModule {
 
-public interface LinkStore<M extends CoreObject> extends ObjectStore<M> {
-    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
-    int deleteAllLinks();
-    List<String> selectDistinctSlaves(@NonNull String slaveColumn);
+    @Provides
+    @Reusable
+    LinkStore<DataSetOrganisationUnitLink> store(DatabaseAdapter databaseAdapter) {
+        return DataSetOrganisationUnitLinkStore.create(databaseAdapter);
+    }
 }

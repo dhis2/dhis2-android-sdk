@@ -36,6 +36,10 @@ public abstract class BaseMockIntegrationTestMetadataEnqueable extends BaseMockI
     public static void setUpClass() throws Exception {
         boolean isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.MetadataEnqueable);
         if (isNewInstance) {
+            objects.dhis2MockServer.enqueueLoginResponses();
+            objects.d2.userModule().blockingLogIn("android", "Android123",
+                    objects.dhis2MockServer.getBaseEndpoint());
+
             objects.dhis2MockServer.enqueueMetadataResponses();
             objects.d2.metadataModule().blockingDownload();
         }

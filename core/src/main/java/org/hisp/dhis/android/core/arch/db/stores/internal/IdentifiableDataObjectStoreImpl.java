@@ -61,6 +61,8 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
     private StatementWrapper setStateForUpdateStatement;
     final String tableName;
 
+    private Integer adapterHashCode;
+
     public IdentifiableDataObjectStoreImpl(DatabaseAdapter databaseAdapter,
                                            SQLStatementBuilder builder,
                                            StatementBinder<M> binder,
@@ -70,6 +72,7 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
     }
 
     private void compileStatements() {
+        resetStatementsIfDbChanged();
         if (selectStateQuery == null) {
             String whereUid = " WHERE " + UID + " =?";
 
@@ -89,6 +92,21 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
 
             this.selectStateQuery = "SELECT " + STATE + " FROM " + tableName + whereUid;
             this.existsQuery = "SELECT 1 FROM " + tableName + whereUid;
+        }
+    }
+
+    private boolean hasAdapterChanged() {
+        Integer oldCode = adapterHashCode;
+        adapterHashCode = databaseAdapter.hashCode();
+        return oldCode != null && databaseAdapter.hashCode() != oldCode;
+    }
+
+    private void resetStatementsIfDbChanged() {
+        if (hasAdapterChanged()) {
+            setStateStatement.close();
+            setStateForUpdateStatement.close();
+            setStateStatement = null;
+            setStateForUpdateStatement = null;
         }
     }
 

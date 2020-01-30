@@ -75,4 +75,11 @@ public class ServerUrlParserShould {
     public void parse_url_slash_api_slash() {
         assertThat(ServerUrlParser.parse("http://dhis2.org/api/")).isEqualTo(EXPECTED);
     }
+
+    @Test
+    public void remove_trailing_slash() {
+        String expected = "http://dhis2.org/demo";
+        assertThat(ServerUrlParser.removeTrailingSlash("http://dhis2.org/demo/")).isEqualTo(expected);
+        assertThat(ServerUrlParser.removeTrailingSlash("http://dhis2.org/demo//")).isEqualTo(expected);
+    }
 }

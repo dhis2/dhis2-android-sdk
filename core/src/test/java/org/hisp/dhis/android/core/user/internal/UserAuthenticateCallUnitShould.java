@@ -252,8 +252,8 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         verifyNoTransactionCompleted();
 
         // stores must not be invoked
-        verify(credentialsSecureStore).get();
-        verify(authenticatedUserStore).selectFirst();
+        verify(credentialsSecureStore, never()).get();
+        verify(authenticatedUserStore, never()).selectFirst();
         verifyNoMoreInteractions(userHandler);
     }
 
@@ -337,6 +337,19 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
         logInSingle.test().awaitTerminalEvent();
+        verifySuccessOffline();
+    }
+
+    @Test
+    public void user_login_offline_if_server_url_has_trailing_slash() throws Exception {
+        whenAPICall().thenThrow(d2Error);
+        
+        when(credentialsSecureStore.get()).thenReturn(null);
+        when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
+
+        Single<User> loginCall = instantiateCall(USERNAME, PASSWORD, serverUrl + "/");
+
+        loginCall.test().awaitTerminalEvent();
         verifySuccessOffline();
     }
 

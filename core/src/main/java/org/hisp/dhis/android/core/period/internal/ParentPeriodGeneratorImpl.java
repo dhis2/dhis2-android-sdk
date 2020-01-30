@@ -34,7 +34,10 @@ import org.hisp.dhis.android.core.period.PeriodType;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
 
@@ -45,27 +48,8 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
     private final NMonthlyPeriodGenerators nMonthly;
     private final YearlyPeriodGenerators yearly;
 
-    static class Past {
-        static final int DAILY_PERIODS = 59;
-        static final int WEEKLY_PERIODS = 12;
-        static final int BIWEEKLY_PERIODS = 12;
-        static final int MONTHLY_PERIODS = 11;
-        static final int BIMONTHLY_PERIODS = 5;
-        static final int QUARTER_PERIODS = 4;
-        static final int SIXMONTHLY_PERIODS = 4;
-        static final int YEARLY_PERIODS = 4;
-    }
-
-    static class Future {
-        static final int DAILY_PERIODS = 1;
-        static final int WEEKLY_PERIODS = 1;
-        static final int BIWEEKLY_PERIODS = 1;
-        static final int MONTHLY_PERIODS = 1;
-        static final int BIMONTHLY_PERIODS = 1;
-        static final int QUARTER_PERIODS = 1;
-        static final int SIXMONTHLY_PERIODS = 1;
-        static final int YEARLY_PERIODS = 1;
-    }
+    final Map<PeriodType, Integer> past;
+    final Map<PeriodType, Integer> future;
 
     ParentPeriodGeneratorImpl(PeriodGenerator daily,
                               WeeklyPeriodGenerators weekly,
@@ -79,33 +63,85 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
         this.monthly = monthly;
         this.nMonthly = nMonthly;
         this.yearly = yearly;
+
+        this.past = getDefaultPastPeriods();
+        this.future = getDefaultFuturePeriods();
+    }
+
+    private Map<PeriodType, Integer> getDefaultPastPeriods() {
+        Map<PeriodType, Integer> past = new HashMap<>();
+        past.put(PeriodType.Daily, 59);
+        past.put(PeriodType.Weekly, 12);
+        past.put(PeriodType.WeeklySaturday, 12);
+        past.put(PeriodType.WeeklySunday, 12);
+        past.put(PeriodType.WeeklyThursday, 12);
+        past.put(PeriodType.WeeklyWednesday, 12);
+        past.put(PeriodType.BiWeekly, 12);
+        past.put(PeriodType.Monthly, 11);
+        past.put(PeriodType.BiMonthly, 5);
+        past.put(PeriodType.Quarterly, 4);
+        past.put(PeriodType.SixMonthly, 4);
+        past.put(PeriodType.SixMonthlyApril, 4);
+        past.put(PeriodType.Yearly, 4);
+        past.put(PeriodType.FinancialApril, 4);
+        past.put(PeriodType.FinancialJuly, 4);
+        past.put(PeriodType.FinancialOct, 4);
+        return past;
+    }
+
+    private Map<PeriodType, Integer> getDefaultFuturePeriods() {
+        Map<PeriodType, Integer> future = new HashMap<>();
+        future.put(PeriodType.Daily, 1);
+        future.put(PeriodType.Weekly, 1);
+        future.put(PeriodType.WeeklySaturday, 1);
+        future.put(PeriodType.WeeklySunday, 1);
+        future.put(PeriodType.WeeklyThursday, 1);
+        future.put(PeriodType.WeeklyWednesday, 1);
+        future.put(PeriodType.BiWeekly, 1);
+        future.put(PeriodType.Monthly, 1);
+        future.put(PeriodType.BiMonthly, 1);
+        future.put(PeriodType.Quarterly, 1);
+        future.put(PeriodType.SixMonthly, 1);
+        future.put(PeriodType.SixMonthlyApril, 1);
+        future.put(PeriodType.Yearly, 1);
+        future.put(PeriodType.FinancialApril, 1);
+        future.put(PeriodType.FinancialJuly, 1);
+        future.put(PeriodType.FinancialOct, 1);
+        return future;
     }
 
     public List<Period> generatePeriods() {
         List<Period> periods = new ArrayList<>();
-        periods.addAll(daily.generatePeriods(Past.DAILY_PERIODS, Future.DAILY_PERIODS));
 
-        periods.addAll(weekly.weekly.generatePeriods(Past.WEEKLY_PERIODS, Future.WEEKLY_PERIODS));
-        periods.addAll(weekly.weeklyWednesday.generatePeriods(Past.WEEKLY_PERIODS, Future.WEEKLY_PERIODS));
-        periods.addAll(weekly.weeklyThursday.generatePeriods(Past.WEEKLY_PERIODS, Future.WEEKLY_PERIODS));
-        periods.addAll(weekly.weeklySaturday.generatePeriods(Past.WEEKLY_PERIODS, Future.WEEKLY_PERIODS));
-        periods.addAll(weekly.weeklySunday.generatePeriods(Past.WEEKLY_PERIODS, Future.WEEKLY_PERIODS));
-
-        periods.addAll(biWeekly.generatePeriods(Past.BIWEEKLY_PERIODS, Future.BIWEEKLY_PERIODS));
-
-        periods.addAll(monthly.generatePeriods(Past.MONTHLY_PERIODS, Future.MONTHLY_PERIODS));
-
-        periods.addAll(nMonthly.biMonthly.generatePeriods(Past.BIMONTHLY_PERIODS, Future.BIMONTHLY_PERIODS));
-        periods.addAll(nMonthly.quarter.generatePeriods(Past.QUARTER_PERIODS, Future.QUARTER_PERIODS));
-        periods.addAll(nMonthly.sixMonthly.generatePeriods(Past.SIXMONTHLY_PERIODS, Future.SIXMONTHLY_PERIODS));
-        periods.addAll(nMonthly.sixMonthlyApril.generatePeriods(Past.SIXMONTHLY_PERIODS, Future.SIXMONTHLY_PERIODS));
-
-        periods.addAll(yearly.yearly.generatePeriods(Past.YEARLY_PERIODS, Future.YEARLY_PERIODS));
-        periods.addAll(yearly.financialApril.generatePeriods(Past.YEARLY_PERIODS, Future.YEARLY_PERIODS));
-        periods.addAll(yearly.financialJuly.generatePeriods(Past.YEARLY_PERIODS, Future.YEARLY_PERIODS));
-        periods.addAll(yearly.financialOct.generatePeriods(Past.YEARLY_PERIODS, Future.YEARLY_PERIODS));
+        for (PeriodType periodType : PeriodType.values()) {
+            PeriodGenerator periodGenerator = getPeriodGenerator(periodType);
+            if (periodGenerator != null) {
+                List<Period> ps = periodGenerator.generatePeriods(getPast(periodType), getFuture(periodType));
+                periods.addAll(ps);
+            }
+        }
 
         return periods;
+    }
+
+    public List<Period> generatePeriods(PeriodType periodType, int futurePeriods) {
+        PeriodGenerator periodGenerator = getPeriodGenerator(periodType);
+
+        if (periodGenerator == null) {
+            return Collections.emptyList();
+        } else {
+            return periodGenerator.generatePeriods(getPast(periodType), futurePeriods);
+        }
+    }
+
+    public Period generatePeriod(PeriodType periodType, Date date) {
+        PeriodGenerator periodGenerator = getPeriodGenerator(periodType);
+
+        if (periodGenerator == null) {
+            return null;
+        } else {
+            return periodGenerator.generatePeriod(date);
+        }
     }
 
     @SuppressWarnings({
@@ -113,42 +149,52 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
             "PMD.ModifiedCyclomaticComplexity",
             "PMD.StdCyclomaticComplexity"
     })
-    public List<Period> generatePeriods(PeriodType periodType, int futurePeriods) {
+    private PeriodGenerator getPeriodGenerator(PeriodType periodType) {
         if (periodType == PeriodType.Daily) {
-            return daily.generatePeriods(Past.DAILY_PERIODS, futurePeriods);
+            return daily;
         } else if (periodType == PeriodType.Weekly) {
-            return weekly.weekly.generatePeriods(Past.WEEKLY_PERIODS, futurePeriods);
+            return weekly.weekly;
         } else if (periodType == PeriodType.WeeklyWednesday) {
-            return weekly.weeklyWednesday.generatePeriods(Past.WEEKLY_PERIODS, futurePeriods);
+            return weekly.weeklyWednesday;
         } else if (periodType == PeriodType.WeeklyThursday) {
-            return weekly.weeklyThursday.generatePeriods(Past.WEEKLY_PERIODS, futurePeriods);
+            return weekly.weeklyThursday;
         } else if (periodType == PeriodType.WeeklySaturday) {
-            return weekly.weeklySaturday.generatePeriods(Past.WEEKLY_PERIODS, futurePeriods);
+            return weekly.weeklySaturday;
         } else if (periodType == PeriodType.WeeklySunday) {
-            return weekly.weeklySunday.generatePeriods(Past.WEEKLY_PERIODS, futurePeriods);
+            return weekly.weeklySunday;
         } else if (periodType == PeriodType.BiWeekly) {
-            return biWeekly.generatePeriods(Past.BIWEEKLY_PERIODS, futurePeriods);
+            return biWeekly;
         } else if (periodType == PeriodType.Monthly) {
-            return monthly.generatePeriods(Past.MONTHLY_PERIODS, futurePeriods);
+            return monthly;
         } else if (periodType == PeriodType.BiMonthly) {
-            return nMonthly.biMonthly.generatePeriods(Past.BIMONTHLY_PERIODS, futurePeriods);
+            return nMonthly.biMonthly;
         } else if (periodType == PeriodType.Quarterly) {
-            return nMonthly.quarter.generatePeriods(Past.QUARTER_PERIODS, futurePeriods);
+            return nMonthly.quarter;
         } else if (periodType == PeriodType.SixMonthly) {
-            return nMonthly.sixMonthly.generatePeriods(Past.SIXMONTHLY_PERIODS, futurePeriods);
+            return nMonthly.sixMonthly;
         } else if (periodType == PeriodType.SixMonthlyApril) {
-            return nMonthly.sixMonthlyApril.generatePeriods(Past.SIXMONTHLY_PERIODS, futurePeriods);
+            return nMonthly.sixMonthlyApril;
         } else if (periodType == PeriodType.Yearly) {
-            return yearly.yearly.generatePeriods(Past.YEARLY_PERIODS, futurePeriods);
+            return yearly.yearly;
         } else if (periodType == PeriodType.FinancialApril) {
-            return yearly.financialApril.generatePeriods(Past.YEARLY_PERIODS, futurePeriods);
+            return yearly.financialApril;
         } else if (periodType == PeriodType.FinancialJuly) {
-            return yearly.financialJuly.generatePeriods(Past.YEARLY_PERIODS, futurePeriods);
+            return yearly.financialJuly;
         } else if (periodType == PeriodType.FinancialOct) {
-            return yearly.financialOct.generatePeriods(Past.YEARLY_PERIODS, futurePeriods);
+            return yearly.financialOct;
         } else {
-            return Collections.emptyList();
+            return null;
         }
+    }
+
+    private int getPast(PeriodType periodType) {
+        Integer periods = past.get(periodType);
+        return periods == null ? 0 : periods;
+    }
+
+    private int getFuture(PeriodType periodType) {
+        Integer periods = future.get(periodType);
+        return periods == null ? 0 : periods;
     }
 
     static ParentPeriodGeneratorImpl create(CalendarProvider calendarProvider) {

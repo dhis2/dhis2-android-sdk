@@ -120,4 +120,9 @@ public class EncryptedStatementWrapper implements StatementWrapper {
     public int executeUpdateDelete() {
         return s.executeUpdateDelete();
     }
+
+    @Override
+    public void close() {
+        s.close();
+    }
 }

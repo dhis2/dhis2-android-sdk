@@ -84,6 +84,8 @@ public class APICallExecutorShould {
 
         users = Collections.singletonList(user);
 
+        when(errorStore.isReady()).thenReturn(true);
+
         when(objectAPICall.execute()).thenReturn(Response.success(user));
         when(payloadAPICall.execute()).thenReturn(Response.success(payload));
         when(payload.items()).thenReturn(users);
@@ -120,6 +122,7 @@ public class APICallExecutorShould {
         } catch (D2Error d2Error) {
             // Empty block
         }
+        verify(errorStore).isReady();
         verify(errorStore).insert(any(D2Error.class));
         verifyNoMoreInteractions(errorStore);
     }
@@ -150,6 +153,7 @@ public class APICallExecutorShould {
         } catch (D2Error d2Error) {
             // Empty block
         }
+        verify(errorStore).isReady();
         verify(errorStore).insert(any(D2Error.class));
         verifyNoMoreInteractions(errorStore);
     }
@@ -163,6 +167,7 @@ public class APICallExecutorShould {
         } catch (D2Error d2Error) {
             //Empty block
         }
+        verify(errorStore).isReady();
         verify(errorStore).insert(any(D2Error.class));
         verifyNoMoreInteractions(errorStore);
     }
@@ -176,6 +181,7 @@ public class APICallExecutorShould {
         } catch (D2Error d2Error) {
             //Empty block
         }
+        verify(errorStore).isReady();
         verify(errorStore).insert(any(D2Error.class));
         verifyNoMoreInteractions(errorStore);
     }

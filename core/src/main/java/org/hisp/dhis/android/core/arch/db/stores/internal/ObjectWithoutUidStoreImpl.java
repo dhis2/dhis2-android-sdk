@@ -48,6 +48,8 @@ public class ObjectWithoutUidStoreImpl<M extends CoreObject>
     private final WhereStatementBinder<M> whereUpdateBinder;
     private final WhereStatementBinder<M> whereDeleteBinder;
 
+    private Integer adapterHashCode;
+
     public ObjectWithoutUidStoreImpl(DatabaseAdapter databaseAdapter,
                                      SQLStatementBuilder builder,
                                      StatementBinder<M> binder,
@@ -62,6 +64,7 @@ public class ObjectWithoutUidStoreImpl<M extends CoreObject>
     @Override
     public void updateWhere(@NonNull M m) throws RuntimeException {
         isNull(m);
+        resetStatementsIfDbChanged();
         if (updateWhereStatement == null) {
             updateWhereStatement = databaseAdapter.compileStatement(builder.updateWhere());
         }
@@ -70,9 +73,25 @@ public class ObjectWithoutUidStoreImpl<M extends CoreObject>
         executeUpdateDelete(updateWhereStatement);
     }
 
+    private boolean hasAdapterChanged() {
+        Integer oldCode = adapterHashCode;
+        adapterHashCode = databaseAdapter.hashCode();
+        return oldCode != null && databaseAdapter.hashCode() != oldCode;
+    }
+
+    private void resetStatementsIfDbChanged() {
+        if (hasAdapterChanged()) {
+            updateWhereStatement.close();
+            deleteWhereStatement.close();
+            updateWhereStatement = null;
+            deleteWhereStatement = null;
+        }
+    }
+
     @Override
     public void deleteWhere(@NonNull M m) throws RuntimeException {
         isNull(m);
+        resetStatementsIfDbChanged();
         if (deleteWhereStatement == null) {
             deleteWhereStatement = databaseAdapter.compileStatement(builder.deleteWhere());
         }

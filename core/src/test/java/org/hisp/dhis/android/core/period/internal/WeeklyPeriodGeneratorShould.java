@@ -34,6 +34,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -124,6 +126,31 @@ public class WeeklyPeriodGeneratorShould {
         assertThat(generatedThuPeriods).isEqualTo(Lists.newArrayList(periodThursday));
         assertThat(generatedSatPeriods).isEqualTo(Lists.newArrayList(periodSaturday));
         assertThat(generatedSunPeriods).isEqualTo(Lists.newArrayList(periodSunday));
+    }
+
+    @Test
+    public void generate_period_id() throws ParseException {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        PeriodGenerator saturdayGenerator = WeeklyPeriodGeneratorFactory.saturday(calendar);
+        assertThat("2019SatW51").isEqualTo(saturdayGenerator.generatePeriod(dateFormatter.parse("2019-12-20")).periodId());
+        assertThat("2019SatW52").isEqualTo(saturdayGenerator.generatePeriod(dateFormatter.parse("2019-12-21")).periodId());
+
+        PeriodGenerator sundayGenerator = WeeklyPeriodGeneratorFactory.sunday(calendar);
+        assertThat("2019SunW51").isEqualTo(sundayGenerator.generatePeriod(dateFormatter.parse("2019-12-21")).periodId());
+        assertThat("2019SunW52").isEqualTo(sundayGenerator.generatePeriod(dateFormatter.parse("2019-12-22")).periodId());
+
+        PeriodGenerator weeklyGenerator = WeeklyPeriodGeneratorFactory.weekly(calendar);
+        assertThat("2019W51").isEqualTo(weeklyGenerator.generatePeriod(dateFormatter.parse("2019-12-22")).periodId());
+        assertThat("2019W52").isEqualTo(weeklyGenerator.generatePeriod(dateFormatter.parse("2019-12-23")).periodId());
+
+        PeriodGenerator wednesdayGenerator = WeeklyPeriodGeneratorFactory.wednesday(calendar);
+        assertThat("2019WedW51").isEqualTo(wednesdayGenerator.generatePeriod(dateFormatter.parse("2019-12-24")).periodId());
+        assertThat("2019WedW52").isEqualTo(wednesdayGenerator.generatePeriod(dateFormatter.parse("2019-12-25")).periodId());
+
+        PeriodGenerator thursdayGenerator = WeeklyPeriodGeneratorFactory.thursday(calendar);
+        assertThat("2019ThuW51").isEqualTo(thursdayGenerator.generatePeriod(dateFormatter.parse("2019-12-25")).periodId());
+        assertThat("2019ThuW52").isEqualTo(thursdayGenerator.generatePeriod(dateFormatter.parse("2019-12-26")).periodId());
     }
 
     private Period generateExpectedPeriod(String id, Calendar cal, int weekStartDay, PeriodType periodType) {

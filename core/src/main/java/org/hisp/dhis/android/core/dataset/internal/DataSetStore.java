@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 
 import androidx.annotation.NonNull;
 
-final class DataSetStore {
+public final class DataSetStore {
 
     private DataSetStore() {}
 

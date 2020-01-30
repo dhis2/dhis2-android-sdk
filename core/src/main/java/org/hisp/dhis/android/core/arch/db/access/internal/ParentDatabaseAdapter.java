@@ -29,64 +29,69 @@ package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-
-import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 
-class UnencryptedDatabaseAdapter implements DatabaseAdapter {
+class ParentDatabaseAdapter implements DatabaseAdapter {
 
-    private final SQLiteDatabase database;
+    private DatabaseAdapter adapter;
 
-    UnencryptedDatabaseAdapter(@NonNull SQLiteDatabase database) {
-        if (database == null) {
-            throw new IllegalArgumentException("database == null");
+    private DatabaseAdapter getAdapter() {
+        if (adapter == null) {
+            throw new RuntimeException("Database not yet created. Please login first.");
+        } else {
+            return adapter;
         }
-        this.database = database;
+    }
+
+    void setAdapter(DatabaseAdapter adapter) {
+        this.adapter = adapter;
+    }
+
+    void removeAdapter() {
+        this.adapter = null;
     }
 
     @Override
     public Transaction beginNewTransaction() {
-        database.beginTransaction();
-        return new TransactionImpl(this);
+        return getAdapter().beginNewTransaction();
     }
 
     @Override
     public void setTransactionSuccessful() {
-        database.setTransactionSuccessful();
+        getAdapter().setTransactionSuccessful();
     }
 
     @Override
     public void endTransaction() {
-        database.endTransaction();
+        getAdapter().endTransaction();
     }
 
     @Override
     public void execSQL(String sql) {
-        database.execSQL(sql);
+        getAdapter().execSQL(sql);
     }
 
     @Override
     public StatementWrapper compileStatement(String sql) {
-        return new UnencryptedStatementWrapper(database.compileStatement(sql));
+        return getAdapter().compileStatement(sql);
     }
 
     @Override
     public Cursor rawQuery(String sql, String... selectionArgs) {
-        return database.rawQuery(sql, selectionArgs);
+        return getAdapter().rawQuery(sql, selectionArgs);
     }
 
     @Override
     public Cursor query(String sql, String[] columns) {
-        return database.query(sql, columns, null, null, null, null, null);
+        return getAdapter().query(sql, columns);
     }
 
     @Override
     public Cursor query(String table, String[] columns, String selection, String[] selectionArgs) {
-        return database.query(table, columns, selection, selectionArgs, null, null, null);
+        return getAdapter().query(table, columns, selection, selectionArgs);
     }
 
     @Override
@@ -101,7 +106,7 @@ class UnencryptedDatabaseAdapter implements DatabaseAdapter {
 
     @Override
     public int delete(String table, String whereClause, String[] whereArgs) {
-        return database.delete(table, whereClause, whereArgs);
+        return getAdapter().delete(table, whereClause, whereArgs);
     }
 
     @Override
@@ -111,31 +116,41 @@ class UnencryptedDatabaseAdapter implements DatabaseAdapter {
 
     @Override
     public long insert(String table, String nullColumnHack, ContentValues values) {
-        return database.insert(table, nullColumnHack, values);
+        return getAdapter().insert(table, nullColumnHack, values);
     }
 
     @Override
     public int update(String table, ContentValues values, String whereClause, String[] whereArgs) {
-        return database.update(table, values, whereClause, whereArgs);
+        return getAdapter().update(table, values, whereClause, whereArgs);
     }
 
     @Override
     public void setForeignKeyConstraintsEnabled(boolean enable) {
-        database.setForeignKeyConstraintsEnabled(enable);
+        getAdapter().setForeignKeyConstraintsEnabled(enable);
     }
 
     @Override
     public void enableWriteAheadLogging() {
-        database.enableWriteAheadLogging();
-    }
-
-    @Override
-    public boolean isReady() {
-        return true;
+        getAdapter().enableWriteAheadLogging();
     }
 
     @Override
     public void close() {
-        database.close();
+        getAdapter().close();
+    }
+
+    @Override
+    public boolean isReady() {
+        return adapter != null;
+    }
+
+    @Override
+    public int hashCode() {
+        return getAdapter().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return getAdapter().equals(o);
     }
 }

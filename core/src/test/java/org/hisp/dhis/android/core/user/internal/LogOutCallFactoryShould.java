@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -56,6 +57,9 @@ public class LogOutCallFactoryShould {
     @Mock
     private Credentials credentials;
 
+    @Mock
+    private DatabaseAdapter databaseAdapter;
+
     private Completable logOutCompletable;
 
     @Before
@@ -65,7 +69,7 @@ public class LogOutCallFactoryShould {
         when(credentials.username()).thenReturn("user");
         when(credentials.password()).thenReturn("password");
 
-        logOutCompletable = new LogOutCallFactory(credentialsSecureStore).logOut();
+        logOutCompletable = new LogOutCallFactory(databaseAdapter, credentialsSecureStore).logOut();
     }
 
     @Test

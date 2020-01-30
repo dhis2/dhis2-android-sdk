@@ -34,6 +34,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -95,5 +97,26 @@ public class FinancialOctPeriodGeneratorShould extends PeriodGeneratorBaseShould
         List<Period> generatedPeriods = generator.generatePeriods(2, 0);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
+    }
+
+    @Test
+    public void generate_period_id() throws ParseException {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        PeriodGenerator yearGenerator = YearlyPeriodGeneratorFactory.yearly(calendar);
+        assertThat("2019").isEqualTo(yearGenerator.generatePeriod(dateFormatter.parse("2019-12-30")).periodId());
+        assertThat("2020").isEqualTo(yearGenerator.generatePeriod(dateFormatter.parse("2020-01-02")).periodId());
+
+        PeriodGenerator aprilGenerator = YearlyPeriodGeneratorFactory.financialApril(calendar);
+        assertThat("2018April").isEqualTo(aprilGenerator.generatePeriod(dateFormatter.parse("2019-03-30")).periodId());
+        assertThat("2019April").isEqualTo(aprilGenerator.generatePeriod(dateFormatter.parse("2019-04-02")).periodId());
+
+        PeriodGenerator julyGenerator = YearlyPeriodGeneratorFactory.financialJuly(calendar);
+        assertThat("2018July").isEqualTo(julyGenerator.generatePeriod(dateFormatter.parse("2019-06-30")).periodId());
+        assertThat("2019July").isEqualTo(julyGenerator.generatePeriod(dateFormatter.parse("2019-07-02")).periodId());
+
+        PeriodGenerator octoberGenerator = YearlyPeriodGeneratorFactory.financialOct(calendar);
+        assertThat("2018Oct").isEqualTo(octoberGenerator.generatePeriod(dateFormatter.parse("2019-09-30")).periodId());
+        assertThat("2019Oct").isEqualTo(octoberGenerator.generatePeriod(dateFormatter.parse("2019-10-02")).periodId());
     }
 }

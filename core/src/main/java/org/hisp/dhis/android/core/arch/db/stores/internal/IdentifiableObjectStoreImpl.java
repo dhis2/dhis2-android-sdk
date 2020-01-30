@@ -69,12 +69,18 @@ public class IdentifiableObjectStoreImpl<M extends CoreObject & ObjectWithUidInt
     @Override
     public final void delete(@NonNull String uid) throws RuntimeException {
         isNull(uid);
+        compileStatements();
+        deleteStatement.bind(1, uid);
+        executeUpdateDelete(deleteStatement);
+    }
+
+    private void compileStatements() {
         resetStatementsIfDbChanged();
         if (deleteStatement == null) {
             deleteStatement = databaseAdapter.compileStatement(builder.deleteById());
+            updateStatement = databaseAdapter.compileStatement(builder.update());
+
         }
-        deleteStatement.bind(1, uid);
-        executeUpdateDelete(deleteStatement);
     }
 
     private boolean hasAdapterChanged() {
@@ -106,10 +112,7 @@ public class IdentifiableObjectStoreImpl<M extends CoreObject & ObjectWithUidInt
     @Override
     public final void update(@NonNull M m) throws RuntimeException {
         isNull(m);
-        resetStatementsIfDbChanged();
-        if (updateStatement == null) {
-            updateStatement = databaseAdapter.compileStatement(builder.update());
-        }
+        compileStatements();
         binder.bindToStatement(m, updateStatement);
         updateStatement.bind(builder.getColumns().length + 1, m.uid());
         executeUpdateDelete(updateStatement);

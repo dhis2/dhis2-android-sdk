@@ -64,13 +64,18 @@ public class ObjectWithoutUidStoreImpl<M extends CoreObject>
     @Override
     public void updateWhere(@NonNull M m) throws RuntimeException {
         isNull(m);
-        resetStatementsIfDbChanged();
-        if (updateWhereStatement == null) {
-            updateWhereStatement = databaseAdapter.compileStatement(builder.updateWhere());
-        }
+        compileStatements();
         binder.bindToStatement(m, updateWhereStatement);
         whereUpdateBinder.bindWhereStatement(m, updateWhereStatement);
         executeUpdateDelete(updateWhereStatement);
+    }
+
+    private void compileStatements() {
+        resetStatementsIfDbChanged();
+        if (updateWhereStatement == null) {
+            updateWhereStatement = databaseAdapter.compileStatement(builder.updateWhere());
+            deleteWhereStatement = databaseAdapter.compileStatement(builder.deleteWhere());
+        }
     }
 
     private boolean hasAdapterChanged() {
@@ -91,10 +96,7 @@ public class ObjectWithoutUidStoreImpl<M extends CoreObject>
     @Override
     public void deleteWhere(@NonNull M m) throws RuntimeException {
         isNull(m);
-        resetStatementsIfDbChanged();
-        if (deleteWhereStatement == null) {
-            deleteWhereStatement = databaseAdapter.compileStatement(builder.deleteWhere());
-        }
+        compileStatements();
         whereDeleteBinder.bindWhereStatement(m, deleteWhereStatement);
         executeUpdateDelete(deleteWhereStatement);
     }

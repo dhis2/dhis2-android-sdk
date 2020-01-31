@@ -28,34 +28,57 @@
 
 package org.hisp.dhis.android.core.settings.android;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import java.util.Map;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DownloadPeriodColumnAdapter;
+import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramSettings.Builder.class)
-public abstract class ProgramSettings {
+@JsonDeserialize(builder = $AutoValue_DataSetSetting.Builder.class)
+public abstract class DataSetSetting extends BaseObject {
+
+    @Nullable
+    @JsonProperty(UID)
+    public abstract String uid();
 
     @JsonProperty()
-    public abstract ProgramSetting globalSettings();
+    public abstract String lastUpdated();
 
     @JsonProperty()
-    public abstract Map<String, ProgramSetting> specificSettings();
+    @ColumnAdapter(DownloadPeriodColumnAdapter.class)
+    public abstract DownloadPeriod periodDSDownload();
+
+    @JsonProperty()
+    @ColumnAdapter(DownloadPeriodColumnAdapter.class)
+    public abstract DownloadPeriod periodDSDBTrimming();
 
     public static Builder builder() {
-        return new AutoValue_ProgramSettings.Builder();
+        return new $AutoValue_DataSetSetting.Builder();
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
-        public abstract Builder globalSettings(ProgramSetting globalSettings);
+        public abstract Builder id(Long id);
 
-        public abstract Builder specificSettings(Map<String, ProgramSetting> specificSettings);
+        @JsonProperty(UID)
+        public abstract Builder uid(String uid);
 
-        public abstract ProgramSettings build();
+        public abstract Builder lastUpdated(String lastUpdated);
+
+        public abstract Builder periodDSDownload(DownloadPeriod periodDSDownload);
+
+        public abstract Builder periodDSDBTrimming(DownloadPeriod periodDSDBTrimming);
+
+        public abstract DataSetSetting build();
     }
 }

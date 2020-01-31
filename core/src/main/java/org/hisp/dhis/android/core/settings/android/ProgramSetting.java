@@ -28,17 +28,28 @@
 
 package org.hisp.dhis.android.core.settings.android;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramSettingsItem.Builder.class)
-public abstract class ProgramSettingsItem {
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DownloadPeriodColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentScopeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.LimitScopeColumnAdapter;
+import org.hisp.dhis.android.core.common.BaseObject;
 
-    @JsonProperty
-    public abstract String id();
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
+
+@AutoValue
+@JsonDeserialize(builder = $AutoValue_ProgramSetting.Builder.class)
+public abstract class ProgramSetting extends BaseObject {
+
+    @Nullable
+    @JsonProperty(UID)
+    public abstract String uid();
 
     @JsonProperty()
     public abstract String lastUpdated();
@@ -56,21 +67,27 @@ public abstract class ProgramSettingsItem {
     public abstract Integer eventsDBTrimming();
 
     @JsonProperty()
+    @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod updateDownload();
 
     @JsonProperty()
+    @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod updateDBTrimming();
 
     @JsonProperty()
+    @ColumnAdapter(LimitScopeColumnAdapter.class)
     public abstract LimitScope settingDownload();
 
     @JsonProperty()
+    @ColumnAdapter(LimitScopeColumnAdapter.class)
     public abstract LimitScope settingDBTrimming();
 
     @JsonProperty()
+    @ColumnAdapter(EnrollmentScopeColumnAdapter.class)
     public abstract EnrollmentScope enrollmentDownload();
 
     @JsonProperty()
+    @ColumnAdapter(EnrollmentScopeColumnAdapter.class)
     public abstract EnrollmentScope enrollmentDBTrimming();
 
     @JsonProperty()
@@ -80,25 +97,31 @@ public abstract class ProgramSettingsItem {
     public abstract Integer teReservedDBTrimming();
 
     @JsonProperty()
+    @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod eventPeriodDownload();
 
     @JsonProperty()
+    @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod eventPeriodDBTrimming();
 
     @JsonProperty()
+    @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod enrollmentDateDownload();
 
     @JsonProperty()
+    @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod enrollmentDateDBTrimming();
 
     public static Builder builder() {
-        return new AutoValue_ProgramSettingsItem.Builder();
+        return new $AutoValue_ProgramSetting.Builder();
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
-        public abstract Builder id(String id);
+        public abstract Builder id(Long id);
+
+        public abstract Builder uid(String uid);
 
         public abstract Builder lastUpdated(String lastUpdated);
 
@@ -134,6 +157,6 @@ public abstract class ProgramSettingsItem {
 
         public abstract Builder enrollmentDateDBTrimming(DownloadPeriod enrollmentDateDBTrimming);
 
-        public abstract ProgramSettingsItem build();
+        public abstract ProgramSetting build();
     }
 }

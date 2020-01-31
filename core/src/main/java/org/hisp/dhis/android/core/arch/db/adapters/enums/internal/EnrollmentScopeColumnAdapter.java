@@ -26,37 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.android;
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.settings.android.EnrollmentScope;
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_DataSetSettingsItem.Builder.class)
-public abstract class DataSetSettingsItem {
-
-    @JsonProperty()
-    public abstract String lastUpdated();
-
-    @JsonProperty()
-    public abstract DownloadPeriod periodDSDownload();
-
-    @JsonProperty()
-    public abstract DownloadPeriod periodDSDBTrimming();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetSettingsItem.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder lastUpdated(String lastUpdated);
-        public abstract Builder periodDSDownload(DownloadPeriod periodDSDownload);
-        public abstract Builder periodDSDBTrimming(DownloadPeriod periodDSDBTrimming);
-
-        public abstract DataSetSettingsItem build();
+public class EnrollmentScopeColumnAdapter extends EnumColumnAdapter<EnrollmentScope> {
+    @Override
+    protected Class<EnrollmentScope> getEnumClass() {
+        return EnrollmentScope.class;
     }
 }

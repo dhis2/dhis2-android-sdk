@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.settings.android.internal;
 
-import org.hisp.dhis.android.core.settings.android.AndroidSettings;
+import org.hisp.dhis.android.core.settings.android.AndroidSetting;
 import org.hisp.dhis.android.core.settings.android.DataSetSettings;
 import org.hisp.dhis.android.core.settings.android.ProgramSettings;
 
@@ -40,7 +40,7 @@ interface AndroidSettingsService {
     String NAMESPACE = "dataStore/ANDROID_SETTING_APP";
 
     @GET(NAMESPACE + "/" + "android_settings")
-    Single<AndroidSettings> getAndroidSettings();
+    Single<AndroidSetting> getAndroidSettings();
 
     @GET(NAMESPACE + "/" + "dataSet_settings")
     Single<DataSetSettings> getDataSetSettings();

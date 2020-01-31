@@ -28,34 +28,41 @@
 
 package org.hisp.dhis.android.core.settings.android;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-import java.util.Map;
+public final class DataSetSettingTableInfo {
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramSettings.Builder.class)
-public abstract class ProgramSettings {
-
-    @JsonProperty()
-    public abstract ProgramSetting globalSettings();
-
-    @JsonProperty()
-    public abstract Map<String, ProgramSetting> specificSettings();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramSettings.Builder();
+    private DataSetSettingTableInfo() {
     }
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder globalSettings(ProgramSetting globalSettings);
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-        public abstract Builder specificSettings(Map<String, ProgramSetting> specificSettings);
+        @Override
+        public String name() {
+            return "DataSetSetting";
+        }
 
-        public abstract ProgramSettings build();
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
+
+    public static class Columns extends CoreColumns {
+        public static final String UID = BaseIdentifiableObject.UID;
+        public static final String PERIOD_DS_DOWNLOAD = "periodDSDownload";
+        public static final String PERIOD_DS_DB_TRIMMING = "periodDSDBTrimming";
+
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    UID,
+                    PERIOD_DS_DOWNLOAD,
+                    PERIOD_DS_DB_TRIMMING
+            );
+        }
     }
 }

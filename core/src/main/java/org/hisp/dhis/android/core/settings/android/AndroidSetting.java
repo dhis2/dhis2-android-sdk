@@ -31,17 +31,23 @@ package org.hisp.dhis.android.core.settings.android;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DataSyncPeriodColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.MetadataSyncPeriodColumnAdapter;
+import org.hisp.dhis.android.core.common.BaseObject;
+
 @AutoValue
-@JsonDeserialize(builder = AutoValue_AndroidSettings.Builder.class)
-public abstract class AndroidSettings {
+@JsonDeserialize(builder = $AutoValue_AndroidSetting.Builder.class)
+public abstract class AndroidSetting extends BaseObject {
 
     @JsonProperty()
     public abstract Boolean loading();
 
     @JsonProperty()
-    public abstract DataSyncPeriod dayaSync();
+    @ColumnAdapter(DataSyncPeriodColumnAdapter.class)
+    public abstract DataSyncPeriod dataSync();
 
     @JsonProperty()
     public abstract Boolean encryptDB();
@@ -56,6 +62,7 @@ public abstract class AndroidSettings {
     public abstract String lastUpdated();
 
     @JsonProperty()
+    @ColumnAdapter(MetadataSyncPeriodColumnAdapter.class)
     public abstract MetadataSyncPeriod metadataSync();
 
     @JsonProperty()
@@ -68,15 +75,17 @@ public abstract class AndroidSettings {
     public abstract String numberSmsConfirmation();
 
     public static Builder builder() {
-        return new AutoValue_AndroidSettings.Builder();
+        return new $AutoValue_AndroidSetting.Builder();
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
+        public abstract Builder id(Long id);
+
         public abstract Builder loading(Boolean loading);
 
-        public abstract Builder dayaSync(DataSyncPeriod dayaSync);
+        public abstract Builder dataSync(DataSyncPeriod dataSync);
 
         public abstract Builder encryptDB(Boolean encryptDB);
 
@@ -94,6 +103,6 @@ public abstract class AndroidSettings {
 
         public abstract Builder numberSmsConfirmation(String numberSmsConfirmation);
 
-        public abstract AndroidSettings build();
+        public abstract AndroidSetting build();
     }
 }

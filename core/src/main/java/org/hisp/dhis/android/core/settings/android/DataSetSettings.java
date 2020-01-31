@@ -40,10 +40,10 @@ import java.util.Map;
 public abstract class DataSetSettings {
 
     @JsonProperty()
-    public abstract DataSetSettingsItem globalSettings();
+    public abstract DataSetSetting globalSettings();
 
     @JsonProperty()
-    public abstract Map<String, DataSetSettingsItem> specificSettings();
+    public abstract Map<String, DataSetSetting> specificSettings();
 
     public static Builder builder() {
         return new AutoValue_DataSetSettings.Builder();
@@ -52,9 +52,9 @@ public abstract class DataSetSettings {
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
-        public abstract Builder globalSettings(DataSetSettingsItem globalSettings);
+        public abstract Builder globalSettings(DataSetSetting globalSettings);
 
-        public abstract Builder specificSettings(Map<String, DataSetSettingsItem> specificSettings);
+        public abstract Builder specificSettings(Map<String, DataSetSetting> specificSettings);
 
         public abstract DataSetSettings build();
     }

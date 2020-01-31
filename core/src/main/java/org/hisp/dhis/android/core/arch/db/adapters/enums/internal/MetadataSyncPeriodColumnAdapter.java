@@ -26,36 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.android;
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.settings.android.MetadataSyncPeriod;
 
-import java.util.Map;
-
-@AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramSettings.Builder.class)
-public abstract class ProgramSettings {
-
-    @JsonProperty()
-    public abstract ProgramSetting globalSettings();
-
-    @JsonProperty()
-    public abstract Map<String, ProgramSetting> specificSettings();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramSettings.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder globalSettings(ProgramSetting globalSettings);
-
-        public abstract Builder specificSettings(Map<String, ProgramSetting> specificSettings);
-
-        public abstract ProgramSettings build();
+public class MetadataSyncPeriodColumnAdapter extends EnumColumnAdapter<MetadataSyncPeriod> {
+    @Override
+    protected Class<MetadataSyncPeriod> getEnumClass() {
+        return MetadataSyncPeriod.class;
     }
 }

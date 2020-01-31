@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import org.hisp.dhis.android.core.settings.android.LimitScope;
+import org.hisp.dhis.android.core.settings.LimitScope;
 
 public class LimitScopeColumnAdapter extends EnumColumnAdapter<LimitScope> {
     @Override

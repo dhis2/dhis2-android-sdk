@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import org.hisp.dhis.android.core.settings.android.DownloadPeriod;
+import org.hisp.dhis.android.core.settings.DownloadPeriod;
 
 public class DownloadPeriodColumnAdapter extends EnumColumnAdapter<DownloadPeriod> {
     @Override

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import org.hisp.dhis.android.core.settings.android.DataSyncPeriod;
+import org.hisp.dhis.android.core.settings.DataSyncPeriod;
 
 public class DataSyncPeriodColumnAdapter extends EnumColumnAdapter<DataSyncPeriod> {
     @Override

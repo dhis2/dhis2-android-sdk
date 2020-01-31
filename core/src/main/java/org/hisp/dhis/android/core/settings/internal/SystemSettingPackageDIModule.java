@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.settings.internal;
 
 import org.hisp.dhis.android.core.settings.SystemSettingModule;
-import org.hisp.dhis.android.core.settings.android.internal.AndroidSettingsEntityDIModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -37,15 +36,23 @@ import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module(includes = {
-        AndroidSettingsEntityDIModule.class,
+        AndroidSettingAppEntityDIModule.class,
+        DataSetSettingEntityDIModule.class,
+        ProgramSettingEntityDIModule.class,
         SystemSettingEntityDIModule.class
 })
 public final class SystemSettingPackageDIModule {
 
     @Provides
     @Reusable
-    SystemSettingService service(Retrofit retrofit) {
+    SystemSettingService systemSettingService(Retrofit retrofit) {
         return retrofit.create(SystemSettingService.class);
+    }
+
+    @Provides
+    @Reusable
+    AndroidSettingAppService settingAppService(Retrofit retrofit) {
+        return retrofit.create(AndroidSettingAppService.class);
     }
 
     @Provides

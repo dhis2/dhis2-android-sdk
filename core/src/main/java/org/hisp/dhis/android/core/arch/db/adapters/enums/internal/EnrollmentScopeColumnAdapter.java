@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import org.hisp.dhis.android.core.settings.android.EnrollmentScope;
+import org.hisp.dhis.android.core.settings.EnrollmentScope;
 
 public class EnrollmentScopeColumnAdapter extends EnumColumnAdapter<EnrollmentScope> {
     @Override

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import org.hisp.dhis.android.core.settings.android.MetadataSyncPeriod;
+import org.hisp.dhis.android.core.settings.MetadataSyncPeriod;
 
 public class MetadataSyncPeriodColumnAdapter extends EnumColumnAdapter<MetadataSyncPeriod> {
     @Override

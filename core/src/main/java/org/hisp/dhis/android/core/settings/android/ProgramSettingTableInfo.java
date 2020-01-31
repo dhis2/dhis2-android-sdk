@@ -42,7 +42,7 @@ public final class ProgramSettingTableInfo {
 
         @Override
         public String name() {
-            return "ProgramSettingTableInfo";
+            return "ProgramSetting";
         }
 
         @Override

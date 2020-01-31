@@ -1,9 +1,9 @@
 package org.hisp.dhis.android.core.sms.mockrepos;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.sms.domain.model.internal.SMSDataValueSet;
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType;
@@ -14,7 +14,6 @@ import org.hisp.dhis.smscompression.models.SMSMetadata;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Completable;
@@ -164,8 +163,8 @@ public class MockLocalDbRepository implements LocalDbRepository {
     }
 
     @Override
-    public Single<List<DataValue>> getDataValues(String orgUnit, String period, String attributeOptionComboUid) {
-        return Single.fromCallable(MockObjects::getDataValues);
+    public Single<SMSDataValueSet> getDataValueSet(String orgUnit, String period, String attributeOptionComboUid) {
+        return Single.fromCallable(MockObjects::getSMSDataValueSet);
     }
 
     @Override

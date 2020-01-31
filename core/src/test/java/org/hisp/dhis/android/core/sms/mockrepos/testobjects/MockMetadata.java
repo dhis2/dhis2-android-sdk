@@ -30,7 +30,7 @@ public class MockMetadata extends SMSMetadata {
 
     private List<ID> getDataElements() {
         ArrayList<ID> attrs = new ArrayList<>();
-        for (DataValue item : MockObjects.getDataValues()) {
+        for (DataValue item : MockObjects.getSMSDataValueSet().dataValues()) {
             attrs.add(new ID(item.dataElement()));
         }
         return attrs;

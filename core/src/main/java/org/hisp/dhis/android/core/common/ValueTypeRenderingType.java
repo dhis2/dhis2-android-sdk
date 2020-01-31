@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.common;
 
 public enum ValueTypeRenderingType {
     DEFAULT,
-    AUTOCOMPLETE,
     DROPDOWN,
     VERTICAL_RADIOBUTTONS,
     HORIZONTAL_RADIOBUTTONS,
@@ -43,5 +42,8 @@ public enum ValueTypeRenderingType {
     TOGGLE,
     VALUE,
     SLIDER,
-    LINEAR_SCALE
+    LINEAR_SCALE,
+    AUTOCOMPLETE,
+    QR_CODE,
+    BAR_CODE
 }

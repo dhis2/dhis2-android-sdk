@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.sms;
 
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.sms.domain.interactor.QrCodeCase;
+import org.hisp.dhis.android.core.sms.domain.model.internal.SMSDataValueSet;
 import org.hisp.dhis.android.core.sms.mockrepos.MockLocalDbRepository;
 import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockMetadata;
 import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockObjects;
@@ -26,6 +27,7 @@ import org.junit.runners.JUnit4;
 
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -100,9 +102,12 @@ public class ConvertTest {
         assertEquals(s.getAttributeOptionCombo().uid, MockObjects.attributeOptionCombo);
         assertEquals(s.getDataSet().uid, MockObjects.dataSetUid);
         assertEquals(s.getPeriod(), MockObjects.period);
+
+        SMSDataValueSet mockSMSDataValueSet = MockObjects.getSMSDataValueSet();
         for (SMSDataValue item : s.getValues()) {
-            assertTrue(containsDataValue(MockObjects.getDataValues(), item));
+            assertTrue(containsDataValue(mockSMSDataValueSet.dataValues(), item));
         }
+        assertEquals(s.isComplete(), mockSMSDataValueSet.completed());
     }
 
     @Test
@@ -164,7 +169,7 @@ public class ConvertTest {
         return false;
     }
 
-    private boolean containsDataValue(ArrayList<DataValue> values, SMSDataValue item) {
+    private boolean containsDataValue(Collection<DataValue> values, SMSDataValue item) {
         for (DataValue value : values) {
             if (Objects.equals(value.dataElement(), item.getDataElement().uid) &&
                     Objects.equals(value.value(), item.getValue())) {

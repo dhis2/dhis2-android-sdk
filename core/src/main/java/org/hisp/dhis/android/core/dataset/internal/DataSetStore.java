@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
-final class DataSetStore {
+public final class DataSetStore {
 
     private DataSetStore() {}
 

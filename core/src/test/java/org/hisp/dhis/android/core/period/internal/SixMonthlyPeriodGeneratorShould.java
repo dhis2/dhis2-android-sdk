@@ -34,6 +34,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -96,4 +98,21 @@ public class SixMonthlyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
     }
+
+    @Test
+    public void generate_period_id() throws ParseException {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        PeriodGenerator sixMonthlyGenerator = NMonthlyPeriodGeneratorFactory.sixMonthly(calendar);
+        assertThat("2019S1").isEqualTo(sixMonthlyGenerator.generatePeriod(dateFormatter.parse("2019-06-30")).periodId());
+        assertThat("2019S2").isEqualTo(sixMonthlyGenerator.generatePeriod(dateFormatter.parse("2019-07-01")).periodId());
+
+        // TODO Fix SixMonthApril generator
+        /*
+        PeriodGenerator sixMonthlyAprilGenerator = NMonthlyPeriodGeneratorFactory.sixMonthlyApril(calendar);
+        assertThat("2018AprilS2").isEqualTo(sixMonthlyAprilGenerator.generatePeriod(dateFormatter.parse("2019-03-30")));
+        assertThat("2019AprilS1").isEqualTo(sixMonthlyAprilGenerator.generatePeriod(dateFormatter.parse("2019-04-01")));
+        */
+    }
+
 }

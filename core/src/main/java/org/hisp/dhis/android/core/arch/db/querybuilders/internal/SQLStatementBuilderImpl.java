@@ -164,6 +164,11 @@ public class SQLStatementBuilderImpl implements SQLStatementBuilder {
     }
 
     @Override
+    public String selectDistinct(String column) {
+        return SELECT + "DISTINCT " + column + FROM + tableName;
+    }
+
+    @Override
     public String selectWhere(String whereClause) {
         return SELECT + "*" + FROM + tableName + WHERE + whereClause + ";";
     }

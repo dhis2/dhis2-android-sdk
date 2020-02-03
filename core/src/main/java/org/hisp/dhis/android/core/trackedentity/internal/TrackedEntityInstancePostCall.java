@@ -42,16 +42,17 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
-import org.hisp.dhis.android.core.note.Note;
-import org.hisp.dhis.android.core.note.internal.NoteToPostTransformer;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse;
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandler;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.note.internal.NoteToPostTransformer;
 import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
+import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
@@ -157,11 +158,16 @@ public final class TrackedEntityInstancePostCall {
                         TrackedEntityInstancePayload trackedEntityInstancePayload =
                                 TrackedEntityInstancePayload.create(partition);
 
-                        TEIWebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                                trackedEntityInstanceService.postTrackedEntityInstances(
-                                        trackedEntityInstancePayload, strategy),
-                                Collections.singletonList(409), TEIWebResponse.class);
-                        teiWebResponseHandler.handleWebResponse(webResponse);
+                        try {
+                            TEIWebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
+                                    trackedEntityInstanceService.postTrackedEntityInstances(
+                                            trackedEntityInstancePayload, strategy),
+                                    Collections.singletonList(409), TEIWebResponse.class);
+                            teiWebResponseHandler.handleWebResponse(webResponse);
+                        } catch (D2Error d2Error) {
+                            markPartitionAs(partition, State.TO_UPDATE);
+                        }
+
                     }
 
                     emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance.class, true));
@@ -204,9 +210,8 @@ public final class TrackedEntityInstancePostCall {
                 partitionRecreated.add(recreatedTrackedEntityInstance);
             }
             trackedEntityInstancesRecreated.add(partitionRecreated);
+            markPartitionAs(partitionRecreated, State.UPLOADING);
         }
-
-        markPartitionsAsUploading(trackedEntityInstancesRecreated);
 
         return trackedEntityInstancesRecreated;
     }
@@ -328,25 +333,23 @@ public final class TrackedEntityInstancePostCall {
                 .build();
     }
 
-    private void markPartitionsAsUploading(List<List<TrackedEntityInstance>> partitions) {
+    private void markPartitionAs(List<TrackedEntityInstance> partition, State state) {
         List<String> trackedEntityInstancesUids = new ArrayList<>();
         List<String> enrollmentUids = new ArrayList<>();
         List<String> eventUids = new ArrayList<>();
 
-        for (List<TrackedEntityInstance> partition : partitions) {
-            for (TrackedEntityInstance instance : partition) {
-                trackedEntityInstancesUids.add(instance.uid());
-                for (Enrollment enrollment : TrackedEntityInstanceInternalAccessor.accessEnrollments(instance)) {
-                    enrollmentUids.add(enrollment.uid());
-                    for (Event event : EnrollmentInternalAccessor.accessEvents(enrollment)) {
-                        eventUids.add(event.uid());
-                    }
+        for (TrackedEntityInstance instance : partition) {
+            trackedEntityInstancesUids.add(instance.uid());
+            for (Enrollment enrollment : TrackedEntityInstanceInternalAccessor.accessEnrollments(instance)) {
+                enrollmentUids.add(enrollment.uid());
+                for (Event event : EnrollmentInternalAccessor.accessEvents(enrollment)) {
+                    eventUids.add(event.uid());
                 }
             }
         }
 
-        trackedEntityInstanceStore.setState(trackedEntityInstancesUids, State.UPLOADING);
-        enrollmentStore.setState(enrollmentUids, State.UPLOADING);
-        eventStore.setState(eventUids, State.UPLOADING);
+        trackedEntityInstanceStore.setState(trackedEntityInstancesUids, state);
+        enrollmentStore.setState(enrollmentUids, state);
+        eventStore.setState(eventUids, state);
     }
 }

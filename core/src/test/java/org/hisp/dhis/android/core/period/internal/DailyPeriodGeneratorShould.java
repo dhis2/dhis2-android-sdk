@@ -34,6 +34,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -59,7 +61,7 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
 
     @Test
     public void generate_daily_periods() {
-        calendar.set(2018,2,4);
+        calendar.set(2018, 2, 4);
         Period period1 = generateExpectedPeriod("20180304", calendar);
         calendar.set(2018, 2, 5);
         Period period2 = generateExpectedPeriod("20180305", calendar);
@@ -73,7 +75,7 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
 
     @Test
     public void generate_daily_periods_for_changing_year() {
-        calendar.set(2017,11,31);
+        calendar.set(2017, 11, 31);
         Period period1 = generateExpectedPeriod("20171231", calendar);
         calendar.set(2018, 0, 1);
         Period period2 = generateExpectedPeriod("20180101", calendar);
@@ -85,5 +87,14 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         List<Period> expectedPeriods = Lists.newArrayList(period1, period2, period3);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
+    }
+
+    @Test
+    public void generate_period_id() throws ParseException {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        PeriodGenerator dailyGenerator = new DailyPeriodGenerator(calendar);
+        assertThat("20191230").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2019-12-30")).periodId());
+        assertThat("20200102").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2020-01-02")).periodId());
     }
 }

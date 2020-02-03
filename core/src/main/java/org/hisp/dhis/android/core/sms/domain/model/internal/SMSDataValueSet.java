@@ -26,16 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+package org.hisp.dhis.android.core.sms.domain.model.internal;
 
-import androidx.annotation.NonNull;
+import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.datavalue.DataValue;
 
-import java.util.List;
+import java.util.Collection;
 
-public interface LinkStore<M extends CoreObject> extends ObjectStore<M> {
-    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
-    int deleteAllLinks();
-    List<String> selectDistinctSlaves(@NonNull String slaveColumn);
+@AutoValue
+public abstract class SMSDataValueSet {
+
+    public abstract Collection<DataValue> dataValues();
+
+    public abstract Boolean completed();
+
+    public static Builder builder() {
+        return new AutoValue_SMSDataValueSet.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder dataValues(Collection<DataValue> dataValues);
+
+        public abstract Builder completed(Boolean completed);
+
+        public abstract SMSDataValueSet build();
+    }
 }

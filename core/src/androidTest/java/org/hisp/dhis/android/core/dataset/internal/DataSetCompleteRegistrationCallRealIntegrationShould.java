@@ -28,19 +28,33 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
+import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.D2Factory;
+import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
+import org.junit.Before;
 
-import java.util.Collection;
+import java.io.IOException;
 
-public interface DataSetCompleteRegistrationStore extends ObjectWithoutUidStore<DataSetCompleteRegistration> {
+public class DataSetCompleteRegistrationCallRealIntegrationShould extends BaseRealIntegrationTest {
 
-    void setState(DataSetCompleteRegistration dataSetCompleteRegistration, State newState);
+    private D2 d2;
 
-    void setDeleted(DataSetCompleteRegistration dataSetCompleteRegistration);
+    @Before
+    public void setUp() throws IOException {
+        super.setUp();
 
-    boolean removeNotPresentAndSynced(Collection<String> dataSetUids,
-                                      Collection<String> periodIds,
-                                      String rootOrgunitUid);
+        d2 = D2Factory.forDatabaseName("complete");
+    }
+
+    // commented out since it is a flaky test that works against a real server.
+    //@Test
+    public void remove_records_deleted_in_the_server() {
+        d2.userModule().logIn(username, password, url).blockingGet();
+        d2.metadataModule().blockingDownload();
+        d2.aggregatedModule().data().download().blockingSubscribe();
+
+        // At this point, delete a record in the server
+
+        d2.aggregatedModule().data().download().blockingSubscribe();
+    }
 }

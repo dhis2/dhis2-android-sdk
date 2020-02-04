@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactoryI
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
-import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 
@@ -48,15 +47,18 @@ import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSep
 final class DataSetCompleteRegistrationCallFactory extends QueryCallFactoryImpl<DataSetCompleteRegistration,
         DataSetCompleteRegistrationQuery> {
 
+    private final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
     private final Handler<DataSetCompleteRegistration> handler;
     private final DataSetCompleteRegistrationService service;
 
     @Inject
     DataSetCompleteRegistrationCallFactory(GenericCallData genericCallData,
                                            APICallExecutor apiCallExecutor,
+                                           DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore,
                                            Handler<DataSetCompleteRegistration> handler,
                                            DataSetCompleteRegistrationService service) {
         super(genericCallData, apiCallExecutor);
+        this.dataSetCompleteRegistrationStore = dataSetCompleteRegistrationStore;
         this.handler = handler;
         this.service = service;
     }
@@ -87,6 +89,7 @@ final class DataSetCompleteRegistrationCallFactory extends QueryCallFactoryImpl<
 
     @Override
     protected CallProcessor<DataSetCompleteRegistration> processor(DataSetCompleteRegistrationQuery query) {
-        return new TransactionalNoResourceSyncCallProcessor<>(data.databaseAdapter(), handler);
+        return new DataSetCompleteRegistrationCallProcessor(data.databaseAdapter(), dataSetCompleteRegistrationStore,
+                handler, query);
     }
 }

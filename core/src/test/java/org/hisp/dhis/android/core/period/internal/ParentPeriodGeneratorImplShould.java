@@ -81,6 +81,9 @@ public class ParentPeriodGeneratorImplShould {
     private PeriodGenerator sixMonthlyAprilPeriodGenerator;
 
     @Mock
+    private PeriodGenerator sixMonthlyNovPeriodGenerator;
+
+    @Mock
     private PeriodGenerator yearlyPeriodGenerator;
 
     @Mock
@@ -91,6 +94,9 @@ public class ParentPeriodGeneratorImplShould {
 
     @Mock
     private PeriodGenerator financialOctPeriodGenerator;
+
+    @Mock
+    private PeriodGenerator financialNovPeriodGenerator;
 
     @Mock
     private Period dailyPeriod;
@@ -151,9 +157,9 @@ public class ParentPeriodGeneratorImplShould {
                 weeklyWednesdayPeriodGenerator, weeklyThursdayPeriodGenerator, weeklySaturdayPeriodGenerator,
                 weeklySundayPeriodGenerator);
         NMonthlyPeriodGenerators nMonthlyPeriodGenerators = new NMonthlyPeriodGenerators(biMonthlyPeriodGenerator,
-                quarterPeriodGenerator, sixMonthlyPeriodGenerator, sixMonthlyAprilPeriodGenerator);
+                quarterPeriodGenerator, sixMonthlyPeriodGenerator, sixMonthlyAprilPeriodGenerator, sixMonthlyNovPeriodGenerator);
         YearlyPeriodGenerators yearlyPeriodGenerators = new YearlyPeriodGenerators(yearlyPeriodGenerator,
-                financialAprilPeriodGenerator, financialJulyPeriodGenerator, financialOctPeriodGenerator);
+                financialAprilPeriodGenerator, financialJulyPeriodGenerator, financialOctPeriodGenerator, financialNovPeriodGenerator);
 
         periodGenerator = new ParentPeriodGeneratorImpl(dailyPeriodGenerator, weeklyPeriodGenerators,
                 biWeeklyPeriodGenerator, monthlyPeriodGenerator, nMonthlyPeriodGenerators, yearlyPeriodGenerators);

@@ -51,4 +51,8 @@ final class YearlyPeriodGeneratorFactory {
     static YearlyPeriodGenerator financialOct(Calendar calendar) {
         return new YearlyPeriodGenerator(calendar, PeriodType.FinancialOct, Calendar.OCTOBER, "Oct");
     }
+
+    static YearlyPeriodGenerator financialNov(Calendar calendar) {
+        return new YearlyPeriodGenerator(calendar, PeriodType.FinancialNov, Calendar.NOVEMBER, "Nov");
+    }
 }

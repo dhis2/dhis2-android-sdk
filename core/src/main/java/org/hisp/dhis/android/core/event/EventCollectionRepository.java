@@ -203,8 +203,20 @@ public final class EventCollectionRepository
         return cf.withOrderBy(Columns.COMPLETE_DATE, direction);
     }
 
+    public EventCollectionRepository orderByCreated(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.CREATED, direction);
+    }
+
     public EventCollectionRepository orderByLastUpdated(RepositoryScope.OrderByDirection direction) {
         return cf.withOrderBy(Columns.LAST_UPDATED, direction);
+    }
+
+    public EventCollectionRepository orderByCreatedAtClient(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.CREATED_AT_CLIENT, direction);
+    }
+
+    public EventCollectionRepository orderByLastUpdatedAtClient(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.LAST_UPDATED_AT_CLIENT, direction);
     }
 
     public int countTrackedEntityInstances() {

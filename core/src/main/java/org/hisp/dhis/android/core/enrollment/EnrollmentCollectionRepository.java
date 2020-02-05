@@ -142,6 +142,30 @@ public final class EnrollmentCollectionRepository extends ReadWriteWithUidCollec
         return cf.bool(EnrollmentTableInfo.Columns.DELETED);
     }
 
+    public EnrollmentCollectionRepository orderByCreated(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.CREATED, direction);
+    }
+
+    public EnrollmentCollectionRepository orderByLastUpdated(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.LAST_UPDATED, direction);
+    }
+
+    public EnrollmentCollectionRepository orderByCreatedAtClient(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.CREATED_AT_CLIENT, direction);
+    }
+
+    public EnrollmentCollectionRepository orderByLastUpdatedAtClient(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.LAST_UPDATED_AT_CLIENT, direction);
+    }
+
+    public EnrollmentCollectionRepository orderByEnrollmentDate(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.ENROLLMENT_DATE, direction);
+    }
+
+    public EnrollmentCollectionRepository orderByIncidentDate(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.INCIDENT_DATE, direction);
+    }
+
     public EnrollmentCollectionRepository withNotes() {
         return cf.withChild(EnrollmentFields.NOTES);
     }

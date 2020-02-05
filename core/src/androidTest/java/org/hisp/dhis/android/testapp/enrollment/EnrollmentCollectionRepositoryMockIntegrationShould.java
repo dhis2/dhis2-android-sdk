@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.testapp.enrollment;
 
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
@@ -107,7 +108,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     @Test
     public void filter_by_created_as_client() {
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
-                .byCreatedAtClient().eq("2019-01-08T13:40:28.718")
+                .byCreatedAtClient().eq("2018-01-08T13:40:28.718")
                 .blockingGet();
         assertThat(enrollments.size(), is(1));
     }
@@ -210,6 +211,66 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
                         .blockingGet();
 
         assertThat(enrollments.size(), is(1));
+    }
+
+    @Test
+    public void order_by_created() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
+                .orderByCreated(RepositoryScope.OrderByDirection.DESC)
+                .blockingGet();
+
+        assertThat(enrollments.get(0).uid(), is("enroll1"));
+        assertThat(enrollments.get(1).uid(), is("enroll2"));
+    }
+
+    @Test
+    public void order_by_created_at_client() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
+                .orderByCreatedAtClient(RepositoryScope.OrderByDirection.DESC)
+                .blockingGet();
+
+        assertThat(enrollments.get(0).uid(), is("enroll2"));
+        assertThat(enrollments.get(1).uid(), is("enroll1"));
+    }
+
+    @Test
+    public void order_by_last_updated() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
+                .orderByLastUpdated(RepositoryScope.OrderByDirection.DESC)
+                .blockingGet();
+
+        assertThat(enrollments.get(0).uid(), is("enroll1"));
+        assertThat(enrollments.get(1).uid(), is("enroll2"));
+    }
+
+    @Test
+    public void order_by_last_updated_at_client() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
+                .orderByLastUpdatedAtClient(RepositoryScope.OrderByDirection.DESC)
+                .blockingGet();
+
+        assertThat(enrollments.get(0).uid(), is("enroll2"));
+        assertThat(enrollments.get(1).uid(), is("enroll1"));
+    }
+
+    @Test
+    public void order_by_enrollment_date() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
+                .orderByEnrollmentDate(RepositoryScope.OrderByDirection.DESC)
+                .blockingGet();
+
+        assertThat(enrollments.get(0).uid(), is("enroll1"));
+        assertThat(enrollments.get(1).uid(), is("enroll2"));
+    }
+
+    @Test
+    public void order_by_incident_date() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
+                .orderByIncidentDate(RepositoryScope.OrderByDirection.DESC)
+                .blockingGet();
+
+        assertThat(enrollments.get(0).uid(), is("enroll1"));
+        assertThat(enrollments.get(1).uid(), is("enroll2"));
     }
 
     @Test

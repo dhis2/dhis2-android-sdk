@@ -57,6 +57,6 @@ final class NMonthlyPeriodGeneratorFactory {
 
     static NMonthlyPeriodGenerator sixMonthlyNov(Calendar calendar) {
         return new NMonthlyPeriodGenerator(calendar, PeriodType.SixMonthlyNov, 6,
-                "NovS", Calendar.APRIL);
+                "NovS", Calendar.NOVEMBER);
     }
 }

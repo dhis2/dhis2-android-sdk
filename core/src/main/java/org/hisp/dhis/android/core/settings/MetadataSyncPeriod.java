@@ -28,9 +28,18 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public enum MetadataSyncPeriod {
+    @JsonProperty("1h")
     EVERY_HOUR,
+
+    @JsonProperty("12h")
     EVERY_12_HOURS,
+
+    @JsonProperty("1d")
     EVERY_DAY,
+
+    @JsonProperty("7d")
     EVERY_7_DAYS
 }

@@ -28,10 +28,21 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public enum DataSyncPeriod {
+    @JsonProperty("30m")
     EVERY_30_MIN,
+
+    @JsonProperty("1h")
     EVERY_HOUR,
+
+    @JsonProperty("6h")
     EVERY_6_HOURS,
+
+    @JsonProperty("12h")
     EVERY_12_HOURS,
+
+    @JsonProperty("24h")
     EVERY_24_HOURS
 }

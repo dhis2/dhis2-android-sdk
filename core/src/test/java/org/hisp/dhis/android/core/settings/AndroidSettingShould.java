@@ -50,7 +50,7 @@ public class AndroidSettingShould extends BaseObjectShould implements ObjectShou
         AndroidSetting androidSetting = objectMapper.readValue(jsonStream, AndroidSetting.class);
 
         assertThat(androidSetting.dataSync()).isEqualByComparingTo(DataSyncPeriod.EVERY_24_HOURS);
-        assertThat(androidSetting.encryptDB()).isTrue();
+        assertThat(androidSetting.encryptDB()).isFalse();
         assertThat(androidSetting.valuesTEI()).isEqualTo(40);
         assertThat(androidSetting.lastUpdated()).isEqualTo(BaseIdentifiableObject.parseDate("2020-01-13T16:52:05.144Z"));
         assertThat(androidSetting.metadataSync()).isEqualByComparingTo(MetadataSyncPeriod.EVERY_DAY);

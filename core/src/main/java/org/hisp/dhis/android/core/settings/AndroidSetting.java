@@ -36,9 +36,12 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DataSyncPeriodColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.MetadataSyncPeriodColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
+
+import java.util.Date;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_AndroidSetting.Builder.class)
@@ -55,7 +58,8 @@ public abstract class AndroidSetting implements CoreObject {
     public abstract Integer valuesTEI();
 
     @JsonProperty()
-    public abstract String lastUpdated();
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date lastUpdated();
 
     @JsonProperty()
     @ColumnAdapter(MetadataSyncPeriodColumnAdapter.class)
@@ -89,7 +93,7 @@ public abstract class AndroidSetting implements CoreObject {
 
         public abstract Builder valuesTEI(Integer valuesTEI);
 
-        public abstract Builder lastUpdated(String lastUpdated);
+        public abstract Builder lastUpdated(Date lastUpdated);
 
         public abstract Builder metadataSync(MetadataSyncPeriod metadataSync);
 

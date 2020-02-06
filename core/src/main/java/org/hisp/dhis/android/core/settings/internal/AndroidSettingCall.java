@@ -83,4 +83,10 @@ public class AndroidSettingCall implements CompletableProvider {
                     return androidSetting;
                 });
     }
+
+    public Single<Boolean> isDatabaseEncrypted() {
+        return apiCallExecutor.wrapSingle(androidSettingAppService.getAndroidSettings(), false)
+                .map(AndroidSetting::encryptDB)
+                .onErrorReturn(throwable -> false);
+    }
 }

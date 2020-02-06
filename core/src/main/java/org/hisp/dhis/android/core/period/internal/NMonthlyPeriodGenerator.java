@@ -36,7 +36,7 @@ class NMonthlyPeriodGenerator extends AbstractPeriodGenerator {
 
     final int durationInMonths;
     final String idAdditionalString;
-    final int startMonth;
+    private final int startMonth;
 
     NMonthlyPeriodGenerator(Calendar calendar, PeriodType periodType, int durationInMonths,
                             String idAdditionalString, int startMonth) {
@@ -50,12 +50,12 @@ class NMonthlyPeriodGenerator extends AbstractPeriodGenerator {
     protected void moveToStartOfCurrentPeriod() {
         calendar.set(Calendar.DATE, 1);
         int currentMonth = calendar.get(Calendar.MONTH);
-        if (currentMonth < startMonth) {
+        int monthsFromStart = (currentMonth - startMonth + 12) % durationInMonths;
+        int currentPeriodStartMonth = (currentMonth - monthsFromStart + 12) % 12;
+        if (currentMonth - monthsFromStart < 0) {
             calendar.add(Calendar.YEAR, -1);
         }
-        int monthsFromStart = currentMonth - startMonth;
-        int startMonth = monthsFromStart - (monthsFromStart % durationInMonths);
-        calendar.set(Calendar.MONTH, startMonth);
+        calendar.set(Calendar.MONTH, currentPeriodStartMonth);
     }
 
     @Override
@@ -65,7 +65,11 @@ class NMonthlyPeriodGenerator extends AbstractPeriodGenerator {
 
     @Override
     protected String generateId() {
-        int periodNumber = calendar.get(Calendar.MONTH) / durationInMonths + 1;
-        return idFormatter.format(calendar.getTime()) + idAdditionalString + periodNumber;
+        Calendar calendarCopy = (Calendar) calendar.clone();
+        if (calendarCopy.get(Calendar.MONTH) < startMonth) {
+            calendarCopy.add(Calendar.YEAR, -1);
+        }
+        int periodNumber = ((calendarCopy.get(Calendar.MONTH) - startMonth + 12) % 12) / durationInMonths + 1;
+        return idFormatter.format(calendarCopy.getTime()) + idAdditionalString + periodNumber;
     }
 }

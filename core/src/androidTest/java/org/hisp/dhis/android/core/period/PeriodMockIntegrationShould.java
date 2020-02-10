@@ -72,7 +72,7 @@ public class PeriodMockIntegrationShould extends BaseMockIntegrationTestFullDisp
 
     @Test
     public void get_periods() {
-        assertThat(d2.periodModule().periods().blockingCount()).isEqualTo(193);
+        assertThat(d2.periodModule().periods().blockingCount()).isEqualTo(203);
     }
 
     @Test

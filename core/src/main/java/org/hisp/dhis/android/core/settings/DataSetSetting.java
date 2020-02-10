@@ -58,14 +58,17 @@ public abstract class DataSetSetting implements CoreObject {
     @JsonProperty()
     public abstract String name();
 
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod periodDSDownload();
 
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod periodDSDBTrimming();

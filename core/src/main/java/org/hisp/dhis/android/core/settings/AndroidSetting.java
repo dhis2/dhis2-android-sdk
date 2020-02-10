@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.settings;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -57,6 +59,7 @@ public abstract class AndroidSetting implements CoreObject {
     @JsonProperty()
     public abstract Integer valuesTEI();
 
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
@@ -65,12 +68,15 @@ public abstract class AndroidSetting implements CoreObject {
     @ColumnAdapter(MetadataSyncPeriodColumnAdapter.class)
     public abstract MetadataSyncPeriod metadataSync();
 
+    @Nullable
     @JsonProperty()
     public abstract String numberSmsToSend();
 
+    @Nullable
     @JsonProperty()
     public abstract Boolean errorConfirmation();
 
+    @Nullable
     @JsonProperty()
     public abstract String numberSmsConfirmation();
 

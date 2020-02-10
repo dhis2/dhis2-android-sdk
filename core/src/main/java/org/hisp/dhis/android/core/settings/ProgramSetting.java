@@ -60,64 +60,81 @@ public abstract class ProgramSetting implements CoreObject {
     @JsonProperty()
     public abstract String name();
 
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
+    @Nullable
     @JsonProperty()
     public abstract Integer teiDownload();
 
+    @Nullable
     @JsonProperty()
     public abstract Integer teiDBTrimming();
 
+    @Nullable
     @JsonProperty()
     public abstract Integer eventsDownload();
 
+    @Nullable
     @JsonProperty()
     public abstract Integer eventsDBTrimming();
 
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod updateDownload();
 
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod updateDBTrimming();
 
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(LimitScopeColumnAdapter.class)
     public abstract LimitScope settingDownload();
 
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(LimitScopeColumnAdapter.class)
     public abstract LimitScope settingDBTrimming();
 
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(EnrollmentScopeColumnAdapter.class)
     public abstract EnrollmentScope enrollmentDownload();
 
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(EnrollmentScopeColumnAdapter.class)
     public abstract EnrollmentScope enrollmentDBTrimming();
 
+    @Nullable
     @JsonProperty()
     public abstract Integer teReservedDownload();
 
+    @Nullable
     @JsonProperty()
     public abstract Integer teReservedDBTrimming();
 
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod eventPeriodDownload();
 
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod eventPeriodDBTrimming();
 
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod enrollmentDateDownload();
 
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod enrollmentDateDBTrimming();

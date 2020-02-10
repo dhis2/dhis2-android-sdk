@@ -41,8 +41,10 @@ public enum PeriodType {
     Quarterly,
     SixMonthly,
     SixMonthlyApril,
+    SixMonthlyNov,
     Yearly,
     FinancialApril,
     FinancialJuly,
-    FinancialOct
+    FinancialOct,
+    FinancialNov
 }

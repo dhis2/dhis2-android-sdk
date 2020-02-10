@@ -36,15 +36,18 @@ final class YearlyPeriodGenerators {
     final PeriodGenerator financialApril;
     final PeriodGenerator financialJuly;
     final PeriodGenerator financialOct;
+    final PeriodGenerator financialNov;
 
     YearlyPeriodGenerators(PeriodGenerator yearly,
-                                   PeriodGenerator financialApril,
-                                   PeriodGenerator financialJuly,
-                                   PeriodGenerator financialOct) {
+                           PeriodGenerator financialApril,
+                           PeriodGenerator financialJuly,
+                           PeriodGenerator financialOct,
+                           PeriodGenerator financialNov) {
         this.yearly = yearly;
         this.financialApril = financialApril;
         this.financialJuly = financialJuly;
         this.financialOct = financialOct;
+        this.financialNov = financialNov;
     }
 
 
@@ -53,7 +56,7 @@ final class YearlyPeriodGenerators {
                 YearlyPeriodGeneratorFactory.yearly(calendar),
                 YearlyPeriodGeneratorFactory.financialApril(calendar),
                 YearlyPeriodGeneratorFactory.financialJuly(calendar),
-                YearlyPeriodGeneratorFactory.financialOct(calendar)
-        );
+                YearlyPeriodGeneratorFactory.financialOct(calendar),
+                YearlyPeriodGeneratorFactory.financialNov(calendar));
     }
 }

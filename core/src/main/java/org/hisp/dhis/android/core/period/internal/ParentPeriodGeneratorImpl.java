@@ -82,10 +82,12 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
         past.put(PeriodType.Quarterly, 4);
         past.put(PeriodType.SixMonthly, 4);
         past.put(PeriodType.SixMonthlyApril, 4);
+        past.put(PeriodType.SixMonthlyNov, 4);
         past.put(PeriodType.Yearly, 4);
         past.put(PeriodType.FinancialApril, 4);
         past.put(PeriodType.FinancialJuly, 4);
         past.put(PeriodType.FinancialOct, 4);
+        past.put(PeriodType.FinancialNov, 4);
         return past;
     }
 
@@ -103,10 +105,12 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
         future.put(PeriodType.Quarterly, 1);
         future.put(PeriodType.SixMonthly, 1);
         future.put(PeriodType.SixMonthlyApril, 1);
+        future.put(PeriodType.SixMonthlyNov, 1);
         future.put(PeriodType.Yearly, 1);
         future.put(PeriodType.FinancialApril, 1);
         future.put(PeriodType.FinancialJuly, 1);
         future.put(PeriodType.FinancialOct, 1);
+        future.put(PeriodType.FinancialNov, 1);
         return future;
     }
 
@@ -174,6 +178,8 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
             return nMonthly.sixMonthly;
         } else if (periodType == PeriodType.SixMonthlyApril) {
             return nMonthly.sixMonthlyApril;
+        } else if (periodType == PeriodType.SixMonthlyNov) {
+            return nMonthly.sixMonthlyNov;
         } else if (periodType == PeriodType.Yearly) {
             return yearly.yearly;
         } else if (periodType == PeriodType.FinancialApril) {
@@ -182,6 +188,8 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
             return yearly.financialJuly;
         } else if (periodType == PeriodType.FinancialOct) {
             return yearly.financialOct;
+        } else if (periodType == PeriodType.FinancialNov) {
+            return yearly.financialNov;
         } else {
             return null;
         }

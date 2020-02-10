@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.period.internal;
 
 import org.assertj.core.util.Lists;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Test;
@@ -103,16 +104,62 @@ public class SixMonthlyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
     public void generate_period_id() throws ParseException {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
-        PeriodGenerator sixMonthlyGenerator = NMonthlyPeriodGeneratorFactory.sixMonthly(calendar);
-        assertThat("2019S1").isEqualTo(sixMonthlyGenerator.generatePeriod(dateFormatter.parse("2019-06-30")).periodId());
-        assertThat("2019S2").isEqualTo(sixMonthlyGenerator.generatePeriod(dateFormatter.parse("2019-07-01")).periodId());
+        PeriodGenerator generator = NMonthlyPeriodGeneratorFactory.sixMonthly(calendar);
+        assertThat(generator.generatePeriod(dateFormatter.parse("2019-06-30")).periodId()).isEqualTo("2019S1");
+        assertThat(generator.generatePeriod(dateFormatter.parse("2019-07-01")).periodId()).isEqualTo("2019S2");
+    }
 
-        // TODO Fix SixMonthApril generator
-        /*
-        PeriodGenerator sixMonthlyAprilGenerator = NMonthlyPeriodGeneratorFactory.sixMonthlyApril(calendar);
-        assertThat("2018AprilS2").isEqualTo(sixMonthlyAprilGenerator.generatePeriod(dateFormatter.parse("2019-03-30")));
-        assertThat("2019AprilS1").isEqualTo(sixMonthlyAprilGenerator.generatePeriod(dateFormatter.parse("2019-04-01")));
-        */
+    @Test
+    public void generate_period_with_right_start_and_end_for_april() throws ParseException {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        PeriodGenerator generator = NMonthlyPeriodGeneratorFactory.sixMonthlyApril(calendar);
+
+        Period p1 = generator.generatePeriod(dateFormatter.parse("2019-09-30"));
+        Period p2 = generator.generatePeriod(dateFormatter.parse("2019-10-01"));
+
+        assertThat(BaseIdentifiableObject.dateToDateStr(p1.startDate())).isEqualTo("2019-04-01T00:00:00.000");
+        assertThat(BaseIdentifiableObject.dateToDateStr(p1.endDate())).isEqualTo("2019-09-30T23:59:59.999");
+        assertThat(BaseIdentifiableObject.dateToDateStr(p2.startDate())).isEqualTo("2019-10-01T00:00:00.000");
+        assertThat(BaseIdentifiableObject.dateToDateStr(p2.endDate())).isEqualTo("2020-03-31T23:59:59.999");
+    }
+
+    @Test
+    public void generate_period_with_right_start_and_end_for_november() throws ParseException {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        PeriodGenerator generator = NMonthlyPeriodGeneratorFactory.sixMonthlyNov(calendar);
+
+        Period p1 = generator.generatePeriod(dateFormatter.parse("2019-10-31"));
+        Period p2 = generator.generatePeriod(dateFormatter.parse("2019-11-01"));
+
+        assertThat(BaseIdentifiableObject.dateToDateStr(p1.startDate())).isEqualTo("2019-05-01T00:00:00.000");
+        assertThat(BaseIdentifiableObject.dateToDateStr(p2.startDate())).isEqualTo("2019-11-01T00:00:00.000");
+        assertThat(BaseIdentifiableObject.dateToDateStr(p1.endDate())).isEqualTo("2019-10-31T23:59:59.999");
+        assertThat(BaseIdentifiableObject.dateToDateStr(p2.endDate())).isEqualTo("2020-04-30T23:59:59.999");
+    }
+
+    @Test
+    public void generate_period_ids_for_april() throws ParseException {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        PeriodGenerator generator = NMonthlyPeriodGeneratorFactory.sixMonthlyApril(calendar);
+        assertThat(generator.generatePeriod(dateFormatter.parse("2019-03-30")).periodId()).isEqualTo("2018AprilS2");
+        assertThat(generator.generatePeriod(dateFormatter.parse("2018-12-31")).periodId()).isEqualTo("2018AprilS2");
+        assertThat(generator.generatePeriod(dateFormatter.parse("2019-01-01")).periodId()).isEqualTo("2018AprilS2");
+        assertThat(generator.generatePeriod(dateFormatter.parse("2019-04-01")).periodId()).isEqualTo("2019AprilS1");
+        assertThat(generator.generatePeriod(dateFormatter.parse("2019-09-30")).periodId()).isEqualTo("2019AprilS1");
+        assertThat(generator.generatePeriod(dateFormatter.parse("2019-10-01")).periodId()).isEqualTo("2019AprilS2");
+    }
+
+    @Test
+    public void generate_period_id_for_november() throws ParseException {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        PeriodGenerator generator = NMonthlyPeriodGeneratorFactory.sixMonthlyNov(calendar);
+        Period period = generator.generatePeriod(dateFormatter.parse("2019-05-01"));
+        assertThat(generator.generatePeriod(dateFormatter.parse("2019-04-30")).periodId()).isEqualTo("2018NovS1");
+        assertThat(generator.generatePeriod(dateFormatter.parse("2019-05-01")).periodId()).isEqualTo("2018NovS2");
+        assertThat(generator.generatePeriod(dateFormatter.parse("2019-10-31")).periodId()).isEqualTo("2018NovS2");
+        assertThat(generator.generatePeriod(dateFormatter.parse("2019-11-01")).periodId()).isEqualTo("2019NovS1");
+        assertThat(generator.generatePeriod(dateFormatter.parse("2019-12-31")).periodId()).isEqualTo("2019NovS1");
+        assertThat(generator.generatePeriod(dateFormatter.parse("2020-01-01")).periodId()).isEqualTo("2019NovS1");
     }
 
 }

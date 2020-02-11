@@ -203,6 +203,8 @@ dependencies {
 
     api "com.google.code.findbugs:annotations:${libraries.findbugs}"
 
+    api "org.hisp.dhis:dhis-support-antlr-expression-parser:2.34-SNAPSHOT"
+
     // Java test dependencies
     testImplementation "junit:junit:${libraries.junit}"
     testImplementation "org.mockito:mockito-core:${libraries.mockito}"

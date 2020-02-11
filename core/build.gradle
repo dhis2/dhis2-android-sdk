@@ -198,6 +198,8 @@ dependencies {
 
     api "com.google.code.findbugs:annotations:${libraries.findbugs}"
 
+    api "org.hisp.dhis:dhis-support-antlr-expression-parser:2.34-SNAPSHOT"
+
     api "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
 
     // Java test dependencies

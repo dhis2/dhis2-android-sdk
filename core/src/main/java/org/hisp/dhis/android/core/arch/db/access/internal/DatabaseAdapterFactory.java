@@ -73,7 +73,9 @@ public final class DatabaseAdapterFactory {
     public static void createOrOpenDatabase(DatabaseAdapter adapter) {
         try {
             ParentDatabaseAdapter parentDatabaseAdapter = (ParentDatabaseAdapter) adapter;
-            parentDatabaseAdapter.setAdapter(instantiateAdapter());
+            DatabaseAdapter internalAdapter = instantiateAdapter();
+            adaptersToPreventNotClosedError.add(internalAdapter);
+            parentDatabaseAdapter.setAdapter(internalAdapter);
         } catch (ClassCastException cce) {
             // This ensures tests that mock DatabaseAdapter pass
         }
@@ -82,22 +84,17 @@ public final class DatabaseAdapterFactory {
     private static DatabaseAdapter instantiateAdapter() {
         int actualVersion = version == null ? BaseDatabaseOpenHelper.VERSION : version;
         if (encrypt) {
-            EncryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(
-                    encryptedOpenHelpers, "-enc.db",
+            EncryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(encryptedOpenHelpers, "-enc.db",
                     dbName -> new EncryptedDatabaseOpenHelper(context, dbName, actualVersion));
-            DatabaseAdapter adapter = new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(ENCRYPTION_PASSWORD));
-            adaptersToPreventNotClosedError.add(adapter);
-            return adapter;
+            return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(ENCRYPTION_PASSWORD));
         } else {
             UnencryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(unencryptedOpenHelpers, ".db",
                     dbName -> new UnencryptedDatabaseOpenHelper(context, dbName, actualVersion));
-            DatabaseAdapter adapter = new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
-            adaptersToPreventNotClosedError.add(adapter);
-            return adapter;
+            return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
         }
     }
 
-    interface Function<I, O> {
+    private interface Function<I, O> {
         O run(I i);
     }
 

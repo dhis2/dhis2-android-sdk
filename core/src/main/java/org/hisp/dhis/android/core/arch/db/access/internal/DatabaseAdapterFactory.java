@@ -73,7 +73,9 @@ public final class DatabaseAdapterFactory {
     public static void createOrOpenDatabase(DatabaseAdapter adapter) {
         try {
             ParentDatabaseAdapter parentDatabaseAdapter = (ParentDatabaseAdapter) adapter;
-            parentDatabaseAdapter.setAdapter(instantiateAdapter());
+            DatabaseAdapter internalAdapter = instantiateAdapter();
+            adaptersToPreventNotClosedError.add(internalAdapter);
+            parentDatabaseAdapter.setAdapter(internalAdapter);
         } catch (ClassCastException cce) {
             // This ensures tests that mock DatabaseAdapter pass
         }
@@ -82,33 +84,33 @@ public final class DatabaseAdapterFactory {
     private static DatabaseAdapter instantiateAdapter() {
         int actualVersion = version == null ? BaseDatabaseOpenHelper.VERSION : version;
         if (encrypt) {
-            EncryptedDatabaseOpenHelper openHelper;
-            if (databaseName == null || !encryptedOpenHelpers.containsKey(databaseName)) {
-                openHelper = new EncryptedDatabaseOpenHelper(context, databaseName + "-enc.db", actualVersion);
-                if (databaseName != null) {
-                    encryptedOpenHelpers.put(databaseName, openHelper);
-                }
-            } else {
-                openHelper = encryptedOpenHelpers.get(databaseName);
-            }
-            DatabaseAdapter adapter = new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(ENCRYPTION_PASSWORD));
-            adaptersToPreventNotClosedError.add(adapter);
-            return adapter;
+            EncryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(encryptedOpenHelpers, "-enc.db",
+                    dbName -> new EncryptedDatabaseOpenHelper(context, dbName, actualVersion));
+            return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(ENCRYPTION_PASSWORD));
         } else {
-            UnencryptedDatabaseOpenHelper openHelper;
-            if (databaseName == null || !unencryptedOpenHelpers.containsKey(databaseName)) {
-                openHelper = new UnencryptedDatabaseOpenHelper(context, databaseName, actualVersion);
-                if (databaseName != null) {
-                    unencryptedOpenHelpers.put(databaseName + ".db", openHelper);
-                }
-            } else {
-                openHelper = unencryptedOpenHelpers.get(databaseName);
-            }
-
-            DatabaseAdapter adapter = new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
-            adaptersToPreventNotClosedError.add(adapter);
-            return adapter;
+            UnencryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(unencryptedOpenHelpers, ".db",
+                    dbName -> new UnencryptedDatabaseOpenHelper(context, dbName, actualVersion));
+            return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
         }
+    }
+
+    private interface Function<I, O> {
+        O run(I i);
+    }
+
+    private static <H> H instantiateOpenHelper(Map<String, H> helpers, String dbPostfix,
+                                               Function<String, H> helperCreator) {
+        String databaseNameWithExtension = databaseName == null ? null : databaseName + dbPostfix;
+        H openHelper;
+        if (databaseNameWithExtension == null || !helpers.containsKey(databaseNameWithExtension)) {
+            openHelper = helperCreator.run(databaseNameWithExtension);
+            if (databaseNameWithExtension != null) {
+                helpers.put(databaseNameWithExtension, openHelper);
+            }
+        } else {
+            openHelper = helpers.get(databaseNameWithExtension);
+        }
+        return openHelper;
     }
 
     @SuppressWarnings("PMD.EmptyCatchBlock")

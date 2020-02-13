@@ -34,11 +34,18 @@ import android.database.Cursor;
 import androidx.test.InstrumentationRegistry;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.junit.AfterClass;
 import org.junit.Test;
 
 public class DatabaseAdapterFactoryIntegrationShould {
 
-    private final String DB_NAME = "database-adapter-factory-integration-should";
+    private static final String DB_NAME = "database-adapter-factory-integration-should";
+
+    @AfterClass
+    public static void tearDownClass() {
+        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        context.deleteDatabase(DB_NAME + ".db");
+    }
 
     @Test
     public void get_adapter() {

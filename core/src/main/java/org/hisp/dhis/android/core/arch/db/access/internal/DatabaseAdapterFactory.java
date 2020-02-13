@@ -82,33 +82,38 @@ public final class DatabaseAdapterFactory {
     private static DatabaseAdapter instantiateAdapter() {
         int actualVersion = version == null ? BaseDatabaseOpenHelper.VERSION : version;
         if (encrypt) {
-            EncryptedDatabaseOpenHelper openHelper;
-            if (databaseName == null || !encryptedOpenHelpers.containsKey(databaseName)) {
-                openHelper = new EncryptedDatabaseOpenHelper(context, databaseName + "-enc.db", actualVersion);
-                if (databaseName != null) {
-                    encryptedOpenHelpers.put(databaseName, openHelper);
-                }
-            } else {
-                openHelper = encryptedOpenHelpers.get(databaseName);
-            }
+            EncryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(
+                    encryptedOpenHelpers, "-enc.db",
+                    dbName -> new EncryptedDatabaseOpenHelper(context, dbName, actualVersion));
             DatabaseAdapter adapter = new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(ENCRYPTION_PASSWORD));
             adaptersToPreventNotClosedError.add(adapter);
             return adapter;
         } else {
-            UnencryptedDatabaseOpenHelper openHelper;
-            if (databaseName == null || !unencryptedOpenHelpers.containsKey(databaseName)) {
-                openHelper = new UnencryptedDatabaseOpenHelper(context, databaseName, actualVersion);
-                if (databaseName != null) {
-                    unencryptedOpenHelpers.put(databaseName + ".db", openHelper);
-                }
-            } else {
-                openHelper = unencryptedOpenHelpers.get(databaseName);
-            }
-
+            UnencryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(unencryptedOpenHelpers, ".db",
+                    dbName -> new UnencryptedDatabaseOpenHelper(context, dbName, actualVersion));
             DatabaseAdapter adapter = new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
             adaptersToPreventNotClosedError.add(adapter);
             return adapter;
         }
+    }
+
+    interface Function<I, O> {
+        O run(I i);
+    }
+
+    private static <H> H instantiateOpenHelper(Map<String, H> helpers, String dbPostfix,
+                                               Function<String, H> helperCreator) {
+        String databaseNameWithExtension = databaseName == null ? null : databaseName + dbPostfix;
+        H openHelper;
+        if (databaseNameWithExtension == null || !helpers.containsKey(databaseNameWithExtension)) {
+            openHelper = helperCreator.run(databaseNameWithExtension);
+            if (databaseNameWithExtension != null) {
+                helpers.put(databaseNameWithExtension, openHelper);
+            }
+        } else {
+            openHelper = helpers.get(databaseNameWithExtension);
+        }
+        return openHelper;
     }
 
     @SuppressWarnings("PMD.EmptyCatchBlock")

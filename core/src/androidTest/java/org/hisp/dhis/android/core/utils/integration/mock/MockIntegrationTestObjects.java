@@ -89,7 +89,7 @@ public class MockIntegrationTestObjects {
 
     private void deleteDatabase() {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        context.deleteDatabase(dbName);
+        context.deleteDatabase(dbName + ".db");
     }
 
     public void tearDown() throws IOException {

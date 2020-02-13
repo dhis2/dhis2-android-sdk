@@ -43,6 +43,8 @@ import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.configuration.internal.Configuration;
 import org.hisp.dhis.android.core.configuration.internal.ConfigurationSecureStoreImpl;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationSecureStore;
+import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import io.reactivex.Single;
@@ -110,6 +112,10 @@ public final class D2Manager {
             SecureStore secureStore = new AndroidSecureStore(d2Configuration.context());
             ObjectSecureStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
             ObjectSecureStore<Configuration> configurationSecureStore = new ConfigurationSecureStoreImpl(secureStore);
+            ObjectSecureStore<DatabasesConfiguration> databasesConfigurationStore
+                    = DatabaseConfigurationSecureStore.get(secureStore);
+
+            DatabasesConfiguration databasesConfiguration = databasesConfigurationStore.get();
             Configuration configuration = configurationSecureStore.get();
 
             if (configuration != null) {

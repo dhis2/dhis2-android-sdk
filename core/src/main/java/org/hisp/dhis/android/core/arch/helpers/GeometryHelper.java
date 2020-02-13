@@ -174,7 +174,8 @@ public final class GeometryHelper {
         }
 
         try {
-            return new ObjectMapper().readValue(geometry.coordinates(), typeReference);
+            //return new ObjectMapper().readValue(geometry.coordinates(), typeReference);
+            throw new IOException();
         } catch (IOException e) {
             throw d2Error(e, "It has not been possible to generate a " + type.getGeometryType() +
                     " from geometry coordinates: " + geometry.coordinates() + ".");

@@ -109,6 +109,20 @@ android {
 
         // should be removed with interoperability library
         exclude "META-INF/rxjava.properties"
+
+        exclude "META-INF/license.txt"
+        exclude "META-INF/DEPENDENCIES"
+        exclude "META-INF/LICENSE.md"
+        exclude "META-INF/NOTICE.md"
+        exclude "META-INF/INDEX.LIST"
+        exclude "license.html"
+        exclude "com/sun/xml/bind/v2/runtime/property/Messages_ko.properties"
+        exclude "com/sun/xml/bind/v2/schemagen/xmlschema/xmlschema-for-jaxb.rng"
+        exclude "com/sun/xml/bind/v2/Messages_es.properties"
+        exclude "com/sun/xml/bind/v2/runtime/reflect/Messages_es.properties"
+        exclude "com/sun/xml/bind/v2/model/impl/Messages_zh_CN.properties"
+        exclude "com/sun/xml/bind/**/*.properties"
+        exclude "com/sun/xml/bind/*.properties"
     }
 
     lintOptions {
@@ -182,7 +196,6 @@ dependencies {
     api("org.apache.commons:commons-jexl:2.1.1") {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
-    testImplementation "commons-logging:commons-logging:1.2"
 
     // Joda time
     api "joda-time:joda-time:2.9.9"
@@ -198,7 +211,21 @@ dependencies {
 
     api "com.google.code.findbugs:annotations:${libraries.findbugs}"
 
-    api "org.hisp.dhis:dhis-support-antlr-expression-parser:2.34-SNAPSHOT"
+    api ("org.hisp.dhis:dhis-support-antlr-expression-parser:2.34-SNAPSHOT") {
+        exclude module: 'truth'
+        exclude module: 'guava'
+        exclude module: 'jasperreports'
+        exclude group: 'com.vividsolutions'
+        exclude group: 'com.sun.xml.bind'
+        exclude group: 'com.sun.xml.ws'
+        exclude group: 'com.google.code.findbugs'
+        exclude group: 'javax.xml.bind'
+        exclude group: 'org.threeten'
+        exclude group: 'org.springframework'
+    }
+    annotationProcessor "org.hisp.dhis:dhis-support-antlr-expression-parser:2.34-SNAPSHOT"
+
+    api "com.google.guava:guava:20.0"
 
     api "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
 
@@ -212,7 +239,6 @@ dependencies {
     testImplementation "androidx.test:runner:${libraries.testrunner}"
 
     // Android test dependencies
-    androidTestImplementation "commons-logging:commons-logging:1.2"
     androidTestImplementation "org.mockito:mockito-core:${libraries.mockito}"
     androidTestImplementation "android.arch.core:core-testing:${libraries.coretesting}"
     androidTestImplementation "com.jraska.livedata:testing:${libraries.livedatatesting}"

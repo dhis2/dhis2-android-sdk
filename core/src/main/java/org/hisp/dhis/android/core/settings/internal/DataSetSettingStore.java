@@ -28,36 +28,34 @@
 
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.settings.DataSetSetting;
+import org.hisp.dhis.android.core.settings.DataSetSettingTableInfo;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+final class DataSetSettingStore {
 
-@Module(includes = {
-        AndroidSettingAppEntityDIModule.class,
-        DataSetSettingEntityDIModule.class,
-        ProgramSettingEntityDIModule.class,
-        SystemSettingEntityDIModule.class
-})
-public final class SystemSettingPackageDIModule {
+    private static final StatementBinder<DataSetSetting> BINDER = (o, w) -> {
+        w.bind(1, o.uid());
+        w.bind(2, o.name());
+        w.bind(3, o.lastUpdated());
+        w.bind(4, o.periodDSDownload());
+        w.bind(5, o.periodDSDBTrimming());
+    };
 
-    @Provides
-    @Reusable
-    SystemSettingService systemSettingService(Retrofit retrofit) {
-        return retrofit.create(SystemSettingService.class);
-    }
+    private static final WhereStatementBinder<DataSetSetting> WHERE_UPDATE_BINDER =
+            (o, w) -> w.bind(6, o.uid());
 
-    @Provides
-    @Reusable
-    AndroidSettingAppService settingAppService(Retrofit retrofit) {
-        return retrofit.create(AndroidSettingAppService.class);
-    }
+    private static final WhereStatementBinder<DataSetSetting> WHERE_DELETE_BINDER =
+            (o, w) -> w.bind(1, o.uid());
 
-    @Provides
-    @Reusable
-    SystemSettingModule module(SystemSettingModuleImpl impl) {
-        return impl;
+    private DataSetSettingStore() {}
+
+    public static ObjectWithoutUidStore<DataSetSetting> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, DataSetSettingTableInfo.TABLE_INFO, BINDER,
+                WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, DataSetSetting::create);
     }
 }

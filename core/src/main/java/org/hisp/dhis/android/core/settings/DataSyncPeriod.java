@@ -26,38 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+public enum DataSyncPeriod {
+    @JsonProperty("30m")
+    EVERY_30_MIN,
 
-@Module(includes = {
-        AndroidSettingAppEntityDIModule.class,
-        DataSetSettingEntityDIModule.class,
-        ProgramSettingEntityDIModule.class,
-        SystemSettingEntityDIModule.class
-})
-public final class SystemSettingPackageDIModule {
+    @JsonProperty("1h")
+    EVERY_HOUR,
 
-    @Provides
-    @Reusable
-    SystemSettingService systemSettingService(Retrofit retrofit) {
-        return retrofit.create(SystemSettingService.class);
-    }
+    @JsonProperty("6h")
+    EVERY_6_HOURS,
 
-    @Provides
-    @Reusable
-    AndroidSettingAppService settingAppService(Retrofit retrofit) {
-        return retrofit.create(AndroidSettingAppService.class);
-    }
+    @JsonProperty("12h")
+    EVERY_12_HOURS,
 
-    @Provides
-    @Reusable
-    SystemSettingModule module(SystemSettingModuleImpl impl) {
-        return impl;
-    }
+    @JsonProperty("24h")
+    EVERY_24_HOURS
 }

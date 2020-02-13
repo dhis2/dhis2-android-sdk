@@ -26,38 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.data.settings;
 
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
+import org.hisp.dhis.android.core.settings.DataSetSetting;
+import org.hisp.dhis.android.core.settings.DownloadPeriod;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+public class DataSetSettingSamples {
 
-@Module(includes = {
-        AndroidSettingAppEntityDIModule.class,
-        DataSetSettingEntityDIModule.class,
-        ProgramSettingEntityDIModule.class,
-        SystemSettingEntityDIModule.class
-})
-public final class SystemSettingPackageDIModule {
-
-    @Provides
-    @Reusable
-    SystemSettingService systemSettingService(Retrofit retrofit) {
-        return retrofit.create(SystemSettingService.class);
-    }
-
-    @Provides
-    @Reusable
-    AndroidSettingAppService settingAppService(Retrofit retrofit) {
-        return retrofit.create(AndroidSettingAppService.class);
-    }
-
-    @Provides
-    @Reusable
-    SystemSettingModule module(SystemSettingModuleImpl impl) {
-        return impl;
+    public static DataSetSetting getDataSetSetting() {
+        return DataSetSetting.builder()
+                .id(1L)
+                .uid("BfMAe6Itzgt")
+                .name("Child Health")
+                .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
+                .periodDSDownload(DownloadPeriod.LAST_3_MONTHS)
+                .periodDSDBTrimming(DownloadPeriod.LAST_12_MONTHS)
+                .build();
     }
 }

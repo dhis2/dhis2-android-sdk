@@ -28,36 +28,35 @@
 
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.settings.AndroidSetting;
+import org.hisp.dhis.android.core.settings.AndroidSettingTableInfo;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+final class AndroidSettingStore {
 
-@Module(includes = {
-        AndroidSettingAppEntityDIModule.class,
-        DataSetSettingEntityDIModule.class,
-        ProgramSettingEntityDIModule.class,
-        SystemSettingEntityDIModule.class
-})
-public final class SystemSettingPackageDIModule {
+    private static final StatementBinder<AndroidSetting> BINDER = (o, w) -> {
+        w.bind(1, o.dataSync());
+        w.bind(2, o.encryptDB());
+        w.bind(3, o.valuesTEI());
+        w.bind(4, o.lastUpdated());
+        w.bind(5, o.metadataSync());
+        w.bind(6, o.numberSmsToSend());
+        w.bind(7, o.errorConfirmation());
+        w.bind(8, o.numberSmsConfirmation());
+    };
 
-    @Provides
-    @Reusable
-    SystemSettingService systemSettingService(Retrofit retrofit) {
-        return retrofit.create(SystemSettingService.class);
-    }
+    private static final WhereStatementBinder<AndroidSetting> WHERE_UPDATE_BINDER = (o, w) -> {};
 
-    @Provides
-    @Reusable
-    AndroidSettingAppService settingAppService(Retrofit retrofit) {
-        return retrofit.create(AndroidSettingAppService.class);
-    }
+    private static final WhereStatementBinder<AndroidSetting> WHERE_DELETE_BINDER = (o, w) -> {};
 
-    @Provides
-    @Reusable
-    SystemSettingModule module(SystemSettingModuleImpl impl) {
-        return impl;
+    private AndroidSettingStore() {}
+
+    public static ObjectWithoutUidStore<AndroidSetting> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, AndroidSettingTableInfo.TABLE_INFO, BINDER,
+                WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, AndroidSetting::create);
     }
 }

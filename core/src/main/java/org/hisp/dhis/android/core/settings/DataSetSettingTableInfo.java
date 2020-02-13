@@ -26,38 +26,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+public final class DataSetSettingTableInfo {
 
-@Module(includes = {
-        AndroidSettingAppEntityDIModule.class,
-        DataSetSettingEntityDIModule.class,
-        ProgramSettingEntityDIModule.class,
-        SystemSettingEntityDIModule.class
-})
-public final class SystemSettingPackageDIModule {
-
-    @Provides
-    @Reusable
-    SystemSettingService systemSettingService(Retrofit retrofit) {
-        return retrofit.create(SystemSettingService.class);
+    private DataSetSettingTableInfo() {
     }
 
-    @Provides
-    @Reusable
-    AndroidSettingAppService settingAppService(Retrofit retrofit) {
-        return retrofit.create(AndroidSettingAppService.class);
-    }
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    @Provides
-    @Reusable
-    SystemSettingModule module(SystemSettingModuleImpl impl) {
-        return impl;
+        @Override
+        public String name() {
+            return "DataSetSetting";
+        }
+
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
+
+    public static class Columns extends CoreColumns {
+        public static final String UID = IdentifiableColumns.UID;
+        public static final String NAME = IdentifiableColumns.NAME;
+        public static final String LAST_UPDATED = IdentifiableColumns.LAST_UPDATED;
+        public static final String PERIOD_DS_DOWNLOAD = "periodDSDownload";
+        public static final String PERIOD_DS_DB_TRIMMING = "periodDSDBTrimming";
+
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    UID,
+                    NAME,
+                    LAST_UPDATED,
+                    PERIOD_DS_DOWNLOAD,
+                    PERIOD_DS_DB_TRIMMING
+            );
+        }
     }
 }

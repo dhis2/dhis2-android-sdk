@@ -26,38 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+import java.io.IOException;
+import java.text.ParseException;
 
-@Module(includes = {
-        AndroidSettingAppEntityDIModule.class,
-        DataSetSettingEntityDIModule.class,
-        ProgramSettingEntityDIModule.class,
-        SystemSettingEntityDIModule.class
-})
-public final class SystemSettingPackageDIModule {
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-    @Provides
-    @Reusable
-    SystemSettingService systemSettingService(Retrofit retrofit) {
-        return retrofit.create(SystemSettingService.class);
+public class AndroidSettingShould extends BaseObjectShould implements ObjectShould {
+
+    public AndroidSettingShould() {
+        super("settings/android_setting.json");
     }
 
-    @Provides
-    @Reusable
-    AndroidSettingAppService settingAppService(Retrofit retrofit) {
-        return retrofit.create(AndroidSettingAppService.class);
-    }
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        AndroidSetting androidSetting = objectMapper.readValue(jsonStream, AndroidSetting.class);
 
-    @Provides
-    @Reusable
-    SystemSettingModule module(SystemSettingModuleImpl impl) {
-        return impl;
+        assertThat(androidSetting.dataSync()).isEqualByComparingTo(DataSyncPeriod.EVERY_24_HOURS);
+        assertThat(androidSetting.encryptDB()).isFalse();
+        assertThat(androidSetting.valuesTEI()).isEqualTo(40);
+        assertThat(androidSetting.lastUpdated()).isEqualTo(BaseIdentifiableObject.parseDate("2020-01-13T16:52:05.144Z"));
+        assertThat(androidSetting.metadataSync()).isEqualByComparingTo(MetadataSyncPeriod.EVERY_DAY);
+        assertThat(androidSetting.numberSmsToSend()).isEqualTo("98456123");
+        assertThat(androidSetting.errorConfirmation()).isTrue();
+        assertThat(androidSetting.numberSmsConfirmation()).isEqualTo("98456122");
     }
 }

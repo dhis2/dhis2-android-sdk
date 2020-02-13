@@ -25,39 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.object.internal;
 
-package org.hisp.dhis.android.core.settings.internal;
+import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider;
 
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
+import io.reactivex.Completable;
+import io.reactivex.Single;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+public abstract class ReadOnlyAnyObjectWithDownloadRepositoryImpl<M> {
 
-@Module(includes = {
-        AndroidSettingAppEntityDIModule.class,
-        DataSetSettingEntityDIModule.class,
-        ProgramSettingEntityDIModule.class,
-        SystemSettingEntityDIModule.class
-})
-public final class SystemSettingPackageDIModule {
+    private final CompletableProvider downloadCompletableProvider;
 
-    @Provides
-    @Reusable
-    SystemSettingService systemSettingService(Retrofit retrofit) {
-        return retrofit.create(SystemSettingService.class);
+    public ReadOnlyAnyObjectWithDownloadRepositoryImpl(CompletableProvider downloadCompletableProvider) {
+        this.downloadCompletableProvider = downloadCompletableProvider;
     }
 
-    @Provides
-    @Reusable
-    AndroidSettingAppService settingAppService(Retrofit retrofit) {
-        return retrofit.create(AndroidSettingAppService.class);
+    public Single<M> get() {
+        return Single.fromCallable(this::blockingGet);
     }
 
-    @Provides
-    @Reusable
-    SystemSettingModule module(SystemSettingModuleImpl impl) {
-        return impl;
+    public abstract M blockingGet();
+
+    public Single<Boolean> exists() {
+        return Single.fromCallable(this::blockingExists);
+    }
+
+    public boolean blockingExists() {
+        return blockingGet() != null;
+    }
+
+    public Completable download() {
+        return downloadCompletableProvider.getCompletable(false);
+    }
+
+    public void blockingDownload() {
+        download().blockingAwait();
     }
 }

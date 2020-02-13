@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.settings.internal;
 
+import org.hisp.dhis.android.core.settings.AndroidSettingObjectRepository;
+import org.hisp.dhis.android.core.settings.DataSetSettingsObjectRepository;
+import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository;
 import org.hisp.dhis.android.core.settings.SystemSettingCollectionRepository;
 import org.hisp.dhis.android.core.settings.SystemSettingModule;
 
@@ -40,13 +43,38 @@ public final class SystemSettingModuleImpl implements SystemSettingModule {
 
     private final SystemSettingCollectionRepository systemSetting;
 
+    private final AndroidSettingObjectRepository androidSetting;
+    private final DataSetSettingsObjectRepository dataSetSetting;
+    private final ProgramSettingsObjectRepository programSetting;
+
     @Inject
-    SystemSettingModuleImpl(SystemSettingCollectionRepository systemSettingRepository) {
+    SystemSettingModuleImpl(SystemSettingCollectionRepository systemSettingRepository,
+                            AndroidSettingObjectRepository androidSetting,
+                            DataSetSettingsObjectRepository dataSetSetting,
+                            ProgramSettingsObjectRepository programSetting) {
         this.systemSetting = systemSettingRepository;
+        this.androidSetting = androidSetting;
+        this.dataSetSetting = dataSetSetting;
+        this.programSetting = programSetting;
     }
 
     @Override
     public SystemSettingCollectionRepository systemSetting() {
         return systemSetting;
+    }
+
+    @Override
+    public AndroidSettingObjectRepository androidSetting() {
+        return androidSetting;
+    }
+
+    @Override
+    public DataSetSettingsObjectRepository dataSetSetting() {
+        return dataSetSetting;
+    }
+
+    @Override
+    public ProgramSettingsObjectRepository programSetting() {
+        return programSetting;
     }
 }

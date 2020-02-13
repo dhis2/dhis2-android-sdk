@@ -28,36 +28,46 @@
 
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.settings.DataSetSetting;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+import java.util.ArrayList;
+import java.util.List;
 
-@Module(includes = {
-        AndroidSettingAppEntityDIModule.class,
-        DataSetSettingEntityDIModule.class,
-        ProgramSettingEntityDIModule.class,
-        SystemSettingEntityDIModule.class
-})
-public final class SystemSettingPackageDIModule {
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-    @Provides
-    @Reusable
-    SystemSettingService systemSettingService(Retrofit retrofit) {
-        return retrofit.create(SystemSettingService.class);
+public class DataSetSettingHandlerShould {
+
+    @Mock
+    private ObjectWithoutUidStore<DataSetSetting> dataSetSettingStore;
+
+    @Mock
+    private DataSetSetting dataSetSetting;
+
+    private Handler<DataSetSetting> dataSetSettingHandler;
+
+    private List<DataSetSetting> dataSetSettings;
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+
+        dataSetSettings = new ArrayList<>();
+        dataSetSettings.add(dataSetSetting);
+
+        dataSetSettingHandler = new DataSetSettingHandler(dataSetSettingStore);
     }
 
-    @Provides
-    @Reusable
-    AndroidSettingAppService settingAppService(Retrofit retrofit) {
-        return retrofit.create(AndroidSettingAppService.class);
-    }
-
-    @Provides
-    @Reusable
-    SystemSettingModule module(SystemSettingModuleImpl impl) {
-        return impl;
+    @Test
+    public void clean_database_before_insert_collection() {
+        dataSetSettingHandler.handleMany(dataSetSettings);
+        verify(dataSetSettingStore, times(1)).delete();
+        verify(dataSetSettingStore, times(1)).updateOrInsertWhere(dataSetSetting);
     }
 }

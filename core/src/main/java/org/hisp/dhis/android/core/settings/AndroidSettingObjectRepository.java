@@ -25,39 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings;
 
-package org.hisp.dhis.android.core.settings.internal;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
+import org.hisp.dhis.android.core.settings.internal.DataSetSettingsCall;
 
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
+import java.util.List;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        AndroidSettingAppEntityDIModule.class,
-        DataSetSettingEntityDIModule.class,
-        ProgramSettingEntityDIModule.class,
-        SystemSettingEntityDIModule.class
-})
-public final class SystemSettingPackageDIModule {
+@Reusable
+public final class AndroidSettingObjectRepository
+        extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<AndroidSetting>
+        implements ReadOnlyWithDownloadObjectRepository<AndroidSetting> {
 
-    @Provides
-    @Reusable
-    SystemSettingService systemSettingService(Retrofit retrofit) {
-        return retrofit.create(SystemSettingService.class);
+    private final ObjectWithoutUidStore<AndroidSetting> store;
+
+    @Inject
+    AndroidSettingObjectRepository(ObjectWithoutUidStore<AndroidSetting> store,
+                                   DataSetSettingsCall dataSetSettingsCall) {
+        super(dataSetSettingsCall);
+        this.store = store;
     }
 
-    @Provides
-    @Reusable
-    AndroidSettingAppService settingAppService(Retrofit retrofit) {
-        return retrofit.create(AndroidSettingAppService.class);
-    }
+    @Override
+    public AndroidSetting blockingGet() {
+        List<AndroidSetting> settings = store.selectAll();
 
-    @Provides
-    @Reusable
-    SystemSettingModule module(SystemSettingModuleImpl impl) {
-        return impl;
+        if (settings.isEmpty()) {
+            return null;
+        } else {
+            return settings.get(0);
+        }
     }
 }

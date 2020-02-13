@@ -28,36 +28,25 @@
 
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.settings.ProgramSettingSamples;
+import org.hisp.dhis.android.core.settings.ProgramSetting;
+import org.hisp.dhis.android.core.settings.ProgramSettingTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+@RunWith(D2JunitRunner.class)
+public class ProgramSettingStoreIntegrationShould
+        extends ObjectStoreAbstractIntegrationShould<ProgramSetting> {
 
-@Module(includes = {
-        AndroidSettingAppEntityDIModule.class,
-        DataSetSettingEntityDIModule.class,
-        ProgramSettingEntityDIModule.class,
-        SystemSettingEntityDIModule.class
-})
-public final class SystemSettingPackageDIModule {
-
-    @Provides
-    @Reusable
-    SystemSettingService systemSettingService(Retrofit retrofit) {
-        return retrofit.create(SystemSettingService.class);
+    public ProgramSettingStoreIntegrationShould() {
+        super(ProgramSettingStore.create(TestDatabaseAdapterFactory.get()), ProgramSettingTableInfo.TABLE_INFO,
+                TestDatabaseAdapterFactory.get());
     }
 
-    @Provides
-    @Reusable
-    AndroidSettingAppService settingAppService(Retrofit retrofit) {
-        return retrofit.create(AndroidSettingAppService.class);
-    }
-
-    @Provides
-    @Reusable
-    SystemSettingModule module(SystemSettingModuleImpl impl) {
-        return impl;
+    @Override
+    protected ProgramSetting buildObject() {
+        return ProgramSettingSamples.getProgramSetting();
     }
 }

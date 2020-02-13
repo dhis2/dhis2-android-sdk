@@ -28,36 +28,46 @@
 
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.settings.AndroidSetting;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+import java.util.ArrayList;
+import java.util.List;
 
-@Module(includes = {
-        AndroidSettingAppEntityDIModule.class,
-        DataSetSettingEntityDIModule.class,
-        ProgramSettingEntityDIModule.class,
-        SystemSettingEntityDIModule.class
-})
-public final class SystemSettingPackageDIModule {
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-    @Provides
-    @Reusable
-    SystemSettingService systemSettingService(Retrofit retrofit) {
-        return retrofit.create(SystemSettingService.class);
+public class AndroidSettingHandlerShould {
+
+    @Mock
+    private ObjectWithoutUidStore<AndroidSetting> androidSettingStore;
+
+    @Mock
+    private AndroidSetting androidSetting;
+
+    private Handler<AndroidSetting> androidSettingHandler;
+
+    private List<AndroidSetting> androidSettings;
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+
+        androidSettings = new ArrayList<>();
+        androidSettings.add(androidSetting);
+
+        androidSettingHandler = new AndroidSettingHandler(androidSettingStore);
     }
 
-    @Provides
-    @Reusable
-    AndroidSettingAppService settingAppService(Retrofit retrofit) {
-        return retrofit.create(AndroidSettingAppService.class);
-    }
-
-    @Provides
-    @Reusable
-    SystemSettingModule module(SystemSettingModuleImpl impl) {
-        return impl;
+    @Test
+    public void clean_database_before_insert_collection() {
+        androidSettingHandler.handleMany(androidSettings);
+        verify(androidSettingStore, times(1)).delete();
+        verify(androidSettingStore, times(1)).updateOrInsertWhere(androidSetting);
     }
 }

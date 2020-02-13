@@ -28,12 +28,50 @@
 
 package org.hisp.dhis.android.core.settings;
 
-public interface SystemSettingModule {
-    SystemSettingCollectionRepository systemSetting();
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-    AndroidSettingObjectRepository androidSetting();
+public final class AndroidSettingTableInfo {
 
-    DataSetSettingsObjectRepository dataSetSetting();
-    
-    ProgramSettingsObjectRepository programSetting();
+    private AndroidSettingTableInfo() {
+    }
+
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "AndroidSetting";
+        }
+
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
+
+    public static class Columns extends CoreColumns {
+        public static final String DATA_SYNC = "dataSync";
+        public static final String ENCRYPT_DB = "encryptDB";
+        public static final String VALUES_TEI = "valuesTEI";
+        public static final String LAST_UPDATED = "lastUpdated";
+        public static final String METADATA_SYNC = "metadataSync";
+        public static final String NUMBER_SMS_TO_SEND = "numberSmsToSend";
+        public static final String ERROR_CONFIRMATION = "errorConfirmation";
+        public static final String NUMBER_SMS_CONFIRMATION = "numberSmsConfirmation";
+
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    DATA_SYNC,
+                    ENCRYPT_DB,
+                    VALUES_TEI,
+                    LAST_UPDATED,
+                    METADATA_SYNC,
+                    NUMBER_SMS_TO_SEND,
+                    ERROR_CONFIRMATION,
+                    NUMBER_SMS_CONFIRMATION
+            );
+        }
+    }
 }

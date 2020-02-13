@@ -28,36 +28,46 @@
 
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.settings.ProgramSetting;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+import java.util.ArrayList;
+import java.util.List;
 
-@Module(includes = {
-        AndroidSettingAppEntityDIModule.class,
-        DataSetSettingEntityDIModule.class,
-        ProgramSettingEntityDIModule.class,
-        SystemSettingEntityDIModule.class
-})
-public final class SystemSettingPackageDIModule {
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-    @Provides
-    @Reusable
-    SystemSettingService systemSettingService(Retrofit retrofit) {
-        return retrofit.create(SystemSettingService.class);
+public class ProgramSettingHandlerShould {
+
+    @Mock
+    private ObjectWithoutUidStore<ProgramSetting> programSettingStore;
+
+    @Mock
+    private ProgramSetting programSetting;
+
+    private Handler<ProgramSetting> programSettingHandler;
+
+    private List<ProgramSetting> programSettings;
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+
+        programSettings = new ArrayList<>();
+        programSettings.add(programSetting);
+
+        programSettingHandler = new ProgramSettingHandler(programSettingStore);
     }
 
-    @Provides
-    @Reusable
-    AndroidSettingAppService settingAppService(Retrofit retrofit) {
-        return retrofit.create(AndroidSettingAppService.class);
-    }
-
-    @Provides
-    @Reusable
-    SystemSettingModule module(SystemSettingModuleImpl impl) {
-        return impl;
+    @Test
+    public void clean_database_before_insert_collection() {
+        programSettingHandler.handleMany(programSettings);
+        verify(programSettingStore, times(1)).delete();
+        verify(programSettingStore, times(1)).updateOrInsertWhere(programSetting);
     }
 }

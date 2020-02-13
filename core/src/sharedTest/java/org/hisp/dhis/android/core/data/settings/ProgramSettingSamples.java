@@ -26,38 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.data.settings;
 
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
+import org.hisp.dhis.android.core.settings.DownloadPeriod;
+import org.hisp.dhis.android.core.settings.EnrollmentScope;
+import org.hisp.dhis.android.core.settings.LimitScope;
+import org.hisp.dhis.android.core.settings.ProgramSetting;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+public class ProgramSettingSamples {
 
-@Module(includes = {
-        AndroidSettingAppEntityDIModule.class,
-        DataSetSettingEntityDIModule.class,
-        ProgramSettingEntityDIModule.class,
-        SystemSettingEntityDIModule.class
-})
-public final class SystemSettingPackageDIModule {
-
-    @Provides
-    @Reusable
-    SystemSettingService systemSettingService(Retrofit retrofit) {
-        return retrofit.create(SystemSettingService.class);
-    }
-
-    @Provides
-    @Reusable
-    AndroidSettingAppService settingAppService(Retrofit retrofit) {
-        return retrofit.create(AndroidSettingAppService.class);
-    }
-
-    @Provides
-    @Reusable
-    SystemSettingModule module(SystemSettingModuleImpl impl) {
-        return impl;
+    public static ProgramSetting getProgramSetting() {
+        return ProgramSetting.builder()
+                .id(1L)
+                .uid("IpHINAT79UW")
+                .name("Child Programme")
+                .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
+                .teiDownload(40)
+                .teiDBTrimming(20)
+                .eventsDownload(30)
+                .eventsDBTrimming(20)
+                .updateDownload(DownloadPeriod.ANY)
+                .updateDBTrimming(DownloadPeriod.LAST_3_MONTHS)
+                .settingDownload(LimitScope.PER_ORG_UNIT)
+                .settingDBTrimming(LimitScope.GLOBAL)
+                .enrollmentDownload(EnrollmentScope.ONLY_ACTIVE)
+                .enrollmentDBTrimming(EnrollmentScope.ALL)
+                .teReservedDownload(100)
+                .teReservedDBTrimming(500)
+                .eventPeriodDownload(DownloadPeriod.ANY)
+                .eventPeriodDBTrimming(DownloadPeriod.LAST_12_MONTHS)
+                .enrollmentDateDownload(DownloadPeriod.LAST_3_MONTHS)
+                .enrollmentDateDBTrimming(DownloadPeriod.LAST_12_MONTHS)
+                .build();
     }
 }

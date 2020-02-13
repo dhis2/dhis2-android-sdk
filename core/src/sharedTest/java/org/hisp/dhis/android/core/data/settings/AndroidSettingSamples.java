@@ -26,38 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.data.settings;
 
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
+import org.hisp.dhis.android.core.settings.AndroidSetting;
+import org.hisp.dhis.android.core.settings.DataSyncPeriod;
+import org.hisp.dhis.android.core.settings.MetadataSyncPeriod;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+public class AndroidSettingSamples {
 
-@Module(includes = {
-        AndroidSettingAppEntityDIModule.class,
-        DataSetSettingEntityDIModule.class,
-        ProgramSettingEntityDIModule.class,
-        SystemSettingEntityDIModule.class
-})
-public final class SystemSettingPackageDIModule {
-
-    @Provides
-    @Reusable
-    SystemSettingService systemSettingService(Retrofit retrofit) {
-        return retrofit.create(SystemSettingService.class);
-    }
-
-    @Provides
-    @Reusable
-    AndroidSettingAppService settingAppService(Retrofit retrofit) {
-        return retrofit.create(AndroidSettingAppService.class);
-    }
-
-    @Provides
-    @Reusable
-    SystemSettingModule module(SystemSettingModuleImpl impl) {
-        return impl;
+    public static AndroidSetting getAndroidSetting() {
+        return AndroidSetting.builder()
+                .id(1L)
+                .dataSync(DataSyncPeriod.EVERY_12_HOURS)
+                .encryptDB(true)
+                .valuesTEI(500)
+                .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
+                .metadataSync(MetadataSyncPeriod.EVERY_DAY)
+                .numberSmsToSend("+34678456123")
+                .errorConfirmation(true)
+                .numberSmsConfirmation("+34654321456")
+                .build();
     }
 }

@@ -25,39 +25,51 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.settings.AndroidSettingTableInfo;
-import org.hisp.dhis.android.core.settings.DataSetSettingTableInfo;
-import org.hisp.dhis.android.core.settings.ProgramSettingTableInfo;
-import org.hisp.dhis.android.core.settings.SystemSettingTableInfo;
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.internal.TableWiper;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
+import org.hisp.dhis.android.core.settings.internal.DataSetSettingsCall;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class SystemSettingModuleWiper implements ModuleWiper {
+public final class ProgramSettingsObjectRepository
+        extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<ProgramSettings>
+        implements ReadOnlyWithDownloadObjectRepository<ProgramSettings> {
 
-    private final TableWiper tableWiper;
+    private final ObjectWithoutUidStore<ProgramSetting> store;
 
     @Inject
-    SystemSettingModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    ProgramSettingsObjectRepository(ObjectWithoutUidStore<ProgramSetting> store,
+                                    DataSetSettingsCall dataSetSettingsCall) {
+        super(dataSetSettingsCall);
+        this.store = store;
     }
 
     @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTable(SystemSettingTableInfo.TABLE_INFO);
-        tableWiper.wipeTable(AndroidSettingTableInfo.TABLE_INFO);
-        tableWiper.wipeTable(DataSetSettingTableInfo.TABLE_INFO);
-        tableWiper.wipeTable(ProgramSettingTableInfo.TABLE_INFO);
-    }
+    public ProgramSettings blockingGet() {
+        List<ProgramSetting> settings = store.selectAll();
 
-    @Override
-    public void wipeData() {
-        // No data to wipe
+        ProgramSettings.Builder builder = ProgramSettings.builder();
+        Map<String, ProgramSetting> specifics = new HashMap<>();
+
+        for (ProgramSetting programSetting : settings) {
+            if (programSetting.uid() == null) {
+                builder.globalSettings(programSetting);
+            } else {
+                specifics.put(programSetting.uid(), programSetting);
+            }
+        }
+        builder.specificSettings(specifics);
+
+        return builder.build();
     }
 }

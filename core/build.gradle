@@ -134,6 +134,9 @@ android {
     }
 
     buildTypes {
+        defaultConfig {
+            minifyEnabled true
+        }
         debug {
             // a fix for the debugger not being able to find local scope variables
             testCoverageEnabled = false
@@ -215,17 +218,34 @@ dependencies {
         exclude module: 'truth'
         exclude module: 'guava'
         exclude module: 'jasperreports'
+        exclude module: 'log4j-core'
+        exclude group: 'javax.annotation'
         exclude group: 'com.vividsolutions'
         exclude group: 'com.sun.xml.bind'
         exclude group: 'com.sun.xml.ws'
         exclude group: 'com.google.code.findbugs'
         exclude group: 'javax.xml.bind'
+        exclude group: 'javax.xml.ws'
         exclude group: 'org.threeten'
         exclude group: 'org.springframework'
     }
-    annotationProcessor "org.hisp.dhis:dhis-support-antlr-expression-parser:2.34-SNAPSHOT"
+    annotationProcessor ("org.hisp.dhis:dhis-support-antlr-expression-parser:2.34-SNAPSHOT") {
+        exclude module: 'truth'
+        exclude module: 'guava'
+        exclude module: 'jasperreports'
+        exclude module: 'log4j-core'
+        exclude group: 'javax.annotation'
+        exclude group: 'com.vividsolutions'
+        exclude group: 'com.sun.xml.bind'
+        exclude group: 'com.sun.xml.ws'
+        exclude group: 'com.google.code.findbugs'
+        exclude group: 'javax.xml.bind'
+        exclude group: 'javax.xml.ws'
+        exclude group: 'org.threeten'
+        exclude group: 'org.springframework'
+    }
 
-    api "com.google.guava:guava:20.0"
+    api "com.google.guava:guava:27.0.1-android"
 
     api "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
 

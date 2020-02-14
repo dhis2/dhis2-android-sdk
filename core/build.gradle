@@ -193,7 +193,11 @@ dependencies {
     api "joda-time:joda-time:2.9.9"
 
     // sms compression library
-    api 'com.github.eHealthAfrica:dhis2-sms-compression:0.1.5'
+    //api 'com.github.eHealthAfrica:dhis2-sms-compression:0.1.5'
+    api files("../../sms-compression/build/libs/sms-compression.jar")
+    api "com.google.code.gson:gson:2.8.2"
+    api "org.apache.commons:commons-lang3:3.6"
+    api "commons-io:commons-io:2.6"
 
     // Extension which generates mappers for work with cursor and content values
     api "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"

@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.sms.mockrepos.testobjects;
 
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.relationship.Relationship;
@@ -20,6 +21,8 @@ import java.util.Date;
 public class MockObjects {
     public static String user = "AIK2aQOJIbj";
     public static String enrollmentUid = "jQK0XnMVFIK";
+    public static String enrollmentUidWithNullEvents = "aQr0XnMVyIq";
+    public static String enrollmentUidWithoutEvents = "hQKhXnMVLIm";
     public static String teiUid = "MmzaWDDruXW";
     public static String teiUid2 = "ggg3R9nRSTI";
     public static String trackedEntityType = "nEenWmSyUEp";
@@ -35,25 +38,48 @@ public class MockObjects {
     public static String dataSetUid = "R75HPJyNLs2";
     public static Boolean isCompleted = true;
 
-    public static Enrollment getTestEnrollment() {
+    private static Enrollment.Builder getEnrollmentBuilder() {
         return Enrollment.builder()
-                .uid(enrollmentUid)
                 .created(new Date())
                 .lastUpdated(new Date())
                 .organisationUnit(orgUnit)
                 .program(program)
                 .enrollmentDate(new Date())
                 .trackedEntityInstance(teiUid)
-                .id(341L).build();
+                .id(341L);
     }
 
-    public static TrackedEntityInstance getTEIEnrollment() {
+    private static TrackedEntityInstance getTestTEIEnrollment(Enrollment enrollment) {
         return TrackedEntityInstanceInternalAccessor
-                .insertEnrollments(TrackedEntityInstance.builder(), Collections.singletonList(getTestEnrollment()))
+                .insertEnrollments(TrackedEntityInstance.builder(), Collections.singletonList(enrollment))
                 .uid(teiUid)
                 .trackedEntityType(trackedEntityType)
                 .trackedEntityAttributeValues(getTestAttributeValues())
                 .build();
+    }
+
+    public static TrackedEntityInstance getTEIEnrollment() {
+        Enrollment enrollment = EnrollmentInternalAccessor
+                .insertEvents(getEnrollmentBuilder(), Collections.singletonList(getTrackerEvent()))
+                .uid(enrollmentUid)
+                .build();
+        return getTestTEIEnrollment(enrollment);
+    }
+
+    public static TrackedEntityInstance getTEIEnrollmentWithoutEvents() {
+        Enrollment enrollment = EnrollmentInternalAccessor
+                .insertEvents(getEnrollmentBuilder(), null)
+                .uid(enrollmentUidWithNullEvents)
+                .build();
+        return getTestTEIEnrollment(enrollment);
+    }
+
+    public static TrackedEntityInstance getTEIEnrollmentWithEventEmpty() {
+        Enrollment enrollment = EnrollmentInternalAccessor
+                .insertEvents(getEnrollmentBuilder(), Collections.emptyList())
+                .uid(enrollmentUidWithoutEvents)
+                .build();
+        return getTestTEIEnrollment(enrollment);
     }
 
     public static ArrayList<TrackedEntityAttributeValue> getTestAttributeValues() {

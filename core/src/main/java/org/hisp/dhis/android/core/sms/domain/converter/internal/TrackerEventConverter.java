@@ -6,13 +6,8 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SmsVersionRepository;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.smscompression.models.SMSDataValue;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 import org.hisp.dhis.smscompression.models.TrackerEventSMSSubmission;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -37,10 +32,10 @@ public class TrackerEventConverter extends Converter<Event> {
             subm.setProgramStage(e.programStage());
             subm.setTimestamp(e.lastUpdated());
             subm.setEnrollment(e.enrollment());
-            subm.setValues(convertDataValues(e.attributeOptionCombo(), e.trackedEntityDataValues()));
+            subm.setValues(ConverterUtils.convertDataValues(e.attributeOptionCombo(), e.trackedEntityDataValues()));
             subm.setOrgUnit(e.organisationUnit());
             subm.setUserID(user);
-            subm.setEventStatus(SimpleEventConverter.translateStatus(e.status()));
+            subm.setEventStatus(ConverterUtils.convertEventStatus(e.status()));
             return subm;
         });
     }
@@ -53,18 +48,5 @@ public class TrackerEventConverter extends Converter<Event> {
     @Override
     Single<Event> readItemFromDb() {
         return getLocalDbRepository().getTrackerEventToSubmit(eventUid);
-    }
-
-    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
-    private List<SMSDataValue> convertDataValues(String catOptionCombo,
-                                                 List<TrackedEntityDataValue> trackedEntityDataValues) {
-        ArrayList<SMSDataValue> dataValues = new ArrayList<>();
-        if (trackedEntityDataValues == null) {
-            return dataValues;
-        }
-        for (TrackedEntityDataValue tedv : trackedEntityDataValues) {
-            dataValues.add(new SMSDataValue(catOptionCombo, tedv.dataElement(), tedv.value()));
-        }
-        return dataValues;
     }
 }

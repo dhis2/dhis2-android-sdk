@@ -60,9 +60,28 @@ public class ConvertTest {
         assertEquals(s.getTrackedEntityType().uid, MockObjects.trackedEntityType);
         assertEquals(s.getOrgUnit().uid, MockObjects.orgUnit);
         assertEquals(s.getTrackerProgram().uid, MockObjects.program);
+        assertEquals(s.getEvents().size(), 1);
+        assertEquals(s.getEvents().get(0).getEvent().uid, MockObjects.eventUid);
+        for (SMSDataValue item : s.getEvents().get(0).getValues()) {
+            assertTrue(containsTeiDataValue(MockObjects.getTeiDataValues(), item));
+        }
         for (SMSAttributeValue item : s.getValues()) {
             assertTrue(containsAttributeValue(MockObjects.getTestAttributeValues(), item));
         }
+    }
+
+    @Test
+    public void convertEnrollmentWitNullEvent() throws Exception {
+        EnrollmentSMSSubmission s = (EnrollmentSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
+                .generateEnrollmentCode(MockObjects.enrollmentUidWithNullEvents));
+        assertTrue(s.getEvents().isEmpty());
+    }
+
+    @Test
+    public void convertEnrollmentWithEmptyEventList() throws Exception {
+        EnrollmentSMSSubmission s = (EnrollmentSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
+                .generateEnrollmentCode(MockObjects.enrollmentUidWithoutEvents));
+        assertTrue(s.getEvents().isEmpty());
     }
 
     @Test

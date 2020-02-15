@@ -90,7 +90,15 @@ public class MockLocalDbRepository implements LocalDbRepository {
 
     @Override
     public Single<TrackedEntityInstance> getTeiEnrollmentToSubmit(String enrollmentUid) {
-        return Single.fromCallable(MockObjects::getTEIEnrollment);
+        if (enrollmentUid.equals(MockObjects.enrollmentUidWithNullEvents)) {
+            return Single.fromCallable(MockObjects::getTEIEnrollmentWithoutEvents);
+        }
+        else if (enrollmentUid.equals(MockObjects.enrollmentUidWithoutEvents)) {
+            return Single.fromCallable(MockObjects::getTEIEnrollmentWithEventEmpty);
+        }
+        else {
+            return Single.fromCallable(MockObjects::getTEIEnrollment);
+        }
     }
 
     @Override

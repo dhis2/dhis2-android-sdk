@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
+import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SmsVersionRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
@@ -11,6 +13,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission;
 import org.hisp.dhis.smscompression.models.SMSAttributeValue;
+import org.hisp.dhis.smscompression.models.SMSEvent;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 
 import java.util.ArrayList;
@@ -40,6 +43,8 @@ public class EnrollmentConverter extends Converter<TrackedEntityInstance> {
             );
         }
 
+        List<Event> events = EnrollmentInternalAccessor.accessEvents(enrollments.get(0));
+
         List<TrackedEntityAttributeValue> attributeValues = tei.trackedEntityAttributeValues();
         if (attributeValues == null) {
             return Single.error(
@@ -63,6 +68,14 @@ public class EnrollmentConverter extends Converter<TrackedEntityInstance> {
                 values.add(createAttributeValue(attr.trackedEntityAttribute(), attr.value()));
             }
             subm.setValues(values);
+
+            if (events != null) {
+                ArrayList<SMSEvent> smsEvents = new ArrayList<>();
+                for (Event event : events) {
+                    smsEvents.add(createSMSEvent(event));
+                }
+                subm.setEvents(smsEvents);
+            }
             return subm;
         });
     }
@@ -79,5 +92,16 @@ public class EnrollmentConverter extends Converter<TrackedEntityInstance> {
 
     private SMSAttributeValue createAttributeValue(String attribute, String value) {
         return new SMSAttributeValue(attribute, value);
+    }
+
+    private SMSEvent createSMSEvent(Event e) {
+        SMSEvent smsEvent = new SMSEvent();
+        smsEvent.setAttributeOptionCombo(e.attributeOptionCombo());
+        smsEvent.setEvent(e.uid());
+        smsEvent.setEventStatus(ConverterUtils.convertEventStatus(e.status()));
+        smsEvent.setProgramStage(e.programStage());
+        smsEvent.setTimestamp(e.lastUpdated());
+        smsEvent.setValues(ConverterUtils.convertDataValues(e.attributeOptionCombo(), e.trackedEntityDataValues()));
+        return smsEvent;
     }
 }

@@ -7,14 +7,18 @@ import org.hisp.dhis.android.core.sms.domain.converter.internal.RelationshipConv
 import org.hisp.dhis.android.core.sms.domain.converter.internal.SimpleEventConverter;
 import org.hisp.dhis.android.core.sms.domain.converter.internal.TrackerEventConverter;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.SmsVersionRepository;
 
 import io.reactivex.Single;
 
 public class QrCodeCase {
     private final LocalDbRepository localDbRepository;
+    private final SmsVersionRepository smsVersionRepository;
 
-    public QrCodeCase(LocalDbRepository localDbRepository) {
+    public QrCodeCase(LocalDbRepository localDbRepository,
+                      SmsVersionRepository smsVersionRepository) {
         this.localDbRepository = localDbRepository;
+        this.smsVersionRepository = smsVersionRepository;
     }
 
     /**
@@ -23,7 +27,7 @@ public class QrCodeCase {
      * @return {@code Single} with the compressed representation.
      */
     public Single<String> generateSimpleEventCode(String eventUid) {
-        return new SimpleEventConverter(localDbRepository, eventUid).readAndConvert();
+        return new SimpleEventConverter(localDbRepository, smsVersionRepository, eventUid).readAndConvert();
     }
 
     /**
@@ -32,7 +36,7 @@ public class QrCodeCase {
      * @return {@code Single} with the compressed representation.
      */
     public Single<String> generateTrackerEventCode(String eventUid) {
-        return new TrackerEventConverter(localDbRepository, eventUid).readAndConvert();
+        return new TrackerEventConverter(localDbRepository, smsVersionRepository, eventUid).readAndConvert();
     }
 
     /**
@@ -41,7 +45,7 @@ public class QrCodeCase {
      * @return {@code Single} with the compressed representation.
      */
     public Single<String> generateEnrollmentCode(String enrollmentUid) {
-        return new EnrollmentConverter(localDbRepository, enrollmentUid).readAndConvert();
+        return new EnrollmentConverter(localDbRepository, smsVersionRepository, enrollmentUid).readAndConvert();
     }
 
     /**
@@ -58,6 +62,7 @@ public class QrCodeCase {
                                               String attributeOptionComboUid) {
         return new DatasetConverter(
                 localDbRepository,
+                smsVersionRepository,
                 dataSet,
                 orgUnit,
                 period,
@@ -70,7 +75,7 @@ public class QrCodeCase {
      * @return {@code Single} with the compressed representation.
      */
     public Single<String> generateRelationshipCode(String relationshipUid) {
-        return new RelationshipConverter(localDbRepository, relationshipUid).readAndConvert();
+        return new RelationshipConverter(localDbRepository, smsVersionRepository, relationshipUid).readAndConvert();
     }
 
     /**
@@ -79,6 +84,6 @@ public class QrCodeCase {
      * @return {@code Single} with the compressed representation.
      */
     public Single<String> generateDeletionCode(String itemToDeleteUid) {
-        return new DeletionConverter(localDbRepository, itemToDeleteUid).readAndConvert();
+        return new DeletionConverter(localDbRepository, smsVersionRepository, itemToDeleteUid).readAndConvert();
     }
 }

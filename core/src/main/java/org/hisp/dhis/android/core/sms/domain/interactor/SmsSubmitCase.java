@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.core.sms.domain.interactor;
 
+import androidx.core.util.Pair;
+
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.sms.domain.converter.internal.Converter;
 import org.hisp.dhis.android.core.sms.domain.converter.internal.DatasetConverter;
@@ -11,12 +13,12 @@ import org.hisp.dhis.android.core.sms.domain.converter.internal.TrackerEventConv
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.DeviceStateRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.SmsVersionRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType;
 
 import java.util.Date;
 import java.util.List;
 
-import androidx.core.util.Pair;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -26,16 +28,20 @@ public class SmsSubmitCase {
     private final LocalDbRepository localDbRepository;
     private final SmsRepository smsRepository;
     private final DeviceStateRepository deviceStateRepository;
+    private final SmsVersionRepository smsVersionRepository;
     private Converter<?> converter;
     private List<String> smsParts;
     private Integer submissionId;
     private boolean finishedSending;
 
-    public SmsSubmitCase(LocalDbRepository localDbRepository, SmsRepository smsRepository,
-                         DeviceStateRepository deviceStateRepository) {
+    public SmsSubmitCase(LocalDbRepository localDbRepository,
+                         SmsRepository smsRepository,
+                         DeviceStateRepository deviceStateRepository,
+                         SmsVersionRepository smsVersionRepository) {
         this.localDbRepository = localDbRepository;
         this.smsRepository = smsRepository;
         this.deviceStateRepository = deviceStateRepository;
+        this.smsVersionRepository = smsVersionRepository;
     }
 
     /**
@@ -44,7 +50,7 @@ public class SmsSubmitCase {
      * @return {@code Single} with the number of SMS to send.
      */
     public Single<Integer> convertTrackerEvent(String eventUid) {
-        return convert(new TrackerEventConverter(localDbRepository, eventUid));
+        return convert(new TrackerEventConverter(localDbRepository, smsVersionRepository, eventUid));
     }
 
     /**
@@ -53,7 +59,7 @@ public class SmsSubmitCase {
      * @return {@code Single} with the number of SMS to send.
      */
     public Single<Integer> convertSimpleEvent(String eventUid) {
-        return convert(new SimpleEventConverter(localDbRepository, eventUid));
+        return convert(new SimpleEventConverter(localDbRepository, smsVersionRepository, eventUid));
     }
 
     /**
@@ -62,7 +68,7 @@ public class SmsSubmitCase {
      * @return {@code Single} with the number of SMS to send.
      */
     public Single<Integer> convertEnrollment(String enrollmentUid) {
-        return convert(new EnrollmentConverter(localDbRepository, enrollmentUid));
+        return convert(new EnrollmentConverter(localDbRepository, smsVersionRepository, enrollmentUid));
     }
 
     /**
@@ -79,6 +85,7 @@ public class SmsSubmitCase {
                                           String attributeOptionComboUid) {
         return convert(new DatasetConverter(
                 localDbRepository,
+                smsVersionRepository,
                 dataSet,
                 orgUnit,
                 period,
@@ -91,7 +98,7 @@ public class SmsSubmitCase {
      * @return {@code Single} with the number of SMS to send.
      */
     public Single<Integer> convertRelationship(String relationshipUid) {
-        return convert(new RelationshipConverter(localDbRepository, relationshipUid));
+        return convert(new RelationshipConverter(localDbRepository, smsVersionRepository, relationshipUid));
     }
 
     /**
@@ -100,7 +107,7 @@ public class SmsSubmitCase {
      * @return {@code Single} with the number of SMS to send.
      */
     public Single<Integer> convertDeletion(String itemToDeleteUid) {
-        return convert(new DeletionConverter(localDbRepository, itemToDeleteUid));
+        return convert(new DeletionConverter(localDbRepository, smsVersionRepository, itemToDeleteUid));
     }
 
     private Single<Integer> convert(Converter<?> converter) {
@@ -259,9 +266,9 @@ public class SmsSubmitCase {
                 case NO_CHECK_NETWORK_PERMISSION:
                     return "No check network permission";
                 case NO_RECEIVE_SMS_PERMISSION:
-                    return "No receive sms permission";
+                    return "No receive smsVersionRepository permission";
                 case NO_SEND_SMS_PERMISSION:
-                    return "No send sms permission";
+                    return "No send smsVersionRepository permission";
                 case NO_GATEWAY_NUMBER_SET:
                     return "No gateway number set";
                 case NO_USER_LOGGED_IN:

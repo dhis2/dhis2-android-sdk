@@ -3,21 +3,26 @@ package org.hisp.dhis.android.core.sms.domain.converter.internal;
 import android.annotation.SuppressLint;
 import android.util.Base64;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.SmsVersionRepository;
 import org.hisp.dhis.smscompression.SMSSubmissionWriter;
 import org.hisp.dhis.smscompression.models.SMSMetadata;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 
-import androidx.annotation.NonNull;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
 public abstract class Converter<P> {
-    final private LocalDbRepository localDbRepository;
+    private final LocalDbRepository localDbRepository;
+    private final SmsVersionRepository smsVersionRepository;
 
-    public Converter(LocalDbRepository localDbRepository) {
+    public Converter(LocalDbRepository localDbRepository,
+                     SmsVersionRepository smsVersionRepository) {
         this.localDbRepository = localDbRepository;
+        this.smsVersionRepository = smsVersionRepository;
     }
 
     public Single<String> readAndConvert() {
@@ -42,7 +47,7 @@ public abstract class Converter<P> {
     private Single<String> convert(@NonNull P dataItem, SMSMetadata metadata, String user, Integer submissionId) {
         return convert(dataItem, user, submissionId).map(submission -> {
             SMSSubmissionWriter writer = new SMSSubmissionWriter(metadata);
-            return base64(writer.compress(submission));
+            return base64(writer.compress(submission, smsVersionRepository.getSMSVersion()));
         });
     }
 

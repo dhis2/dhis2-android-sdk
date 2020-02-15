@@ -1,8 +1,11 @@
 package org.hisp.dhis.android.core.sms.domain.converter.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.SmsVersionRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.smscompression.models.SMSDataValue;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
@@ -11,15 +14,16 @@ import org.hisp.dhis.smscompression.models.TrackerEventSMSSubmission;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
 public class TrackerEventConverter extends Converter<Event> {
     private final String eventUid;
 
-    public TrackerEventConverter(LocalDbRepository localDbRepository, String eventUid) {
-        super(localDbRepository);
+    public TrackerEventConverter(LocalDbRepository localDbRepository,
+                                 SmsVersionRepository smsVersionRepository,
+                                 String eventUid) {
+        super(localDbRepository, smsVersionRepository);
         this.eventUid = eventUid;
     }
 

@@ -4,6 +4,7 @@ import org.hisp.dhis.android.core.sms.domain.interactor.SmsSubmitCase;
 import org.hisp.dhis.android.core.sms.mockrepos.MockDeviceStateRepository;
 import org.hisp.dhis.android.core.sms.mockrepos.MockLocalDbRepository;
 import org.hisp.dhis.android.core.sms.mockrepos.MockSmsRepository;
+import org.hisp.dhis.android.core.sms.mockrepos.MockSmsVersionRepository;
 import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockObjects;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +20,7 @@ public class SubmitTest {
     private MockLocalDbRepository localDbRepository;
     private MockDeviceStateRepository deviceStateRepository;
     private MockSmsRepository smsRepository;
+    private MockSmsVersionRepository smsVersionRepository;
     private SmsSubmitCase sender;
 
     @Before
@@ -26,7 +28,8 @@ public class SubmitTest {
         localDbRepository = new MockLocalDbRepository();
         deviceStateRepository = new MockDeviceStateRepository();
         smsRepository = new MockSmsRepository();
-        sender = new SmsSubmitCase(localDbRepository, smsRepository, deviceStateRepository);
+        smsVersionRepository = new MockSmsVersionRepository();
+        sender = new SmsSubmitCase(localDbRepository, smsRepository, deviceStateRepository, smsVersionRepository);
     }
 
     @Test
@@ -70,14 +73,14 @@ public class SubmitTest {
                 .assertValueCount(2);
 
         localDbRepository.setGatewayNumber("").test().assertComplete();
-        sender = new SmsSubmitCase(localDbRepository, smsRepository, deviceStateRepository);
+        sender = new SmsSubmitCase(localDbRepository, smsRepository, deviceStateRepository, smsVersionRepository);
         convertTask.call().test()
                 .assertError(error -> error instanceof SmsSubmitCase.PreconditionFailed &&
                         ((SmsSubmitCase.PreconditionFailed) error).getType() == SmsSubmitCase.PreconditionFailed.Type.NO_GATEWAY_NUMBER_SET);
 
         localDbRepository = new MockLocalDbRepository();
         localDbRepository.setModuleEnabled(false).test().assertComplete();
-        sender = new SmsSubmitCase(localDbRepository, smsRepository, deviceStateRepository);
+        sender = new SmsSubmitCase(localDbRepository, smsRepository, deviceStateRepository, smsVersionRepository);
         convertTask.call().test()
                 .assertError(error -> error instanceof SmsSubmitCase.PreconditionFailed &&
                         ((SmsSubmitCase.PreconditionFailed) error).getType() == SmsSubmitCase.PreconditionFailed.Type.SMS_MODULE_DISABLED);
@@ -89,7 +92,7 @@ public class SubmitTest {
                 return Single.just(false);
             }
         };
-        sender = new SmsSubmitCase(localDbRepository, smsRepository, deviceStateRepository);
+        sender = new SmsSubmitCase(localDbRepository, smsRepository, deviceStateRepository, smsVersionRepository);
         convertTask.call().test()
                 .assertError(error -> error instanceof SmsSubmitCase.PreconditionFailed &&
                         ((SmsSubmitCase.PreconditionFailed) error).getType() == SmsSubmitCase.PreconditionFailed.Type.NO_NETWORK);

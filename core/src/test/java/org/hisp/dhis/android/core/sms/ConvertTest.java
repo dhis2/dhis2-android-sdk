@@ -4,7 +4,9 @@ package org.hisp.dhis.android.core.sms;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.sms.domain.interactor.QrCodeCase;
 import org.hisp.dhis.android.core.sms.domain.model.internal.SMSDataValueSet;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.SmsVersionRepository;
 import org.hisp.dhis.android.core.sms.mockrepos.MockLocalDbRepository;
+import org.hisp.dhis.android.core.sms.mockrepos.MockSmsVersionRepository;
 import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockMetadata;
 import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockObjects;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
@@ -40,15 +42,17 @@ import static org.junit.Assert.assertTrue;
 @RunWith(JUnit4.class)
 public class ConvertTest {
     private MockLocalDbRepository testLocalDb;
+    private SmsVersionRepository smsVersionRepository;
 
     @Before
     public void init() {
         testLocalDb = new MockLocalDbRepository();
+        smsVersionRepository = new MockSmsVersionRepository();
     }
 
     @Test
     public void convertEnrollment() throws Exception {
-        EnrollmentSMSSubmission s = (EnrollmentSMSSubmission) convert(new QrCodeCase(testLocalDb)
+        EnrollmentSMSSubmission s = (EnrollmentSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
                 .generateEnrollmentCode(MockObjects.enrollmentUid));
         assertEquals(s.getUserID().uid, MockObjects.user);
         assertEquals(s.getEnrollment().uid, MockObjects.enrollmentUid);
@@ -63,7 +67,7 @@ public class ConvertTest {
 
     @Test
     public void convertSimpleEvent() throws Exception {
-        SimpleEventSMSSubmission s = (SimpleEventSMSSubmission) convert(new QrCodeCase(testLocalDb)
+        SimpleEventSMSSubmission s = (SimpleEventSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
                 .generateSimpleEventCode(MockObjects.eventUid));
         assertEquals(s.getUserID().uid, MockObjects.user);
         assertEquals(s.getOrgUnit().uid, MockObjects.orgUnit);
@@ -78,7 +82,7 @@ public class ConvertTest {
 
     @Test
     public void convertTrackerEvent() throws Exception {
-        TrackerEventSMSSubmission s = (TrackerEventSMSSubmission) convert(new QrCodeCase(testLocalDb)
+        TrackerEventSMSSubmission s = (TrackerEventSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
                 .generateTrackerEventCode(MockObjects.eventUid));
         assertEquals(s.getUserID().uid, MockObjects.user);
         assertEquals(s.getOrgUnit().uid, MockObjects.orgUnit);
@@ -94,7 +98,7 @@ public class ConvertTest {
 
     @Test
     public void convertDataSet() throws Exception {
-        AggregateDatasetSMSSubmission s = (AggregateDatasetSMSSubmission) convert(new QrCodeCase(testLocalDb)
+        AggregateDatasetSMSSubmission s = (AggregateDatasetSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
                 .generateDataSetCode(MockObjects.dataSetUid, MockObjects.orgUnit,
                         MockObjects.period, MockObjects.attributeOptionCombo));
         assertEquals(s.getUserID().uid, MockObjects.user);
@@ -112,7 +116,7 @@ public class ConvertTest {
 
     @Test
     public void convertRelationship() throws Exception {
-        RelationshipSMSSubmission s = (RelationshipSMSSubmission) convert(new QrCodeCase(testLocalDb)
+        RelationshipSMSSubmission s = (RelationshipSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
                 .generateRelationshipCode(MockObjects.relationship));
         assertEquals(s.getUserID().uid, MockObjects.user);
         assertEquals(s.getRelationship().uid, MockObjects.relationship);
@@ -123,7 +127,7 @@ public class ConvertTest {
 
     @Test
     public void convertDeletion() throws Exception {
-        DeleteSMSSubmission s = (DeleteSMSSubmission) convert(new QrCodeCase(testLocalDb)
+        DeleteSMSSubmission s = (DeleteSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
                 .generateDeletionCode(MockObjects.eventUid));
         assertEquals(s.getUserID().uid, MockObjects.user);
         assertEquals(s.getEvent().uid, MockObjects.eventUid);

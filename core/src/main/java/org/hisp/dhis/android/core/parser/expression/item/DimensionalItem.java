@@ -29,9 +29,10 @@ package org.hisp.dhis.android.core.parser.expression.item;
  */
 
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.ExprContext;
 
-import static org.hisp.dhis.antlr.AntlrParserUtils.DOUBLE_VALUE_IF_NULL;
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ItemContext;
+import static org.hisp.dhis.android.core.parser.antlr.AntlrParserUtils.DOUBLE_VALUE_IF_NULL;
 
 /**
  * Parsed dimensional item as handled by the expression service.
@@ -39,10 +40,10 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ItemContext
  * @author Jim Grace
  */
 public abstract class DimensionalItem
-    extends ExpressionServiceItem
+    implements ExpressionItem
 {
     @Override
-    public final Object getDescription( ItemContext ctx, CommonExpressionVisitor visitor )
+    public final Object getDescription( ExprContext ctx, CommonExpressionVisitor visitor )
     {
         // TODO Implement
         /*
@@ -61,7 +62,7 @@ public abstract class DimensionalItem
     }
 
     @Override
-    public final Object getItemId( ItemContext ctx, CommonExpressionVisitor visitor )
+    public final Object getItemId(ExprContext ctx, CommonExpressionVisitor visitor )
     {
         // TODO Implement
         //visitor.getItemIds().add( getDimensionalItemId( ctx ) );
@@ -70,13 +71,13 @@ public abstract class DimensionalItem
     }
 
     @Override
-    public final Object getOrgUnitGroup( ItemContext ctx, CommonExpressionVisitor visitor )
+    public final Object getOrgUnitGroup( ExprContext ctx, CommonExpressionVisitor visitor )
     {
         return DOUBLE_VALUE_IF_NULL;
     }
 
     @Override
-    public final Object evaluate( ItemContext ctx, CommonExpressionVisitor visitor )
+    public final Object evaluate( ExprContext ctx, CommonExpressionVisitor visitor )
     {
         Double value = visitor.getItemValueMap().get( getId( ctx ) );
 
@@ -93,5 +94,5 @@ public abstract class DimensionalItem
      * @param ctx the parser item context
      * @return the id for this item
      */
-    public abstract String getId( ItemContext ctx );
+    public abstract String getId( ExprContext ctx );
 }

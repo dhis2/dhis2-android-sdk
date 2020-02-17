@@ -1,3 +1,5 @@
+package org.hisp.dhis.android.core.parser.expression.operator;
+
 /*
  * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
@@ -26,34 +28,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.parser.expression.item;
-
-import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.expression.ExprItem;
-
-import static org.hisp.dhis.antlr.AntlrParserUtils.DOUBLE_VALUE_IF_NULL;
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ItemContext;
+import org.hisp.dhis.android.core.parser.antlr.operator.AntlrOperatorCompareLessThanOrEqual;
+import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
 
 /**
- * Parsed expression item as handled by the expression service.
- * <p/>
- * When getting item id and org unit group, just return default values
- * (because not every item implements these, only those that need to.)
+ * Compare operator: less than or equal
  *
  * @author Jim Grace
  */
-public abstract class ExpressionServiceItem implements ExprItem {
-
-    @Override
-    public Object getItemId( ItemContext ctx, CommonExpressionVisitor visitor )
-    {
-        return DOUBLE_VALUE_IF_NULL;
-    }
-
-    @Override
-    public Object getOrgUnitGroup( ItemContext ctx, CommonExpressionVisitor visitor )
-    {
-        return DOUBLE_VALUE_IF_NULL;
-    }
-
+public class OperatorCompareLessThanOrEqual
+    extends AntlrOperatorCompareLessThanOrEqual
+    implements ExpressionItem
+{
 }

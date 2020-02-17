@@ -1,3 +1,5 @@
+package org.hisp.dhis.android.core.parser.expression.operator;
+
 /*
  * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
@@ -26,54 +28,59 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.parser.expression;
 
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ItemContext;
+import org.hisp.dhis.android.core.parser.antlr.operator.AntlrOperatorLogicalOr;
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.ExprContext;
 
 /**
- * Evaluates a parsed expression item.
+ * Logical operator: Or
+ * <pre>
+ *
+ * Truth table (same as for SQL):
+ *
+ *       A      B    A or B
+ *     -----  -----  ------
+ *     null   null    null
+ *     null   false   null
+ *     null   true    true
+ *
+ *     false  null    null
+ *     false  false   false
+ *     false  true    true
+ *
+ *     true   null    true
+ *     true   false   true
+ *     true   true    true
+ * </pre>
  *
  * @author Jim Grace
  */
-public interface ExprItem
+public class OperatorLogicalOr
+    extends AntlrOperatorLogicalOr
+    implements ExpressionItem
 {
-    /**
-     * Collects the description of an expression item.
-     *
-     * @param ctx the expression context
-     * @param visitor the tree visitor
-     * @return a dummy value for the item (of the right type)
-     */
-    Object getDescription(ItemContext ctx, CommonExpressionVisitor visitor);
+    @Override
+    public Object evaluateAllPaths(ExprContext ctx, CommonExpressionVisitor visitor )
+    {
+        Boolean value = visitor.castBooleanVisit( ctx.expr( 0 ) );
+        Boolean value1 = visitor.castBooleanVisit( ctx.expr( 1 ) );
 
-    /**
-     * Collects the item id for later database lookup
-     * (applies to expression service items).
-     *
-     * @param ctx the expression context
-     * @param visitor the tree visitor
-     * @return a dummy value for the item
-     */
-    Object getItemId(ItemContext ctx, CommonExpressionVisitor visitor);
+        if ( value == null )
+        {
+            value = value1;
 
-    /**
-     * Collects the organisation unit group for which we will need counts
-     * (applies to expression service items).
-     *
-     * @param ctx the expression context
-     * @param visitor the tree visitor
-     * @return a dummy value for the item
-     */
-    Object getOrgUnitGroup(ItemContext ctx, CommonExpressionVisitor visitor);
+            if ( value != null && !value )
+            {
+                value = null;
+            }
+        }
+        else if ( !value )
+        {
+            value = value1;
+        }
 
-    /**
-     * Returns the database value of the item
-     * (applies to expression service items).
-     *
-     * @param ctx the expression context
-     * @param visitor the tree visitor
-     * @return a dummy value (of the right type) for the item
-     */
-    Object evaluate(ItemContext ctx, CommonExpressionVisitor visitor);
-
+        return value;
+    }
 }

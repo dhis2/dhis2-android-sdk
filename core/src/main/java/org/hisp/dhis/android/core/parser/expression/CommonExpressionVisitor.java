@@ -29,10 +29,9 @@
 package org.hisp.dhis.android.core.parser.expression;
 
 import org.apache.commons.lang3.Validate;
-import org.hisp.dhis.antlr.AntlrExprFunction;
-import org.hisp.dhis.antlr.AntlrExpressionVisitor;
-import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+import org.hisp.dhis.android.core.parser.antlr.AntlrExpressionVisitor;
+import org.hisp.dhis.android.core.parser.antlr.ParserExceptionWithoutContext;
+import org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.ExprContext;
 
 import java.util.HashMap;
 import java.util.List;
@@ -48,19 +47,14 @@ public class CommonExpressionVisitor
         extends AntlrExpressionVisitor
 {
     /**
-     * Map of ExprFunction instances to call for each org.hisp.dhis.rules.parser.expression function
-     */
-    private Map<Integer, AntlrExprFunction> functionMap;
-
-    /**
      * Map of ExprItem instances to call for each expression item
      */
-    private Map<Integer, ExprItem> itemMap;
+    private Map<Integer, ExpressionItem> itemMap;
 
     /**
      * Method to call within the ExprItem instance
      */
-    private ExprItemMethod itemMethod;
+    private ExpressionItemMethod itemMethod;
 
     /**
      * Count of days in period to use in evaluating an expression.
@@ -82,24 +76,18 @@ public class CommonExpressionVisitor
      */
     private Map<String, List<String>> supplementaryData = new HashMap<>();
 
+    /**
+     * Default value for data type double.
+     */
+    public static final double DEFAULT_DOUBLE_VALUE = 1d;
+
+
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
 
-    protected CommonExpressionVisitor()
+    CommonExpressionVisitor()
     {
-    }
-
-    @Override
-    public Object visitItem( ExpressionParser.ItemContext ctx ) {
-        ExprItem item = itemMap.get( ctx.it.getType() );
-
-        if ( item == null ) {
-            throw new org.hisp.dhis.antlr.ParserExceptionWithoutContext(
-                    "Item " + ctx.it.getText() + " not supported for this type of expression" );
-        }
-
-        return itemMethod.apply( item, ctx, this );
     }
 
     /**
@@ -117,19 +105,23 @@ public class CommonExpressionVisitor
     // -------------------------------------------------------------------------
 
     @Override
-    public Object visitExpr( ExpressionParser.ExprContext ctx ) {
+    public Object visitExpr( ExprContext ctx )
+    {
+        if ( ctx.it != null )
+        {
+            ExpressionItem item = itemMap.get( ctx.it.getType() );
 
-        if ( ctx.fun != null ) {
-            AntlrExprFunction function = functionMap.get( ctx.fun.getType() );
-
-            if ( function == null ) {
-                throw new ParserExceptionWithoutContext( "Function " + ctx.fun.getText() + " not supported for this type of expression" );
+            if ( item == null )
+            {
+                throw new ParserExceptionWithoutContext(
+                        "Item " + ctx.it.getText() + " not supported for this type of expression" );
             }
 
-            return function.evaluate(ctx, this);
+            return itemMethod.apply( item, ctx, this );
         }
 
-        if ( ctx.expr().size() > 0 ) { // If there's an expr, visit the expr
+        if ( ctx.expr().size() > 0 ) // If there's an expr, visit the expr
+        {
             return visit( ctx.expr( 0 ) );
         }
 
@@ -173,23 +165,17 @@ public class CommonExpressionVisitor
             this.visitor = new CommonExpressionVisitor();
         }
 
-        public Builder withFunctionMap( Map<Integer, AntlrExprFunction> functionMap ) {
-            this.visitor.functionMap = functionMap;
-            return this;
-        }
-
-        public Builder withItemMap( Map<Integer, ExprItem> itemMap ) {
+        public Builder withItemMap( Map<Integer, ExpressionItem> itemMap ) {
             this.visitor.itemMap = itemMap;
             return this;
         }
 
-        public Builder withExprItemMethod( ExprItemMethod exprItemMethod ) {
-            this.visitor.itemMethod = exprItemMethod;
+        public Builder withExprItemMethod( ExpressionItemMethod expressionItemMethod) {
+            this.visitor.itemMethod = expressionItemMethod;
             return this;
         }
 
         public CommonExpressionVisitor validateCommonProperties() {
-            Validate.notNull( this.visitor.functionMap, "Missing required property 'functionMap'" );
             Validate.notNull( this.visitor.itemMap, "Missing required property 'itemMap'" );
             return visitor;
         }

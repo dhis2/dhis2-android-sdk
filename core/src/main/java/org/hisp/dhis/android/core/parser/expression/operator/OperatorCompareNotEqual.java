@@ -1,3 +1,5 @@
+package org.hisp.dhis.android.core.parser.expression.operator;
+
 /*
  * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
@@ -26,24 +28,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.parser.expression;
-
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ItemContext;
+import org.hisp.dhis.android.core.parser.antlr.operator.AntlrOperatorCompareNotEqual;
+import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
 
 /**
- * Applies a method in an ExprFunction.
+ * Compare operator: not equal
  *
  * @author Jim Grace
  */
-@FunctionalInterface
-public interface ExprItemMethod
+public class OperatorCompareNotEqual
+    extends AntlrOperatorCompareNotEqual
+    implements ExpressionItem
 {
-    /**
-     * Invokes a method in an expression function
-     *
-     * @param item the item to evaluate
-     * @param ctx the second function argument
-     * @return the function result
-     */
-    Object apply(ExprItem item, ItemContext ctx, CommonExpressionVisitor visitor);
 }

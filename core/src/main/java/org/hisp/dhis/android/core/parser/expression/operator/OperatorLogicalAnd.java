@@ -1,3 +1,5 @@
+package org.hisp.dhis.android.core.parser.expression.operator;
+
 /*
  * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
@@ -26,26 +28,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.parser.expression.item;
-
+import org.hisp.dhis.android.core.parser.antlr.operator.AntlrOperatorLogicalAnd;
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
 import org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.ExprContext;
 
 /**
- * Parsed expression item as handled by the expression service.
- * <p/>
- * When getting item id and org unit group, just return default values
- * (because not every item implements these, only those that need to.)
+ * Logical operator: And
+ * <pre>
+ *
+ * Truth table (same as for SQL):
+ *
+ *       A      B    A and B
+ *     -----  -----  -------
+ *     null   null    null
+ *     null   false   null
+ *     null   true    null
+ *
+ *     false  null    false
+ *     false  false   false
+ *     false  true    false
+ *
+ *     true   null    null
+ *     true   false   false
+ *     true   true    true
+ * </pre>
  *
  * @author Jim Grace
  */
-public class ItemDays implements ExpressionItem {
-
+public class OperatorLogicalAnd
+    extends AntlrOperatorLogicalAnd
+    implements ExpressionItem
+{
     @Override
-    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor )
+    public Object evaluateAllPaths(ExprContext ctx, CommonExpressionVisitor visitor )
     {
-        return visitor.getDays();
-    }
+        Boolean value0 = visitor.castBooleanVisit( ctx.expr( 0 ) );
+        Boolean value1 = visitor.castBooleanVisit( ctx.expr( 1 ) );
 
+        return value0 != null && value0 ? value1 : true;
+    }
 }

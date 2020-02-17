@@ -28,8 +28,9 @@
 
 package org.hisp.dhis.android.core.parser.expression.item;
 
+import org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.ExprContext;
+
 import static org.apache.commons.lang3.ObjectUtils.anyNotNull;
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ItemContext;
 
 /**
  * Parsed expression item as handled by the expression service.
@@ -42,7 +43,7 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ItemContext
 public class DimItemDataElementAndOperand extends DimensionalItem {
 
     @Override
-    public String getId( ItemContext ctx )
+    public String getId( ExprContext ctx )
     {
         if ( isDataElementOperandSyntax( ctx ) )
         {
@@ -63,7 +64,7 @@ public class DimItemDataElementAndOperand extends DimensionalItem {
      * @param ctx the item context
      * @return true if data element operand syntax
      */
-    private boolean isDataElementOperandSyntax( ItemContext ctx )
+    private boolean isDataElementOperandSyntax( ExprContext ctx )
     {
         return anyNotNull( ctx.uid1, ctx.uid2 );
     }

@@ -1,3 +1,5 @@
+package org.hisp.dhis.android.core.parser.expression.operator;
+
 /*
  * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
@@ -26,26 +28,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.parser.expression.item;
 
-import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.antlr.operator.AntlrOperatorLogicalNot;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
-import org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.ExprContext;
 
 /**
- * Parsed expression item as handled by the expression service.
- * <p/>
- * When getting item id and org unit group, just return default values
- * (because not every item implements these, only those that need to.)
+ * Logical operator: Not
+ * <pre>
+ *
+ * Truth table (same as for SQL):
+ *
+ *       A    not A
+ *     -----  -----
+ *     null   null
+ *     false  true
+ *     true   false
+ * </pre>
  *
  * @author Jim Grace
  */
-public class ItemDays implements ExpressionItem {
-
-    @Override
-    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor )
-    {
-        return visitor.getDays();
-    }
-
+public class OperatorLogicalNot
+    extends AntlrOperatorLogicalNot
+    implements ExpressionItem
+{
 }

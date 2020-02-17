@@ -26,26 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.parser.expression.item;
+package org.hisp.dhis.android.core.parser.expression;
 
-import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
 import org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.ExprContext;
 
 /**
- * Parsed expression item as handled by the expression service.
- * <p/>
- * When getting item id and org unit group, just return default values
- * (because not every item implements these, only those that need to.)
+ * Applies a method in an ExprFunction.
  *
  * @author Jim Grace
  */
-public class ItemDays implements ExpressionItem {
-
-    @Override
-    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor )
-    {
-        return visitor.getDays();
-    }
-
+@FunctionalInterface
+public interface ExpressionItemMethod
+{
+    /**
+     * Invokes a method in an expression function
+     *
+     * @param item the item to evaluate
+     * @param ctx the second function argument
+     * @return the function result
+     */
+    Object apply(ExpressionItem item, ExprContext ctx, CommonExpressionVisitor visitor );
 }

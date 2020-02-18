@@ -123,7 +123,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
     }
 
     public void handleMany(final Collection<TrackedEntityInstance> trackedEntityInstances, boolean asRelationship,
-                           boolean isFullUpdate) {
+                           boolean isFullUpdate, boolean overwrite) {
         if (trackedEntityInstances == null) {
             return;
         }
@@ -137,7 +137,13 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
                     .build();
         }
 
-        Collection<TrackedEntityInstance> preHandledCollection = beforeCollectionHandled(trackedEntityInstances);
+        Collection<TrackedEntityInstance> preHandledCollection;
+        if (overwrite) {
+            preHandledCollection = trackedEntityInstances;
+        } else {
+            preHandledCollection = beforeCollectionHandled(trackedEntityInstances);
+        }
+
         List<TrackedEntityInstance> transformedCollection = new ArrayList<>(preHandledCollection.size());
 
         for (TrackedEntityInstance trackedEntityInstance : preHandledCollection) {

@@ -180,7 +180,7 @@ public class TrackedEntityInstanceHandlerShould {
         when(trackedEntityInstance.toBuilder()).thenReturn(TrackedEntityInstance.builder().uid("uid"));
         when(trackedEntityInstanceStore.updateOrInsert(any(TrackedEntityInstance.class))).thenReturn(HandleAction.Update);
 
-        trackedEntityInstanceHandler.handleMany(Collections.singletonList(trackedEntityInstance), false, true);
+        trackedEntityInstanceHandler.handleMany(Collections.singletonList(trackedEntityInstance), false, true, false);
 
         verify(enrollmentCleaner, times(1)).deleteOrphan(any(TrackedEntityInstance.class), anyCollection());
     }
@@ -190,7 +190,7 @@ public class TrackedEntityInstanceHandlerShould {
         when(trackedEntityInstance.toBuilder()).thenReturn(TrackedEntityInstance.builder().uid("uid"));
         when(trackedEntityInstanceStore.updateOrInsert(any(TrackedEntityInstance.class))).thenReturn(HandleAction.Update);
 
-        trackedEntityInstanceHandler.handleMany(Collections.singletonList(trackedEntityInstance), false, false);
+        trackedEntityInstanceHandler.handleMany(Collections.singletonList(trackedEntityInstance), false, false, false);
 
         verify(enrollmentCleaner, never()).deleteOrphan(any(TrackedEntityInstance.class), anyCollection());
     }

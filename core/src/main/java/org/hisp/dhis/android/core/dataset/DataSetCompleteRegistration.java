@@ -71,6 +71,10 @@ public abstract class DataSetCompleteRegistration extends BaseDeletableDataObjec
     @JsonProperty
     public abstract String storedBy();
 
+    @Nullable
+    @JsonProperty
+    abstract Boolean completed();
+
     @NonNull
     public static DataSetCompleteRegistration create(Cursor cursor) {
         return AutoValue_DataSetCompleteRegistration.createFromCursor(cursor);
@@ -104,13 +108,20 @@ public abstract class DataSetCompleteRegistration extends BaseDeletableDataObjec
 
         public abstract Builder storedBy(@Nullable String storedBy);
 
+        abstract Builder completed(@Nullable Boolean completed);
+
         abstract DataSetCompleteRegistration autoBuild();
 
         // Auxiliary fields to access values
         abstract Boolean deleted();
+        abstract Boolean completed();
+
         public DataSetCompleteRegistration build() {
+            if (completed() == null) {
+                completed(true);
+            }
             if (deleted() == null) {
-                deleted(false);
+                deleted(!completed());
             }
             return autoBuild();
         }

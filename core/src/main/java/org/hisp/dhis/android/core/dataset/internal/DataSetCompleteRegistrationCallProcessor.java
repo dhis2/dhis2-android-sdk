@@ -35,7 +35,10 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isDeleted;
 
 class DataSetCompleteRegistrationCallProcessor implements CallProcessor<DataSetCompleteRegistration> {
 
@@ -59,13 +62,15 @@ class DataSetCompleteRegistrationCallProcessor implements CallProcessor<DataSetC
         if (objectList != null && !objectList.isEmpty()) {
             D2CallExecutor.create(databaseAdapter).executeD2CallTransactionally(() -> {
                 removeExistingRegistersForQuery(query);
-                handler.handleMany(objectList);
+                List<DataSetCompleteRegistration> objectsToImport = removeDeletedEntries(objectList);
+                handler.handleMany(objectsToImport);
                 return null;
             });
         }
     }
 
     /*
+     For versions lower than 2.32:
      Records deleted in the server are not returned in the API. The strategy here is to remove all the records
      linked to a particular query before storing the returned values. Only records in "SYNCED" state are removed.
      */
@@ -74,6 +79,18 @@ class DataSetCompleteRegistrationCallProcessor implements CallProcessor<DataSetC
             dataSetCompleteRegistrationStore.removeNotPresentAndSynced(query.dataSetUids(),
                     query.periodIds(), rootOrgUnitUid);
         }
+    }
+
+    private List<DataSetCompleteRegistration> removeDeletedEntries(List<DataSetCompleteRegistration> list) {
+        List<DataSetCompleteRegistration> objectsToImport = new ArrayList<>();
+
+        for (DataSetCompleteRegistration record : list) {
+            if (!isDeleted(record)) {
+                objectsToImport.add(record);
+            }
+        }
+
+        return objectsToImport;
     }
 
 }

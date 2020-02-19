@@ -45,14 +45,112 @@ import java.util.List;
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isDeleted;
 
 public class IdentifiableDataHandlerImpl<O extends DeletableDataObject & ObjectWithUidInterface>
-        extends IdentifiableHandlerImpl<O> {
+         implements IdentifiableDataHandler<O> {
+
+    final IdentifiableObjectStore<O> store;
 
     public IdentifiableDataHandlerImpl(IdentifiableObjectStore<O> store) {
-        super(store);
+        this.store = store;
     }
 
     @Override
-    protected Collection<O> beforeCollectionHandled(Collection<O> os) {
+    public final void handle(O o, Boolean overwrite) {
+        if (o == null) {
+            return;
+        }
+        O object = beforeObjectHandled(o, overwrite);
+        HandleAction action = deleteOrPersist(object);
+        afterObjectHandled(object, action, overwrite);
+    }
+
+    @Override
+    public final void handle(O o, Transformer<O, O> transformer, Boolean overwrite) {
+        if (o == null) {
+            return;
+        }
+        handleInternal(o, transformer, overwrite);
+    }
+
+    protected void handle(O o, Transformer<O, O> transformer, List<O> oTransformedCollection, Boolean overwrite) {
+        if (o == null) {
+            return;
+        }
+        O oTransformed = handleInternal(o, transformer, overwrite);
+        oTransformedCollection.add(oTransformed);
+    }
+
+    private O handleInternal(O o, Transformer<O, O> transformer, Boolean overwrite) {
+        O object = beforeObjectHandled(o, overwrite);
+        O oTransformed = transformer.transform(object);
+        HandleAction action = deleteOrPersist(oTransformed);
+        afterObjectHandled(oTransformed, action, overwrite);
+        return oTransformed;
+    }
+
+    @Override
+    public final void handleMany(Collection<O> oCollection, Boolean overwrite) {
+        if (oCollection != null) {
+            Collection<O> preHandledCollection = beforeCollectionHandled(oCollection, overwrite);
+            for (O o : preHandledCollection) {
+                handle(o, overwrite);
+            }
+            afterCollectionHandled(preHandledCollection, overwrite);
+        }
+    }
+
+    @Override
+    public final void handleMany(Collection<O> oCollection, Transformer<O, O> transformer, Boolean overwrite) {
+        if (oCollection != null) {
+            Collection<O> preHandledCollection = beforeCollectionHandled(oCollection, overwrite);
+            List<O> oTransformedCollection = new ArrayList<>(oCollection.size());
+            for (O o : preHandledCollection) {
+                handle(o, transformer, oTransformedCollection, overwrite);
+            }
+            afterCollectionHandled(oTransformedCollection, overwrite);
+        }
+    }
+
+    protected HandleAction deleteOrPersist(O o) {
+        String modelUid = o.uid();
+        if ((isDeleted(o) || deleteIfCondition(o)) && modelUid != null) {
+            store.deleteIfExists(modelUid);
+            return HandleAction.Delete;
+        } else {
+            return store.updateOrInsert(o);
+        }
+    }
+
+    protected boolean deleteIfCondition(O o) {
+        return false;
+    }
+
+    protected O beforeObjectHandled(O o, Boolean overwrite) {
+        return o;
+    }
+
+    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+    protected void afterObjectHandled(O o, HandleAction action, Boolean overwrite) {
+        /* Method is not abstract since empty action is the default action and we don't want it to
+         * be unnecessarily written in every child.
+         */
+    }
+
+    protected Collection<O> beforeCollectionHandled(Collection<O> oCollection, Boolean overwrite) {
+        if (overwrite) {
+            return oCollection;
+        } else {
+            return removeExistingNotSyncedObjects(oCollection);
+        }
+    }
+
+    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+    protected void afterCollectionHandled(Collection<O> oCollection, Boolean overwrite) {
+        /* Method is not abstract since empty action is the default action and we don't want it to
+         * be unnecessarily written in every child.
+         */
+    }
+
+    private Collection<O> removeExistingNotSyncedObjects(Collection<O> os) {
         List<String> storedObjectUids = storedObjectUids(os);
         List<String> syncedObjectUids = syncedObjectUids(storedObjectUids);
 

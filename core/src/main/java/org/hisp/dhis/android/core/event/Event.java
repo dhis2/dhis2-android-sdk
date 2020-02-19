@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnA
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EventStatusColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCoordinatesColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNoteListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityDataValueListColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
@@ -50,6 +51,7 @@ import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.event.internal.EventFields;
+import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
 import java.util.Date;
@@ -142,6 +144,11 @@ public abstract class Event extends BaseDeletableDataObject implements ObjectWit
     public abstract String assignedUser();
 
     @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreNoteListColumnAdapter.class)
+    public abstract List<Note> notes();
+
+    @Nullable
     @JsonProperty(EventFields.TRACKED_ENTITY_DATA_VALUES)
     @ColumnAdapter(IgnoreTrackedEntityDataValueListColumnAdapter.class)
     public abstract List<TrackedEntityDataValue> trackedEntityDataValues();
@@ -199,6 +206,8 @@ public abstract class Event extends BaseDeletableDataObject implements ObjectWit
         public abstract Builder attributeOptionCombo(String attributeOptionCombo);
 
         public abstract Builder assignedUser(String assignedUser);
+
+        public abstract Builder notes(List<Note> notes);
 
         @JsonProperty(EventFields.TRACKED_ENTITY_DATA_VALUES)
         public abstract Builder trackedEntityDataValues(List<TrackedEntityDataValue> trackedEntityDataValues);

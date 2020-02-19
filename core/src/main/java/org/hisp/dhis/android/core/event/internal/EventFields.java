@@ -34,6 +34,8 @@ import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.note.internal.NoteFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueFields;
 
@@ -46,6 +48,7 @@ public final class EventFields {
     public static final String ORGANISATION_UNIT = "orgUnit";
     public static final String TRACKED_ENTITY_DATA_VALUES = "dataValues";
     private final static String GEOMETRY = "geometry";
+    public static final String NOTES = "notes";
 
     private static FieldsHelper<Event> fh = new FieldsHelper<>();
 
@@ -66,6 +69,7 @@ public final class EventFields {
                     fh.<String>field(Columns.DUE_DATE),
                     fh.<String>field(Columns.ATTRIBUTE_OPTION_COMBO),
                     fh.<String>field(Columns.ASSIGNED_USER),
+                    fh.<Note>nestedField(NOTES).with(NoteFields.all),
                     fh.<TrackedEntityDataValue>nestedField(TRACKED_ENTITY_DATA_VALUES)
                             .with(TrackedEntityDataValueFields.allFields)
     ).build();

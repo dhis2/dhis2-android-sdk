@@ -299,6 +299,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
                 .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.PERIOD, period)
                 .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.ATTRIBUTE_OPTION_COMBO,
                         attributeOptionComboUid)
+                .appendKeyNumberValue(DataSetCompleteRegistrationTableInfo.Columns.DELETED, 0)
                 .build();
         return dataSetCompleteRegistrationStore.countWhere(whereClause) > 0;
     }

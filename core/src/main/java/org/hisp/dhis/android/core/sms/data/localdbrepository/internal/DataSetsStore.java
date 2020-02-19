@@ -60,22 +60,14 @@ class DataSetsStore {
                                                        State state) {
         return Completable.fromAction(() -> {
             DataSetCompleteRegistration dataSet = dataSetRepository
-                    .byAttributeOptionComboUid().eq(attributeOptionComboUid)
-                    .byPeriod().eq(period)
+                    .byDataSetUid().eq(dataSetId)
                     .byOrganisationUnitUid().eq(orgUnit)
+                    .byPeriod().eq(period)
+                    .byAttributeOptionComboUid().eq(attributeOptionComboUid)
                     .one().blockingGet();
             if (dataSet != null) {
                 dataSetStore.setState(dataSet, state);
-                return;
             }
-            dataSet = DataSetCompleteRegistration.builder()
-                    .dataSet(dataSetId)
-                    .attributeOptionCombo(attributeOptionComboUid)
-                    .period(period)
-                    .organisationUnit(orgUnit)
-                    .state(state)
-                    .build();
-            dataSetStore.insert(dataSet);
         });
     }
 }

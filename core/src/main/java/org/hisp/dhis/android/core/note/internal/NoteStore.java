@@ -40,30 +40,39 @@ import org.hisp.dhis.android.core.note.NoteTableInfo;
 public final class NoteStore {
 
     private static final StatementBinder<Note> BINDER = (o, w) -> {
-        w.bind(1, o.enrollment());
-        w.bind(2, o.value());
-        w.bind(3, o.storedBy());
-        w.bind(4, o.storedDate());
-        w.bind(5, o.uid());
-        w.bind(6, o.state());
+        w.bind(1, o.noteType());
+        w.bind(2, o.event());
+        w.bind(3, o.enrollment());
+        w.bind(4, o.value());
+        w.bind(5, o.storedBy());
+        w.bind(6, o.storedDate());
+        w.bind(7, o.uid());
+        w.bind(8, o.state());
     };
 
     private static final WhereStatementBinder<Note> WHERE_UPDATE_BINDER = (o, w) -> {
-        w.bind(7, o.enrollment());
-        w.bind(8, o.value());
-        w.bind(9, o.storedBy());
-        w.bind(10, o.storedDate());
+        w.bind(9, o.noteType());
+        w.bind(10, o.event());
+        w.bind(11, o.enrollment());
+        w.bind(12, o.value());
+        w.bind(13, o.storedBy());
+        w.bind(14, o.storedDate());
     };
 
     private static final WhereStatementBinder<Note> WHERE_DELETE_BINDER = (o, w) -> {
-        w.bind(1, o.enrollment());
-        w.bind(2, o.value());
-        w.bind(3, o.storedBy());
-        w.bind(4, o.storedDate());
+        w.bind(1, o.noteType());
+        w.bind(2, o.event());
+        w.bind(3, o.enrollment());
+        w.bind(4, o.value());
+        w.bind(5, o.storedBy());
+        w.bind(6, o.storedDate());
     };
 
-    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+    static final SingleParentChildProjection ENROLLMENT_CHILD_PROJECTION = new SingleParentChildProjection(
             NoteTableInfo.TABLE_INFO, NoteTableInfo.Columns.ENROLLMENT);
+
+    static final SingleParentChildProjection EVENT_CHILD_PROJECTION = new SingleParentChildProjection(
+            NoteTableInfo.TABLE_INFO, NoteTableInfo.Columns.EVENT);
 
     private NoteStore() {}
 

@@ -53,6 +53,8 @@ public final class NoteTableInfo {
     };
 
     public static class Columns extends CoreColumns {
+        public final static String NOTE_TYPE = "noteType";
+        public final static String EVENT = "event";
         public final static String ENROLLMENT = "enrollment";
         public final static String VALUE = "value";
         public final static String STORED_BY = "storedBy";
@@ -61,6 +63,8 @@ public final class NoteTableInfo {
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
+                    NOTE_TYPE,
+                    EVENT,
                     ENROLLMENT,
                     VALUE,
                     STORED_BY,
@@ -73,6 +77,8 @@ public final class NoteTableInfo {
         @Override
         public String[] whereUpdate() {
             return new String[]{
+                    NOTE_TYPE,
+                    EVENT,
                     ENROLLMENT,
                     VALUE,
                     STORED_BY,

@@ -288,22 +288,33 @@ public final class TrackedEntityInstancePostCall {
             for (Enrollment enrollment : enrollments) {
                 List<Event> eventRecreated = new ArrayList<>();
                 List<Event> eventsForEnrollment = eventMap.get(enrollment.uid());
+                NoteToPostTransformer transformer = new NoteToPostTransformer(versionManager);
                 if (eventsForEnrollment != null) {
                     for (Event event : eventsForEnrollment) {
                         List<TrackedEntityDataValue> dataValuesForEvent = dataValueMap.get(event.uid());
+                        List<Note> notesForEvent = new ArrayList<>();
+                        for (Note note : notes) {
+                            if (event.uid().equals(note.event())) {
+                                notesForEvent.add(transformer.transform(note));
+                            }
+                        }
+
                         if (versionManager.is2_30()) {
                             eventRecreated.add(event.toBuilder()
                                     .trackedEntityDataValues(dataValuesForEvent)
+                                    .notes(notesForEvent)
                                     .geometry(null)
                                     .build());
                         } else {
-                            eventRecreated.add(event.toBuilder().trackedEntityDataValues(dataValuesForEvent).build());
+                            eventRecreated.add(event.toBuilder()
+                                    .trackedEntityDataValues(dataValuesForEvent)
+                                    .notes(notesForEvent)
+                                    .build());
                         }
                     }
                 }
 
                 List<Note> notesForEnrollment = new ArrayList<>();
-                NoteToPostTransformer transformer = new NoteToPostTransformer(versionManager);
                 for (Note note : notes) {
                     if (enrollment.uid().equals(note.enrollment())) {
                         notesForEnrollment.add(transformer.transform(note));

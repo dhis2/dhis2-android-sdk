@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventTableInfo;
-import org.hisp.dhis.android.core.note.internal.NoteChildrenAppender;
+import org.hisp.dhis.android.core.note.internal.NoteForEnrollmentChildrenAppender;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,7 +74,7 @@ public final class EnrollmentEntityDIModule {
     @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<Enrollment>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         return new HashMap<String, ChildrenAppender<Enrollment>>() {{
-            put(EnrollmentFields.NOTES, NoteChildrenAppender.create(databaseAdapter));
+            put(EnrollmentFields.NOTES, NoteForEnrollmentChildrenAppender.create(databaseAdapter));
         }};
     }
 

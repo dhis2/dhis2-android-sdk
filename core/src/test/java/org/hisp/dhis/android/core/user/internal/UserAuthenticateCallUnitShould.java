@@ -40,6 +40,8 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownl
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.common.BaseCallShould;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator;
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -140,6 +142,8 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Mock
     private ObjectSecureStore<DatabasesConfiguration> configurationSecureStore;
 
+    private DatabaseConfigurationHelper configurationHelper = new DatabaseConfigurationHelper(new DatabaseNameGenerator());
+
     // call we are testing
     private Single<User> logInSingle;
 
@@ -188,7 +192,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private Single<User> instantiateCall(String username, String password, String serverUrl) {
         return new UserAuthenticateCallFactory(databaseAdapter, apiCallExecutor,
                 userService, credentialsSecureStore, userHandler, resourceHandler, authenticatedUserStore,
-                systemInfoRepository, userStore, wipeModule, configurationSecureStore, context).logIn(username, password, serverUrl);
+                systemInfoRepository, userStore, wipeModule, configurationSecureStore, configurationHelper, context).logIn(username, password, serverUrl);
     }
 
     private OngoingStubbing<User> whenAPICall() throws D2Error {

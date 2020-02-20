@@ -28,33 +28,33 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
-import org.hisp.dhis.android.core.constant.ConstantModule;
-import org.hisp.dhis.android.core.constant.internal.ConstantModuleImpl;
+public final class DatabaseNameGenerator {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class ConfigurationPackageDIModule {
-
-    @Provides
-    @Reusable
-    ObjectSecureStore<DatabasesConfiguration> configurationSecureStore(SecureStore secureStore) {
-        return DatabaseConfigurationSecureStore.get(secureStore);
+    String getDatabaseName(String serverUrl, String username, boolean encrypt) {
+        String encryptedStr = encrypt ? "encrypted" : "unencrypted";
+        return processServerUrl(serverUrl) + "_" + username + "_" + encryptedStr + ".db";
     }
 
-    @Provides
-    @Reusable
-    DatabaseConfigurationHelper configurationHelper() {
-        return new DatabaseConfigurationHelper(new DatabaseNameGenerator());
+    private String processServerUrl(String serverUrl) {
+        String noHttps = removePrefix(serverUrl, "https://");
+        String noHttp = removePrefix(noHttps, "http://");
+        String onlyAlphanumeric = noHttp.replaceAll("[^a-zA-Z0-9]", "-");
+        String withNoMultipleMinus = onlyAlphanumeric.replaceAll("-+", "-");
+        String withNoMinusAtTheBeginning = removePrefix(withNoMultipleMinus, "-");
+        return removeSuffix(withNoMinusAtTheBeginning, "-");
     }
 
-    @Provides
-    @Reusable
-    ConstantModule module(ConstantModuleImpl impl) {
-        return impl;
+    private String removePrefix(String s, String prefix) {
+        if (s.startsWith(prefix)) {
+            return s.substring(prefix.length());
+        }
+        return s;
+    }
+
+    private String removeSuffix(String s, String prefix) {
+        if (s.endsWith(prefix)) {
+            return s.substring(0, s.length() - prefix.length());
+        }
+        return s;
     }
 }

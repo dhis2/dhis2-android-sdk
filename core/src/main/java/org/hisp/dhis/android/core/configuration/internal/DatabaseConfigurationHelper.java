@@ -28,16 +28,18 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import androidx.annotation.NonNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class DatabaseConfigurationHelper {
+public final class DatabaseConfigurationHelper {
 
+    private final DatabaseNameGenerator databaseNameGenerator;
 
-    @NonNull
-    public static DatabaseUserConfiguration getLoggedUserConfiguration(DatabasesConfiguration configuration, String username) {
+    public DatabaseConfigurationHelper(DatabaseNameGenerator databaseNameGenerator) {
+        this.databaseNameGenerator = databaseNameGenerator;
+    }
+
+    public DatabaseUserConfiguration getLoggedUserConfiguration(DatabasesConfiguration configuration, String username) {
         DatabaseServerConfiguration serverConfiguration = getServerConfiguration(configuration,
                 configuration.loggedServerUrl());
         if (serverConfiguration == null) {
@@ -51,7 +53,7 @@ public abstract class DatabaseConfigurationHelper {
         throw new RuntimeException("Malformed configuration: User database configuration not found");
     }
 
-    private static DatabaseServerConfiguration getServerConfiguration(DatabasesConfiguration configuration, String serverUrl) {
+    private DatabaseServerConfiguration getServerConfiguration(DatabasesConfiguration configuration, String serverUrl) {
         for (DatabaseServerConfiguration server: configuration.servers()) {
             if (server.serverUrl().equals(serverUrl)) {
                 return server;
@@ -60,12 +62,7 @@ public abstract class DatabaseConfigurationHelper {
         return null;
     }
 
-    public static String getDatabaseName(String serverUrl, String username, boolean encrypt) {
-        String encryptedStr = encrypt ? "encrypted" : "unencrypted";
-        return serverUrl.hashCode() + "-" + username + "-" + encryptedStr + ".db";
-    }
-
-    public static DatabasesConfiguration addConfiguration(DatabasesConfiguration configuration, String serverUrl,
+    public DatabasesConfiguration addConfiguration(DatabasesConfiguration configuration, String serverUrl,
                                                    String username, boolean encrypt) {
         DatabaseServerConfiguration existingServerConf = configuration == null ? null
                 : getServerConfiguration(configuration, serverUrl);
@@ -81,7 +78,7 @@ public abstract class DatabaseConfigurationHelper {
 
         DatabaseUserConfiguration newUserConf = DatabaseUserConfiguration.builder()
                 .username(username)
-                .databaseName(getDatabaseName(serverUrl, username, encrypt))
+                .databaseName(databaseNameGenerator.getDatabaseName(serverUrl, username, encrypt))
                 .encrypted(encrypt)
                 .build();
 

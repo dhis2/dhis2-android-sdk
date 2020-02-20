@@ -85,6 +85,7 @@ public final class UserAuthenticateCallFactory {
     private final IdentifiableObjectStore<User> userStore;
     private final WipeModule wipeModule;
     private final ObjectSecureStore<DatabasesConfiguration> configurationSecureStore;
+    private final DatabaseConfigurationHelper configurationHelper;
 
     private final Context context;
 
@@ -101,6 +102,7 @@ public final class UserAuthenticateCallFactory {
             @NonNull IdentifiableObjectStore<User> userStore,
             @NonNull WipeModule wipeModule,
             @NonNull ObjectSecureStore<DatabasesConfiguration> configurationSecureStore,
+            @NonNull DatabaseConfigurationHelper configurationHelper,
             @NonNull Context context) {
         this.databaseAdapter = databaseAdapter;
         this.apiCallExecutor = apiCallExecutor;
@@ -116,6 +118,7 @@ public final class UserAuthenticateCallFactory {
         this.userStore = userStore;
         this.wipeModule = wipeModule;
         this.configurationSecureStore = configurationSecureStore;
+        this.configurationHelper = configurationHelper;
         this.context = context;
     }
 
@@ -139,7 +142,7 @@ public final class UserAuthenticateCallFactory {
         try {
             HttpUrl httpServerUrl = ServerUrlParser.parse(serverUrl);
             ServerURLWrapper.setServerUrl(httpServerUrl.toString());
-            DatabasesConfiguration updatedConfiguration = DatabaseConfigurationHelper.addConfiguration(
+            DatabasesConfiguration updatedConfiguration = configurationHelper.addConfiguration(
                     configurationSecureStore.get(), httpServerUrl.toString(), username,
                     DatabaseAdapterFactory.encryptNextNotConfiguredDatabases);
             configurationSecureStore.set(updatedConfiguration);
@@ -147,7 +150,7 @@ public final class UserAuthenticateCallFactory {
             User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,
                     new UserAuthenticateCallErrorCatcher());
 
-            DatabaseUserConfiguration userConfiguration = DatabaseConfigurationHelper.getLoggedUserConfiguration(
+            DatabaseUserConfiguration userConfiguration = configurationHelper.getLoggedUserConfiguration(
                     updatedConfiguration, username);
             DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration.databaseName(),
                     context, userConfiguration.encrypted());

@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationMigration;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration;
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -133,7 +134,8 @@ public final class D2Manager {
 
         if (databaseConfiguration != null) {
             ServerURLWrapper.setServerUrl(databaseConfiguration.loggedServerUrl());
-            DatabaseUserConfiguration userConfiguration = DatabaseConfigurationHelper.getLoggedUserConfiguration(
+            DatabaseConfigurationHelper configurationHelper = new DatabaseConfigurationHelper(new DatabaseNameGenerator());
+            DatabaseUserConfiguration userConfiguration = configurationHelper.getLoggedUserConfiguration(
                     databaseConfiguration, credentials.username());
             DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration.databaseName(),
                     d2Configuration.context(), userConfiguration.encrypted());

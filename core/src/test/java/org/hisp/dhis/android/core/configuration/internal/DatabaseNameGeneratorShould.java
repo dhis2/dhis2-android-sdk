@@ -28,33 +28,28 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
-import org.hisp.dhis.android.core.constant.ConstantModule;
-import org.hisp.dhis.android.core.constant.internal.ConstantModuleImpl;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-@Module
-public final class ConfigurationPackageDIModule {
+@RunWith(JUnit4.class)
+public class DatabaseNameGeneratorShould {
 
-    @Provides
-    @Reusable
-    ObjectSecureStore<DatabasesConfiguration> configurationSecureStore(SecureStore secureStore) {
-        return DatabaseConfigurationSecureStore.get(secureStore);
+    private final String URL = "https://play.dhis2.org/android-current/";
+    private final String USERNAME = "user23";
+    private final DatabaseNameGenerator generator = new DatabaseNameGenerator();
+
+    @Test
+    public void return_name_with_server_and_username_with_valid_characters_for_encrypted_db() {
+        String name = generator.getDatabaseName(URL, USERNAME, true);
+        assertThat(name).isEqualTo("play-dhis2-org-android-current_user23_encrypted.db");
     }
 
-    @Provides
-    @Reusable
-    DatabaseConfigurationHelper configurationHelper() {
-        return new DatabaseConfigurationHelper(new DatabaseNameGenerator());
-    }
-
-    @Provides
-    @Reusable
-    ConstantModule module(ConstantModuleImpl impl) {
-        return impl;
+    @Test
+    public void return_name_with_server_and_username_with_valid_characters_for_unencrypted_db() {
+        String name = generator.getDatabaseName(URL, USERNAME, false);
+        assertThat(name).isEqualTo("play-dhis2-org-android-current_user23_unencrypted.db");
     }
 }

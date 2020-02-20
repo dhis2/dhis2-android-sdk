@@ -74,7 +74,6 @@ public abstract class BaseRealIntegrationTest {
         DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, null, false);
         secureStore = new AndroidSecureStore(context);
         credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
-        credentialsSecureStore.remove();
         resourceHandler = ResourceHandler.create(databaseAdapter);
         resourceHandler.setServerDate(serverDate);
         Stetho.initializeWithDefaults(context);

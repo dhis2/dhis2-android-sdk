@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.note.internal;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.note.NoteSamples;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.note.NoteTableInfo;
@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
-public class NoteStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<Note> {
+public class NoteStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Note> {
 
     public NoteStoreIntegrationShould() {
         super(NoteStore.create(TestDatabaseAdapterFactory.get()),

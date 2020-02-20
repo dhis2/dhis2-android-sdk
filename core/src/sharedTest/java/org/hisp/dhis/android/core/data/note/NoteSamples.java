@@ -39,7 +39,6 @@ public class NoteSamples {
                 .id(1L)
                 .noteType(Note.NoteType.ENROLLMENT_NOTE)
                 .event("eventUid")
-                .enrollment("enrollmentUid")
                 .value("value")
                 .storedBy("user")
                 .storedDate("2018-03-19T15:20:55.058")

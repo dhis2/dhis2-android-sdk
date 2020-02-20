@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.imports.ImportStatus;
@@ -65,7 +65,7 @@ public class EventImportHandlerShould {
     private EnrollmentStore enrollmentStore;
 
     @Mock
-    private ObjectWithoutUidStore<Note> noteStore;
+    private IdentifiableObjectStore<Note> noteStore;
 
     @Mock
     private TrackedEntityInstanceStore trackedEntityInstanceStore;

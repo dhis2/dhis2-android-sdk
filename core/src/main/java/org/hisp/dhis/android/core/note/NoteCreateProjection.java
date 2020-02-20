@@ -99,6 +99,23 @@ public abstract class NoteCreateProjection {
 
         public abstract Builder value(String value);
 
-        public abstract NoteCreateProjection build();
+        abstract NoteCreateProjection autoBuild();
+
+        // Auxiliary fields
+        abstract Note.NoteType noteType();
+        abstract String event();
+        abstract String enrollment();
+
+        public NoteCreateProjection build() {
+            if (noteType() == null) {
+                throw new IllegalArgumentException("Note type is null");
+            } else if (noteType() == Note.NoteType.ENROLLMENT_NOTE && enrollment() == null) {
+                throw new IllegalArgumentException("Enrollment note type need an enrollment uid");
+            } else if (noteType() == Note.NoteType.EVENT_NOTE && event() == null) {
+                throw new IllegalArgumentException("Event note type need an event uid");
+            }
+
+            return autoBuild();
+        }
     }
 }

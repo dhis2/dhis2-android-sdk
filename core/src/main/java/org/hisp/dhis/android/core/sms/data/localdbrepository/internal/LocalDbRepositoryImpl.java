@@ -283,9 +283,10 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
-    public Single<SMSDataValueSet> getDataValueSet(String orgUnit, String period, String attributeOptionComboUid) {
-        return dataSetsStore.getDataValues(orgUnit, period, attributeOptionComboUid).map(values -> {
-            Boolean isCompleted = isDataValueSetCompleted(orgUnit, period, attributeOptionComboUid);
+    public Single<SMSDataValueSet> getDataValueSet(String dataset, String orgUnit,
+                                                   String period, String attributeOptionComboUid) {
+        return dataSetsStore.getDataValues(dataset, orgUnit, period, attributeOptionComboUid).map(values -> {
+            Boolean isCompleted = isDataValueSetCompleted(dataset, orgUnit, period, attributeOptionComboUid);
             return SMSDataValueSet.builder()
                     .dataValues(values)
                     .completed(isCompleted)
@@ -293,8 +294,10 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
         });
     }
 
-    private Boolean isDataValueSetCompleted(String orgUnit, String period, String attributeOptionComboUid) {
+    private Boolean isDataValueSetCompleted(String dataset, String orgUnit,
+                                            String period, String attributeOptionComboUid) {
         String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.DATA_SET, dataset)
                 .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.ORGANISATION_UNIT, orgUnit)
                 .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.PERIOD, period)
                 .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.ATTRIBUTE_OPTION_COMBO,
@@ -312,7 +315,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
                                                     State state) {
         return Completable.mergeArray(
                 dataSetsStore.updateDataSetValuesState(
-                        orgUnit, period, attributeOptionComboUid, state),
+                        dataSetId, orgUnit, period, attributeOptionComboUid, state),
                 dataSetsStore.updateDataSetCompleteRegistrationState(
                         dataSetId, orgUnit, period, attributeOptionComboUid, state)
         );

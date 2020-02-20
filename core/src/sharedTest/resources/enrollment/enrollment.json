@@ -11,11 +11,24 @@
   "followup": false,
   "incidentDate": "2014-07-21T12:27:50.730",
   "status": "ACTIVE",
-  "notes": [],
   "deleted": false,
   "coordinate": {
     "latitude": 10.03,
     "longitude": 11.11
   },
-  "attributes": []
+  "attributes": [],
+  "notes": [
+    {
+      "note": "enrollmentNote1",
+      "storedDate": "2018-03-19T15:20:55.058",
+      "storedBy": "android",
+      "value": "Enrollment note 1"
+    },
+    {
+      "note": "enrollmentNote2",
+      "storedDate": "2018-03-19T15:20:55.058",
+      "storedBy": "android",
+      "value": "Enrollment note 2"
+    }
+  ]
 }

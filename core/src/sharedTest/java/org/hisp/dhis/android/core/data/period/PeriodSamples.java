@@ -43,7 +43,7 @@ public class PeriodSamples {
                 .periodId("20171231")
                 .periodType(PeriodType.Daily)
                 .startDate(getDate("2017-12-31T00:00:00.000"))
-                .startDate(getDate("2017-12-31T23:59:59.999"))
+                .endDate(getDate("2017-12-31T23:59:59.999"))
                 .build();
     }
 

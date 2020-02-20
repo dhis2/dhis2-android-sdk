@@ -39,11 +39,8 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
@@ -61,11 +58,9 @@ public class MockIntegrationTestObjects {
     public final D2 d2;
     public final Dhis2MockServer dhis2MockServer;
     public final MockIntegrationTestDatabaseContent content;
-    private final String dbName;
 
     MockIntegrationTestObjects(MockIntegrationTestDatabaseContent content) throws Exception {
         this.content = content;
-        dbName = content.toString().toLowerCase();
 
         deleteDatabase();
 
@@ -75,13 +70,12 @@ public class MockIntegrationTestObjects {
         dhis2MockServer = new Dhis2MockServer();
         CalendarProviderFactory.setFixed();
 
-        d2 = D2Factory.forDatabaseName(dbName);
+        d2 = D2Factory.forNewDatabase();
 
         databaseAdapter = d2.databaseAdapter();
-        ObjectSecureStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(new AndroidSecureStore(context));
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter);
+        SecureStore secureStore = new InMemorySecureStore();
 
-        d2DIComponent = D2DIComponent.create(context, d2.retrofit(), databaseAdapter, credentialsSecureStore);
+        d2DIComponent = D2DIComponent.create(context, d2.retrofit(), databaseAdapter, secureStore);
 
         resourceHandler = ResourceHandler.create(databaseAdapter);
         resourceHandler.setServerDate(serverDate);
@@ -89,7 +83,7 @@ public class MockIntegrationTestObjects {
 
     private void deleteDatabase() {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        context.deleteDatabase(dbName + ".db");
+        // TODO context.deleteDatabase(dbName + ".db");
     }
 
     public void tearDown() throws IOException {

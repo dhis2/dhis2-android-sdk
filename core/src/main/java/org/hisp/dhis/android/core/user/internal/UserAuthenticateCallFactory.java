@@ -41,7 +41,9 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
-import org.hisp.dhis.android.core.configuration.internal.Configuration;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration;
+import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration;
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -80,7 +82,7 @@ public final class UserAuthenticateCallFactory {
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final IdentifiableObjectStore<User> userStore;
     private final WipeModule wipeModule;
-    private final ObjectSecureStore<Configuration> configurationSecureStore;
+    private final ObjectSecureStore<DatabasesConfiguration> configurationSecureStore;
 
     @Inject
     UserAuthenticateCallFactory(
@@ -94,7 +96,7 @@ public final class UserAuthenticateCallFactory {
             @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             @NonNull IdentifiableObjectStore<User> userStore,
             @NonNull WipeModule wipeModule,
-            @NonNull ObjectSecureStore<Configuration> configurationSecureStore) {
+            @NonNull ObjectSecureStore<DatabasesConfiguration> configurationSecureStore) {
         this.databaseAdapter = databaseAdapter;
         this.apiCallExecutor = apiCallExecutor;
 
@@ -131,12 +133,18 @@ public final class UserAuthenticateCallFactory {
         try {
             HttpUrl httpServerUrl = ServerUrlParser.parse(serverUrl);
             ServerURLWrapper.setServerUrl(httpServerUrl.toString());
-            configurationSecureStore.set(Configuration.forServerUrl(httpServerUrl));
+            DatabasesConfiguration updatedConfiguration = DatabaseConfigurationHelper.addConfiguration(
+                    configurationSecureStore.get(), httpServerUrl.toString(), username,
+                    DatabaseAdapterFactory.encryptNextNotConfiguredDatabases);
+            configurationSecureStore.set(updatedConfiguration);
 
             User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,
                     new UserAuthenticateCallErrorCatcher());
 
-            DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter);
+            DatabaseUserConfiguration userConfiguration = DatabaseConfigurationHelper.getLoggedUserConfiguration(
+                    updatedConfiguration, username);
+            DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration.databaseName(),
+                    userConfiguration.encrypted());
 
             throwExceptionIfAlreadyAuthenticatedAndDbNotEmpty();
 

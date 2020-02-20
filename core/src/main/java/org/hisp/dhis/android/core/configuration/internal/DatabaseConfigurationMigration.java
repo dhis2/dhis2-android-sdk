@@ -30,25 +30,39 @@ package org.hisp.dhis.android.core.configuration.internal;
 
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
-import org.hisp.dhis.android.core.constant.ConstantModule;
-import org.hisp.dhis.android.core.constant.internal.ConstantModuleImpl;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import java.util.Collections;
 
-@Module
-public final class ConfigurationPackageDIModule {
+public final class DatabaseConfigurationMigration {
 
-    @Provides
-    @Reusable
-    ObjectSecureStore<DatabasesConfiguration> configurationSecureStore(SecureStore secureStore) {
-        return DatabaseConfigurationSecureStore.get(secureStore);
+    public static DatabasesConfiguration apply(SecureStore secureStore) {
+        ObjectSecureStore<Configuration> oldConfigurationStore = new ConfigurationSecureStoreImpl(secureStore);
+        ObjectSecureStore<DatabasesConfiguration> newConfigurationStore
+                = DatabaseConfigurationSecureStore.get(secureStore);
+
+        Configuration oldConfiguration = oldConfigurationStore.get();
+        if (oldConfiguration != null) {
+            oldConfigurationStore.remove();
+            DatabasesConfiguration newConfiguration = DatabasesConfiguration.builder()
+                    .loggedServerUrl(oldConfiguration.serverUrl().toString())
+                    .servers(Collections.singletonList(DatabaseServerConfiguration.builder()
+                            .serverUrl(oldConfiguration.serverUrl().toString())
+                            .users(Collections.singletonList(
+                                    DatabaseUserConfiguration.builder()
+                                            .databaseName("dhis.org")
+                                            .encrypted(false)
+                                            .build()
+                            ))
+                            .build()))
+                    .build();
+            newConfigurationStore.set(newConfiguration);
+            return newConfiguration;
+        } else {
+            return newConfigurationStore.get();
+        }
     }
 
-    @Provides
-    @Reusable
-    ConstantModule module(ConstantModuleImpl impl) {
-        return impl;
+    private DatabaseConfigurationMigration() {
+
     }
 }

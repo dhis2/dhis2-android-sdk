@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.junit.After;
@@ -58,6 +59,7 @@ public abstract class BaseRealIntegrationTest {
 
     protected Date serverDate = new Date();
     protected ResourceHandler resourceHandler;
+    private SecureStore secureStore;
     protected ObjectSecureStore<Credentials> credentialsSecureStore;
 
     protected String username = RealServerMother.username;
@@ -68,9 +70,11 @@ public abstract class BaseRealIntegrationTest {
     public void setUp() throws IOException {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
 
-        databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(context, null);
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter);
-        credentialsSecureStore = new CredentialsSecureStoreImpl(new AndroidSecureStore(context));
+        databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(context);
+        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, null, false);
+        secureStore = new AndroidSecureStore(context);
+        credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
+        credentialsSecureStore.remove();
         resourceHandler = ResourceHandler.create(databaseAdapter);
         resourceHandler.setServerDate(serverDate);
         Stetho.initializeWithDefaults(context);
@@ -99,6 +103,6 @@ public abstract class BaseRealIntegrationTest {
 
     protected D2DIComponent getD2DIComponent(D2 d2) {
         return D2DIComponent.create(InstrumentationRegistry.getTargetContext().getApplicationContext(), d2.retrofit(),
-                databaseAdapter, credentialsSecureStore);
+                databaseAdapter, secureStore);
     }
 }

@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.data.database.migrations;
 
+import androidx.test.InstrumentationRegistry;
+import androidx.test.runner.AndroidJUnit4;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueTableInfo;
@@ -36,9 +39,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hisp.dhis.android.core.arch.db.access.SqliteCheckerUtility.ifTableExist;
@@ -88,8 +88,8 @@ public class DataBaseMigrationShould {
 
     public DatabaseAdapter initCoreDataBase(int databaseVersion) {
         databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , dbName, databaseVersion);
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter);
+                , databaseVersion);
+        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, dbName, false);
         return databaseAdapter;
     }
 }

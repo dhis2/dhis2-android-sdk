@@ -29,7 +29,8 @@
 package org.hisp.dhis.android.core.arch.storage.internal;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
 
 import java.io.IOException;
 
@@ -49,7 +50,8 @@ public class  JsonSecureStoreImpl<O> implements ObjectSecureStore<O> {
 
     public void set(O o) {
         try {
-            this.secureStore.setData(key, new ObjectMapper().writeValueAsString(o));
+            String strObject = ObjectMapperFactory.objectMapper().writeValueAsString(o);
+            this.secureStore.setData(key, strObject);
             this.object = o;
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Couldn't persist object in secure store");
@@ -63,7 +65,7 @@ public class  JsonSecureStoreImpl<O> implements ObjectSecureStore<O> {
                 return null;
             } else {
                 try {
-                    return new ObjectMapper().readValue(strObject, clazz);
+                    return ObjectMapperFactory.objectMapper().readValue(strObject, clazz);
                 } catch (IOException e) {
                     throw new RuntimeException("Couldn't read object from secure store");
                 }

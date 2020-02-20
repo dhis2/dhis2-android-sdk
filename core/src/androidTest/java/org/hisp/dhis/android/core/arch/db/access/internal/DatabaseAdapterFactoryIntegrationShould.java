@@ -39,7 +39,7 @@ import org.junit.Test;
 
 public class DatabaseAdapterFactoryIntegrationShould {
 
-    private static final String DB_NAME = "database-adapter-factory-integration-should";
+    private static final String DB_NAME = "database-adapter-factory-integration-should.db";
 
     @AfterClass
     public static void tearDownClass() {
@@ -50,47 +50,47 @@ public class DatabaseAdapterFactoryIntegrationShould {
     @Test
     public void get_adapter() {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        DatabaseAdapterFactory.getDatabaseAdapter(context, DB_NAME);
+        DatabaseAdapterFactory.getDatabaseAdapter(context);
     }
 
     @Test
     public void get_adapter_create_and_close() {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(context, DB_NAME);
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter);
+        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(context);
+        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DB_NAME, false);
         databaseAdapter.close();
     }
 
     @Test
     public void get_adapter_create_close_and_recreate() {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(context, DB_NAME);
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter);
+        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(context);
+        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DB_NAME, false);
         databaseAdapter.close();
 
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter);
+        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DB_NAME, false);
     }
 
     @Test
     public void get_adapter_create_and_recreate_without_closing() {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(context, DB_NAME);
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter);
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter);
+        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(context);
+        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DB_NAME, false);
+        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DB_NAME, false);
     }
 
     @Test
     public void get_adapter_create_close_and_recreate_reading_db() {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(context, DB_NAME);
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter);
+        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(context);
+        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DB_NAME, false);
         Cursor cursor1 = databaseAdapter.rawQuery("SELECT * FROM User");
         int count1 = cursor1.getCount();
         cursor1.close();
 
         databaseAdapter.close();
 
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter);
+        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DB_NAME, false);
         Cursor cursor2 = databaseAdapter.rawQuery("SELECT * FROM User");
         int count2 = cursor2.getCount();
         cursor2.close();

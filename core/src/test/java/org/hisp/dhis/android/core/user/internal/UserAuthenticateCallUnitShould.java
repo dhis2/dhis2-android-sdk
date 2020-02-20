@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownl
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.configuration.internal.Configuration;
+import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
@@ -133,7 +133,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private WipeModule wipeModule;
 
     @Mock
-    private ObjectSecureStore<Configuration> configurationSecureStore;
+    private ObjectSecureStore<DatabasesConfiguration> configurationSecureStore;
 
     // call we are testing
     private Single<User> logInSingle;

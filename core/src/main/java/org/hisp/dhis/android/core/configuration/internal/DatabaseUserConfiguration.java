@@ -30,32 +30,40 @@ package org.hisp.dhis.android.core.configuration.internal;
 
 import androidx.annotation.NonNull;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
+@JsonDeserialize(builder = AutoValue_DatabaseUserConfiguration.Builder.class)
 public abstract class DatabaseUserConfiguration {
 
+    @JsonProperty()
     @NonNull
     public abstract String username();
 
+    @JsonProperty()
     @NonNull
     public abstract String databaseName();
 
+    @JsonProperty()
     @NonNull
-    public abstract String encrypted();
+    public abstract boolean encrypted();
 
     public static Builder builder() {
         return new AutoValue_DatabaseUserConfiguration.Builder();
     }
 
     @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder username(String username);
 
         public abstract Builder databaseName(String databaseName);
 
-        public abstract Builder encrypted(String encrypted);
+        public abstract Builder encrypted(boolean encrypted);
 
         public abstract DatabaseUserConfiguration build();
     }

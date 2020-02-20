@@ -30,18 +30,22 @@ package org.hisp.dhis.android.core.configuration.internal;
 
 import androidx.annotation.NonNull;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
 
-import okhttp3.HttpUrl;
-
 @AutoValue
+@JsonDeserialize(builder = AutoValue_DatabaseServerConfiguration.Builder.class)
 public abstract class DatabaseServerConfiguration {
 
+    @JsonProperty()
     @NonNull
-    public abstract HttpUrl serverUrl();
+    public abstract String serverUrl();
 
+    @JsonProperty()
     @NonNull
     public abstract List<DatabaseUserConfiguration> users();
 
@@ -50,8 +54,9 @@ public abstract class DatabaseServerConfiguration {
     }
 
     @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
-        public abstract Builder serverUrl(HttpUrl serverUrl);
+        public abstract Builder serverUrl(String serverUrl);
 
         public abstract Builder users(List<DatabaseUserConfiguration> users);
 

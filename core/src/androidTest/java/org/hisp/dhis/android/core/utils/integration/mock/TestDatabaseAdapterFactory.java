@@ -30,24 +30,21 @@ package org.hisp.dhis.android.core.utils.integration.mock;
 
 import android.content.Context;
 
+import androidx.test.InstrumentationRegistry;
+
 import com.facebook.stetho.Stetho;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 
-import androidx.test.InstrumentationRegistry;
-
 public class TestDatabaseAdapterFactory {
     private static String dbName = null;
     private static DatabaseAdapter databaseAdapter = null;
 
-    public static void setUp() {
+    public static DatabaseAdapter get() {
         if (databaseAdapter == null) {
             databaseAdapter = create();
         }
-    }
-
-    public static DatabaseAdapter get() {
         return databaseAdapter;
     }
 
@@ -61,8 +58,8 @@ public class TestDatabaseAdapterFactory {
     private static DatabaseAdapter create() {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
         Stetho.initializeWithDefaults(context);
-        DatabaseAdapter parentDatabaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(context, dbName);
-        DatabaseAdapterFactory.createOrOpenDatabase(parentDatabaseAdapter);
+        DatabaseAdapter parentDatabaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(context);
+        DatabaseAdapterFactory.createOrOpenDatabase(parentDatabaseAdapter, dbName, false);
         parentDatabaseAdapter.setForeignKeyConstraintsEnabled(false);
         return parentDatabaseAdapter;
     }

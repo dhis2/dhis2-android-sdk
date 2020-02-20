@@ -36,14 +36,14 @@ import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
+import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
-import org.hisp.dhis.android.core.configuration.internal.Configuration;
-import org.hisp.dhis.android.core.configuration.internal.ConfigurationSecureStoreImpl;
-import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationSecureStore;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationMigration;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration;
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
@@ -56,8 +56,6 @@ import io.reactivex.annotations.Nullable;
  * singleton across the application.
  */
 public final class D2Manager {
-
-    private static String databaseName = "dhis";
 
     private static D2 d2;
     private static D2Configuration d2Configuration;
@@ -109,30 +107,16 @@ public final class D2Manager {
                 SSLContextInitializer.initializeSSLContext(d2Configuration.context());
             }
 
-            SecureStore secureStore = new AndroidSecureStore(d2Configuration.context());
+            SecureStore secureStore = new InMemorySecureStore();
             ObjectSecureStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
-            ObjectSecureStore<Configuration> configurationSecureStore = new ConfigurationSecureStoreImpl(secureStore);
-            ObjectSecureStore<DatabasesConfiguration> databasesConfigurationStore
-                    = DatabaseConfigurationSecureStore.get(secureStore);
-
-            DatabasesConfiguration databasesConfiguration = databasesConfigurationStore.get();
-            Configuration configuration = configurationSecureStore.get();
-
-            if (configuration != null) {
-                ServerURLWrapper.setServerUrl(configuration.serverUrl().toString());
-            }
-
-            Credentials credentials = credentialsSecureStore.get();
-            if (credentials != null) {
-                DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter);
-            }
+            openDatabaseIfAlreadyCreated(secureStore, credentialsSecureStore);
 
             d2 = new D2(
                     RetrofitFactory.retrofit(
                             OkHttpClientFactory.okHttpClient(d2Configuration, credentialsSecureStore)),
                     databaseAdapter,
                     d2Configuration.context(),
-                    credentialsSecureStore
+                    secureStore
             );
 
             long setUpTime = System.currentTimeMillis() - startTime;
@@ -140,6 +124,20 @@ public final class D2Manager {
 
             return d2;
         });
+    }
+
+    private static void openDatabaseIfAlreadyCreated(SecureStore secureStore,
+                                                     ObjectSecureStore<Credentials> credentialsSecureStore) {
+        DatabasesConfiguration databaseConfiguration = DatabaseConfigurationMigration.apply(secureStore);
+        Credentials credentials = credentialsSecureStore.get();
+
+        if (databaseConfiguration != null) {
+            ServerURLWrapper.setServerUrl(databaseConfiguration.loggedServerUrl());
+            DatabaseUserConfiguration userConfiguration = DatabaseConfigurationHelper.getLoggedUserConfiguration(
+                    databaseConfiguration, credentials.username());
+            DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration.databaseName(),
+                    userConfiguration.encrypted());
+        }
     }
 
     /**
@@ -155,15 +153,10 @@ public final class D2Manager {
     private static void setUp(@Nullable D2Configuration d2Config) throws D2Error {
         long startTime = System.currentTimeMillis();
         d2Configuration = D2ConfigurationValidator.validateAndSetDefaultValues(d2Config);
-        databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(d2Configuration.context(), databaseName);
+        databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(d2Configuration.context());
 
         long setUpTime = System.currentTimeMillis() - startTime;
         Log.i(D2Manager.class.getName(), "Set up took " + setUpTime + "ms");
-    }
-
-    @VisibleForTesting
-    static void setDatabaseName(String dbName) {
-        databaseName = dbName;
     }
 
     @VisibleForTesting

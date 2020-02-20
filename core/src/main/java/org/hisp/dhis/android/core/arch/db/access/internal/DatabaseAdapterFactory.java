@@ -40,9 +40,8 @@ import java.util.Map;
 
 public final class DatabaseAdapterFactory {
 
-    private static boolean encrypt;
+    public static boolean encryptNextNotConfiguredDatabases;
     private static String ENCRYPTION_PASSWORD = "dhis-password";
-    private static String databaseName;
     private static Integer version;
     private static Context context;
 
@@ -51,29 +50,27 @@ public final class DatabaseAdapterFactory {
     private static List<DatabaseAdapter> adaptersToPreventNotClosedError = new ArrayList<>();
 
     public static void setExperimentalEncryption(boolean experimentalEncryption) {
-        encrypt = experimentalEncryption;
+        encryptNextNotConfiguredDatabases = experimentalEncryption;
     }
 
-    public static DatabaseAdapter getDatabaseAdapter(Context context, String databaseName) {
+    public static DatabaseAdapter getDatabaseAdapter(Context context) {
         DatabaseAdapterFactory.context = context;
-        DatabaseAdapterFactory.databaseName = databaseName;
         DatabaseAdapterFactory.version = null;
         return new ParentDatabaseAdapter();
     }
 
     @VisibleForTesting
-    public static DatabaseAdapter getDatabaseAdapter(Context context, String databaseName, int version) {
+    public static DatabaseAdapter getDatabaseAdapter(Context context, int version) {
         DatabaseAdapterFactory.context = context;
-        DatabaseAdapterFactory.databaseName = databaseName;
         DatabaseAdapterFactory.version = version;
         return new ParentDatabaseAdapter();
     }
 
     @SuppressWarnings("PMD.EmptyCatchBlock")
-    public static void createOrOpenDatabase(DatabaseAdapter adapter) {
+    public static void createOrOpenDatabase(DatabaseAdapter adapter, String databaseName, boolean encrypt) {
         try {
             ParentDatabaseAdapter parentDatabaseAdapter = (ParentDatabaseAdapter) adapter;
-            DatabaseAdapter internalAdapter = instantiateAdapter();
+            DatabaseAdapter internalAdapter = instantiateAdapter(databaseName, encrypt);
             adaptersToPreventNotClosedError.add(internalAdapter);
             parentDatabaseAdapter.setAdapter(internalAdapter);
         } catch (ClassCastException cce) {
@@ -81,15 +78,15 @@ public final class DatabaseAdapterFactory {
         }
     }
 
-    private static DatabaseAdapter instantiateAdapter() {
+    private static DatabaseAdapter instantiateAdapter(String databaseName, boolean encrypt) {
         int actualVersion = version == null ? BaseDatabaseOpenHelper.VERSION : version;
         if (encrypt) {
-            EncryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(encryptedOpenHelpers, "-enc.db",
-                    dbName -> new EncryptedDatabaseOpenHelper(context, dbName, actualVersion));
+            EncryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, encryptedOpenHelpers,
+                    v -> new EncryptedDatabaseOpenHelper(context, databaseName, actualVersion));
             return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(ENCRYPTION_PASSWORD));
         } else {
-            UnencryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(unencryptedOpenHelpers, ".db",
-                    dbName -> new UnencryptedDatabaseOpenHelper(context, dbName, actualVersion));
+            UnencryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, unencryptedOpenHelpers,
+                    v -> new UnencryptedDatabaseOpenHelper(context, databaseName, actualVersion));
             return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
         }
     }
@@ -98,17 +95,15 @@ public final class DatabaseAdapterFactory {
         O run(I i);
     }
 
-    private static <H> H instantiateOpenHelper(Map<String, H> helpers, String dbPostfix,
-                                               Function<String, H> helperCreator) {
-        String databaseNameWithExtension = databaseName == null ? null : databaseName + dbPostfix;
+    private static <H> H instantiateOpenHelper(String databaseName, Map<String, H> helpers, Function<Void, H> helperCreator) {
         H openHelper;
-        if (databaseNameWithExtension == null || !helpers.containsKey(databaseNameWithExtension)) {
-            openHelper = helperCreator.run(databaseNameWithExtension);
-            if (databaseNameWithExtension != null) {
-                helpers.put(databaseNameWithExtension, openHelper);
+        if (databaseName == null || !helpers.containsKey(databaseName)) {
+            openHelper = helperCreator.run(null);
+            if (databaseName != null) {
+                helpers.put(databaseName, openHelper);
             }
         } else {
-            openHelper = helpers.get(databaseNameWithExtension);
+            openHelper = helpers.get(databaseName);
         }
         return openHelper;
     }

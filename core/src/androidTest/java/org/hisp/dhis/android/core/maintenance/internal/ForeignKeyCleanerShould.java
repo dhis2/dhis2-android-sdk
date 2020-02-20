@@ -92,7 +92,7 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
     public void setUp() throws IOException {
         super.setUp();
 
-        dhis2MockServer = new Dhis2MockServer();
+        dhis2MockServer = new Dhis2MockServer(0);
         ServerURLWrapper.setServerUrl(dhis2MockServer.getBaseEndpoint() + "api/");
 
         d2 = D2Factory.forDatabaseAdapter(databaseAdapter());

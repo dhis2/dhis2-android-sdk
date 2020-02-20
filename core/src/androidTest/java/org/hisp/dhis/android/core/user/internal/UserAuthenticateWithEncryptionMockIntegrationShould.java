@@ -53,7 +53,7 @@ public class UserAuthenticateWithEncryptionMockIntegrationShould {
     public static void setUpClass() throws IOException {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
         d2 = D2Manager.blockingInstantiateD2(D2Factory.d2Configuration(context));
-        dhis2MockServer = new Dhis2MockServer();
+        dhis2MockServer = new Dhis2MockServer(0);
         dhis2MockServer.setRequestDispatcher();
     }
 

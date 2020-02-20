@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.data.server;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.file.IFileReader;
@@ -80,22 +82,39 @@ public class Dhis2MockServer {
     private static final String DATA_APPROVALS_MULTIPLE_JSON = "dataapproval/data_approvals_multiple.json";
     private static final String ORGANISATION_UNITS_JSON = "organisationunit/organisation_units.json";
     private static final String SMS_METADATA_IDS = "sms/metadata_ids.json";
+    private static final String MOCKWEBSERVER = "Dhis2MockWebServer";
 
     private MockWebServer server;
     private IFileReader fileReader;
+    private Dhis2Dispatcher dhis2Dispatcher;
 
-    private Dhis2MockServer(IFileReader fileReader) throws IOException {
+    private Dhis2MockServer(IFileReader fileReader, int port) throws IOException {
         this.fileReader = fileReader;
         this.server = new MockWebServer();
-        this.server.start();
+        dhis2Dispatcher = new Dhis2Dispatcher(fileReader, new ResponseController());
+        start(port);
     }
 
-    public Dhis2MockServer() throws IOException {
-        this(new ResourcesFileReader());
+    public Dhis2MockServer(int port) throws IOException {
+        this(new ResourcesFileReader(), port);
+    }
+
+    private void start(int port) throws IOException {
+        try {
+            server.start(port);
+        } catch (IOException e) {
+            Log.e(MOCKWEBSERVER, "Could not start server");
+            e.printStackTrace();
+        }
     }
 
     public void shutdown() throws IOException {
-        server.shutdown();
+        try {
+            server.shutdown();
+        } catch (IOException e) {
+            Log.e(MOCKWEBSERVER, "Could not shutdown server");
+            e.printStackTrace();
+        }
     }
 
     public void enqueueMockResponse() {
@@ -116,6 +135,10 @@ public class Dhis2MockServer {
     public void enqueueMockResponse(String fileName) {
         MockResponse response = createMockResponse(fileName);
         server.enqueue(response);
+    }
+
+    public void setDhis2Dispatcher(){
+        server.setDispatcher(dhis2Dispatcher);
     }
 
     public void setRequestDispatcher() {
@@ -260,7 +283,7 @@ public class Dhis2MockServer {
         return server.takeRequest();
     }
 
-    public void addResponse(String method, String url, String path, int responseCode) {
-     //   dispatcher.addResponse(method, url, path, responseCode);
+    public void addResponse(String method, String path, String responseName, int responseCode){
+        dhis2Dispatcher.addResponse(method, path, responseName, responseCode);
     }
 }

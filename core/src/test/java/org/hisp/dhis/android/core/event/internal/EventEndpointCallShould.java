@@ -65,7 +65,7 @@ public class EventEndpointCallShould {
 
     @BeforeClass
     public static void setUpClass() throws IOException {
-        mockWebServer = new Dhis2MockServer();
+        mockWebServer = new Dhis2MockServer(0);
         retrofit = RetrofitFactory.fromDHIS2MockServer(mockWebServer);
     }
 

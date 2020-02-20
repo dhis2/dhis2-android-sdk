@@ -39,4 +39,8 @@ public class Dhis2Dispatcher extends Dispatcher {
             return new MockResponse().setResponseCode(500).setBody("Error reading JSON file for MockServer");
         }
     }
+
+    public void addResponse(String method, String path, String responseName, int responseCode) {
+        responseController.addResponse(method, path, responseName, responseCode);
+    }
 }

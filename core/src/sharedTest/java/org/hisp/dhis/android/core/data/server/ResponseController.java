@@ -70,36 +70,4 @@ public class ResponseController {
         }
         return codeResponses.get(resource);
     }
-
-    public static class Builder {
-        private final ResponseController responses;
-
-        public Builder() {
-            responses = new ResponseController();
-        }
-
-        public Builder addGetResponse(String pathRegex, String responseName, Integer code) {
-            responses.addResponse(GET, pathRegex, responseName, code);
-            return this;
-        }
-
-        public Builder addPostResponse(String pathRegex, String responseName, Integer code) {
-            responses.addResponse(POST, pathRegex, responseName, code);
-            return this;
-        }
-
-        public Builder addPutResponse(String pathRegex, String responseName, Integer code) {
-            responses.addResponse(PUT, pathRegex, responseName, code);
-            return this;
-        }
-
-        public Builder addDeleteResponse(String pathRegex, String responseName, Integer code) {
-            responses.addResponse(DELETE, pathRegex, responseName, code);
-            return this;
-        }
-
-        public ResponseController build() {
-            return responses;
-        }
-    }
 }

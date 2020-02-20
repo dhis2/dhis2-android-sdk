@@ -72,7 +72,7 @@ public class MockIntegrationTestObjects {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
         Stetho.initializeWithDefaults(context);
 
-        dhis2MockServer = new Dhis2MockServer();
+        dhis2MockServer = new Dhis2MockServer(0);
         CalendarProviderFactory.setFixed();
 
         d2 = D2Factory.forDatabaseName(dbName);

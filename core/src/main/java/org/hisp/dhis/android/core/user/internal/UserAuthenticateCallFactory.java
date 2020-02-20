@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
@@ -84,6 +86,8 @@ public final class UserAuthenticateCallFactory {
     private final WipeModule wipeModule;
     private final ObjectSecureStore<DatabasesConfiguration> configurationSecureStore;
 
+    private final Context context;
+
     @Inject
     UserAuthenticateCallFactory(
             @NonNull DatabaseAdapter databaseAdapter,
@@ -96,7 +100,8 @@ public final class UserAuthenticateCallFactory {
             @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             @NonNull IdentifiableObjectStore<User> userStore,
             @NonNull WipeModule wipeModule,
-            @NonNull ObjectSecureStore<DatabasesConfiguration> configurationSecureStore) {
+            @NonNull ObjectSecureStore<DatabasesConfiguration> configurationSecureStore,
+            @NonNull Context context) {
         this.databaseAdapter = databaseAdapter;
         this.apiCallExecutor = apiCallExecutor;
 
@@ -111,6 +116,7 @@ public final class UserAuthenticateCallFactory {
         this.userStore = userStore;
         this.wipeModule = wipeModule;
         this.configurationSecureStore = configurationSecureStore;
+        this.context = context;
     }
 
     public Single<User> logIn(final String username, final String password, final String serverUrl) {
@@ -144,7 +150,7 @@ public final class UserAuthenticateCallFactory {
             DatabaseUserConfiguration userConfiguration = DatabaseConfigurationHelper.getLoggedUserConfiguration(
                     updatedConfiguration, username);
             DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration.databaseName(),
-                    userConfiguration.encrypted());
+                    context, userConfiguration.encrypted());
 
             throwExceptionIfAlreadyAuthenticatedAndDbNotEmpty();
 

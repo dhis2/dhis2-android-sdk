@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.data.database.migrations;
 
+import android.content.Context;
+
 import androidx.test.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
@@ -87,9 +89,9 @@ public class DataBaseMigrationShould {
     }
 
     public DatabaseAdapter initCoreDataBase(int databaseVersion) {
-        databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , databaseVersion);
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, dbName, false);
+        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter();
+        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, dbName, context, false, databaseVersion);
         return databaseAdapter;
     }
 }

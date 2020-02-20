@@ -58,8 +58,8 @@ public class TestDatabaseAdapterFactory {
     private static DatabaseAdapter create() {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
         Stetho.initializeWithDefaults(context);
-        DatabaseAdapter parentDatabaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(context);
-        DatabaseAdapterFactory.createOrOpenDatabase(parentDatabaseAdapter, dbName, false);
+        DatabaseAdapter parentDatabaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter();
+        DatabaseAdapterFactory.createOrOpenDatabase(parentDatabaseAdapter, dbName, context, false);
         parentDatabaseAdapter.setForeignKeyConstraintsEnabled(false);
         return parentDatabaseAdapter;
     }

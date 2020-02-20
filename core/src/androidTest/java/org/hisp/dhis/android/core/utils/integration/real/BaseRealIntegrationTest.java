@@ -70,8 +70,8 @@ public abstract class BaseRealIntegrationTest {
     public void setUp() throws IOException {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
 
-        databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(context);
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, null, false);
+        databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter();
+        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, null, context, false);
         secureStore = new AndroidSecureStore(context);
         credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
         resourceHandler = ResourceHandler.create(databaseAdapter);

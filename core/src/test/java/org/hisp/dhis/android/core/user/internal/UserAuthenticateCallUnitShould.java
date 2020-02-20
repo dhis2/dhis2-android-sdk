@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import android.content.Context;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
@@ -74,6 +76,9 @@ import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class UserAuthenticateCallUnitShould extends BaseCallShould {
+
+    @Mock
+    private Context context;
 
     @Mock
     private UserService userService;
@@ -183,7 +188,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private Single<User> instantiateCall(String username, String password, String serverUrl) {
         return new UserAuthenticateCallFactory(databaseAdapter, apiCallExecutor,
                 userService, credentialsSecureStore, userHandler, resourceHandler, authenticatedUserStore,
-                systemInfoRepository, userStore, wipeModule, configurationSecureStore).logIn(username, password, serverUrl);
+                systemInfoRepository, userStore, wipeModule, configurationSecureStore, context).logIn(username, password, serverUrl);
     }
 
     private OngoingStubbing<User> whenAPICall() throws D2Error {

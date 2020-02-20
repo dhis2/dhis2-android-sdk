@@ -29,8 +29,6 @@ package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import android.content.Context;
 
-import androidx.annotation.VisibleForTesting;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 
 import java.util.ArrayList;
@@ -42,8 +40,6 @@ public final class DatabaseAdapterFactory {
 
     public static boolean encryptNextNotConfiguredDatabases;
     private static String ENCRYPTION_PASSWORD = "dhis-password";
-    private static Integer version;
-    private static Context context;
 
     private static Map<String, UnencryptedDatabaseOpenHelper> unencryptedOpenHelpers = new HashMap<>();
     private static Map<String, EncryptedDatabaseOpenHelper> encryptedOpenHelpers = new HashMap<>();
@@ -53,24 +49,16 @@ public final class DatabaseAdapterFactory {
         encryptNextNotConfiguredDatabases = experimentalEncryption;
     }
 
-    public static DatabaseAdapter getDatabaseAdapter(Context context) {
-        DatabaseAdapterFactory.context = context;
-        DatabaseAdapterFactory.version = null;
-        return new ParentDatabaseAdapter();
-    }
-
-    @VisibleForTesting
-    public static DatabaseAdapter getDatabaseAdapter(Context context, int version) {
-        DatabaseAdapterFactory.context = context;
-        DatabaseAdapterFactory.version = version;
+    public static DatabaseAdapter getDatabaseAdapter() {
         return new ParentDatabaseAdapter();
     }
 
     @SuppressWarnings("PMD.EmptyCatchBlock")
-    public static void createOrOpenDatabase(DatabaseAdapter adapter, String databaseName, boolean encrypt) {
+    public static void createOrOpenDatabase(DatabaseAdapter adapter, String databaseName, Context context,
+                                            boolean encrypt, Integer version) {
         try {
             ParentDatabaseAdapter parentDatabaseAdapter = (ParentDatabaseAdapter) adapter;
-            DatabaseAdapter internalAdapter = instantiateAdapter(databaseName, encrypt);
+            DatabaseAdapter internalAdapter = instantiateAdapter(databaseName, context, encrypt, version);
             adaptersToPreventNotClosedError.add(internalAdapter);
             parentDatabaseAdapter.setAdapter(internalAdapter);
         } catch (ClassCastException cce) {
@@ -78,15 +66,20 @@ public final class DatabaseAdapterFactory {
         }
     }
 
-    private static DatabaseAdapter instantiateAdapter(String databaseName, boolean encrypt) {
-        int actualVersion = version == null ? BaseDatabaseOpenHelper.VERSION : version;
+    public static void createOrOpenDatabase(DatabaseAdapter adapter, String databaseName, Context context,
+                                            boolean encrypt) {
+        createOrOpenDatabase(adapter, databaseName, context, encrypt, BaseDatabaseOpenHelper.VERSION);
+    }
+
+    private static DatabaseAdapter instantiateAdapter(String databaseName, Context context,
+                                                      boolean encrypt, int version) {
         if (encrypt) {
             EncryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, encryptedOpenHelpers,
-                    v -> new EncryptedDatabaseOpenHelper(context, databaseName, actualVersion));
+                    v -> new EncryptedDatabaseOpenHelper(context, databaseName, version));
             return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(ENCRYPTION_PASSWORD));
         } else {
             UnencryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, unencryptedOpenHelpers,
-                    v -> new UnencryptedDatabaseOpenHelper(context, databaseName, actualVersion));
+                    v -> new UnencryptedDatabaseOpenHelper(context, databaseName, version));
             return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
         }
     }

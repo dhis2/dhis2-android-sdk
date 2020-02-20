@@ -37,19 +37,48 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 @RunWith(JUnit4.class)
 public class DatabaseNameGeneratorShould {
 
-    private final String URL = "https://play.dhis2.org/android-current/";
+    private final String URL = "https://play.dhis2.org/android-current";
+    private final String URL_HTTP = "http://play.dhis2.org/android-current";
     private final String USERNAME = "user23";
     private final DatabaseNameGenerator generator = new DatabaseNameGenerator();
+
+    private final String EXPECTED_ENCR = "play-dhis2-org-android-current_user23_encrypted.db";
+    private final String EXPECTED_UNEN = "play-dhis2-org-android-current_user23_unencrypted.db";
 
     @Test
     public void return_name_with_server_and_username_with_valid_characters_for_encrypted_db() {
         String name = generator.getDatabaseName(URL, USERNAME, true);
-        assertThat(name).isEqualTo("play-dhis2-org-android-current_user23_encrypted.db");
+        assertThat(name).isEqualTo(EXPECTED_ENCR);
     }
 
     @Test
     public void return_name_with_server_and_username_with_valid_characters_for_unencrypted_db() {
         String name = generator.getDatabaseName(URL, USERNAME, false);
-        assertThat(name).isEqualTo("play-dhis2-org-android-current_user23_unencrypted.db");
+        assertThat(name).isEqualTo(EXPECTED_UNEN);
     }
+
+    @Test
+    public void return_name_with_server_and_username_for_http() {
+        String name = generator.getDatabaseName(URL_HTTP, USERNAME, true);
+        assertThat(name).isEqualTo(EXPECTED_ENCR);
+    }
+
+    @Test
+    public void return_name_with_server_and_username_with_trailing_slash() {
+        String name = generator.getDatabaseName(URL + "/", USERNAME, true);
+        assertThat(name).isEqualTo(EXPECTED_ENCR);
+    }
+
+    @Test
+    public void return_name_with_server_and_username_with_api() {
+        String name = generator.getDatabaseName(URL + "/api", USERNAME, true);
+        assertThat(name).isEqualTo(EXPECTED_ENCR);
+    }
+
+    @Test
+    public void return_name_with_server_and_username_with_api_and_trailing_slash() {
+        String name = generator.getDatabaseName(URL + "/api/", USERNAME, true);
+        assertThat(name).isEqualTo(EXPECTED_ENCR);
+    }
+
 }

@@ -38,7 +38,10 @@ public final class DatabaseNameGenerator {
     private String processServerUrl(String serverUrl) {
         String noHttps = removePrefix(serverUrl, "https://");
         String noHttp = removePrefix(noHttps, "http://");
-        String onlyAlphanumeric = noHttp.replaceAll("[^a-zA-Z0-9]", "-");
+        String noSlashSufix = removeSuffix(noHttp, "/");
+        String noAPISufix = removeSuffix(noSlashSufix, "/api");
+
+        String onlyAlphanumeric = noAPISufix.replaceAll("[^a-zA-Z0-9]", "-");
         String withNoMultipleMinus = onlyAlphanumeric.replaceAll("-+", "-");
         String withNoMinusAtTheBeginning = removePrefix(withNoMultipleMinus, "-");
         return removeSuffix(withNoMinusAtTheBeginning, "-");

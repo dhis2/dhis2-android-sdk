@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.common.DeletableDataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.Collection;
-import java.util.List;
 
 public interface IdentifiableDataHandler<O extends DeletableDataObject & ObjectWithUidInterface> {
 

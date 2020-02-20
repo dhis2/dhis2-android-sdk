@@ -89,7 +89,8 @@ final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
                     notes.add(noteVersionManager.transform(Note.NoteType.ENROLLMENT_NOTE, enrollment.uid(), note));
                 }
             }
-            Set<Note> notesToSync = noteUniquenessManager.buildUniqueCollection(notes, enrollment.uid());
+            Set<Note> notesToSync = noteUniquenessManager.buildUniqueCollection(
+                    notes, Note.NoteType.ENROLLMENT_NOTE, enrollment.uid());
             noteHandler.handleMany(notesToSync);
         }
 

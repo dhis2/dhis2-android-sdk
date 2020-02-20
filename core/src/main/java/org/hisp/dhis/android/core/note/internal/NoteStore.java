@@ -48,15 +48,16 @@ public final class NoteStore {
         w.bind(6, o.storedDate());
         w.bind(7, o.uid());
         w.bind(8, o.state());
+        w.bind(9, o.deleted());
     };
 
     private static final WhereStatementBinder<Note> WHERE_UPDATE_BINDER = (o, w) -> {
-        w.bind(9, o.noteType());
-        w.bind(10, o.event());
-        w.bind(11, o.enrollment());
-        w.bind(12, o.value());
-        w.bind(13, o.storedBy());
-        w.bind(14, o.storedDate());
+        w.bind(10, o.noteType());
+        w.bind(11, o.event());
+        w.bind(12, o.enrollment());
+        w.bind(13, o.value());
+        w.bind(14, o.storedBy());
+        w.bind(15, o.storedDate());
     };
 
     private static final WhereStatementBinder<Note> WHERE_DELETE_BINDER = (o, w) -> {

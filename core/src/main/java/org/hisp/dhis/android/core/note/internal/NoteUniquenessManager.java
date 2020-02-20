@@ -54,14 +54,22 @@ public class NoteUniquenessManager {
         this.noteStore = noteStore;
     }
 
-    public Set<Note> buildUniqueCollection(Collection<Note> notes, String enrollmentUid) {
+    public Set<Note> buildUniqueCollection(Collection<Note> notes, Note.NoteType noteType, String ownerUid) {
+        if (noteType == null) {
+            throw new IllegalArgumentException("Note type is null");
+        }
+
+        String ownerColumn = noteType == Note.NoteType.ENROLLMENT_NOTE ?
+                NoteTableInfo.Columns.ENROLLMENT :
+                NoteTableInfo.Columns.EVENT;
+
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(DataColumns.STATE, State.TO_POST)
-                .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build();
+                .appendKeyStringValue(ownerColumn, ownerUid).build();
         List<Note> toPostNotes = noteStore.selectWhere(whereClause);
 
         String deleteWhereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build();
+                .appendKeyStringValue(ownerColumn, ownerUid).build();
         noteStore.deleteWhere(deleteWhereClause);
 
         Set<Note> uniqueNotes = new HashSet<>();

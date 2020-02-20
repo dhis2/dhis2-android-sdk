@@ -25,49 +25,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.handlers.internal;
 
-package org.hisp.dhis.android.core.event.internal;
+import org.hisp.dhis.android.core.common.DeletableDataObject;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventCreateProjection;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueChildrenAppender;
+import java.util.Collection;
 
-import java.util.Collections;
-import java.util.Map;
+public interface IdentifiableDataHandler<O extends DeletableDataObject & ObjectWithUidInterface> {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+    void handle(O o, Boolean overwrite);
 
-@Module
-public final class EventEntityDIModule {
+    void handle(O o, Transformer<O, O> transformer, Boolean overwrite);
 
-    @Provides
-    @Reusable
-    public EventStore store(DatabaseAdapter databaseAdapter) {
-        return EventStoreImpl.create(databaseAdapter);
-    }
+    void handleMany(Collection<O> oCollection, Boolean overwrite);
 
-    @Provides
-    @Reusable
-    public IdentifiableDataHandler<Event> handler(EventHandler impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    Transformer<EventCreateProjection, Event> transformer() {
-        return new EventProjectionTransformer();
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Event>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singletonMap(EventFields.TRACKED_ENTITY_DATA_VALUES,
-                TrackedEntityDataValueChildrenAppender.create(databaseAdapter));
-    }
+    void handleMany(Collection<O> oCollection, Transformer<O, O> transformer, Boolean overwrite);
 }

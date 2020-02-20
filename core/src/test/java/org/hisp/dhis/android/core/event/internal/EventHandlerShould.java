@@ -76,7 +76,7 @@ public class EventHandlerShould {
 
     @Test
     public void do_nothing_when_passing_empty_list_argument() {
-        eventHandler.handleMany(new ArrayList<>());
+        eventHandler.handleMany(new ArrayList<>(), false);
 
         // verify that store is never invoked
         verify(eventStore, never()).deleteIfExists(anyString());
@@ -88,7 +88,7 @@ public class EventHandlerShould {
     public void invoke_only_delete_when_a_event_is_set_as_deleted() {
         when(event.deleted()).thenReturn(Boolean.TRUE);
 
-        eventHandler.handle(event);
+        eventHandler.handle(event, false);
 
         // verify that delete is invoked once
         verify(eventStore, times(1)).deleteIfExists(event.uid());
@@ -96,6 +96,9 @@ public class EventHandlerShould {
         // verify that update and insert is never invoked
         verify(eventStore, never()).update(any(Event.class));
         verify(eventStore, never()).insert(any(Event.class));
+
+        // verify that data value handler is never invoked
+        verify(trackedEntityDataValueHandler, never()).handleMany(anyCollection(), any());
     }
 
     @Test
@@ -104,7 +107,7 @@ public class EventHandlerShould {
         when(event.organisationUnit()).thenReturn("org_unit_uid");
         when(event.status()).thenReturn(EventStatus.SCHEDULE);
 
-        eventHandler.handle(event);
+        eventHandler.handle(event, false);
 
         // verify that update and insert is invoked, since we're updating before inserting
         verify(eventStore, times(1)).updateOrInsert(any(Event.class));
@@ -113,15 +116,5 @@ public class EventHandlerShould {
 
         // verify that delete is never invoked
         verify(eventStore, never()).deleteIfExists(anyString());
-    }
-
-    @Test
-    public void do_not_persist_data_values_if_event_is_deleted() {
-        when(event.deleted()).thenReturn(Boolean.TRUE);
-
-        eventHandler.handle(event);
-
-        // verify that data value handler is never invoked
-        verify(trackedEntityDataValueHandler, never()).handleMany(anyCollection(), any());
     }
 }

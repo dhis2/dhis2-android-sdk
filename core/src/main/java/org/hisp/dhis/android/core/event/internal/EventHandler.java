@@ -53,7 +53,7 @@ final class EventHandler extends IdentifiableDataHandlerImpl<Event> {
     }
 
     @Override
-    protected void afterObjectHandled(Event event, HandleAction action) {
+    protected void afterObjectHandled(Event event, HandleAction action, Boolean overwrite) {
         final String eventUid = event.uid();
 
         if (action == HandleAction.Delete) {

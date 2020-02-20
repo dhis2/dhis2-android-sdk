@@ -162,7 +162,7 @@ class TrackedEntityInstanceWithLimitCallFactory {
         return teiDownloadObservable.map(
                 teiList -> {
                     boolean isFullUpdate = params.program() == null;
-                    boolean overwrite = shouldOverwrite(params);
+                    boolean overwrite = params.overwrite();
                     persistenceCallFactory.getCall(teiList, isFullUpdate, overwrite).call();
                     programOrganisationUnitSet.addAll(
                             TrackedEntityInstanceHelper.getProgramOrganisationUnitTuple(teiList, serverDate));
@@ -314,11 +314,6 @@ class TrackedEntityInstanceWithLimitCallFactory {
             programOrganisationUnitLastUpdatedHandler.handleMany(programOrganisationUnitSet);
             return progressManager.increaseProgress(TrackedEntityInstance.class, true);
         }).toObservable();
-    }
-
-    //TODO Define a proper implementation for "overwrite" property. Maybe it should be exposed to the app
-    private boolean shouldOverwrite(ProgramDataDownloadParams params) {
-        return params.uids().size() == 1;
     }
 
     private static class TeiListWithPaging {

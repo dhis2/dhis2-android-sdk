@@ -259,4 +259,8 @@ public class Dhis2MockServer {
     public RecordedRequest takeRequest() throws InterruptedException {
         return server.takeRequest();
     }
+
+    public void addResponse(String method, String url, String path, int responseCode) {
+     //   dispatcher.addResponse(method, url, path, responseCode);
+    }
 }

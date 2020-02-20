@@ -28,9 +28,11 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner;
@@ -47,13 +49,12 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
 public final class EventPersistenceCallFactory {
 
-    private final HandlerWithTransformer<Event> eventHandler;
+    private final IdentifiableDataHandler<Event> eventHandler;
     private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
     private final OrganisationUnitModuleDownloader organisationUnitDownloader;
@@ -61,7 +62,7 @@ public final class EventPersistenceCallFactory {
 
     @Inject
     EventPersistenceCallFactory(
-            @NonNull HandlerWithTransformer<Event> eventHandler,
+            @NonNull IdentifiableDataHandler<Event> eventHandler,
             @NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore,
             @NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
             @NonNull OrganisationUnitModuleDownloader organisationUnitDownloader,
@@ -79,7 +80,8 @@ public final class EventPersistenceCallFactory {
             eventHandler.handleMany(events,
                     event -> event.toBuilder()
                             .state(State.SYNCED)
-                            .build());
+                            .build(),
+                    false);
 
             Set<String> searchOrgUnitUids = getMissingOrganisationUnitUids(events);
 

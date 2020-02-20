@@ -64,15 +64,17 @@ public class TrackedEntityInstanceDownloaderShould {
                 .limitByOrgunit(true)
                 .limitByProgram(true)
                 .limit(500)
+                .overwrite(true)
                 .download();
 
         verify(callFactory).download(paramsCapture.capture());
         ProgramDataDownloadParams params = paramsCapture.getValue();
 
         assertThat(params.program()).isEqualTo("program-uid");
-        assertThat(params.limitByOrgunit()).isEqualTo(true);
-        assertThat(params.limitByProgram()).isEqualTo(true);
+        assertThat(params.limitByOrgunit()).isTrue();
+        assertThat(params.limitByProgram()).isTrue();
         assertThat(params.limit()).isEqualTo(500);
+        assertThat(params.overwrite()).isTrue();
     }
 
     @Test

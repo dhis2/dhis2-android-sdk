@@ -67,6 +67,7 @@ public final class EventEntityDIModule {
 
     @Provides
     @Reusable
+    @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<Event>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         return new HashMap<String, ChildrenAppender<Event>>() {{
             put(EventFields.TRACKED_ENTITY_DATA_VALUES,

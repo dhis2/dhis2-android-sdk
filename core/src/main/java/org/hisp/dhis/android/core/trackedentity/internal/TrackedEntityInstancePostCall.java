@@ -292,12 +292,7 @@ public final class TrackedEntityInstancePostCall {
                 if (eventsForEnrollment != null) {
                     for (Event event : eventsForEnrollment) {
                         List<TrackedEntityDataValue> dataValuesForEvent = dataValueMap.get(event.uid());
-                        List<Note> notesForEvent = new ArrayList<>();
-                        for (Note note : notes) {
-                            if (event.uid().equals(note.event())) {
-                                notesForEvent.add(transformer.transform(note));
-                            }
-                        }
+                        List<Note> notesForEvent = getEventNotes(notes, event, transformer);
 
                         if (versionManager.is2_30()) {
                             eventRecreated.add(event.toBuilder()
@@ -314,13 +309,7 @@ public final class TrackedEntityInstancePostCall {
                     }
                 }
 
-                List<Note> notesForEnrollment = new ArrayList<>();
-                for (Note note : notes) {
-                    if (enrollment.uid().equals(note.enrollment())) {
-                        notesForEnrollment.add(transformer.transform(note));
-                    }
-                }
-
+                List<Note> notesForEnrollment = getEnrollmentNotes(notes, enrollment, transformer);
                 enrollmentsRecreated.add(
                         EnrollmentInternalAccessor.insertEvents(enrollment.toBuilder(), eventRecreated)
                         .notes(notesForEnrollment)
@@ -342,6 +331,26 @@ public final class TrackedEntityInstancePostCall {
                         enrollmentsRecreated)
                 .trackedEntityAttributeValues(attributeValues == null ? emptyAttributeValueList : attributeValues)
                 .build();
+    }
+
+    private List<Note> getEventNotes(List<Note> notes, Event event, NoteToPostTransformer transformer) {
+        List<Note> notesForEvent = new ArrayList<>();
+        for (Note note : notes) {
+            if (event.uid().equals(note.event())) {
+                notesForEvent.add(transformer.transform(note));
+            }
+        }
+        return notesForEvent;
+    }
+
+    private List<Note> getEnrollmentNotes(List<Note> notes, Enrollment enrollment, NoteToPostTransformer transformer) {
+        List<Note> notesForEnrollment = new ArrayList<>();
+        for (Note note : notes) {
+            if (enrollment.uid().equals(note.enrollment())) {
+                notesForEnrollment.add(transformer.transform(note));
+            }
+        }
+        return notesForEnrollment;
     }
 
     private void markPartitionAs(List<TrackedEntityInstance> partition, State state) {

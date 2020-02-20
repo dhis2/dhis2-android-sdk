@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.event.internal;
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
@@ -60,14 +60,14 @@ import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getS
 public class EventImportHandler {
     private final EventStore eventStore;
     private final EnrollmentStore enrollmentStore;
-    private final ObjectWithoutUidStore<Note> noteStore;
+    private final IdentifiableObjectStore<Note> noteStore;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final ObjectStore<TrackerImportConflict> trackerImportConflictStore;
 
     @Inject
     public EventImportHandler(@NonNull EventStore eventStore,
                               @NonNull EnrollmentStore enrollmentStore,
-                              @NonNull ObjectWithoutUidStore<Note> noteStore,
+                              @NonNull IdentifiableObjectStore<Note> noteStore,
                               @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
                               @NonNull ObjectStore<TrackerImportConflict> trackerImportConflictStore) {
         this.eventStore = eventStore;
@@ -172,7 +172,7 @@ public class EventImportHandler {
                 .appendKeyStringValue(NoteTableInfo.Columns.EVENT, eventUid).build();
         List<Note> notes = noteStore.selectWhere(whereClause);
         for (Note note : notes) {
-            noteStore.updateWhere(note.toBuilder().state(state).build());
+            noteStore.update(note.toBuilder().state(state).build());
         }
     }
 }

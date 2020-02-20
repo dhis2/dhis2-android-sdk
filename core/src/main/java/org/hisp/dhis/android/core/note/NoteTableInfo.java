@@ -74,17 +74,5 @@ public final class NoteTableInfo {
                     DELETED
             );
         }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{
-                    NOTE_TYPE,
-                    EVENT,
-                    ENROLLMENT,
-                    VALUE,
-                    STORED_BY,
-                    STORED_DATE
-            };
-        }
     }
 }

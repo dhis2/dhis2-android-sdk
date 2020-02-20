@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.common.DataColumns;
@@ -92,7 +92,7 @@ public final class TrackedEntityInstancePostCall {
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
     private final RelationshipItemStore relationshipItemStore;
-    private final ObjectWithoutUidStore<Note> noteStore;
+    private final IdentifiableObjectStore<Note> noteStore;
 
     private final TEIWebResponseHandler teiWebResponseHandler;
 
@@ -112,7 +112,7 @@ public final class TrackedEntityInstancePostCall {
                                   @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
                                   @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
                                   @NonNull RelationshipItemStore relationshipItemStore,
-                                  @NonNull ObjectWithoutUidStore<Note> noteStore,
+                                  @NonNull IdentifiableObjectStore<Note> noteStore,
                                   @NonNull TEIWebResponseHandler teiWebResponseHandler,
                                   @NonNull APICallExecutor apiCallExecutor,
                                   @NonNull SystemInfoModuleDownloader systemInfoDownloader) {

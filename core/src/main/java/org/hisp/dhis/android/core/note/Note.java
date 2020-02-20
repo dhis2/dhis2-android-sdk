@@ -40,6 +40,7 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.NoteTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.note.internal.NoteFields;
@@ -53,7 +54,6 @@ public abstract class Note extends BaseDeletableDataObject implements ObjectWith
         EVENT_NOTE
     }
 
-    @Nullable
     @JsonProperty(NoteFields.UID)
     public abstract String uid();
 
@@ -112,6 +112,19 @@ public abstract class Note extends BaseDeletableDataObject implements ObjectWith
 
         public abstract Builder storedDate(String storedDate);
 
-        public abstract Note build();
+        abstract Note autoBuild();
+
+        // Auxiliary fields
+        abstract String uid();
+
+        public Note build() {
+            try {
+                uid();
+            } catch (IllegalStateException e) {
+                uid(new UidGeneratorImpl().generate());
+            }
+
+            return autoBuild();
+        }
     }
 }

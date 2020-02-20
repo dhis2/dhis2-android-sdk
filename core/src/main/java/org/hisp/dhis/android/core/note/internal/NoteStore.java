@@ -30,8 +30,7 @@ package org.hisp.dhis.android.core.note.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.note.Note;
@@ -51,24 +50,6 @@ public final class NoteStore {
         w.bind(9, o.deleted());
     };
 
-    private static final WhereStatementBinder<Note> WHERE_UPDATE_BINDER = (o, w) -> {
-        w.bind(10, o.noteType());
-        w.bind(11, o.event());
-        w.bind(12, o.enrollment());
-        w.bind(13, o.value());
-        w.bind(14, o.storedBy());
-        w.bind(15, o.storedDate());
-    };
-
-    private static final WhereStatementBinder<Note> WHERE_DELETE_BINDER = (o, w) -> {
-        w.bind(1, o.noteType());
-        w.bind(2, o.event());
-        w.bind(3, o.enrollment());
-        w.bind(4, o.value());
-        w.bind(5, o.storedBy());
-        w.bind(6, o.storedDate());
-    };
-
     static final SingleParentChildProjection ENROLLMENT_CHILD_PROJECTION = new SingleParentChildProjection(
             NoteTableInfo.TABLE_INFO, NoteTableInfo.Columns.ENROLLMENT);
 
@@ -77,8 +58,8 @@ public final class NoteStore {
 
     private NoteStore() {}
 
-    public static ObjectWithoutUidStore<Note> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, NoteTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, Note::create);
+    public static IdentifiableObjectStore<Note> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, NoteTableInfo.TABLE_INFO,
+                BINDER, Note::create);
     }
 }

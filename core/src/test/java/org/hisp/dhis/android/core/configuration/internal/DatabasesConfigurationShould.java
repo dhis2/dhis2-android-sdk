@@ -46,7 +46,7 @@ public class DatabasesConfigurationShould extends BaseObjectShould implements Ob
     @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        DatabasesConfiguration configuration = objectMapper.readValue(jsonStream, DatabasesConfiguration.class);
+        DatabasesConfiguration configuration = deserialize(DatabasesConfiguration.class);
 
         assertThat(configuration.loggedServerUrl()).isEqualTo("https://dhis2.org");
         assertThat(configuration.servers().size()).isEqualTo(1);
@@ -59,7 +59,14 @@ public class DatabasesConfigurationShould extends BaseObjectShould implements Ob
         assertThat(user.username()).isEqualTo("user");
         assertThat(user.databaseName()).isEqualTo("dbname.db");
         assertThat(user.encrypted()).isEqualTo(true);
+    }
 
+    @Test
+    public void equal_when_deserialize_serialize_deserialize() throws IOException {
+        DatabasesConfiguration configuration = deserialize(DatabasesConfiguration.class);
 
+        String serialized = serialize(configuration);
+        DatabasesConfiguration deserialized = deserialize(serialized, DatabasesConfiguration.class);
+        assertThat(deserialized).isEqualTo(configuration);
     }
 }

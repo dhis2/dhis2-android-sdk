@@ -40,6 +40,8 @@ import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseDIModule;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.di.internal.RepositoriesDIModule;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStorageDIModule;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.category.CategoryOption;
@@ -155,6 +157,8 @@ public interface D2DIComponent {
     EventPostCall eventPostCall();
     @VisibleForTesting
     IdentifiableObjectStore<CategoryOption> categoryOptionStore();
+    @VisibleForTesting
+    ObjectSecureStore<Credentials> credentialsSecureStore();
 
     @Component.Builder
     interface Builder {

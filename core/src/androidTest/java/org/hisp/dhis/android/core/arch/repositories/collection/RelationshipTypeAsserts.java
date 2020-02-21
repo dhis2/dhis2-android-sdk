@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
+import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 
 import static com.google.common.truth.Truth.assertThat;
 

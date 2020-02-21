@@ -71,7 +71,7 @@ public final class D2 {
     private final Retrofit retrofit;
     private final DatabaseAdapter databaseAdapter;
     private final D2Modules modules;
-    private final D2DIComponent d2DIComponent;
+    final D2DIComponent d2DIComponent;
 
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter, @NonNull Context context,
        @NonNull SecureStore secureStore) {

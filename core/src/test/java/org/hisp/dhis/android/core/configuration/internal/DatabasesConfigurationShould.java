@@ -26,34 +26,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.configuration.internal;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.text.ParseException;
 
-public abstract class BaseObjectShould {
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-    protected final ObjectMapper objectMapper;
-    protected final InputStream jsonStream;
+public class DatabasesConfigurationShould extends BaseObjectShould implements ObjectShould {
 
-    public BaseObjectShould(String jsonPath) {
-        this.objectMapper = Inject.objectMapper();
-        this.jsonStream = this.getClass().getClassLoader().getResourceAsStream(jsonPath);
+    public DatabasesConfigurationShould() {
+        super("configuration/databases_configuration.json");
     }
 
-    protected <O> O deserialize(Class<O> oClass) throws IOException {
-        return objectMapper.readValue(jsonStream, oClass);
-    }
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        DatabasesConfiguration configuration = objectMapper.readValue(jsonStream, DatabasesConfiguration.class);
 
-    protected <O> O deserialize(String jsonString, Class<O> oClass) throws IOException {
-        return objectMapper.readValue(jsonString, oClass);
-    }
+        assertThat(configuration.loggedServerUrl()).isEqualTo("https://dhis2.org");
+        assertThat(configuration.servers().size()).isEqualTo(1);
 
-    protected <O> String serialize(O object) throws IOException {
-        return objectMapper.writeValueAsString(object);
+        DatabaseServerConfiguration server = configuration.servers().get(0);
+        assertThat(server.serverUrl()).isEqualTo("https://dhis2.org");
+        assertThat(server.users().size()).isEqualTo(1);
+
+        DatabaseUserConfiguration user = server.users().get(0);
+        assertThat(user.username()).isEqualTo("user");
+        assertThat(user.databaseName()).isEqualTo("dbname.db");
+        assertThat(user.encrypted()).isEqualTo(true);
+
+
     }
 }

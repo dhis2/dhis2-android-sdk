@@ -53,6 +53,7 @@ public class D2Factory {
         D2Configuration d2Configuration = d2Configuration(context);
 
         D2Manager.setTestMode(true);
+        D2Manager.setTestingSecureStore(new InMemorySecureStore());
         D2 d2 = D2Manager.blockingInstantiateD2(d2Configuration);
 
         D2Manager.clear();

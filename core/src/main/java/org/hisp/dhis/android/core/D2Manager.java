@@ -36,9 +36,9 @@ import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
-import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper;
@@ -62,6 +62,7 @@ public final class D2Manager {
     private static D2Configuration d2Configuration;
     private static DatabaseAdapter databaseAdapter;
     private static boolean isTestMode;
+    private static SecureStore testingSecureStore;
 
     private D2Manager() {
     }
@@ -108,7 +109,8 @@ public final class D2Manager {
                 SSLContextInitializer.initializeSSLContext(d2Configuration.context());
             }
 
-            SecureStore secureStore = new InMemorySecureStore();
+            SecureStore secureStore = testingSecureStore == null ? new AndroidSecureStore(d2Config.context())
+                    : testingSecureStore;
             ObjectSecureStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
             openDatabaseIfAlreadyCreated(secureStore, credentialsSecureStore);
 
@@ -167,9 +169,15 @@ public final class D2Manager {
     }
 
     @VisibleForTesting
+    static void setTestingSecureStore(SecureStore secureStore) {
+        testingSecureStore = secureStore;
+    }
+
+    @VisibleForTesting
     static void clear() {
         d2Configuration = null;
         d2 = null;
         databaseAdapter =  null;
+        testingSecureStore = null;
     }
 }

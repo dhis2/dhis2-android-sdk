@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.data.server;
+package org.hisp.dhis.android.core.mockwebserver;
 
 import java.util.ArrayList;
 import java.util.Collections;

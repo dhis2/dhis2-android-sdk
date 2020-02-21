@@ -1,8 +1,8 @@
-package org.hisp.dhis.android.core.data.server;
+package org.hisp.dhis.android.core.mockwebserver;
 
 import android.util.Log;
 
-import org.hisp.dhis.android.core.data.file.IFileReader;
+import org.hisp.dhis.android.core.arch.file.IFileReader;
 
 import java.io.IOException;
 

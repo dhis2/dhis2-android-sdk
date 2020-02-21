@@ -26,14 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.server;
+package org.hisp.dhis.android.core.mockwebserver;
 
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.data.file.IFileReader;
-import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
+import org.hisp.dhis.android.core.arch.file.IFileReader;
+import org.hisp.dhis.android.core.arch.file.ResourcesFileReader;
 
 import java.io.IOException;
 import java.text.DateFormat;

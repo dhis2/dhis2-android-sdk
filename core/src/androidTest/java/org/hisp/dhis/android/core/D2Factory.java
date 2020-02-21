@@ -35,6 +35,7 @@ import androidx.test.InstrumentationRegistry;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
@@ -48,12 +49,21 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class D2Factory {
 
     public static D2 forNewDatabase() {
+        return forNewDatabaseInternal(new InMemorySecureStore());
+    }
+
+    public static D2 forNewDatabaseWithAndroidSecureStore() {
+        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        return forNewDatabaseInternal(new AndroidSecureStore(context));
+    }
+
+    private static D2 forNewDatabaseInternal(SecureStore secureStore) {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
 
         D2Configuration d2Configuration = d2Configuration(context);
 
         D2Manager.setTestMode(true);
-        D2Manager.setTestingSecureStore(new InMemorySecureStore());
+        D2Manager.setTestingSecureStore(secureStore);
         D2 d2 = D2Manager.blockingInstantiateD2(d2Configuration);
 
         D2Manager.clear();
@@ -85,7 +95,7 @@ public class D2Factory {
                         OkHttpClientFactory.okHttpClient(d2Configuration(context), credentialsSecureStore)),
                 databaseAdapter,
                 context,
-                secureStore
-        );
+                secureStore,
+                credentialsSecureStore);
     }
 }

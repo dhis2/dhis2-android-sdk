@@ -198,12 +198,12 @@ public interface D2DIComponent {
     }
 
     static D2DIComponent create(Context context, Retrofit retrofit, DatabaseAdapter databaseAdapter,
-                                SecureStore secureStore) {
+                                SecureStore secureStore, ObjectSecureStore<Credentials> credentialsSecureStore) {
         return DaggerD2DIComponent.builder()
                 .appContextDIModule(new AppContextDIModule(context))
                 .databaseDIModule(new DatabaseDIModule(databaseAdapter))
                 .apiClientDIModule(new APIClientDIModule(retrofit))
-                .secureStorageDIModule(new SecureStorageDIModule(secureStore))
+                .secureStorageDIModule(new SecureStorageDIModule(secureStore, credentialsSecureStore))
                 .build();
     }
 }

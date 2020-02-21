@@ -119,7 +119,8 @@ public final class D2Manager {
                             OkHttpClientFactory.okHttpClient(d2Configuration, credentialsSecureStore)),
                     databaseAdapter,
                     d2Configuration.context(),
-                    secureStore
+                    secureStore,
+                    credentialsSecureStore
             );
 
             long setUpTime = System.currentTimeMillis() - startTime;

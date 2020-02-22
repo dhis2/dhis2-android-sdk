@@ -144,7 +144,7 @@ public final class UserAuthenticateCallFactory {
             ServerURLWrapper.setServerUrl(httpServerUrl.toString());
             DatabasesConfiguration updatedConfiguration = configurationHelper.addConfiguration(
                     configurationSecureStore.get(), httpServerUrl.toString(), username,
-                    DatabaseAdapterFactory.encryptNextNotConfiguredDatabases);
+                    DatabaseAdapterFactory.getExperimentalEncryption());
             configurationSecureStore.set(updatedConfiguration);
 
             User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,

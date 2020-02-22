@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
 
 import java.io.IOException;
 
+@SuppressWarnings({"PMD.PreserveStackTrace"})
 public class  JsonSecureStoreImpl<O> implements ObjectSecureStore<O> {
 
     private final SecureStore secureStore;

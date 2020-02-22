@@ -60,7 +60,9 @@ public final class DatabaseConfigurationMigration {
                                         DatabaseNameGenerator nameGenerator,
                                         DatabaseRenamer renamer) {
         Configuration oldConfiguration = oldConfigurationStore.get();
-        if (oldConfiguration != null) {
+        if (oldConfiguration == null) {
+            return newConfigurationStore.get();
+        } else {
             oldConfigurationStore.remove();
             DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter();
             DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, context, false);
@@ -81,8 +83,6 @@ public final class DatabaseConfigurationMigration {
                 newConfigurationStore.set(newConfiguration);
                 return newConfiguration;
             }
-        } else {
-            return newConfigurationStore.get();
         }
     }
 

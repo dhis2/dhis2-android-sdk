@@ -157,7 +157,7 @@ public final class UserAuthenticateCallFactory {
 
             throwExceptionIfAlreadyAuthenticatedAndDbNotEmpty();
 
-            return loginOnline(authenticatedUser, username, password, serverUrl);
+            return loginOnline(authenticatedUser, username, password);
         } catch (D2Error d2Error) {
             if (
                     d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
@@ -173,11 +173,7 @@ public final class UserAuthenticateCallFactory {
         }
     }
 
-    private User loginOnline(User authenticatedUser, String username, String password,
-                             String serverUrl) throws D2Error {
-        if (wasLoggedAndUserIsNew(authenticatedUser) || wasLoggedAndServerIsNew(serverUrl)) {
-            wipeModule.wipeEverything();
-        }
+    private User loginOnline(User authenticatedUser, String username, String password) {
 
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
@@ -271,11 +267,6 @@ public final class UserAuthenticateCallFactory {
                         .build();
             }
         }
-    }
-
-    private boolean wasLoggedAndUserIsNew(User newUser) {
-        User lastUser = userStore.selectFirst();
-        return lastUser != null && !lastUser.uid().equals(newUser.uid());
     }
 
     private boolean wasLoggedAndServerIsNew(String serverUrl) {

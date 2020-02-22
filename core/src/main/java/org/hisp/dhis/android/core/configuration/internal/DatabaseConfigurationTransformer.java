@@ -29,34 +29,30 @@
 package org.hisp.dhis.android.core.configuration.internal;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 
-public final class DatabaseConfigurationMigration {
+import java.util.Collections;
 
-    public static DatabasesConfiguration apply(SecureStore secureStore) {
-        return apply(
-                new ConfigurationSecureStoreImpl(secureStore),
-                DatabaseConfigurationSecureStore.get(secureStore),
-                new DatabaseConfigurationTransformer("dhis2.org")
-        );
+final class DatabaseConfigurationTransformer implements Transformer<Configuration, DatabasesConfiguration> {
+
+    private final String databaseName;
+
+    DatabaseConfigurationTransformer(String databaseName) {
+        this.databaseName = databaseName;
     }
 
-    static DatabasesConfiguration apply(ObjectSecureStore<Configuration> oldConfigurationStore,
-                                 ObjectSecureStore<DatabasesConfiguration> newConfigurationStore,
-                                 Transformer<Configuration, DatabasesConfiguration> transformer) {
-        Configuration oldConfiguration = oldConfigurationStore.get();
-        if (oldConfiguration != null) {
-            oldConfigurationStore.remove();
-            DatabasesConfiguration newConfiguration = transformer.transform(oldConfiguration);
-            newConfigurationStore.set(newConfiguration);
-            return newConfiguration;
-        } else {
-            return newConfigurationStore.get();
-        }
-    }
-
-    private DatabaseConfigurationMigration() {
-
+    @Override
+    public DatabasesConfiguration transform(Configuration oldConfiguration) {
+        return DatabasesConfiguration.builder()
+                .loggedServerUrl(oldConfiguration.serverUrl().toString())
+                .servers(Collections.singletonList(DatabaseServerConfiguration.builder()
+                        .serverUrl(oldConfiguration.serverUrl().toString())
+                        .users(Collections.singletonList(
+                                DatabaseUserConfiguration.builder()
+                                        .databaseName(databaseName)
+                                        .encrypted(false)
+                                        .build()
+                        ))
+                        .build()))
+                .build();
     }
 }

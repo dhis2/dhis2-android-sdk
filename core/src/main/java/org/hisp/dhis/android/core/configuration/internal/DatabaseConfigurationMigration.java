@@ -28,27 +28,36 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
+import android.content.Context;
+
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 
 public final class DatabaseConfigurationMigration {
 
-    public static DatabasesConfiguration apply(SecureStore secureStore) {
+    public static DatabasesConfiguration apply(Context context, SecureStore secureStore, String username) {
         return apply(
                 new ConfigurationSecureStoreImpl(secureStore),
                 DatabaseConfigurationSecureStore.get(secureStore),
-                new DatabaseConfigurationTransformer("dhis2.org")
+                new DatabaseConfigurationTransformer(),
+                new DatabaseNameGenerator(),
+                new DatabaseRenamer(context),
+                username
         );
     }
 
     static DatabasesConfiguration apply(ObjectSecureStore<Configuration> oldConfigurationStore,
-                                 ObjectSecureStore<DatabasesConfiguration> newConfigurationStore,
-                                 Transformer<Configuration, DatabasesConfiguration> transformer) {
+                                        ObjectSecureStore<DatabasesConfiguration> newConfigurationStore,
+                                        DatabaseConfigurationTransformer transformer,
+                                        DatabaseNameGenerator nameGenerator,
+                                        DatabaseRenamer renamer,
+                                        String username) {
         Configuration oldConfiguration = oldConfigurationStore.get();
         if (oldConfiguration != null) {
             oldConfigurationStore.remove();
-            DatabasesConfiguration newConfiguration = transformer.transform(oldConfiguration);
+            String databaseName = nameGenerator.getDatabaseName(oldConfiguration.serverUrl().toString(), username, false);
+            renamer.renameDatabase("dhis.db", databaseName);
+            DatabasesConfiguration newConfiguration = transformer.transform(oldConfiguration, databaseName);
             newConfigurationStore.set(newConfiguration);
             return newConfiguration;
         } else {

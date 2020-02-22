@@ -28,22 +28,21 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import java.util.Collections;
+import android.content.Context;
 
-final class DatabaseConfigurationTransformer {
+import java.io.File;
 
-    public DatabasesConfiguration transform(Configuration oldConfiguration, String databaseName) {
-        return DatabasesConfiguration.builder()
-                .loggedServerUrl(oldConfiguration.serverUrl().toString())
-                .servers(Collections.singletonList(DatabaseServerConfiguration.builder()
-                        .serverUrl(oldConfiguration.serverUrl().toString())
-                        .users(Collections.singletonList(
-                                DatabaseUserConfiguration.builder()
-                                        .databaseName(databaseName)
-                                        .encrypted(false)
-                                        .build()
-                        ))
-                        .build()))
-                .build();
+final class DatabaseRenamer {
+
+    private final Context context;
+
+    DatabaseRenamer(Context context) {
+        this.context = context;
+    }
+
+    boolean renameDatabase(String from, String to) {
+        File fromFile = context.getDatabasePath(from);
+        File toFile = new File(fromFile.getParentFile(), to);
+        return fromFile.renameTo(toFile);
     }
 }

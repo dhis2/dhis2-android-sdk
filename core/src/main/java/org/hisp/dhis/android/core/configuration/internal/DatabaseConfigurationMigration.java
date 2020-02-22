@@ -30,33 +30,53 @@ package org.hisp.dhis.android.core.configuration.internal;
 
 import android.content.Context;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
+import org.hisp.dhis.android.core.user.UserCredentials;
+import org.hisp.dhis.android.core.user.internal.UserCredentialsStore;
+import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl;
 
 public final class DatabaseConfigurationMigration {
 
-    public static DatabasesConfiguration apply(Context context, SecureStore secureStore, String username) {
+    private static final String OLD_DBNAME = "dhis.db";
+
+    public static DatabasesConfiguration apply(Context context, SecureStore secureStore) {
         return apply(
+                context,
                 new ConfigurationSecureStoreImpl(secureStore),
                 DatabaseConfigurationSecureStore.get(secureStore),
                 new DatabaseConfigurationTransformer(),
                 new DatabaseNameGenerator(),
-                new DatabaseRenamer(context),
-                username
+                new DatabaseRenamer(context)
         );
     }
 
-    static DatabasesConfiguration apply(ObjectSecureStore<Configuration> oldConfigurationStore,
+    static DatabasesConfiguration apply(Context context,
+                                        ObjectSecureStore<Configuration> oldConfigurationStore,
                                         ObjectSecureStore<DatabasesConfiguration> newConfigurationStore,
                                         DatabaseConfigurationTransformer transformer,
                                         DatabaseNameGenerator nameGenerator,
-                                        DatabaseRenamer renamer,
-                                        String username) {
+                                        DatabaseRenamer renamer) {
         Configuration oldConfiguration = oldConfigurationStore.get();
         if (oldConfiguration != null) {
             oldConfigurationStore.remove();
-            String databaseName = nameGenerator.getDatabaseName(oldConfiguration.serverUrl().toString(), username, false);
-            renamer.renameDatabase("dhis.db", databaseName);
+            DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter();
+            DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, context, false);
+            UserCredentialsStore userCredentialsStore = UserCredentialsStoreImpl.create(databaseAdapter);
+            UserCredentials credentials = userCredentialsStore.selectFirst();
+            String username = credentials == null ? null : credentials.username();
+            databaseAdapter.close();
+
+            String databaseName = nameGenerator.getDatabaseName(oldConfiguration.serverUrl().toString(),
+                    username, false);
+            if (username == null) {
+                context.deleteDatabase(OLD_DBNAME);
+            } else {
+                renamer.renameDatabase(OLD_DBNAME, databaseName);
+            }
+
             DatabasesConfiguration newConfiguration = transformer.transform(oldConfiguration, databaseName);
             newConfigurationStore.set(newConfiguration);
             return newConfiguration;

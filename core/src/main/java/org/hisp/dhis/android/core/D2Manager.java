@@ -132,7 +132,8 @@ public final class D2Manager {
 
     private static void openDatabaseIfAlreadyCreated(SecureStore secureStore,
                                                      ObjectSecureStore<Credentials> credentialsSecureStore) {
-        DatabasesConfiguration databaseConfiguration = DatabaseConfigurationMigration.apply(secureStore);
+        DatabasesConfiguration databaseConfiguration = DatabaseConfigurationMigration.apply(d2Configuration.context(),
+                secureStore);
         Credentials credentials = credentialsSecureStore.get();
 
         if (databaseConfiguration != null) {

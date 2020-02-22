@@ -88,7 +88,8 @@ public final class DatabaseAdapterFactory {
         O run(I i);
     }
 
-    private static <H> H instantiateOpenHelper(String databaseName, Map<String, H> helpers, Function<Void, H> helperCreator) {
+    private static <H> H instantiateOpenHelper(String databaseName, Map<String, H> helpers,
+                                               Function<Void, H> helperCreator) {
         H openHelper;
         if (databaseName == null || !helpers.containsKey(databaseName)) {
             openHelper = helperCreator.run(null);

@@ -138,7 +138,8 @@ public final class D2Manager {
 
         if (databaseConfiguration != null) {
             ServerURLWrapper.setServerUrl(databaseConfiguration.loggedServerUrl());
-            DatabaseConfigurationHelper configurationHelper = new DatabaseConfigurationHelper(new DatabaseNameGenerator());
+            DatabaseConfigurationHelper configurationHelper =
+                    new DatabaseConfigurationHelper(new DatabaseNameGenerator());
             DatabaseUserConfiguration userConfiguration = configurationHelper.getLoggedUserConfiguration(
                     databaseConfiguration, credentials.username());
             DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration.databaseName(),

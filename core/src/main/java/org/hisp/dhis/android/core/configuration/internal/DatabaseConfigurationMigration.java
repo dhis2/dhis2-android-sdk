@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl;
 
 public final class DatabaseConfigurationMigration {
 
-    private static final String OLD_DBNAME = "dhis.db";
+    static final String OLD_DBNAME = "dhis.db";
 
     public static DatabasesConfiguration apply(Context context, SecureStore secureStore) {
         return apply(
@@ -73,13 +73,14 @@ public final class DatabaseConfigurationMigration {
                     username, false);
             if (username == null) {
                 context.deleteDatabase(OLD_DBNAME);
+                return null;
             } else {
                 renamer.renameDatabase(OLD_DBNAME, databaseName);
+                DatabasesConfiguration newConfiguration = transformer.transform(oldConfiguration, databaseName,
+                        username);
+                newConfigurationStore.set(newConfiguration);
+                return newConfiguration;
             }
-
-            DatabasesConfiguration newConfiguration = transformer.transform(oldConfiguration, databaseName);
-            newConfigurationStore.set(newConfiguration);
-            return newConfiguration;
         } else {
             return newConfigurationStore.get();
         }

@@ -32,13 +32,14 @@ import java.util.Collections;
 
 final class DatabaseConfigurationTransformer {
 
-    public DatabasesConfiguration transform(Configuration oldConfiguration, String databaseName) {
+    public DatabasesConfiguration transform(Configuration oldConfiguration, String databaseName, String username) {
         return DatabasesConfiguration.builder()
                 .loggedServerUrl(oldConfiguration.serverUrl().toString())
                 .servers(Collections.singletonList(DatabaseServerConfiguration.builder()
                         .serverUrl(oldConfiguration.serverUrl().toString())
                         .users(Collections.singletonList(
                                 DatabaseUserConfiguration.builder()
+                                        .username(username)
                                         .databaseName(databaseName)
                                         .encrypted(false)
                                         .build()

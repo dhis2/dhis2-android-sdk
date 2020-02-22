@@ -291,36 +291,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     }
 
     @Test
-    public void wipe_db_when_previously_another_user() throws Exception {
-        when(userStore.selectFirst()).thenReturn(anotherUser);
-
-        logInSingle.blockingGet();
-
-        verify(wipeModule).wipeEverything();
-        verifySuccess();
-    }
-
-    @Test
-    public void wipe_db_when_previously_equal_user_but_different_server() throws Exception {
-        when(systemInfoFromDb.contextPath()).thenReturn("https://another-instance.org/");
-
-        logInSingle.blockingGet();
-
-        verify(wipeModule).wipeEverything();
-        verifySuccess();
-    }
-
-    @Test
-    public void wipe_db_when_previously_different_user() throws Exception {
-        when(loggedUser.uid()).thenReturn("previous_user");
-
-        logInSingle.blockingGet();
-
-        verify(wipeModule).wipeEverything();
-        verifySuccess();
-    }
-
-    @Test
     public void throw_d2_call_exception_state_exception_if_user_already_signed_in() {
         when(credentialsSecureStore.get()).thenReturn(credentials);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);

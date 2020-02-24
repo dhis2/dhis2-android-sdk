@@ -33,6 +33,7 @@ public class MockObjects {
     public static String relationship = "Tj1ddhpeCFL";
     public static String relationshipType = "R74HPJyNLs9";
     public static String dataSetUid = "R75HPJyNLs2";
+    public static String dataSetEmptyListUid = "aUztUa3QPbQ";
     public static Boolean isCompleted = true;
 
     public static Enrollment getTestEnrollment() {
@@ -120,6 +121,13 @@ public class MockObjects {
     public static SMSDataValueSet getSMSDataValueSet() {
         return SMSDataValueSet.builder()
                 .dataValues(getDataValues())
+                .completed(isCompleted)
+                .build();
+    }
+
+    public static SMSDataValueSet getSMSDataValueSetEmptyList() {
+        return SMSDataValueSet.builder()
+                .dataValues(Collections.emptyList())
                 .completed(isCompleted)
                 .build();
     }

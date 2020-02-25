@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
-import android.content.Context;
-
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
@@ -40,11 +38,10 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownl
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper;
-import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseServerConfiguration;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration;
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration;
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
@@ -82,9 +79,6 @@ import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class UserAuthenticateCallUnitShould extends BaseCallShould {
-
-    @Mock
-    private Context context;
 
     @Mock
     private UserService userService;
@@ -144,9 +138,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private WipeModule wipeModule;
 
     @Mock
-    private ObjectSecureStore<DatabasesConfiguration> configurationSecureStore;
-
-    private DatabaseConfigurationHelper configurationHelper = new DatabaseConfigurationHelper(new DatabaseNameGenerator());
+    private MultiUserDatabaseManager multiUserDatabaseManager;
 
     // call we are testing
     private Single<User> logInSingle;
@@ -156,6 +148,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private static final String PASSWORD = "test_password";
 
     private static final String baseEndpoint = "https://dhis-instance.org";
+    private static final String baseEndpointWithAPI = baseEndpoint + "/api/";
     private static final String serverUrl = baseEndpoint;
 
     private DatabaseUserConfiguration USER_CONFIG_11 = DatabaseUserConfiguration.builder()
@@ -210,7 +203,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private Single<User> instantiateCall(String username, String password, String serverUrl) {
         return new UserAuthenticateCallFactory(databaseAdapter, apiCallExecutor,
                 userService, credentialsSecureStore, userHandler, resourceHandler, authenticatedUserStore,
-                systemInfoRepository, userStore, wipeModule, configurationSecureStore, configurationHelper, context).logIn(username, password, serverUrl);
+                systemInfoRepository, userStore, wipeModule, multiUserDatabaseManager).logIn(username, password, serverUrl);
     }
 
     private OngoingStubbing<User> whenAPICall() throws D2Error {
@@ -335,11 +328,11 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     // Offline support
 
     @Test
-    public void succeed_for_login_offline_if_user_has_logged_out() throws Exception {
+    public void succeed_for_login_offline_if_database_exists_and_authenticated_user_too() throws Exception {
         whenAPICall().thenThrow(d2Error);
 
         when(credentialsSecureStore.get()).thenReturn(null);
-        when(configurationSecureStore.get()).thenReturn(SINGLE_SERVER_SINGLE_USER_CONFIG);
+        when(multiUserDatabaseManager.loadExisting(baseEndpointWithAPI, USERNAME)).thenReturn(true);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
         logInSingle.test().awaitTerminalEvent();
@@ -352,7 +345,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         
         when(credentialsSecureStore.get()).thenReturn(null);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
-        when(configurationSecureStore.get()).thenReturn(SINGLE_SERVER_SINGLE_USER_CONFIG);
+        when(multiUserDatabaseManager.loadExisting(baseEndpointWithAPI, USERNAME)).thenReturn(true);
 
         Single<User> loginCall = instantiateCall(USERNAME, PASSWORD, serverUrl + "/");
 
@@ -376,8 +369,8 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         when(credentialsSecureStore.get()).thenReturn(null);
         when(authenticatedUser.hash()).thenReturn("different_hash");
+        when(multiUserDatabaseManager.loadExisting(baseEndpointWithAPI, USERNAME)).thenReturn(true);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
-        when(configurationSecureStore.get()).thenReturn(SINGLE_SERVER_SINGLE_USER_CONFIG);
 
         TestObserver<User> testObserver = logInSingle.test();
         assertD2Error(testObserver, D2ErrorCode.BAD_CREDENTIALS);

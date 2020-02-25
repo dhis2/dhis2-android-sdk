@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
@@ -43,9 +41,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
-import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper;
-import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration;
-import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration;
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager;
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -68,7 +64,6 @@ import static okhttp3.Credentials.basic;
 import static org.hisp.dhis.android.core.arch.helpers.UserHelper.md5;
 
 @Reusable
-@SuppressWarnings("PMD.ExcessiveImports")
 public final class UserAuthenticateCallFactory {
 
     private final DatabaseAdapter databaseAdapter;
@@ -84,10 +79,7 @@ public final class UserAuthenticateCallFactory {
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final IdentifiableObjectStore<User> userStore;
     private final WipeModule wipeModule;
-    private final ObjectSecureStore<DatabasesConfiguration> configurationSecureStore;
-    private final DatabaseConfigurationHelper configurationHelper;
-
-    private final Context context;
+    private final MultiUserDatabaseManager multiUserDatabaseManager;
 
     @Inject
     UserAuthenticateCallFactory(
@@ -101,9 +93,7 @@ public final class UserAuthenticateCallFactory {
             @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             @NonNull IdentifiableObjectStore<User> userStore,
             @NonNull WipeModule wipeModule,
-            @NonNull ObjectSecureStore<DatabasesConfiguration> configurationSecureStore,
-            @NonNull DatabaseConfigurationHelper configurationHelper,
-            @NonNull Context context) {
+            @NonNull MultiUserDatabaseManager multiUserDatabaseManager) {
         this.databaseAdapter = databaseAdapter;
         this.apiCallExecutor = apiCallExecutor;
 
@@ -117,9 +107,7 @@ public final class UserAuthenticateCallFactory {
         this.systemInfoRepository = systemInfoRepository;
         this.userStore = userStore;
         this.wipeModule = wipeModule;
-        this.configurationSecureStore = configurationSecureStore;
-        this.configurationHelper = configurationHelper;
-        this.context = context;
+        this.multiUserDatabaseManager = multiUserDatabaseManager;
     }
 
     public Single<User> logIn(final String username, final String password, final String serverUrl) {
@@ -159,21 +147,9 @@ public final class UserAuthenticateCallFactory {
         }
     }
 
-    private void createOrOpenDatabase(DatabaseUserConfiguration userConfiguration) {
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, context, userConfiguration);
-    }
-
-    private DatabaseUserConfiguration addConfiguration(HttpUrl serverUrl, String username) {
-        DatabasesConfiguration updatedConfiguration = configurationHelper.addConfiguration(
-                configurationSecureStore.get(), serverUrl.toString(), username,
-                DatabaseAdapterFactory.getExperimentalEncryption());
-        configurationSecureStore.set(updatedConfiguration);
-        return configurationHelper.getLoggedUserConfiguration(updatedConfiguration, username);
-    }
-
     private User loginOnline(HttpUrl serverUrl, User authenticatedUser, String username, String password) {
-        DatabaseUserConfiguration userConfiguration = addConfiguration(serverUrl, username);
-        createOrOpenDatabase(userConfiguration);
+        multiUserDatabaseManager.createIfNotExistingAndLoad(serverUrl.toString(), username,
+                DatabaseAdapterFactory.getExperimentalEncryption());
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
             AuthenticatedUser authenticatedUserToStore = buildAuthenticatedUser(authenticatedUser.uid(),
@@ -200,18 +176,11 @@ public final class UserAuthenticateCallFactory {
     }
 
     private User loginOffline(HttpUrl serverUrl, String username, String password) throws D2Error {
-        DatabasesConfiguration configuration = configurationSecureStore.get();
-        DatabaseUserConfiguration userConfiguration = configurationHelper.getUserConfiguration(
-                configuration, serverUrl.toString(), username);
-
-        if (userConfiguration == null) {
+        boolean existingDatabase = multiUserDatabaseManager.loadExisting(serverUrl.toString(), username);
+        if (!existingDatabase) {
             throw noUserOfflineError();
         }
 
-        DatabasesConfiguration updatedConfiguration = configurationHelper.setServerUrl(
-                configuration, serverUrl.toString());
-        configurationSecureStore.set(updatedConfiguration);
-        createOrOpenDatabase(userConfiguration);
         AuthenticatedUser existingUser = authenticatedUserStore.selectFirst();
 
         if (existingUser == null) {

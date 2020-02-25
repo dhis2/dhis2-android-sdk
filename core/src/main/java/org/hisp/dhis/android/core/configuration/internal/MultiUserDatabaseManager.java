@@ -32,9 +32,12 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 
 import javax.inject.Inject;
 
@@ -44,20 +47,41 @@ import dagger.Reusable;
 public class MultiUserDatabaseManager {
 
     private final DatabaseAdapter databaseAdapter;
-    private final ObjectSecureStore<DatabasesConfiguration> configurationSecureStore;
+    private final ObjectSecureStore<DatabasesConfiguration> databaseConfigurationSecureStore;
     private final DatabaseConfigurationHelper configurationHelper;
     private final Context context;
+    private final SecureStore secureStore;
 
     @Inject
     MultiUserDatabaseManager(
             @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull ObjectSecureStore<DatabasesConfiguration> configurationSecureStore,
+            @NonNull ObjectSecureStore<DatabasesConfiguration> databaseConfigurationSecureStore,
             @NonNull DatabaseConfigurationHelper configurationHelper,
-            @NonNull Context context) {
+            @NonNull Context context,
+            @NonNull SecureStore secureStore) {
         this.databaseAdapter = databaseAdapter;
-        this.configurationSecureStore = configurationSecureStore;
+        this.databaseConfigurationSecureStore = databaseConfigurationSecureStore;
         this.configurationHelper = configurationHelper;
         this.context = context;
+        this.secureStore = secureStore;
+    }
+
+    public static MultiUserDatabaseManager create(DatabaseAdapter databaseAdapter, Context context,
+                                                  SecureStore secureStore) {
+        DatabaseConfigurationHelper configHelper = new DatabaseConfigurationHelper(new DatabaseNameGenerator());
+        return new MultiUserDatabaseManager(databaseAdapter,
+                DatabaseConfigurationSecureStore.get(secureStore), configHelper, context, secureStore);
+    }
+
+    public void loadIfLogged(Credentials credentials) {
+        DatabasesConfiguration databaseConfiguration = DatabaseConfigurationMigration.apply(context, secureStore);
+
+        if (databaseConfiguration != null && credentials != null) {
+            ServerURLWrapper.setServerUrl(databaseConfiguration.loggedServerUrl());
+            DatabaseUserConfiguration userConfiguration = configurationHelper.getLoggedUserConfiguration(
+                    databaseConfiguration, credentials.username());
+            createOrOpenDatabase(userConfiguration);
+        }
     }
 
     public void createIfNotExistingAndLoad(String serverUrl, String username, boolean encrypt) {
@@ -66,7 +90,7 @@ public class MultiUserDatabaseManager {
     }
 
     public boolean loadExisting(String serverUrl, String username) {
-        DatabasesConfiguration configuration = configurationSecureStore.get();
+        DatabasesConfiguration configuration = databaseConfigurationSecureStore.get();
         DatabaseUserConfiguration userConfiguration = configurationHelper.getUserConfiguration(
                 configuration, serverUrl, username);
 
@@ -76,7 +100,7 @@ public class MultiUserDatabaseManager {
 
         DatabasesConfiguration updatedConfiguration = configurationHelper.setServerUrl(
                 configuration, serverUrl);
-        configurationSecureStore.set(updatedConfiguration);
+        databaseConfigurationSecureStore.set(updatedConfiguration);
         createOrOpenDatabase(userConfiguration);
         return true;
     }
@@ -87,8 +111,8 @@ public class MultiUserDatabaseManager {
 
     private DatabaseUserConfiguration addNewConfigurationInternal(String serverUrl, String username, boolean encrypt) {
         DatabasesConfiguration updatedConfiguration = configurationHelper.addConfiguration(
-                configurationSecureStore.get(), serverUrl, username, encrypt);
-        configurationSecureStore.set(updatedConfiguration);
+                databaseConfigurationSecureStore.get(), serverUrl, username, encrypt);
+        databaseConfigurationSecureStore.set(updatedConfiguration);
         return configurationHelper.getLoggedUserConfiguration(updatedConfiguration, username);
     }
 }

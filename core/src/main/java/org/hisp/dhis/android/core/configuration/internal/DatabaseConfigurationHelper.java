@@ -31,16 +31,16 @@ package org.hisp.dhis.android.core.configuration.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class DatabaseConfigurationHelper {
+final class DatabaseConfigurationHelper {
 
     private final DatabaseNameGenerator databaseNameGenerator;
 
-    public DatabaseConfigurationHelper(DatabaseNameGenerator databaseNameGenerator) {
+    DatabaseConfigurationHelper(DatabaseNameGenerator databaseNameGenerator) {
         this.databaseNameGenerator = databaseNameGenerator;
     }
 
-    public DatabaseUserConfiguration getUserConfiguration(DatabasesConfiguration configuration, String serverUrl,
-                                                          String username) {
+    DatabaseUserConfiguration getUserConfiguration(DatabasesConfiguration configuration, String serverUrl,
+                                                   String username) {
         if (configuration != null) {
             DatabaseServerConfiguration serverConfiguration = getServerConfiguration(configuration, serverUrl);
             if (serverConfiguration != null) {
@@ -54,7 +54,7 @@ public final class DatabaseConfigurationHelper {
         return null;
     }
 
-    public DatabaseUserConfiguration getLoggedUserConfiguration(DatabasesConfiguration configuration, String username) {
+    DatabaseUserConfiguration getLoggedUserConfiguration(DatabasesConfiguration configuration, String username) {
         DatabaseUserConfiguration userConfiguration = getUserConfiguration(configuration,
                 configuration.loggedServerUrl(), username);
         if (userConfiguration == null) {
@@ -73,8 +73,8 @@ public final class DatabaseConfigurationHelper {
         return null;
     }
 
-    public DatabasesConfiguration addConfiguration(DatabasesConfiguration configuration, String serverUrl,
-                                                   String username, boolean encrypt) {
+    DatabasesConfiguration addConfiguration(DatabasesConfiguration configuration, String serverUrl,
+                                            String username, boolean encrypt) {
         DatabaseServerConfiguration existingServerConf = configuration == null ? null
                 : getServerConfiguration(configuration, serverUrl);
 
@@ -115,7 +115,7 @@ public final class DatabaseConfigurationHelper {
                 .build();
     }
 
-    public DatabasesConfiguration setServerUrl(DatabasesConfiguration configuration, String serverUrl) {
+    DatabasesConfiguration setServerUrl(DatabasesConfiguration configuration, String serverUrl) {
         return configuration.toBuilder().loggedServerUrl(serverUrl).build();
     }
 }

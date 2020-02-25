@@ -8,6 +8,7 @@ import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCollectionR
 import org.hisp.dhis.android.core.dataset.DataSetElement;
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore;
 import org.hisp.dhis.android.core.datavalue.DataValue;
+import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore;
 
@@ -42,25 +43,40 @@ class DataSetsStore {
 
     Single<List<DataValue>> getDataValues(String dataSetUid, String orgUnit,
                                           String period, String attributeOptionComboUid) {
-        DataSet dataSet = dataSetRepository
-                .byUid().eq(dataSetUid)
-                .withDataSetElements()
-                .one().blockingGet();
+        return Single.fromCallable(() -> {
+            DataSet dataSet = dataSetRepository
+                    .byUid().eq(dataSetUid)
+                    .withDataSetElements()
+                    .one().blockingGet();
 
-        List<String> dataElementUids = new ArrayList<>();
-        if (dataSet != null && dataSet.dataSetElements() != null) {
-            for (DataSetElement dataSetElement : dataSet.dataSetElements()) {
-                dataElementUids.add(dataSetElement.dataElement().uid());
+            List<String> dataElementUids = new ArrayList<>();
+            if (dataSet != null && dataSet.dataSetElements() != null) {
+                for (DataSetElement dataSetElement : dataSet.dataSetElements()) {
+                    dataElementUids.add(dataSetElement.dataElement().uid());
+                }
             }
-        }
 
-        return Single.fromCallable(() -> dataValueModule.dataValues()
-                .byDataElementUid().in(dataElementUids)
-                .byOrganisationUnitUid().eq(orgUnit)
-                .byPeriod().eq(period)
-                .byAttributeOptionComboUid().eq(attributeOptionComboUid)
-                .byState().in(Arrays.asList(State.uploadableStates()))
-                .blockingGet());
+            DataValueCollectionRepository baseDataValuesRepo = dataValueModule.dataValues()
+                    .byDataElementUid().in(dataElementUids)
+                    .byOrganisationUnitUid().eq(orgUnit)
+                    .byPeriod().eq(period)
+                    .byAttributeOptionComboUid().eq(attributeOptionComboUid);
+
+            List<DataValue> dataValues = baseDataValuesRepo
+                    .byState().in(Arrays.asList(State.uploadableStates()))
+                    .blockingGet();
+
+            // TODO Workaround to prevent empty lists. Not supported in compression library
+            if (dataValues.isEmpty()) {
+                List<DataValue> allDataValues = baseDataValuesRepo.blockingGet();
+
+                if (!allDataValues.isEmpty()) {
+                    dataValues = allDataValues.subList(0, 1);
+                }
+            }
+
+            return dataValues;
+        });
     }
 
     Completable updateDataSetValuesState(String dataSet,

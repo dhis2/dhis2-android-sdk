@@ -35,15 +35,12 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.dataset.SectionDataElementLink;
 import org.hisp.dhis.android.core.dataset.SectionDataElementLinkTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class SectionDataElementLinkStore {
 
-    private static final StatementBinder<SectionDataElementLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.section());
-        sqLiteBind(sqLiteStatement, 2, o.dataElement());
-        sqLiteBind(sqLiteStatement, 3, o.sortOrder());
+    private static final StatementBinder<SectionDataElementLink> BINDER = (o, w) -> {
+        w.bind(1, o.section());
+        w.bind(2, o.dataElement());
+        w.bind(3, o.sortOrder());
     };
 
     private SectionDataElementLinkStore() {}

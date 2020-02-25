@@ -28,20 +28,17 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableWithStyleStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
+import androidx.annotation.NonNull;
 
 public final class TrackedEntityAttributeStore {
 
@@ -51,23 +48,22 @@ public final class TrackedEntityAttributeStore {
             new NameableWithStyleStatementBinder<TrackedEntityAttribute>() {
 
         @Override
-        public void bindToStatement(@NonNull TrackedEntityAttribute o,
-                                    @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 13, o.pattern());
-            sqLiteBind(sqLiteStatement, 14, o.sortOrderInListNoProgram());
-            sqLiteBind(sqLiteStatement, 15, UidsHelper.getUidOrNull(o.optionSet()));
-            sqLiteBind(sqLiteStatement, 16, o.valueType());
-            sqLiteBind(sqLiteStatement, 17, o.expression());
-            sqLiteBind(sqLiteStatement, 18, o.programScope());
-            sqLiteBind(sqLiteStatement, 19, o.displayInListNoProgram());
-            sqLiteBind(sqLiteStatement, 20, o.generated());
-            sqLiteBind(sqLiteStatement, 21, o.displayOnVisitSchedule());
-            sqLiteBind(sqLiteStatement, 22, o.orgUnitScope());
-            sqLiteBind(sqLiteStatement, 23, o.unique());
-            sqLiteBind(sqLiteStatement, 24, o.inherit());
-            sqLiteBind(sqLiteStatement, 25, o.formName());
-            sqLiteBind(sqLiteStatement, 26, o.fieldMask());
+        public void bindToStatement(@NonNull TrackedEntityAttribute o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(13, o.pattern());
+            w.bind(14, o.sortOrderInListNoProgram());
+            w.bind(15, UidsHelper.getUidOrNull(o.optionSet()));
+            w.bind(16, o.valueType());
+            w.bind(17, o.expression());
+            w.bind(18, o.programScope());
+            w.bind(19, o.displayInListNoProgram());
+            w.bind(20, o.generated());
+            w.bind(21, o.displayOnVisitSchedule());
+            w.bind(22, o.orgUnitScope());
+            w.bind(23, o.unique());
+            w.bind(24, o.inherit());
+            w.bind(25, o.formName());
+            w.bind(26, o.fieldMask());
         }
     };
 

@@ -205,8 +205,8 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
         return periods == null ? 0 : periods;
     }
 
-    static ParentPeriodGeneratorImpl create() {
-        Calendar calendar = Calendar.getInstance();
+    static ParentPeriodGeneratorImpl create(CalendarProvider calendarProvider) {
+        Calendar calendar = calendarProvider.getCalendar();
         return new ParentPeriodGeneratorImpl(
                 new DailyPeriodGenerator(calendar),
                 WeeklyPeriodGenerators.create(calendar),

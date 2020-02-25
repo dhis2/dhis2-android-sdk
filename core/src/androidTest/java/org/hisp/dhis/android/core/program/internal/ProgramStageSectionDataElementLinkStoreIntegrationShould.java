@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShou
 import org.hisp.dhis.android.core.data.program.ProgramStageSectionDataElementLinkSamples;
 import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLink;
 import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLinkTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
@@ -41,8 +41,8 @@ public class ProgramStageSectionDataElementLinkStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<ProgramStageSectionDataElementLink> {
 
     public ProgramStageSectionDataElementLinkStoreIntegrationShould() {
-        super(ProgramStageSectionDataElementLinkStore.create(DatabaseAdapterFactory.get()),
-                ProgramStageSectionDataElementLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+        super(ProgramStageSectionDataElementLinkStore.create(TestDatabaseAdapterFactory.get()),
+                ProgramStageSectionDataElementLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
     @Override

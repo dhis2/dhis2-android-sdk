@@ -29,8 +29,9 @@
 package org.hisp.dhis.android.core.utils.integration.mock;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
+import androidx.test.InstrumentationRegistry;
 
 import com.facebook.stetho.Stetho;
 
@@ -38,18 +39,19 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 
 import java.io.IOException;
 import java.util.Date;
 
-import androidx.test.InstrumentationRegistry;
-
 public class MockIntegrationTestObjects {
-    public final SQLiteDatabase database;
     public final DatabaseAdapter databaseAdapter;
 
     public Date serverDate = new Date();
@@ -60,11 +62,10 @@ public class MockIntegrationTestObjects {
     public final Dhis2MockServer dhis2MockServer;
     public final MockIntegrationTestDatabaseContent content;
     private final String dbName;
-    private final CredentialsSecureStore credentialsSecureStore;
 
     MockIntegrationTestObjects(MockIntegrationTestDatabaseContent content) throws Exception {
         this.content = content;
-        dbName = content.toString().toLowerCase() + ".db";
+        dbName = content.toString().toLowerCase();
 
         deleteDatabase();
 
@@ -72,12 +73,13 @@ public class MockIntegrationTestObjects {
         Stetho.initializeWithDefaults(context);
 
         dhis2MockServer = new Dhis2MockServer();
+        CalendarProviderFactory.setFixed();
 
         d2 = D2Factory.forDatabaseName(dbName);
 
-        database = d2.databaseAdapter().database();
         databaseAdapter = d2.databaseAdapter();
-        credentialsSecureStore = new CredentialsSecureStoreImpl(context);
+        ObjectSecureStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(new AndroidSecureStore(context));
+        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter);
 
         d2DIComponent = D2DIComponent.create(context, d2.retrofit(), databaseAdapter, credentialsSecureStore);
 
@@ -87,12 +89,12 @@ public class MockIntegrationTestObjects {
 
     private void deleteDatabase() {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        context.deleteDatabase(dbName);
+        context.deleteDatabase(dbName + ".db");
     }
 
     public void tearDown() throws IOException {
         Log.i("MockIntegrationTestObjects", "Objects teardown: " + content);
-        database.close();
+        databaseAdapter.close();
         deleteDatabase();
         dhis2MockServer.shutdown();
     }

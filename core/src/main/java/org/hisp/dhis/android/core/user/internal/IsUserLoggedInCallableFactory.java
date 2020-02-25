@@ -32,7 +32,7 @@ import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
 
 import javax.inject.Inject;
@@ -42,13 +42,13 @@ import io.reactivex.Single;
 final class IsUserLoggedInCallableFactory {
 
     @NonNull
-    private final CredentialsSecureStore credentialsSecureStore;
+    private final ObjectSecureStore<Credentials> credentialsSecureStore;
 
     @NonNull
     private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
 
     @Inject
-    IsUserLoggedInCallableFactory(@NonNull CredentialsSecureStore credentialsSecureStore,
+    IsUserLoggedInCallableFactory(@NonNull ObjectSecureStore<Credentials> credentialsSecureStore,
                                   @NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore) {
         this.credentialsSecureStore = credentialsSecureStore;
         this.authenticatedUserStore = authenticatedUserStore;
@@ -56,10 +56,14 @@ final class IsUserLoggedInCallableFactory {
 
     Single<Boolean> isLogged() {
         return Single.create(emitter -> {
-            Credentials credentials = credentialsSecureStore.getCredentials();
-            AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
+            if (authenticatedUserStore.isReady()) {
+                Credentials credentials = credentialsSecureStore.get();
+                AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
 
-            emitter.onSuccess(credentials != null && authenticatedUser != null);
+                emitter.onSuccess(credentials != null && authenticatedUser != null);
+            } else {
+                emitter.onSuccess(false);
+            }
         });
     }
 }

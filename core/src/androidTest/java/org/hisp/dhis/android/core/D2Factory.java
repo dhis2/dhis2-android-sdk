@@ -30,15 +30,18 @@ package org.hisp.dhis.android.core;
 
 import android.content.Context;
 
+import androidx.test.InstrumentationRegistry;
+
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 
 import java.util.Collections;
 
-import androidx.test.InstrumentationRegistry;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 public class D2Factory {
@@ -63,7 +66,7 @@ public class D2Factory {
         return forDatabaseName(null);
     }
 
-    private static D2Configuration d2Configuration(Context context) {
+    public static D2Configuration d2Configuration(Context context) {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
         return D2Configuration.builder()
@@ -80,7 +83,7 @@ public class D2Factory {
     public static D2 forDatabaseAdapter(DatabaseAdapter databaseAdapter) {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
         NotClosedObjectsDetector.enableNotClosedObjectsDetection();
-        CredentialsSecureStore credentialsSecureStore = new CredentialsSecureStoreImpl(context);
+        ObjectSecureStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(new AndroidSecureStore(context));
         return new D2(
                 RetrofitFactory.retrofit(
                         OkHttpClientFactory.okHttpClient(d2Configuration(context), credentialsSecureStore)),

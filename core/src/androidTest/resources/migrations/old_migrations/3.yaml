@@ -1,7 +1,5 @@
 up:
- - PRAGMA foreign_keys=off;
- - BEGIN TRANSACTION;
- - ALTER TABLE Event RENAME TO EventOld;
+  - ALTER TABLE Event RENAME TO EventOld;
  - CREATE TABLE Event (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL UNIQUE,enrollment TEXT, created TEXT,lastUpdated TEXT,createdAtClient TEXT,lastUpdatedAtClient TEXT,status TEXT,latitude TEXT,longitude TEXT,program TEXT NOT NULL,programStage TEXT NOT NULL,organisationUnit TEXT NOT NULL,eventDate TEXT,completedDate TEXT,dueDate TEXT,state TEXT, attributeCategoryOptions TEXT, attributeOptionCombo TEXT, trackedEntityInstance TEXT, FOREIGN KEY (program) REFERENCES Program (uid) ON DELETE CASCADE, FOREIGN KEY (programStage) REFERENCES ProgramStage (uid) ON DELETE CASCADE,FOREIGN KEY (enrollment) REFERENCES Enrollment (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit (uid) ON DELETE CASCADE);
  - INSERT INTO Event (uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient, status, latitude, longitude, program, programStage, organisationUnit, eventDate, completedDate, dueDate, state, attributeCategoryOptions, attributeOptionCombo, trackedEntityInstance) Select uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient, status, latitude, longitude, program, programStage, organisationUnit, eventDate, completedDate, dueDate, state, attributeCategoryOptions, attributeOptionCombo, trackedEntityInstance from EventOld
  - ALTER TABLE TrackedEntityDataValue RENAME TO TrackedEntityDataValueOld;
@@ -11,6 +9,4 @@ up:
  - DROP TABLE IF EXISTS EventOld;
  - CREATE TABLE DataSet (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, shortName TEXT, displayShortName TEXT, description TEXT, displayDescription TEXT, periodType TEXT,categoryCombo TEXT NOT NULL,mobile INTEGER,version INTEGER,expiryDays INTEGER,timelyDays INTEGER,notifyCompletingUser INTEGER,openFuturePeriods INTEGER,fieldCombinationRequired INTEGER,validCompleteOnly INTEGER,noValueRequiresComment INTEGER,skipOffline INTEGER,dataElementDecoration INTEGER,renderAsTabs INTEGER,renderHorizontally INTEGER, FOREIGN KEY ( categoryCombo) REFERENCES CategoryCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
  - CREATE TABLE DataSetDataElementLink (_id INTEGER PRIMARY KEY AUTOINCREMENT, dataSet TEXT NOT NULL,dataElement TEXT NOT NULL, FOREIGN KEY (dataSet)  REFERENCES DataSet (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (dataElement)  REFERENCES DataElement (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (dataSet, dataElement));
- - COMMIT;
- - PRAGMA foreign_keys=on;
 down:

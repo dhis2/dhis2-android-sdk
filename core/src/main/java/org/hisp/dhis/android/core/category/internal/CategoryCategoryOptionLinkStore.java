@@ -35,15 +35,12 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink;
 import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class CategoryCategoryOptionLinkStore {
 
-    private static final StatementBinder<CategoryCategoryOptionLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.category());
-        sqLiteBind(sqLiteStatement, 2, o.categoryOption());
-        sqLiteBind(sqLiteStatement, 3, o.sortOrder());
+    private static final StatementBinder<CategoryCategoryOptionLink> BINDER = (o, w) -> {
+        w.bind(1, o.category());
+        w.bind(2, o.categoryOption());
+        w.bind(3, o.sortOrder());
     };
 
     private CategoryCategoryOptionLinkStore() {}

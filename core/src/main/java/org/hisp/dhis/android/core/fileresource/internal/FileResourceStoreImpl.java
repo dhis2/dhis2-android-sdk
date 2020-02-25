@@ -31,44 +31,38 @@ package org.hisp.dhis.android.core.fileresource.internal;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
-import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class FileResourceStoreImpl extends IdentifiableDataObjectStoreImpl<FileResource> {
 
-    private static final StatementBinder<FileResource> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.uid());
-        sqLiteBind(sqLiteStatement, 2, o.name());
-        sqLiteBind(sqLiteStatement, 3, o.created());
-        sqLiteBind(sqLiteStatement, 4, o.lastUpdated());
-        sqLiteBind(sqLiteStatement, 5, o.contentType());
-        sqLiteBind(sqLiteStatement, 6, o.contentLength());
-        sqLiteBind(sqLiteStatement, 7, o.path());
-        sqLiteBind(sqLiteStatement, 8, o.state());
+    private static final StatementBinder<FileResource> BINDER = (o, w) -> {
+        w.bind(1, o.uid());
+        w.bind(2, o.name());
+        w.bind(3, o.created());
+        w.bind(4, o.lastUpdated());
+        w.bind(5, o.contentType());
+        w.bind(6, o.contentLength());
+        w.bind(7, o.path());
+        w.bind(8, o.state());
     };
 
     private FileResourceStoreImpl(DatabaseAdapter databaseAdapter,
-                                  SQLStatementWrapper statementWrapper,
                                   SQLStatementBuilderImpl builder,
                                   StatementBinder<FileResource> binder,
                                   ObjectFactory<FileResource> objectFactory) {
-        super(databaseAdapter, statementWrapper, builder, binder, objectFactory);
+        super(databaseAdapter, builder, binder, objectFactory);
     }
 
     public static FileResourceStoreImpl create(DatabaseAdapter databaseAdapter) {
         SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(
                 FileResourceTableInfo.TABLE_INFO.name(),
                 FileResourceTableInfo.TABLE_INFO.columns());
-        SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);
 
         return new FileResourceStoreImpl(
                 databaseAdapter,
-                statementWrapper,
                 statementBuilder,
                 BINDER,
                 FileResource::create

@@ -30,33 +30,33 @@ package org.hisp.dhis.android.core.arch.db.stores.internal;
 
 import android.database.Cursor;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
-import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.List;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
+import androidx.annotation.NonNull;
+
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isNull;
 
 public class IdentifiableObjectStoreImpl<M extends CoreObject & ObjectWithUidInterface>
         extends ObjectStoreImpl<M> implements IdentifiableObjectStore<M> {
 
-    private final SQLStatementWrapper statements;
+    private StatementWrapper updateStatement;
+    private StatementWrapper deleteStatement;
+
+    private Integer adapterHashCode;
 
     public IdentifiableObjectStoreImpl(DatabaseAdapter databaseAdapter,
-                                       SQLStatementWrapper statements,
                                        SQLStatementBuilder builder, StatementBinder<M> binder,
                                        ObjectFactory<M> objectFactory) {
-        super(databaseAdapter, statements.insert, builder, binder, objectFactory);
-        this.statements = statements;
+        super(databaseAdapter, builder, binder, objectFactory);
     }
 
     @Override
@@ -69,8 +69,33 @@ public class IdentifiableObjectStoreImpl<M extends CoreObject & ObjectWithUidInt
     @Override
     public final void delete(@NonNull String uid) throws RuntimeException {
         isNull(uid);
-        sqLiteBind(statements.deleteById, 1, uid);
-        executeUpdateDelete(statements.deleteById);
+        compileStatements();
+        deleteStatement.bind(1, uid);
+        executeUpdateDelete(deleteStatement);
+    }
+
+    private void compileStatements() {
+        resetStatementsIfDbChanged();
+        if (deleteStatement == null) {
+            deleteStatement = databaseAdapter.compileStatement(builder.deleteById());
+            updateStatement = databaseAdapter.compileStatement(builder.update());
+
+        }
+    }
+
+    private boolean hasAdapterChanged() {
+        Integer oldCode = adapterHashCode;
+        adapterHashCode = databaseAdapter.hashCode();
+        return oldCode != null && databaseAdapter.hashCode() != oldCode;
+    }
+
+    private void resetStatementsIfDbChanged() {
+        if (hasAdapterChanged()) {
+            updateStatement.close();
+            deleteStatement.close();
+            updateStatement = null;
+            deleteStatement = null;
+        }
     }
 
     @Override
@@ -87,9 +112,10 @@ public class IdentifiableObjectStoreImpl<M extends CoreObject & ObjectWithUidInt
     @Override
     public final void update(@NonNull M m) throws RuntimeException {
         isNull(m);
-        binder.bindToStatement(m, statements.update);
-        sqLiteBind(statements.update, builder.getColumns().length + 1, m.uid());
-        executeUpdateDelete(statements.update);
+        compileStatements();
+        binder.bindToStatement(m, updateStatement);
+        updateStatement.bind(builder.getColumns().length + 1, m.uid());
+        executeUpdateDelete(updateStatement);
     }
 
     @Override
@@ -105,18 +131,18 @@ public class IdentifiableObjectStoreImpl<M extends CoreObject & ObjectWithUidInt
 
     @Override
     public List<String> selectUids() throws RuntimeException {
-        Cursor cursor = databaseAdapter.query(statements.selectUids);
+        Cursor cursor = databaseAdapter.rawQuery(builder.selectUids());
         return mapStringColumnSetFromCursor(cursor);
     }
 
     public List<String> selectUidsWhere(String whereClause) throws RuntimeException {
-        Cursor cursor = databaseAdapter.query(builder.selectUidsWhere(whereClause));
+        Cursor cursor = databaseAdapter.rawQuery(builder.selectUidsWhere(whereClause));
         return mapStringColumnSetFromCursor(cursor);
     }
 
     @Override
     public M selectByUid(String uid) throws RuntimeException {
-        Cursor cursor = databaseAdapter.query(builder.selectByUid(), uid);
+        Cursor cursor = databaseAdapter.rawQuery(builder.selectByUid(), uid);
         return mapObjectFromCursor(cursor);
     }
 

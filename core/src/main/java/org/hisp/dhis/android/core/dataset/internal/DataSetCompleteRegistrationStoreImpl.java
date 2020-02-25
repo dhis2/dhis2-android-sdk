@@ -41,37 +41,35 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 
 import java.util.Collection;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class DataSetCompleteRegistrationStoreImpl extends
         ObjectWithoutUidStoreImpl<DataSetCompleteRegistration> implements DataSetCompleteRegistrationStore {
 
     private static final StatementBinder<DataSetCompleteRegistration> BINDER =
-            (dataSetCompleteRegistration, sqLiteStatement) -> {
-                sqLiteBind(sqLiteStatement, 1, dataSetCompleteRegistration.period());
-                sqLiteBind(sqLiteStatement, 2, dataSetCompleteRegistration.dataSet());
-                sqLiteBind(sqLiteStatement, 3, dataSetCompleteRegistration.organisationUnit());
-                sqLiteBind(sqLiteStatement, 4, dataSetCompleteRegistration.attributeOptionCombo());
-                sqLiteBind(sqLiteStatement, 5, dataSetCompleteRegistration.date());
-                sqLiteBind(sqLiteStatement, 6, dataSetCompleteRegistration.storedBy());
-                sqLiteBind(sqLiteStatement, 7, dataSetCompleteRegistration.state());
-                sqLiteBind(sqLiteStatement, 8, dataSetCompleteRegistration.deleted());
+            (dataSetCompleteRegistration, w) -> {
+                w.bind(1, dataSetCompleteRegistration.period());
+                w.bind(2, dataSetCompleteRegistration.dataSet());
+                w.bind(3, dataSetCompleteRegistration.organisationUnit());
+                w.bind(4, dataSetCompleteRegistration.attributeOptionCombo());
+                w.bind(5, dataSetCompleteRegistration.date());
+                w.bind(6, dataSetCompleteRegistration.storedBy());
+                w.bind(7, dataSetCompleteRegistration.state());
+                w.bind(8, dataSetCompleteRegistration.deleted());
             };
 
     private static final WhereStatementBinder<DataSetCompleteRegistration> WHERE_UPDATE_BINDER =
-            (dataSetCompleteRegistration, sqLiteStatement) -> {
-                sqLiteBind(sqLiteStatement, 9, dataSetCompleteRegistration.period());
-                sqLiteBind(sqLiteStatement, 10, dataSetCompleteRegistration.dataSet());
-                sqLiteBind(sqLiteStatement, 11, dataSetCompleteRegistration.organisationUnit());
-                sqLiteBind(sqLiteStatement, 12, dataSetCompleteRegistration.attributeOptionCombo());
+            (dataSetCompleteRegistration, w) -> {
+                w.bind(9, dataSetCompleteRegistration.period());
+                w.bind(10, dataSetCompleteRegistration.dataSet());
+                w.bind(11, dataSetCompleteRegistration.organisationUnit());
+                w.bind(12, dataSetCompleteRegistration.attributeOptionCombo());
             };
 
     private static final WhereStatementBinder<DataSetCompleteRegistration> WHERE_DELETE_BINDER =
-            (dataSetCompleteRegistration, sqLiteStatement) -> {
-                sqLiteBind(sqLiteStatement, 1, dataSetCompleteRegistration.period());
-                sqLiteBind(sqLiteStatement, 2, dataSetCompleteRegistration.dataSet());
-                sqLiteBind(sqLiteStatement, 3, dataSetCompleteRegistration.organisationUnit());
-                sqLiteBind(sqLiteStatement, 4, dataSetCompleteRegistration.attributeOptionCombo());
+            (dataSetCompleteRegistration, w) -> {
+                w.bind(1, dataSetCompleteRegistration.period());
+                w.bind(2, dataSetCompleteRegistration.dataSet());
+                w.bind(3, dataSetCompleteRegistration.organisationUnit());
+                w.bind(4, dataSetCompleteRegistration.attributeOptionCombo());
             };
 
     private DataSetCompleteRegistrationStoreImpl(DatabaseAdapter databaseAdapter,

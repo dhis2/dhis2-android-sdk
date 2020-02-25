@@ -39,15 +39,31 @@ import dagger.Reusable;
 @Reusable
 public class SystemSettingModuleDownloader implements MetadataModuleDownloader<Unit> {
 
-    private final SystemSettingCall call;
+    private final SystemSettingCall systemSettingCall;
+
+    private final AndroidSettingCall androidSettingCall;
+    private final DataSetSettingsCall dataSetSettingsCall;
+    private final ProgramSettingsCall programSettingsCall;
 
     @Inject
-    SystemSettingModuleDownloader(SystemSettingCall call) {
-        this.call = call;
+    SystemSettingModuleDownloader(SystemSettingCall systemSettingCall,
+                                  AndroidSettingCall androidSettingCall,
+                                  DataSetSettingsCall dataSetSettingsCall,
+                                  ProgramSettingsCall programSettingsCall) {
+        this.systemSettingCall = systemSettingCall;
+        this.androidSettingCall =  androidSettingCall;
+        this.dataSetSettingsCall = dataSetSettingsCall;
+        this.programSettingsCall = programSettingsCall;
     }
 
     @Override
     public Callable<Unit> downloadMetadata() {
-        return call;
+        return () -> {
+            androidSettingCall.getCompletable(false).blockingAwait();
+            dataSetSettingsCall.getCompletable(false).blockingAwait();
+            programSettingsCall.getCompletable(false).blockingAwait();
+            systemSettingCall.call();
+            return new Unit();
+        };
     }
 }

@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.utils.integration.real;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+
+import androidx.test.InstrumentationRegistry;
 
 import com.facebook.stetho.Stetho;
 
@@ -38,10 +38,11 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.DbOpenHelper;
-import org.hisp.dhis.android.core.arch.db.access.internal.SqLiteDatabaseAdapter;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.junit.After;
@@ -50,18 +51,14 @@ import org.junit.Before;
 import java.io.IOException;
 import java.util.Date;
 
-import androidx.test.InstrumentationRegistry;
-
 import static com.google.common.truth.Truth.assertThat;
 
 public abstract class BaseRealIntegrationTest {
-    private SQLiteDatabase sqLiteDatabase;
     private DatabaseAdapter databaseAdapter;
-    private Context context;
 
     protected Date serverDate = new Date();
     protected ResourceHandler resourceHandler;
-    protected CredentialsSecureStore credentialsSecureStore;
+    protected ObjectSecureStore<Credentials> credentialsSecureStore;
 
     protected String username = RealServerMother.username;
     protected String password = RealServerMother.password;
@@ -69,12 +66,11 @@ public abstract class BaseRealIntegrationTest {
 
     @Before
     public void setUp() throws IOException {
-        context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
 
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(context, null);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
-        credentialsSecureStore = new CredentialsSecureStoreImpl(context);
+        databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(context, null);
+        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter);
+        credentialsSecureStore = new CredentialsSecureStoreImpl(new AndroidSecureStore(context));
         resourceHandler = ResourceHandler.create(databaseAdapter);
         resourceHandler.setServerDate(serverDate);
         Stetho.initializeWithDefaults(context);
@@ -82,12 +78,14 @@ public abstract class BaseRealIntegrationTest {
 
     @After
     public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
-    }
-
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
+        assertThat(databaseAdapter).isNotNull();
+        try {
+            databaseAdapter.close();
+        } catch (Exception e) {
+            // Otherwise SQLiteException: unable to close due to unfinalized statements or unfinished backups:
+            // sqlite3_close() failed with SQL cipher
+            // TODO Fix in the SDK, otherwise it will throw the errors in production
+        }
     }
 
     protected DatabaseAdapter databaseAdapter() {
@@ -97,11 +95,6 @@ public abstract class BaseRealIntegrationTest {
     protected GenericCallData getGenericCallData(D2 d2) {
         return GenericCallData.create(
                 databaseAdapter(), d2.retrofit(), resourceHandler, d2.systemInfoModule().versionManager());
-    }
-
-    protected Cursor getCursor(String table, String[] columns) {
-        return sqLiteDatabase.query(table, columns,
-                null, null, null, null, null);
     }
 
     protected D2DIComponent getD2DIComponent(D2 d2) {

@@ -43,9 +43,12 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilte
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.systeminfo.DHISVersion;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
@@ -62,6 +65,7 @@ import dagger.Reusable;
 import io.reactivex.Single;
 
 @Reusable
+@SuppressWarnings({"PMD.ExcessiveImports"})
 public final class TrackedEntityInstanceQueryCollectionRepository
         implements ReadOnlyCollectionRepository<TrackedEntityInstance> {
 
@@ -70,6 +74,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     private final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders;
     private final ScopedFilterConnectorFactory<TrackedEntityInstanceQueryCollectionRepository,
                     TrackedEntityInstanceQueryRepositoryScope> connectorFactory;
+    private final DHISVersionManager versionManager;
 
     private final TrackedEntityInstanceQueryRepositoryScope scope;
 
@@ -78,13 +83,16 @@ public final class TrackedEntityInstanceQueryCollectionRepository
             final TrackedEntityInstanceStore store,
             final TrackedEntityInstanceQueryCallFactory onlineCallFactory,
             final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
-            final TrackedEntityInstanceQueryRepositoryScope scope) {
+            final TrackedEntityInstanceQueryRepositoryScope scope,
+            final DHISVersionManager versionManager) {
         this.store = store;
         this.onlineCallFactory = onlineCallFactory;
         this.childrenAppenders = childrenAppenders;
         this.scope = scope;
+        this.versionManager = versionManager;
         this.connectorFactory = new ScopedFilterConnectorFactory<>(s ->
-                new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders, s));
+                new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
+                        s, versionManager));
     }
 
     /**
@@ -95,7 +103,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      */
     public TrackedEntityInstanceQueryCollectionRepository onlineOnly() {
         return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().mode(RepositoryMode.ONLINE_ONLY).build());
+                scope.toBuilder().mode(RepositoryMode.ONLINE_ONLY).build(), versionManager);
     }
 
     /**
@@ -105,7 +113,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      */
     public TrackedEntityInstanceQueryCollectionRepository offlineOnly() {
         return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().mode(RepositoryMode.OFFLINE_ONLY).build());
+                scope.toBuilder().mode(RepositoryMode.OFFLINE_ONLY).build(), versionManager);
     }
 
     /**
@@ -117,7 +125,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      */
     public TrackedEntityInstanceQueryCollectionRepository onlineFirst() {
         return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().mode(RepositoryMode.ONLINE_FIRST).build());
+                scope.toBuilder().mode(RepositoryMode.ONLINE_FIRST).build(), versionManager);
     }
 
     /**
@@ -129,7 +137,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      */
     public TrackedEntityInstanceQueryCollectionRepository offlineFirst() {
         return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build());
+                scope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build(), versionManager);
     }
 
     /**
@@ -264,6 +272,23 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope, State> byStates() {
         return connectorFactory.listConnector(states -> scope.toBuilder().states(states).build());
+    }
+
+    /**
+     * Filter by assigned user mode.
+     * <br><b>IMPORTANT:</b> this filter has effect if DHIS2 version is 2.32 or later. Otherwise, it is ignored.
+     *
+     * @return Repository connector
+     */
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, AssignedUserMode> byAssignedUserMode() {
+        return connectorFactory.eqConnector(mode -> {
+            if (versionManager.isGreaterThan(DHISVersion.V2_31)) {
+                return scope.toBuilder().assignedUserMode(mode).build();
+            } else {
+                return scope;
+            }
+        });
     }
 
     @Override

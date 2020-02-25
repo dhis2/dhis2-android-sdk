@@ -31,10 +31,12 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo.Columns;
@@ -79,6 +81,15 @@ public final class OrganisationUnitCollectionRepository
 
     public IntegerFilterConnector<OrganisationUnitCollectionRepository> byLevel() {
         return cf.integer(Columns.LEVEL);
+    }
+
+
+    public EnumFilterConnector<OrganisationUnitCollectionRepository, FeatureType> byGeometryType() {
+        return cf.enumC(Columns.GEOMETRY_TYPE);
+    }
+
+    public StringFilterConnector<OrganisationUnitCollectionRepository> byGeometryCoordinates() {
+        return cf.string(Columns.GEOMETRY_COORDINATES);
     }
 
     public OrganisationUnitCollectionRepository byOrganisationUnitScope(OrganisationUnit.Scope scope) {

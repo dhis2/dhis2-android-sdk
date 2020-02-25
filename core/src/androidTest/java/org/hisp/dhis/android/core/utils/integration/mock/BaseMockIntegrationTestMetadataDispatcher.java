@@ -36,20 +36,10 @@ public abstract class BaseMockIntegrationTestMetadataDispatcher extends BaseMock
     public static void setUpClass() throws Exception {
         boolean isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.MetadataDispatcher);
         if (isNewInstance) {
-            dhis2MockServer.setRequestDispatcher();
-
-            freshLogin();
-            d2.metadataModule().blockingDownload();
-        }
-    }
-
-    private static void freshLogin() {
-        try {
-            d2.userModule().logOut().blockingAwait();
-        } catch (RuntimeException e) {
-            // Do nothing
-        } finally {
-            d2.userModule().blockingLogIn("android", "Android123", dhis2MockServer.getBaseEndpoint());
+            objects.dhis2MockServer.setRequestDispatcher();
+            objects.d2.userModule().blockingLogIn("android", "Android123",
+                    objects.dhis2MockServer.getBaseEndpoint());
+            objects.d2.metadataModule().blockingDownload();
         }
     }
 }

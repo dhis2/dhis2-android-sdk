@@ -63,6 +63,6 @@ class ObjectWithUidChildStoreImpl<P extends ObjectWithUidInterface> implements O
             return ObjectWithUid.create(cursor.getString(idColumnIndex));
         });
 
-        return cursorExecutor.getObjects(databaseAdapter.query(selectStatement));
+        return cursorExecutor.getObjects(databaseAdapter.rawQuery(selectStatement));
     }
 }

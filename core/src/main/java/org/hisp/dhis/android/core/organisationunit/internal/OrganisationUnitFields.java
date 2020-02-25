@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo.Columns;
@@ -41,6 +43,9 @@ public final class OrganisationUnitFields {
     public static final String DATA_SETS = "dataSets";
     private static final String ANCESTORS = "ancestors";
     public static final String ORGANISATION_UNIT_GROUPS = "organisationUnitGroups";
+    public final static String COORDINATES = "coordinates";
+    public final static String FEATURE_TYPE = "featureType";
+    public final static String GEOMETRY = "geometry";
 
     private static final FieldsHelper<OrganisationUnit> fh = new FieldsHelper<>();
 
@@ -57,6 +62,9 @@ public final class OrganisationUnitFields {
                     openingDate,
                     closedDate,
                     fh.<String>field(Columns.LEVEL),
+                    fh.<String>field(COORDINATES),
+                    fh.<FeatureType>field(FEATURE_TYPE),
+                    fh.<Geometry>field(GEOMETRY),
                     fh.nestedFieldWithUid(Columns.PARENT),
                     fh.nestedFieldWithUid(PROGRAMS),
                     fh.nestedFieldWithUid(DATA_SETS),

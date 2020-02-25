@@ -138,6 +138,10 @@ public abstract class Event extends BaseDeletableDataObject implements ObjectWit
     public abstract String attributeOptionCombo();
 
     @Nullable
+    @JsonProperty()
+    public abstract String assignedUser();
+
+    @Nullable
     @JsonProperty(EventFields.TRACKED_ENTITY_DATA_VALUES)
     @ColumnAdapter(IgnoreTrackedEntityDataValueListColumnAdapter.class)
     public abstract List<TrackedEntityDataValue> trackedEntityDataValues();
@@ -193,6 +197,8 @@ public abstract class Event extends BaseDeletableDataObject implements ObjectWit
         public abstract Builder dueDate(Date dueDate);
 
         public abstract Builder attributeOptionCombo(String attributeOptionCombo);
+
+        public abstract Builder assignedUser(String assignedUser);
 
         @JsonProperty(EventFields.TRACKED_ENTITY_DATA_VALUES)
         public abstract Builder trackedEntityDataValues(List<TrackedEntityDataValue> trackedEntityDataValues);

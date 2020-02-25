@@ -36,15 +36,12 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class CategoryCategoryComboLinkStore {
 
-    private static final StatementBinder<CategoryCategoryComboLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.category());
-        sqLiteBind(sqLiteStatement, 2, o.categoryCombo());
-        sqLiteBind(sqLiteStatement, 3, o.sortOrder());
+    private static final StatementBinder<CategoryCategoryComboLink> BINDER = (o, w) -> {
+        w.bind(1, o.category());
+        w.bind(2, o.categoryCombo());
+        w.bind(3, o.sortOrder());
     };
 
     private CategoryCategoryComboLinkStore() {}

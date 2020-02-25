@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.user.UserRole;
@@ -46,8 +45,8 @@ public final class UserRoleStore {
 
     private static StatementBinder<UserRole> BINDER = new IdentifiableStatementBinder<UserRole>() {
         @Override
-        public void bindToStatement(@NonNull UserRole o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
+        public void bindToStatement(@NonNull UserRole o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
         }
     };
 

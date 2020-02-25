@@ -30,6 +30,7 @@ package org.hisp.dhis.android.testapp.trackedentity;
 
 import com.google.common.collect.Lists;
 
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
@@ -176,5 +177,45 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .blockingGet();
 
         assertThat(trackedEntityInstances.size(), is(2));
+    }
+
+    @Test
+    public void order_by_created() {
+        List<TrackedEntityInstance> trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstances()
+                        .orderByCreated(RepositoryScope.OrderByDirection.ASC)
+                        .blockingGet();
+
+        assertThat(trackedEntityInstances.get(0).uid(), is("nWrB0TfWlvD"));
+        assertThat(trackedEntityInstances.get(1).uid(), is("nWrB0TfWlvh"));
+    }
+
+    @Test
+    public void order_by_created_at_client() {
+        List<TrackedEntityInstance> trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstances()
+                        .orderByCreatedAtClient(RepositoryScope.OrderByDirection.ASC)
+                        .blockingGet();
+
+        assertThat(trackedEntityInstances.get(0).uid(), is("nWrB0TfWlvh"));
+        assertThat(trackedEntityInstances.get(1).uid(), is("nWrB0TfWlvD"));
+    }
+
+    @Test
+    public void order_by_last_updated() {
+        List<TrackedEntityInstance> trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstances()
+                        .orderByLastUpdated(RepositoryScope.OrderByDirection.ASC)
+                        .blockingGet();
+
+        assertThat(trackedEntityInstances.get(0).uid(), is("nWrB0TfWlvD"));
+        assertThat(trackedEntityInstances.get(1).uid(), is("nWrB0TfWlvh"));
+    }
+
+    @Test
+    public void order_by_last_updated_at_client() {
+        List<TrackedEntityInstance> trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstances()
+                        .orderByLastUpdatedAtClient(RepositoryScope.OrderByDirection.ASC)
+                        .blockingGet();
+
+        assertThat(trackedEntityInstances.get(0).uid(), is("nWrB0TfWlvh"));
+        assertThat(trackedEntityInstances.get(1).uid(), is("nWrB0TfWlvD"));
     }
 }

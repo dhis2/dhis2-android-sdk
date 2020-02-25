@@ -35,14 +35,11 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.program.ProgramSectionAttributeLink;
 import org.hisp.dhis.android.core.program.ProgramSectionAttributeLinkTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class ProgramSectionAttributeLinkStore {
 
-    private static final StatementBinder<ProgramSectionAttributeLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.programSection());
-        sqLiteBind(sqLiteStatement, 2, o.attribute());
+    private static final StatementBinder<ProgramSectionAttributeLink> BINDER = (o, w) -> {
+        w.bind(1, o.programSection());
+        w.bind(2, o.attribute());
     };
 
     private ProgramSectionAttributeLinkStore() {}

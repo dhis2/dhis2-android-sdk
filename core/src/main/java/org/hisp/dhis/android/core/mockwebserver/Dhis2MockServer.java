@@ -88,7 +88,7 @@ public class Dhis2MockServer {
     private IFileReader fileReader;
     private Dhis2Dispatcher dhis2Dispatcher;
 
-    private Dhis2MockServer(IFileReader fileReader, int port) throws IOException {
+    public Dhis2MockServer(IFileReader fileReader, int port) throws IOException {
         this.fileReader = fileReader;
         this.server = new MockWebServer();
         dhis2Dispatcher = new Dhis2Dispatcher(fileReader, new ResponseController());

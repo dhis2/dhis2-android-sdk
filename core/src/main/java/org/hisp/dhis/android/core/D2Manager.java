@@ -136,7 +136,7 @@ public final class D2Manager {
                 secureStore);
         Credentials credentials = credentialsSecureStore.get();
 
-        if (databaseConfiguration != null) {
+        if (databaseConfiguration != null && credentials != null) {
             ServerURLWrapper.setServerUrl(databaseConfiguration.loggedServerUrl());
             DatabaseConfigurationHelper configurationHelper =
                     new DatabaseConfigurationHelper(new DatabaseNameGenerator());

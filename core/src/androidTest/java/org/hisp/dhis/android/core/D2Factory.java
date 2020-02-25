@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreIm
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.Collections;
 
@@ -90,12 +91,17 @@ public class D2Factory {
         NotClosedObjectsDetector.enableNotClosedObjectsDetection();
         SecureStore secureStore = new InMemorySecureStore();
         ObjectSecureStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
-        return new D2(
-                RetrofitFactory.retrofit(
-                        OkHttpClientFactory.okHttpClient(d2Configuration(context), credentialsSecureStore)),
-                databaseAdapter,
-                context,
-                secureStore,
-                credentialsSecureStore);
+        try {
+            return new D2(
+                    RetrofitFactory.retrofit(
+                            OkHttpClientFactory.okHttpClient(d2Configuration(context), credentialsSecureStore)),
+                    databaseAdapter,
+                    context,
+                    secureStore,
+                    credentialsSecureStore);
+        } catch (D2Error d2Error) {
+            d2Error.printStackTrace();
+            return null;
+        }
     }
 }

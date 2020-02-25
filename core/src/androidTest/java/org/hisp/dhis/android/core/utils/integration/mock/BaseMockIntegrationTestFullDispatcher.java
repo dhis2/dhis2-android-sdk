@@ -100,7 +100,7 @@ public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockInte
         d2ErrorStore.insert(D2ErrorSamples.get());
         d2ErrorStore.insert(D2Error.builder()
                 .errorComponent(D2ErrorComponent.SDK)
-                .errorCode(D2ErrorCode.DIFFERENT_SERVER_OFFLINE)
+                .errorCode(D2ErrorCode.BAD_CREDENTIALS)
                 .url("http://dhis2.org/api/programs/uid")
                 .errorDescription("Different server offline")
                 .httpErrorCode(402)

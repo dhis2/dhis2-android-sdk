@@ -135,35 +135,25 @@ public final class UserAuthenticateCallFactory {
     private User loginInternal(String username, String password, String serverUrl) throws D2Error {
         throwExceptionIfUsernameNull(username);
         throwExceptionIfPasswordNull(password);
+        throwExceptionIfAlreadyAuthenticated();
+        HttpUrl parsedServerUrl = ServerUrlParser.parse(serverUrl);
+
+        ServerURLWrapper.setServerUrl(parsedServerUrl.toString());
+        DatabaseUserConfiguration userConfiguration = updateConfiguration(parsedServerUrl.toString(), username);
+        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration.databaseName(),
+                context, userConfiguration.encrypted());
 
         Call<User> authenticateCall =
                 userService.authenticate(basic(username, password), UserFields.allFieldsWithoutOrgUnit);
-
         try {
-            HttpUrl httpServerUrl = ServerUrlParser.parse(serverUrl);
-            ServerURLWrapper.setServerUrl(httpServerUrl.toString());
-            DatabasesConfiguration updatedConfiguration = configurationHelper.addConfiguration(
-                    configurationSecureStore.get(), httpServerUrl.toString(), username,
-                    DatabaseAdapterFactory.getExperimentalEncryption());
-            configurationSecureStore.set(updatedConfiguration);
-
             User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,
                     new UserAuthenticateCallErrorCatcher());
-
-            DatabaseUserConfiguration userConfiguration = configurationHelper.getLoggedUserConfiguration(
-                    updatedConfiguration, username);
-            DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration.databaseName(),
-                    context, userConfiguration.encrypted());
-
-            throwExceptionIfAlreadyAuthenticatedAndDbNotEmpty();
-
             return loginOnline(authenticatedUser, username, password);
         } catch (D2Error d2Error) {
-            if (
-                    d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
-                            d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
-                            d2Error.errorCode() == D2ErrorCode.UNKNOWN_HOST) {
-                return loginOffline(username, password, serverUrl);
+            if (d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
+                    d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
+                    d2Error.errorCode() == D2ErrorCode.UNKNOWN_HOST) {
+                return loginOffline(username, password);
             } else if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
                 wipeModule.wipeEverything();
                 throw d2Error;
@@ -171,6 +161,14 @@ public final class UserAuthenticateCallFactory {
                 throw d2Error;
             }
         }
+    }
+
+    private DatabaseUserConfiguration updateConfiguration(String serverUrl, String username) {
+        DatabasesConfiguration updatedConfiguration = configurationHelper.addConfiguration(
+                configurationSecureStore.get(), serverUrl, username,
+                DatabaseAdapterFactory.getExperimentalEncryption());
+        configurationSecureStore.set(updatedConfiguration);
+        return configurationHelper.getLoggedUserConfiguration(updatedConfiguration, username);
     }
 
     private User loginOnline(User authenticatedUser, String username, String password) {
@@ -192,29 +190,21 @@ public final class UserAuthenticateCallFactory {
         }
     }
 
-    private User loginOffline(String username, String password, String serverUrl) throws D2Error {
-        if (wasLoggedAndServerIsNew(serverUrl)) {
-            throw D2Error.builder()
-                    .errorCode(D2ErrorCode.DIFFERENT_SERVER_OFFLINE)
-                    .errorDescription("Cannot switch servers offline.")
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .build();
-        }
-
+    private User loginOffline(String username, String password) throws D2Error {
         AuthenticatedUser existingUser = authenticatedUserStore.selectFirst();
 
         if (existingUser == null) {
             throw D2Error.builder()
                     .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE)
-                    .errorDescription("No user has been previously authenticated. Cannot login offline.")
+                    .errorDescription("The user hasn't been previously authenticated. Cannot login offline.")
                     .errorComponent(D2ErrorComponent.SDK)
                     .build();
         }
 
         if (!md5(username, password).equals(existingUser.hash())) {
             throw D2Error.builder()
-                    .errorCode(D2ErrorCode.DIFFERENT_AUTHENTICATED_USER_OFFLINE)
-                    .errorDescription("Credentials do not match authenticated user. Cannot switch users offline.")
+                    .errorCode(D2ErrorCode.BAD_CREDENTIALS)
+                    .errorDescription("Credentials do not match authenticated user. Cannot login offline.")
                     .errorComponent(D2ErrorComponent.SDK)
                     .build();
         }
@@ -253,30 +243,15 @@ public final class UserAuthenticateCallFactory {
         }
     }
 
-    private void throwExceptionIfAlreadyAuthenticatedAndDbNotEmpty() throws D2Error {
+    private void throwExceptionIfAlreadyAuthenticated() throws D2Error {
         Credentials credentials = credentialsSecureStore.get();
-        AuthenticatedUser existingUser = authenticatedUserStore.selectFirst();
         if (credentials != null) {
-            if (existingUser == null) {
-                credentialsSecureStore.remove();
-            } else {
-                throw D2Error.builder()
-                        .errorCode(D2ErrorCode.ALREADY_AUTHENTICATED)
-                        .errorDescription("A user is already authenticated: " + credentials.username())
-                        .errorComponent(D2ErrorComponent.SDK)
-                        .build();
-            }
+            throw D2Error.builder()
+                    .errorCode(D2ErrorCode.ALREADY_AUTHENTICATED)
+                    .errorDescription("A user is already authenticated: " + credentials.username())
+                    .errorComponent(D2ErrorComponent.SDK)
+                    .build();
         }
-    }
-
-    private boolean wasLoggedAndServerIsNew(String serverUrl) {
-        String baseServerUrl = ServerUrlParser.removeTrailingSlash(serverUrl);
-
-        SystemInfo lastSystemInfo = systemInfoRepository.blockingGet();
-        String existingServerUrl = lastSystemInfo == null ? null :
-                ServerUrlParser.removeTrailingSlash(lastSystemInfo.contextPath());
-
-        return !baseServerUrl.equals(existingServerUrl);
     }
 
     private void handleUser(User user) {

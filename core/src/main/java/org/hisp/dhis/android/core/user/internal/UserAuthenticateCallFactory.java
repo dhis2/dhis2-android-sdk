@@ -139,21 +139,17 @@ public final class UserAuthenticateCallFactory {
         HttpUrl parsedServerUrl = ServerUrlParser.parse(serverUrl);
 
         ServerURLWrapper.setServerUrl(parsedServerUrl.toString());
-        DatabaseUserConfiguration userConfiguration = updateConfiguration(parsedServerUrl.toString(), username);
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration.databaseName(),
-                context, userConfiguration.encrypted());
-
         Call<User> authenticateCall =
                 userService.authenticate(basic(username, password), UserFields.allFieldsWithoutOrgUnit);
         try {
             User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,
                     new UserAuthenticateCallErrorCatcher());
-            return loginOnline(authenticatedUser, username, password);
+            return loginOnline(parsedServerUrl, authenticatedUser, username, password);
         } catch (D2Error d2Error) {
             if (d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
                     d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
                     d2Error.errorCode() == D2ErrorCode.UNKNOWN_HOST) {
-                return loginOffline(username, password);
+                return loginOffline(parsedServerUrl, username, password);
             } else if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
                 wipeModule.wipeEverything();
                 throw d2Error;
@@ -163,16 +159,21 @@ public final class UserAuthenticateCallFactory {
         }
     }
 
-    private DatabaseUserConfiguration updateConfiguration(String serverUrl, String username) {
+    private void createOrOpenDatabase(DatabaseUserConfiguration userConfiguration) {
+        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, context, userConfiguration);
+    }
+
+    private DatabaseUserConfiguration addConfiguration(HttpUrl serverUrl, String username) {
         DatabasesConfiguration updatedConfiguration = configurationHelper.addConfiguration(
-                configurationSecureStore.get(), serverUrl, username,
+                configurationSecureStore.get(), serverUrl.toString(), username,
                 DatabaseAdapterFactory.getExperimentalEncryption());
         configurationSecureStore.set(updatedConfiguration);
         return configurationHelper.getLoggedUserConfiguration(updatedConfiguration, username);
     }
 
-    private User loginOnline(User authenticatedUser, String username, String password) {
-
+    private User loginOnline(HttpUrl serverUrl, User authenticatedUser, String username, String password) {
+        DatabaseUserConfiguration userConfiguration = addConfiguration(serverUrl, username);
+        createOrOpenDatabase(userConfiguration);
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
             AuthenticatedUser authenticatedUserToStore = buildAuthenticatedUser(authenticatedUser.uid(),
@@ -190,15 +191,31 @@ public final class UserAuthenticateCallFactory {
         }
     }
 
-    private User loginOffline(String username, String password) throws D2Error {
+    private D2Error noUserOfflineError() {
+        return D2Error.builder()
+                .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE)
+                .errorDescription("The user hasn't been previously authenticated. Cannot login offline.")
+                .errorComponent(D2ErrorComponent.SDK)
+                .build();
+    }
+
+    private User loginOffline(HttpUrl serverUrl, String username, String password) throws D2Error {
+        DatabasesConfiguration configuration = configurationSecureStore.get();
+        DatabaseUserConfiguration userConfiguration = configurationHelper.getUserConfiguration(
+                configuration, serverUrl.toString(), username);
+
+        if (userConfiguration == null) {
+            throw noUserOfflineError();
+        }
+
+        DatabasesConfiguration updatedConfiguration = configurationHelper.setServerUrl(
+                configuration, serverUrl.toString());
+        configurationSecureStore.set(updatedConfiguration);
+        createOrOpenDatabase(userConfiguration);
         AuthenticatedUser existingUser = authenticatedUserStore.selectFirst();
 
         if (existingUser == null) {
-            throw D2Error.builder()
-                    .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE)
-                    .errorDescription("The user hasn't been previously authenticated. Cannot login offline.")
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .build();
+            throw noUserOfflineError();
         }
 
         if (!md5(username, password).equals(existingUser.hash())) {

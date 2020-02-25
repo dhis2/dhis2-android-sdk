@@ -42,6 +42,8 @@ import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseServerConfiguration;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration;
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -59,6 +61,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.stubbing.OngoingStubbing;
+
+import java.util.Collections;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -153,6 +157,20 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     private static final String baseEndpoint = "https://dhis-instance.org";
     private static final String serverUrl = baseEndpoint;
+
+    private DatabaseUserConfiguration USER_CONFIG_11 = DatabaseUserConfiguration.builder()
+            .username(USERNAME)
+            .databaseName("dbname.db")
+            .encrypted(false)
+            .build();
+
+    private DatabasesConfiguration SINGLE_SERVER_SINGLE_USER_CONFIG = DatabasesConfiguration.builder()
+            .loggedServerUrl(baseEndpoint)
+            .servers(Collections.singletonList(DatabaseServerConfiguration.builder()
+                    .serverUrl(baseEndpoint + "/api/")
+                    .users(Collections.singletonList(USER_CONFIG_11))
+                    .build()
+            )).build();
 
     @Before
     @SuppressWarnings("unchecked")
@@ -321,6 +339,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         whenAPICall().thenThrow(d2Error);
 
         when(credentialsSecureStore.get()).thenReturn(null);
+        when(configurationSecureStore.get()).thenReturn(SINGLE_SERVER_SINGLE_USER_CONFIG);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
         logInSingle.test().awaitTerminalEvent();
@@ -333,6 +352,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         
         when(credentialsSecureStore.get()).thenReturn(null);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
+        when(configurationSecureStore.get()).thenReturn(SINGLE_SERVER_SINGLE_USER_CONFIG);
 
         Single<User> loginCall = instantiateCall(USERNAME, PASSWORD, serverUrl + "/");
 
@@ -357,7 +377,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(credentialsSecureStore.get()).thenReturn(null);
         when(authenticatedUser.hash()).thenReturn("different_hash");
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
-
+        when(configurationSecureStore.get()).thenReturn(SINGLE_SERVER_SINGLE_USER_CONFIG);
 
         TestObserver<User> testObserver = logInSingle.test();
         assertD2Error(testObserver, D2ErrorCode.BAD_CREDENTIALS);

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.db.access.internal;
 import android.content.Context;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,6 +74,12 @@ public final class DatabaseAdapterFactory {
     public static void createOrOpenDatabase(DatabaseAdapter adapter, String databaseName, Context context,
                                             boolean encrypt) {
         createOrOpenDatabase(adapter, databaseName, context, encrypt, BaseDatabaseOpenHelper.VERSION);
+    }
+
+    public static void createOrOpenDatabase(DatabaseAdapter adapter, Context context,
+                                            DatabaseUserConfiguration userConfiguration) {
+        createOrOpenDatabase(adapter, userConfiguration.databaseName(), context, userConfiguration.encrypted(),
+                BaseDatabaseOpenHelper.VERSION);
     }
 
     private static DatabaseAdapter instantiateAdapter(String databaseName, Context context,

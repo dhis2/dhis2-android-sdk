@@ -142,8 +142,7 @@ public final class D2Manager {
                     new DatabaseConfigurationHelper(new DatabaseNameGenerator());
             DatabaseUserConfiguration userConfiguration = configurationHelper.getLoggedUserConfiguration(
                     databaseConfiguration, credentials.username());
-            DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration.databaseName(),
-                    d2Configuration.context(), userConfiguration.encrypted());
+            DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, d2Configuration.context(), userConfiguration);
         }
     }
 

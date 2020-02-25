@@ -55,19 +55,13 @@ public class ResponseController {
 
     private String findResponse(Map<String, String> resourcesMap, String path, String currentPath) {
         String filename = EMPTY;
-    //    Pattern pattern = Pattern.compile(path);
-    //    Matcher matcher = pattern.matcher(currentPath);
+        Pattern pattern = Pattern.compile(path);
+        Matcher matcher = pattern.matcher(currentPath);
 
-    //    if (currentPath.startsWith(path)){
+        if (matcher.matches()){
             filename = resourcesMap.get(path);
-    //    }
-
+        }
         return filename;
-    //    return resourcesMap.get(path);
-    //    if (matcher.matches()){
-      //      filename = resourcesMap.get(path);
-    //    }
-    //    return filename;
     }
 
     int getCode(String resource){

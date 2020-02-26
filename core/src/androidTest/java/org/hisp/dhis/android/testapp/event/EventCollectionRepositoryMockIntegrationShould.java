@@ -282,6 +282,13 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     }
 
     @Test
+    public void include_notes_as_children() {
+        Event event = d2.eventModule().events()
+                .withNotes().uid("single1").blockingGet();
+        assertThat(event.notes().size(), is(2));
+    }
+
+    @Test
     public void order_by_due_date() {
         List<Event> events = d2.eventModule().events()
                 .orderByDueDate(RepositoryScope.OrderByDirection.ASC)

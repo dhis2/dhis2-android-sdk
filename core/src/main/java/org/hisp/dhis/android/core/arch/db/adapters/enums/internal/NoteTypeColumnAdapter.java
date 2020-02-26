@@ -26,33 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.period;
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.period.Period;
-import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.note.Note;
 
-import java.text.ParseException;
-import java.util.Date;
-
-public class PeriodSamples {
-
-    public static Period getPeriod() {
-        return Period.builder()
-                .id(1L)
-                .periodId("20171231")
-                .periodType(PeriodType.Daily)
-                .startDate(getDate("2017-12-31T00:00:00.000"))
-                .endDate(getDate("2017-12-31T23:59:59.999"))
-                .build();
-    }
-
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+public class NoteTypeColumnAdapter extends EnumColumnAdapter<Note.NoteType> {
+    @Override
+    protected Class<Note.NoteType> getEnumClass() {
+        return Note.NoteType.class;
     }
 }

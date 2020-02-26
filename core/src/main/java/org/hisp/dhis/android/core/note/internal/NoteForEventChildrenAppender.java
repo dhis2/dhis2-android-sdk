@@ -25,34 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.note.internal;
 
-package org.hisp.dhis.android.core.data.period;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.note.Note;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.period.Period;
-import org.hisp.dhis.android.core.period.PeriodType;
+public final class NoteForEventChildrenAppender extends ChildrenAppender<Event> {
 
-import java.text.ParseException;
-import java.util.Date;
+    private final SingleParentChildStore<Event, Note> childStore;
 
-public class PeriodSamples {
-
-    public static Period getPeriod() {
-        return Period.builder()
-                .id(1L)
-                .periodId("20171231")
-                .periodType(PeriodType.Daily)
-                .startDate(getDate("2017-12-31T00:00:00.000"))
-                .endDate(getDate("2017-12-31T23:59:59.999"))
-                .build();
+    private NoteForEventChildrenAppender(SingleParentChildStore<Event, Note> childStore) {
+        this.childStore = childStore;
     }
 
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+    @Override
+    protected Event appendChildren(Event event) {
+        Event.Builder builder = event.toBuilder();
+        builder.notes(childStore.getChildren(event));
+        return builder.build();
+    }
+
+    public static ChildrenAppender<Event> create(DatabaseAdapter databaseAdapter) {
+        return new NoteForEventChildrenAppender(
+                StoreFactory.singleParentChildStore(
+                        databaseAdapter,
+                        NoteStore.EVENT_CHILD_PROJECTION,
+                        Note::create)
+        );
     }
 }

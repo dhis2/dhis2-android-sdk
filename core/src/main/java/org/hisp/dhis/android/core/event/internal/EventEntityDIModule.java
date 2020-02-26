@@ -34,9 +34,10 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventCreateProjection;
+import org.hisp.dhis.android.core.note.internal.NoteForEventChildrenAppender;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueChildrenAppender;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import dagger.Module;
@@ -66,8 +67,12 @@ public final class EventEntityDIModule {
 
     @Provides
     @Reusable
+    @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<Event>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singletonMap(EventFields.TRACKED_ENTITY_DATA_VALUES,
-                TrackedEntityDataValueChildrenAppender.create(databaseAdapter));
+        return new HashMap<String, ChildrenAppender<Event>>() {{
+            put(EventFields.TRACKED_ENTITY_DATA_VALUES,
+                    TrackedEntityDataValueChildrenAppender.create(databaseAdapter));
+            put(EventFields.NOTES, NoteForEventChildrenAppender.create(databaseAdapter));
+        }};
     }
 }

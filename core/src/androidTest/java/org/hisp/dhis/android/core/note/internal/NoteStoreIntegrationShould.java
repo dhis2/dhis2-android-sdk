@@ -26,33 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.period;
+package org.hisp.dhis.android.core.note.internal;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.period.Period;
-import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.note.NoteSamples;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.note.NoteTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-import java.text.ParseException;
-import java.util.Date;
+@RunWith(D2JunitRunner.class)
+public class NoteStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Note> {
 
-public class PeriodSamples {
-
-    public static Period getPeriod() {
-        return Period.builder()
-                .id(1L)
-                .periodId("20171231")
-                .periodType(PeriodType.Daily)
-                .startDate(getDate("2017-12-31T00:00:00.000"))
-                .endDate(getDate("2017-12-31T23:59:59.999"))
-                .build();
+    public NoteStoreIntegrationShould() {
+        super(NoteStore.create(TestDatabaseAdapterFactory.get()),
+                NoteTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+    @Override
+    protected Note buildObject() {
+        return NoteSamples.getNote();
+    }
+
+    @Override
+    protected Note buildObjectToUpdate() {
+        return NoteSamples.getNote().toBuilder()
+                .state(State.SYNCED)
+                .build();
     }
 }

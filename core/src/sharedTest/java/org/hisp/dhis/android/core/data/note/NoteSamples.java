@@ -26,33 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.period;
+package org.hisp.dhis.android.core.data.note;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.period.Period;
-import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.note.Note;
 
-import java.text.ParseException;
-import java.util.Date;
+public class NoteSamples {
 
-public class PeriodSamples {
+    public static Note getNote() {
 
-    public static Period getPeriod() {
-        return Period.builder()
+        return Note.builder()
                 .id(1L)
-                .periodId("20171231")
-                .periodType(PeriodType.Daily)
-                .startDate(getDate("2017-12-31T00:00:00.000"))
-                .endDate(getDate("2017-12-31T23:59:59.999"))
+                .noteType(Note.NoteType.ENROLLMENT_NOTE)
+                .event("eventUid")
+                .value("value")
+                .storedBy("user")
+                .storedDate("2018-03-19T15:20:55.058")
+                .uid("noteUId")
+                .state(State.TO_POST)
                 .build();
-    }
-
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }

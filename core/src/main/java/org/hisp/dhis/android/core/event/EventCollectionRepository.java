@@ -191,6 +191,10 @@ public final class EventCollectionRepository
         return cf.withChild(EventFields.TRACKED_ENTITY_DATA_VALUES);
     }
 
+    public EventCollectionRepository withNotes() {
+        return cf.withChild(EventFields.NOTES);
+    }
+
     public EventCollectionRepository orderByEventDate(RepositoryScope.OrderByDirection direction) {
         return cf.withOrderBy(Columns.EVENT_DATE, direction);
     }

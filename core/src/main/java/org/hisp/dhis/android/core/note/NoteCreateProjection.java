@@ -28,17 +28,25 @@
 
 package org.hisp.dhis.android.core.note;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Note.Builder.class)
 public abstract class NoteCreateProjection {
+
+    @Nullable
+    @JsonIgnore()
+    public abstract Note.NoteType noteType();
+
+    @Nullable
+    @JsonIgnore()
+    public abstract String event();
 
     @Nullable
     @JsonIgnore()
@@ -48,11 +56,30 @@ public abstract class NoteCreateProjection {
     @JsonProperty()
     public abstract String value();
 
+    /**
+     * @deprecated replaced by {@link #create(Note.NoteType, String, String)}
+     */
+    @Deprecated
     public static NoteCreateProjection create(String enrollment, String value) {
         return builder()
+                .noteType(Note.NoteType.ENROLLMENT_NOTE)
                 .enrollment(enrollment)
                 .value(value)
                 .build();
+    }
+
+    public static NoteCreateProjection create(Note.NoteType noteType, String ownerUid, String value) {
+        Builder builder = builder()
+                .noteType(noteType)
+                .value(value);
+
+        if (noteType == Note.NoteType.ENROLLMENT_NOTE) {
+            return builder.enrollment(ownerUid).build();
+        } else if (noteType == Note.NoteType.EVENT_NOTE) {
+            return builder.event(ownerUid).build();
+        } else {
+            throw new IllegalArgumentException("Unknown note type");
+        }
     }
 
     public static Builder builder() {
@@ -64,10 +91,31 @@ public abstract class NoteCreateProjection {
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public static abstract class Builder {
+        public abstract Builder noteType(Note.NoteType noteType);
+
+        public abstract Builder event(String event);
+
         public abstract Builder enrollment(String enrollment);
 
         public abstract Builder value(String value);
 
-        public abstract NoteCreateProjection build();
+        abstract NoteCreateProjection autoBuild();
+
+        // Auxiliary fields
+        abstract Note.NoteType noteType();
+        abstract String event();
+        abstract String enrollment();
+
+        public NoteCreateProjection build() {
+            if (noteType() == null) {
+                throw new IllegalArgumentException("Note type is null");
+            } else if (noteType() == Note.NoteType.ENROLLMENT_NOTE && enrollment() == null) {
+                throw new IllegalArgumentException("Enrollment note type need an enrollment uid");
+            } else if (noteType() == Note.NoteType.EVENT_NOTE && event() == null) {
+                throw new IllegalArgumentException("Event note type need an event uid");
+            }
+
+            return autoBuild();
+        }
     }
 }

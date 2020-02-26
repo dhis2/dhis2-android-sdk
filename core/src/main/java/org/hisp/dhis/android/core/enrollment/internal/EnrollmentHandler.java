@@ -86,10 +86,11 @@ final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
             Collection<Note> notes = new ArrayList<>();
             if (enrollment.notes() != null) {
                 for (Note note : enrollment.notes()) {
-                    notes.add(noteVersionManager.transform(enrollment, note));
+                    notes.add(noteVersionManager.transform(Note.NoteType.ENROLLMENT_NOTE, enrollment.uid(), note));
                 }
             }
-            Set<Note> notesToSync = noteUniquenessManager.buildUniqueCollection(notes, enrollment.uid());
+            Set<Note> notesToSync = noteUniquenessManager.buildUniqueCollection(
+                    notes, Note.NoteType.ENROLLMENT_NOTE, enrollment.uid());
             noteHandler.handleMany(notesToSync);
         }
 

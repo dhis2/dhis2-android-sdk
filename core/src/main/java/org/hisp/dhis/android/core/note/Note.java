@@ -36,8 +36,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.NoteTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.note.internal.NoteFields;
@@ -46,9 +49,22 @@ import org.hisp.dhis.android.core.note.internal.NoteFields;
 @JsonDeserialize(builder = AutoValue_Note.Builder.class)
 public abstract class Note extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
-    @Nullable
+    public enum NoteType {
+        ENROLLMENT_NOTE,
+        EVENT_NOTE
+    }
+
     @JsonProperty(NoteFields.UID)
     public abstract String uid();
+
+    @Nullable
+    @JsonIgnore()
+    @ColumnAdapter(NoteTypeColumnAdapter.class)
+    public abstract NoteType noteType();
+
+    @Nullable
+    @JsonIgnore()
+    public abstract String event();
 
     @Nullable
     @JsonIgnore()
@@ -84,6 +100,10 @@ public abstract class Note extends BaseDeletableDataObject implements ObjectWith
         @JsonProperty(NoteFields.UID)
         public abstract Builder uid(String uid);
 
+        public abstract Builder noteType(NoteType noteType);
+
+        public abstract Builder event(String event);
+
         public abstract Builder enrollment(String enrollment);
 
         public abstract Builder value(String value);
@@ -92,6 +112,19 @@ public abstract class Note extends BaseDeletableDataObject implements ObjectWith
 
         public abstract Builder storedDate(String storedDate);
 
-        public abstract Note build();
+        abstract Note autoBuild();
+
+        // Auxiliary fields
+        abstract String uid();
+
+        public Note build() {
+            try {
+                uid();
+            } catch (IllegalStateException e) {
+                uid(new UidGeneratorImpl().generate());
+            }
+
+            return autoBuild();
+        }
     }
 }

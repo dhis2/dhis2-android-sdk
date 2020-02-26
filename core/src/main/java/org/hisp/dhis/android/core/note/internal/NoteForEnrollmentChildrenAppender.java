@@ -34,12 +34,11 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.note.Note;
 
-public final class NoteChildrenAppender extends ChildrenAppender<Enrollment> {
-
+public final class NoteForEnrollmentChildrenAppender extends ChildrenAppender<Enrollment> {
 
     private final SingleParentChildStore<Enrollment, Note> childStore;
 
-    private NoteChildrenAppender(SingleParentChildStore<Enrollment, Note> childStore) {
+    private NoteForEnrollmentChildrenAppender(SingleParentChildStore<Enrollment, Note> childStore) {
         this.childStore = childStore;
     }
 
@@ -51,10 +50,10 @@ public final class NoteChildrenAppender extends ChildrenAppender<Enrollment> {
     }
 
     public static ChildrenAppender<Enrollment> create(DatabaseAdapter databaseAdapter) {
-        return new NoteChildrenAppender(
+        return new NoteForEnrollmentChildrenAppender(
                 StoreFactory.singleParentChildStore(
                         databaseAdapter,
-                        NoteStore.CHILD_PROJECTION,
+                        NoteStore.ENROLLMENT_CHILD_PROJECTION,
                         Note::create)
         );
     }

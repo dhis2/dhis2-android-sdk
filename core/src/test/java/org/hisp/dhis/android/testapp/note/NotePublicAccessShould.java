@@ -26,33 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.period;
+package org.hisp.dhis.android.testapp.note;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.period.Period;
-import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.mockito.Mock;
 
-import java.text.ParseException;
-import java.util.Date;
+public class NotePublicAccessShould
+        extends BasePublicAccessShould<Note> {
 
-public class PeriodSamples {
+    @Mock
+    private Note object;
 
-    public static Period getPeriod() {
-        return Period.builder()
-                .id(1L)
-                .periodId("20171231")
-                .periodType(PeriodType.Daily)
-                .startDate(getDate("2017-12-31T00:00:00.000"))
-                .endDate(getDate("2017-12-31T23:59:59.999"))
-                .build();
+    @Override
+    public Note object() {
+        return object;
     }
 
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+    @Override
+    public void has_public_create_method() {
+        Note.create(null);
+    }
+
+    @Override
+    public void has_public_builder_method() {
+        Note.builder();
+    }
+
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
     }
 }

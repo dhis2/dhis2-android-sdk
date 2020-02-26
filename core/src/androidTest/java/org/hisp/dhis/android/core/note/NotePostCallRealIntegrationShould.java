@@ -83,7 +83,8 @@ public class NotePostCallRealIntegrationShould extends BaseRealIntegrationTest {
     private void addNote() {
         Enrollment enrollment = d2.enrollmentModule().enrollments().one().blockingGet();
         try {
-            d2.noteModule().notes().blockingAdd(NoteCreateProjection.create(enrollment.uid(), "New note"));
+            d2.noteModule().notes().blockingAdd(NoteCreateProjection.create(
+                    Note.NoteType.ENROLLMENT_NOTE, enrollment.uid(), "New note"));
         } catch (Exception ignored) {
         }
     }

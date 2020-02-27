@@ -56,9 +56,6 @@ public abstract class AndroidSetting implements CoreObject {
     @JsonProperty()
     public abstract Boolean encryptDB();
 
-    @JsonProperty()
-    public abstract Integer valuesTEI();
-
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
@@ -96,8 +93,6 @@ public abstract class AndroidSetting implements CoreObject {
         public abstract Builder dataSync(DataSyncPeriod dataSync);
 
         public abstract Builder encryptDB(Boolean encryptDB);
-
-        public abstract Builder valuesTEI(Integer valuesTEI);
 
         public abstract Builder lastUpdated(Date lastUpdated);
 

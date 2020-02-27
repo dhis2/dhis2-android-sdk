@@ -53,7 +53,6 @@ public final class AndroidSettingTableInfo {
     public static class Columns extends CoreColumns {
         public static final String DATA_SYNC = "dataSync";
         public static final String ENCRYPT_DB = "encryptDB";
-        public static final String VALUES_TEI = "valuesTEI";
         public static final String LAST_UPDATED = "lastUpdated";
         public static final String METADATA_SYNC = "metadataSync";
         public static final String NUMBER_SMS_TO_SEND = "numberSmsToSend";
@@ -65,7 +64,6 @@ public final class AndroidSettingTableInfo {
             return CollectionsHelper.appendInNewArray(super.all(),
                     DATA_SYNC,
                     ENCRYPT_DB,
-                    VALUES_TEI,
                     LAST_UPDATED,
                     METADATA_SYNC,
                     NUMBER_SMS_TO_SEND,

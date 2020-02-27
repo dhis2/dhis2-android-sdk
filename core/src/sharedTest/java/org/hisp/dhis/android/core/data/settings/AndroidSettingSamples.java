@@ -40,7 +40,6 @@ public class AndroidSettingSamples {
                 .id(1L)
                 .dataSync(DataSyncPeriod.EVERY_12_HOURS)
                 .encryptDB(true)
-                .valuesTEI(500)
                 .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
                 .metadataSync(MetadataSyncPeriod.EVERY_DAY)
                 .numberSmsToSend("+34678456123")

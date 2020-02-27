@@ -56,7 +56,6 @@ public final class AndroidSettingTableInfo {
         public static final String LAST_UPDATED = "lastUpdated";
         public static final String METADATA_SYNC = "metadataSync";
         public static final String NUMBER_SMS_TO_SEND = "numberSmsToSend";
-        public static final String ERROR_CONFIRMATION = "errorConfirmation";
         public static final String NUMBER_SMS_CONFIRMATION = "numberSmsConfirmation";
 
         @Override
@@ -67,7 +66,6 @@ public final class AndroidSettingTableInfo {
                     LAST_UPDATED,
                     METADATA_SYNC,
                     NUMBER_SMS_TO_SEND,
-                    ERROR_CONFIRMATION,
                     NUMBER_SMS_CONFIRMATION
             );
         }

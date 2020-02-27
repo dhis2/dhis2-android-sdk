@@ -71,10 +71,6 @@ public abstract class AndroidSetting implements CoreObject {
 
     @Nullable
     @JsonProperty()
-    public abstract Boolean errorConfirmation();
-
-    @Nullable
-    @JsonProperty()
     public abstract String numberSmsConfirmation();
 
     public static AndroidSetting create(Cursor cursor) {
@@ -99,8 +95,6 @@ public abstract class AndroidSetting implements CoreObject {
         public abstract Builder metadataSync(MetadataSyncPeriod metadataSync);
 
         public abstract Builder numberSmsToSend(String numberSmsToSend);
-
-        public abstract Builder errorConfirmation(Boolean errorConfirmation);
 
         public abstract Builder numberSmsConfirmation(String numberSmsConfirmation);
 

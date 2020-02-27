@@ -54,7 +54,6 @@ public class AndroidSettingShould extends BaseObjectShould implements ObjectShou
         assertThat(androidSetting.lastUpdated()).isEqualTo(BaseIdentifiableObject.parseDate("2020-01-13T16:52:05.144Z"));
         assertThat(androidSetting.metadataSync()).isEqualByComparingTo(MetadataSyncPeriod.EVERY_DAY);
         assertThat(androidSetting.numberSmsToSend()).isEqualTo("98456123");
-        assertThat(androidSetting.errorConfirmation()).isTrue();
         assertThat(androidSetting.numberSmsConfirmation()).isEqualTo("98456122");
     }
 }

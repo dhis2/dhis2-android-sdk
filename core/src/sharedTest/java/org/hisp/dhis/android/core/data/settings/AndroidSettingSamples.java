@@ -43,7 +43,6 @@ public class AndroidSettingSamples {
                 .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
                 .metadataSync(MetadataSyncPeriod.EVERY_DAY)
                 .numberSmsToSend("+34678456123")
-                .errorConfirmation(true)
                 .numberSmsConfirmation("+34654321456")
                 .build();
     }

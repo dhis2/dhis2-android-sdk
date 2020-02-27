@@ -44,8 +44,7 @@ final class AndroidSettingStore {
         w.bind(3, o.lastUpdated());
         w.bind(4, o.metadataSync());
         w.bind(5, o.numberSmsToSend());
-        w.bind(6, o.errorConfirmation());
-        w.bind(7, o.numberSmsConfirmation());
+        w.bind(6, o.numberSmsConfirmation());
     };
 
     private static final WhereStatementBinder<AndroidSetting> WHERE_UPDATE_BINDER = (o, w) -> {};

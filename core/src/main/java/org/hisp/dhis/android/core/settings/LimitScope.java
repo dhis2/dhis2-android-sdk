@@ -28,10 +28,23 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public enum LimitScope {
     ALL_ORG_UNITS,
     GLOBAL,
     PER_ORG_UNIT,
     PER_PROGRAM,
-    PER_OU_AND_PROGRAM
+    PER_OU_AND_PROGRAM;
+
+    @JsonCreator
+    public static LimitScope forName(String name) {
+        for(LimitScope c: values()) {
+            if(c.name().equals(name)) {
+                return c;
+            }
+        }
+
+        return null;
+    }
 }

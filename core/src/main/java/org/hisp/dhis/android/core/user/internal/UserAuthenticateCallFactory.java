@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
@@ -41,7 +43,9 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
-import org.hisp.dhis.android.core.configuration.internal.Configuration;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration;
+import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration;
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -80,7 +84,10 @@ public final class UserAuthenticateCallFactory {
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final IdentifiableObjectStore<User> userStore;
     private final WipeModule wipeModule;
-    private final ObjectSecureStore<Configuration> configurationSecureStore;
+    private final ObjectSecureStore<DatabasesConfiguration> configurationSecureStore;
+    private final DatabaseConfigurationHelper configurationHelper;
+
+    private final Context context;
 
     @Inject
     UserAuthenticateCallFactory(
@@ -94,7 +101,9 @@ public final class UserAuthenticateCallFactory {
             @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             @NonNull IdentifiableObjectStore<User> userStore,
             @NonNull WipeModule wipeModule,
-            @NonNull ObjectSecureStore<Configuration> configurationSecureStore) {
+            @NonNull ObjectSecureStore<DatabasesConfiguration> configurationSecureStore,
+            @NonNull DatabaseConfigurationHelper configurationHelper,
+            @NonNull Context context) {
         this.databaseAdapter = databaseAdapter;
         this.apiCallExecutor = apiCallExecutor;
 
@@ -109,6 +118,8 @@ public final class UserAuthenticateCallFactory {
         this.userStore = userStore;
         this.wipeModule = wipeModule;
         this.configurationSecureStore = configurationSecureStore;
+        this.configurationHelper = configurationHelper;
+        this.context = context;
     }
 
     public Single<User> logIn(final String username, final String password, final String serverUrl) {
@@ -131,16 +142,22 @@ public final class UserAuthenticateCallFactory {
         try {
             HttpUrl httpServerUrl = ServerUrlParser.parse(serverUrl);
             ServerURLWrapper.setServerUrl(httpServerUrl.toString());
-            configurationSecureStore.set(Configuration.forServerUrl(httpServerUrl));
+            DatabasesConfiguration updatedConfiguration = configurationHelper.addConfiguration(
+                    configurationSecureStore.get(), httpServerUrl.toString(), username,
+                    DatabaseAdapterFactory.getExperimentalEncryption());
+            configurationSecureStore.set(updatedConfiguration);
 
             User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,
                     new UserAuthenticateCallErrorCatcher());
 
-            DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter);
+            DatabaseUserConfiguration userConfiguration = configurationHelper.getLoggedUserConfiguration(
+                    updatedConfiguration, username);
+            DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration.databaseName(),
+                    context, userConfiguration.encrypted());
 
             throwExceptionIfAlreadyAuthenticatedAndDbNotEmpty();
 
-            return loginOnline(authenticatedUser, username, password, serverUrl);
+            return loginOnline(authenticatedUser, username, password);
         } catch (D2Error d2Error) {
             if (
                     d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
@@ -156,11 +173,7 @@ public final class UserAuthenticateCallFactory {
         }
     }
 
-    private User loginOnline(User authenticatedUser, String username, String password,
-                             String serverUrl) throws D2Error {
-        if (wasLoggedAndUserIsNew(authenticatedUser) || wasLoggedAndServerIsNew(serverUrl)) {
-            wipeModule.wipeEverything();
-        }
+    private User loginOnline(User authenticatedUser, String username, String password) {
 
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
@@ -254,11 +267,6 @@ public final class UserAuthenticateCallFactory {
                         .build();
             }
         }
-    }
-
-    private boolean wasLoggedAndUserIsNew(User newUser) {
-        User lastUser = userStore.selectFirst();
-        return lastUser != null && !lastUser.uid().equals(newUser.uid());
     }
 
     private boolean wasLoggedAndServerIsNew(String serverUrl) {

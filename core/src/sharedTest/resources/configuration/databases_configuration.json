@@ -1,0 +1,15 @@
+{
+  "loggedServerUrl": "https://dhis2.org",
+  "servers": [
+    {
+      "serverUrl": "https://dhis2.org",
+      "users": [
+        {
+          "username": "user",
+          "databaseName": "dbname.db",
+          "encrypted": true
+        }
+      ]
+    }
+  ]
+}

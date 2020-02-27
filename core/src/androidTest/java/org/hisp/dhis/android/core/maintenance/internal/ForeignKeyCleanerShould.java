@@ -34,6 +34,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 import com.google.common.truth.Truth;
 
+import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
@@ -57,7 +58,6 @@ import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserCredentialsTableInfo;
 import org.hisp.dhis.android.core.user.UserTableInfo;
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

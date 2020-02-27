@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.storage.internal;
 
-import android.content.Context;
-
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -40,8 +38,8 @@ public class SecureStorageDIModule {
     private final SecureStore secureStore;
     private final ObjectSecureStore<Credentials> credentialsSecureStore;
 
-    public SecureStorageDIModule(Context context, ObjectSecureStore<Credentials> credentialsSecureStore) {
-        this.secureStore = new AndroidSecureStore(context);
+    public SecureStorageDIModule(SecureStore secureStore, ObjectSecureStore<Credentials> credentialsSecureStore) {
+        this.secureStore = secureStore;
         this.credentialsSecureStore = credentialsSecureStore;
     }
 

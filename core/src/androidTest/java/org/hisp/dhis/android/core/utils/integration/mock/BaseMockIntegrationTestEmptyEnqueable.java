@@ -28,12 +28,18 @@
 
 package org.hisp.dhis.android.core.utils.integration.mock;
 
+import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.BeforeClass;
 
 public abstract class BaseMockIntegrationTestEmptyEnqueable extends BaseMockIntegrationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        setUpClass(MockIntegrationTestDatabaseContent.EmptyEnqueable);
+        boolean isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.EmptyEnqueable);
+        if (isNewInstance) {
+            dhis2MockServer.enqueueLoginResponses();
+            objects.d2.userModule().blockingLogIn(RealServerMother.username, RealServerMother.password,
+                    objects.dhis2MockServer.getBaseEndpoint());
+        }
     }
 }

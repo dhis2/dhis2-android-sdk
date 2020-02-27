@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.integration.real;
+package org.hisp.dhis.android.core;
 
 import android.content.Context;
 
@@ -34,15 +34,10 @@ import androidx.test.InstrumentationRegistry;
 
 import com.facebook.stetho.Stetho;
 
-import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.junit.After;
@@ -58,7 +53,6 @@ public abstract class BaseRealIntegrationTest {
 
     protected Date serverDate = new Date();
     protected ResourceHandler resourceHandler;
-    protected ObjectSecureStore<Credentials> credentialsSecureStore;
 
     protected String username = RealServerMother.username;
     protected String password = RealServerMother.password;
@@ -68,9 +62,8 @@ public abstract class BaseRealIntegrationTest {
     public void setUp() throws IOException {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
 
-        databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter(context, null);
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter);
-        credentialsSecureStore = new CredentialsSecureStoreImpl(new AndroidSecureStore(context));
+        databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter();
+        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, null, context, false);
         resourceHandler = ResourceHandler.create(databaseAdapter);
         resourceHandler.setServerDate(serverDate);
         Stetho.initializeWithDefaults(context);
@@ -79,13 +72,7 @@ public abstract class BaseRealIntegrationTest {
     @After
     public void tearDown() throws IOException {
         assertThat(databaseAdapter).isNotNull();
-        try {
-            databaseAdapter.close();
-        } catch (Exception e) {
-            // Otherwise SQLiteException: unable to close due to unfinalized statements or unfinished backups:
-            // sqlite3_close() failed with SQL cipher
-            // TODO Fix in the SDK, otherwise it will throw the errors in production
-        }
+        databaseAdapter.close();
     }
 
     protected DatabaseAdapter databaseAdapter() {
@@ -98,7 +85,6 @@ public abstract class BaseRealIntegrationTest {
     }
 
     protected D2DIComponent getD2DIComponent(D2 d2) {
-        return D2DIComponent.create(InstrumentationRegistry.getTargetContext().getApplicationContext(), d2.retrofit(),
-                databaseAdapter, credentialsSecureStore);
+        return d2.d2DIComponent;
     }
 }

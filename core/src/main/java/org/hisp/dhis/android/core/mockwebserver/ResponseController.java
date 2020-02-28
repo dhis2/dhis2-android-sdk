@@ -18,10 +18,13 @@ public class ResponseController {
     public static final String PUT = "PUT";
     public static final String DELETE = "DELETE";
 
+    public static final String API_ME_PATH = "/api/me?.*";
+    public static final String API_SYSTEM_INFO_PATH = "/api/system/info?.*";
+
     private Map<String, LinkedHashMap<String, String>> methodsMap;
     private Map<String, Integer> codeResponses;
 
-    public ResponseController(){
+    ResponseController(){
         initMaps();
     }
 
@@ -34,7 +37,11 @@ public class ResponseController {
         methodsMap.put(DELETE, new LinkedHashMap<>());
     }
 
-    public void addResponse(String method, String path, String responseName, Integer responseCode) {
+    void populateInternalResponses(){
+
+    }
+
+    void addResponse(String method, String path, String responseName, Integer responseCode) {
         LinkedHashMap<String, String> resourcesMap = methodsMap.get(method);
         resourcesMap.put(path, responseName);
         codeResponses.put(responseName, responseCode);

@@ -17,9 +17,13 @@ public class Dhis2Dispatcher extends Dispatcher {
     private IFileReader fileReader;
     private ResponseController responseController;
 
-    public Dhis2Dispatcher(IFileReader fileReader, ResponseController responseController){
+    Dhis2Dispatcher(IFileReader fileReader, ResponseController responseController){
         this.fileReader = fileReader;
         this.responseController = responseController;
+    }
+
+    void configInternalResponseController(){
+        responseController.populateInternalResponses();
     }
 
     @Override
@@ -39,7 +43,7 @@ public class Dhis2Dispatcher extends Dispatcher {
         }
     }
 
-    public void addResponse(String method, String path, String responseName, int responseCode) {
+    void addResponse(String method, String path, String responseName, int responseCode) {
         responseController.addResponse(method, path, responseName, responseCode);
     }
 }

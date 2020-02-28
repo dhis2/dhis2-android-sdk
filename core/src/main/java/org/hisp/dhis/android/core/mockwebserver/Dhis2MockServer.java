@@ -97,6 +97,7 @@ public class Dhis2MockServer {
 
     public Dhis2MockServer(int port) throws IOException {
         this(new ResourcesFileReader(), port);
+        dhis2Dispatcher.configInternalResponseController();
     }
 
     private void start(int port) throws IOException {

@@ -65,7 +65,7 @@ public class TrackedEntityInstanceDownloaderShould {
                 .limitByOrgunit(true)
                 .limitByProgram(true)
                 .limit(500)
-                .byEnrollmentStatus(EnrollmentScope.ONLY_ACTIVE)
+                .byProgramStatus(EnrollmentScope.ONLY_ACTIVE)
                 .overwrite(true)
                 .download();
 

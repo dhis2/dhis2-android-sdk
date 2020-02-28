@@ -36,7 +36,6 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.UnwrappedEqInFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.settings.EnrollmentScope;
 
@@ -62,7 +61,7 @@ public abstract class ProgramDataDownloadParams {
     public abstract String program();
 
     @Nullable
-    public abstract EnrollmentStatus programStatus();
+    public abstract EnrollmentScope programStatus();
 
     @Nullable
     public abstract Date programStartDate();
@@ -81,9 +80,6 @@ public abstract class ProgramDataDownloadParams {
 
     @NonNull
     public abstract Integer limit();
-
-    @Nullable
-    public abstract EnrollmentScope enrollmentScope();
 
     @NonNull
     public abstract Boolean overwrite();
@@ -107,8 +103,8 @@ public abstract class ProgramDataDownloadParams {
                 case QueryParams.LIMIT:
                     builder.limit(Integer.parseInt(item.value()));
                     break;
-                case QueryParams.ENROLLMENT_STATUS:
-                    builder.enrollmentScope(EnrollmentScope.valueOf(item.value()));
+                case QueryParams.PROGRAM_STATUS:
+                    builder.programStatus(EnrollmentScope.valueOf(item.value()));
                     break;
                 case QueryParams.OVERWRITE:
                     builder.overwrite(item.value().equals("1"));
@@ -139,7 +135,7 @@ public abstract class ProgramDataDownloadParams {
 
         public abstract Builder program(String program);
 
-        public abstract Builder programStatus(EnrollmentStatus enrollmentStatus);
+        public abstract Builder programStatus(EnrollmentScope enrollmentScope);
 
         public abstract Builder programStartDate(Date programStartDate);
 
@@ -152,8 +148,6 @@ public abstract class ProgramDataDownloadParams {
         public abstract Builder limitByOrgunit(Boolean limitByOrgunit);
 
         public abstract Builder limit(Integer limit);
-
-        public abstract Builder enrollmentScope(EnrollmentScope enrollmentScope);
 
         public abstract Builder overwrite(Boolean overwrite);
 
@@ -172,7 +166,6 @@ public abstract class ProgramDataDownloadParams {
         public static final String LIMIT_BY_ORGUNIT = "limitByOrgunit";
         public static final String LIMIT_BY_PROGRAM = "limitByProgram";
         public static final String LIMIT = "limit";
-        public static final String ENROLLMENT_STATUS = "enrollmentStatus";
         public static final String OVERWRITE = "overwrite";
     }
 }

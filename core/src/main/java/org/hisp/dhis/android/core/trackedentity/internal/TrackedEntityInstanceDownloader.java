@@ -99,8 +99,8 @@ public final class TrackedEntityInstanceDownloader extends BaseRepositoryImpl<Tr
         return cf.integer(QueryParams.LIMIT).eq(limit);
     }
 
-    public TrackedEntityInstanceDownloader byEnrollmentStatus(EnrollmentScope status) {
-        return cf.baseString(QueryParams.ENROLLMENT_STATUS).eq(status.toString());
+    public TrackedEntityInstanceDownloader byProgramStatus(EnrollmentScope status) {
+        return cf.baseString(QueryParams.PROGRAM_STATUS).eq(status.toString());
     }
 
     /**

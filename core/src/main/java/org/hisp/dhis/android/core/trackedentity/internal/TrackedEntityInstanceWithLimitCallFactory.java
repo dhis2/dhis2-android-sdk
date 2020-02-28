@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.helpers.internal.BooleanWrapper;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
@@ -46,6 +47,7 @@ import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLastUpdated;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
+import org.hisp.dhis.android.core.settings.EnrollmentScope;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -221,12 +223,12 @@ class TrackedEntityInstanceWithLimitCallFactory {
         List<TeiQuery.Builder> builders = new ArrayList<>();
 
         if (params.program() != null) {
-            builders.add(getBuilderFor(lastUpdated, orgUnits, ouMode, params.uids()).program(params.program()));
+            builders.add(getBuilderFor(lastUpdated, orgUnits, ouMode, params).program(params.program()));
         } else if (params.limitByProgram()) {
             if (ouMode.equals(OrganisationUnitMode.SELECTED)) {
                 for (OrganisationUnitProgramLink link : getOrganisationUnitProgramLinksByOrgunitUids(orgUnits)) {
                     builders.add(getBuilderFor(lastUpdated, Collections.singletonList(link.organisationUnit()),
-                            ouMode, params.uids()).program(link.program()));
+                            ouMode, params).program(link.program()));
                 }
             } else {
                 Set<String> programs = new HashSet<>();
@@ -234,23 +236,30 @@ class TrackedEntityInstanceWithLimitCallFactory {
                     programs.add(link.program());
                 }
                 for (String program : programs) {
-                    builders.add(getBuilderFor(lastUpdated, orgUnits, ouMode, params.uids()).program(program));
+                    builders.add(getBuilderFor(lastUpdated, orgUnits, ouMode, params).program(program));
                 }
             }
         } else {
-            builders.add(getBuilderFor(lastUpdated, orgUnits, ouMode, params.uids()));
+            builders.add(getBuilderFor(lastUpdated, orgUnits, ouMode, params));
         }
 
         return builders;
     }
 
     private TeiQuery.Builder getBuilderFor(String lastUpdated, List<String> organisationUnits,
-                                           OrganisationUnitMode organisationUnitMode, List<String> teiUids) {
-        return TeiQuery.builder()
+                                           OrganisationUnitMode organisationUnitMode,
+                                           ProgramDataDownloadParams params) {
+        TeiQuery.Builder builder = TeiQuery.builder()
                 .lastUpdatedStartDate(lastUpdated)
                 .orgUnits(organisationUnits)
                 .ouMode(organisationUnitMode)
-                .uids(teiUids);
+                .uids(params.uids());
+
+        if (params.programStatus() != null && params.programStatus().equals(EnrollmentScope.ONLY_ACTIVE)) {
+            builder.programStatus(EnrollmentStatus.ACTIVE);
+        }
+
+        return builder;
     }
 
     private Observable<List<TrackedEntityInstance>> getTrackedEntityInstancesWithPaging(
@@ -276,10 +285,9 @@ class TrackedEntityInstanceWithLimitCallFactory {
                                                          Paging paging) {
         if (paging.isLastPage()
                 && pageTrackedEntityInstances.size() > paging.previousItemsToSkipCount()) {
-            int toIndex = pageTrackedEntityInstances.size() <
-                    paging.pageSize() - paging.posteriorItemsToSkipCount() ?
-                    pageTrackedEntityInstances.size() :
-                    paging.pageSize() - paging.posteriorItemsToSkipCount();
+            int toIndex = Math.min(
+                    pageTrackedEntityInstances.size(),
+                    paging.pageSize() - paging.posteriorItemsToSkipCount());
 
             return pageTrackedEntityInstances.subList(paging.previousItemsToSkipCount(), toIndex);
         } else {

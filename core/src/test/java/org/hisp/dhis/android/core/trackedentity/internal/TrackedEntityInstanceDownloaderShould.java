@@ -76,7 +76,7 @@ public class TrackedEntityInstanceDownloaderShould {
         assertThat(params.limitByOrgunit()).isTrue();
         assertThat(params.limitByProgram()).isTrue();
         assertThat(params.limit()).isEqualTo(500);
-        assertThat(params.enrollmentScope()).isEqualByComparingTo(EnrollmentScope.ONLY_ACTIVE);
+        assertThat(params.programStatus()).isEqualByComparingTo(EnrollmentScope.ONLY_ACTIVE);
         assertThat(params.overwrite()).isTrue();
     }
 

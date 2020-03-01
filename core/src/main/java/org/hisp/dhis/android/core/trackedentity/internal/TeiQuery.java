@@ -61,6 +61,9 @@ abstract class TeiQuery extends BaseQuery {
     @Nullable
     abstract EnrollmentStatus programStatus();
 
+    @NonNull
+    abstract int limit();
+
     static Builder builder() {
         return new AutoValue_TeiQuery.Builder()
                 .page(1)
@@ -84,6 +87,8 @@ abstract class TeiQuery extends BaseQuery {
         abstract Builder uids(Collection<String> uIds);
 
         abstract Builder programStatus(EnrollmentStatus programStatus);
+
+        abstract Builder limit(int limit);
 
         abstract TeiQuery autoBuild();
 

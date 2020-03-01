@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.program.ProgramType;
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
 import org.hisp.dhis.android.core.resource.internal.Resource;
@@ -140,7 +141,7 @@ public final class EventWithLimitCallFactory {
 
                 List<String> programs;
                 if (params.program() == null) {
-                    programs = programStore.queryWithoutRegistrationProgramUids();
+                    programs = programStore.getUidsByProgramType(ProgramType.WITHOUT_REGISTRATION);
                 } else {
                     programs = Collections.singletonList(params.program());
                 }

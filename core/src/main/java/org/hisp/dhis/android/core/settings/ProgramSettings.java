@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -39,6 +41,7 @@ import java.util.Map;
 @JsonDeserialize(builder = AutoValue_ProgramSettings.Builder.class)
 public abstract class ProgramSettings {
 
+    @Nullable
     @JsonProperty()
     public abstract ProgramSetting globalSettings();
 

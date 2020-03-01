@@ -46,7 +46,7 @@ import java.util.List;
 @AutoValue
 public abstract class ProgramDataDownloadParams {
 
-    private static Integer DEFAULT_LIMIT = 500;
+    public static Integer DEFAULT_LIMIT = 500;
 
     @NonNull
     public abstract List<String> uids();
@@ -72,13 +72,13 @@ public abstract class ProgramDataDownloadParams {
     @Nullable
     public abstract String trackedEntityType();
 
-    @NonNull
+    @Nullable
     public abstract Boolean limitByOrgunit();
 
-    @NonNull
+    @Nullable
     public abstract Boolean limitByProgram();
 
-    @NonNull
+    @Nullable
     public abstract Integer limit();
 
     @NonNull
@@ -117,7 +117,6 @@ public abstract class ProgramDataDownloadParams {
 
     public static Builder builder() {
         return new AutoValue_ProgramDataDownloadParams.Builder()
-                .limitByOrgunit(false).limitByProgram(false).limit(DEFAULT_LIMIT)
                 .overwrite(false)
                 .orgUnits(Collections.emptyList())
                 .uids(Collections.emptyList());

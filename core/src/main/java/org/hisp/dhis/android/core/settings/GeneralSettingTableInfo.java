@@ -26,28 +26,48 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.settings.AndroidSettingSamples;
-import org.hisp.dhis.android.core.settings.AndroidSetting;
-import org.hisp.dhis.android.core.settings.AndroidSettingTableInfo;
-import org.hisp.dhis.android.core.settings.internal.AndroidSettingStore;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-@RunWith(D2JunitRunner.class)
-public class AndroidSettingStoreIntegrationShould
-        extends ObjectStoreAbstractIntegrationShould<AndroidSetting> {
+public final class GeneralSettingTableInfo {
 
-    public AndroidSettingStoreIntegrationShould() {
-        super(AndroidSettingStore.create(TestDatabaseAdapterFactory.get()), AndroidSettingTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
+    private GeneralSettingTableInfo() {
     }
 
-    @Override
-    protected AndroidSetting buildObject() {
-        return AndroidSettingSamples.getAndroidSetting();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "GeneralSetting";
+        }
+
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
+
+    public static class Columns extends CoreColumns {
+        public static final String DATA_SYNC = "dataSync";
+        public static final String ENCRYPT_DB = "encryptDB";
+        public static final String LAST_UPDATED = "lastUpdated";
+        public static final String METADATA_SYNC = "metadataSync";
+        public static final String NUMBER_SMS_TO_SEND = "numberSmsToSend";
+        public static final String NUMBER_SMS_CONFIRMATION = "numberSmsConfirmation";
+
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    DATA_SYNC,
+                    ENCRYPT_DB,
+                    LAST_UPDATED,
+                    METADATA_SYNC,
+                    NUMBER_SMS_TO_SEND,
+                    NUMBER_SMS_CONFIRMATION
+            );
+        }
     }
 }

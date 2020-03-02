@@ -38,8 +38,8 @@ public enum DownloadPeriod {
 
     @JsonCreator
     public static DownloadPeriod forName(String name) {
-        for(DownloadPeriod c: values()) {
-            if(c.name().equals(name)) {
+        for (DownloadPeriod c: values()) {
+            if (c.name().equals(name)) {
                 return c;
             }
         }

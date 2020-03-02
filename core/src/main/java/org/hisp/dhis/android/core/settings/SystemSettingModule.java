@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.settings;
 public interface SystemSettingModule {
     SystemSettingCollectionRepository systemSetting();
 
-    AndroidSettingObjectRepository androidSetting();
+    GeneralSettingObjectRepository generalSetting();
 
     DataSetSettingsObjectRepository dataSetSetting();
     

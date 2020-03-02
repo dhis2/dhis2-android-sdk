@@ -26,24 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.settings;
+package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
-import org.hisp.dhis.android.core.settings.AndroidSetting;
-import org.hisp.dhis.android.core.settings.DataSyncPeriod;
-import org.hisp.dhis.android.core.settings.MetadataSyncPeriod;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-public class AndroidSettingSamples {
+import java.io.IOException;
+import java.text.ParseException;
 
-    public static AndroidSetting getAndroidSetting() {
-        return AndroidSetting.builder()
-                .id(1L)
-                .dataSync(DataSyncPeriod.EVERY_12_HOURS)
-                .encryptDB(true)
-                .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
-                .metadataSync(MetadataSyncPeriod.EVERY_DAY)
-                .numberSmsToSend("+34678456123")
-                .numberSmsConfirmation("+34654321456")
-                .build();
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
+public class GeneralSettingsShould extends BaseObjectShould implements ObjectShould {
+
+    public GeneralSettingsShould() {
+        super("settings/general_settings.json");
+    }
+
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        GeneralSettings generalSettings = objectMapper.readValue(jsonStream, GeneralSettings.class);
+
+        assertThat(generalSettings.dataSync()).isEqualByComparingTo(DataSyncPeriod.EVERY_24_HOURS);
+        assertThat(generalSettings.encryptDB()).isFalse();
+        assertThat(generalSettings.lastUpdated()).isEqualTo(BaseIdentifiableObject.parseDate("2020-01-13T16:52:05.144Z"));
+        assertThat(generalSettings.metadataSync()).isEqualByComparingTo(MetadataSyncPeriod.EVERY_DAY);
+        assertThat(generalSettings.numberSmsToSend()).isEqualTo("98456123");
+        assertThat(generalSettings.numberSmsConfirmation()).isEqualTo("98456122");
     }
 }

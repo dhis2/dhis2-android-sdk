@@ -39,8 +39,8 @@ public enum LimitScope {
 
     @JsonCreator
     public static LimitScope forName(String name) {
-        for(LimitScope c: values()) {
-            if(c.name().equals(name)) {
+        for (LimitScope c: values()) {
+            if (c.name().equals(name)) {
                 return c;
             }
         }

@@ -36,7 +36,7 @@ import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module(includes = {
-        AndroidSettingAppEntityDIModule.class,
+        GeneralSettingEntityDIModule.class,
         DataSetSettingEntityDIModule.class,
         ProgramSettingEntityDIModule.class,
         SystemSettingEntityDIModule.class
@@ -51,8 +51,8 @@ public final class SystemSettingPackageDIModule {
 
     @Provides
     @Reusable
-    AndroidSettingAppService settingAppService(Retrofit retrofit) {
-        return retrofit.create(AndroidSettingAppService.class);
+    AndroidSettingService androidSettingService(Retrofit retrofit) {
+        return retrofit.create(AndroidSettingService.class);
     }
 
     @Provides

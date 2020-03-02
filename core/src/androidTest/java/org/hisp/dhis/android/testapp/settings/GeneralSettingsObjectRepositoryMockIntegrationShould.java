@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.testapp.settings;
 
-import org.hisp.dhis.android.core.settings.AndroidSetting;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
 import org.hisp.dhis.android.core.settings.DataSyncPeriod;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -39,11 +39,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(D2JunitRunner.class)
-public class AndroidSettingObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
+public class GeneralSettingsObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
     public void find_android_setting() {
-        AndroidSetting androidSetting = d2.systemSettingModule().androidSetting().blockingGet();
-        assertThat(androidSetting.dataSync(), is(DataSyncPeriod.EVERY_24_HOURS));
+        GeneralSettings generalSettings = d2.systemSettingModule().generalSetting().blockingGet();
+        assertThat(generalSettings.dataSync(), is(DataSyncPeriod.EVERY_24_HOURS));
     }
 }

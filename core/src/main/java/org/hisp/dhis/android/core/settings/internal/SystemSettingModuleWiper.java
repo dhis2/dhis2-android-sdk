@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.settings.AndroidSettingTableInfo;
+import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo;
 import org.hisp.dhis.android.core.settings.DataSetSettingTableInfo;
 import org.hisp.dhis.android.core.settings.ProgramSettingTableInfo;
 import org.hisp.dhis.android.core.settings.SystemSettingTableInfo;
@@ -51,7 +51,7 @@ public final class SystemSettingModuleWiper implements ModuleWiper {
     @Override
     public void wipeMetadata() {
         tableWiper.wipeTable(SystemSettingTableInfo.TABLE_INFO);
-        tableWiper.wipeTable(AndroidSettingTableInfo.TABLE_INFO);
+        tableWiper.wipeTable(GeneralSettingTableInfo.TABLE_INFO);
         tableWiper.wipeTable(DataSetSettingTableInfo.TABLE_INFO);
         tableWiper.wipeTable(ProgramSettingTableInfo.TABLE_INFO);
     }

@@ -26,48 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.data.settings;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
+import org.hisp.dhis.android.core.settings.DataSyncPeriod;
+import org.hisp.dhis.android.core.settings.MetadataSyncPeriod;
 
-public final class AndroidSettingTableInfo {
+public class GeneralSettingsSamples {
 
-    private AndroidSettingTableInfo() {
-    }
-
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "AndroidSetting";
-        }
-
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends CoreColumns {
-        public static final String DATA_SYNC = "dataSync";
-        public static final String ENCRYPT_DB = "encryptDB";
-        public static final String LAST_UPDATED = "lastUpdated";
-        public static final String METADATA_SYNC = "metadataSync";
-        public static final String NUMBER_SMS_TO_SEND = "numberSmsToSend";
-        public static final String NUMBER_SMS_CONFIRMATION = "numberSmsConfirmation";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    DATA_SYNC,
-                    ENCRYPT_DB,
-                    LAST_UPDATED,
-                    METADATA_SYNC,
-                    NUMBER_SMS_TO_SEND,
-                    NUMBER_SMS_CONFIRMATION
-            );
-        }
+    public static GeneralSettings getGeneralSettings() {
+        return GeneralSettings.builder()
+                .id(1L)
+                .dataSync(DataSyncPeriod.EVERY_12_HOURS)
+                .encryptDB(true)
+                .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
+                .metadataSync(MetadataSyncPeriod.EVERY_DAY)
+                .numberSmsToSend("+34678456123")
+                .numberSmsConfirmation("+34654321456")
+                .build();
     }
 }

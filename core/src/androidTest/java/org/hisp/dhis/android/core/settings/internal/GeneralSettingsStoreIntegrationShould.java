@@ -26,34 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.settings.GeneralSettingsSamples;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
+import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-import java.io.IOException;
-import java.text.ParseException;
+@RunWith(D2JunitRunner.class)
+public class GeneralSettingsStoreIntegrationShould
+        extends ObjectStoreAbstractIntegrationShould<GeneralSettings> {
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-
-public class AndroidSettingShould extends BaseObjectShould implements ObjectShould {
-
-    public AndroidSettingShould() {
-        super("settings/android_setting.json");
+    public GeneralSettingsStoreIntegrationShould() {
+        super(GeneralSettingStore.create(TestDatabaseAdapterFactory.get()), GeneralSettingTableInfo.TABLE_INFO,
+                TestDatabaseAdapterFactory.get());
     }
 
     @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        AndroidSetting androidSetting = objectMapper.readValue(jsonStream, AndroidSetting.class);
-
-        assertThat(androidSetting.dataSync()).isEqualByComparingTo(DataSyncPeriod.EVERY_24_HOURS);
-        assertThat(androidSetting.encryptDB()).isFalse();
-        assertThat(androidSetting.lastUpdated()).isEqualTo(BaseIdentifiableObject.parseDate("2020-01-13T16:52:05.144Z"));
-        assertThat(androidSetting.metadataSync()).isEqualByComparingTo(MetadataSyncPeriod.EVERY_DAY);
-        assertThat(androidSetting.numberSmsToSend()).isEqualTo("98456123");
-        assertThat(androidSetting.numberSmsConfirmation()).isEqualTo("98456122");
+    protected GeneralSettings buildObject() {
+        return GeneralSettingsSamples.getGeneralSettings();
     }
 }

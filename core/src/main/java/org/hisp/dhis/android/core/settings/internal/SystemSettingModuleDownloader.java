@@ -41,27 +41,27 @@ public class SystemSettingModuleDownloader implements MetadataModuleDownloader<U
 
     private final SystemSettingCall systemSettingCall;
 
-    private final AndroidSettingCall androidSettingCall;
-    private final DataSetSettingsCall dataSetSettingsCall;
-    private final ProgramSettingsCall programSettingsCall;
+    private final GeneralSettingCall generalSettingCall;
+    private final DataSetSettingCall dataSetSettingCall;
+    private final ProgramSettingCall programSettingCall;
 
     @Inject
     SystemSettingModuleDownloader(SystemSettingCall systemSettingCall,
-                                  AndroidSettingCall androidSettingCall,
-                                  DataSetSettingsCall dataSetSettingsCall,
-                                  ProgramSettingsCall programSettingsCall) {
+                                  GeneralSettingCall generalSettingCall,
+                                  DataSetSettingCall dataSetSettingCall,
+                                  ProgramSettingCall programSettingCall) {
         this.systemSettingCall = systemSettingCall;
-        this.androidSettingCall =  androidSettingCall;
-        this.dataSetSettingsCall = dataSetSettingsCall;
-        this.programSettingsCall = programSettingsCall;
+        this.generalSettingCall = generalSettingCall;
+        this.dataSetSettingCall = dataSetSettingCall;
+        this.programSettingCall = programSettingCall;
     }
 
     @Override
     public Callable<Unit> downloadMetadata() {
         return () -> {
-            androidSettingCall.getCompletable(false).blockingAwait();
-            dataSetSettingsCall.getCompletable(false).blockingAwait();
-            programSettingsCall.getCompletable(false).blockingAwait();
+            generalSettingCall.getCompletable(false).blockingAwait();
+            dataSetSettingCall.getCompletable(false).blockingAwait();
+            programSettingCall.getCompletable(false).blockingAwait();
             systemSettingCall.call();
             return new Unit();
         };

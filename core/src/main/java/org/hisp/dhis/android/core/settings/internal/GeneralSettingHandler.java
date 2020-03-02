@@ -25,41 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings;
+
+package org.hisp.dhis.android.core.settings.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
-import org.hisp.dhis.android.core.settings.internal.DataSetSettingsCall;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
 
-import java.util.List;
+import java.util.Collection;
 
-import javax.inject.Inject;
+class GeneralSettingHandler extends ObjectWithoutUidHandlerImpl<GeneralSettings> {
 
-import dagger.Reusable;
-
-@Reusable
-public final class AndroidSettingObjectRepository
-        extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<AndroidSetting>
-        implements ReadOnlyWithDownloadObjectRepository<AndroidSetting> {
-
-    private final ObjectWithoutUidStore<AndroidSetting> store;
-
-    @Inject
-    AndroidSettingObjectRepository(ObjectWithoutUidStore<AndroidSetting> store,
-                                   DataSetSettingsCall dataSetSettingsCall) {
-        super(dataSetSettingsCall);
-        this.store = store;
+    GeneralSettingHandler(ObjectWithoutUidStore<GeneralSettings> store) {
+        super(store);
     }
 
     @Override
-    public AndroidSetting blockingGet() {
-        List<AndroidSetting> settings = store.selectAll();
-
-        if (settings.isEmpty()) {
-            return null;
-        } else {
-            return settings.get(0);
-        }
+    protected Collection<GeneralSettings> beforeCollectionHandled(Collection<GeneralSettings> oCollection) {
+        store.delete();
+        return oCollection;
     }
 }

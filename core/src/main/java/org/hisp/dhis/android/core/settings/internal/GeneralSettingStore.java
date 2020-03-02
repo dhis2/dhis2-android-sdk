@@ -28,46 +28,33 @@
 
 package org.hisp.dhis.android.core.settings.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.settings.AndroidSetting;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
+import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo;
 
-import java.util.ArrayList;
-import java.util.List;
+final class GeneralSettingStore {
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+    private static final StatementBinder<GeneralSettings> BINDER = (o, w) -> {
+        w.bind(1, o.dataSync());
+        w.bind(2, o.encryptDB());
+        w.bind(3, o.lastUpdated());
+        w.bind(4, o.metadataSync());
+        w.bind(5, o.numberSmsToSend());
+        w.bind(6, o.numberSmsConfirmation());
+    };
 
-public class AndroidSettingHandlerShould {
+    private static final WhereStatementBinder<GeneralSettings> WHERE_UPDATE_BINDER = (o, w) -> {};
 
-    @Mock
-    private ObjectWithoutUidStore<AndroidSetting> androidSettingStore;
+    private static final WhereStatementBinder<GeneralSettings> WHERE_DELETE_BINDER = (o, w) -> {};
 
-    @Mock
-    private AndroidSetting androidSetting;
+    private GeneralSettingStore() {}
 
-    private Handler<AndroidSetting> androidSettingHandler;
-
-    private List<AndroidSetting> androidSettings;
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-
-        androidSettings = new ArrayList<>();
-        androidSettings.add(androidSetting);
-
-        androidSettingHandler = new AndroidSettingHandler(androidSettingStore);
-    }
-
-    @Test
-    public void clean_database_before_insert_collection() {
-        androidSettingHandler.handleMany(androidSettings);
-        verify(androidSettingStore, times(1)).delete();
-        verify(androidSettingStore, times(1)).updateOrInsertWhere(androidSetting);
+    public static ObjectWithoutUidStore<GeneralSettings> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, GeneralSettingTableInfo.TABLE_INFO, BINDER,
+                WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, GeneralSettings::create);
     }
 }

@@ -28,24 +28,46 @@
 
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.settings.AndroidSetting;
-import org.hisp.dhis.android.core.settings.DataSetSettings;
-import org.hisp.dhis.android.core.settings.ProgramSettings;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import io.reactivex.Single;
-import retrofit2.http.GET;
+import java.util.ArrayList;
+import java.util.List;
 
-interface AndroidSettingAppService {
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-    String NAMESPACE = "dataStore/ANDROID_SETTING_APP";
+public class GeneralSettingsHandlerShould {
 
-    @GET(NAMESPACE + "/" + "android_settings")
-    Single<AndroidSetting> getAndroidSettings();
+    @Mock
+    private ObjectWithoutUidStore<GeneralSettings> generalSettingStore;
 
-    @GET(NAMESPACE + "/" + "dataSet_settings")
-    Single<DataSetSettings> getDataSetSettings();
+    @Mock
+    private GeneralSettings generalSettings;
 
-    @GET(NAMESPACE + "/" + "program_settings")
-    Single<ProgramSettings> getProgramSettings();
+    private Handler<GeneralSettings> generalSettingHandler;
 
+    private List<GeneralSettings> generalSettingList;
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+
+        generalSettingList = new ArrayList<>();
+        generalSettingList.add(generalSettings);
+
+        generalSettingHandler = new GeneralSettingHandler(generalSettingStore);
+    }
+
+    @Test
+    public void clean_database_before_insert_collection() {
+        generalSettingHandler.handleMany(generalSettingList);
+        verify(generalSettingStore, times(1)).delete();
+        verify(generalSettingStore, times(1)).updateOrInsertWhere(generalSettings);
+    }
 }

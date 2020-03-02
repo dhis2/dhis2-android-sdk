@@ -25,36 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings;
 
-package org.hisp.dhis.android.core.settings.internal;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.settings.AndroidSetting;
-import org.hisp.dhis.android.core.settings.AndroidSettingTableInfo;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
+import org.hisp.dhis.android.core.settings.internal.DataSetSettingCall;
 
-final class AndroidSettingStore {
+import java.util.List;
 
-    private static final StatementBinder<AndroidSetting> BINDER = (o, w) -> {
-        w.bind(1, o.dataSync());
-        w.bind(2, o.encryptDB());
-        w.bind(3, o.lastUpdated());
-        w.bind(4, o.metadataSync());
-        w.bind(5, o.numberSmsToSend());
-        w.bind(6, o.numberSmsConfirmation());
-    };
+import javax.inject.Inject;
 
-    private static final WhereStatementBinder<AndroidSetting> WHERE_UPDATE_BINDER = (o, w) -> {};
+import dagger.Reusable;
 
-    private static final WhereStatementBinder<AndroidSetting> WHERE_DELETE_BINDER = (o, w) -> {};
+@Reusable
+public final class GeneralSettingObjectRepository
+        extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<GeneralSettings>
+        implements ReadOnlyWithDownloadObjectRepository<GeneralSettings> {
 
-    private AndroidSettingStore() {}
+    private final ObjectWithoutUidStore<GeneralSettings> store;
 
-    public static ObjectWithoutUidStore<AndroidSetting> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, AndroidSettingTableInfo.TABLE_INFO, BINDER,
-                WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, AndroidSetting::create);
+    @Inject
+    GeneralSettingObjectRepository(ObjectWithoutUidStore<GeneralSettings> store,
+                                   DataSetSettingCall dataSetSettingCall) {
+        super(dataSetSettingCall);
+        this.store = store;
+    }
+
+    @Override
+    public GeneralSettings blockingGet() {
+        List<GeneralSettings> settings = store.selectAll();
+
+        if (settings.isEmpty()) {
+            return null;
+        } else {
+            return settings.get(0);
+        }
     }
 }

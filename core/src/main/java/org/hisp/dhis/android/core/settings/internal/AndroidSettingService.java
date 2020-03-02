@@ -28,29 +28,24 @@
 
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.settings.AndroidSetting;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
+import org.hisp.dhis.android.core.settings.DataSetSettings;
+import org.hisp.dhis.android.core.settings.ProgramSettings;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import io.reactivex.Single;
+import retrofit2.http.GET;
 
-@Module
-public final class AndroidSettingAppEntityDIModule {
+interface AndroidSettingService {
 
-    @Provides
-    @Reusable
-    ObjectWithoutUidStore<AndroidSetting> androidSettingStore(DatabaseAdapter databaseAdapter) {
-        return AndroidSettingStore.create(databaseAdapter);
-    }
+    String NAMESPACE = "dataStore/ANDROID_SETTING_APP";
 
-    @Provides
-    @Reusable
-    Handler<AndroidSetting> dataSetSettingHandler(ObjectWithoutUidStore<AndroidSetting> store) {
-        return new AndroidSettingHandler(store);
-    }
+    @GET(NAMESPACE + "/" + "general_settings")
+    Single<GeneralSettings> getGeneralSettings();
 
+    @GET(NAMESPACE + "/" + "dataSet_settings")
+    Single<DataSetSettings> getDataSetSettings();
+
+    @GET(NAMESPACE + "/" + "program_settings")
+    Single<ProgramSettings> getProgramSettings();
 
 }

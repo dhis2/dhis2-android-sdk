@@ -32,12 +32,10 @@ import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.settings.ProgramSetting;
-import org.hisp.dhis.android.core.settings.ProgramSettings;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -46,20 +44,21 @@ import io.reactivex.Completable;
 import io.reactivex.Single;
 
 @Reusable
-public class ProgramSettingsCall implements CompletableProvider {
+public class GeneralSettingCall implements CompletableProvider {
+
     private final DatabaseAdapter databaseAdapter;
-    private final Handler<ProgramSetting> programSettingHandler;
-    private final AndroidSettingAppService androidSettingAppService;
+    private final Handler<GeneralSettings> generalSettingHandler;
+    private final AndroidSettingService androidSettingService;
     private final RxAPICallExecutor apiCallExecutor;
 
     @Inject
-    ProgramSettingsCall(DatabaseAdapter databaseAdapter,
-                        Handler<ProgramSetting> programSettingHandler,
-                        AndroidSettingAppService androidSettingAppService,
-                        RxAPICallExecutor apiCallExecutor) {
+    GeneralSettingCall(DatabaseAdapter databaseAdapter,
+                       Handler<GeneralSettings> generalSettingHandler,
+                       AndroidSettingService androidSettingService,
+                       RxAPICallExecutor apiCallExecutor) {
         this.databaseAdapter = databaseAdapter;
-        this.programSettingHandler = programSettingHandler;
-        this.androidSettingAppService = androidSettingAppService;
+        this.generalSettingHandler = generalSettingHandler;
+        this.androidSettingService = androidSettingService;
         this.apiCallExecutor = apiCallExecutor;
     }
 
@@ -70,31 +69,24 @@ public class ProgramSettingsCall implements CompletableProvider {
                 .onErrorComplete();
     }
 
-    private Single<ProgramSettings> downloadAndPersist(boolean storeError) {
-        return apiCallExecutor.wrapSingle(androidSettingAppService.getProgramSettings(), storeError)
-                .map(programSettings -> {
+    private Single<GeneralSettings> downloadAndPersist(boolean storeError) {
+        return apiCallExecutor.wrapSingle(androidSettingService.getGeneralSettings(), storeError)
+                .map(generalSettings -> {
                     Transaction transaction = databaseAdapter.beginNewTransaction();
                     try {
-                        List<ProgramSetting> programSettingList = getProgramSettingList(programSettings);
-                        programSettingHandler.handleMany(programSettingList);
+                        List<GeneralSettings> generalSettingsList = Collections.singletonList(generalSettings);
+                        generalSettingHandler.handleMany(generalSettingsList);
                         transaction.setSuccessful();
                     } finally {
                         transaction.end();
                     }
-                    return programSettings;
+                    return generalSettings;
                 });
     }
 
-    private List<ProgramSetting> getProgramSettingList(ProgramSettings programSettings) {
-        List<ProgramSetting> programSettingList = new ArrayList<>();
-
-        if (programSettings != null) {
-            programSettingList.add(programSettings.globalSettings());
-
-            for (Map.Entry<String, ProgramSetting> entry : programSettings.specificSettings().entrySet()) {
-                programSettingList.add(entry.getValue());
-            }
-        }
-        return programSettingList;
+    public Single<Boolean> isDatabaseEncrypted() {
+        return apiCallExecutor.wrapSingle(androidSettingService.getGeneralSettings(), false)
+                .map(GeneralSettings::encryptDB)
+                .onErrorReturn(throwable -> false);
     }
 }

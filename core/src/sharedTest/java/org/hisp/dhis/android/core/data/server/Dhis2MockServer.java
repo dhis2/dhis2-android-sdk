@@ -52,7 +52,7 @@ public class Dhis2MockServer {
     private static final String AUTHORITIES_JSON = "user/authorities.json";
     private static final String SYSTEM_INFO_JSON = "systeminfo/system_info.json";
     private static final String SYSTEM_SETTINGS_JSON = "settings/system_settings.json";
-    private static final String ANDROID_SETTINGS_JSON = "settings/android_setting.json";
+    private static final String ANDROID_SETTINGS_JSON = "settings/general_settings.json";
     private static final String DATASET_SETTINGS_JSON = "settings/dataset_settings.json";
     private static final String PROGRAM_SETTINGS_JSON = "settings/program_settings.json";
     private static final String PROGRAMS_JSON = "program/programs.json";

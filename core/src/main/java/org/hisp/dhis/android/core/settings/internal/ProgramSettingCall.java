@@ -32,8 +32,8 @@ import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.settings.DataSetSetting;
-import org.hisp.dhis.android.core.settings.DataSetSettings;
+import org.hisp.dhis.android.core.settings.ProgramSetting;
+import org.hisp.dhis.android.core.settings.ProgramSettings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,20 +46,20 @@ import io.reactivex.Completable;
 import io.reactivex.Single;
 
 @Reusable
-public class DataSetSettingsCall implements CompletableProvider {
+public class ProgramSettingCall implements CompletableProvider {
     private final DatabaseAdapter databaseAdapter;
-    private final Handler<DataSetSetting> dataSetSettingHandler;
-    private final AndroidSettingAppService androidSettingAppService;
+    private final Handler<ProgramSetting> programSettingHandler;
+    private final AndroidSettingService androidSettingService;
     private final RxAPICallExecutor apiCallExecutor;
 
     @Inject
-    DataSetSettingsCall(DatabaseAdapter databaseAdapter,
-                        Handler<DataSetSetting> dataSetSettingHandler,
-                        AndroidSettingAppService androidSettingAppService,
-                        RxAPICallExecutor apiCallExecutor) {
+    ProgramSettingCall(DatabaseAdapter databaseAdapter,
+                       Handler<ProgramSetting> programSettingHandler,
+                       AndroidSettingService androidSettingService,
+                       RxAPICallExecutor apiCallExecutor) {
         this.databaseAdapter = databaseAdapter;
-        this.dataSetSettingHandler = dataSetSettingHandler;
-        this.androidSettingAppService = androidSettingAppService;
+        this.programSettingHandler = programSettingHandler;
+        this.androidSettingService = androidSettingService;
         this.apiCallExecutor = apiCallExecutor;
     }
 
@@ -70,31 +70,31 @@ public class DataSetSettingsCall implements CompletableProvider {
                 .onErrorComplete();
     }
 
-    private Single<DataSetSettings> downloadAndPersist(boolean storeError) {
-        return apiCallExecutor.wrapSingle(androidSettingAppService.getDataSetSettings(), storeError)
-                .map(dataSetSettings -> {
+    private Single<ProgramSettings> downloadAndPersist(boolean storeError) {
+        return apiCallExecutor.wrapSingle(androidSettingService.getProgramSettings(), storeError)
+                .map(programSettings -> {
                     Transaction transaction = databaseAdapter.beginNewTransaction();
                     try {
-                        List<DataSetSetting> dataSetSettingList = getDataSetSettingList(dataSetSettings);
-                        dataSetSettingHandler.handleMany(dataSetSettingList);
+                        List<ProgramSetting> programSettingList = getProgramSettingList(programSettings);
+                        programSettingHandler.handleMany(programSettingList);
                         transaction.setSuccessful();
                     } finally {
                         transaction.end();
                     }
-                    return dataSetSettings;
+                    return programSettings;
                 });
     }
 
-    private List<DataSetSetting> getDataSetSettingList(DataSetSettings dataSetSettings) {
-        List<DataSetSetting> dataSetSettingList = new ArrayList<>();
+    private List<ProgramSetting> getProgramSettingList(ProgramSettings programSettings) {
+        List<ProgramSetting> programSettingList = new ArrayList<>();
 
-        if (dataSetSettings != null) {
-            dataSetSettingList.add(dataSetSettings.globalSettings());
+        if (programSettings != null) {
+            programSettingList.add(programSettings.globalSettings());
 
-            for (Map.Entry<String, DataSetSetting> entry : dataSetSettings.specificSettings().entrySet()) {
-                dataSetSettingList.add(entry.getValue());
+            for (Map.Entry<String, ProgramSetting> entry : programSettings.specificSettings().entrySet()) {
+                programSettingList.add(entry.getValue());
             }
         }
-        return dataSetSettingList;
+        return programSettingList;
     }
 }

@@ -32,10 +32,12 @@ import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.settings.AndroidSetting;
+import org.hisp.dhis.android.core.settings.DataSetSetting;
+import org.hisp.dhis.android.core.settings.DataSetSettings;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -44,21 +46,20 @@ import io.reactivex.Completable;
 import io.reactivex.Single;
 
 @Reusable
-public class AndroidSettingCall implements CompletableProvider {
-
+public class DataSetSettingCall implements CompletableProvider {
     private final DatabaseAdapter databaseAdapter;
-    private final Handler<AndroidSetting> androidSettingHandler;
-    private final AndroidSettingAppService androidSettingAppService;
+    private final Handler<DataSetSetting> dataSetSettingHandler;
+    private final AndroidSettingService androidSettingService;
     private final RxAPICallExecutor apiCallExecutor;
 
     @Inject
-    AndroidSettingCall(DatabaseAdapter databaseAdapter,
-                        Handler<AndroidSetting> androidSettingHandler,
-                        AndroidSettingAppService androidSettingAppService,
-                        RxAPICallExecutor apiCallExecutor) {
+    DataSetSettingCall(DatabaseAdapter databaseAdapter,
+                       Handler<DataSetSetting> dataSetSettingHandler,
+                       AndroidSettingService androidSettingService,
+                       RxAPICallExecutor apiCallExecutor) {
         this.databaseAdapter = databaseAdapter;
-        this.androidSettingHandler = androidSettingHandler;
-        this.androidSettingAppService = androidSettingAppService;
+        this.dataSetSettingHandler = dataSetSettingHandler;
+        this.androidSettingService = androidSettingService;
         this.apiCallExecutor = apiCallExecutor;
     }
 
@@ -69,24 +70,31 @@ public class AndroidSettingCall implements CompletableProvider {
                 .onErrorComplete();
     }
 
-    private Single<AndroidSetting> downloadAndPersist(boolean storeError) {
-        return apiCallExecutor.wrapSingle(androidSettingAppService.getAndroidSettings(), storeError)
-                .map(androidSetting -> {
+    private Single<DataSetSettings> downloadAndPersist(boolean storeError) {
+        return apiCallExecutor.wrapSingle(androidSettingService.getDataSetSettings(), storeError)
+                .map(dataSetSettings -> {
                     Transaction transaction = databaseAdapter.beginNewTransaction();
                     try {
-                        List<AndroidSetting> androidSettingList = Collections.singletonList(androidSetting);
-                        androidSettingHandler.handleMany(androidSettingList);
+                        List<DataSetSetting> dataSetSettingList = getDataSetSettingList(dataSetSettings);
+                        dataSetSettingHandler.handleMany(dataSetSettingList);
                         transaction.setSuccessful();
                     } finally {
                         transaction.end();
                     }
-                    return androidSetting;
+                    return dataSetSettings;
                 });
     }
 
-    public Single<Boolean> isDatabaseEncrypted() {
-        return apiCallExecutor.wrapSingle(androidSettingAppService.getAndroidSettings(), false)
-                .map(AndroidSetting::encryptDB)
-                .onErrorReturn(throwable -> false);
+    private List<DataSetSetting> getDataSetSettingList(DataSetSettings dataSetSettings) {
+        List<DataSetSetting> dataSetSettingList = new ArrayList<>();
+
+        if (dataSetSettings != null) {
+            dataSetSettingList.add(dataSetSettings.globalSettings());
+
+            for (Map.Entry<String, DataSetSetting> entry : dataSetSettings.specificSettings().entrySet()) {
+                dataSetSettingList.add(entry.getValue());
+            }
+        }
+        return dataSetSettingList;
     }
 }

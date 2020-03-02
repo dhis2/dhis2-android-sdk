@@ -36,8 +36,8 @@ public enum EnrollmentScope {
 
     @JsonCreator
     public static EnrollmentScope forName(String name) {
-        for(EnrollmentScope c: values()) {
-            if(c.name().equals(name)) {
+        for (EnrollmentScope c: values()) {
+            if (c.name().equals(name)) {
                 return c;
             }
         }

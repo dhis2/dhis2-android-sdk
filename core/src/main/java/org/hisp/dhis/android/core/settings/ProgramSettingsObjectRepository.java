@@ -41,7 +41,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public final class ProgramSettingsObjectRepository
+public class ProgramSettingsObjectRepository
         extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<ProgramSettings>
         implements ReadOnlyWithDownloadObjectRepository<ProgramSettings> {
 

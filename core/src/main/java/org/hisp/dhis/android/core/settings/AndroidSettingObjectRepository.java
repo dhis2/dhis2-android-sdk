@@ -39,7 +39,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public final class AndroidSettingObjectRepository
+public class AndroidSettingObjectRepository
         extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<AndroidSetting>
         implements ReadOnlyWithDownloadObjectRepository<AndroidSetting> {
 

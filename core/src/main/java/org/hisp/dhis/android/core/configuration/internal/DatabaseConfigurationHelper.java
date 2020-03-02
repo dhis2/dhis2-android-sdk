@@ -39,6 +39,7 @@ final class DatabaseConfigurationHelper {
         this.databaseNameGenerator = databaseNameGenerator;
     }
 
+    @SuppressWarnings("PMD.AvoidDeeplyNestedIfStmts")
     DatabaseUserConfiguration getUserConfiguration(DatabasesConfiguration configuration, String serverUrl,
                                                    String username) {
         if (configuration != null) {

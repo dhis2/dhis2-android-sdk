@@ -64,6 +64,7 @@ import static okhttp3.Credentials.basic;
 import static org.hisp.dhis.android.core.arch.helpers.UserHelper.md5;
 
 @Reusable
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class UserAuthenticateCallFactory {
 
     private final DatabaseAdapter databaseAdapter;

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import android.content.Context;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
@@ -38,7 +40,9 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownl
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.configuration.internal.Configuration;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator;
+import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
@@ -74,6 +78,9 @@ import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class UserAuthenticateCallUnitShould extends BaseCallShould {
+
+    @Mock
+    private Context context;
 
     @Mock
     private UserService userService;
@@ -133,7 +140,9 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private WipeModule wipeModule;
 
     @Mock
-    private ObjectSecureStore<Configuration> configurationSecureStore;
+    private ObjectSecureStore<DatabasesConfiguration> configurationSecureStore;
+
+    private DatabaseConfigurationHelper configurationHelper = new DatabaseConfigurationHelper(new DatabaseNameGenerator());
 
     // call we are testing
     private Single<User> logInSingle;
@@ -183,7 +192,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private Single<User> instantiateCall(String username, String password, String serverUrl) {
         return new UserAuthenticateCallFactory(databaseAdapter, apiCallExecutor,
                 userService, credentialsSecureStore, userHandler, resourceHandler, authenticatedUserStore,
-                systemInfoRepository, userStore, wipeModule, configurationSecureStore).logIn(username, password, serverUrl);
+                systemInfoRepository, userStore, wipeModule, configurationSecureStore, configurationHelper, context).logIn(username, password, serverUrl);
     }
 
     private OngoingStubbing<User> whenAPICall() throws D2Error {
@@ -278,36 +287,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         logInSingle.blockingGet();
 
         verify(wipeModule, never()).wipeEverything();
-        verifySuccess();
-    }
-
-    @Test
-    public void wipe_db_when_previously_another_user() throws Exception {
-        when(userStore.selectFirst()).thenReturn(anotherUser);
-
-        logInSingle.blockingGet();
-
-        verify(wipeModule).wipeEverything();
-        verifySuccess();
-    }
-
-    @Test
-    public void wipe_db_when_previously_equal_user_but_different_server() throws Exception {
-        when(systemInfoFromDb.contextPath()).thenReturn("https://another-instance.org/");
-
-        logInSingle.blockingGet();
-
-        verify(wipeModule).wipeEverything();
-        verifySuccess();
-    }
-
-    @Test
-    public void wipe_db_when_previously_different_user() throws Exception {
-        when(loggedUser.uid()).thenReturn("previous_user");
-
-        logInSingle.blockingGet();
-
-        verify(wipeModule).wipeEverything();
         verifySuccess();
     }
 

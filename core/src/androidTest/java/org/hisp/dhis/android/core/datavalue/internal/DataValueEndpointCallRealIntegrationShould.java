@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.datavalue.internal;
 
+import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
@@ -35,7 +36,6 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImp
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.datavalue.DataValue;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;

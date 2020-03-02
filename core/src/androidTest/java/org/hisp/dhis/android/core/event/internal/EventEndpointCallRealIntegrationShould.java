@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.event.internal;
 
 import com.google.common.truth.Truth;
 
+import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;

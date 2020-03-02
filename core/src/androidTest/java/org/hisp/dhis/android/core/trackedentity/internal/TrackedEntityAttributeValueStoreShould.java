@@ -31,8 +31,11 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import com.google.common.collect.Lists;
 
+import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
@@ -47,7 +50,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTable
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo.Columns;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,8 +57,6 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-
-import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hamcrest.core.Is.is;

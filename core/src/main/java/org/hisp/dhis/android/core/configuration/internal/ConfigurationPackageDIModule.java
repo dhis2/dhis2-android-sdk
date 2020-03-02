@@ -42,8 +42,14 @@ public final class ConfigurationPackageDIModule {
 
     @Provides
     @Reusable
-    ObjectSecureStore<Configuration> configurationSecureStore(SecureStore secureStore) {
-        return new ConfigurationSecureStoreImpl(secureStore);
+    ObjectSecureStore<DatabasesConfiguration> configurationSecureStore(SecureStore secureStore) {
+        return DatabaseConfigurationSecureStore.get(secureStore);
+    }
+
+    @Provides
+    @Reusable
+    DatabaseConfigurationHelper configurationHelper() {
+        return new DatabaseConfigurationHelper(new DatabaseNameGenerator());
     }
 
     @Provides

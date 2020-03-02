@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.settings;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
-import org.hisp.dhis.android.core.settings.internal.DataSetSettingCall;
+import org.hisp.dhis.android.core.settings.internal.ProgramSettingCall;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,8 +49,8 @@ public final class ProgramSettingsObjectRepository
 
     @Inject
     ProgramSettingsObjectRepository(ObjectWithoutUidStore<ProgramSetting> store,
-                                    DataSetSettingCall dataSetSettingCall) {
-        super(dataSetSettingCall);
+                                    ProgramSettingCall programSettingCall) {
+        super(programSettingCall);
         this.store = store;
     }
 

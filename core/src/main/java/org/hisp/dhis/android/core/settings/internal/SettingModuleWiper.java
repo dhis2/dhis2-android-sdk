@@ -27,15 +27,37 @@
  */
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.settings.SystemSettings;
+import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo;
+import org.hisp.dhis.android.core.settings.DataSetSettingTableInfo;
+import org.hisp.dhis.android.core.settings.ProgramSettingTableInfo;
+import org.hisp.dhis.android.core.settings.SystemSettingTableInfo;
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.internal.TableWiper;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import javax.inject.Inject;
 
-interface SystemSettingService {
-    @GET("systemSettings")
-    Call<SystemSettings> getSystemSettings(@Query("fields") @Which Fields<SystemSettings> fields);
+import dagger.Reusable;
+
+@Reusable
+public final class SettingModuleWiper implements ModuleWiper {
+
+    private final TableWiper tableWiper;
+
+    @Inject
+    SettingModuleWiper(TableWiper tableWiper) {
+        this.tableWiper = tableWiper;
+    }
+
+    @Override
+    public void wipeMetadata() {
+        tableWiper.wipeTable(SystemSettingTableInfo.TABLE_INFO);
+        tableWiper.wipeTable(GeneralSettingTableInfo.TABLE_INFO);
+        tableWiper.wipeTable(DataSetSettingTableInfo.TABLE_INFO);
+        tableWiper.wipeTable(ProgramSettingTableInfo.TABLE_INFO);
+    }
+
+    @Override
+    public void wipeData() {
+        // No data to wipe
+    }
 }

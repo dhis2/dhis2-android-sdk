@@ -58,7 +58,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule;
 import org.hisp.dhis.android.core.period.PeriodModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
+import org.hisp.dhis.android.core.settings.SettingModule;
 import org.hisp.dhis.android.core.sms.SmsModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
@@ -106,8 +106,16 @@ public final class D2 {
         return this.modules.systemInfo;
     }
 
-    public SystemSettingModule systemSettingModule() {
-        return this.modules.systemSetting;
+    /**
+     * @deprecated Use {@link #settingModule()} instead.
+     */
+    @Deprecated
+    public SettingModule systemSettingModule() {
+        return this.modules.settingModule;
+    }
+
+    public SettingModule settingModule() {
+        return this.modules.settingModule;
     }
 
     public PeriodModule periodModule() {

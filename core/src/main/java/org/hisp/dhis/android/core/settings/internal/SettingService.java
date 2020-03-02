@@ -25,39 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
+import org.hisp.dhis.android.core.settings.DataSetSettings;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
+import org.hisp.dhis.android.core.settings.ProgramSettings;
+import org.hisp.dhis.android.core.settings.SystemSettings;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+import io.reactivex.Single;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-@Module(includes = {
-        GeneralSettingEntityDIModule.class,
-        DataSetSettingEntityDIModule.class,
-        ProgramSettingEntityDIModule.class,
-        SystemSettingEntityDIModule.class
-})
-public final class SystemSettingPackageDIModule {
+interface SettingService {
 
-    @Provides
-    @Reusable
-    SystemSettingService systemSettingService(Retrofit retrofit) {
-        return retrofit.create(SystemSettingService.class);
-    }
+    String ANDROID_APP_NAMESPACE = "dataStore/ANDROID_SETTING_APP";
 
-    @Provides
-    @Reusable
-    AndroidSettingService androidSettingService(Retrofit retrofit) {
-        return retrofit.create(AndroidSettingService.class);
-    }
+    @GET("systemSettings")
+    Call<SystemSettings> getSystemSettings(@Query("fields") @Which Fields<SystemSettings> fields);
 
-    @Provides
-    @Reusable
-    SystemSettingModule module(SystemSettingModuleImpl impl) {
-        return impl;
-    }
+    @GET(ANDROID_APP_NAMESPACE + "/" + "general_settings")
+    Single<GeneralSettings> getGeneralSettings();
+
+    @GET(ANDROID_APP_NAMESPACE + "/" + "dataSet_settings")
+    Single<DataSetSettings> getDataSetSettings();
+
+    @GET(ANDROID_APP_NAMESPACE + "/" + "program_settings")
+    Single<ProgramSettings> getProgramSettings();
 }

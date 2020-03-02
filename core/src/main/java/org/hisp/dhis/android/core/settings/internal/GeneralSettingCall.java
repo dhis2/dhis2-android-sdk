@@ -48,13 +48,13 @@ public class GeneralSettingCall implements CompletableProvider {
 
     private final DatabaseAdapter databaseAdapter;
     private final Handler<GeneralSettings> generalSettingHandler;
-    private final AndroidSettingService androidSettingService;
+    private final SettingService androidSettingService;
     private final RxAPICallExecutor apiCallExecutor;
 
     @Inject
     GeneralSettingCall(DatabaseAdapter databaseAdapter,
                        Handler<GeneralSettings> generalSettingHandler,
-                       AndroidSettingService androidSettingService,
+                       SettingService androidSettingService,
                        RxAPICallExecutor apiCallExecutor) {
         this.databaseAdapter = databaseAdapter;
         this.generalSettingHandler = generalSettingHandler;

@@ -25,39 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo;
-import org.hisp.dhis.android.core.settings.DataSetSettingTableInfo;
-import org.hisp.dhis.android.core.settings.ProgramSettingTableInfo;
-import org.hisp.dhis.android.core.settings.SystemSettingTableInfo;
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.internal.TableWiper;
+package org.hisp.dhis.android.core.settings;
 
-import javax.inject.Inject;
+public interface SettingModule {
+    SystemSettingCollectionRepository systemSetting();
 
-import dagger.Reusable;
+    GeneralSettingObjectRepository generalSetting();
 
-@Reusable
-public final class SystemSettingModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    SystemSettingModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTable(SystemSettingTableInfo.TABLE_INFO);
-        tableWiper.wipeTable(GeneralSettingTableInfo.TABLE_INFO);
-        tableWiper.wipeTable(DataSetSettingTableInfo.TABLE_INFO);
-        tableWiper.wipeTable(ProgramSettingTableInfo.TABLE_INFO);
-    }
-
-    @Override
-    public void wipeData() {
-        // No data to wipe
-    }
+    DataSetSettingsObjectRepository dataSetSetting();
+    
+    ProgramSettingsObjectRepository programSetting();
 }

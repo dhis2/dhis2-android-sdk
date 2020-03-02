@@ -49,13 +49,13 @@ import io.reactivex.Single;
 public class ProgramSettingCall implements CompletableProvider {
     private final DatabaseAdapter databaseAdapter;
     private final Handler<ProgramSetting> programSettingHandler;
-    private final AndroidSettingService androidSettingService;
+    private final SettingService androidSettingService;
     private final RxAPICallExecutor apiCallExecutor;
 
     @Inject
     ProgramSettingCall(DatabaseAdapter databaseAdapter,
                        Handler<ProgramSetting> programSettingHandler,
-                       AndroidSettingService androidSettingService,
+                       SettingService androidSettingService,
                        RxAPICallExecutor apiCallExecutor) {
         this.databaseAdapter = databaseAdapter;
         this.programSettingHandler = programSettingHandler;

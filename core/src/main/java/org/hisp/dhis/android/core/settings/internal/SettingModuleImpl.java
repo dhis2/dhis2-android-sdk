@@ -31,15 +31,15 @@ package org.hisp.dhis.android.core.settings.internal;
 import org.hisp.dhis.android.core.settings.GeneralSettingObjectRepository;
 import org.hisp.dhis.android.core.settings.DataSetSettingsObjectRepository;
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository;
+import org.hisp.dhis.android.core.settings.SettingModule;
 import org.hisp.dhis.android.core.settings.SystemSettingCollectionRepository;
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class SystemSettingModuleImpl implements SystemSettingModule {
+public final class SettingModuleImpl implements SettingModule {
 
     private final SystemSettingCollectionRepository systemSetting;
 
@@ -48,10 +48,10 @@ public final class SystemSettingModuleImpl implements SystemSettingModule {
     private final ProgramSettingsObjectRepository programSetting;
 
     @Inject
-    SystemSettingModuleImpl(SystemSettingCollectionRepository systemSettingRepository,
-                            GeneralSettingObjectRepository generalSetting,
-                            DataSetSettingsObjectRepository dataSetSetting,
-                            ProgramSettingsObjectRepository programSetting) {
+    SettingModuleImpl(SystemSettingCollectionRepository systemSettingRepository,
+                      GeneralSettingObjectRepository generalSetting,
+                      DataSetSettingsObjectRepository dataSetSetting,
+                      ProgramSettingsObjectRepository programSetting) {
         this.systemSetting = systemSettingRepository;
         this.generalSetting = generalSetting;
         this.dataSetSetting = dataSetSetting;

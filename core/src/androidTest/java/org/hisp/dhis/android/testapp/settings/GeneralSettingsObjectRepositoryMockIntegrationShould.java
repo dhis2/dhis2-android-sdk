@@ -43,7 +43,7 @@ public class GeneralSettingsObjectRepositoryMockIntegrationShould extends BaseMo
 
     @Test
     public void find_android_setting() {
-        GeneralSettings generalSettings = d2.systemSettingModule().generalSetting().blockingGet();
+        GeneralSettings generalSettings = d2.settingModule().generalSetting().blockingGet();
         assertThat(generalSettings.dataSync(), is(DataSyncPeriod.EVERY_24_HOURS));
     }
 }

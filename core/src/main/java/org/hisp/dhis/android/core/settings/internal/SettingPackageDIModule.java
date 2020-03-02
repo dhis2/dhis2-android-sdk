@@ -28,24 +28,30 @@
 
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.settings.GeneralSettings;
-import org.hisp.dhis.android.core.settings.DataSetSettings;
-import org.hisp.dhis.android.core.settings.ProgramSettings;
+import org.hisp.dhis.android.core.settings.SettingModule;
 
-import io.reactivex.Single;
-import retrofit2.http.GET;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-interface AndroidSettingService {
+@Module(includes = {
+        GeneralSettingEntityDIModule.class,
+        DataSetSettingEntityDIModule.class,
+        ProgramSettingEntityDIModule.class,
+        SystemSettingEntityDIModule.class
+})
+public final class SettingPackageDIModule {
 
-    String NAMESPACE = "dataStore/ANDROID_SETTING_APP";
+    @Provides
+    @Reusable
+    SettingService settingService(Retrofit retrofit) {
+        return retrofit.create(SettingService.class);
+    }
 
-    @GET(NAMESPACE + "/" + "general_settings")
-    Single<GeneralSettings> getGeneralSettings();
-
-    @GET(NAMESPACE + "/" + "dataSet_settings")
-    Single<DataSetSettings> getDataSetSettings();
-
-    @GET(NAMESPACE + "/" + "program_settings")
-    Single<ProgramSettings> getProgramSettings();
-
+    @Provides
+    @Reusable
+    SettingModule module(SettingModuleImpl impl) {
+        return impl;
+    }
 }

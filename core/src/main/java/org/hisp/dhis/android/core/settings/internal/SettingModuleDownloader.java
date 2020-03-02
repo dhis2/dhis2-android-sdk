@@ -37,7 +37,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public class SystemSettingModuleDownloader implements MetadataModuleDownloader<Unit> {
+public class SettingModuleDownloader implements MetadataModuleDownloader<Unit> {
 
     private final SystemSettingCall systemSettingCall;
 
@@ -46,10 +46,10 @@ public class SystemSettingModuleDownloader implements MetadataModuleDownloader<U
     private final ProgramSettingCall programSettingCall;
 
     @Inject
-    SystemSettingModuleDownloader(SystemSettingCall systemSettingCall,
-                                  GeneralSettingCall generalSettingCall,
-                                  DataSetSettingCall dataSetSettingCall,
-                                  ProgramSettingCall programSettingCall) {
+    SettingModuleDownloader(SystemSettingCall systemSettingCall,
+                            GeneralSettingCall generalSettingCall,
+                            DataSetSettingCall dataSetSettingCall,
+                            ProgramSettingCall programSettingCall) {
         this.systemSettingCall = systemSettingCall;
         this.generalSettingCall = generalSettingCall;
         this.dataSetSettingCall = dataSetSettingCall;

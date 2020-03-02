@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
+import org.hisp.dhis.android.core.settings.ProgramSetting;
 import org.hisp.dhis.android.core.settings.ProgramSettings;
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
@@ -44,8 +45,11 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -70,14 +74,19 @@ public class EventQueryBundleFactoryShould {
     @Mock
     private ProgramSettingsObjectRepository programSettingsObjectRepository;
 
-    private ProgramSettings programSettings = null;
-    private List<String> programList = Arrays.asList("program1", "program2", "program3");
-    private List<String> rootOrgUnits = Arrays.asList("ou1", "ou2");
-    private List<String> captureOrgUnits = Arrays.asList("ou1", "ou1.1", "ou2");
+    @Mock
+    private ProgramSettings programSettings;
+
+    private String p1 = "program1", p2 = "program2", p3 = "program3";
+
+    private String ou1 = "ou1", ou1c1 = "ou1.1", ou2 = "ou2";
+
+    private List<String> rootOrgUnits = Arrays.asList(ou1, ou2);
+    private List<String> captureOrgUnits = Arrays.asList(ou1, ou1c1, ou2);
     private List<OrganisationUnitProgramLink> links = Arrays.asList(
-            OrganisationUnitProgramLink.builder().organisationUnit("ou1.1").program("program1").build(),
-            OrganisationUnitProgramLink.builder().organisationUnit("ou1.1").program("program2").build(),
-            OrganisationUnitProgramLink.builder().organisationUnit("ou2").program("program2").build()
+            OrganisationUnitProgramLink.builder().organisationUnit(ou1c1).program(p1).build(),
+            OrganisationUnitProgramLink.builder().organisationUnit(ou1c1).program(p2).build(),
+            OrganisationUnitProgramLink.builder().organisationUnit(ou2).program(p2).build()
     );
 
     // Object to test
@@ -91,7 +100,7 @@ public class EventQueryBundleFactoryShould {
         when(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids()).thenReturn(rootOrgUnits);
         when(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(any())).thenReturn(captureOrgUnits);
         when(organisationUnitProgramLinkLinkStore.selectWhere(anyString())).thenReturn(links);
-        when(programStore.getUidsByProgramType(any())).thenReturn(programList);
+        when(programStore.getUidsByProgramType(any())).thenReturn(getProgramList());
         when(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings);
 
         bundleFactory = new EventQueryBundleFactory(resourceHandler, userOrganisationUnitLinkStore,
@@ -108,8 +117,42 @@ public class EventQueryBundleFactoryShould {
 
         EventQueryBundle bundle = bundles.get(0);
         assertThat(bundle.orgUnitList()).isEqualTo(rootOrgUnits);
-        assertThat(bundle.programList()).isEqualTo(programList);
+        assertThat(bundle.programList()).isEqualTo(getProgramList());
         assertThat(bundle.ouMode()).isEqualByComparingTo(OrganisationUnitMode.DESCENDANTS);
+    }
+
+    @Test
+    public void create_separate_bundle_for_program_if_has_specific_settings() {
+        ProgramDataDownloadParams params = ProgramDataDownloadParams.builder().build();
+
+        Map<String, ProgramSetting> specifics = new HashMap<>();
+        specifics.put(p1, ProgramSetting.builder().uid(p1).eventsDownload(200).build());
+
+        when(programSettings.specificSettings()).thenReturn(specifics);
+
+        List<EventQueryBundle> bundles = bundleFactory.getEventQueryBundles(params);
+
+        assertThat(bundles.size()).isEqualTo(2);
+
+        for (EventQueryBundle bundle : bundles) {
+            if (bundle.programList().size() == 1) {
+                assertThat(bundle.programList().get(0)).isEqualTo(p1);
+                assertThat(bundle.limit()).isEqualTo(200);
+            } else if (bundle.programList().size() == 2) {
+                assertThat(bundle.programList().contains(p2)).isTrue();
+                assertThat(bundle.programList().contains(p3)).isTrue();
+            } else {
+                throw new RuntimeException("Not a valid bundle");
+            }
+        }
+    }
+
+    private List<String> getProgramList() {
+        List<String> programList = new ArrayList<>();
+        programList.add(p1);
+        programList.add(p2);
+        programList.add(p3);
+        return programList;
     }
 
 }

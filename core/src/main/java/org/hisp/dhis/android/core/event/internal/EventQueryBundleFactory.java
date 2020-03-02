@@ -99,6 +99,7 @@ class EventQueryBundleFactory {
 
                 for (Map.Entry<String, ProgramSetting> specificSetting : specificSettings.entrySet()) {
                     builders.addAll(queryPerProgram(params, programSettings, specificSetting.getKey(), lastUpdated));
+                    programs.remove(specificSetting.getKey());
                 }
 
                 builders.addAll(queryGlobal(params, programSettings, programs, lastUpdated));

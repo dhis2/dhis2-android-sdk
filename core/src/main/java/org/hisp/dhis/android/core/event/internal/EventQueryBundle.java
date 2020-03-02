@@ -26,28 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.event.internal;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @AutoValue
-abstract class TeiQuery extends BaseQuery {
+abstract class EventQueryBundle {
 
     @NonNull
-    abstract Collection<String> orgUnits();
+    abstract List<String> orgUnitList();
 
-    @Nullable
-    abstract String program();
+    @NonNull
+    abstract List<String> programList();
 
     @NonNull
     abstract OrganisationUnitMode ouMode();
@@ -56,50 +54,25 @@ abstract class TeiQuery extends BaseQuery {
     abstract String lastUpdatedStartDate();
 
     @NonNull
-    abstract Collection<String> uids();
-
-    @Nullable
-    abstract EnrollmentStatus programStatus();
-
-    @NonNull
     abstract Integer limit();
 
     static Builder builder() {
-        return new AutoValue_TeiQuery.Builder()
-                .page(1)
-                .pageSize(DEFAULT_PAGE_SIZE)
-                .paging(true)
-                .ouMode(OrganisationUnitMode.SELECTED)
-                .orgUnits(Collections.emptyList())
-                .uids(Collections.emptyList());
+        return new AutoValue_EventQueryBundle.Builder()
+                .ouMode(OrganisationUnitMode.SELECTED);
     }
 
     @AutoValue.Builder
-    abstract static class Builder extends BaseQuery.Builder<Builder> {
-        abstract Builder orgUnits(Collection<String> orgUnits);
+    abstract static class Builder {
+        abstract Builder orgUnitList(List<String> orgUnitList);
 
-        abstract Builder program(String program);
+        abstract Builder programList(List<String> programList);
 
         abstract Builder ouMode(OrganisationUnitMode ouMode);
 
         abstract Builder lastUpdatedStartDate(String lastUpdatedStartDate);
 
-        abstract Builder uids(Collection<String> uIds);
-
-        abstract Builder programStatus(EnrollmentStatus programStatus);
-
         abstract Builder limit(Integer limit);
 
-        abstract TeiQuery autoBuild();
-
-        //Auxiliary fields
-        abstract String program();
-
-        public TeiQuery build() {
-            if (program() == null) {
-                programStatus(null);
-            }
-            return autoBuild();
-        }
+        abstract EventQueryBundle build();
     }
 }

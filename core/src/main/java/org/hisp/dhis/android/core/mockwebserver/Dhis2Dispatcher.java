@@ -5,6 +5,7 @@ import android.util.Log;
 import org.hisp.dhis.android.core.arch.file.IFileReader;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
@@ -28,7 +29,7 @@ public class Dhis2Dispatcher extends Dispatcher {
 
     @Override
     public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
-        String method = request.getMethod().toUpperCase();
+        String method = request.getMethod().toUpperCase(Locale.getDefault());
         String path = request.getPath();
 
         String fileName = responseController.getBody(method, path);

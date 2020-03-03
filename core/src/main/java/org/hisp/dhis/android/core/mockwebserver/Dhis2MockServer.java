@@ -210,7 +210,9 @@ public class Dhis2MockServer {
                 } else if (path.startsWith("/api/dataApprovals/multiple?")) {
                     return createMockResponse(DATA_APPROVALS_MULTIPLE_JSON);
                 } else {
-                    return new MockResponse().setResponseCode(404).setBody("Path not present in Dhis2MockServer dispatcher");
+                    return new MockResponse()
+                            .setResponseCode(404)
+                            .setBody("Path not present in Dhis2MockServer dispatcher");
                 }
             }
         };

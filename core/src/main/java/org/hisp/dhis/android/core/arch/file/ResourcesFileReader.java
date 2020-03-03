@@ -42,8 +42,8 @@ public final class ResourcesFileReader implements IFileReader {
         InputStream fileStream = this.getClass().getClassLoader().getResourceAsStream(filename);
 
         StringBuilder textBuilder = new StringBuilder();
-        try (Reader reader = new BufferedReader(new InputStreamReader
-                (fileStream, Charset.forName(StandardCharsets.UTF_8.name())))) {
+        try (Reader reader = new BufferedReader(
+                new InputStreamReader(fileStream, Charset.forName(StandardCharsets.UTF_8.name())))) {
             int c;
             while ((c = reader.read()) != -1) {
                 textBuilder.append((char) c);

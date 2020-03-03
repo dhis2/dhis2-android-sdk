@@ -25,27 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings;
 
-package org.hisp.dhis.android.core.data.settings;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
+import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall;
 
-import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
-import org.hisp.dhis.android.core.settings.AndroidSetting;
-import org.hisp.dhis.android.core.settings.DataSyncPeriod;
-import org.hisp.dhis.android.core.settings.MetadataSyncPeriod;
+import java.util.List;
 
-public class AndroidSettingSamples {
+import javax.inject.Inject;
 
-    public static AndroidSetting getAndroidSetting() {
-        return AndroidSetting.builder()
-                .id(1L)
-                .dataSync(DataSyncPeriod.EVERY_12_HOURS)
-                .encryptDB(true)
-                .valuesTEI(500)
-                .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
-                .metadataSync(MetadataSyncPeriod.EVERY_DAY)
-                .numberSmsToSend("+34678456123")
-                .errorConfirmation(true)
-                .numberSmsConfirmation("+34654321456")
-                .build();
+import dagger.Reusable;
+
+@Reusable
+public final class GeneralSettingObjectRepository
+        extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<GeneralSettings>
+        implements ReadOnlyWithDownloadObjectRepository<GeneralSettings> {
+
+    private final ObjectWithoutUidStore<GeneralSettings> store;
+
+    @Inject
+    GeneralSettingObjectRepository(ObjectWithoutUidStore<GeneralSettings> store,
+                                   GeneralSettingCall generalSettingCall) {
+        super(generalSettingCall);
+        this.store = store;
+    }
+
+    @Override
+    public GeneralSettings blockingGet() {
+        List<GeneralSettings> settings = store.selectAll();
+
+        if (settings.isEmpty()) {
+            return null;
+        } else {
+            return settings.get(0);
+        }
     }
 }

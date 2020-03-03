@@ -54,8 +54,8 @@ public class ProgramSettingSamples {
                 .enrollmentDBTrimming(EnrollmentScope.ALL)
                 .teReservedDownload(100)
                 .teReservedDBTrimming(500)
-                .eventPeriodDownload(DownloadPeriod.ANY)
-                .eventPeriodDBTrimming(DownloadPeriod.LAST_12_MONTHS)
+                .eventDateDownload(DownloadPeriod.ANY)
+                .eventDateDBTrimming(DownloadPeriod.LAST_12_MONTHS)
                 .enrollmentDateDownload(DownloadPeriod.LAST_3_MONTHS)
                 .enrollmentDateDBTrimming(DownloadPeriod.LAST_12_MONTHS)
                 .build();

@@ -67,8 +67,8 @@ public final class ProgramSettingTableInfo {
         public static final String ENROLLMENT_DB_TRIMMING = "enrollmentDBTrimming";
         public static final String TE_RESERVED_DOWNLOAD = "teReservedDownload";
         public static final String TE_RESERVED_DB_TRIMMIG = "teReservedDBTrimming";
-        public static final String EVENT_PERIOD_DOWNLOAD = "eventPeriodDownload";
-        public static final String EVENT_PERIOD_DB_TRIMMING = "eventPeriodDBTrimming";
+        public static final String EVENT_DATE_DOWNLOAD = "eventDateDownload";
+        public static final String EVENT_DATE_DB_TRIMMING = "eventDateDBTrimming";
         public static final String ENROLLMENT_DATE_DOWNLOAD = "enrollmentDateDownload";
         public static final String ENROLLMENT_DATE_DB_TRIMMING = "enrollmentDateDBTrimming";
 
@@ -90,8 +90,8 @@ public final class ProgramSettingTableInfo {
                     ENROLLMENT_DB_TRIMMING,
                     TE_RESERVED_DOWNLOAD,
                     TE_RESERVED_DB_TRIMMIG,
-                    EVENT_PERIOD_DOWNLOAD,
-                    EVENT_PERIOD_DB_TRIMMING,
+                    EVENT_DATE_DOWNLOAD,
+                    EVENT_DATE_DB_TRIMMING,
                     ENROLLMENT_DATE_DOWNLOAD,
                     ENROLLMENT_DATE_DB_TRIMMING
             );

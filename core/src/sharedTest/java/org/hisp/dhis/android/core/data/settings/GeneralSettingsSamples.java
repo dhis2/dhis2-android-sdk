@@ -26,37 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.data.settings;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.settings.AndroidSetting;
-import org.hisp.dhis.android.core.settings.AndroidSettingTableInfo;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
+import org.hisp.dhis.android.core.settings.DataSyncPeriod;
+import org.hisp.dhis.android.core.settings.MetadataSyncPeriod;
 
-final class AndroidSettingStore {
+public class GeneralSettingsSamples {
 
-    private static final StatementBinder<AndroidSetting> BINDER = (o, w) -> {
-        w.bind(1, o.dataSync());
-        w.bind(2, o.encryptDB());
-        w.bind(3, o.valuesTEI());
-        w.bind(4, o.lastUpdated());
-        w.bind(5, o.metadataSync());
-        w.bind(6, o.numberSmsToSend());
-        w.bind(7, o.errorConfirmation());
-        w.bind(8, o.numberSmsConfirmation());
-    };
-
-    private static final WhereStatementBinder<AndroidSetting> WHERE_UPDATE_BINDER = (o, w) -> {};
-
-    private static final WhereStatementBinder<AndroidSetting> WHERE_DELETE_BINDER = (o, w) -> {};
-
-    private AndroidSettingStore() {}
-
-    public static ObjectWithoutUidStore<AndroidSetting> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, AndroidSettingTableInfo.TABLE_INFO, BINDER,
-                WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, AndroidSetting::create);
+    public static GeneralSettings getGeneralSettings() {
+        return GeneralSettings.builder()
+                .id(1L)
+                .dataSync(DataSyncPeriod.EVERY_12_HOURS)
+                .encryptDB(true)
+                .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
+                .metadataSync(MetadataSyncPeriod.EVERY_DAY)
+                .numberSmsToSend("+34678456123")
+                .numberSmsConfirmation("+34654321456")
+                .build();
     }
 }

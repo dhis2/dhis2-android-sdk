@@ -28,29 +28,46 @@
 
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.settings.AndroidSetting;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import java.util.ArrayList;
+import java.util.List;
 
-@Module
-public final class AndroidSettingAppEntityDIModule {
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-    @Provides
-    @Reusable
-    ObjectWithoutUidStore<AndroidSetting> androidSettingStore(DatabaseAdapter databaseAdapter) {
-        return AndroidSettingStore.create(databaseAdapter);
+public class GeneralSettingsHandlerShould {
+
+    @Mock
+    private ObjectWithoutUidStore<GeneralSettings> generalSettingStore;
+
+    @Mock
+    private GeneralSettings generalSettings;
+
+    private Handler<GeneralSettings> generalSettingHandler;
+
+    private List<GeneralSettings> generalSettingList;
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+
+        generalSettingList = new ArrayList<>();
+        generalSettingList.add(generalSettings);
+
+        generalSettingHandler = new GeneralSettingHandler(generalSettingStore);
     }
 
-    @Provides
-    @Reusable
-    Handler<AndroidSetting> dataSetSettingHandler(ObjectWithoutUidStore<AndroidSetting> store) {
-        return new AndroidSettingHandler(store);
+    @Test
+    public void clean_database_before_insert_collection() {
+        generalSettingHandler.handleMany(generalSettingList);
+        verify(generalSettingStore, times(1)).delete();
+        verify(generalSettingStore, times(1)).updateOrInsertWhere(generalSettings);
     }
-
-
 }

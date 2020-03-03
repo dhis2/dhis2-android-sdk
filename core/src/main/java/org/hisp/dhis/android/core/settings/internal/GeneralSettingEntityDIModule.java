@@ -25,41 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings;
 
+package org.hisp.dhis.android.core.settings.internal;
+
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
-import org.hisp.dhis.android.core.settings.internal.DataSetSettingsCall;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
 
-import java.util.List;
-
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-public final class AndroidSettingObjectRepository
-        extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<AndroidSetting>
-        implements ReadOnlyWithDownloadObjectRepository<AndroidSetting> {
+@Module
+public final class GeneralSettingEntityDIModule {
 
-    private final ObjectWithoutUidStore<AndroidSetting> store;
-
-    @Inject
-    AndroidSettingObjectRepository(ObjectWithoutUidStore<AndroidSetting> store,
-                                   DataSetSettingsCall dataSetSettingsCall) {
-        super(dataSetSettingsCall);
-        this.store = store;
+    @Provides
+    @Reusable
+    ObjectWithoutUidStore<GeneralSettings> generalSettingStore(DatabaseAdapter databaseAdapter) {
+        return GeneralSettingStore.create(databaseAdapter);
     }
 
-    @Override
-    public AndroidSetting blockingGet() {
-        List<AndroidSetting> settings = store.selectAll();
-
-        if (settings.isEmpty()) {
-            return null;
-        } else {
-            return settings.get(0);
-        }
+    @Provides
+    @Reusable
+    Handler<GeneralSettings> dataSetSettingHandler(ObjectWithoutUidStore<GeneralSettings> store) {
+        return new GeneralSettingHandler(store);
     }
+
+
 }

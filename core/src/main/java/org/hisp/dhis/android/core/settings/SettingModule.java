@@ -26,28 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.settings.AndroidSettingSamples;
-import org.hisp.dhis.android.core.settings.AndroidSetting;
-import org.hisp.dhis.android.core.settings.AndroidSettingTableInfo;
-import org.hisp.dhis.android.core.settings.internal.AndroidSettingStore;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
+public interface SettingModule {
+    SystemSettingCollectionRepository systemSetting();
 
-@RunWith(D2JunitRunner.class)
-public class AndroidSettingStoreIntegrationShould
-        extends ObjectStoreAbstractIntegrationShould<AndroidSetting> {
+    GeneralSettingObjectRepository generalSetting();
 
-    public AndroidSettingStoreIntegrationShould() {
-        super(AndroidSettingStore.create(TestDatabaseAdapterFactory.get()), AndroidSettingTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
-    }
-
-    @Override
-    protected AndroidSetting buildObject() {
-        return AndroidSettingSamples.getAndroidSetting();
-    }
+    DataSetSettingsObjectRepository dataSetSetting();
+    
+    ProgramSettingsObjectRepository programSetting();
 }

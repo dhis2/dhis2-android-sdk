@@ -33,6 +33,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
+import java.util.Collections;
 import java.util.Map;
 
 @AutoValue
@@ -46,7 +47,8 @@ public abstract class ProgramSettings {
     public abstract Map<String, ProgramSetting> specificSettings();
 
     public static Builder builder() {
-        return new AutoValue_ProgramSettings.Builder();
+        return new AutoValue_ProgramSettings.Builder()
+                .specificSettings(Collections.emptyMap());
     }
 
     @AutoValue.Builder
@@ -56,6 +58,20 @@ public abstract class ProgramSettings {
 
         public abstract Builder specificSettings(Map<String, ProgramSetting> specificSettings);
 
-        public abstract ProgramSettings build();
+        abstract ProgramSettings autoBuild();
+
+        //Auxiliary fields
+        abstract Map<String, ProgramSetting> specificSettings();
+
+        public ProgramSettings build() {
+
+            try {
+                specificSettings();
+            } catch (IllegalStateException e) {
+                specificSettings(Collections.emptyMap());
+            }
+
+            return autoBuild();
+        }
     }
 }

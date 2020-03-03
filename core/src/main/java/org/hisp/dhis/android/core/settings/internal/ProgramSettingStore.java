@@ -54,8 +54,8 @@ final class ProgramSettingStore {
         w.bind(13, o.enrollmentDBTrimming());
         w.bind(14, o.teReservedDownload());
         w.bind(15, o.teReservedDBTrimming());
-        w.bind(16, o.eventPeriodDownload());
-        w.bind(17, o.eventPeriodDBTrimming());
+        w.bind(16, o.eventDateDownload());
+        w.bind(17, o.eventDateDBTrimming());
         w.bind(18, o.enrollmentDateDownload());
         w.bind(19, o.enrollmentDateDBTrimming());
     };

@@ -46,8 +46,8 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_AndroidSetting.Builder.class)
-public abstract class AndroidSetting implements CoreObject {
+@JsonDeserialize(builder = $$AutoValue_GeneralSettings.Builder.class)
+public abstract class GeneralSettings implements CoreObject {
 
     @JsonProperty()
     @ColumnAdapter(DataSyncPeriodColumnAdapter.class)
@@ -55,9 +55,6 @@ public abstract class AndroidSetting implements CoreObject {
 
     @JsonProperty()
     public abstract Boolean encryptDB();
-
-    @JsonProperty()
-    public abstract Integer valuesTEI();
 
     @Nullable
     @JsonProperty()
@@ -74,18 +71,14 @@ public abstract class AndroidSetting implements CoreObject {
 
     @Nullable
     @JsonProperty()
-    public abstract Boolean errorConfirmation();
-
-    @Nullable
-    @JsonProperty()
     public abstract String numberSmsConfirmation();
 
-    public static AndroidSetting create(Cursor cursor) {
-        return $AutoValue_AndroidSetting.createFromCursor(cursor);
+    public static GeneralSettings create(Cursor cursor) {
+        return $AutoValue_GeneralSettings.createFromCursor(cursor);
     }
 
     public static Builder builder() {
-        return new $AutoValue_AndroidSetting.Builder();
+        return new $AutoValue_GeneralSettings.Builder();
     }
 
     @AutoValue.Builder
@@ -97,18 +90,14 @@ public abstract class AndroidSetting implements CoreObject {
 
         public abstract Builder encryptDB(Boolean encryptDB);
 
-        public abstract Builder valuesTEI(Integer valuesTEI);
-
         public abstract Builder lastUpdated(Date lastUpdated);
 
         public abstract Builder metadataSync(MetadataSyncPeriod metadataSync);
 
         public abstract Builder numberSmsToSend(String numberSmsToSend);
 
-        public abstract Builder errorConfirmation(Boolean errorConfirmation);
-
         public abstract Builder numberSmsConfirmation(String numberSmsConfirmation);
 
-        public abstract AndroidSetting build();
+        public abstract GeneralSettings build();
     }
 }

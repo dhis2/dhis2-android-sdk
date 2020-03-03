@@ -28,7 +28,21 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public enum EnrollmentScope {
     ALL,
-    ONLY_ACTIVE
+    ONLY_ACTIVE;
+
+    @JsonCreator
+    public static EnrollmentScope forName(String name) {
+        for (EnrollmentScope c: values()) {
+            if (c.name().equals(name)) {
+                return c;
+            }
+        }
+
+        return null;
+    }
+
 }

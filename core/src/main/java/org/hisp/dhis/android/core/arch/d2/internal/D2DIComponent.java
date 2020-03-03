@@ -76,7 +76,7 @@ import org.hisp.dhis.android.core.program.internal.ProgramPackageDIModule;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipPackageDIModule;
 import org.hisp.dhis.android.core.resource.internal.ResourcePackageDIModule;
-import org.hisp.dhis.android.core.settings.internal.SystemSettingPackageDIModule;
+import org.hisp.dhis.android.core.settings.internal.SettingPackageDIModule;
 import org.hisp.dhis.android.core.sms.internal.SmsDIModule;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
@@ -124,7 +124,7 @@ import retrofit2.Retrofit;
         RelationshipPackageDIModule.class,
         ResourcePackageDIModule.class,
         SystemInfoPackageDIModule.class,
-        SystemSettingPackageDIModule.class,
+        SettingPackageDIModule.class,
         TrackedEntityPackageDIModule.class,
         SmsDIModule.class,
         UserPackageDIModule.class}
@@ -191,7 +191,7 @@ public interface D2DIComponent {
         Builder relationshipDIModule(RelationshipPackageDIModule relationshipPackageDIModule);
         Builder resourcePackageDIModule(ResourcePackageDIModule resourcePackageDIModule);
         Builder systemInfoPackageDIModule(SystemInfoPackageDIModule systemInfoPackageDIModule);
-        Builder systemSettingPackageDIModule(SystemSettingPackageDIModule systemSettingPackageDIModule);
+        Builder systemSettingPackageDIModule(SettingPackageDIModule settingPackageDIModule);
         Builder trackedEntityPackageDIModule(TrackedEntityPackageDIModule trackedEntityPackageDIModule);
         Builder userPackageDIModule(UserPackageDIModule userPackageDIModule);
         D2DIComponent build();

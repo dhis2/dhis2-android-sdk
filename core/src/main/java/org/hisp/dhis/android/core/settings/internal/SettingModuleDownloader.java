@@ -25,56 +25,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.settings.AndroidSettingObjectRepository;
-import org.hisp.dhis.android.core.settings.DataSetSettingsObjectRepository;
-import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository;
-import org.hisp.dhis.android.core.settings.SystemSettingCollectionRepository;
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
+import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleDownloader;
+import org.hisp.dhis.android.core.common.Unit;
+
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class SystemSettingModuleImpl implements SystemSettingModule {
+public class SettingModuleDownloader implements MetadataModuleDownloader<Unit> {
 
-    private final SystemSettingCollectionRepository systemSetting;
+    private final SystemSettingCall systemSettingCall;
 
-    private final AndroidSettingObjectRepository androidSetting;
-    private final DataSetSettingsObjectRepository dataSetSetting;
-    private final ProgramSettingsObjectRepository programSetting;
+    private final GeneralSettingCall generalSettingCall;
+    private final DataSetSettingCall dataSetSettingCall;
+    private final ProgramSettingCall programSettingCall;
 
     @Inject
-    SystemSettingModuleImpl(SystemSettingCollectionRepository systemSettingRepository,
-                            AndroidSettingObjectRepository androidSetting,
-                            DataSetSettingsObjectRepository dataSetSetting,
-                            ProgramSettingsObjectRepository programSetting) {
-        this.systemSetting = systemSettingRepository;
-        this.androidSetting = androidSetting;
-        this.dataSetSetting = dataSetSetting;
-        this.programSetting = programSetting;
+    SettingModuleDownloader(SystemSettingCall systemSettingCall,
+                            GeneralSettingCall generalSettingCall,
+                            DataSetSettingCall dataSetSettingCall,
+                            ProgramSettingCall programSettingCall) {
+        this.systemSettingCall = systemSettingCall;
+        this.generalSettingCall = generalSettingCall;
+        this.dataSetSettingCall = dataSetSettingCall;
+        this.programSettingCall = programSettingCall;
     }
 
     @Override
-    public SystemSettingCollectionRepository systemSetting() {
-        return systemSetting;
-    }
-
-    @Override
-    public AndroidSettingObjectRepository androidSetting() {
-        return androidSetting;
-    }
-
-    @Override
-    public DataSetSettingsObjectRepository dataSetSetting() {
-        return dataSetSetting;
-    }
-
-    @Override
-    public ProgramSettingsObjectRepository programSetting() {
-        return programSetting;
+    public Callable<Unit> downloadMetadata() {
+        return () -> {
+            generalSettingCall.getCompletable(false).blockingAwait();
+            dataSetSettingCall.getCompletable(false).blockingAwait();
+            programSettingCall.getCompletable(false).blockingAwait();
+            systemSettingCall.call();
+            return new Unit();
+        };
     }
 }

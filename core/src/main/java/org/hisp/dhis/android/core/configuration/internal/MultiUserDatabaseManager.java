@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.configuration.internal;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -51,6 +52,7 @@ public class MultiUserDatabaseManager {
     private final DatabaseConfigurationHelper configurationHelper;
     private final Context context;
     private final SecureStore secureStore;
+    private final DatabaseCopy databaseCopy;
 
     @Inject
     MultiUserDatabaseManager(
@@ -58,19 +60,22 @@ public class MultiUserDatabaseManager {
             @NonNull ObjectSecureStore<DatabasesConfiguration> databaseConfigurationSecureStore,
             @NonNull DatabaseConfigurationHelper configurationHelper,
             @NonNull Context context,
-            @NonNull SecureStore secureStore) {
+            @NonNull SecureStore secureStore,
+            @NonNull DatabaseCopy databaseCopy) {
         this.databaseAdapter = databaseAdapter;
         this.databaseConfigurationSecureStore = databaseConfigurationSecureStore;
         this.configurationHelper = configurationHelper;
         this.context = context;
         this.secureStore = secureStore;
+        this.databaseCopy = databaseCopy;
     }
 
     public static MultiUserDatabaseManager create(DatabaseAdapter databaseAdapter, Context context,
                                                   SecureStore secureStore) {
         DatabaseConfigurationHelper configHelper = new DatabaseConfigurationHelper(new DatabaseNameGenerator());
         return new MultiUserDatabaseManager(databaseAdapter,
-                DatabaseConfigurationSecureStore.get(secureStore), configHelper, context, secureStore);
+                DatabaseConfigurationSecureStore.get(secureStore), configHelper, context, secureStore,
+                new DatabaseCopy());
     }
 
     public void loadIfLogged(Credentials credentials) {
@@ -84,33 +89,59 @@ public class MultiUserDatabaseManager {
         }
     }
 
-    public void createIfNotExistingAndLoad(String serverUrl, String username, boolean encrypt) {
-        DatabaseUserConfiguration userConfiguration = addNewConfigurationInternal(serverUrl, username, encrypt);
-        createOrOpenDatabase(userConfiguration);
+    public void loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(String serverUrl, String username, boolean encrypt) {
+        boolean existing = loadExistingChangingEncryptionIfRequired(serverUrl, username, userConfiguration -> encrypt);
+        if (!existing) {
+            DatabaseUserConfiguration userConfiguration = addNewConfigurationInternal(serverUrl, username, encrypt);
+            createOrOpenDatabase(userConfiguration);
+        }
     }
 
-    public boolean loadExisting(String serverUrl, String username) {
-        DatabasesConfiguration configuration = databaseConfigurationSecureStore.get();
-        DatabaseUserConfiguration userConfiguration = configurationHelper.getUserConfiguration(
-                configuration, serverUrl, username);
+    public boolean loadExistingKeepingEncryption(String serverUrl, String username) {
+        return loadExistingChangingEncryptionIfRequired(serverUrl, username, DatabaseUserConfiguration::encrypted);
+    }
 
-        if (userConfiguration == null) {
+    private boolean loadExistingChangingEncryptionIfRequired(String serverUrl, String username,
+                                                             EncryptionExtractor encryptionExtractor) {
+        DatabaseUserConfiguration existingUserConfiguration = getUserConfiguration(serverUrl, username);
+        if (existingUserConfiguration == null) {
             return false;
         }
 
-        DatabasesConfiguration updatedConfiguration = configurationHelper.setServerUrl(
-                configuration, serverUrl);
-        databaseConfigurationSecureStore.set(updatedConfiguration);
-        createOrOpenDatabase(userConfiguration);
+        boolean encrypt = encryptionExtractor.extract(existingUserConfiguration);
+        DatabaseUserConfiguration updatedUserConfiguration = addNewConfigurationInternal(serverUrl, username, encrypt);
+        createOrOpenDatabase(updatedUserConfiguration);
+
+        changeEncryptionIfRequired(existingUserConfiguration, encrypt);
         return true;
+    }
+
+    interface EncryptionExtractor {
+        boolean extract(DatabaseUserConfiguration userConfiguration);
+    }
+
+    private void changeEncryptionIfRequired(DatabaseUserConfiguration existingUserConfiguration, boolean encrypt) {
+        if (encrypt != existingUserConfiguration.encrypted()) {
+            Log.w(MultiUserDatabaseManager.class.getName(),
+                    "Encryption value changed for " + existingUserConfiguration.username() +  ": " + encrypt);
+            DatabaseAdapter auxOldParentDatabaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
+            DatabaseAdapterFactory.createOrOpenDatabase(auxOldParentDatabaseAdapter, context, existingUserConfiguration);
+            databaseCopy.copy(auxOldParentDatabaseAdapter, databaseAdapter);
+            context.deleteDatabase(existingUserConfiguration.databaseName());
+        }
     }
 
     private void createOrOpenDatabase(DatabaseUserConfiguration userConfiguration) {
         DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, context, userConfiguration);
     }
 
+    private DatabaseUserConfiguration getUserConfiguration(String serverUrl, String username) {
+        DatabasesConfiguration configuration = databaseConfigurationSecureStore.get();
+        return configurationHelper.getUserConfiguration(configuration, serverUrl, username);
+    }
+
     private DatabaseUserConfiguration addNewConfigurationInternal(String serverUrl, String username, boolean encrypt) {
-        DatabasesConfiguration updatedConfiguration = configurationHelper.addConfiguration(
+        DatabasesConfiguration updatedConfiguration = configurationHelper.setConfiguration(
                 databaseConfigurationSecureStore.get(), serverUrl, username, encrypt);
         databaseConfigurationSecureStore.set(updatedConfiguration);
         return configurationHelper.getLoggedUserConfiguration(updatedConfiguration, username);

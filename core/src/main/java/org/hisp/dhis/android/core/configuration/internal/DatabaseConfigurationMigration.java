@@ -64,7 +64,7 @@ final class DatabaseConfigurationMigration {
             return newConfigurationStore.get();
         } else {
             oldConfigurationStore.remove();
-            DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter();
+            DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
             DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, context, false);
             UserCredentialsStore userCredentialsStore = UserCredentialsStoreImpl.create(databaseAdapter);
             UserCredentials credentials = userCredentialsStore.selectFirst();

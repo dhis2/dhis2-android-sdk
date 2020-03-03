@@ -26,41 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.integration.mock;
-
-import android.content.Context;
-
-import androidx.test.InstrumentationRegistry;
-
-import com.facebook.stetho.Stetho;
+package org.hisp.dhis.android.core.configuration.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 
-public class TestDatabaseAdapterFactory {
-    private static String dbName = null;
-    private static DatabaseAdapter databaseAdapter = null;
+final class DatabaseCopy {
+    void copy(DatabaseAdapter adapterFrom, DatabaseAdapter adapterTo) {
 
-    public static DatabaseAdapter get() {
-        if (databaseAdapter == null) {
-            databaseAdapter = create();
-        }
-        return databaseAdapter;
-    }
-
-    public static void tearDown() {
-        if (databaseAdapter != null) {
-            databaseAdapter.close();
-            databaseAdapter = null;
-        }
-    }
-
-    private static DatabaseAdapter create() {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        Stetho.initializeWithDefaults(context);
-        DatabaseAdapter parentDatabaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
-        DatabaseAdapterFactory.createOrOpenDatabase(parentDatabaseAdapter, dbName, context, false);
-        parentDatabaseAdapter.setForeignKeyConstraintsEnabled(false);
-        return parentDatabaseAdapter;
     }
 }

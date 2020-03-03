@@ -74,7 +74,7 @@ final class DatabaseConfigurationHelper {
         return null;
     }
 
-    DatabasesConfiguration addConfiguration(DatabasesConfiguration configuration, String serverUrl,
+    DatabasesConfiguration setConfiguration(DatabasesConfiguration configuration, String serverUrl,
                                             String username, boolean encrypt) {
         DatabaseServerConfiguration existingServerConf = configuration == null ? null
                 : getServerConfiguration(configuration, serverUrl);

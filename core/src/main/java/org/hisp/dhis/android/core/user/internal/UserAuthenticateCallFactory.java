@@ -133,7 +133,8 @@ public final class UserAuthenticateCallFactory {
         try {
             User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,
                     new UserAuthenticateCallErrorCatcher());
-            return loginOnline(parsedServerUrl, authenticatedUser, username, password);
+            return loginOnline(parsedServerUrl, authenticatedUser, username, password,
+                    DatabaseAdapterFactory.getExperimentalEncryption());
         } catch (D2Error d2Error) {
             if (d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
                     d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
@@ -148,9 +149,9 @@ public final class UserAuthenticateCallFactory {
         }
     }
 
-    private User loginOnline(HttpUrl serverUrl, User authenticatedUser, String username, String password) {
-        multiUserDatabaseManager.createIfNotExistingAndLoad(serverUrl.toString(), username,
-                DatabaseAdapterFactory.getExperimentalEncryption());
+    private User loginOnline(HttpUrl serverUrl, User authenticatedUser, String username, String password,
+                             boolean encrypt) {
+        multiUserDatabaseManager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl.toString(), username, encrypt);
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
             AuthenticatedUser authenticatedUserToStore = buildAuthenticatedUser(authenticatedUser.uid(),
@@ -177,7 +178,8 @@ public final class UserAuthenticateCallFactory {
     }
 
     private User loginOffline(HttpUrl serverUrl, String username, String password) throws D2Error {
-        boolean existingDatabase = multiUserDatabaseManager.loadExisting(serverUrl.toString(), username);
+        boolean existingDatabase = multiUserDatabaseManager.loadExistingKeepingEncryption(serverUrl.toString(),
+                username);
         if (!existingDatabase) {
             throw noUserOfflineError();
         }

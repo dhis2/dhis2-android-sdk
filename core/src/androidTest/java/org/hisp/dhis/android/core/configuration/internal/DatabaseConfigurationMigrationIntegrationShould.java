@@ -85,7 +85,7 @@ public class DatabaseConfigurationMigrationIntegrationShould {
 
     @Test
     public void delete_empty_database() {
-        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter();
+        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
         DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, context, false);
         oldConfigurationStore.set(Configuration.forServerUrl(HttpUrl.parse(URL_STR)));
 
@@ -96,7 +96,7 @@ public class DatabaseConfigurationMigrationIntegrationShould {
 
     @Test
     public void rename_database_with_credentials() {
-        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter();
+        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
         DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, context, false);
         oldConfigurationStore.set(Configuration.forServerUrl(HttpUrl.parse(URL_STR)));
         setCredentials(databaseAdapter);
@@ -119,14 +119,14 @@ public class DatabaseConfigurationMigrationIntegrationShould {
     @Test
     public void return_existing_new_configuration_if_old_configuration_null() {
         DatabasesConfiguration newConfiguration = new DatabaseConfigurationHelper(nameGenerator)
-                .addConfiguration(null, URL_STR, USERNAME, false);
+                .setConfiguration(null, URL_STR, USERNAME, false);
         newConfigurationStore.set(newConfiguration);
         assertThat(apply()).isSameAs(newConfiguration);
     }
 
     @Test
     public void return_empty_new_configuration_if_existing_empty_database() {
-        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter();
+        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
         DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, context, false);
         oldConfigurationStore.set(Configuration.forServerUrl(HttpUrl.parse(URL_STR)));
         assertThat(apply()).isNull();

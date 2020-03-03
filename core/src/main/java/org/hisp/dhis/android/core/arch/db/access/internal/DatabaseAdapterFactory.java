@@ -54,7 +54,7 @@ public final class DatabaseAdapterFactory {
         return encryptNextNotConfiguredDatabases;
     }
 
-    public static DatabaseAdapter getDatabaseAdapter() {
+    public static DatabaseAdapter newParentDatabaseAdapter() {
         return new ParentDatabaseAdapter();
     }
 

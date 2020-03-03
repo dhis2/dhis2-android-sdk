@@ -53,6 +53,7 @@ public class MultiUserDatabaseManager {
     private final Context context;
     private final SecureStore secureStore;
     private final DatabaseCopy databaseCopy;
+    private final DatabaseConfigurationMigration migration;
 
     @Inject
     MultiUserDatabaseManager(
@@ -61,13 +62,15 @@ public class MultiUserDatabaseManager {
             @NonNull DatabaseConfigurationHelper configurationHelper,
             @NonNull Context context,
             @NonNull SecureStore secureStore,
-            @NonNull DatabaseCopy databaseCopy) {
+            @NonNull DatabaseCopy databaseCopy,
+            @NonNull DatabaseConfigurationMigration migration) {
         this.databaseAdapter = databaseAdapter;
         this.databaseConfigurationSecureStore = databaseConfigurationSecureStore;
         this.configurationHelper = configurationHelper;
         this.context = context;
         this.secureStore = secureStore;
         this.databaseCopy = databaseCopy;
+        this.migration = migration;
     }
 
     public static MultiUserDatabaseManager create(DatabaseAdapter databaseAdapter, Context context,
@@ -75,11 +78,11 @@ public class MultiUserDatabaseManager {
         DatabaseConfigurationHelper configHelper = new DatabaseConfigurationHelper(new DatabaseNameGenerator());
         return new MultiUserDatabaseManager(databaseAdapter,
                 DatabaseConfigurationSecureStore.get(secureStore), configHelper, context, secureStore,
-                new DatabaseCopy());
+                new DatabaseCopy(), DatabaseConfigurationMigration.create(context, secureStore));
     }
 
     public void loadIfLogged(Credentials credentials) {
-        DatabasesConfiguration databaseConfiguration = DatabaseConfigurationMigration.apply(context, secureStore);
+        DatabasesConfiguration databaseConfiguration = migration.apply();
 
         if (databaseConfiguration != null && credentials != null) {
             ServerURLWrapper.setServerUrl(databaseConfiguration.loggedServerUrl());

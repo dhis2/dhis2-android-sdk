@@ -42,23 +42,28 @@ final class DatabaseConfigurationMigration {
 
     static final String OLD_DBNAME = "dhis.db";
 
-    static DatabasesConfiguration apply(Context context, SecureStore secureStore) {
-        return apply(
-                context,
-                new ConfigurationSecureStoreImpl(secureStore),
-                DatabaseConfigurationSecureStore.get(secureStore),
-                new DatabaseConfigurationTransformer(),
-                new DatabaseNameGenerator(),
-                new DatabaseRenamer(context)
-        );
+    private final Context context;
+    private final ObjectSecureStore<Configuration> oldConfigurationStore;
+    private final ObjectSecureStore<DatabasesConfiguration> newConfigurationStore;
+    private final DatabaseConfigurationTransformer transformer;
+    private final DatabaseNameGenerator nameGenerator;
+    private final DatabaseRenamer renamer;
+
+    DatabaseConfigurationMigration(Context context,
+                                   ObjectSecureStore<Configuration> oldConfigurationStore,
+                                   ObjectSecureStore<DatabasesConfiguration> newConfigurationStore,
+                                   DatabaseConfigurationTransformer transformer,
+                                   DatabaseNameGenerator nameGenerator,
+                                   DatabaseRenamer renamer) {
+        this.context = context;
+        this.oldConfigurationStore = oldConfigurationStore;
+        this.newConfigurationStore = newConfigurationStore;
+        this.transformer = transformer;
+        this.nameGenerator = nameGenerator;
+        this.renamer = renamer;
     }
 
-    static DatabasesConfiguration apply(Context context,
-                                        ObjectSecureStore<Configuration> oldConfigurationStore,
-                                        ObjectSecureStore<DatabasesConfiguration> newConfigurationStore,
-                                        DatabaseConfigurationTransformer transformer,
-                                        DatabaseNameGenerator nameGenerator,
-                                        DatabaseRenamer renamer) {
+    DatabasesConfiguration apply() {
         Configuration oldConfiguration = oldConfigurationStore.get();
         if (oldConfiguration == null) {
             return newConfigurationStore.get();
@@ -86,7 +91,14 @@ final class DatabaseConfigurationMigration {
         }
     }
 
-    private DatabaseConfigurationMigration() {
-
+    static DatabaseConfigurationMigration create(Context context, SecureStore secureStore) {
+        return new DatabaseConfigurationMigration(
+                context,
+                new ConfigurationSecureStoreImpl(secureStore),
+                DatabaseConfigurationSecureStore.get(secureStore),
+                new DatabaseConfigurationTransformer(),
+                new DatabaseNameGenerator(),
+                new DatabaseRenamer(context)
+        );
     }
 }

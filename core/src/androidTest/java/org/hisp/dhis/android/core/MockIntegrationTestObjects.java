@@ -37,7 +37,7 @@ import com.facebook.stetho.Stetho;
 
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestDatabaseContent;
@@ -62,7 +62,7 @@ public class MockIntegrationTestObjects {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
         Stetho.initializeWithDefaults(context);
 
-        dhis2MockServer = new Dhis2MockServer();
+        dhis2MockServer = new Dhis2MockServer(0);
         CalendarProviderFactory.setFixed();
 
         d2 = D2Factory.forNewDatabase();

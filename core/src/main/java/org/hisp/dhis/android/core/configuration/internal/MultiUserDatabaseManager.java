@@ -94,7 +94,8 @@ public class MultiUserDatabaseManager {
         }
     }
 
-    public void loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(String serverUrl, String username, boolean encrypt) {
+    public void loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(String serverUrl, String username,
+                                                                           boolean encrypt) {
         boolean existing = loadExistingChangingEncryptionIfRequired(serverUrl, username, userConfiguration -> encrypt);
         if (!existing) {
             DatabaseUserConfiguration userConfiguration = addNewConfigurationInternal(serverUrl, username, encrypt);

@@ -151,7 +151,8 @@ public final class UserAuthenticateCallFactory {
 
     private User loginOnline(HttpUrl serverUrl, User authenticatedUser, String username, String password,
                              boolean encrypt) {
-        multiUserDatabaseManager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl.toString(), username, encrypt);
+        multiUserDatabaseManager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl.toString(),
+                username, encrypt);
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
             AuthenticatedUser authenticatedUserToStore = buildAuthenticatedUser(authenticatedUser.uid(),

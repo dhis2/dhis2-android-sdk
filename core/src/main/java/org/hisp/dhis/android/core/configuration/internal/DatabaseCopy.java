@@ -31,7 +31,12 @@ package org.hisp.dhis.android.core.configuration.internal;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 
 class DatabaseCopy {
+    /**
+     * Copy tables from one DatabaseAdapter to another
+     * @param adapterFrom
+     * @param adapterTo
+     */
     void copy(DatabaseAdapter adapterFrom, DatabaseAdapter adapterTo) {
-
+        // TODO TO BE IMPLEMENTED
     }
 }

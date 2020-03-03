@@ -26,36 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
 
-import java.io.IOException;
-import java.text.ParseException;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+@Module
+public final class GeneralSettingEntityDIModule {
 
-public class AndroidSettingShould extends BaseObjectShould implements ObjectShould {
-
-    public AndroidSettingShould() {
-        super("settings/android_setting.json");
+    @Provides
+    @Reusable
+    ObjectWithoutUidStore<GeneralSettings> generalSettingStore(DatabaseAdapter databaseAdapter) {
+        return GeneralSettingStore.create(databaseAdapter);
     }
 
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        AndroidSetting androidSetting = objectMapper.readValue(jsonStream, AndroidSetting.class);
-
-        assertThat(androidSetting.dataSync()).isEqualByComparingTo(DataSyncPeriod.EVERY_24_HOURS);
-        assertThat(androidSetting.encryptDB()).isFalse();
-        assertThat(androidSetting.valuesTEI()).isEqualTo(40);
-        assertThat(androidSetting.lastUpdated()).isEqualTo(BaseIdentifiableObject.parseDate("2020-01-13T16:52:05.144Z"));
-        assertThat(androidSetting.metadataSync()).isEqualByComparingTo(MetadataSyncPeriod.EVERY_DAY);
-        assertThat(androidSetting.numberSmsToSend()).isEqualTo("98456123");
-        assertThat(androidSetting.errorConfirmation()).isTrue();
-        assertThat(androidSetting.numberSmsConfirmation()).isEqualTo("98456122");
+    @Provides
+    @Reusable
+    Handler<GeneralSettings> dataSetSettingHandler(ObjectWithoutUidStore<GeneralSettings> store) {
+        return new GeneralSettingHandler(store);
     }
+
+
 }

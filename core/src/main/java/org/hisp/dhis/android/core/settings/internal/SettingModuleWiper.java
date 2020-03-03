@@ -25,27 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.settings.AndroidSetting;
-import org.hisp.dhis.android.core.settings.DataSetSettings;
-import org.hisp.dhis.android.core.settings.ProgramSettings;
+import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo;
+import org.hisp.dhis.android.core.settings.DataSetSettingTableInfo;
+import org.hisp.dhis.android.core.settings.ProgramSettingTableInfo;
+import org.hisp.dhis.android.core.settings.SystemSettingTableInfo;
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.internal.TableWiper;
 
-import io.reactivex.Single;
-import retrofit2.http.GET;
+import javax.inject.Inject;
 
-interface AndroidSettingAppService {
+import dagger.Reusable;
 
-    String NAMESPACE = "dataStore/ANDROID_SETTING_APP";
+@Reusable
+public final class SettingModuleWiper implements ModuleWiper {
 
-    @GET(NAMESPACE + "/" + "android_settings")
-    Single<AndroidSetting> getAndroidSettings();
+    private final TableWiper tableWiper;
 
-    @GET(NAMESPACE + "/" + "dataSet_settings")
-    Single<DataSetSettings> getDataSetSettings();
+    @Inject
+    SettingModuleWiper(TableWiper tableWiper) {
+        this.tableWiper = tableWiper;
+    }
 
-    @GET(NAMESPACE + "/" + "program_settings")
-    Single<ProgramSettings> getProgramSettings();
+    @Override
+    public void wipeMetadata() {
+        tableWiper.wipeTable(SystemSettingTableInfo.TABLE_INFO);
+        tableWiper.wipeTable(GeneralSettingTableInfo.TABLE_INFO);
+        tableWiper.wipeTable(DataSetSettingTableInfo.TABLE_INFO);
+        tableWiper.wipeTable(ProgramSettingTableInfo.TABLE_INFO);
+    }
 
+    @Override
+    public void wipeData() {
+        // No data to wipe
+    }
 }

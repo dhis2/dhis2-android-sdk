@@ -46,20 +46,20 @@ import io.reactivex.Completable;
 import io.reactivex.Single;
 
 @Reusable
-public class DataSetSettingsCall implements CompletableProvider {
+public class DataSetSettingCall implements CompletableProvider {
     private final DatabaseAdapter databaseAdapter;
     private final Handler<DataSetSetting> dataSetSettingHandler;
-    private final AndroidSettingAppService androidSettingAppService;
+    private final SettingService androidSettingService;
     private final RxAPICallExecutor apiCallExecutor;
 
     @Inject
-    DataSetSettingsCall(DatabaseAdapter databaseAdapter,
-                        Handler<DataSetSetting> dataSetSettingHandler,
-                        AndroidSettingAppService androidSettingAppService,
-                        RxAPICallExecutor apiCallExecutor) {
+    DataSetSettingCall(DatabaseAdapter databaseAdapter,
+                       Handler<DataSetSetting> dataSetSettingHandler,
+                       SettingService androidSettingService,
+                       RxAPICallExecutor apiCallExecutor) {
         this.databaseAdapter = databaseAdapter;
         this.dataSetSettingHandler = dataSetSettingHandler;
-        this.androidSettingAppService = androidSettingAppService;
+        this.androidSettingService = androidSettingService;
         this.apiCallExecutor = apiCallExecutor;
     }
 
@@ -71,7 +71,7 @@ public class DataSetSettingsCall implements CompletableProvider {
     }
 
     private Single<DataSetSettings> downloadAndPersist(boolean storeError) {
-        return apiCallExecutor.wrapSingle(androidSettingAppService.getDataSetSettings(), storeError)
+        return apiCallExecutor.wrapSingle(androidSettingService.getDataSetSettings(), storeError)
                 .map(dataSetSettings -> {
                     Transaction transaction = databaseAdapter.beginNewTransaction();
                     try {

@@ -25,39 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.settings.AndroidSettingTableInfo;
-import org.hisp.dhis.android.core.settings.DataSetSettingTableInfo;
-import org.hisp.dhis.android.core.settings.ProgramSettingTableInfo;
-import org.hisp.dhis.android.core.settings.SystemSettingTableInfo;
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.internal.TableWiper;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
+import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class SystemSettingModuleWiper implements ModuleWiper {
+public class GeneralSettingObjectRepository
+        extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<GeneralSettings>
+        implements ReadOnlyWithDownloadObjectRepository<GeneralSettings> {
 
-    private final TableWiper tableWiper;
+    private final ObjectWithoutUidStore<GeneralSettings> store;
 
     @Inject
-    SystemSettingModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    GeneralSettingObjectRepository(ObjectWithoutUidStore<GeneralSettings> store,
+                                   GeneralSettingCall generalSettingCall) {
+        super(generalSettingCall);
+        this.store = store;
     }
 
     @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTable(SystemSettingTableInfo.TABLE_INFO);
-        tableWiper.wipeTable(AndroidSettingTableInfo.TABLE_INFO);
-        tableWiper.wipeTable(DataSetSettingTableInfo.TABLE_INFO);
-        tableWiper.wipeTable(ProgramSettingTableInfo.TABLE_INFO);
-    }
+    public GeneralSettings blockingGet() {
+        List<GeneralSettings> settings = store.selectAll();
 
-    @Override
-    public void wipeData() {
-        // No data to wipe
+        if (settings.isEmpty()) {
+            return null;
+        } else {
+            return settings.get(0);
+        }
     }
 }

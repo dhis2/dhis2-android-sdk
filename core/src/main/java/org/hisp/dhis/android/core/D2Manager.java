@@ -32,7 +32,6 @@ import android.util.Log;
 
 import androidx.annotation.VisibleForTesting;
 
-import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
@@ -41,11 +40,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
-import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper;
-import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationMigration;
-import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator;
-import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration;
-import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration;
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import io.reactivex.Single;
@@ -112,7 +107,8 @@ public final class D2Manager {
             SecureStore secureStore = testingSecureStore == null ? new AndroidSecureStore(d2Config.context())
                     : testingSecureStore;
             ObjectSecureStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
-            openDatabaseIfAlreadyCreated(secureStore, credentialsSecureStore);
+            MultiUserDatabaseManager.create(databaseAdapter, d2Config.context(), secureStore)
+                    .loadIfLogged(credentialsSecureStore.get());
 
             d2 = new D2(
                     RetrofitFactory.retrofit(
@@ -128,23 +124,6 @@ public final class D2Manager {
 
             return d2;
         });
-    }
-
-    private static void openDatabaseIfAlreadyCreated(SecureStore secureStore,
-                                                     ObjectSecureStore<Credentials> credentialsSecureStore) {
-        DatabasesConfiguration databaseConfiguration = DatabaseConfigurationMigration.apply(d2Configuration.context(),
-                secureStore);
-        Credentials credentials = credentialsSecureStore.get();
-
-        if (databaseConfiguration != null) {
-            ServerURLWrapper.setServerUrl(databaseConfiguration.loggedServerUrl());
-            DatabaseConfigurationHelper configurationHelper =
-                    new DatabaseConfigurationHelper(new DatabaseNameGenerator());
-            DatabaseUserConfiguration userConfiguration = configurationHelper.getLoggedUserConfiguration(
-                    databaseConfiguration, credentials.username());
-            DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration.databaseName(),
-                    d2Configuration.context(), userConfiguration.encrypted());
-        }
     }
 
     /**

@@ -28,50 +28,32 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-public final class AndroidSettingTableInfo {
+import java.io.IOException;
+import java.text.ParseException;
 
-    private AndroidSettingTableInfo() {
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
+public class GeneralSettingsShould extends BaseObjectShould implements ObjectShould {
+
+    public GeneralSettingsShould() {
+        super("settings/general_settings.json");
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        GeneralSettings generalSettings = objectMapper.readValue(jsonStream, GeneralSettings.class);
 
-        @Override
-        public String name() {
-            return "AndroidSetting";
-        }
-
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends CoreColumns {
-        public static final String DATA_SYNC = "dataSync";
-        public static final String ENCRYPT_DB = "encryptDB";
-        public static final String VALUES_TEI = "valuesTEI";
-        public static final String LAST_UPDATED = "lastUpdated";
-        public static final String METADATA_SYNC = "metadataSync";
-        public static final String NUMBER_SMS_TO_SEND = "numberSmsToSend";
-        public static final String ERROR_CONFIRMATION = "errorConfirmation";
-        public static final String NUMBER_SMS_CONFIRMATION = "numberSmsConfirmation";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    DATA_SYNC,
-                    ENCRYPT_DB,
-                    VALUES_TEI,
-                    LAST_UPDATED,
-                    METADATA_SYNC,
-                    NUMBER_SMS_TO_SEND,
-                    ERROR_CONFIRMATION,
-                    NUMBER_SMS_CONFIRMATION
-            );
-        }
+        assertThat(generalSettings.dataSync()).isEqualByComparingTo(DataSyncPeriod.EVERY_24_HOURS);
+        assertThat(generalSettings.encryptDB()).isFalse();
+        assertThat(generalSettings.lastUpdated()).isEqualTo(BaseIdentifiableObject.parseDate("2020-01-13T16:52:05.144Z"));
+        assertThat(generalSettings.metadataSync()).isEqualByComparingTo(MetadataSyncPeriod.EVERY_DAY);
+        assertThat(generalSettings.numberSmsToSend()).isEqualTo("98456123");
+        assertThat(generalSettings.numberSmsConfirmation()).isEqualTo("98456122");
     }
 }

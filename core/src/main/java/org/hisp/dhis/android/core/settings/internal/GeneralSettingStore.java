@@ -26,14 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings.internal;
 
-public interface SystemSettingModule {
-    SystemSettingCollectionRepository systemSetting();
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
+import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo;
 
-    AndroidSettingObjectRepository androidSetting();
+final class GeneralSettingStore {
 
-    DataSetSettingsObjectRepository dataSetSetting();
-    
-    ProgramSettingsObjectRepository programSetting();
+    private static final StatementBinder<GeneralSettings> BINDER = (o, w) -> {
+        w.bind(1, o.dataSync());
+        w.bind(2, o.encryptDB());
+        w.bind(3, o.lastUpdated());
+        w.bind(4, o.metadataSync());
+        w.bind(5, o.numberSmsToSend());
+        w.bind(6, o.numberSmsConfirmation());
+    };
+
+    private static final WhereStatementBinder<GeneralSettings> WHERE_UPDATE_BINDER = (o, w) -> {};
+
+    private static final WhereStatementBinder<GeneralSettings> WHERE_DELETE_BINDER = (o, w) -> {};
+
+    private GeneralSettingStore() {}
+
+    public static ObjectWithoutUidStore<GeneralSettings> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, GeneralSettingTableInfo.TABLE_INFO, BINDER,
+                WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, GeneralSettings::create);
+    }
 }

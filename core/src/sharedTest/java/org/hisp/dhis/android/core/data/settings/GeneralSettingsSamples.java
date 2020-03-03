@@ -25,17 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.settings.SystemSettings;
+package org.hisp.dhis.android.core.data.settings;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
+import org.hisp.dhis.android.core.settings.DataSyncPeriod;
+import org.hisp.dhis.android.core.settings.MetadataSyncPeriod;
 
-interface SystemSettingService {
-    @GET("systemSettings")
-    Call<SystemSettings> getSystemSettings(@Query("fields") @Which Fields<SystemSettings> fields);
+public class GeneralSettingsSamples {
+
+    public static GeneralSettings getGeneralSettings() {
+        return GeneralSettings.builder()
+                .id(1L)
+                .dataSync(DataSyncPeriod.EVERY_12_HOURS)
+                .encryptDB(true)
+                .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
+                .metadataSync(MetadataSyncPeriod.EVERY_DAY)
+                .numberSmsToSend("+34678456123")
+                .numberSmsConfirmation("+34654321456")
+                .build();
+    }
 }

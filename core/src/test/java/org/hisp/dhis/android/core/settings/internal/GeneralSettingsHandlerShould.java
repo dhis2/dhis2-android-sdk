@@ -28,35 +28,46 @@
 
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.settings.AndroidSetting;
-import org.hisp.dhis.android.core.settings.AndroidSettingTableInfo;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-final class AndroidSettingStore {
+import java.util.ArrayList;
+import java.util.List;
 
-    private static final StatementBinder<AndroidSetting> BINDER = (o, w) -> {
-        w.bind(1, o.dataSync());
-        w.bind(2, o.encryptDB());
-        w.bind(3, o.valuesTEI());
-        w.bind(4, o.lastUpdated());
-        w.bind(5, o.metadataSync());
-        w.bind(6, o.numberSmsToSend());
-        w.bind(7, o.errorConfirmation());
-        w.bind(8, o.numberSmsConfirmation());
-    };
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-    private static final WhereStatementBinder<AndroidSetting> WHERE_UPDATE_BINDER = (o, w) -> {};
+public class GeneralSettingsHandlerShould {
 
-    private static final WhereStatementBinder<AndroidSetting> WHERE_DELETE_BINDER = (o, w) -> {};
+    @Mock
+    private ObjectWithoutUidStore<GeneralSettings> generalSettingStore;
 
-    private AndroidSettingStore() {}
+    @Mock
+    private GeneralSettings generalSettings;
 
-    public static ObjectWithoutUidStore<AndroidSetting> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, AndroidSettingTableInfo.TABLE_INFO, BINDER,
-                WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, AndroidSetting::create);
+    private Handler<GeneralSettings> generalSettingHandler;
+
+    private List<GeneralSettings> generalSettingList;
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+
+        generalSettingList = new ArrayList<>();
+        generalSettingList.add(generalSettings);
+
+        generalSettingHandler = new GeneralSettingHandler(generalSettingStore);
+    }
+
+    @Test
+    public void clean_database_before_insert_collection() {
+        generalSettingHandler.handleMany(generalSettingList);
+        verify(generalSettingStore, times(1)).delete();
+        verify(generalSettingStore, times(1)).updateOrInsertWhere(generalSettings);
     }
 }

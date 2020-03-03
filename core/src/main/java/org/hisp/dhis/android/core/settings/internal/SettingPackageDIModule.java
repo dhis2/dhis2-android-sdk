@@ -26,26 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.settings;
+package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
-import org.hisp.dhis.android.core.settings.AndroidSetting;
-import org.hisp.dhis.android.core.settings.DataSyncPeriod;
-import org.hisp.dhis.android.core.settings.MetadataSyncPeriod;
+import org.hisp.dhis.android.core.settings.SettingModule;
 
-public class AndroidSettingSamples {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-    public static AndroidSetting getAndroidSetting() {
-        return AndroidSetting.builder()
-                .id(1L)
-                .dataSync(DataSyncPeriod.EVERY_12_HOURS)
-                .encryptDB(true)
-                .valuesTEI(500)
-                .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
-                .metadataSync(MetadataSyncPeriod.EVERY_DAY)
-                .numberSmsToSend("+34678456123")
-                .errorConfirmation(true)
-                .numberSmsConfirmation("+34654321456")
-                .build();
+@Module(includes = {
+        GeneralSettingEntityDIModule.class,
+        DataSetSettingEntityDIModule.class,
+        ProgramSettingEntityDIModule.class,
+        SystemSettingEntityDIModule.class
+})
+public final class SettingPackageDIModule {
+
+    @Provides
+    @Reusable
+    SettingService settingService(Retrofit retrofit) {
+        return retrofit.create(SettingService.class);
+    }
+
+    @Provides
+    @Reusable
+    SettingModule module(SettingModuleImpl impl) {
+        return impl;
     }
 }

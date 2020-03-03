@@ -43,7 +43,7 @@ public class ProgramSettingObjectRepositoryMockIntegrationShould extends BaseMoc
 
     @Test
     public void find_program_setting() {
-        ProgramSettings programSetting = d2.systemSettingModule().programSetting().blockingGet();
+        ProgramSettings programSetting = d2.settingModule().programSetting().blockingGet();
 
         assertThat(programSetting.globalSettings(), notNullValue());
         assertThat(programSetting.specificSettings().size(), is(2));

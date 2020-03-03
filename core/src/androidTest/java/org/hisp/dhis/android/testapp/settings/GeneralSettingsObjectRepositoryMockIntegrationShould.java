@@ -25,41 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
-import org.hisp.dhis.android.core.settings.internal.DataSetSettingsCall;
+package org.hisp.dhis.android.testapp.settings;
 
-import java.util.List;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
+import org.hisp.dhis.android.core.settings.DataSyncPeriod;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import javax.inject.Inject;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
-import dagger.Reusable;
+@RunWith(D2JunitRunner.class)
+public class GeneralSettingsObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
-@Reusable
-public class AndroidSettingObjectRepository
-        extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<AndroidSetting>
-        implements ReadOnlyWithDownloadObjectRepository<AndroidSetting> {
-
-    private final ObjectWithoutUidStore<AndroidSetting> store;
-
-    @Inject
-    AndroidSettingObjectRepository(ObjectWithoutUidStore<AndroidSetting> store,
-                                   DataSetSettingsCall dataSetSettingsCall) {
-        super(dataSetSettingsCall);
-        this.store = store;
-    }
-
-    @Override
-    public AndroidSetting blockingGet() {
-        List<AndroidSetting> settings = store.selectAll();
-
-        if (settings.isEmpty()) {
-            return null;
-        } else {
-            return settings.get(0);
-        }
+    @Test
+    public void find_android_setting() {
+        GeneralSettings generalSettings = d2.settingModule().generalSetting().blockingGet();
+        assertThat(generalSettings.dataSync(), is(DataSyncPeriod.EVERY_24_HOURS));
     }
 }

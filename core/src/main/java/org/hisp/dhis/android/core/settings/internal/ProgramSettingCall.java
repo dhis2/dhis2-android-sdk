@@ -46,20 +46,20 @@ import io.reactivex.Completable;
 import io.reactivex.Single;
 
 @Reusable
-public class ProgramSettingsCall implements CompletableProvider {
+public class ProgramSettingCall implements CompletableProvider {
     private final DatabaseAdapter databaseAdapter;
     private final Handler<ProgramSetting> programSettingHandler;
-    private final AndroidSettingAppService androidSettingAppService;
+    private final SettingService androidSettingService;
     private final RxAPICallExecutor apiCallExecutor;
 
     @Inject
-    ProgramSettingsCall(DatabaseAdapter databaseAdapter,
-                        Handler<ProgramSetting> programSettingHandler,
-                        AndroidSettingAppService androidSettingAppService,
-                        RxAPICallExecutor apiCallExecutor) {
+    ProgramSettingCall(DatabaseAdapter databaseAdapter,
+                       Handler<ProgramSetting> programSettingHandler,
+                       SettingService androidSettingService,
+                       RxAPICallExecutor apiCallExecutor) {
         this.databaseAdapter = databaseAdapter;
         this.programSettingHandler = programSettingHandler;
-        this.androidSettingAppService = androidSettingAppService;
+        this.androidSettingService = androidSettingService;
         this.apiCallExecutor = apiCallExecutor;
     }
 
@@ -71,7 +71,7 @@ public class ProgramSettingsCall implements CompletableProvider {
     }
 
     private Single<ProgramSettings> downloadAndPersist(boolean storeError) {
-        return apiCallExecutor.wrapSingle(androidSettingAppService.getProgramSettings(), storeError)
+        return apiCallExecutor.wrapSingle(androidSettingService.getProgramSettings(), storeError)
                 .map(programSettings -> {
                     Transaction transaction = databaseAdapter.beginNewTransaction();
                     try {

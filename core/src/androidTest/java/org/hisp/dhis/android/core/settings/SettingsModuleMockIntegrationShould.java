@@ -43,44 +43,44 @@ public class SettingsModuleMockIntegrationShould extends BaseMockIntegrationTest
 
     @Test
     public void allow_access_to_system_setting() {
-        List<SystemSetting> systemSettings = d2.systemSettingModule().systemSetting().blockingGet();
+        List<SystemSetting> systemSettings = d2.settingModule().systemSetting().blockingGet();
         assertThat(systemSettings.size(), is(2));
     }
 
     @Test
     public void allow_access_to_system_setting_filtered_by_key() {
-        List<SystemSetting> systemSettingsFlag = d2.systemSettingModule().systemSetting().byKey()
+        List<SystemSetting> systemSettingsFlag = d2.settingModule().systemSetting().byKey()
                 .eq(SystemSetting.SystemSettingKey.FLAG).blockingGet();
         assertThat(systemSettingsFlag.size(), is(1));
         assertThat(systemSettingsFlag.get(0).value(), is("sierra_leone"));
 
-        List<SystemSetting> systemSettingsStyle = d2.systemSettingModule().systemSetting().byKey()
+        List<SystemSetting> systemSettingsStyle = d2.settingModule().systemSetting().byKey()
                 .eq(SystemSetting.SystemSettingKey.STYLE).blockingGet();
         assertThat(systemSettingsStyle.get(0).value(), is("light_blue/light_blue.css"));
     }
 
     @Test
     public void allow_access_to_system_setting_filtered_by_value() {
-        List<SystemSetting> systemSettingsFlag = d2.systemSettingModule().systemSetting().byValue()
+        List<SystemSetting> systemSettingsFlag = d2.settingModule().systemSetting().byValue()
                 .eq("sierra_leone").blockingGet();
         assertThat(systemSettingsFlag.size(), is(1));
         assertThat(systemSettingsFlag.get(0).key(), is(SystemSetting.SystemSettingKey.FLAG));
 
-        List<SystemSetting> systemSettingsStyle = d2.systemSettingModule().systemSetting().byValue()
+        List<SystemSetting> systemSettingsStyle = d2.settingModule().systemSetting().byValue()
                 .eq("light_blue/light_blue.css").blockingGet();
         assertThat(systemSettingsStyle.get(0).key(), is(SystemSetting.SystemSettingKey.STYLE));
     }
 
     @Test
     public void allow_access_to_flag_settings() {
-        SystemSetting systemSetting = d2.systemSettingModule().systemSetting().flag().blockingGet();
+        SystemSetting systemSetting = d2.settingModule().systemSetting().flag().blockingGet();
         assertThat(systemSetting.key(), is(SystemSetting.SystemSettingKey.FLAG));
         assertThat(systemSetting.value(), is("sierra_leone"));
     }
 
     @Test
     public void allow_access_to_style_settings() {
-        SystemSetting systemSetting = d2.systemSettingModule().systemSetting().style().blockingGet();
+        SystemSetting systemSetting = d2.settingModule().systemSetting().style().blockingGet();
         assertThat(systemSetting.key(), is(SystemSetting.SystemSettingKey.STYLE));
         assertThat(systemSetting.value(), is("light_blue/light_blue.css"));
     }

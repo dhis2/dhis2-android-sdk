@@ -41,5 +41,5 @@ public enum MetadataSyncPeriod {
     EVERY_DAY,
 
     @JsonProperty("7d")
-    EVERY_7_DAYS
+    EVERY_7_DAYS;
 }

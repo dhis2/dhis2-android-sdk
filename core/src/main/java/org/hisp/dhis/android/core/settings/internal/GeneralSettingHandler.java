@@ -28,29 +28,21 @@
 
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.settings.AndroidSetting;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import java.util.Collection;
 
-@Module
-public final class AndroidSettingAppEntityDIModule {
+class GeneralSettingHandler extends ObjectWithoutUidHandlerImpl<GeneralSettings> {
 
-    @Provides
-    @Reusable
-    ObjectWithoutUidStore<AndroidSetting> androidSettingStore(DatabaseAdapter databaseAdapter) {
-        return AndroidSettingStore.create(databaseAdapter);
+    GeneralSettingHandler(ObjectWithoutUidStore<GeneralSettings> store) {
+        super(store);
     }
 
-    @Provides
-    @Reusable
-    Handler<AndroidSetting> dataSetSettingHandler(ObjectWithoutUidStore<AndroidSetting> store) {
-        return new AndroidSettingHandler(store);
+    @Override
+    protected Collection<GeneralSettings> beforeCollectionHandled(Collection<GeneralSettings> oCollection) {
+        store.delete();
+        return oCollection;
     }
-
-
 }

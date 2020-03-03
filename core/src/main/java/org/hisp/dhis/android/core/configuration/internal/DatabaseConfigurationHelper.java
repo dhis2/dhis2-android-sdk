@@ -31,26 +31,38 @@ package org.hisp.dhis.android.core.configuration.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class DatabaseConfigurationHelper {
+final class DatabaseConfigurationHelper {
 
     private final DatabaseNameGenerator databaseNameGenerator;
 
-    public DatabaseConfigurationHelper(DatabaseNameGenerator databaseNameGenerator) {
+    DatabaseConfigurationHelper(DatabaseNameGenerator databaseNameGenerator) {
         this.databaseNameGenerator = databaseNameGenerator;
     }
 
-    public DatabaseUserConfiguration getLoggedUserConfiguration(DatabasesConfiguration configuration, String username) {
-        DatabaseServerConfiguration serverConfiguration = getServerConfiguration(configuration,
-                configuration.loggedServerUrl());
-        if (serverConfiguration == null) {
-            throw new RuntimeException("Malformed configuration: Server database configuration not found");
-        }
-        for (DatabaseUserConfiguration user: serverConfiguration.users()) {
-            if (user.username().equals(username)) {
-                return user;
+    @SuppressWarnings("PMD.AvoidDeeplyNestedIfStmts")
+    DatabaseUserConfiguration getUserConfiguration(DatabasesConfiguration configuration, String serverUrl,
+                                                   String username) {
+        if (configuration != null) {
+            DatabaseServerConfiguration serverConfiguration = getServerConfiguration(configuration, serverUrl);
+            if (serverConfiguration != null) {
+                for (DatabaseUserConfiguration user: serverConfiguration.users()) {
+                    if (user.username().equals(username)) {
+                        return user;
+                    }
+                }
             }
         }
-        throw new RuntimeException("Malformed configuration: User database configuration not found");
+        return null;
+    }
+
+    DatabaseUserConfiguration getLoggedUserConfiguration(DatabasesConfiguration configuration, String username) {
+        DatabaseUserConfiguration userConfiguration = getUserConfiguration(configuration,
+                configuration.loggedServerUrl(), username);
+        if (userConfiguration == null) {
+            throw new RuntimeException("Malformed configuration: user configuration not found for logged server");
+        } else {
+            return userConfiguration;
+        }
     }
 
     private DatabaseServerConfiguration getServerConfiguration(DatabasesConfiguration configuration, String serverUrl) {
@@ -62,8 +74,8 @@ public final class DatabaseConfigurationHelper {
         return null;
     }
 
-    public DatabasesConfiguration addConfiguration(DatabasesConfiguration configuration, String serverUrl,
-                                                   String username, boolean encrypt) {
+    DatabasesConfiguration addConfiguration(DatabasesConfiguration configuration, String serverUrl,
+                                            String username, boolean encrypt) {
         DatabaseServerConfiguration existingServerConf = configuration == null ? null
                 : getServerConfiguration(configuration, serverUrl);
 
@@ -102,5 +114,9 @@ public final class DatabaseConfigurationHelper {
                 .loggedServerUrl(serverUrl)
                 .servers(newServers)
                 .build();
+    }
+
+    DatabasesConfiguration setServerUrl(DatabasesConfiguration configuration, String serverUrl) {
+        return configuration.toBuilder().loggedServerUrl(serverUrl).build();
     }
 }

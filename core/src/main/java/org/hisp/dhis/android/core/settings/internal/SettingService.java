@@ -25,24 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
-import org.hisp.dhis.android.core.settings.AndroidSetting;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
+import org.hisp.dhis.android.core.settings.DataSetSettings;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
+import org.hisp.dhis.android.core.settings.ProgramSettings;
+import org.hisp.dhis.android.core.settings.SystemSettings;
 
-import java.util.Collection;
+import io.reactivex.Single;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-class AndroidSettingHandler extends ObjectWithoutUidHandlerImpl<AndroidSetting> {
+interface SettingService {
 
-    AndroidSettingHandler(ObjectWithoutUidStore<AndroidSetting> store) {
-        super(store);
-    }
+    String ANDROID_APP_NAMESPACE = "dataStore/ANDROID_SETTING_APP";
 
-    @Override
-    protected Collection<AndroidSetting> beforeCollectionHandled(Collection<AndroidSetting> oCollection) {
-        store.delete();
-        return oCollection;
-    }
+    @GET("systemSettings")
+    Call<SystemSettings> getSystemSettings(@Query("fields") @Which Fields<SystemSettings> fields);
+
+    @GET(ANDROID_APP_NAMESPACE + "/" + "general_settings")
+    Single<GeneralSettings> getGeneralSettings();
+
+    @GET(ANDROID_APP_NAMESPACE + "/" + "dataSet_settings")
+    Single<DataSetSettings> getDataSetSettings();
+
+    @GET(ANDROID_APP_NAMESPACE + "/" + "program_settings")
+    Single<ProgramSettings> getProgramSettings();
 }

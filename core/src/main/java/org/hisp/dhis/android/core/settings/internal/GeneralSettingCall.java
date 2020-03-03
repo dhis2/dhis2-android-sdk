@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.settings.AndroidSetting;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,21 +44,21 @@ import io.reactivex.Completable;
 import io.reactivex.Single;
 
 @Reusable
-public class AndroidSettingCall implements CompletableProvider {
+public class GeneralSettingCall implements CompletableProvider {
 
     private final DatabaseAdapter databaseAdapter;
-    private final Handler<AndroidSetting> androidSettingHandler;
-    private final AndroidSettingAppService androidSettingAppService;
+    private final Handler<GeneralSettings> generalSettingHandler;
+    private final SettingService androidSettingService;
     private final RxAPICallExecutor apiCallExecutor;
 
     @Inject
-    AndroidSettingCall(DatabaseAdapter databaseAdapter,
-                        Handler<AndroidSetting> androidSettingHandler,
-                        AndroidSettingAppService androidSettingAppService,
-                        RxAPICallExecutor apiCallExecutor) {
+    GeneralSettingCall(DatabaseAdapter databaseAdapter,
+                       Handler<GeneralSettings> generalSettingHandler,
+                       SettingService androidSettingService,
+                       RxAPICallExecutor apiCallExecutor) {
         this.databaseAdapter = databaseAdapter;
-        this.androidSettingHandler = androidSettingHandler;
-        this.androidSettingAppService = androidSettingAppService;
+        this.generalSettingHandler = generalSettingHandler;
+        this.androidSettingService = androidSettingService;
         this.apiCallExecutor = apiCallExecutor;
     }
 
@@ -69,24 +69,24 @@ public class AndroidSettingCall implements CompletableProvider {
                 .onErrorComplete();
     }
 
-    private Single<AndroidSetting> downloadAndPersist(boolean storeError) {
-        return apiCallExecutor.wrapSingle(androidSettingAppService.getAndroidSettings(), storeError)
-                .map(androidSetting -> {
+    private Single<GeneralSettings> downloadAndPersist(boolean storeError) {
+        return apiCallExecutor.wrapSingle(androidSettingService.getGeneralSettings(), storeError)
+                .map(generalSettings -> {
                     Transaction transaction = databaseAdapter.beginNewTransaction();
                     try {
-                        List<AndroidSetting> androidSettingList = Collections.singletonList(androidSetting);
-                        androidSettingHandler.handleMany(androidSettingList);
+                        List<GeneralSettings> generalSettingsList = Collections.singletonList(generalSettings);
+                        generalSettingHandler.handleMany(generalSettingsList);
                         transaction.setSuccessful();
                     } finally {
                         transaction.end();
                     }
-                    return androidSetting;
+                    return generalSettings;
                 });
     }
 
     public Single<Boolean> isDatabaseEncrypted() {
-        return apiCallExecutor.wrapSingle(androidSettingAppService.getAndroidSettings(), false)
-                .map(AndroidSetting::encryptDB)
+        return apiCallExecutor.wrapSingle(androidSettingService.getGeneralSettings(), false)
+                .map(GeneralSettings::encryptDB)
                 .onErrorReturn(throwable -> false);
     }
 }

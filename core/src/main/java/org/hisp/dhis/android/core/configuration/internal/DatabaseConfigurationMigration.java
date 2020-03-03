@@ -38,11 +38,11 @@ import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl;
 
-public final class DatabaseConfigurationMigration {
+final class DatabaseConfigurationMigration {
 
     static final String OLD_DBNAME = "dhis.db";
 
-    public static DatabasesConfiguration apply(Context context, SecureStore secureStore) {
+    static DatabasesConfiguration apply(Context context, SecureStore secureStore) {
         return apply(
                 context,
                 new ConfigurationSecureStoreImpl(secureStore),

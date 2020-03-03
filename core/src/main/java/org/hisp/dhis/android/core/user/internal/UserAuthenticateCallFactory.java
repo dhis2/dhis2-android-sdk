@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
@@ -43,9 +41,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
-import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper;
-import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration;
-import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration;
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager;
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -84,10 +80,7 @@ public final class UserAuthenticateCallFactory {
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final IdentifiableObjectStore<User> userStore;
     private final WipeModule wipeModule;
-    private final ObjectSecureStore<DatabasesConfiguration> configurationSecureStore;
-    private final DatabaseConfigurationHelper configurationHelper;
-
-    private final Context context;
+    private final MultiUserDatabaseManager multiUserDatabaseManager;
 
     @Inject
     UserAuthenticateCallFactory(
@@ -101,9 +94,7 @@ public final class UserAuthenticateCallFactory {
             @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             @NonNull IdentifiableObjectStore<User> userStore,
             @NonNull WipeModule wipeModule,
-            @NonNull ObjectSecureStore<DatabasesConfiguration> configurationSecureStore,
-            @NonNull DatabaseConfigurationHelper configurationHelper,
-            @NonNull Context context) {
+            @NonNull MultiUserDatabaseManager multiUserDatabaseManager) {
         this.databaseAdapter = databaseAdapter;
         this.apiCallExecutor = apiCallExecutor;
 
@@ -117,9 +108,7 @@ public final class UserAuthenticateCallFactory {
         this.systemInfoRepository = systemInfoRepository;
         this.userStore = userStore;
         this.wipeModule = wipeModule;
-        this.configurationSecureStore = configurationSecureStore;
-        this.configurationHelper = configurationHelper;
-        this.context = context;
+        this.multiUserDatabaseManager = multiUserDatabaseManager;
     }
 
     public Single<User> logIn(final String username, final String password, final String serverUrl) {
@@ -135,35 +124,21 @@ public final class UserAuthenticateCallFactory {
     private User loginInternal(String username, String password, String serverUrl) throws D2Error {
         throwExceptionIfUsernameNull(username);
         throwExceptionIfPasswordNull(password);
+        throwExceptionIfAlreadyAuthenticated();
+        HttpUrl parsedServerUrl = ServerUrlParser.parse(serverUrl);
 
+        ServerURLWrapper.setServerUrl(parsedServerUrl.toString());
         Call<User> authenticateCall =
                 userService.authenticate(basic(username, password), UserFields.allFieldsWithoutOrgUnit);
-
         try {
-            HttpUrl httpServerUrl = ServerUrlParser.parse(serverUrl);
-            ServerURLWrapper.setServerUrl(httpServerUrl.toString());
-            DatabasesConfiguration updatedConfiguration = configurationHelper.addConfiguration(
-                    configurationSecureStore.get(), httpServerUrl.toString(), username,
-                    DatabaseAdapterFactory.getExperimentalEncryption());
-            configurationSecureStore.set(updatedConfiguration);
-
             User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,
                     new UserAuthenticateCallErrorCatcher());
-
-            DatabaseUserConfiguration userConfiguration = configurationHelper.getLoggedUserConfiguration(
-                    updatedConfiguration, username);
-            DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration.databaseName(),
-                    context, userConfiguration.encrypted());
-
-            throwExceptionIfAlreadyAuthenticatedAndDbNotEmpty();
-
-            return loginOnline(authenticatedUser, username, password);
+            return loginOnline(parsedServerUrl, authenticatedUser, username, password);
         } catch (D2Error d2Error) {
-            if (
-                    d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
-                            d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
-                            d2Error.errorCode() == D2ErrorCode.UNKNOWN_HOST) {
-                return loginOffline(username, password, serverUrl);
+            if (d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
+                    d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
+                    d2Error.errorCode() == D2ErrorCode.UNKNOWN_HOST) {
+                return loginOffline(parsedServerUrl, username, password);
             } else if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
                 wipeModule.wipeEverything();
                 throw d2Error;
@@ -173,8 +148,9 @@ public final class UserAuthenticateCallFactory {
         }
     }
 
-    private User loginOnline(User authenticatedUser, String username, String password) {
-
+    private User loginOnline(HttpUrl serverUrl, User authenticatedUser, String username, String password) {
+        multiUserDatabaseManager.createIfNotExistingAndLoad(serverUrl.toString(), username,
+                DatabaseAdapterFactory.getExperimentalEncryption());
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
             AuthenticatedUser authenticatedUserToStore = buildAuthenticatedUser(authenticatedUser.uid(),
@@ -192,29 +168,30 @@ public final class UserAuthenticateCallFactory {
         }
     }
 
-    private User loginOffline(String username, String password, String serverUrl) throws D2Error {
-        if (wasLoggedAndServerIsNew(serverUrl)) {
-            throw D2Error.builder()
-                    .errorCode(D2ErrorCode.DIFFERENT_SERVER_OFFLINE)
-                    .errorDescription("Cannot switch servers offline.")
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .build();
+    private D2Error noUserOfflineError() {
+        return D2Error.builder()
+                .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE)
+                .errorDescription("The user hasn't been previously authenticated. Cannot login offline.")
+                .errorComponent(D2ErrorComponent.SDK)
+                .build();
+    }
+
+    private User loginOffline(HttpUrl serverUrl, String username, String password) throws D2Error {
+        boolean existingDatabase = multiUserDatabaseManager.loadExisting(serverUrl.toString(), username);
+        if (!existingDatabase) {
+            throw noUserOfflineError();
         }
 
         AuthenticatedUser existingUser = authenticatedUserStore.selectFirst();
 
         if (existingUser == null) {
-            throw D2Error.builder()
-                    .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE)
-                    .errorDescription("No user has been previously authenticated. Cannot login offline.")
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .build();
+            throw noUserOfflineError();
         }
 
         if (!md5(username, password).equals(existingUser.hash())) {
             throw D2Error.builder()
-                    .errorCode(D2ErrorCode.DIFFERENT_AUTHENTICATED_USER_OFFLINE)
-                    .errorDescription("Credentials do not match authenticated user. Cannot switch users offline.")
+                    .errorCode(D2ErrorCode.BAD_CREDENTIALS)
+                    .errorDescription("Credentials do not match authenticated user. Cannot login offline.")
                     .errorComponent(D2ErrorComponent.SDK)
                     .build();
         }
@@ -253,30 +230,15 @@ public final class UserAuthenticateCallFactory {
         }
     }
 
-    private void throwExceptionIfAlreadyAuthenticatedAndDbNotEmpty() throws D2Error {
+    private void throwExceptionIfAlreadyAuthenticated() throws D2Error {
         Credentials credentials = credentialsSecureStore.get();
-        AuthenticatedUser existingUser = authenticatedUserStore.selectFirst();
         if (credentials != null) {
-            if (existingUser == null) {
-                credentialsSecureStore.remove();
-            } else {
-                throw D2Error.builder()
-                        .errorCode(D2ErrorCode.ALREADY_AUTHENTICATED)
-                        .errorDescription("A user is already authenticated: " + credentials.username())
-                        .errorComponent(D2ErrorComponent.SDK)
-                        .build();
-            }
+            throw D2Error.builder()
+                    .errorCode(D2ErrorCode.ALREADY_AUTHENTICATED)
+                    .errorDescription("A user is already authenticated: " + credentials.username())
+                    .errorComponent(D2ErrorComponent.SDK)
+                    .build();
         }
-    }
-
-    private boolean wasLoggedAndServerIsNew(String serverUrl) {
-        String baseServerUrl = ServerUrlParser.removeTrailingSlash(serverUrl);
-
-        SystemInfo lastSystemInfo = systemInfoRepository.blockingGet();
-        String existingServerUrl = lastSystemInfo == null ? null :
-                ServerUrlParser.removeTrailingSlash(lastSystemInfo.contextPath());
-
-        return !baseServerUrl.equals(existingServerUrl);
     }
 
     private void handleUser(User user) {

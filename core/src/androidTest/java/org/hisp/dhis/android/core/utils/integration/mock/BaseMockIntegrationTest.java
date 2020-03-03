@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.utils.integration.mock;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.MockIntegrationTestObjects;
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;

@@ -45,13 +45,15 @@ public abstract class BaseObjectShould {
         this.jsonStream = this.getClass().getClassLoader().getResourceAsStream(jsonPath);
     }
 
-    public <O> O deserialize(Class<O> oClass) throws IOException {
+    protected <O> O deserialize(Class<O> oClass) throws IOException {
         return objectMapper.readValue(jsonStream, oClass);
     }
-    public <O> O deserialize(String jsonString, Class<O> oClass) throws IOException {
+
+    protected <O> O deserialize(String jsonString, Class<O> oClass) throws IOException {
         return objectMapper.readValue(jsonString, oClass);
     }
-    public <O> String serialize(O object) throws IOException {
+
+    protected <O> String serialize(O object) throws IOException {
         return objectMapper.writeValueAsString(object);
     }
 }

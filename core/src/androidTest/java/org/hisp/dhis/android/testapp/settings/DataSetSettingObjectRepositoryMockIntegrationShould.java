@@ -43,7 +43,7 @@ public class DataSetSettingObjectRepositoryMockIntegrationShould extends BaseMoc
 
     @Test
     public void find_dataset_setting() {
-        DataSetSettings dataSetSettings = d2.systemSettingModule().dataSetSetting().blockingGet();
+        DataSetSettings dataSetSettings = d2.settingModule().dataSetSetting().blockingGet();
 
         assertThat(dataSetSettings.globalSettings(), notNullValue());
         assertThat(dataSetSettings.specificSettings().size(), is(2));

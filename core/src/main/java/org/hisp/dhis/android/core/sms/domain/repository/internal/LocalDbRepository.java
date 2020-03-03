@@ -63,7 +63,8 @@ public interface LocalDbRepository {
 
     Completable removeOngoingSubmission(Integer id);
 
-    Single<SMSDataValueSet> getDataValueSet(String orgUnit,
+    Single<SMSDataValueSet> getDataValueSet(String dataSet,
+                                            String orgUnit,
                                             String period,
                                             String attributeOptionComboUid);
 

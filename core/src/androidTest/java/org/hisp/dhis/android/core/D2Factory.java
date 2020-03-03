@@ -38,7 +38,10 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
+import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.Collections;
 
@@ -46,24 +49,27 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 public class D2Factory {
 
-    public static D2 forDatabaseName(String databaseName) {
+    public static D2 forNewDatabase() {
+        return forNewDatabaseInternal(new InMemorySecureStore());
+    }
+
+    public static D2 forNewDatabaseWithAndroidSecureStore() {
+        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        return forNewDatabaseInternal(new AndroidSecureStore(context));
+    }
+
+    private static D2 forNewDatabaseInternal(SecureStore secureStore) {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
 
         D2Configuration d2Configuration = d2Configuration(context);
 
-        D2Manager.setDatabaseName(databaseName);
-
         D2Manager.setTestMode(true);
+        D2Manager.setTestingSecureStore(secureStore);
         D2 d2 = D2Manager.blockingInstantiateD2(d2Configuration);
 
         D2Manager.clear();
-        D2Manager.setDatabaseName(null);
 
         return d2;
-    }
-
-    public static D2 forNewDatabase() {
-        return forDatabaseName(null);
     }
 
     public static D2Configuration d2Configuration(Context context) {
@@ -83,13 +89,19 @@ public class D2Factory {
     public static D2 forDatabaseAdapter(DatabaseAdapter databaseAdapter) {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
         NotClosedObjectsDetector.enableNotClosedObjectsDetection();
-        ObjectSecureStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(new AndroidSecureStore(context));
-        return new D2(
-                RetrofitFactory.retrofit(
-                        OkHttpClientFactory.okHttpClient(d2Configuration(context), credentialsSecureStore)),
-                databaseAdapter,
-                context,
-                credentialsSecureStore
-        );
+        SecureStore secureStore = new InMemorySecureStore();
+        ObjectSecureStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
+        try {
+            return new D2(
+                    RetrofitFactory.retrofit(
+                            OkHttpClientFactory.okHttpClient(d2Configuration(context), credentialsSecureStore)),
+                    databaseAdapter,
+                    context,
+                    secureStore,
+                    credentialsSecureStore);
+        } catch (D2Error d2Error) {
+            d2Error.printStackTrace();
+            return null;
+        }
     }
 }

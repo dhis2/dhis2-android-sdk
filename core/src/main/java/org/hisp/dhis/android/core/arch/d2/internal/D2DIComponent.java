@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.arch.repositories.di.internal.RepositoriesDIMo
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStorageDIModule;
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.internal.CategoryPackageDIModule;
 import org.hisp.dhis.android.core.common.internal.CommonPackageDIModule;
@@ -75,7 +76,7 @@ import org.hisp.dhis.android.core.program.internal.ProgramPackageDIModule;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipPackageDIModule;
 import org.hisp.dhis.android.core.resource.internal.ResourcePackageDIModule;
-import org.hisp.dhis.android.core.settings.internal.SystemSettingPackageDIModule;
+import org.hisp.dhis.android.core.settings.internal.SettingPackageDIModule;
 import org.hisp.dhis.android.core.sms.internal.SmsDIModule;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
@@ -123,7 +124,7 @@ import retrofit2.Retrofit;
         RelationshipPackageDIModule.class,
         ResourcePackageDIModule.class,
         SystemInfoPackageDIModule.class,
-        SystemSettingPackageDIModule.class,
+        SettingPackageDIModule.class,
         TrackedEntityPackageDIModule.class,
         SmsDIModule.class,
         UserPackageDIModule.class}
@@ -156,6 +157,8 @@ public interface D2DIComponent {
     EventPostCall eventPostCall();
     @VisibleForTesting
     IdentifiableObjectStore<CategoryOption> categoryOptionStore();
+    @VisibleForTesting
+    ObjectSecureStore<Credentials> credentialsSecureStore();
 
     @Component.Builder
     interface Builder {
@@ -188,19 +191,19 @@ public interface D2DIComponent {
         Builder relationshipDIModule(RelationshipPackageDIModule relationshipPackageDIModule);
         Builder resourcePackageDIModule(ResourcePackageDIModule resourcePackageDIModule);
         Builder systemInfoPackageDIModule(SystemInfoPackageDIModule systemInfoPackageDIModule);
-        Builder systemSettingPackageDIModule(SystemSettingPackageDIModule systemSettingPackageDIModule);
+        Builder systemSettingPackageDIModule(SettingPackageDIModule settingPackageDIModule);
         Builder trackedEntityPackageDIModule(TrackedEntityPackageDIModule trackedEntityPackageDIModule);
         Builder userPackageDIModule(UserPackageDIModule userPackageDIModule);
         D2DIComponent build();
     }
 
     static D2DIComponent create(Context context, Retrofit retrofit, DatabaseAdapter databaseAdapter,
-                                ObjectSecureStore<Credentials> credentialsSecureStore) {
+                                SecureStore secureStore, ObjectSecureStore<Credentials> credentialsSecureStore) {
         return DaggerD2DIComponent.builder()
                 .appContextDIModule(new AppContextDIModule(context))
                 .databaseDIModule(new DatabaseDIModule(databaseAdapter))
                 .apiClientDIModule(new APIClientDIModule(retrofit))
-                .secureStorageDIModule(new SecureStorageDIModule(context, credentialsSecureStore))
+                .secureStorageDIModule(new SecureStorageDIModule(secureStore, credentialsSecureStore))
                 .build();
     }
 }

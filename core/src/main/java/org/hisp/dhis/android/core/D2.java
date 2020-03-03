@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.category.CategoryModule;
 import org.hisp.dhis.android.core.constant.ConstantModule;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
@@ -58,7 +59,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule;
 import org.hisp.dhis.android.core.period.PeriodModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
-import org.hisp.dhis.android.core.settings.SystemSettingModule;
+import org.hisp.dhis.android.core.settings.SettingModule;
 import org.hisp.dhis.android.core.sms.SmsModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
@@ -72,13 +73,15 @@ public final class D2 {
     private final Retrofit retrofit;
     private final DatabaseAdapter databaseAdapter;
     private final D2Modules modules;
-    private final D2DIComponent d2DIComponent;
+    final D2DIComponent d2DIComponent;
 
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter, @NonNull Context context,
+       @NonNull SecureStore secureStore,
        @NonNull ObjectSecureStore<Credentials> credentialsSecureStore) {
         this.retrofit = retrofit;
         this.databaseAdapter = databaseAdapter;
-        this.d2DIComponent = D2DIComponent.create(context, retrofit, databaseAdapter, credentialsSecureStore);
+        this.d2DIComponent = D2DIComponent.create(context, retrofit, databaseAdapter, secureStore,
+                credentialsSecureStore);
         this.modules = d2DIComponent.modules();
     }
 
@@ -106,8 +109,16 @@ public final class D2 {
         return this.modules.systemInfo;
     }
 
-    public SystemSettingModule systemSettingModule() {
-        return this.modules.systemSetting;
+    /**
+     * @deprecated Use {@link #settingModule()} instead.
+     */
+    @Deprecated
+    public SettingModule systemSettingModule() {
+        return this.modules.settingModule;
+    }
+
+    public SettingModule settingModule() {
+        return this.modules.settingModule;
     }
 
     public PeriodModule periodModule() {

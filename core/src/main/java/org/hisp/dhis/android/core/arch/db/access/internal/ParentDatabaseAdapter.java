@@ -136,7 +136,9 @@ class ParentDatabaseAdapter implements DatabaseAdapter {
 
     @Override
     public void close() {
-        getAdapter().close();
+        if (adapter != null) {
+            adapter.close();
+        }
     }
 
     @Override

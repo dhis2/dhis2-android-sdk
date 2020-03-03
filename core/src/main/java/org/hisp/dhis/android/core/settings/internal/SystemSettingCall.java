@@ -48,14 +48,14 @@ final class SystemSettingCall implements Callable<Unit> {
     private final APICallExecutor apiCallExecutor;
     private final DatabaseAdapter databaseAdapter;
     private final Handler<SystemSetting> handler;
-    private final SystemSettingService service;
+    private final SettingService service;
     private final SystemSettingsSplitter settingsSplitter;
 
     @Inject
     SystemSettingCall(APICallExecutor apiCallExecutor,
                       DatabaseAdapter databaseAdapter,
                       Handler<SystemSetting> handler,
-                      SystemSettingService service,
+                      SettingService service,
                       SystemSettingsSplitter settingsSplitter) {
         this.apiCallExecutor = apiCallExecutor;
         this.databaseAdapter = databaseAdapter;

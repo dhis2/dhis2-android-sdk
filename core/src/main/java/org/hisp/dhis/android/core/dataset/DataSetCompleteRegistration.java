@@ -41,6 +41,7 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreBooleanColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.State;
 
@@ -73,6 +74,7 @@ public abstract class DataSetCompleteRegistration extends BaseDeletableDataObjec
 
     @Nullable
     @JsonProperty
+    @ColumnAdapter(IgnoreBooleanColumnAdapter.class)
     abstract Boolean completed();
 
     @NonNull

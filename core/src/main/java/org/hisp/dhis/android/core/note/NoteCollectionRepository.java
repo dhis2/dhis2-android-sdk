@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.note;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
@@ -55,7 +56,7 @@ public final class NoteCollectionRepository
     private final DataStatePropagator dataStatePropagator;
 
     @Inject
-    NoteCollectionRepository(final ObjectWithoutUidStore<Note> store,
+    NoteCollectionRepository(final IdentifiableObjectStore<Note> store,
                              final Map<String, ChildrenAppender<Note>> childrenAppenders,
                              final RepositoryScope scope,
                              final Transformer<NoteCreateProjection, Note> transformer,
@@ -67,6 +68,15 @@ public final class NoteCollectionRepository
 
     public StringFilterConnector<NoteCollectionRepository> byUid() {
         return cf.string(IdentifiableColumns.UID);
+    }
+
+
+    public EnumFilterConnector<NoteCollectionRepository, Note.NoteType> byNoteType() {
+        return cf.enumC(Columns.NOTE_TYPE);
+    }
+
+    public StringFilterConnector<NoteCollectionRepository> byEventUid() {
+        return cf.string(Columns.EVENT);
     }
 
     public StringFilterConnector<NoteCollectionRepository> byEnrollmentUid() {

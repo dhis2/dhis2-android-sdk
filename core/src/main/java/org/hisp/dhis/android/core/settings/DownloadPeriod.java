@@ -28,9 +28,22 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public enum DownloadPeriod {
     ANY,
     LAST_MONTH,
     LAST_3_MONTHS,
-    LAST_12_MONTHS
+    LAST_12_MONTHS;
+
+    @JsonCreator
+    public static DownloadPeriod forName(String name) {
+        for (DownloadPeriod c: values()) {
+            if (c.name().equals(name)) {
+                return c;
+            }
+        }
+
+        return null;
+    }
 }

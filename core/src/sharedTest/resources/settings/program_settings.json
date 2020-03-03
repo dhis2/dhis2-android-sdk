@@ -11,10 +11,10 @@
     "settingDBTrimming": "GLOBAL",
     "enrollmentDownload": "ALL",
     "teReservedDownload": 100,
-    "eventPeriodDownload": "ANY",
+    "eventDateDownload": "ANY",
     "enrollmentDBTrimming": "ALL",
     "teReservedDBTrimming": 100,
-    "eventPeriodDBTrimming": "ANY",
+    "eventDateDBTrimming": "ANY",
     "enrollmentDateDownload": "ANY",
     "enrollmentDateDBTrimming": "ANY"
   },
@@ -33,10 +33,10 @@
       "settingDBTrimming": "PER_ORG_UNIT",
       "enrollmentDownload": "ALL",
       "teReservedDownload": "60",
-      "eventPeriodDownload": "ANY",
+      "eventDateDownload": "ANY",
       "enrollmentDBTrimming": "ONLY_ACTIVE",
       "teReservedDBTrimming": "20",
-      "eventPeriodDBTrimming": "LAST_MONTH",
+      "eventDateDBTrimming": "LAST_MONTH",
       "enrollmentDateDownload": "ANY",
       "enrollmentDateDBTrimming": "LAST_MONTH"
     },
@@ -54,10 +54,10 @@
       "settingDBTrimming": "PER_ORG_UNIT",
       "enrollmentDownload": "ALL",
       "teReservedDownload": "20",
-      "eventPeriodDownload": "ANY",
+      "eventDateDownload": "ANY",
       "enrollmentDBTrimming": "ALL",
       "teReservedDBTrimming": "20",
-      "eventPeriodDBTrimming": "LAST_3_MONTHS",
+      "eventDateDBTrimming": "LAST_3_MONTHS",
       "enrollmentDateDownload": "LAST_MONTH",
       "enrollmentDateDBTrimming": "LAST_3_MONTHS"
     }

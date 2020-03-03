@@ -122,12 +122,12 @@ public abstract class ProgramSetting implements CoreObject {
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DownloadPeriodColumnAdapter.class)
-    public abstract DownloadPeriod eventPeriodDownload();
+    public abstract DownloadPeriod eventDateDownload();
 
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DownloadPeriodColumnAdapter.class)
-    public abstract DownloadPeriod eventPeriodDBTrimming();
+    public abstract DownloadPeriod eventDateDBTrimming();
 
     @Nullable
     @JsonProperty()
@@ -183,9 +183,9 @@ public abstract class ProgramSetting implements CoreObject {
 
         public abstract Builder teReservedDBTrimming(Integer teReservedDBTrimming);
 
-        public abstract Builder eventPeriodDownload(DownloadPeriod eventPeriodDownload);
+        public abstract Builder eventDateDownload(DownloadPeriod eventPeriodDownload);
 
-        public abstract Builder eventPeriodDBTrimming(DownloadPeriod eventPeriodDBTrimming);
+        public abstract Builder eventDateDBTrimming(DownloadPeriod eventPeriodDBTrimming);
 
         public abstract Builder enrollmentDateDownload(DownloadPeriod enrollmentDateDownload);
 

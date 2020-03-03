@@ -78,5 +78,8 @@ public class EventShould extends BaseObjectShould implements ObjectShould {
         assertThat(event.trackedEntityDataValues().get(5).dataElement()).isEqualTo("oZg33kd9taw");
         assertThat(event.trackedEntityDataValues().get(6).dataElement()).isEqualTo("qrur9Dvnyt5");
         assertThat(event.trackedEntityDataValues().get(7).dataElement()).isEqualTo("GieVkTxp4HH");
+
+        assertThat(event.notes().get(0).uid()).isEqualTo("eventNote1");
+        assertThat(event.notes().get(1).uid()).isEqualTo("eventNote2");
     }
 }

@@ -133,7 +133,7 @@ public class Dhis2MockServer {
                     return createMockResponse(SYSTEM_INFO_JSON);
                 } else if (path.startsWith("/api/systemSettings?")) {
                     return createMockResponse(SYSTEM_SETTINGS_JSON);
-                } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/android_settings")) {
+                } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/general_settings")) {
                     return createMockResponse(ANDROID_SETTINGS_JSON);
                 } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/dataSet_settings")) {
                     return createMockResponse(DATASET_SETTINGS_JSON);

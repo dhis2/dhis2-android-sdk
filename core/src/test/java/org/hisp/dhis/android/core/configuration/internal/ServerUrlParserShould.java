@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.configuration.internal;
 
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -41,38 +42,38 @@ public class ServerUrlParserShould {
 
     private final HttpUrl EXPECTED = HttpUrl.parse("http://dhis2.org/api/");
 
-    @Test(expected = IllegalArgumentException.class)
-    public void return_error_empty_string() {
+    @Test(expected = D2Error.class)
+    public void return_error_empty_string() throws D2Error {
         ServerUrlParser.parse("");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void return_error_null_string() {
+    @Test(expected = D2Error.class)
+    public void return_error_null_string() throws D2Error {
         ServerUrlParser.parse(null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void return_error_malformed_url() {
+    @Test(expected = D2Error.class)
+    public void return_error_malformed_url() throws D2Error {
         ServerUrlParser.parse("malformed url");
     }
 
     @Test
-    public void parse_url_with_no_api_no_slash() {
+    public void parse_url_with_no_api_no_slash() throws D2Error {
         assertThat(ServerUrlParser.parse("http://dhis2.org")).isEqualTo(EXPECTED);
     }
 
     @Test
-    public void parse_url_slash() {
+    public void parse_url_slash() throws D2Error {
         assertThat(ServerUrlParser.parse("http://dhis2.org/")).isEqualTo(EXPECTED);
     }
 
     @Test
-    public void parse_url_slash_api() {
+    public void parse_url_slash_api() throws D2Error {
         assertThat(ServerUrlParser.parse("http://dhis2.org/api")).isEqualTo(EXPECTED);
     }
 
     @Test
-    public void parse_url_slash_api_slash() {
+    public void parse_url_slash_api_slash() throws D2Error {
         assertThat(ServerUrlParser.parse("http://dhis2.org/api/")).isEqualTo(EXPECTED);
     }
 

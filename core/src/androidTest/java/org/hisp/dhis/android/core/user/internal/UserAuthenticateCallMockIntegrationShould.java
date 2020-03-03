@@ -92,6 +92,9 @@ public class UserAuthenticateCallMockIntegrationShould extends BaseMockIntegrati
     }
 
     private User login() {
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut();
+        }
         return d2.userModule().blockingLogIn("test_user", "test_password", dhis2MockServer.getBaseEndpoint());
     }
 }

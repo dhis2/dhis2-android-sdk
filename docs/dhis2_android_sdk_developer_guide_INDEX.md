@@ -25,3 +25,4 @@ applicable_txt: 'Applicable to version 1.0.0'
 !INCLUDE "content/developer/program-rule-engine.md"
 !INCLUDE "content/developer/program-indicator-engine.md"
 !INCLUDE "content/developer/debugging.md"
+!INCLUDE "content/developer/known-issues.md"

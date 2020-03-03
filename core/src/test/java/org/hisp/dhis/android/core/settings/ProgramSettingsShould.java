@@ -63,8 +63,6 @@ public class ProgramSettingsShould extends BaseObjectShould implements ObjectSho
         assertThat(global.settingDBTrimming()).isEqualByComparingTo(LimitScope.GLOBAL);
         assertThat(global.enrollmentDownload()).isEqualByComparingTo(EnrollmentScope.ALL);
         assertThat(global.enrollmentDBTrimming()).isEqualByComparingTo(EnrollmentScope.ALL);
-        assertThat(global.teReservedDownload()).isEqualTo(100);
-        assertThat(global.teReservedDBTrimming()).isEqualTo(100);
         assertThat(global.eventDateDownload()).isEqualByComparingTo(DownloadPeriod.ANY);
         assertThat(global.eventDateDBTrimming()).isEqualByComparingTo(DownloadPeriod.ANY);
         assertThat(global.enrollmentDateDownload()).isEqualByComparingTo(DownloadPeriod.ANY);
@@ -85,8 +83,6 @@ public class ProgramSettingsShould extends BaseObjectShould implements ObjectSho
         assertThat(childProgramme.settingDBTrimming()).isEqualByComparingTo(LimitScope.PER_ORG_UNIT);
         assertThat(childProgramme.enrollmentDownload()).isEqualByComparingTo(EnrollmentScope.ALL);
         assertThat(childProgramme.enrollmentDBTrimming()).isEqualByComparingTo(EnrollmentScope.ONLY_ACTIVE);
-        assertThat(childProgramme.teReservedDownload()).isEqualTo(60);
-        assertThat(childProgramme.teReservedDBTrimming()).isEqualTo(20);
         assertThat(childProgramme.eventDateDownload()).isEqualByComparingTo(DownloadPeriod.ANY);
         assertThat(childProgramme.eventDateDBTrimming()).isEqualByComparingTo(DownloadPeriod.LAST_MONTH);
         assertThat(childProgramme.enrollmentDateDownload()).isEqualByComparingTo(DownloadPeriod.ANY);

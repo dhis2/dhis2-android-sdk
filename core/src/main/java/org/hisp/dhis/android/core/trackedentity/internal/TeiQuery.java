@@ -61,6 +61,9 @@ abstract class TeiQuery extends BaseQuery {
     @Nullable
     abstract EnrollmentStatus programStatus();
 
+    @Nullable
+    abstract String programStartDate();
+
     @NonNull
     abstract Integer limit();
 
@@ -87,6 +90,8 @@ abstract class TeiQuery extends BaseQuery {
         abstract Builder uids(Collection<String> uIds);
 
         abstract Builder programStatus(EnrollmentStatus programStatus);
+
+        abstract Builder programStartDate(String programStartDate);
 
         abstract Builder limit(Integer limit);
 

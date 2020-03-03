@@ -28,8 +28,10 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
@@ -40,6 +42,7 @@ import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
+import org.hisp.dhis.android.core.settings.DownloadPeriod;
 import org.hisp.dhis.android.core.settings.EnrollmentScope;
 import org.hisp.dhis.android.core.settings.LimitScope;
 import org.hisp.dhis.android.core.settings.ProgramSetting;
@@ -49,6 +52,7 @@ import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -117,6 +121,7 @@ class TrackedEntityInstanceQueryBuilderFactory {
                                                    String lastUpdated) {
         int limit = getLimit(params, programSettings, programUid);
         EnrollmentStatus programStatus = getProgramStatus(params, programSettings, programUid);
+        String programStartDate = getProgramStartDate(programSettings, programUid);
 
         List<TeiQuery.Builder> builders = new ArrayList<>();
 
@@ -139,11 +144,11 @@ class TrackedEntityInstanceQueryBuilderFactory {
         if (hasLimitByOrgunit) {
             for (String orgUnitUid : orgUnits) {
                 builders.add(getBuilderFor(lastUpdated, Collections.singletonList(orgUnitUid), ouMode, params, limit)
-                        .program(programUid).programStatus(programStatus));
+                        .program(programUid).programStatus(programStatus).programStartDate(programStartDate));
             }
         } else {
             builders.add(getBuilderFor(lastUpdated, orgUnits, ouMode, params, limit)
-                    .program(programUid).programStatus(programStatus));
+                    .program(programUid).programStatus(programStatus).programStartDate(programStartDate));
         }
 
         return builders;
@@ -308,6 +313,28 @@ class TrackedEntityInstanceQueryBuilderFactory {
         }
 
         return null;
+    }
+
+    private String getProgramStartDate(ProgramSettings programSettings, String programUid) {
+        DownloadPeriod period = null;
+        if (programSettings != null) {
+            ProgramSetting specificSetting = programSettings.specificSettings().get(programUid);
+            ProgramSetting globalSetting = programSettings.globalSettings();
+
+            if (specificSetting != null && specificSetting.enrollmentDateDownload() != null) {
+                period = specificSetting.enrollmentDateDownload();
+            }
+            else if (globalSetting != null && globalSetting.enrollmentDateDownload() != null) {
+                period = globalSetting.enrollmentDateDownload();
+            }
+        }
+
+        if (period != null && period != DownloadPeriod.ANY) {
+            Date programStartDate = DateUtils.addMonths(new Date(), - period.getMonths());
+            return BaseIdentifiableObject.dateToSpaceDateStr(programStartDate);
+        } else {
+            return null;
+        }
     }
 
     private EnrollmentStatus enrollmentScopeToProgramStatus(EnrollmentScope enrollmentScope) {

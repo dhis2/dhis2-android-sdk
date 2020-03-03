@@ -58,8 +58,8 @@ final class TrackedEntityInstancesEndpointCallFactory {
         String programStatus = query.programStatus() != null ? query.programStatus().toString() : null;
 
         return trackedEntityInstanceService.getTrackedEntityInstances(uidStr, ouStr,
-                query.ouMode().name(), query.program(), programStatus, TrackedEntityInstanceFields.allFields,
-                Boolean.TRUE, query.page(), query.pageSize(), query.lastUpdatedStartDate(), true,
-                true);
+                query.ouMode().name(), query.program(), programStatus, query.programStartDate(),
+                TrackedEntityInstanceFields.allFields, Boolean.TRUE, query.page(), query.pageSize(),
+                query.lastUpdatedStartDate(), true, true);
     }
 }

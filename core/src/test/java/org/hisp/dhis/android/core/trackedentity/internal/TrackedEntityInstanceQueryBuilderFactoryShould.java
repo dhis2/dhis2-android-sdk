@@ -34,6 +34,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
+import org.hisp.dhis.android.core.settings.DownloadPeriod;
+import org.hisp.dhis.android.core.settings.ProgramSetting;
 import org.hisp.dhis.android.core.settings.ProgramSettings;
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
@@ -44,8 +46,11 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -53,7 +58,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class TeiQueryBuilderFactoryShould {
+public class TrackedEntityInstanceQueryBuilderFactoryShould {
 
     @Mock
     private ResourceHandler resourceHandler;
@@ -70,14 +75,19 @@ public class TeiQueryBuilderFactoryShould {
     @Mock
     private ProgramSettingsObjectRepository programSettingsObjectRepository;
 
-    private ProgramSettings programSettings = null;
-    private List<String> programList = Arrays.asList("program1", "program2", "program3");
-    private List<String> rootOrgUnits = Arrays.asList("ou1", "ou2");
-    private List<String> captureOrgUnits = Arrays.asList("ou1", "ou1.1", "ou2");
+    @Mock
+    private ProgramSettings programSettings;
+
+    private String p1 = "program1", p2 = "program2", p3 = "program3";
+
+    private String ou1 = "ou1", ou1c1 = "ou1.1", ou2 = "ou2";
+
+    private List<String> rootOrgUnits = Arrays.asList(ou1, ou2);
+    private List<String> captureOrgUnits = Arrays.asList(ou1, ou1c1, ou2);
     private List<OrganisationUnitProgramLink> links = Arrays.asList(
-            OrganisationUnitProgramLink.builder().organisationUnit("ou1.1").program("program1").build(),
-            OrganisationUnitProgramLink.builder().organisationUnit("ou1.1").program("program2").build(),
-            OrganisationUnitProgramLink.builder().organisationUnit("ou2").program("program2").build()
+            OrganisationUnitProgramLink.builder().organisationUnit(ou1c1).program(p1).build(),
+            OrganisationUnitProgramLink.builder().organisationUnit(ou1c1).program(p2).build(),
+            OrganisationUnitProgramLink.builder().organisationUnit(ou2).program(p2).build()
     );
 
     // Object to test
@@ -91,7 +101,7 @@ public class TeiQueryBuilderFactoryShould {
         when(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids()).thenReturn(rootOrgUnits);
         when(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(any())).thenReturn(captureOrgUnits);
         when(organisationUnitProgramLinkLinkStore.selectWhere(anyString())).thenReturn(links);
-        when(programStore.getUidsByProgramType(any())).thenReturn(programList);
+        when(programStore.getUidsByProgramType(any())).thenReturn(getProgramList());
         when(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings);
 
         builderFactory = new TrackedEntityInstanceQueryBuilderFactory(resourceHandler, userOrganisationUnitLinkStore,
@@ -112,4 +122,35 @@ public class TeiQueryBuilderFactoryShould {
         assertThat(bundle.program()).isNull();
     }
 
+    @Test
+    public void get_enrollment_date_value_if_defined() {
+        ProgramDataDownloadParams params = ProgramDataDownloadParams.builder().build();
+
+        Map<String, ProgramSetting> specificSettings = new HashMap<>();
+        specificSettings.put(p1, ProgramSetting.builder()
+                .uid(p1).enrollmentDateDownload(DownloadPeriod.LAST_3_MONTHS).build());
+
+        when(programSettings.specificSettings()).thenReturn(specificSettings);
+
+        List<TeiQuery.Builder> builders = builderFactory.getTeiQueryBuilders(params);
+
+        assertThat(builders.size()).isEqualTo(2);
+
+        for (TeiQuery.Builder builder : builders) {
+            TeiQuery query = builder.build();
+
+            if (query.program() != null) {
+                assertThat(query.program()).isEqualTo(p1);
+                assertThat(query.programStartDate()).isNotNull();
+            }
+        }
+    }
+
+    private List<String> getProgramList() {
+        List<String> programList = new ArrayList<>();
+        programList.add(p1);
+        programList.add(p2);
+        programList.add(p3);
+        return programList;
+    }
 }

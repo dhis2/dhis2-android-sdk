@@ -105,6 +105,7 @@ public interface TrackedEntityInstanceService {
             @Query(OU_MODE) String orgUnitMode,
             @Query(PROGRAM) String program,
             @Query(PROGRAM_STATUS) String programStatus,
+            @Query(PROGRAM_START_DATE) String programStartDate,
             @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
             @Query(PAGING) Boolean paging,
             @Query(PAGE) int page,

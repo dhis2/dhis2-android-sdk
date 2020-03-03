@@ -35,15 +35,12 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLink;
 import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLinkTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class ProgramStageSectionDataElementLinkStore {
 
-    private static final StatementBinder<ProgramStageSectionDataElementLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.programStageSection());
-        sqLiteBind(sqLiteStatement, 2, o.dataElement());
-        sqLiteBind(sqLiteStatement, 3, o.sortOrder());
+    private static final StatementBinder<ProgramStageSectionDataElementLink> BINDER = (o, w) -> {
+        w.bind(1, o.programStageSection());
+        w.bind(2, o.dataElement());
+        w.bind(3, o.sortOrder());
     };
 
     private ProgramStageSectionDataElementLinkStore() {}

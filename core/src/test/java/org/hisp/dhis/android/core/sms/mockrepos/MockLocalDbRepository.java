@@ -171,8 +171,12 @@ public class MockLocalDbRepository implements LocalDbRepository {
     }
 
     @Override
-    public Single<SMSDataValueSet> getDataValueSet(String orgUnit, String period, String attributeOptionComboUid) {
-        return Single.fromCallable(MockObjects::getSMSDataValueSet);
+    public Single<SMSDataValueSet> getDataValueSet(String dataSetUid, String orgUnit, String period, String attributeOptionComboUid) {
+        if (dataSetUid.equals(MockObjects.dataSetEmptyListUid)) {
+            return Single.fromCallable(MockObjects::getSMSDataValueSetEmptyList);
+        } else {
+            return Single.fromCallable(MockObjects::getSMSDataValueSet);
+        }
     }
 
     @Override

@@ -35,15 +35,23 @@ import dagger.Provides;
 
 @Module
 public class SecureStorageDIModule {
-    private final CredentialsSecureStore credentialsSecureStore;
+    private final SecureStore secureStore;
+    private final ObjectSecureStore<Credentials> credentialsSecureStore;
 
-    public SecureStorageDIModule(CredentialsSecureStore credentialsSecureStore) {
+    public SecureStorageDIModule(SecureStore secureStore, ObjectSecureStore<Credentials> credentialsSecureStore) {
+        this.secureStore = secureStore;
         this.credentialsSecureStore = credentialsSecureStore;
     }
 
     @Provides
     @Singleton
-    CredentialsSecureStore credentialsSecureStore() {
+    SecureStore secureStore() {
+        return secureStore;
+    }
+
+    @Provides
+    @Singleton
+    ObjectSecureStore<Credentials> credentialsSecureStore() {
         return credentialsSecureStore;
     }
 }

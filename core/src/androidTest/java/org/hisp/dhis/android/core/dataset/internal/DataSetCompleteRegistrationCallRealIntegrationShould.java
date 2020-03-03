@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
+import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class DataSetCompleteRegistrationCallRealIntegrationShould extends BaseRe
     public void setUp() throws IOException {
         super.setUp();
 
-        d2 = D2Factory.forDatabaseName("complete");
+        d2 = D2Factory.forNewDatabase();
     }
 
     // commented out since it is a flaky test that works against a real server.

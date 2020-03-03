@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
@@ -42,24 +40,21 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo.Columns
 
 import java.util.List;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class UserOrganisationUnitLinkStoreImpl extends LinkStoreImpl<UserOrganisationUnitLink>
         implements UserOrganisationUnitLinkStore {
 
-    private static final StatementBinder<UserOrganisationUnitLink> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.user());
-        sqLiteBind(sqLiteStatement, 2, o.organisationUnit());
-        sqLiteBind(sqLiteStatement, 3, o.organisationUnitScope());
-        sqLiteBind(sqLiteStatement, 4, o.root());
+    private static final StatementBinder<UserOrganisationUnitLink> BINDER = (o, w) -> {
+        w.bind(1, o.user());
+        w.bind(2, o.organisationUnit());
+        w.bind(3, o.organisationUnitScope());
+        w.bind(4, o.root());
     };
 
     private UserOrganisationUnitLinkStoreImpl(DatabaseAdapter databaseAdapter,
-                                              SQLiteStatement insertStatement,
                                               String masterColumn,
                                               SQLStatementBuilderImpl builder,
                                               StatementBinder<UserOrganisationUnitLink> binder) {
-        super(databaseAdapter, insertStatement, builder, masterColumn, binder, UserOrganisationUnitLink::create);
+        super(databaseAdapter, builder, masterColumn, binder, UserOrganisationUnitLink::create);
     }
 
     public static UserOrganisationUnitLinkStore create(DatabaseAdapter databaseAdapter) {
@@ -68,7 +63,6 @@ public final class UserOrganisationUnitLinkStoreImpl extends LinkStoreImpl<UserO
 
         return new UserOrganisationUnitLinkStoreImpl(
                 databaseAdapter,
-                databaseAdapter.compileStatement(statementBuilder.insert()),
                 Columns.ORGANISATION_UNIT_SCOPE,
                 statementBuilder,
                 BINDER);

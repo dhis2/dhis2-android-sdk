@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.program.ProgramOrganisationUnitLastUpdatedSamples;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
@@ -41,8 +41,8 @@ public class ProgramOrganisationUnitLastUpdatedStoreIntegrationShould
         extends ObjectWithoutUidStoreAbstractIntegrationShould<ProgramOrganisationUnitLastUpdated> {
 
     public ProgramOrganisationUnitLastUpdatedStoreIntegrationShould() {
-        super(ProgramOrganisationUnitLastUpdatedStore.create(DatabaseAdapterFactory.get()),
-                ProgramOrganisationUnitLastUpdatedTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+        super(ProgramOrganisationUnitLastUpdatedStore.create(TestDatabaseAdapterFactory.get()),
+                ProgramOrganisationUnitLastUpdatedTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
     @Override

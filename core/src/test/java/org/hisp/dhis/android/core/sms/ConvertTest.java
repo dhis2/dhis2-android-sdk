@@ -130,8 +130,25 @@ public class ConvertTest {
         for (SMSDataValue item : s.getValues()) {
             assertTrue(containsDataValue(mockSMSDataValueSet.dataValues(), item));
         }
-        assertEquals(s.isComplete(), mockSMSDataValueSet.completed());
+        assertEquals(s.isComplete(), MockObjects.isCompleted);
     }
+
+    // TODO Enable this test when the compression supports empty lists
+    //@Test
+    public void convertDataSetWithEmptyDataValueList() throws Exception {
+        AggregateDatasetSMSSubmission s = (AggregateDatasetSMSSubmission) convert(new QrCodeCase(testLocalDb)
+                .generateDataSetCode(MockObjects.dataSetEmptyListUid, MockObjects.orgUnit,
+                        MockObjects.period, MockObjects.attributeOptionCombo));
+        assertEquals(s.getUserID().uid, MockObjects.user);
+        assertEquals(s.getOrgUnit().uid, MockObjects.orgUnit);
+        assertEquals(s.getAttributeOptionCombo().uid, MockObjects.attributeOptionCombo);
+        assertEquals(s.getDataSet().uid, MockObjects.dataSetUid);
+        assertEquals(s.getPeriod(), MockObjects.period);
+
+        assertEquals(s.getValues().size(), 0);
+        assertEquals(s.isComplete(), MockObjects.isCompleted);
+    }
+
 
     @Test
     public void convertRelationship() throws Exception {

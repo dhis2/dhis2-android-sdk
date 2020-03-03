@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
 import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
@@ -85,6 +86,9 @@ abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
     @Nullable
     public abstract List<State> states();
 
+    @Nullable
+    public abstract AssignedUserMode assignedUserMode();
+
     public String formattedProgramStartDate() {
         return programStartDate() == null ? null : QUERY_FORMAT.format(programStartDate());
     }
@@ -131,9 +135,11 @@ abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
 
         public abstract Builder trackedEntityType(String trackedEntityType);
 
+        public abstract Builder includeDeleted(Boolean includeDeleted);
+
         public abstract Builder states(List<State> states);
 
-        public abstract Builder includeDeleted(Boolean includeDeleted);
+        public abstract Builder assignedUserMode(AssignedUserMode assignedUserMode);
 
         abstract TrackedEntityInstanceQueryRepositoryScope autoBuild();
 

@@ -28,9 +28,10 @@
 
 package org.hisp.dhis.android.core.arch.db.access;
 
+import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
+
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 
 @SuppressWarnings("PMD.UseVarargs")
 public interface DatabaseAdapter {
@@ -42,14 +43,12 @@ public interface DatabaseAdapter {
      * and SQLiteProgram.bindLong each time you want to run the
      * statement. Statements may not return result sets larger than 1x1.
      * <p>
-     * No two threads should be using the same {@link SQLiteStatement} at the same time.
      *
      * @param sql The raw SQL statement, may contain ? for unknown values to be
      *            bound later.
-     * @return A pre-compiled {@link SQLiteStatement} object. Note that
-     * {@link SQLiteStatement}s are not synchronized, see the documentation for more details.
+     * @return A pre-compiled {@link StatementWrapper} object. Note that
      */
-    SQLiteStatement compileStatement(String sql);
+    StatementWrapper compileStatement(String sql);
 
     /**
      * Runs the provided SQL and returns a {@link Cursor} over the result set.
@@ -61,31 +60,32 @@ public interface DatabaseAdapter {
      * @return A {@link Cursor} object, which is positioned before the first entry. Note that
      * {@link Cursor}s are not synchronized, see the documentation for more details.
      */
-    Cursor query(String sql, String... selectionArgs);
 
-    /**
+    Cursor rawQuery(String sql, String... selectionArgs);
+
+    Cursor query(String sql, String... columns);
+
+    Cursor query(String table, String[] columns, String selection, String[] selectionArgs);
+                               /**
      * Execute {@code statement} and return the ID of the row inserted due to this call.
      * The SQL statement should be an INSERT for this to be a useful call.
      *
-     * @param table           The affected table
      * @param sqLiteStatement The SQL statement to execute
      * @return the row ID of the last row inserted, if this insert is successful. -1 otherwise.
      * @throws android.database.SQLException If the SQL string is invalid
-     * @see SQLiteStatement#executeInsert()
      */
-    long executeInsert(String table, SQLiteStatement sqLiteStatement);
+    long executeInsert(StatementWrapper sqLiteStatement);
 
     /**
      * Execute this SQL statement, if the the number of rows affected by execution of this SQL
      * statement is of any importance to the caller - for example, UPDATE / DELETE SQL statements.
      *
-     * @param table           The affected table
      * @param sqLiteStatement The SQL statement to execute
      * @return the number of rows affected by this SQL statement execution.
      * @throws android.database.SQLException If the SQL string is invalid for
      *                                       some reason
      */
-    int executeUpdateDelete(String table, SQLiteStatement sqLiteStatement);
+    int executeUpdateDelete(StatementWrapper sqLiteStatement);
 
     /**
      * Convenience method for deleting rows in the database.
@@ -110,11 +110,44 @@ public interface DatabaseAdapter {
      */
     int delete(String table);
 
+    long insert(String table, String nullColumnHack, ContentValues values);
+
+    int update(String table, ContentValues values, String whereClause, String[] whereArgs);
+
+    void setForeignKeyConstraintsEnabled(boolean enable);
 
     /**
-     * @return A newly started {@link Transaction}
+     * Begins a transaction in EXCLUSIVE mode.
+     * <p>
+     * Transactions can be nested.
+     * When the outer transaction is ended all of
+     * the work done in that transaction and all of the nested transactions will be committed or
+     * rolled back. The changes will be rolled back if any transaction is ended without being
+     * marked as clean (by calling setTransactionSuccessful). Otherwise they will be committed.
+     * </p>
+     * <p>Here is the standard idiom for transactions:
+     * <p>
+     * <pre>
+     *   Transaction t = databaseAdapter.beginNewTransaction();
+     *   try {
+     *     ...
+     *     transaction.setSuccessful();
+     *   } finally {
+     *     transaction.end();
+     *   }
+     * </pre>
      */
     Transaction beginNewTransaction();
 
-    SQLiteDatabase database();
+    void setTransactionSuccessful();
+
+    void endTransaction();
+
+    void execSQL(String sql);
+
+    void enableWriteAheadLogging();
+
+    boolean isReady();
+
+    void close();
 }

@@ -1,0 +1,46 @@
+{
+  "code": "Code",
+  "lastUpdated": "2018-05-15T08:14:06.767",
+  "id": "Nc8OxbNuVH3",
+  "created": "2018-05-15T08:14:06.767",
+  "name": "My Program Section",
+  "displayName": "My Program Section",
+  "description": "Description",
+  "externalAccess": false,
+  "formName": "formName",
+  "sortOrder": 1,
+  "favorite": false,
+  "access": {
+    "read": true,
+    "update": true,
+    "externalize": false,
+    "delete": true,
+    "write": true,
+    "manage": true
+  },
+  "program": {
+    "id": "IpHINAT79UW"
+  },
+  "lastUpdatedBy": {
+    "id": "xE7jOejl9FI"
+  },
+  "style": {
+    "color": "#fff",
+    "icon": "my-icon"
+  },
+  "favorites": [
+  ],
+  "programTrackedEntityAttribute": [
+    {
+      "id": "zDhUuAYrxNC"
+    }
+  ],
+  "translations": [
+  ],
+  "userGroupAccesses": [
+  ],
+  "attributeValues": [
+  ],
+  "userAccesses": [
+  ]
+}

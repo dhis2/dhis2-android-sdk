@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.utils.integration.mock;
 
+import org.hisp.dhis.android.core.MockIntegrationTestObjects;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;

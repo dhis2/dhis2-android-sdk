@@ -33,6 +33,7 @@ import androidx.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.State;
@@ -59,7 +60,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
     private final RelationshipHandler relationshipHandler;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final HandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler;
-    private final HandlerWithTransformer<Enrollment> enrollmentHandler;
+    private final IdentifiableDataHandler<Enrollment> enrollmentHandler;
     private final OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner;
 
     @Inject
@@ -68,7 +69,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
             @NonNull RelationshipHandler relationshipHandler,
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
             @NonNull HandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler,
-            @NonNull HandlerWithTransformer<Enrollment> enrollmentHandler,
+            @NonNull IdentifiableDataHandler<Enrollment> enrollmentHandler,
             @NonNull OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner) {
         super(trackedEntityInstanceStore);
         this.relationshipVersionManager = relationshipVersionManager;
@@ -80,7 +81,8 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
     }
 
     @Override
-    protected void afterObjectHandled(final TrackedEntityInstance trackedEntityInstance, HandleAction action) {
+    protected void afterObjectHandled(final TrackedEntityInstance trackedEntityInstance, HandleAction action,
+                                      Boolean overwrite) {
         if (action != HandleAction.Delete) {
             trackedEntityAttributeValueHandler.handleMany(
                     trackedEntityInstance.trackedEntityAttributeValues(),
@@ -91,7 +93,8 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
             if (enrollments != null) {
                 enrollmentHandler.handleMany(enrollments, enrollment -> enrollment.toBuilder()
                         .state(State.SYNCED)
-                        .build());
+                        .build(),
+                        overwrite);
             }
 
             handleRelationships(trackedEntityInstance);
@@ -115,7 +118,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
 
     private void handleRelationship(TrackedEntityInstance relativeTEI, Relationship229Compatible relationship229) {
         if (!trackedEntityInstanceStore.exists(relativeTEI.uid())) {
-            handle(relativeTEI, relationshipTransformer());
+            handle(relativeTEI, relationshipTransformer(), false);
         }
 
         Relationship relationship = relationshipVersionManager.from229Compatible(relationship229);
@@ -123,7 +126,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
     }
 
     public void handleMany(final Collection<TrackedEntityInstance> trackedEntityInstances, boolean asRelationship,
-                           boolean isFullUpdate) {
+                           boolean isFullUpdate, boolean overwrite) {
         if (trackedEntityInstances == null) {
             return;
         }
@@ -137,11 +140,13 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
                     .build();
         }
 
-        Collection<TrackedEntityInstance> preHandledCollection = beforeCollectionHandled(trackedEntityInstances);
+        Collection<TrackedEntityInstance> preHandledCollection =
+                beforeCollectionHandled(trackedEntityInstances, overwrite);
+
         List<TrackedEntityInstance> transformedCollection = new ArrayList<>(preHandledCollection.size());
 
         for (TrackedEntityInstance trackedEntityInstance : preHandledCollection) {
-            handle(trackedEntityInstance, transformer, transformedCollection);
+            handle(trackedEntityInstance, transformer, transformedCollection, overwrite);
 
             if (isFullUpdate) {
                 enrollmentOrphanCleaner.deleteOrphan(
@@ -150,7 +155,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
             }
         }
 
-        afterCollectionHandled(transformedCollection);
+        afterCollectionHandled(transformedCollection, overwrite);
 
     }
 

@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
 
 import androidx.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils;
@@ -61,7 +61,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo.Columns;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -152,20 +151,20 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
         ContentValues dataElement1 = CreateDataElementUtils.create(1L, DATA_ELEMENT_1, CategoryCombo.DEFAULT_UID, null);
         ContentValues dataElement2 = CreateDataElementUtils.create(2L, DATA_ELEMENT_2, CategoryCombo.DEFAULT_UID, null);
 
-        database().insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType);
-        database().insert(RelationshipTypeTableInfo.TABLE_INFO.name(), null,
+        databaseAdapter().insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType);
+        databaseAdapter().insert(RelationshipTypeTableInfo.TABLE_INFO.name(), null,
                 relationshipType);
-        database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program);
-        database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
-        database().insert(ProgramStageTableInfo.TABLE_INFO.name(), null, programStage);
-        database().insert(CategoryComboTableInfo.TABLE_INFO.name(), null, defaultCategoryCombo);
-        database().insert(DataElementTableInfo.TABLE_INFO.name(), null, dataElement1);
-        database().insert(DataElementTableInfo.TABLE_INFO.name(), null, dataElement2);
-        database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null,
+        databaseAdapter().insert(ProgramTableInfo.TABLE_INFO.name(), null, program);
+        databaseAdapter().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
+        databaseAdapter().insert(ProgramStageTableInfo.TABLE_INFO.name(), null, programStage);
+        databaseAdapter().insert(CategoryComboTableInfo.TABLE_INFO.name(), null, defaultCategoryCombo);
+        databaseAdapter().insert(DataElementTableInfo.TABLE_INFO.name(), null, dataElement1);
+        databaseAdapter().insert(DataElementTableInfo.TABLE_INFO.name(), null, dataElement2);
+        databaseAdapter().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null,
                 trackedEntityInstance);
-        database().insert(EnrollmentTableInfo.TABLE_INFO.name(), null, enrollment);
-        database().insert(EventTableInfo.TABLE_INFO.name(), null, event1);
-        database().insert(EventTableInfo.TABLE_INFO.name(), null, event2);
+        databaseAdapter().insert(EnrollmentTableInfo.TABLE_INFO.name(), null, enrollment);
+        databaseAdapter().insert(EventTableInfo.TABLE_INFO.name(), null, event1);
+        databaseAdapter().insert(EventTableInfo.TABLE_INFO.name(), null, event2);
 
         trackedEntityDataValue = TrackedEntityDataValue.builder()
                 .event(EVENT_1)
@@ -181,8 +180,7 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
     @Test
     public void insert_tracked_entity_data_value_in_data_base_when_insert() {
         long rowId = trackedEntityDataValueStore.insert(trackedEntityDataValue);
-        Cursor cursor = database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
-                PROJECTION, null, null, null, null, null);
+        Cursor cursor = databaseAdapter().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(), PROJECTION);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(
                 EVENT_1,
@@ -205,8 +203,7 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
                 .value(null)
                 .providedElsewhere(null).build());
 
-        Cursor cursor = database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
-                PROJECTION, null, null, null, null, null);
+        Cursor cursor = databaseAdapter().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(), PROJECTION);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(EVENT_1, null, null, DATA_ELEMENT_1, null, null,
@@ -218,11 +215,10 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
     public void delete_tracked_entity_data_value_when_delete_event_foreign_key() {
         trackedEntityDataValueStore.insert(trackedEntityDataValue);
 
-        database().delete(EventTableInfo.TABLE_INFO.name(), EventTableInfo.Columns.UID + "=?",
+        databaseAdapter().delete(EventTableInfo.TABLE_INFO.name(), EventTableInfo.Columns.UID + "=?",
                 new String[]{EVENT_1});
 
-        Cursor cursor = database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
-                PROJECTION, null, null, null, null, null);
+        Cursor cursor = databaseAdapter().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(), PROJECTION);
         assertThatCursor(cursor).isExhausted();
         cursor.close();
     }
@@ -232,12 +228,11 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
     public void delete_tracked_entity_data_value_when_delete_data_element_foreign_key() {
         trackedEntityDataValueStore.insert(trackedEntityDataValue);
 
-        database().delete(DataElementTableInfo.TABLE_INFO.name(),
+        databaseAdapter().delete(DataElementTableInfo.TABLE_INFO.name(),
                 IdentifiableColumns.UID + "=?",
                 new String[]{DATA_ELEMENT_1});
 
-        Cursor cursor = database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
-                PROJECTION, null, null, null, null, null);
+        Cursor cursor = databaseAdapter().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(), PROJECTION);
         assertThatCursor(cursor).isExhausted();
         cursor.close();
     }
@@ -248,10 +243,10 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
 
         String[] projection = {Columns.EVENT};
         Cursor cursor =
-                database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
+                databaseAdapter().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
                         projection,
                 Columns.EVENT + "=?",
-                new String[]{EVENT_1}, null, null, null);
+                new String[]{EVENT_1});
         assertThatCursor(cursor).hasRow(EVENT_1).isExhausted();
         cursor.close();
 
@@ -273,7 +268,7 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
 
     }
 
-    @Test(expected = SQLiteConstraintException.class)
+    @Test(expected = RuntimeException.class)
     public void throw_illegal_argument_exception_when_insert_tracked_entity_data_value_with_invalid_event() {
         trackedEntityDataValueStore.insert(trackedEntityDataValue.toBuilder().event("wrong").build());
     }
@@ -295,8 +290,7 @@ public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
 
         trackedEntityDataValueStore.updateWhere(trackedEntityDataValue);
 
-        Cursor cursor = database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
-                PROJECTION, null, null, null, null, null);
+        Cursor cursor = databaseAdapter().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(), PROJECTION);
 
         assertThatCursor(cursor).hasRow(EVENT_1,
                 dateString,

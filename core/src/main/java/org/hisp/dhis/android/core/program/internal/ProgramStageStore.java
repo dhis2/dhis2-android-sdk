@@ -28,13 +28,10 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableWithStyleStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
@@ -42,37 +39,38 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
+import androidx.annotation.NonNull;
 
 public final class ProgramStageStore {
 
     private static StatementBinder<ProgramStage> BINDER = new IdentifiableWithStyleStatementBinder<ProgramStage>() {
 
         @Override
-        public void bindToStatement(@NonNull ProgramStage o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 9, o.description());
-            sqLiteBind(sqLiteStatement, 10, o.displayDescription());
-            sqLiteBind(sqLiteStatement, 11, o.executionDateLabel());
-            sqLiteBind(sqLiteStatement, 12, o.allowGenerateNextVisit());
-            sqLiteBind(sqLiteStatement, 13, o.validCompleteOnly());
-            sqLiteBind(sqLiteStatement, 14, o.reportDateToUse());
-            sqLiteBind(sqLiteStatement, 15, o.openAfterEnrollment());
-            sqLiteBind(sqLiteStatement, 16, o.repeatable());
-            sqLiteBind(sqLiteStatement, 17, o.formType().name());
-            sqLiteBind(sqLiteStatement, 18, o.displayGenerateEventBox());
-            sqLiteBind(sqLiteStatement, 19, o.generatedByEnrollmentDate());
-            sqLiteBind(sqLiteStatement, 20, o.autoGenerateEvent());
-            sqLiteBind(sqLiteStatement, 21, o.sortOrder());
-            sqLiteBind(sqLiteStatement, 22, o.hideDueDate());
-            sqLiteBind(sqLiteStatement, 23, o.blockEntryForm());
-            sqLiteBind(sqLiteStatement, 24, o.minDaysFromStart());
-            sqLiteBind(sqLiteStatement, 25, o.standardInterval());
-            sqLiteBind(sqLiteStatement, 26, UidsHelper.getUidOrNull(o.program()));
-            sqLiteBind(sqLiteStatement, 27, o.periodType());
-            sqLiteBind(sqLiteStatement, 28, o.access().data().write());
-            sqLiteBind(sqLiteStatement, 29, o.remindCompleted());
-            sqLiteBind(sqLiteStatement, 30, o.featureType());
+        public void bindToStatement(@NonNull ProgramStage o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(9, o.description());
+            w.bind(10, o.displayDescription());
+            w.bind(11, o.executionDateLabel());
+            w.bind(12, o.allowGenerateNextVisit());
+            w.bind(13, o.validCompleteOnly());
+            w.bind(14, o.reportDateToUse());
+            w.bind(15, o.openAfterEnrollment());
+            w.bind(16, o.repeatable());
+            w.bind(17, o.formType().name());
+            w.bind(18, o.displayGenerateEventBox());
+            w.bind(19, o.generatedByEnrollmentDate());
+            w.bind(20, o.autoGenerateEvent());
+            w.bind(21, o.sortOrder());
+            w.bind(22, o.hideDueDate());
+            w.bind(23, o.blockEntryForm());
+            w.bind(24, o.minDaysFromStart());
+            w.bind(25, o.standardInterval());
+            w.bind(26, UidsHelper.getUidOrNull(o.program()));
+            w.bind(27, o.periodType());
+            w.bind(28, o.access().data().write());
+            w.bind(29, o.remindCompleted());
+            w.bind(30, o.featureType());
+            w.bind(31, o.enableUserAssignment());
         }
     };
 

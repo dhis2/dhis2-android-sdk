@@ -81,6 +81,9 @@ public abstract class ProgramDataDownloadParams {
     @NonNull
     public abstract Integer limit();
 
+    @NonNull
+    public abstract Boolean overwrite();
+
     public static ProgramDataDownloadParams fromRepositoryScope(RepositoryScope scope) {
         Builder builder = builder();
         for (RepositoryScopeFilterItem item : scope.filters()) {
@@ -100,6 +103,9 @@ public abstract class ProgramDataDownloadParams {
                 case QueryParams.LIMIT:
                     builder.limit(Integer.parseInt(item.value()));
                     break;
+                case QueryParams.OVERWRITE:
+                    builder.overwrite(item.value().equals("1"));
+                    break;
                 default:
             }
         }
@@ -109,6 +115,7 @@ public abstract class ProgramDataDownloadParams {
     public static Builder builder() {
         return new AutoValue_ProgramDataDownloadParams.Builder()
                 .limitByOrgunit(false).limitByProgram(false).limit(DEFAULT_LIMIT)
+                .overwrite(false)
                 .orgUnits(Collections.emptyList())
                 .uids(Collections.emptyList());
     }
@@ -139,6 +146,8 @@ public abstract class ProgramDataDownloadParams {
 
         public abstract Builder limit(Integer limit);
 
+        public abstract Builder overwrite(Boolean overwrite);
+
         public abstract ProgramDataDownloadParams build();
     }
 
@@ -154,5 +163,6 @@ public abstract class ProgramDataDownloadParams {
         public static final String LIMIT_BY_ORGUNIT = "limitByOrgunit";
         public static final String LIMIT_BY_PROGRAM = "limitByProgram";
         public static final String LIMIT = "limit";
+        public static final String OVERWRITE = "overwrite";
     }
 }

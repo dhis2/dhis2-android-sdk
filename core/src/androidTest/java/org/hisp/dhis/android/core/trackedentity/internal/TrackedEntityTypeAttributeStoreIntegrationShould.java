@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShou
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityTypeAttributeSamples;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
@@ -42,8 +42,8 @@ public class TrackedEntityTypeAttributeStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<TrackedEntityTypeAttribute> {
 
     public TrackedEntityTypeAttributeStoreIntegrationShould() {
-        super(TrackedEntityTypeAttributeStore.create(DatabaseAdapterFactory.get()),
-                TrackedEntityTypeAttributeTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+        super(TrackedEntityTypeAttributeStore.create(TestDatabaseAdapterFactory.get()),
+                TrackedEntityTypeAttributeTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
     @Override

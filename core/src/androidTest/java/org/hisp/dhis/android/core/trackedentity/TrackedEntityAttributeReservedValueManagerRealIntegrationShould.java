@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
@@ -52,7 +53,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeR
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStore;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStoreInterface;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -143,7 +143,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
         trackedEntityAttributeStore.updateOrInsert(TrackedEntityAttribute.builder().uid(ownerUid).pattern(pattern).build());
 
         CategoryCombo categoryCombo = CategoryCombo.builder().uid(categoryComboUid).build();
-        database().insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo.toContentValues());
+        databaseAdapter().insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo.toContentValues());
 
         Program program = Program.builder().uid(programUid).categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
                 .access(Access.create(null, null, DataAccess.create(true, true))).build();

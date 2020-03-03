@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.common.DataColumns;
@@ -92,7 +92,7 @@ public final class TrackedEntityInstancePostCall {
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
     private final RelationshipItemStore relationshipItemStore;
-    private final ObjectWithoutUidStore<Note> noteStore;
+    private final IdentifiableObjectStore<Note> noteStore;
 
     private final TEIWebResponseHandler teiWebResponseHandler;
 
@@ -112,7 +112,7 @@ public final class TrackedEntityInstancePostCall {
                                   @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
                                   @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
                                   @NonNull RelationshipItemStore relationshipItemStore,
-                                  @NonNull ObjectWithoutUidStore<Note> noteStore,
+                                  @NonNull IdentifiableObjectStore<Note> noteStore,
                                   @NonNull TEIWebResponseHandler teiWebResponseHandler,
                                   @NonNull APICallExecutor apiCallExecutor,
                                   @NonNull SystemInfoModuleDownloader systemInfoDownloader) {
@@ -288,28 +288,28 @@ public final class TrackedEntityInstancePostCall {
             for (Enrollment enrollment : enrollments) {
                 List<Event> eventRecreated = new ArrayList<>();
                 List<Event> eventsForEnrollment = eventMap.get(enrollment.uid());
+                NoteToPostTransformer transformer = new NoteToPostTransformer(versionManager);
                 if (eventsForEnrollment != null) {
                     for (Event event : eventsForEnrollment) {
                         List<TrackedEntityDataValue> dataValuesForEvent = dataValueMap.get(event.uid());
+                        List<Note> notesForEvent = getEventNotes(notes, event, transformer);
+
                         if (versionManager.is2_30()) {
                             eventRecreated.add(event.toBuilder()
                                     .trackedEntityDataValues(dataValuesForEvent)
+                                    .notes(notesForEvent)
                                     .geometry(null)
                                     .build());
                         } else {
-                            eventRecreated.add(event.toBuilder().trackedEntityDataValues(dataValuesForEvent).build());
+                            eventRecreated.add(event.toBuilder()
+                                    .trackedEntityDataValues(dataValuesForEvent)
+                                    .notes(notesForEvent)
+                                    .build());
                         }
                     }
                 }
 
-                List<Note> notesForEnrollment = new ArrayList<>();
-                NoteToPostTransformer transformer = new NoteToPostTransformer(versionManager);
-                for (Note note : notes) {
-                    if (enrollment.uid().equals(note.enrollment())) {
-                        notesForEnrollment.add(transformer.transform(note));
-                    }
-                }
-
+                List<Note> notesForEnrollment = getEnrollmentNotes(notes, enrollment, transformer);
                 enrollmentsRecreated.add(
                         EnrollmentInternalAccessor.insertEvents(enrollment.toBuilder(), eventRecreated)
                         .notes(notesForEnrollment)
@@ -331,6 +331,26 @@ public final class TrackedEntityInstancePostCall {
                         enrollmentsRecreated)
                 .trackedEntityAttributeValues(attributeValues == null ? emptyAttributeValueList : attributeValues)
                 .build();
+    }
+
+    private List<Note> getEventNotes(List<Note> notes, Event event, NoteToPostTransformer transformer) {
+        List<Note> notesForEvent = new ArrayList<>();
+        for (Note note : notes) {
+            if (event.uid().equals(note.event())) {
+                notesForEvent.add(transformer.transform(note));
+            }
+        }
+        return notesForEvent;
+    }
+
+    private List<Note> getEnrollmentNotes(List<Note> notes, Enrollment enrollment, NoteToPostTransformer transformer) {
+        List<Note> notesForEnrollment = new ArrayList<>();
+        for (Note note : notes) {
+            if (enrollment.uid().equals(note.enrollment())) {
+                notesForEnrollment.add(transformer.transform(note));
+            }
+        }
+        return notesForEnrollment;
     }
 
     private void markPartitionAs(List<TrackedEntityInstance> partition, State state) {

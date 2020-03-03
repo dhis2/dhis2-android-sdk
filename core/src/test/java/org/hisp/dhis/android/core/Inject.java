@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
 
 public class Inject {
     private Inject() {
@@ -40,13 +39,6 @@ public class Inject {
 
     // configures and returns instance of object mapper
     public static ObjectMapper objectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        // setting date format which is used across all models
-        objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());
-
-        // don't fail on unknown properties
-        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        return objectMapper;
+        return ObjectMapperFactory.objectMapper();
     }
 }

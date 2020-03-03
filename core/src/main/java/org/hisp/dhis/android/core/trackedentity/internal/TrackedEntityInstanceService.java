@@ -68,6 +68,7 @@ public interface TrackedEntityInstanceService {
     String LAST_UPDATED_START_DATE = "lastUpdatedStartDate";
     String REASON = "reason";
     String INCLUDE_DELETED = "includeDeleted";
+    String ASSIGNED_USER_MODE = "assignedUserMode";
 
     @POST(TRACKED_ENTITY_INSTANCES)
     Call<TEIWebResponse> postTrackedEntityInstances(
@@ -121,6 +122,7 @@ public interface TrackedEntityInstanceService {
             @Query(QUERY) String query,
             @Query(ATTRIBUTE) List<String> attribute,
             @Query(FILTER) List<String> filter,
+            @Query(ASSIGNED_USER_MODE) String assignedUserMode,
             @Query(PAGING) Boolean paging,
             @Query(PAGE) int page,
             @Query(PAGE_SIZE) int pageSize);

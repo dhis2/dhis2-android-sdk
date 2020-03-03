@@ -74,6 +74,6 @@ public class DatasetConverter extends Converter<SMSDataValueSet> {
 
     @Override
     Single<SMSDataValueSet> readItemFromDb() {
-        return getLocalDbRepository().getDataValueSet(orgUnit, period, attributeOptionComboUid);
+        return getLocalDbRepository().getDataValueSet(dataSet, orgUnit, period, attributeOptionComboUid);
     }
 }

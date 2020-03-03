@@ -13,7 +13,6 @@ The SDK follows the standard test structure: unit tests (`test` folder) and inst
 There is third kind of tests, usually called `*RealIntegrationShould`, which usually connect to real DHIS2 servers and create databases in the device. They are very useful to test against a real DHIS2 API. These tests are commented out by default and are not executed in CI builds because they rely on a particular server configuration and availability. To execute these tests:
 
 - Remove the comment on `@Test` annotation.
-- Optionally define a database name replacing `d2 = D2Factory.forNewDatabase();` by `d2 = D2Factory.forDatabaseName("your-database.db");`. In this way data will be persisted in the device or emulator and could be browsed.
 - Check or update the instance URL, username and password passed during login.
 
 ## Debugging

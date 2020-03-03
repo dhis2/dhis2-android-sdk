@@ -35,20 +35,18 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class TrackerImportConflictStore {
 
-    private static final StatementBinder<TrackerImportConflict> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.conflict());
-        sqLiteBind(sqLiteStatement, 2, o.value());
-        sqLiteBind(sqLiteStatement, 3, o.trackedEntityInstance());
-        sqLiteBind(sqLiteStatement, 4, o.enrollment());
-        sqLiteBind(sqLiteStatement, 5, o.event());
-        sqLiteBind(sqLiteStatement, 6, o.tableReference());
-        sqLiteBind(sqLiteStatement, 7, o.errorCode());
-        sqLiteBind(sqLiteStatement, 8, o.status());
-        sqLiteBind(sqLiteStatement, 9, o.created());
+    private static final StatementBinder<TrackerImportConflict> BINDER = (o, w) -> {
+        w.bind(1, o.conflict());
+        w.bind(2, o.value());
+        w.bind(3, o.trackedEntityInstance());
+        w.bind(4, o.enrollment());
+        w.bind(5, o.event());
+        w.bind(6, o.tableReference());
+        w.bind(7, o.errorCode());
+        w.bind(8, o.status());
+        w.bind(9, o.created());
     };
 
     private TrackerImportConflictStore() {

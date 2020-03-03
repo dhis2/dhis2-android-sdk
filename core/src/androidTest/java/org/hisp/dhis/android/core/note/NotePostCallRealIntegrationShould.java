@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.note;
 
+import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -83,7 +83,8 @@ public class NotePostCallRealIntegrationShould extends BaseRealIntegrationTest {
     private void addNote() {
         Enrollment enrollment = d2.enrollmentModule().enrollments().one().blockingGet();
         try {
-            d2.noteModule().notes().blockingAdd(NoteCreateProjection.create(enrollment.uid(), "New note"));
+            d2.noteModule().notes().blockingAdd(NoteCreateProjection.create(
+                    Note.NoteType.ENROLLMENT_NOTE, enrollment.uid(), "New note"));
         } catch (Exception ignored) {
         }
     }

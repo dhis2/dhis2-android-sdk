@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.utils.integration.mock;
 
+import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.BeforeClass;
 
 public abstract class BaseMockIntegrationTestMetadataDispatcher extends BaseMockIntegrationTest {
@@ -37,6 +38,8 @@ public abstract class BaseMockIntegrationTestMetadataDispatcher extends BaseMock
         boolean isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.MetadataDispatcher);
         if (isNewInstance) {
             objects.dhis2MockServer.setRequestDispatcher();
+            objects.d2.userModule().blockingLogIn(RealServerMother.username, RealServerMother.password,
+                    objects.dhis2MockServer.getBaseEndpoint());
             objects.d2.metadataModule().blockingDownload();
         }
     }

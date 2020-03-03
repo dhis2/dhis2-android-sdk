@@ -35,17 +35,15 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class D2ErrorStore {
 
-    private static final StatementBinder<D2Error> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.url());
-        sqLiteBind(sqLiteStatement, 2, o.errorComponent());
-        sqLiteBind(sqLiteStatement, 3, o.errorCode());
-        sqLiteBind(sqLiteStatement, 4, o.errorDescription());
-        sqLiteBind(sqLiteStatement, 5, o.httpErrorCode());
-        sqLiteBind(sqLiteStatement, 6, o.created());
+    private static final StatementBinder<D2Error> BINDER = (o, w) -> {
+        w.bind(1, o.url());
+        w.bind(2, o.errorComponent());
+        w.bind(3, o.errorCode());
+        w.bind(4, o.errorDescription());
+        w.bind(5, o.httpErrorCode());
+        w.bind(6, o.created());
     };
 
     private D2ErrorStore() {

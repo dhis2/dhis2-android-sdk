@@ -37,20 +37,18 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
 import java.util.List;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class ResourceStoreImpl extends ObjectWithoutUidStoreImpl<Resource> implements ResourceStore {
 
-    private static final StatementBinder<Resource> BINDER = (resource, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, resource.resourceType());
-        sqLiteBind(sqLiteStatement, 2, resource.lastSynced());
+    private static final StatementBinder<Resource> BINDER = (resource, w) -> {
+        w.bind(1, resource.resourceType());
+        w.bind(2, resource.lastSynced());
     };
 
     private static final WhereStatementBinder<Resource> WHERE_UPDATE_BINDER
-            = (resource, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 3, resource.resourceType());
+            = (resource, w) -> w.bind(3, resource.resourceType());
 
     private static final WhereStatementBinder<Resource> WHERE_DELETE_BINDER
-            = (resource, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, resource.resourceType());
+            = (resource, w) -> w.bind(1, resource.resourceType());
 
     private ResourceStoreImpl(DatabaseAdapter databaseAdapter,
                              SQLStatementBuilderImpl builder) {

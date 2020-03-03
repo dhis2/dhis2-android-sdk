@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.object.internal;
 
-import android.database.sqlite.SQLiteConstraintException;
-
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
@@ -61,20 +59,12 @@ public class ReadWriteWithUidObjectRepositoryImpl
         try {
             store.update(m);
             return new Unit();
-        } catch (SQLiteConstraintException e) {
+        } catch (Exception e) {
             throw D2Error
                     .builder()
                     .errorComponent(D2ErrorComponent.SDK)
                     .errorCode(D2ErrorCode.OBJECT_CANT_BE_UPDATED)
                     .errorDescription("Object property can't be updated")
-                    .originalException(e)
-                    .build();
-        } catch (Exception e) {
-            throw D2Error
-                    .builder()
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .errorCode(D2ErrorCode.UNEXPECTED)
-                    .errorDescription("Unexpected exception on property update")
                     .originalException(e)
                     .build();
         }

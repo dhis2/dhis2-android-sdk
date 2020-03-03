@@ -61,6 +61,6 @@ class SingleParentChildStoreImpl<P extends ObjectWithUidInterface, C> implements
                 .appendKeyStringValue(childProjection.parentColumn, p.uid())
                 .build();
         String selectStatement = statementBuilder.selectWhere(whereClause);
-        return cursorExecutor.getObjects(databaseAdapter.query(selectStatement));
+        return cursorExecutor.getObjects(databaseAdapter.rawQuery(selectStatement));
     }
 }

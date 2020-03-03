@@ -46,7 +46,7 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModu
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader;
 import org.hisp.dhis.android.core.settings.SystemSetting;
-import org.hisp.dhis.android.core.settings.internal.SystemSettingModuleDownloader;
+import org.hisp.dhis.android.core.settings.internal.SettingModuleDownloader;
 import org.hisp.dhis.android.core.sms.SmsModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
@@ -66,7 +66,7 @@ public class MetadataCall {
     private final RxAPICallExecutor rxCallExecutor;
 
     private final SystemInfoModuleDownloader systemInfoDownloader;
-    private final SystemSettingModuleDownloader systemSettingDownloader;
+    private final SettingModuleDownloader systemSettingDownloader;
     private final UserModuleDownloader userModuleDownloader;
     private final CategoryModuleDownloader categoryDownloader;
     private final ProgramModuleDownloader programDownloader;
@@ -79,7 +79,7 @@ public class MetadataCall {
     @Inject
     MetadataCall(@NonNull RxAPICallExecutor rxCallExecutor,
                  @NonNull SystemInfoModuleDownloader systemInfoDownloader,
-                 @NonNull SystemSettingModuleDownloader systemSettingDownloader,
+                 @NonNull SettingModuleDownloader systemSettingDownloader,
                  @NonNull UserModuleDownloader userModuleDownloader,
                  @NonNull CategoryModuleDownloader categoryDownloader,
                  @NonNull ProgramModuleDownloader programDownloader,

@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.testapp.program;
 
 import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.AccessLevel;
 import org.hisp.dhis.android.core.program.Program;
@@ -51,7 +52,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void find_all() {
         List<Program> programs = d2.programModule().programs()
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size(), is(2));
     }
 
     @Test
@@ -203,7 +204,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byTrackedEntityTypeUid().eq("nEenWmSyUEp")
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size(), is(2));
     }
 
     @Test
@@ -211,7 +212,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byCategoryComboUid().eq("m2jTvAj5kkm")
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size(), is(2));
     }
 
     @Test
@@ -219,7 +220,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byAccessDataWrite().isTrue()
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size(), is(2));
     }
 
     @Test
@@ -268,7 +269,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byOrganisationUnitUid("DiszpKrYNg8")
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size(), is(2));
     }
 
     @Test
@@ -276,7 +277,20 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byOrganisationUnitList(Collections.singletonList("DiszpKrYNg8"))
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size(), is(2));
+    }
+
+    @Test
+    public void filter_by_orgunit_scope() {
+        List<Program> programCapture = d2.programModule().programs()
+                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                .blockingGet();
+        assertThat(programCapture.size(), is(2));
+
+        List<Program> programSearch = d2.programModule().programs()
+                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
+                .blockingGet();
+        assertThat(programSearch.size(), is(0));
     }
 
     @Test

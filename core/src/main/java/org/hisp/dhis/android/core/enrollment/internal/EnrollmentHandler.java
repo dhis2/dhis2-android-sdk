@@ -33,15 +33,15 @@ import androidx.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
+import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager;
 import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager;
-import org.hisp.dhis.android.core.event.Event;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,7 +54,7 @@ import dagger.Reusable;
 @Reusable
 final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
     private final NoteDHISVersionManager noteVersionManager;
-    private final HandlerWithTransformer<Event> eventHandler;
+    private final IdentifiableDataHandler<Event> eventHandler;
     private final Handler<Note> noteHandler;
     private final NoteUniquenessManager noteUniquenessManager;
     private final OrphanCleaner<Enrollment, Event> eventOrphanCleaner;
@@ -62,7 +62,7 @@ final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
     @Inject
     EnrollmentHandler(@NonNull NoteDHISVersionManager noteVersionManager,
                       @NonNull EnrollmentStore enrollmentStore,
-                      @NonNull HandlerWithTransformer<Event> eventHandler,
+                      @NonNull IdentifiableDataHandler<Event> eventHandler,
                       @NonNull OrphanCleaner<Enrollment, Event> eventOrphanCleaner,
                       @NonNull Handler<Note> noteHandler,
                       @NonNull NoteUniquenessManager noteUniquenessManager) {
@@ -75,20 +75,22 @@ final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
     }
 
     @Override
-    protected void afterObjectHandled(Enrollment enrollment, HandleAction action) {
+    protected void afterObjectHandled(Enrollment enrollment, HandleAction action, Boolean overwrite) {
         if (action != HandleAction.Delete) {
             eventHandler.handleMany(EnrollmentInternalAccessor.accessEvents(enrollment),
                     event -> event.toBuilder()
                             .state(State.SYNCED)
-                            .build());
+                            .build(),
+                    overwrite);
 
             Collection<Note> notes = new ArrayList<>();
             if (enrollment.notes() != null) {
                 for (Note note : enrollment.notes()) {
-                    notes.add(noteVersionManager.transform(enrollment, note));
+                    notes.add(noteVersionManager.transform(Note.NoteType.ENROLLMENT_NOTE, enrollment.uid(), note));
                 }
             }
-            Set<Note> notesToSync = noteUniquenessManager.buildUniqueCollection(notes, enrollment.uid());
+            Set<Note> notesToSync = noteUniquenessManager.buildUniqueCollection(
+                    notes, Note.NoteType.ENROLLMENT_NOTE, enrollment.uid());
             noteHandler.handleMany(notesToSync);
         }
 

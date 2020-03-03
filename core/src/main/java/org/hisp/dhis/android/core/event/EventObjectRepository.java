@@ -84,6 +84,10 @@ public final class EventObjectRepository
         return updateObject(updateBuilder().attributeOptionCombo(attributeOptionComboUid).build());
     }
 
+    public Unit setAssignedUser(String assignedUser) throws D2Error {
+        return updateObject(updateBuilder().assignedUser(assignedUser).build());
+    }
+
     private Event.Builder updateBuilder() {
         Event event = blockingGetWithoutChildren();
         Date updateDate = new Date();

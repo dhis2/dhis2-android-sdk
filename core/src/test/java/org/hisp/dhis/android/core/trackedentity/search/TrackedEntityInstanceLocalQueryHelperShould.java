@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.trackedentity.search;
 
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.junit.Before;
@@ -110,6 +111,16 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
 
         String sqlQuery2 = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, Collections.emptyList(), 50);
         assertThat(sqlQuery2).contains("deleted != 1");
+    }
+
+    @Test
+    public void build_sql_query_with_assigned_user_mode() {
+        TrackedEntityInstanceQueryRepositoryScope scope = queryBuilder
+                .assignedUserMode(AssignedUserMode.ANY)
+                .build();
+
+        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, Collections.emptyList(), 50);
+        assertThat(sqlQuery).contains("assignedUser IS NOT NULL");
     }
 
 }

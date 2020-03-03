@@ -281,6 +281,59 @@
           }
         }
       ]
+    },
+    {
+      "lastUpdated": "2017-01-19T14:32:05.307",
+      "id": "IpHINAT79UW",
+      "created": "2016-04-12T15:30:43.783",
+      "name": "Child Programme",
+      "shortName": "Child Programme",
+      "displayName": "Child Programme",
+      "ignoreOverdueEvents": false,
+      "displayShortName": "Child Programme",
+      "captureCoordinates": true,
+      "displayFrontPageList": true,
+      "enrollmentDateLabel": "Enrollment",
+      "onlyEnrollOnce": true,
+      "programType": "WITH_REGISTRATION",
+      "accessLevel": "OPEN",
+      "relationshipFromA": false,
+      "dataEntryMethod": false,
+      "version": 4,
+      "selectIncidentDatesInFuture": true,
+      "incidentDateLabel": "Incident",
+      "displayIncidentDate": true,
+      "selectEnrollmentDatesInFuture": true,
+      "registration": true,
+      "useFirstStageDuringRegistration": false,
+      "expiryDays": 4,
+      "completeEventsExpiryDays": 6,
+      "expiryPeriodType": "Monthly",
+      "minAttributesRequiredToSearch": 5,
+      "maxTeiCountToReturn": 10,
+      "access": {
+        "data": {
+          "write": true
+        }
+      },
+      "relationshipType": {
+        "id": "V2kkHafqs8G"
+      },
+      "relationshipText": "Relationship text",
+      "trackedEntityType": {
+        "id": "nEenWmSyUEp"
+      },
+      "categoryCombo": {
+        "id": "m2jTvAj5kkm"
+      },
+      "programRuleVariables": [
+      ],
+      "programTrackedEntityAttributes": [
+      ],
+      "programIndicators": [
+      ],
+      "programSections": [
+      ]
     }
   ]
 }

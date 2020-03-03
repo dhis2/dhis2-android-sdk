@@ -29,11 +29,10 @@
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.common.CoreObject;
 
 import io.reactivex.Completable;
 
-public interface ReadOnlyWithDownloadObjectRepository<M extends CoreObject> extends ReadOnlyObjectRepository<M> {
+public interface ReadOnlyWithDownloadObjectRepository<M> extends ReadOnlyObjectRepository<M> {
 
     /**
      * Downloads the resource in scope in an asynchronous way. As soon as it's downloaded and processed, the Completable

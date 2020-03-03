@@ -51,6 +51,8 @@ public abstract class DatabaseUserConfiguration {
     @NonNull
     public abstract boolean encrypted();
 
+    public abstract Builder toBuilder();
+
     public static Builder builder() {
         return new AutoValue_DatabaseUserConfiguration.Builder();
     }

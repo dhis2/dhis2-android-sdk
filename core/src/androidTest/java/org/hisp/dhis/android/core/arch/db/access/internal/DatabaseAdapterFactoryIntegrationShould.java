@@ -49,13 +49,13 @@ public class DatabaseAdapterFactoryIntegrationShould {
 
     @Test
     public void get_adapter() {
-        DatabaseAdapterFactory.getDatabaseAdapter();
+        DatabaseAdapterFactory.newParentDatabaseAdapter();
     }
 
     @Test
     public void get_adapter_create_and_close() {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter();
+        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
         DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DB_NAME, context, false);
         databaseAdapter.close();
     }
@@ -63,7 +63,7 @@ public class DatabaseAdapterFactoryIntegrationShould {
     @Test
     public void get_adapter_create_close_and_recreate() {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter();
+        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
         DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DB_NAME, context, false);
         databaseAdapter.close();
 
@@ -73,7 +73,7 @@ public class DatabaseAdapterFactoryIntegrationShould {
     @Test
     public void get_adapter_create_and_recreate_without_closing() {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter();
+        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
         DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DB_NAME, context, false);
         DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DB_NAME, context, false);
     }
@@ -81,7 +81,7 @@ public class DatabaseAdapterFactoryIntegrationShould {
     @Test
     public void get_adapter_create_close_and_recreate_reading_db() {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter();
+        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
         DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DB_NAME, context, false);
         Cursor cursor1 = databaseAdapter.rawQuery("SELECT * FROM User");
         int count1 = cursor1.getCount();

@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
- *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,41 +25,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.integration.mock;
+package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import android.content.Context;
 
-import androidx.test.InstrumentationRegistry;
-
-import com.facebook.stetho.Stetho;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration;
 
-public class TestDatabaseAdapterFactory {
-    private static String dbName = null;
-    private static DatabaseAdapter databaseAdapter = null;
+import javax.inject.Inject;
 
-    public static DatabaseAdapter get() {
-        if (databaseAdapter == null) {
-            databaseAdapter = create();
-        }
-        return databaseAdapter;
+import dagger.Reusable;
+
+@Reusable
+public class DatabaseCreator {
+
+    private final Context context;
+
+    @Inject
+    public DatabaseCreator(Context context) {
+        this.context = context;
     }
 
-    public static void tearDown() {
-        if (databaseAdapter != null) {
-            databaseAdapter.close();
-            databaseAdapter = null;
-        }
-    }
-
-    private static DatabaseAdapter create() {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        Stetho.initializeWithDefaults(context);
-        DatabaseAdapter parentDatabaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
-        DatabaseAdapterFactory.createOrOpenDatabase(parentDatabaseAdapter, dbName, context, false);
-        parentDatabaseAdapter.setForeignKeyConstraintsEnabled(false);
-        return parentDatabaseAdapter;
+    public void createOrOpenDatabase(DatabaseAdapter adapter, DatabaseUserConfiguration userConfiguration) {
+        DatabaseAdapterFactory.createOrOpenDatabase(adapter, context, userConfiguration);
     }
 }

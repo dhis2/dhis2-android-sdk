@@ -51,6 +51,9 @@ abstract class EventQuery extends BaseQuery {
     @Nullable
     abstract String lastUpdatedStartDate();
 
+    @NonNull
+    abstract String eventStartDate();
+
     static Builder builder() {
         return new AutoValue_EventQuery.Builder()
                 .page(1)
@@ -68,6 +71,8 @@ abstract class EventQuery extends BaseQuery {
         abstract Builder ouMode(OrganisationUnitMode ouMode);
 
         abstract Builder lastUpdatedStartDate(String lastUpdatedStartDate);
+
+        abstract Builder eventStartDate(String eventStartDate);
 
         abstract EventQuery build();
     }

@@ -53,6 +53,9 @@ abstract class EventQueryBundle {
     @Nullable
     abstract String lastUpdatedStartDate();
 
+    @Nullable
+    abstract String eventStartDate();
+
     @NonNull
     abstract Integer limit();
 
@@ -70,6 +73,8 @@ abstract class EventQueryBundle {
         abstract Builder ouMode(OrganisationUnitMode ouMode);
 
         abstract Builder lastUpdatedStartDate(String lastUpdatedStartDate);
+
+        abstract Builder eventStartDate(String eventStartDate);
 
         abstract Builder limit(Integer limit);
 

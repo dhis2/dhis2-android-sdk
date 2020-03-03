@@ -28,8 +28,10 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
@@ -39,6 +41,7 @@ import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
+import org.hisp.dhis.android.core.settings.DownloadPeriod;
 import org.hisp.dhis.android.core.settings.LimitScope;
 import org.hisp.dhis.android.core.settings.ProgramSetting;
 import org.hisp.dhis.android.core.settings.ProgramSettings;
@@ -47,6 +50,7 @@ import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -112,10 +116,11 @@ class EventQueryBundleFactory {
     }
 
     private List<EventQueryBundle> queryPerProgram(ProgramDataDownloadParams params,
-                                                           ProgramSettings programSettings,
-                                                           String programUid,
-                                                           String lastUpdated) {
+                                                   ProgramSettings programSettings,
+                                                   String programUid,
+                                                   String lastUpdated) {
         int limit = getLimit(params, programSettings, programUid);
+        String eventStartDate = getEventStartDate(programSettings, programUid);
 
         List<EventQueryBundle> builders = new ArrayList<>();
 
@@ -139,20 +144,21 @@ class EventQueryBundleFactory {
         if (hasLimitByOrgunit) {
             for (String orgUnitUid : orgUnits) {
                 builders.add(getBuilderFor(lastUpdated, Collections.singletonList(orgUnitUid), programs, ouMode,
-                        params, limit));
+                        eventStartDate, limit));
             }
         } else {
-            builders.add(getBuilderFor(lastUpdated, orgUnits, programs, ouMode, params, limit));
+            builders.add(getBuilderFor(lastUpdated, orgUnits, programs, ouMode, eventStartDate, limit));
         }
 
         return builders;
     }
 
     private List<EventQueryBundle> queryGlobal(ProgramDataDownloadParams params,
-                                                       ProgramSettings programSettings,
-                                                       List<String> programList,
-                                                       String lastUpdated) {
+                                               ProgramSettings programSettings,
+                                               List<String> programList,
+                                               String lastUpdated) {
         int limit = getLimit(params, programSettings, null);
+        String eventStartDate = getEventStartDate(programSettings, null);
 
         List<EventQueryBundle> builders = new ArrayList<>();
 
@@ -175,10 +181,10 @@ class EventQueryBundleFactory {
         if (hasLimitByOrgunit) {
             for (String orgUnitUid : orgUnits) {
                 builders.add(getBuilderFor(lastUpdated, Collections.singletonList(orgUnitUid), programList, ouMode,
-                        params, limit));
+                        eventStartDate, limit));
             }
         } else {
-            builders.add(getBuilderFor(lastUpdated, orgUnits, programList, ouMode, params, limit));
+            builders.add(getBuilderFor(lastUpdated, orgUnits, programList, ouMode, eventStartDate, limit));
         }
 
         return builders;
@@ -186,17 +192,18 @@ class EventQueryBundleFactory {
     }
 
     private EventQueryBundle getBuilderFor(String lastUpdated,
-                                                   List<String> organisationUnits,
-                                                   List<String> programs,
-                                                   OrganisationUnitMode organisationUnitMode,
-                                                   ProgramDataDownloadParams params,
-                                                   int limit) {
+                                           List<String> organisationUnits,
+                                           List<String> programs,
+                                           OrganisationUnitMode organisationUnitMode,
+                                           String eventStartDate,
+                                           int limit) {
         return EventQueryBundle.builder()
                 .lastUpdatedStartDate(lastUpdated)
                 .orgUnitList(organisationUnits)
                 .ouMode(organisationUnitMode)
                 .programList(programs)
                 .limit(limit)
+                .eventStartDate(eventStartDate)
                 .build();
     }
 
@@ -292,4 +299,25 @@ class EventQueryBundleFactory {
         return ProgramDataDownloadParams.DEFAULT_LIMIT;
     }
 
+    private String getEventStartDate(ProgramSettings programSettings, String programUid) {
+        DownloadPeriod period = null;
+        if (programSettings != null) {
+            ProgramSetting specificSetting = programSettings.specificSettings().get(programUid);
+            ProgramSetting globalSetting = programSettings.globalSettings();
+
+            if (specificSetting != null && specificSetting.eventDateDownload() != null) {
+                period = specificSetting.eventDateDownload();
+            }
+            else if (globalSetting != null && globalSetting.eventDateDownload() != null) {
+                period = globalSetting.eventDateDownload();
+            }
+        }
+
+        if (period != null && period != DownloadPeriod.ANY) {
+            Date eventStartDate = DateUtils.addMonths(new Date(), - period.getMonths());
+            return BaseIdentifiableObject.dateToSpaceDateStr(eventStartDate);
+        } else {
+            return null;
+        }
+    }
 }

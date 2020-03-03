@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
+import org.hisp.dhis.android.core.settings.DownloadPeriod;
 import org.hisp.dhis.android.core.settings.ProgramSetting;
 import org.hisp.dhis.android.core.settings.ProgramSettings;
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository;
@@ -143,6 +144,27 @@ public class EventQueryBundleFactoryShould {
                 assertThat(bundle.programList().contains(p3)).isTrue();
             } else {
                 throw new RuntimeException("Not a valid bundle");
+            }
+        }
+    }
+
+    @Test
+    public void get_event_date_if_defined() {
+        ProgramDataDownloadParams params = ProgramDataDownloadParams.builder().build();
+
+        Map<String, ProgramSetting> specifics = new HashMap<>();
+        specifics.put(p1, ProgramSetting.builder().uid(p1).eventDateDownload(DownloadPeriod.LAST_3_MONTHS).build());
+
+        when(programSettings.specificSettings()).thenReturn(specifics);
+
+        List<EventQueryBundle> bundles = bundleFactory.getEventQueryBundles(params);
+
+        assertThat(bundles.size()).isEqualTo(2);
+
+        for (EventQueryBundle bundle : bundles) {
+            if (bundle.programList().size() == 1) {
+                assertThat(bundle.programList().get(0)).isEqualTo(p1);
+                assertThat(bundle.eventStartDate()).isNotNull();
             }
         }
     }

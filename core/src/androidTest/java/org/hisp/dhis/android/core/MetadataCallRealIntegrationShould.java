@@ -30,9 +30,7 @@ package org.hisp.dhis.android.core;
 
 import android.util.Log;
 
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 
@@ -72,12 +70,8 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
     //This test is uncommented because technically it is flaky.
     //It depends on a live server to operate and the login is hardcoded here.
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-    @Test
+    //@Test
     public void response_successful_on_sync_meta_data_once() throws Exception {
-        d2.userModule().logIn(username, password, url).blockingGet();
-
-        DatabaseAdapterFactory.setExperimentalEncryption(true);
-
         d2.userModule().logIn(username, password, url).blockingGet();
 
         d2.metadataModule().blockingDownload();

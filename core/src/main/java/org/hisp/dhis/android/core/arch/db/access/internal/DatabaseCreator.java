@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
- *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,12 +25,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal;
+package org.hisp.dhis.android.core.arch.db.access.internal;
+
+import android.content.Context;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration;
 
-class DatabaseCopy {
-    void copy(DatabaseAdapter adapterFrom, DatabaseAdapter adapterTo) {
+import javax.inject.Inject;
 
+import dagger.Reusable;
+
+@Reusable
+public class DatabaseCreator {
+
+    private final Context context;
+
+    @Inject
+    public DatabaseCreator(Context context) {
+        this.context = context;
+    }
+
+    public void createOrOpenDatabase(DatabaseAdapter adapter, DatabaseUserConfiguration userConfiguration) {
+        DatabaseAdapterFactory.createOrOpenDatabase(adapter, context, userConfiguration);
     }
 }

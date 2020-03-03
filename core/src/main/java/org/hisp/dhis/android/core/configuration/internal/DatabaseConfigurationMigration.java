@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl;
 
-final class DatabaseConfigurationMigration {
+class DatabaseConfigurationMigration {
 
     static final String OLD_DBNAME = "dhis.db";
 

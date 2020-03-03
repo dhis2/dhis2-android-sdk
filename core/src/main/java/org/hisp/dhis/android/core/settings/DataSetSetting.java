@@ -39,7 +39,6 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DownloadPeriodColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
@@ -65,13 +64,11 @@ public abstract class DataSetSetting implements CoreObject {
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DownloadPeriodColumnAdapter.class)
-    public abstract DownloadPeriod periodDSDownload();
+    public abstract Integer periodDSDownload();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(DownloadPeriodColumnAdapter.class)
-    public abstract DownloadPeriod periodDSDBTrimming();
+    public abstract Integer periodDSDBTrimming();
 
     public static DataSetSetting create(Cursor cursor) {
         return $AutoValue_DataSetSetting.createFromCursor(cursor);
@@ -93,9 +90,9 @@ public abstract class DataSetSetting implements CoreObject {
 
         public abstract Builder lastUpdated(Date lastUpdated);
 
-        public abstract Builder periodDSDownload(DownloadPeriod periodDSDownload);
+        public abstract Builder periodDSDownload(Integer periodDSDownload);
 
-        public abstract Builder periodDSDBTrimming(DownloadPeriod periodDSDBTrimming);
+        public abstract Builder periodDSDBTrimming(Integer periodDSDBTrimming);
 
         public abstract DataSetSetting build();
     }

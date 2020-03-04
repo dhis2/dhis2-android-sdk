@@ -32,6 +32,8 @@ import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.settings.DataSetSetting;
+import org.hisp.dhis.android.core.settings.DataSetSettingsObjectRepository;
 
 import java.util.List;
 
@@ -44,14 +46,17 @@ import io.reactivex.Single;
 public class PeriodForDataSetManager {
 
     private final DataSetCollectionRepository dataSetCollectionRepository;
+    private final DataSetSettingsObjectRepository dataSetSettingsRepository;
     private final ParentPeriodGenerator parentPeriodGenerator;
     private final PeriodStore periodStore;
 
     @Inject
     PeriodForDataSetManager(DataSetCollectionRepository dataSetCollectionRepository,
+                            DataSetSettingsObjectRepository dataSetSettingsRepository,
                             ParentPeriodGenerator parentPeriodGenerator,
                             PeriodStore periodStore) {
         this.dataSetCollectionRepository = dataSetCollectionRepository;
+        this.dataSetSettingsRepository = dataSetSettingsRepository;
         this.parentPeriodGenerator = parentPeriodGenerator;
         this.periodStore = periodStore;
     }
@@ -60,6 +65,7 @@ public class PeriodForDataSetManager {
         return dataSetCollectionRepository.uid(dataSetUid).get().map(dataSet -> {
             Integer dataSetFuturePeriods = dataSet.openFuturePeriods();
             int futurePeriods = dataSetFuturePeriods == null ? 0 : dataSetFuturePeriods;
+
             List<Period> periods = parentPeriodGenerator.generatePeriods(dataSet.periodType(), futurePeriods);
             storePeriods(periods);
             return periods;
@@ -81,6 +87,12 @@ public class PeriodForDataSetManager {
         }
 
         List<Period> periods = parentPeriodGenerator.generatePeriods(periodType, maxFuturePeriods);
+        storePeriods(periods);
+        return periods;
+    }
+
+    public List<Period> getPeriodsInRange(PeriodType periodType, int pastPeriods, int futurePeriods) {
+        List<Period> periods = parentPeriodGenerator.generatePeriods(periodType, pastPeriods, futurePeriods);
         storePeriods(periods);
         return periods;
     }

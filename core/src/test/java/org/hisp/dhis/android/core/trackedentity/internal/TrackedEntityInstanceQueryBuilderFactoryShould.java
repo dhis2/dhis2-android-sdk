@@ -146,6 +146,22 @@ public class TrackedEntityInstanceQueryBuilderFactoryShould {
         }
     }
 
+    @Test
+    public void single_query_if_program_provided_by_user() {
+        ProgramDataDownloadParams params = ProgramDataDownloadParams.builder().limit(5000).program(p1).build();
+
+        List<TeiQuery.Builder> builders = builderFactory.getTeiQueryBuilders(params);
+
+        assertThat(builders.size()).isEqualTo(1);
+
+        for (TeiQuery.Builder builder : builders) {
+            TeiQuery query = builder.build();
+
+            assertThat(query.program()).isEqualTo(p1);
+            assertThat(query.limit()).isEqualTo(5000);
+        }
+    }
+
     private List<String> getProgramList() {
         List<String> programList = new ArrayList<>();
         programList.add(p1);

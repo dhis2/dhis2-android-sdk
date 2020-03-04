@@ -63,6 +63,7 @@ import javax.inject.Inject;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
+@SuppressWarnings({"PMD.ExcessiveImports"})
 final class AggregatedDataCall {
 
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
@@ -111,8 +112,11 @@ final class AggregatedDataCall {
 
     private Observable<D2Progress> selectDataSetsAndDownload(D2ProgressManager progressManager,
                                                              D2Progress systemInfoProgress) {
-        return Observable.fromIterable(dataValueQueryFactory.getDataValueQueries()).flatMap(bundle ->
-                downloadInternal(bundle, progressManager, systemInfoProgress));
+        return Observable
+                .fromIterable(dataValueQueryFactory.getDataValueQueries())
+                .flatMap(bundle ->
+                        downloadInternal(bundle, progressManager, systemInfoProgress)
+                );
     }
 
     private Observable<D2Progress> downloadInternal(AggregatedDataCallBundle bundle,

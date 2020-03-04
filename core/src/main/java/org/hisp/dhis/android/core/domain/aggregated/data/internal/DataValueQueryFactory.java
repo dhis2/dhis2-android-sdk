@@ -68,6 +68,7 @@ class DataValueQueryFactory {
         this.organisationUnitStore = organisationUnitStore;
     }
 
+    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
     List<AggregatedDataCallBundle> getDataValueQueries() {
         List<AggregatedDataCallBundle> queries = new ArrayList<>();
 
@@ -112,7 +113,7 @@ class DataValueQueryFactory {
 
     private String getPastFuturePair(DataSetSettings dataSetSettings, DataSet dataSet, PeriodType periodType) {
         int pastPeriods = getPastPeriods(dataSetSettings, dataSet, periodType);
-        int futurePeriods = dataSet.openFuturePeriods() != null ? dataSet.openFuturePeriods() : 1;
+        int futurePeriods = dataSet.openFuturePeriods() == null ? 1 : dataSet.openFuturePeriods();
 
         return new PastFuturePair(pastPeriods, futurePeriods).toKey();
     }

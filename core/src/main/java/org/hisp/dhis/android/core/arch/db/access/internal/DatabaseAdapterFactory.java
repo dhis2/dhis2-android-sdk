@@ -39,20 +39,11 @@ import java.util.Map;
 
 public final class DatabaseAdapterFactory {
 
-    private static boolean encryptNextNotConfiguredDatabases;
     private static String ENCRYPTION_PASSWORD = "dhis-password";
 
     private static Map<String, UnencryptedDatabaseOpenHelper> unencryptedOpenHelpers = new HashMap<>();
     private static Map<String, EncryptedDatabaseOpenHelper> encryptedOpenHelpers = new HashMap<>();
     private static List<DatabaseAdapter> adaptersToPreventNotClosedError = new ArrayList<>();
-
-    public static void setExperimentalEncryption(boolean experimentalEncryption) {
-        encryptNextNotConfiguredDatabases = experimentalEncryption;
-    }
-
-    public static boolean getExperimentalEncryption() {
-        return encryptNextNotConfiguredDatabases;
-    }
 
     public static DatabaseAdapter newParentDatabaseAdapter() {
         return new ParentDatabaseAdapter();

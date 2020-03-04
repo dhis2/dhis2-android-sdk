@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManage
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
+import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.hisp.dhis.android.core.user.User;
@@ -135,6 +136,9 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Mock
     private MultiUserDatabaseManager multiUserDatabaseManager;
 
+    @Mock
+    private GeneralSettingCall generalSettingCall;
+
     // call we are testing
     private Single<User> logInSingle;
 
@@ -177,6 +181,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 
         when(d2Error.errorCode()).thenReturn(D2ErrorCode.SOCKET_TIMEOUT);
+        when(generalSettingCall.isDatabaseEncrypted()).thenReturn(Single.just(false));
 
         logInSingle = instantiateCall(USERNAME, PASSWORD, serverUrl);
     }
@@ -184,7 +189,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private Single<User> instantiateCall(String username, String password, String serverUrl) {
         return new UserAuthenticateCallFactory(databaseAdapter, apiCallExecutor,
                 userService, credentialsSecureStore, userHandler, resourceHandler, authenticatedUserStore,
-                systemInfoRepository, userStore, wipeModule, multiUserDatabaseManager).logIn(username, password, serverUrl);
+                systemInfoRepository, userStore, wipeModule, multiUserDatabaseManager, generalSettingCall).logIn(username, password, serverUrl);
     }
 
     private OngoingStubbing<User> whenAPICall() throws D2Error {

@@ -55,7 +55,7 @@ public class Dhis2MockServer {
     private static final String AUTHORITIES_JSON = "user/authorities.json";
     private static final String SYSTEM_INFO_JSON = "systeminfo/system_info.json";
     private static final String SYSTEM_SETTINGS_JSON = "settings/system_settings.json";
-    private static final String ANDROID_SETTINGS_JSON = "settings/general_settings.json";
+    private static final String GENERAL_SETTINGS_JSON = "settings/general_settings.json";
     private static final String DATASET_SETTINGS_JSON = "settings/dataset_settings.json";
     private static final String PROGRAM_SETTINGS_JSON = "settings/program_settings.json";
     private static final String PROGRAMS_JSON = "program/programs.json";
@@ -156,7 +156,7 @@ public class Dhis2MockServer {
                 } else if (path.startsWith("/api/systemSettings?")) {
                     return createMockResponse(SYSTEM_SETTINGS_JSON);
                 } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/general_settings")) {
-                    return createMockResponse(ANDROID_SETTINGS_JSON);
+                    return createMockResponse(GENERAL_SETTINGS_JSON);
                 } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/dataSet_settings")) {
                     return createMockResponse(DATASET_SETTINGS_JSON);
                 } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/program_settings")) {
@@ -219,13 +219,14 @@ public class Dhis2MockServer {
 
     public void enqueueLoginResponses() {
         enqueueMockResponse(USER_JSON);
+        enqueueMockResponse(GENERAL_SETTINGS_JSON);
         enqueueMockResponse(SYSTEM_INFO_JSON);
     }
 
     public void enqueueMetadataResponses() {
         enqueueMockResponse(SYSTEM_INFO_JSON);
         enqueueMockResponse(SYSTEM_SETTINGS_JSON);
-        enqueueMockResponse(ANDROID_SETTINGS_JSON);
+        enqueueMockResponse(GENERAL_SETTINGS_JSON);
         enqueueMockResponse(DATASET_SETTINGS_JSON);
         enqueueMockResponse(PROGRAM_SETTINGS_JSON);
         enqueueMockResponse(USER_JSON);

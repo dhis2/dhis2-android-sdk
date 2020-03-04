@@ -15,8 +15,8 @@ public class Dhis2Dispatcher extends Dispatcher {
 
     private static final String DISPATCHER = "Dispatcher";
 
-    private IFileReader fileReader;
-    private ResponseController responseController;
+    private final IFileReader fileReader;
+    private final ResponseController responseController;
 
     Dhis2Dispatcher(IFileReader fileReader, ResponseController responseController){
         this.fileReader = fileReader;

@@ -48,6 +48,7 @@ import okhttp3.mockwebserver.RecordedRequest;
 
 import static okhttp3.internal.Util.UTC;
 
+@SuppressWarnings("PMD")
 public class Dhis2MockServer {
     private static final int OK_CODE = 200;
 
@@ -81,7 +82,6 @@ public class Dhis2MockServer {
     private static final String DATA_SET_COMPLETE_REGISTRATIONS_JSON = "dataset/data_set_complete_registrations.json";
     private static final String DATA_APPROVALS_MULTIPLE_JSON = "dataapproval/data_approvals_multiple.json";
     private static final String ORGANISATION_UNITS_JSON = "organisationunit/organisation_units.json";
-    private static final String SMS_METADATA_IDS = "sms/metadata_ids.json";
     private static final String MOCKWEBSERVER = "Dhis2MockWebServer";
 
     private MockWebServer server;
@@ -102,19 +102,17 @@ public class Dhis2MockServer {
 
     private void start(int port) throws IOException {
         try {
-            server.start(port);
+            this.server.start(port);
         } catch (IOException e) {
             Log.e(MOCKWEBSERVER, "Could not start server");
-            e.printStackTrace();
         }
     }
 
     public void shutdown() throws IOException {
         try {
-            server.shutdown();
+            this.server.shutdown();
         } catch (IOException e) {
             Log.e(MOCKWEBSERVER, "Could not shutdown server");
-            e.printStackTrace();
         }
     }
 
@@ -151,7 +149,7 @@ public class Dhis2MockServer {
                 String path = request.getPath();
                 if (path.startsWith("/api/me?")) {
                     return createMockResponse(USER_JSON);
-                } else if (path.equals("/api/me/authorization")) {
+                } else if ("/api/me/authorization".equals(path)) {
                     return createMockResponse(AUTHORITIES_JSON);
                 } else if (path.startsWith("/api/system/info?")) {
                     return createMockResponse(SYSTEM_INFO_JSON);

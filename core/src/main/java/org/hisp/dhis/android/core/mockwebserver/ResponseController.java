@@ -38,7 +38,7 @@ public class ResponseController {
     }
 
     void populateInternalResponses(){
-
+        //move sdk dispatcher here
     }
 
     void addResponse(String method, String path, String responseName, Integer responseCode) {
@@ -55,7 +55,9 @@ public class ResponseController {
         Collections.reverse(paths);
         for (String path : paths) {
             filename = findResponse(resourcesMap, path, currentPath);
-            if (!filename.isEmpty()) break;
+            if (!filename.isEmpty()){
+                break;
+            }
         }
         return filename;
     }

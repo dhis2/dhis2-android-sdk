@@ -59,6 +59,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
+@SuppressWarnings({"PMD.GodClass"})
 class EventQueryBundleFactory {
 
     private final Resource.Type resourceType = Resource.Type.EVENT;
@@ -305,19 +306,22 @@ class EventQueryBundleFactory {
             ProgramSetting specificSetting = programSettings.specificSettings().get(programUid);
             ProgramSetting globalSetting = programSettings.globalSettings();
 
-            if (specificSetting != null && specificSetting.eventDateDownload() != null) {
+            if (hasEventDateDownload(specificSetting)) {
                 period = specificSetting.eventDateDownload();
-            }
-            else if (globalSetting != null && globalSetting.eventDateDownload() != null) {
+            } else if (hasEventDateDownload(globalSetting)) {
                 period = globalSetting.eventDateDownload();
             }
         }
 
-        if (period != null && period != DownloadPeriod.ANY) {
-            Date eventStartDate = DateUtils.addMonths(new Date(), - period.getMonths());
-            return BaseIdentifiableObject.dateToSpaceDateStr(eventStartDate);
-        } else {
+        if (period == null || period == DownloadPeriod.ANY) {
             return null;
+        } else {
+            Date eventStartDate = DateUtils.addMonths(new Date(), -period.getMonths());
+            return BaseIdentifiableObject.dateToSpaceDateStr(eventStartDate);
         }
+    }
+
+    private boolean hasEventDateDownload(ProgramSetting programSetting) {
+        return programSetting != null && programSetting.eventDateDownload() != null;
     }
 }

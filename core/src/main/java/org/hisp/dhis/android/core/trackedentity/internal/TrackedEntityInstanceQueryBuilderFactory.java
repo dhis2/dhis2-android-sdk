@@ -61,6 +61,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
+@SuppressWarnings({"PMD.GodClass"})
 class TrackedEntityInstanceQueryBuilderFactory {
 
     private final Resource.Type resourceType = Resource.Type.TRACKED_ENTITY_INSTANCE;
@@ -109,7 +110,7 @@ class TrackedEntityInstanceQueryBuilderFactory {
                 builders.addAll(queryGlobal(params, programSettings, lastUpdated));
             }
         } else {
-            builders.addAll(queryPerProgram(params, programSettings, params.program(), lastUpdated));;
+            builders.addAll(queryPerProgram(params, programSettings, params.program(), lastUpdated));
         }
 
         return builders;
@@ -321,19 +322,18 @@ class TrackedEntityInstanceQueryBuilderFactory {
             ProgramSetting specificSetting = programSettings.specificSettings().get(programUid);
             ProgramSetting globalSetting = programSettings.globalSettings();
 
-            if (specificSetting != null && specificSetting.enrollmentDateDownload() != null) {
+            if (hasEnrollmentDateDownload(specificSetting)) {
                 period = specificSetting.enrollmentDateDownload();
-            }
-            else if (globalSetting != null && globalSetting.enrollmentDateDownload() != null) {
+            } else if (hasEnrollmentDateDownload(globalSetting)) {
                 period = globalSetting.enrollmentDateDownload();
             }
         }
 
-        if (period != null && period != DownloadPeriod.ANY) {
-            Date programStartDate = DateUtils.addMonths(new Date(), - period.getMonths());
-            return BaseIdentifiableObject.dateToSpaceDateStr(programStartDate);
-        } else {
+        if (period == null || period == DownloadPeriod.ANY) {
             return null;
+        } else {
+            Date programStartDate = DateUtils.addMonths(new Date(), -period.getMonths());
+            return BaseIdentifiableObject.dateToSpaceDateStr(programStartDate);
         }
     }
 
@@ -343,6 +343,10 @@ class TrackedEntityInstanceQueryBuilderFactory {
         } else {
             return null;
         }
+    }
+
+    private boolean hasEnrollmentDateDownload(ProgramSetting programSetting) {
+        return programSetting != null && programSetting.enrollmentDateDownload() != null;
     }
 
 }

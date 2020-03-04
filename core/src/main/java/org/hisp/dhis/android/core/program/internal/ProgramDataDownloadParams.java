@@ -46,7 +46,7 @@ import java.util.List;
 @AutoValue
 public abstract class ProgramDataDownloadParams {
 
-    public static Integer DEFAULT_LIMIT = 500;
+    public static final Integer DEFAULT_LIMIT = 500;
 
     @NonNull
     public abstract List<String> uids();

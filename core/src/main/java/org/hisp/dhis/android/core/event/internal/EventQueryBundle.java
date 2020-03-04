@@ -35,7 +35,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
-import java.util.Collections;
 import java.util.List;
 
 @AutoValue

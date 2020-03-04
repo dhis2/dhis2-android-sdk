@@ -39,11 +39,9 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownl
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
-import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 
 import java.util.List;
 
@@ -52,12 +50,6 @@ import javax.inject.Inject;
 import dagger.Reusable;
 import io.reactivex.Observable;
 
-@SuppressWarnings({
-        "PMD.NPathComplexity",
-        "PMD.CyclomaticComplexity",
-        "PMD.ModifiedCyclomaticComplexity",
-        "PMD.StdCyclomaticComplexity"
-})
 @Reusable
 public final class EventWithLimitCallFactory {
 
@@ -65,8 +57,6 @@ public final class EventWithLimitCallFactory {
 
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final ResourceHandler resourceHandler;
-    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
-    private final ProgramStoreInterface programStore;
 
     private final D2CallExecutor d2CallExecutor;
 
@@ -79,16 +69,12 @@ public final class EventWithLimitCallFactory {
     EventWithLimitCallFactory(
             @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             @NonNull ResourceHandler resourceHandler,
-            @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
-            @NonNull ProgramStoreInterface programStore,
             @NonNull D2CallExecutor d2CallExecutor,
             @NonNull EventQueryBundleFactory eventQueryBundleFactory,
             @NonNull EventEndpointCallFactory endpointCallFactory,
             @NonNull EventPersistenceCallFactory persistenceCallFactory) {
         this.systemInfoRepository = systemInfoRepository;
         this.resourceHandler = resourceHandler;
-        this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
-        this.programStore = programStore;
         this.d2CallExecutor = d2CallExecutor;
         this.eventQueryBundleFactory = eventQueryBundleFactory;
         this.endpointCallFactory = endpointCallFactory;

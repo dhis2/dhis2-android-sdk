@@ -10,10 +10,8 @@
     "updateDBTrimming": "ANY",
     "settingDBTrimming": "GLOBAL",
     "enrollmentDownload": "ALL",
-    "teReservedDownload": 100,
     "eventDateDownload": "ANY",
     "enrollmentDBTrimming": "ALL",
-    "teReservedDBTrimming": 100,
     "eventDateDBTrimming": "ANY",
     "enrollmentDateDownload": "ANY",
     "enrollmentDateDBTrimming": "ANY"
@@ -32,10 +30,8 @@
       "updateDBTrimming": "LAST_3_MONTHS",
       "settingDBTrimming": "PER_ORG_UNIT",
       "enrollmentDownload": "ALL",
-      "teReservedDownload": "60",
       "eventDateDownload": "ANY",
       "enrollmentDBTrimming": "ONLY_ACTIVE",
-      "teReservedDBTrimming": "20",
       "eventDateDBTrimming": "LAST_MONTH",
       "enrollmentDateDownload": "ANY",
       "enrollmentDateDBTrimming": "LAST_MONTH"
@@ -53,10 +49,8 @@
       "updateDBTrimming": "LAST_3_MONTHS",
       "settingDBTrimming": "PER_ORG_UNIT",
       "enrollmentDownload": "ALL",
-      "teReservedDownload": "20",
       "eventDateDownload": "ANY",
       "enrollmentDBTrimming": "ALL",
-      "teReservedDBTrimming": "20",
       "eventDateDBTrimming": "LAST_3_MONTHS",
       "enrollmentDateDownload": "LAST_MONTH",
       "enrollmentDateDBTrimming": "LAST_3_MONTHS"

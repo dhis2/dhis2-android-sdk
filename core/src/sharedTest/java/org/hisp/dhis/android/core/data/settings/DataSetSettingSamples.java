@@ -40,8 +40,8 @@ public class DataSetSettingSamples {
                 .uid("BfMAe6Itzgt")
                 .name("Child Health")
                 .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
-                .periodDSDownload(DownloadPeriod.LAST_3_MONTHS)
-                .periodDSDBTrimming(DownloadPeriod.LAST_12_MONTHS)
+                .periodDSDownload(10)
+                .periodDSDBTrimming(20)
                 .build();
     }
 }

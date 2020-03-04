@@ -43,8 +43,9 @@ final class GeneralSettingStore {
         w.bind(2, o.encryptDB());
         w.bind(3, o.lastUpdated());
         w.bind(4, o.metadataSync());
-        w.bind(5, o.numberSmsToSend());
-        w.bind(6, o.numberSmsConfirmation());
+        w.bind(5, o.reservedValues());
+        w.bind(6, o.numberSmsToSend());
+        w.bind(7, o.numberSmsConfirmation());
     };
 
     private static final WhereStatementBinder<GeneralSettings> WHERE_UPDATE_BINDER = (o, w) -> {};

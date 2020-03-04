@@ -148,19 +148,19 @@ public class DatabasesConfigurationHelperShould {
 
     @Test
     public void add_new_configuration_to_empty() {
-        DatabasesConfiguration config = helper.addConfiguration(null, URL_1, USERNAME_1, false);
+        DatabasesConfiguration config = helper.setConfiguration(null, URL_1, USERNAME_1, false);
         assertThat(config).isEqualTo(SINGLE_SERVER_SINGLE_USER_CONFIG);
     }
 
     @Test
     public void add_new_configuration_to_single_server_single_user_in_same_server() {
-        DatabasesConfiguration config = helper.addConfiguration(SINGLE_SERVER_SINGLE_USER_CONFIG, URL_1, USERNAME_2, false);
+        DatabasesConfiguration config = helper.setConfiguration(SINGLE_SERVER_SINGLE_USER_CONFIG, URL_1, USERNAME_2, false);
         assertThat(config).isEqualTo(SINGLE_SERVER_2_USERS_CONFIG);
     }
 
     @Test
     public void add_new_configuration_to_single_server_single_user_in_other_server() {
-        DatabasesConfiguration config = helper.addConfiguration(SINGLE_SERVER_SINGLE_USER_CONFIG, URL_2, USERNAME_2, false);
+        DatabasesConfiguration config = helper.setConfiguration(SINGLE_SERVER_SINGLE_USER_CONFIG, URL_2, USERNAME_2, false);
         assertThat(config.loggedServerUrl()).isEqualTo(URL_2);
         assertThat(helper.getLoggedUserConfiguration(config, USERNAME_2)).isEqualTo(USER_CONFIG_22);
     }

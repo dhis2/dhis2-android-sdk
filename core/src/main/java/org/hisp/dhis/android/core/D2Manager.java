@@ -139,7 +139,7 @@ public final class D2Manager {
     private static void setUp(@Nullable D2Configuration d2Config) throws D2Error {
         long startTime = System.currentTimeMillis();
         d2Configuration = D2ConfigurationValidator.validateAndSetDefaultValues(d2Config);
-        databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter();
+        databaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
 
         long setUpTime = System.currentTimeMillis() - startTime;
         Log.i(D2Manager.class.getName(), "Set up took " + setUpTime + "ms");

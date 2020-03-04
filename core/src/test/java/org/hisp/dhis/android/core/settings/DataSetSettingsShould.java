@@ -53,15 +53,15 @@ public class DataSetSettingsShould extends BaseObjectShould implements ObjectSho
         assertThat(global.uid()).isNull();
         assertThat(global.name()).isNull();
         assertThat(global.lastUpdated()).isEqualTo(BaseIdentifiableObject.parseDate("2020-01-31T22:42:57.763Z"));
-        assertThat(global.periodDSDownload()).isEqualByComparingTo(DownloadPeriod.LAST_12_MONTHS);
-        assertThat(global.periodDSDBTrimming()).isEqualByComparingTo(DownloadPeriod.LAST_12_MONTHS);
+        assertThat(global.periodDSDownload()).isEqualTo(30);
+        assertThat(global.periodDSDBTrimming()).isEqualByComparingTo(40);
 
         DataSetSetting childHealth = dataSetSettings.specificSettings().get("BfMAe6Itzgt");
         assertThat(childHealth).isNotNull();
         assertThat(childHealth.uid()).isEqualTo("BfMAe6Itzgt");
         assertThat(childHealth.name()).isEqualTo("Child Health");
         assertThat(childHealth.lastUpdated()).isEqualTo(BaseIdentifiableObject.parseDate("2020-01-31T22:38:20.210Z"));
-        assertThat(childHealth.periodDSDownload()).isEqualByComparingTo(DownloadPeriod.LAST_3_MONTHS);
-        assertThat(childHealth.periodDSDBTrimming()).isEqualByComparingTo(DownloadPeriod.LAST_3_MONTHS);
+        assertThat(childHealth.periodDSDownload()).isEqualTo(10);
+        assertThat(childHealth.periodDSDBTrimming()).isEqualByComparingTo(15);
     }
 }

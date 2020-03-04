@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.user.internal;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -47,7 +47,7 @@ public class UserAuthenticateWithEncryptionMockIntegrationShould {
     @BeforeClass
     public static void setUpClass() throws IOException {
         d2 = D2Factory.forNewDatabase();
-        dhis2MockServer = new Dhis2MockServer();
+        dhis2MockServer = new Dhis2MockServer(0);
         dhis2MockServer.setRequestDispatcher();
     }
 

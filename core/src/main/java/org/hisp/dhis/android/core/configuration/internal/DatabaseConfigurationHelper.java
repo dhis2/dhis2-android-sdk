@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.configuration.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-final class DatabaseConfigurationHelper {
+class DatabaseConfigurationHelper {
 
     private final DatabaseNameGenerator databaseNameGenerator;
 
@@ -74,7 +74,7 @@ final class DatabaseConfigurationHelper {
         return null;
     }
 
-    DatabasesConfiguration addConfiguration(DatabasesConfiguration configuration, String serverUrl,
+    DatabasesConfiguration setConfiguration(DatabasesConfiguration configuration, String serverUrl,
                                             String username, boolean encrypt) {
         DatabaseServerConfiguration existingServerConf = configuration == null ? null
                 : getServerConfiguration(configuration, serverUrl);
@@ -114,9 +114,5 @@ final class DatabaseConfigurationHelper {
                 .loggedServerUrl(serverUrl)
                 .servers(newServers)
                 .build();
-    }
-
-    DatabasesConfiguration setServerUrl(DatabasesConfiguration configuration, String serverUrl) {
-        return configuration.toBuilder().loggedServerUrl(serverUrl).build();
     }
 }

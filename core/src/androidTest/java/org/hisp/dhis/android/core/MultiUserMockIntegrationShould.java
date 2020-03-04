@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.category.CategoryOptionTableInfo;
 import org.hisp.dhis.android.core.data.category.CategoryOptionSamples;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
 import org.junit.Test;
 
@@ -76,7 +76,7 @@ public class MultiUserMockIntegrationShould extends BaseMockIntegrationTestEmpty
 
         d2.userModule().blockingLogOut();
 
-        Dhis2MockServer server2 = new Dhis2MockServer();
+        Dhis2MockServer server2 = new Dhis2MockServer(0);
         server2.enqueueLoginResponses();
         d2.userModule().blockingLogIn("u2", "p2", server2.getBaseEndpoint());
         assertThat(d2.categoryModule().categoryOptions().blockingCount()).isEqualTo(0);

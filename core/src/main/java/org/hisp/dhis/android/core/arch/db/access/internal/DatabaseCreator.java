@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
- *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,31 +25,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.file;
+package org.hisp.dhis.android.core.arch.db.access.internal;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import android.content.Context;
 
-public final class ResourcesFileReader implements IFileReader {
-    @Override
-    public String getStringFromFile(String filename) throws IOException {
-        InputStream fileStream = this.getClass().getClassLoader().getResourceAsStream(filename);
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration;
 
-        StringBuilder textBuilder = new StringBuilder();
-        try (Reader reader = new BufferedReader(new InputStreamReader
-                (fileStream, Charset.forName(StandardCharsets.UTF_8.name())))) {
-            int c;
-            while ((c = reader.read()) != -1) {
-                textBuilder.append((char) c);
-            }
-        }
+import javax.inject.Inject;
 
-        return textBuilder.toString();
+import dagger.Reusable;
+
+@Reusable
+public class DatabaseCreator {
+
+    private final Context context;
+
+    @Inject
+    public DatabaseCreator(Context context) {
+        this.context = context;
+    }
+
+    public void createOrOpenDatabase(DatabaseAdapter adapter, DatabaseUserConfiguration userConfiguration) {
+        DatabaseAdapterFactory.createOrOpenDatabase(adapter, context, userConfiguration);
     }
 }
-

@@ -313,7 +313,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         whenAPICall().thenThrow(d2Error);
 
         when(credentialsSecureStore.get()).thenReturn(null);
-        when(multiUserDatabaseManager.loadExisting(baseEndpointWithAPI, USERNAME)).thenReturn(true);
+        when(multiUserDatabaseManager.loadExistingKeepingEncryption(baseEndpointWithAPI, USERNAME)).thenReturn(true);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
         logInSingle.test().awaitTerminalEvent();
@@ -326,7 +326,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         
         when(credentialsSecureStore.get()).thenReturn(null);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
-        when(multiUserDatabaseManager.loadExisting(baseEndpointWithAPI, USERNAME)).thenReturn(true);
+        when(multiUserDatabaseManager.loadExistingKeepingEncryption(baseEndpointWithAPI, USERNAME)).thenReturn(true);
 
         Single<User> loginCall = instantiateCall(USERNAME, PASSWORD, serverUrl + "/");
 
@@ -350,7 +350,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         when(credentialsSecureStore.get()).thenReturn(null);
         when(authenticatedUser.hash()).thenReturn("different_hash");
-        when(multiUserDatabaseManager.loadExisting(baseEndpointWithAPI, USERNAME)).thenReturn(true);
+        when(multiUserDatabaseManager.loadExistingKeepingEncryption(baseEndpointWithAPI, USERNAME)).thenReturn(true);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
         TestObserver<User> testObserver = logInSingle.test();

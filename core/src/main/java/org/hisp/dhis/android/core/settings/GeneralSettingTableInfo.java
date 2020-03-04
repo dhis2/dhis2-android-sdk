@@ -55,6 +55,7 @@ public final class GeneralSettingTableInfo {
         public static final String ENCRYPT_DB = "encryptDB";
         public static final String LAST_UPDATED = "lastUpdated";
         public static final String METADATA_SYNC = "metadataSync";
+        public static final String RESERVED_VALUES = "reservedValues";
         public static final String NUMBER_SMS_TO_SEND = "numberSmsToSend";
         public static final String NUMBER_SMS_CONFIRMATION = "numberSmsConfirmation";
 
@@ -65,6 +66,7 @@ public final class GeneralSettingTableInfo {
                     ENCRYPT_DB,
                     LAST_UPDATED,
                     METADATA_SYNC,
+                    RESERVED_VALUES,
                     NUMBER_SMS_TO_SEND,
                     NUMBER_SMS_CONFIRMATION
             );

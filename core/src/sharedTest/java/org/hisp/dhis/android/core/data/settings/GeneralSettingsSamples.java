@@ -42,6 +42,7 @@ public class GeneralSettingsSamples {
                 .encryptDB(true)
                 .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
                 .metadataSync(MetadataSyncPeriod.EVERY_DAY)
+                .reservedValues(100)
                 .numberSmsToSend("+34678456123")
                 .numberSmsConfirmation("+34654321456")
                 .build();

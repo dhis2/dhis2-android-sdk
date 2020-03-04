@@ -52,17 +52,15 @@ final class ProgramSettingStore {
         w.bind(11, o.settingDBTrimming());
         w.bind(12, o.enrollmentDownload());
         w.bind(13, o.enrollmentDBTrimming());
-        w.bind(14, o.teReservedDownload());
-        w.bind(15, o.teReservedDBTrimming());
-        w.bind(16, o.eventDateDownload());
-        w.bind(17, o.eventDateDBTrimming());
-        w.bind(18, o.enrollmentDateDownload());
-        w.bind(19, o.enrollmentDateDBTrimming());
+        w.bind(14, o.eventDateDownload());
+        w.bind(15, o.eventDateDBTrimming());
+        w.bind(16, o.enrollmentDateDownload());
+        w.bind(17, o.enrollmentDateDBTrimming());
     };
 
 
     private static final WhereStatementBinder<ProgramSetting> WHERE_UPDATE_BINDER =
-            (o, w) -> w.bind(20, o.uid());
+            (o, w) -> w.bind(18, o.uid());
 
     private static final WhereStatementBinder<ProgramSetting> WHERE_DELETE_BINDER =
             (o, w) -> w.bind(1, o.uid());

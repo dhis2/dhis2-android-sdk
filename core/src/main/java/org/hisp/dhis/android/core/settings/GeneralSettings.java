@@ -67,6 +67,10 @@ public abstract class GeneralSettings implements CoreObject {
 
     @Nullable
     @JsonProperty()
+    public abstract Integer reservedValues();
+
+    @Nullable
+    @JsonProperty()
     public abstract String numberSmsToSend();
 
     @Nullable
@@ -93,6 +97,8 @@ public abstract class GeneralSettings implements CoreObject {
         public abstract Builder lastUpdated(Date lastUpdated);
 
         public abstract Builder metadataSync(MetadataSyncPeriod metadataSync);
+
+        public abstract Builder reservedValues(Integer reservedValues);
 
         public abstract Builder numberSmsToSend(String numberSmsToSend);
 

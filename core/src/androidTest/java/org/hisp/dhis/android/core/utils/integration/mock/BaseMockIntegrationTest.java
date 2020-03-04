@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.MockIntegrationTestObjects;
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
 
 public abstract class BaseMockIntegrationTest {
 

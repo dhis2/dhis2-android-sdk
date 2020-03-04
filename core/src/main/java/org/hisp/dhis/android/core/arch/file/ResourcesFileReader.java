@@ -26,41 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.integration.mock;
+package org.hisp.dhis.android.core.arch.file;
 
-import android.content.Context;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
-import androidx.test.InstrumentationRegistry;
+public final class ResourcesFileReader implements IFileReader {
+    @Override
+    public String getStringFromFile(String filename) throws IOException {
+        InputStream fileStream = this.getClass().getClassLoader().getResourceAsStream(filename);
 
-import com.facebook.stetho.Stetho;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
-
-public class TestDatabaseAdapterFactory {
-    private static String dbName = null;
-    private static DatabaseAdapter databaseAdapter = null;
-
-    public static DatabaseAdapter get() {
-        if (databaseAdapter == null) {
-            databaseAdapter = create();
+        StringBuilder textBuilder = new StringBuilder();
+        try (Reader reader = new BufferedReader(
+                new InputStreamReader(fileStream, Charset.forName(StandardCharsets.UTF_8.name())))) {
+            int c;
+            while ((c = reader.read()) != -1) {
+                textBuilder.append((char) c);
+            }
         }
-        return databaseAdapter;
-    }
 
-    public static void tearDown() {
-        if (databaseAdapter != null) {
-            databaseAdapter.close();
-            databaseAdapter = null;
-        }
-    }
-
-    private static DatabaseAdapter create() {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        Stetho.initializeWithDefaults(context);
-        DatabaseAdapter parentDatabaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
-        DatabaseAdapterFactory.createOrOpenDatabase(parentDatabaseAdapter, dbName, context, false);
-        parentDatabaseAdapter.setForeignKeyConstraintsEnabled(false);
-        return parentDatabaseAdapter;
+        return textBuilder.toString();
     }
 }
+

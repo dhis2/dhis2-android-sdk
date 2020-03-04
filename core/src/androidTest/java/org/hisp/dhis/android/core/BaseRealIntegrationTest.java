@@ -62,7 +62,7 @@ public abstract class BaseRealIntegrationTest {
     public void setUp() throws IOException {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
 
-        databaseAdapter = DatabaseAdapterFactory.getDatabaseAdapter();
+        databaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
         DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, null, context, false);
         resourceHandler = ResourceHandler.create(databaseAdapter);
         resourceHandler.setServerDate(serverDate);

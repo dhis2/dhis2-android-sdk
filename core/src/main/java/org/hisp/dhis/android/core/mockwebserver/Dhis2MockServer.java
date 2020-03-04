@@ -26,12 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.server;
+package org.hisp.dhis.android.core.mockwebserver;
+
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.data.file.IFileReader;
-import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
+import org.hisp.dhis.android.core.arch.file.IFileReader;
+import org.hisp.dhis.android.core.arch.file.ResourcesFileReader;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -46,6 +48,7 @@ import okhttp3.mockwebserver.RecordedRequest;
 
 import static okhttp3.internal.Util.UTC;
 
+@SuppressWarnings("PMD")
 public class Dhis2MockServer {
     private static final int OK_CODE = 200;
 
@@ -79,23 +82,38 @@ public class Dhis2MockServer {
     private static final String DATA_SET_COMPLETE_REGISTRATIONS_JSON = "dataset/data_set_complete_registrations.json";
     private static final String DATA_APPROVALS_MULTIPLE_JSON = "dataapproval/data_approvals_multiple.json";
     private static final String ORGANISATION_UNITS_JSON = "organisationunit/organisation_units.json";
-    private static final String SMS_METADATA_IDS = "sms/metadata_ids.json";
+    private static final String MOCKWEBSERVER = "Dhis2MockWebServer";
 
     private MockWebServer server;
     private IFileReader fileReader;
+    private Dhis2Dispatcher dhis2Dispatcher;
 
-    private Dhis2MockServer(IFileReader fileReader) throws IOException {
+    public Dhis2MockServer(IFileReader fileReader, int port) throws IOException {
         this.fileReader = fileReader;
         this.server = new MockWebServer();
-        this.server.start();
+        dhis2Dispatcher = new Dhis2Dispatcher(fileReader, new ResponseController());
+        start(port);
     }
 
-    public Dhis2MockServer() throws IOException {
-        this(new ResourcesFileReader());
+    public Dhis2MockServer(int port) throws IOException {
+        this(new ResourcesFileReader(), port);
+        dhis2Dispatcher.configInternalResponseController();
+    }
+
+    private void start(int port) throws IOException {
+        try {
+            this.server.start(port);
+        } catch (IOException e) {
+            Log.e(MOCKWEBSERVER, "Could not start server");
+        }
     }
 
     public void shutdown() throws IOException {
-        server.shutdown();
+        try {
+            this.server.shutdown();
+        } catch (IOException e) {
+            Log.e(MOCKWEBSERVER, "Could not shutdown server");
+        }
     }
 
     public void enqueueMockResponse() {
@@ -118,6 +136,10 @@ public class Dhis2MockServer {
         server.enqueue(response);
     }
 
+    public void setDhis2Dispatcher(){
+        server.setDispatcher(dhis2Dispatcher);
+    }
+
     public void setRequestDispatcher() {
         final Dispatcher dispatcher = new Dispatcher() {
 
@@ -127,7 +149,7 @@ public class Dhis2MockServer {
                 String path = request.getPath();
                 if (path.startsWith("/api/me?")) {
                     return createMockResponse(USER_JSON);
-                } else if (path.equals("/api/me/authorization")) {
+                } else if ("/api/me/authorization".equals(path)) {
                     return createMockResponse(AUTHORITIES_JSON);
                 } else if (path.startsWith("/api/system/info?")) {
                     return createMockResponse(SYSTEM_INFO_JSON);
@@ -186,7 +208,9 @@ public class Dhis2MockServer {
                 } else if (path.startsWith("/api/dataApprovals/multiple?")) {
                     return createMockResponse(DATA_APPROVALS_MULTIPLE_JSON);
                 } else {
-                    return new MockResponse().setResponseCode(404).setBody("Path not present in Dhis2MockServer dispatcher");
+                    return new MockResponse()
+                            .setResponseCode(404)
+                            .setBody("Path not present in Dhis2MockServer dispatcher");
                 }
             }
         };
@@ -258,5 +282,9 @@ public class Dhis2MockServer {
 
     public RecordedRequest takeRequest() throws InterruptedException {
         return server.takeRequest();
+    }
+
+    public void addResponse(String method, String path, String responseName, int responseCode){
+        dhis2Dispatcher.addResponse(method, path, responseName, responseCode);
     }
 }

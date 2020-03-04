@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.event.internal;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
 import org.hisp.dhis.android.core.event.Event;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -65,7 +65,7 @@ public class EventEndpointCallShould {
 
     @BeforeClass
     public static void setUpClass() throws IOException {
-        mockWebServer = new Dhis2MockServer();
+        mockWebServer = new Dhis2MockServer(0);
         retrofit = RetrofitFactory.fromDHIS2MockServer(mockWebServer);
     }
 

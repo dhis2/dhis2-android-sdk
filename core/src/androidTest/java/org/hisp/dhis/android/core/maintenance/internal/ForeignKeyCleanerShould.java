@@ -44,7 +44,7 @@ import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
 import org.hisp.dhis.android.core.program.ProgramRule;
@@ -92,7 +92,7 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
     public void setUp() throws IOException {
         super.setUp();
 
-        dhis2MockServer = new Dhis2MockServer();
+        dhis2MockServer = new Dhis2MockServer(0);
         ServerURLWrapper.setServerUrl(dhis2MockServer.getBaseEndpoint() + "api/");
 
         d2 = D2Factory.forDatabaseAdapter(databaseAdapter());

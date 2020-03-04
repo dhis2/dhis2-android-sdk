@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.imports.internal;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.Inject;
-import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
+import org.hisp.dhis.android.core.arch.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;

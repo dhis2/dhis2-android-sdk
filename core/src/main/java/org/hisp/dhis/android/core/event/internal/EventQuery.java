@@ -51,7 +51,7 @@ abstract class EventQuery extends BaseQuery {
     @Nullable
     abstract String lastUpdatedStartDate();
 
-    @NonNull
+    @Nullable
     abstract String eventStartDate();
 
     static Builder builder() {

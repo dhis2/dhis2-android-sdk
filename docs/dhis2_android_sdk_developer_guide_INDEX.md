@@ -2,8 +2,8 @@
 title: 'DHIS 2 Android SDK Developer Guide'
 author: 'DHIS 2'
 date:
-year: 2019
-month: December
+year: 2020
+month: March
 keywords: [DHIS2, Android]
 commit:
 version: master

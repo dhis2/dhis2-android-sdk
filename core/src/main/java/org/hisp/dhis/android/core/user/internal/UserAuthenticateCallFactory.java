@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
@@ -48,6 +47,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
+import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.hisp.dhis.android.core.user.User;
@@ -81,6 +81,7 @@ public final class UserAuthenticateCallFactory {
     private final IdentifiableObjectStore<User> userStore;
     private final WipeModule wipeModule;
     private final MultiUserDatabaseManager multiUserDatabaseManager;
+    private final GeneralSettingCall generalSettingCall;
 
     @Inject
     UserAuthenticateCallFactory(
@@ -94,7 +95,8 @@ public final class UserAuthenticateCallFactory {
             @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             @NonNull IdentifiableObjectStore<User> userStore,
             @NonNull WipeModule wipeModule,
-            @NonNull MultiUserDatabaseManager multiUserDatabaseManager) {
+            @NonNull MultiUserDatabaseManager multiUserDatabaseManager,
+            @NonNull GeneralSettingCall generalSettingCall) {
         this.databaseAdapter = databaseAdapter;
         this.apiCallExecutor = apiCallExecutor;
 
@@ -109,6 +111,7 @@ public final class UserAuthenticateCallFactory {
         this.userStore = userStore;
         this.wipeModule = wipeModule;
         this.multiUserDatabaseManager = multiUserDatabaseManager;
+        this.generalSettingCall = generalSettingCall;
     }
 
     public Single<User> logIn(final String username, final String password, final String serverUrl) {
@@ -133,8 +136,7 @@ public final class UserAuthenticateCallFactory {
         try {
             User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,
                     new UserAuthenticateCallErrorCatcher());
-            return loginOnline(parsedServerUrl, authenticatedUser, username, password,
-                    DatabaseAdapterFactory.getExperimentalEncryption());
+            return loginOnline(parsedServerUrl, authenticatedUser, username, password);
         } catch (D2Error d2Error) {
             if (d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
                     d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
@@ -149,8 +151,11 @@ public final class UserAuthenticateCallFactory {
         }
     }
 
-    private User loginOnline(HttpUrl serverUrl, User authenticatedUser, String username, String password,
-                             boolean encrypt) {
+    private User loginOnline(HttpUrl serverUrl, User authenticatedUser, String username, String password) {
+
+        credentialsSecureStore.set(Credentials.create(username, password));
+        boolean encrypt = generalSettingCall.isDatabaseEncrypted().blockingGet();
+
         multiUserDatabaseManager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl.toString(),
                 username, encrypt);
         Transaction transaction = databaseAdapter.beginNewTransaction();
@@ -158,8 +163,6 @@ public final class UserAuthenticateCallFactory {
             AuthenticatedUser authenticatedUserToStore = buildAuthenticatedUser(authenticatedUser.uid(),
                     username, password);
             authenticatedUserStore.updateOrInsertWhere(authenticatedUserToStore);
-            credentialsSecureStore.set(Credentials.create(username, password));
-
             systemInfoRepository.download().blockingAwait();
 
             handleUser(authenticatedUser);

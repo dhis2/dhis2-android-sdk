@@ -131,6 +131,16 @@ public class MultiUserDatabaseManager {
         return true;
     }
 
+    public void loadDbForTesting(String name, boolean encrypt, String user) {
+        DatabaseUserConfiguration config = DatabaseUserConfiguration.builder()
+                .databaseName(name)
+                .encrypted(encrypt)
+                .username(user)
+                .build();
+
+        databaseCreator.createOrOpenDatabase(databaseAdapter, config);
+    }
+
     interface EncryptionExtractor {
         boolean extract(DatabaseUserConfiguration userConfiguration);
     }

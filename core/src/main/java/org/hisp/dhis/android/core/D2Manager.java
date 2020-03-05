@@ -58,6 +58,7 @@ public final class D2Manager {
     private static DatabaseAdapter databaseAdapter;
     private static boolean isTestMode;
     private static SecureStore testingSecureStore;
+    private static String testingDbName, testingUser;
 
     private D2Manager() {
     }
@@ -107,8 +108,14 @@ public final class D2Manager {
             SecureStore secureStore = testingSecureStore == null ? new AndroidSecureStore(d2Config.context())
                     : testingSecureStore;
             ObjectSecureStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
-            MultiUserDatabaseManager.create(databaseAdapter, d2Config.context(), secureStore)
-                    .loadIfLogged(credentialsSecureStore.get());
+
+            if (wantToImportDBForExternalTesting()){
+                MultiUserDatabaseManager.create(databaseAdapter, d2Config.context(), secureStore)
+                        .loadDbForTesting(testingDbName, false, testingUser);
+            } else {
+                MultiUserDatabaseManager.create(databaseAdapter, d2Config.context(), secureStore)
+                        .loadIfLogged(credentialsSecureStore.get());
+            }
 
             d2 = new D2(
                     RetrofitFactory.retrofit(
@@ -125,6 +132,7 @@ public final class D2Manager {
             return d2;
         });
     }
+
 
     /**
      * Instantiates D2 with the provided configuration. This is a blocking method. If you are using RxJava,
@@ -153,6 +161,16 @@ public final class D2Manager {
     @VisibleForTesting
     static void setTestingSecureStore(SecureStore secureStore) {
         testingSecureStore = secureStore;
+    }
+
+    @VisibleForTesting
+    public static void setTestingDB(String name, String userCredential){
+        testingDbName = name;
+        testingUser = userCredential;
+    }
+
+    private static boolean wantToImportDBForExternalTesting(){
+        return testingDbName != null && testingUser != null;
     }
 
     @VisibleForTesting

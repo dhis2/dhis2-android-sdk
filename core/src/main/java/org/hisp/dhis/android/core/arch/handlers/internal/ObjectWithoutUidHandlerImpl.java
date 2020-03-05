@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.common.CoreObject;
 
 public class ObjectWithoutUidHandlerImpl<O extends CoreObject> extends HandlerBaseImpl<O> {
 
-    private final ObjectWithoutUidStore<O> store;
+    protected final ObjectWithoutUidStore<O> store;
 
     public ObjectWithoutUidHandlerImpl(ObjectWithoutUidStore<O> store) {
         this.store = store;

@@ -27,14 +27,21 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.helpers.internal.BooleanWrapper;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem;
+import org.hisp.dhis.android.core.common.CoreColumns;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -52,13 +59,12 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeR
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import dagger.Reusable;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -235,6 +241,52 @@ public final class TrackedEntityAttributeReservedValueManager {
      */
     public int blockingCount(@NonNull String attributeUid, @Nullable String organisationUnitUid) {
         return organisationUnitUid == null ? store.count(attributeUid) : store.count(attributeUid, organisationUnitUid);
+    }
+
+    /**
+     * Generate a list of reserved value summaries from the existing tracked entity attribute reserved values in the DB.
+     *
+     * @return Single with a list of the reserved value summaries
+     */
+    public Single<List<ReservedValueSummary>> getReservedValueSummaries() {
+        return Single.just(blockingGetReservedValueSummaries());
+    }
+
+    /**
+     * @see #getReservedValueSummaries()
+     *
+     * @return List of the reserved value summaries
+     */
+    public List<ReservedValueSummary> blockingGetReservedValueSummaries() {
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyNumberValue(TrackedEntityAttributeTableInfo.Columns.GENERATED, 1).build();
+        String orderByClause = OrderByClauseBuilder.orderByFromItems(
+                Collections.singletonList(RepositoryScopeOrderByItem.builder()
+                        .column(IdentifiableColumns.DISPLAY_NAME)
+                        .direction(RepositoryScope.OrderByDirection.ASC).build()),
+                CoreColumns.ID);
+        List<TrackedEntityAttribute> trackedEntityAttributes =
+                trackedEntityAttributeStore.selectWhere(whereClause, orderByClause);
+
+        List<ReservedValueSummary> reservedValueSummaries = new ArrayList<>();
+
+        for (TrackedEntityAttribute trackedEntityAttribute : trackedEntityAttributes) {
+            ReservedValueSummary.Builder builder = ReservedValueSummary.builder()
+                    .trackedEntityAttribute(trackedEntityAttribute);
+            if (isOrgunitDependent(trackedEntityAttribute.pattern())) {
+                List<OrganisationUnit> organisationUnits = getOrgUnitsLinkedToAttribute(trackedEntityAttribute.uid());
+                for (OrganisationUnit organisationUnit : organisationUnits) {
+                    builder.organisationUnit(organisationUnit)
+                            .count(blockingCount(trackedEntityAttribute.uid(), organisationUnit.uid()));
+                }
+            } else {
+                builder.count(blockingCount(trackedEntityAttribute.uid(), null));
+            }
+
+            reservedValueSummaries.add(builder.build());
+        }
+
+        return reservedValueSummaries;
     }
 
     private D2Progress increaseProgress() {

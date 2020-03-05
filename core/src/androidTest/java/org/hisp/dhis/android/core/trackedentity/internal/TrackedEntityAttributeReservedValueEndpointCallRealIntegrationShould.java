@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
+import org.hisp.dhis.android.core.trackedentity.ReservedValueSummary;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue;
 import org.junit.Before;
@@ -111,6 +112,18 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
 
         assertThat(attributeCount).isEqualTo(numberToReserve);
         assertThat(attributeAndOrgUnitCount).isEqualTo(numberToReserve);
+    }
+
+    // @Test
+    public void retrieve_the_reserved_value_summaries() {
+        login();
+        syncMetadata();
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadAllReservedValues(5);
+
+        List<ReservedValueSummary> reservedValueSummaries =
+                d2.trackedEntityModule().reservedValueManager().blockingGetReservedValueSummaries();
+
+        assertThat(reservedValueSummaries).isNotEmpty();
     }
 
     private void login() {

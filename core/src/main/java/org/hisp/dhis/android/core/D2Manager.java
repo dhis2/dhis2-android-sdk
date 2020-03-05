@@ -133,7 +133,6 @@ public final class D2Manager {
         });
     }
 
-
     /**
      * Instantiates D2 with the provided configuration. This is a blocking method. If you are using RxJava,
      * use {@link D2Manager#instantiateD2(D2Configuration)} instead.
@@ -164,7 +163,7 @@ public final class D2Manager {
     }
 
     @VisibleForTesting
-    public static void setTestingDB(String name, String userCredential){
+    public static void setDBForExternalTesting(String name, String userCredential){
         testingDbName = name;
         testingUser = userCredential;
     }

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.datavalue.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 
@@ -53,7 +52,7 @@ public final class DataValueEntityDIModule {
     @Provides
     @Reusable
     Handler<DataValue> handler(DataValueStore dataValueStore) {
-        return new ObjectWithoutUidHandlerImpl<>(dataValueStore);
+        return new DataValueHandler(dataValueStore);
     }
 
     @Provides

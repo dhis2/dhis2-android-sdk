@@ -50,7 +50,8 @@ interface DataValueService {
                                            @Query("period") String periodIds,
                                            @Query("orgUnit") String orgUnitUids,
                                            @Query("children") Boolean children,
-                                           @Query("paging") Boolean paging);
+                                           @Query("paging") Boolean paging,
+                                           @Query("includeDeleted") Boolean includeDeleted);
 
     @POST("dataValueSets")
     Call<DataValueImportSummary> postDataValues(@Body DataValueSet dataValueSet);

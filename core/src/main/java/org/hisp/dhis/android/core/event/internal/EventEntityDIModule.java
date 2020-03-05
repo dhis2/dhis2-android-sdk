@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.event.Event;
@@ -54,7 +54,7 @@ public final class EventEntityDIModule {
 
     @Provides
     @Reusable
-    public HandlerWithTransformer<Event> handler(EventHandler impl) {
+    public IdentifiableDataHandler<Event> handler(EventHandler impl) {
         return impl;
     }
 

@@ -26,21 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.sms.domain.model.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.datavalue.DataValue;
 
 import java.util.Collection;
 
-public interface DataSetCompleteRegistrationStore extends ObjectWithoutUidStore<DataSetCompleteRegistration> {
+@AutoValue
+public abstract class SMSDataValueSet {
 
-    void setState(DataSetCompleteRegistration dataSetCompleteRegistration, State newState);
+    public abstract Collection<DataValue> dataValues();
 
-    void setDeleted(DataSetCompleteRegistration dataSetCompleteRegistration);
+    public abstract Boolean completed();
 
-    boolean removeNotPresentAndSynced(Collection<String> dataSetUids,
-                                      Collection<String> periodIds,
-                                      String rootOrgunitUid);
+    public static Builder builder() {
+        return new AutoValue_SMSDataValueSet.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder dataValues(Collection<DataValue> dataValues);
+
+        public abstract Builder completed(Boolean completed);
+
+        public abstract SMSDataValueSet build();
+    }
 }

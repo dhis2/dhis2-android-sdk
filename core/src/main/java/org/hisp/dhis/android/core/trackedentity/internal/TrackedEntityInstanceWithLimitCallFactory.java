@@ -162,7 +162,8 @@ class TrackedEntityInstanceWithLimitCallFactory {
         return teiDownloadObservable.map(
                 teiList -> {
                     boolean isFullUpdate = params.program() == null;
-                    persistenceCallFactory.getCall(teiList, isFullUpdate).call();
+                    boolean overwrite = params.overwrite();
+                    persistenceCallFactory.getCall(teiList, isFullUpdate, overwrite).call();
                     programOrganisationUnitSet.addAll(
                             TrackedEntityInstanceHelper.getProgramOrganisationUnitTuple(teiList, serverDate));
                     return progressManager.increaseProgress(TrackedEntityInstance.class, false);

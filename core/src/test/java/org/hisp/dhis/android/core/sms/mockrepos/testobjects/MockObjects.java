@@ -7,6 +7,7 @@ import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance;
+import org.hisp.dhis.android.core.sms.domain.model.internal.SMSDataValueSet;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -32,6 +33,8 @@ public class MockObjects {
     public static String relationship = "Tj1ddhpeCFL";
     public static String relationshipType = "R74HPJyNLs9";
     public static String dataSetUid = "R75HPJyNLs2";
+    public static String dataSetEmptyListUid = "aUztUa3QPbQ";
+    public static Boolean isCompleted = true;
 
     public static Enrollment getTestEnrollment() {
         return Enrollment.builder()
@@ -115,7 +118,21 @@ public class MockObjects {
                 .build();
     }
 
-    public static ArrayList<DataValue> getDataValues() {
+    public static SMSDataValueSet getSMSDataValueSet() {
+        return SMSDataValueSet.builder()
+                .dataValues(getDataValues())
+                .completed(isCompleted)
+                .build();
+    }
+
+    public static SMSDataValueSet getSMSDataValueSetEmptyList() {
+        return SMSDataValueSet.builder()
+                .dataValues(Collections.emptyList())
+                .completed(isCompleted)
+                .build();
+    }
+
+    private static ArrayList<DataValue> getDataValues() {
         ArrayList<DataValue> list = new ArrayList<>();
         for (String[] val : getValues()) {
             list.add(getDataValue(val[0], val[1]));

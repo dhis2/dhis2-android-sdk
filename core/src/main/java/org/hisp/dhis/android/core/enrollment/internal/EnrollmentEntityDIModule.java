@@ -31,15 +31,15 @@ package org.hisp.dhis.android.core.enrollment.internal;
 import org.hisp.dhis.android.core.arch.cleaners.internal.DataOrphanCleanerImpl;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
-import org.hisp.dhis.android.core.note.internal.NoteChildrenAppender;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventTableInfo;
+import org.hisp.dhis.android.core.note.internal.NoteChildrenAppender;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +59,7 @@ public final class EnrollmentEntityDIModule {
 
     @Provides
     @Reusable
-    public HandlerWithTransformer<Enrollment> handler(EnrollmentHandler impl) {
+    public IdentifiableDataHandler<Enrollment> handler(EnrollmentHandler impl) {
         return impl;
     }
 

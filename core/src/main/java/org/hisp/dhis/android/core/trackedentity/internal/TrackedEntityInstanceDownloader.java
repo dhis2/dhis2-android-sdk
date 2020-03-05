@@ -98,4 +98,15 @@ public final class TrackedEntityInstanceDownloader extends BaseRepositoryImpl<Tr
         return cf.integer(QueryParams.LIMIT).eq(limit);
     }
 
+    /**
+     * If true, it overwrites existing TEIs in the device with the TEIs returned from the server. It does not modify
+     * TEIs that are not returned from the server.
+     *
+     * @param overwrite True to overwrite
+     * @return the new repository
+     */
+    public TrackedEntityInstanceDownloader overwrite(Boolean overwrite) {
+        return cf.bool(QueryParams.OVERWRITE).eq(overwrite);
+    }
+
 }

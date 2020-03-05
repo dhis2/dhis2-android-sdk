@@ -36,8 +36,8 @@ ext {
             buildToolsVersion: "28.0.3",
             minSdkVersion    : 19,
             targetSdkVersion : 28,
-            versionCode      : 200,
-            versionName      : "1.0.0"
+            versionCode      : 201,
+            versionName      : "1.0.1"
     ]
 
     libraries = [
@@ -211,6 +211,7 @@ dependencies {
     testImplementation "androidx.test:runner:${libraries.testrunner}"
 
     // Android test dependencies
+    androidTestImplementation "commons-logging:commons-logging:1.2"
     androidTestImplementation "org.mockito:mockito-core:${libraries.mockito}"
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
     androidTestImplementation "android.arch.core:core-testing:${libraries.coretesting}"

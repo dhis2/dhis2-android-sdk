@@ -28,19 +28,20 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
 
-import java.util.Collection;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-public interface DataSetCompleteRegistrationStore extends ObjectWithoutUidStore<DataSetCompleteRegistration> {
+@Module
+public final class DataSetOrganisationUnitLinkEntityDIModule {
 
-    void setState(DataSetCompleteRegistration dataSetCompleteRegistration, State newState);
-
-    void setDeleted(DataSetCompleteRegistration dataSetCompleteRegistration);
-
-    boolean removeNotPresentAndSynced(Collection<String> dataSetUids,
-                                      Collection<String> periodIds,
-                                      String rootOrgunitUid);
+    @Provides
+    @Reusable
+    LinkStore<DataSetOrganisationUnitLink> store(DatabaseAdapter databaseAdapter) {
+        return DataSetOrganisationUnitLinkStore.create(databaseAdapter);
+    }
 }

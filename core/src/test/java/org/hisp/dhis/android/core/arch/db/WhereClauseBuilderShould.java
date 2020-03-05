@@ -130,6 +130,15 @@ public class WhereClauseBuilderShould {
     }
 
     @Test
+    public void build_where_statement_for_in_subquery() {
+        WhereClauseBuilder builder = new WhereClauseBuilder();
+        String whereStatement = builder
+                .appendInSubQuery("COL1", "SELECT uid FROM table")
+                .build();
+        assertThat(whereStatement).isEqualTo("COL1 IN (SELECT uid FROM table)");
+    }
+
+    @Test
     public void build_where_statement_for_is_null_value() {
         WhereClauseBuilder builder = new WhereClauseBuilder();
         String whereStatement = builder

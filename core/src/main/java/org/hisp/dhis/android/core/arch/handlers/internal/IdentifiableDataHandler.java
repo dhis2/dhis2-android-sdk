@@ -25,22 +25,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.handlers.internal;
 
-package org.hisp.dhis.android.core.dataset.internal;
-
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
+import org.hisp.dhis.android.core.common.DeletableDataObject;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.Collection;
 
-public interface DataSetCompleteRegistrationStore extends ObjectWithoutUidStore<DataSetCompleteRegistration> {
+public interface IdentifiableDataHandler<O extends DeletableDataObject & ObjectWithUidInterface> {
 
-    void setState(DataSetCompleteRegistration dataSetCompleteRegistration, State newState);
+    void handle(O o, Boolean overwrite);
 
-    void setDeleted(DataSetCompleteRegistration dataSetCompleteRegistration);
+    void handle(O o, Transformer<O, O> transformer, Boolean overwrite);
 
-    boolean removeNotPresentAndSynced(Collection<String> dataSetUids,
-                                      Collection<String> periodIds,
-                                      String rootOrgunitUid);
+    void handleMany(Collection<O> oCollection, Boolean overwrite);
+
+    void handleMany(Collection<O> oCollection, Transformer<O, O> transformer, Boolean overwrite);
 }

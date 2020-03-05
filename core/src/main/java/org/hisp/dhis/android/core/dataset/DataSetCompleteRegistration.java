@@ -41,6 +41,7 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreBooleanColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.State;
 
@@ -70,6 +71,11 @@ public abstract class DataSetCompleteRegistration extends BaseDeletableDataObjec
     @Nullable
     @JsonProperty
     public abstract String storedBy();
+
+    @Nullable
+    @JsonProperty
+    @ColumnAdapter(IgnoreBooleanColumnAdapter.class)
+    abstract Boolean completed();
 
     @NonNull
     public static DataSetCompleteRegistration create(Cursor cursor) {
@@ -104,13 +110,20 @@ public abstract class DataSetCompleteRegistration extends BaseDeletableDataObjec
 
         public abstract Builder storedBy(@Nullable String storedBy);
 
+        abstract Builder completed(@Nullable Boolean completed);
+
         abstract DataSetCompleteRegistration autoBuild();
 
         // Auxiliary fields to access values
         abstract Boolean deleted();
+        abstract Boolean completed();
+
         public DataSetCompleteRegistration build() {
+            if (completed() == null) {
+                completed(true);
+            }
             if (deleted() == null) {
-                deleted(false);
+                deleted(!completed());
             }
             return autoBuild();
         }

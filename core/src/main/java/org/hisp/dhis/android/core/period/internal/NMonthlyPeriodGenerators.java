@@ -36,15 +36,18 @@ final class NMonthlyPeriodGenerators {
     final PeriodGenerator quarter;
     final PeriodGenerator sixMonthly;
     final PeriodGenerator sixMonthlyApril;
+    final PeriodGenerator sixMonthlyNov;
 
     NMonthlyPeriodGenerators(PeriodGenerator biMonthly,
-                                     PeriodGenerator quarter,
-                                     PeriodGenerator sixMonthly,
-                                     PeriodGenerator sixMonthlyApril) {
+                             PeriodGenerator quarter,
+                             PeriodGenerator sixMonthly,
+                             PeriodGenerator sixMonthlyApril,
+                             PeriodGenerator sixMonthlyNov) {
         this.biMonthly = biMonthly;
         this.quarter = quarter;
         this.sixMonthly = sixMonthly;
         this.sixMonthlyApril = sixMonthlyApril;
+        this.sixMonthlyNov = sixMonthlyNov;
     }
 
 
@@ -53,7 +56,7 @@ final class NMonthlyPeriodGenerators {
                 NMonthlyPeriodGeneratorFactory.biMonthly(calendar),
                 NMonthlyPeriodGeneratorFactory.quarter(calendar),
                 NMonthlyPeriodGeneratorFactory.sixMonthly(calendar),
-                NMonthlyPeriodGeneratorFactory.sixMonthlyApril(calendar)
-        );
+                NMonthlyPeriodGeneratorFactory.sixMonthlyApril(calendar),
+                NMonthlyPeriodGeneratorFactory.sixMonthlyNov(calendar));
     }
 }

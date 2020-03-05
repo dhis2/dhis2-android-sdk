@@ -272,17 +272,7 @@ public final class TrackedEntityAttributeReservedValueManager {
             // TODO use server date
             store.deleteExpired(new Date());
 
-            Integer fillUpTo;
-            if (minNumberOfValuesToHave == null) {
-                GeneralSettings generalSettings = generalSettingObjectRepository.blockingGet();
-                if (generalSettings == null || generalSettings.reservedValues() == null) {
-                    fillUpTo = FILL_UP_TO;
-                } else {
-                    fillUpTo = generalSettings.reservedValues();
-                }
-            } else {
-                fillUpTo = minNumberOfValuesToHave;
-            }
+            Integer fillUpTo = getFillUpToValue(minNumberOfValuesToHave);
 
             Integer remainingValues = organisationUnit == null ?
                     store.count(attribute) : store.count(attribute, organisationUnit.uid());
@@ -364,5 +354,18 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     private boolean isOrgunitDependent(String pattern) {
         return pattern != null && pattern.contains("ORG_UNIT_CODE");
+    }
+
+    private Integer getFillUpToValue(Integer minNumberOfValuesToHave) {
+        if (minNumberOfValuesToHave == null) {
+            GeneralSettings generalSettings = generalSettingObjectRepository.blockingGet();
+            if (generalSettings == null || generalSettings.reservedValues() == null) {
+                return FILL_UP_TO;
+            } else {
+                return generalSettings.reservedValues();
+            }
+        } else {
+            return minNumberOfValuesToHave;
+        }
     }
 }

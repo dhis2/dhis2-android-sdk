@@ -76,7 +76,7 @@ final class AggregatedDataCall {
     private final CategoryOptionComboStore categoryOptionComboStore;
     private final RxAPICallExecutor rxCallExecutor;
 
-    private final DataValueQueryFactory dataValueQueryFactory;
+    private final AggregatedDataCallBundleFactory aggregatedDataCallBundleFactory;
 
     @Inject
     AggregatedDataCall(@NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
@@ -88,7 +88,7 @@ final class AggregatedDataCall {
                        @NonNull UserOrganisationUnitLinkStore organisationUnitStore,
                        @NonNull CategoryOptionComboStore categoryOptionComboStore,
                        @NonNull RxAPICallExecutor rxCallExecutor,
-                       @NonNull DataValueQueryFactory dataValueQueryFactory) {
+                       @NonNull AggregatedDataCallBundleFactory aggregatedDataCallBundleFactory) {
         this.systemInfoRepository = systemInfoRepository;
         this.dhisVersionManager = dhisVersionManager;
         this.dataValueCallFactory = dataValueCallFactory;
@@ -98,7 +98,7 @@ final class AggregatedDataCall {
         this.categoryOptionComboStore = categoryOptionComboStore;
         this.rxCallExecutor = rxCallExecutor;
 
-        this.dataValueQueryFactory = dataValueQueryFactory;
+        this.aggregatedDataCallBundleFactory = aggregatedDataCallBundleFactory;
     }
 
     Observable<D2Progress> download() {
@@ -113,7 +113,7 @@ final class AggregatedDataCall {
     private Observable<D2Progress> selectDataSetsAndDownload(D2ProgressManager progressManager,
                                                              D2Progress systemInfoProgress) {
         return Observable
-                .fromIterable(dataValueQueryFactory.getDataValueQueries())
+                .fromIterable(aggregatedDataCallBundleFactory.getDataValueQueries())
                 .flatMap(bundle ->
                         downloadInternal(bundle, progressManager, systemInfoProgress)
                 );

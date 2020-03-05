@@ -79,10 +79,7 @@ class AggregatedDataCallBundleFactory {
                 organisationUnitStore.queryRootCaptureOrganisationUnitUids());
 
         for (PeriodType periodType : PeriodType.values()) {
-            String periodTypeClause = new WhereClauseBuilder()
-                    .appendKeyStringValue(DataSetTableInfo.Columns.PERIOD_TYPE, periodType.name()).build();
-
-            List<DataSet> dataSets = dataSetStore.selectWhere(periodTypeClause);
+            List<DataSet> dataSets = getDataSetsInPeriodType(periodType);
             if (dataSets.isEmpty()) {
                 continue;
             }
@@ -157,6 +154,13 @@ class AggregatedDataCallBundleFactory {
             periodIds.add(period.periodId());
         }
         return periodIds;
+    }
+
+    private List<DataSet> getDataSetsInPeriodType(PeriodType periodType) {
+        String periodTypeClause = new WhereClauseBuilder()
+                .appendKeyStringValue(DataSetTableInfo.Columns.PERIOD_TYPE, periodType.name()).build();
+
+        return dataSetStore.selectWhere(periodTypeClause);
     }
 
     static class PastFuturePair {

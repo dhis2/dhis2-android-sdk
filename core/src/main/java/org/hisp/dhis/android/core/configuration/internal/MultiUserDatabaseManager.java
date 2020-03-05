@@ -96,27 +96,39 @@ public class MultiUserDatabaseManager {
 
     public void loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(String serverUrl, String username,
                                                                            boolean encrypt) {
-        boolean existing = loadExistingChangingEncryptionIfRequired(serverUrl, username, userConfiguration -> encrypt);
+        boolean existing = loadExistingChangingEncryptionIfRequired(serverUrl, username, userConfiguration -> encrypt,
+                true);
         if (!existing) {
             DatabaseUserConfiguration userConfiguration = addNewConfigurationInternal(serverUrl, username, encrypt);
             databaseCreator.createOrOpenDatabase(databaseAdapter, userConfiguration);
         }
     }
 
+    public void changeEncryptionIfRequired(Credentials credentials, boolean encrypt) {
+        DatabasesConfiguration databasesConfiguration = databaseConfigurationSecureStore.get();
+        loadExistingChangingEncryptionIfRequired(databasesConfiguration.loggedServerUrl(),
+                credentials.username(), userConfiguration -> encrypt, false);
+    }
+
     public boolean loadExistingKeepingEncryption(String serverUrl, String username) {
-        return loadExistingChangingEncryptionIfRequired(serverUrl, username, DatabaseUserConfiguration::encrypted);
+        return loadExistingChangingEncryptionIfRequired(serverUrl, username, DatabaseUserConfiguration::encrypted,
+                true);
     }
 
     private boolean loadExistingChangingEncryptionIfRequired(String serverUrl, String username,
-                                                             EncryptionExtractor encryptionExtractor) {
+                                                             EncryptionExtractor encryptionExtractor,
+                                                             boolean alsoOpenWhenEncryptionDoesntChange) {
         DatabaseUserConfiguration existingUserConfiguration = getUserConfiguration(serverUrl, username);
         if (existingUserConfiguration == null) {
             return false;
         }
 
         boolean encrypt = encryptionExtractor.extract(existingUserConfiguration);
-        DatabaseUserConfiguration updatedUserConfiguration = addNewConfigurationInternal(serverUrl, username, encrypt);
-        databaseCreator.createOrOpenDatabase(databaseAdapter, updatedUserConfiguration);
+        if (encrypt != existingUserConfiguration.encrypted() || alsoOpenWhenEncryptionDoesntChange) {
+            DatabaseUserConfiguration updatedUserConfiguration = addNewConfigurationInternal(serverUrl, username,
+                    encrypt);
+            databaseCreator.createOrOpenDatabase(databaseAdapter, updatedUserConfiguration);
+        }
 
         changeEncryptionIfRequired(existingUserConfiguration, encrypt);
         return true;

@@ -84,8 +84,17 @@ public class MultiUserDatabaseManager {
     }
 
     public void loadIfLogged(Credentials credentials) {
-        DatabasesConfiguration databaseConfiguration = migration.apply();
 
+   /*     DatabaseUserConfiguration config = DatabaseUserConfiguration.builder()
+                .databaseName("127-0-0-1-8080_android_unencrypted.db")
+                .encrypted(false)
+                .username("android")
+                .build();
+
+        databaseCreator.createOrOpenDatabase(databaseAdapter, config); */
+
+
+      DatabasesConfiguration databaseConfiguration = migration.apply();
         if (databaseConfiguration != null && credentials != null) {
             ServerURLWrapper.setServerUrl(databaseConfiguration.loggedServerUrl());
             DatabaseUserConfiguration userConfiguration = configurationHelper.getLoggedUserConfiguration(

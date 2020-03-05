@@ -45,14 +45,17 @@ import io.reactivex.Completable;
 public final class LogOutCallFactory {
 
     private final DatabaseAdapter databaseAdapter;
+    private final DatabaseAdapterFactory databaseAdapterFactory;
 
     @NonNull
     private final ObjectSecureStore<Credentials> credentialsSecureStore;
 
     @Inject
     LogOutCallFactory(@NonNull DatabaseAdapter databaseAdapter,
+                      @NonNull DatabaseAdapterFactory databaseAdapterFactory,
                       @NonNull ObjectSecureStore<Credentials> credentialsSecureStore) {
         this.databaseAdapter = databaseAdapter;
+        this.databaseAdapterFactory = databaseAdapterFactory;
         this.credentialsSecureStore = credentialsSecureStore;
     }
 
@@ -68,7 +71,7 @@ public final class LogOutCallFactory {
                         .build();
             }
 
-            DatabaseAdapterFactory.removeDatabaseAdapter(databaseAdapter);
+            databaseAdapterFactory.removeDatabaseAdapter(databaseAdapter);
 
             this.credentialsSecureStore.remove();
             emitter.onComplete();

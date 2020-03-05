@@ -36,7 +36,6 @@ import androidx.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseCreator;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
@@ -54,7 +53,7 @@ public class MultiUserDatabaseManager {
     private final Context context;
     private final DatabaseCopy databaseCopy;
     private final DatabaseConfigurationMigration migration;
-    private final DatabaseCreator databaseCreator;
+    private final DatabaseAdapterFactory databaseAdapterFactory;
 
     @Inject
     MultiUserDatabaseManager(
@@ -64,23 +63,24 @@ public class MultiUserDatabaseManager {
             @NonNull Context context,
             @NonNull DatabaseCopy databaseCopy,
             @NonNull DatabaseConfigurationMigration migration,
-            @NonNull DatabaseCreator databaseCreator) {
+            @NonNull DatabaseAdapterFactory databaseAdapterFactory) {
         this.databaseAdapter = databaseAdapter;
         this.databaseConfigurationSecureStore = databaseConfigurationSecureStore;
         this.configurationHelper = configurationHelper;
         this.context = context;
         this.databaseCopy = databaseCopy;
         this.migration = migration;
-        this.databaseCreator = databaseCreator;
+        this.databaseAdapterFactory = databaseAdapterFactory;
     }
 
     public static MultiUserDatabaseManager create(DatabaseAdapter databaseAdapter, Context context,
-                                                  SecureStore secureStore) {
+                                                  SecureStore secureStore,
+                                                  DatabaseAdapterFactory databaseAdapterFactory) {
         DatabaseConfigurationHelper configHelper = new DatabaseConfigurationHelper(new DatabaseNameGenerator());
         return new MultiUserDatabaseManager(databaseAdapter,
                 DatabaseConfigurationSecureStore.get(secureStore), configHelper, context,
-                new DatabaseCopy(), DatabaseConfigurationMigration.create(context, secureStore),
-                new DatabaseCreator(context));
+                new DatabaseCopy(), DatabaseConfigurationMigration.create(context, secureStore, databaseAdapterFactory),
+                databaseAdapterFactory);
     }
 
     public void loadIfLogged(Credentials credentials) {
@@ -90,7 +90,7 @@ public class MultiUserDatabaseManager {
             ServerURLWrapper.setServerUrl(databaseConfiguration.loggedServerUrl());
             DatabaseUserConfiguration userConfiguration = configurationHelper.getLoggedUserConfiguration(
                     databaseConfiguration, credentials.username());
-            databaseCreator.createOrOpenDatabase(databaseAdapter, userConfiguration);
+            databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration);
         }
     }
 
@@ -100,7 +100,7 @@ public class MultiUserDatabaseManager {
                 true);
         if (!existing) {
             DatabaseUserConfiguration userConfiguration = addNewConfigurationInternal(serverUrl, username, encrypt);
-            databaseCreator.createOrOpenDatabase(databaseAdapter, userConfiguration);
+            databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration);
         }
     }
 
@@ -127,7 +127,7 @@ public class MultiUserDatabaseManager {
         if (encrypt != existingUserConfiguration.encrypted() || alsoOpenWhenEncryptionDoesntChange) {
             DatabaseUserConfiguration updatedUserConfiguration = addNewConfigurationInternal(serverUrl, username,
                     encrypt);
-            databaseCreator.createOrOpenDatabase(databaseAdapter, updatedUserConfiguration);
+            databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, updatedUserConfiguration);
         }
 
         changeEncryptionIfRequired(existingUserConfiguration, encrypt);
@@ -142,8 +142,8 @@ public class MultiUserDatabaseManager {
         if (encrypt != existingUserConfiguration.encrypted()) {
             Log.w(MultiUserDatabaseManager.class.getName(),
                     "Encryption value changed for " + existingUserConfiguration.username() +  ": " + encrypt);
-            DatabaseAdapter auxOldParentDatabaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
-            databaseCreator.createOrOpenDatabase(auxOldParentDatabaseAdapter, existingUserConfiguration);
+            DatabaseAdapter auxOldParentDatabaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
+            databaseAdapterFactory.createOrOpenDatabase(auxOldParentDatabaseAdapter, existingUserConfiguration);
             databaseCopy.copy(auxOldParentDatabaseAdapter, databaseAdapter);
             context.deleteDatabase(existingUserConfiguration.databaseName());
         }

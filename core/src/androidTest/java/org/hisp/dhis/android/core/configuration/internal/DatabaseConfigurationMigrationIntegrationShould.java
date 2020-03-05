@@ -61,6 +61,8 @@ public class DatabaseConfigurationMigrationIntegrationShould {
     private final DatabaseConfigurationTransformer transformer = new DatabaseConfigurationTransformer();
     private final DatabaseNameGenerator nameGenerator = new DatabaseNameGenerator();
     private final DatabaseRenamer renamer = new DatabaseRenamer(context);
+    private final DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(context,
+            new InMemorySecureStore());
 
     private final String URL_STR = "https://server.org/";
     private final String USERNAME = "usnm";
@@ -84,13 +86,13 @@ public class DatabaseConfigurationMigrationIntegrationShould {
         oldConfigurationStore = new ConfigurationSecureStoreImpl(secureStore);
         newConfigurationStore = DatabaseConfigurationSecureStore.get(secureStore);
         migration = new DatabaseConfigurationMigration(context, oldConfigurationStore, newConfigurationStore,
-                transformer, nameGenerator, renamer);
+                transformer, nameGenerator, renamer, databaseAdapterFactory);
     }
 
     @Test
     public void delete_empty_database() {
-        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, context, false);
+        DatabaseAdapter databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
+        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, false);
         oldConfigurationStore.set(Configuration.forServerUrl(HttpUrl.parse(URL_STR)));
 
         assertThat(Arrays.asList(context.databaseList()).contains(OLD_DBNAME)).isTrue();
@@ -100,8 +102,8 @@ public class DatabaseConfigurationMigrationIntegrationShould {
 
     @Test
     public void rename_database_with_credentials() {
-        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, context, false);
+        DatabaseAdapter databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
+        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, false);
         oldConfigurationStore.set(Configuration.forServerUrl(HttpUrl.parse(URL_STR)));
         setCredentials(databaseAdapter);
 
@@ -110,7 +112,7 @@ public class DatabaseConfigurationMigrationIntegrationShould {
         assertThat(Arrays.asList(context.databaseList()).contains(OLD_DBNAME)).isFalse();
         assertThat(Arrays.asList(context.databaseList()).contains(newName)).isTrue();
 
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, newName, context, false);
+        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, newName, false);
         UserCredentialsStore credentialsStore = UserCredentialsStoreImpl.create(databaseAdapter);
         assertThat(credentialsStore.selectFirst()).isEqualTo(credentials);
     }
@@ -130,8 +132,8 @@ public class DatabaseConfigurationMigrationIntegrationShould {
 
     @Test
     public void return_empty_new_configuration_if_existing_empty_database() {
-        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, context, false);
+        DatabaseAdapter databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
+        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, false);
         oldConfigurationStore.set(Configuration.forServerUrl(HttpUrl.parse(URL_STR)));
         assertThat(migration.apply()).isNull();
     }

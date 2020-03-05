@@ -41,11 +41,9 @@ import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreIm
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.annotations.Nullable;
 
 /**
  * Helper class that offers static methods to setup and initialize the D2 instance. Also, it ensures that D2 is a
@@ -92,9 +90,14 @@ public final class D2Manager {
      */
     public static Single<D2> instantiateD2(@NonNull D2Configuration d2Config) {
         return Single.fromCallable(() -> {
-            setUp(d2Config);
-
             long startTime = System.currentTimeMillis();
+            SecureStore secureStore = testingSecureStore == null ? new AndroidSecureStore(d2Config.context())
+                    : testingSecureStore;
+            DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(d2Config.context(),
+                    secureStore);
+
+            d2Configuration = D2ConfigurationValidator.validateAndSetDefaultValues(d2Config);
+            databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
 
             if (isTestMode) {
                 NotClosedObjectsDetector.enableNotClosedObjectsDetection();
@@ -104,10 +107,8 @@ public final class D2Manager {
                 SSLContextInitializer.initializeSSLContext(d2Configuration.context());
             }
 
-            SecureStore secureStore = testingSecureStore == null ? new AndroidSecureStore(d2Config.context())
-                    : testingSecureStore;
             ObjectSecureStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
-            MultiUserDatabaseManager.create(databaseAdapter, d2Config.context(), secureStore)
+            MultiUserDatabaseManager.create(databaseAdapter, d2Config.context(), secureStore, databaseAdapterFactory)
                     .loadIfLogged(credentialsSecureStore.get());
 
             d2 = new D2(
@@ -134,15 +135,6 @@ public final class D2Manager {
      */
     public static D2 blockingInstantiateD2(@NonNull D2Configuration d2Config) {
         return instantiateD2(d2Config).blockingGet();
-    }
-
-    private static void setUp(@Nullable D2Configuration d2Config) throws D2Error {
-        long startTime = System.currentTimeMillis();
-        d2Configuration = D2ConfigurationValidator.validateAndSetDefaultValues(d2Config);
-        databaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
-
-        long setUpTime = System.currentTimeMillis() - startTime;
-        Log.i(D2Manager.class.getName(), "Set up took " + setUpTime + "ms");
     }
 
     @VisibleForTesting

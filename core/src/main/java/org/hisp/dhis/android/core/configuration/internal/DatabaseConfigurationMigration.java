@@ -48,19 +48,22 @@ class DatabaseConfigurationMigration {
     private final DatabaseConfigurationTransformer transformer;
     private final DatabaseNameGenerator nameGenerator;
     private final DatabaseRenamer renamer;
+    private final DatabaseAdapterFactory databaseAdapterFactory;
 
     DatabaseConfigurationMigration(Context context,
                                    ObjectSecureStore<Configuration> oldConfigurationStore,
                                    ObjectSecureStore<DatabasesConfiguration> newConfigurationStore,
                                    DatabaseConfigurationTransformer transformer,
                                    DatabaseNameGenerator nameGenerator,
-                                   DatabaseRenamer renamer) {
+                                   DatabaseRenamer renamer,
+                                   DatabaseAdapterFactory databaseAdapterFactory) {
         this.context = context;
         this.oldConfigurationStore = oldConfigurationStore;
         this.newConfigurationStore = newConfigurationStore;
         this.transformer = transformer;
         this.nameGenerator = nameGenerator;
         this.renamer = renamer;
+        this.databaseAdapterFactory = databaseAdapterFactory;
     }
 
     DatabasesConfiguration apply() {
@@ -69,8 +72,8 @@ class DatabaseConfigurationMigration {
             return newConfigurationStore.get();
         } else {
             oldConfigurationStore.remove();
-            DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
-            DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, context, false);
+            DatabaseAdapter databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
+            databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, false);
             UserCredentialsStore userCredentialsStore = UserCredentialsStoreImpl.create(databaseAdapter);
             UserCredentials credentials = userCredentialsStore.selectFirst();
             String username = credentials == null ? null : credentials.username();
@@ -91,14 +94,15 @@ class DatabaseConfigurationMigration {
         }
     }
 
-    static DatabaseConfigurationMigration create(Context context, SecureStore secureStore) {
+    static DatabaseConfigurationMigration create(Context context, SecureStore secureStore,
+                                                 DatabaseAdapterFactory databaseAdapterFactory) {
         return new DatabaseConfigurationMigration(
                 context,
                 new ConfigurationSecureStoreImpl(secureStore),
                 DatabaseConfigurationSecureStore.get(secureStore),
                 new DatabaseConfigurationTransformer(),
                 new DatabaseNameGenerator(),
-                new DatabaseRenamer(context)
-        );
+                new DatabaseRenamer(context),
+                databaseAdapterFactory);
     }
 }

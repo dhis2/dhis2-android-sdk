@@ -41,9 +41,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 import okhttp3.mockwebserver.RecordedRequest;
@@ -51,8 +49,6 @@ import retrofit2.Retrofit;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
 
 public class EventEndpointCallShould {
 
@@ -80,12 +76,6 @@ public class EventEndpointCallShould {
     }
 
     @Test
-    public void create_event_call_if_uids_size_does_not_exceeds_the_limit() {
-        Callable<List<Event>> eventEndpointCall = givenAEventCallByUIds(64);
-        assertThat(eventEndpointCall, is(notNullValue()));
-    }
-
-    @Test
     public void realize_request_with_page_filters_when_included_in_query() throws Exception {
         Callable<List<Event>> eventEndpointCall = givenAEventCallByPagination(2, 32);
 
@@ -110,20 +100,6 @@ public class EventEndpointCallShould {
 
         assertThat(request.getPath(), containsString("orgUnit=OU"));
         assertThat(request.getPath(), containsString("program=P"));
-    }
-
-    private Callable<List<Event>> givenAEventCallByUIds(int numUIds) {
-        Set<String> uIds = new HashSet<>();
-
-        for (int i = 0; i < numUIds; i++) {
-            uIds.add("uid" + i);
-        }
-
-        EventQuery eventQuery = EventQuery.builder()
-                .uids(uIds)
-                .build();
-
-        return new EventEndpointCallFactory(retrofit.create(EventService.class), APICallExecutorImpl.create(databaseAdapter)).getCall(eventQuery);
     }
 
     private Callable<List<Event>> givenAEventCallByPagination(int page, int pageCount) {

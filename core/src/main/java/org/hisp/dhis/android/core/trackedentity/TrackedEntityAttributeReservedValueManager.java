@@ -44,6 +44,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
+import org.hisp.dhis.android.core.settings.GeneralSettingObjectRepository;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueQuery;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStoreInterface;
@@ -66,8 +68,9 @@ import io.reactivex.Single;
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class TrackedEntityAttributeReservedValueManager {
 
-    private static final Integer MIN_TO_TRY_FILL = 50;
     private static final Integer FILL_UP_TO = 100;
+    private static final Double FACTOR_TO_REFILL = 0.5;
+
 
     private final TrackedEntityAttributeReservedValueStoreInterface store;
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
@@ -75,6 +78,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     private final IdentifiableObjectStore<ProgramTrackedEntityAttribute> programTrackedEntityAttributeStore;
     private final LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+    private final GeneralSettingObjectRepository generalSettingObjectRepository;
     private final D2CallExecutor executor;
     private final SystemInfoCall systemInfoCall;
     private final QueryCallFactory<TrackedEntityAttributeReservedValue,
@@ -84,24 +88,26 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     @Inject
     TrackedEntityAttributeReservedValueManager(
-            D2CallExecutor executor,
-            SystemInfoCall systemInfoCall,
             TrackedEntityAttributeReservedValueStoreInterface store,
             IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
             IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore,
             IdentifiableObjectStore<ProgramTrackedEntityAttribute> programTrackedEntityAttributeStore,
             LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore,
             UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
+            GeneralSettingObjectRepository generalSettingObjectRepository,
+            D2CallExecutor executor,
+            SystemInfoCall systemInfoCall,
             QueryCallFactory<TrackedEntityAttributeReservedValue,
                     TrackedEntityAttributeReservedValueQuery> reservedValueQueryCallFactory) {
-        this.executor = executor;
-        this.systemInfoCall = systemInfoCall;
         this.store = store;
         this.organisationUnitStore = organisationUnitStore;
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
         this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
         this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
+        this.generalSettingObjectRepository = generalSettingObjectRepository;
+        this.executor = executor;
+        this.systemInfoCall = systemInfoCall;
         this.reservedValueQueryCallFactory = reservedValueQueryCallFactory;
     }
 
@@ -118,7 +124,7 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     /**
      * Get a reserved value and remove it from database. If the number of available values is below a threshold
-     * (default {@link #MIN_TO_TRY_FILL}) it tries to download before returning a value.
+     * (default {@link #FILL_UP_TO} * {@link #FACTOR_TO_REFILL}) it tries to download before returning a value.
      *
      * @param attributeUid          Attribute uid
      * @param organisationUnitUid   Organisation unit uid
@@ -266,15 +272,17 @@ public final class TrackedEntityAttributeReservedValueManager {
             // TODO use server date
             store.deleteExpired(new Date());
 
+            Integer fillUpTo = getFillUpToValue(minNumberOfValuesToHave);
+
             Integer remainingValues = organisationUnit == null ?
                     store.count(attribute) : store.count(attribute, organisationUnit.uid());
 
+            // If number of values is explicitly specified, we use that value as threshold.
             Integer minNumberToTryFill = minNumberOfValuesToHave == null ?
-                    MIN_TO_TRY_FILL : minNumberOfValuesToHave;
+                    (int) (fillUpTo * FACTOR_TO_REFILL) : minNumberOfValuesToHave;
 
             if (remainingValues < minNumberToTryFill) {
-                Integer numberToReserve =
-                        (minNumberOfValuesToHave == null ? FILL_UP_TO : minNumberOfValuesToHave) - remainingValues;
+                Integer numberToReserve = fillUpTo - remainingValues;
 
                 return downloadValues(attribute, organisationUnit, numberToReserve, systemInfoDownloaded, storeError);
             } else {
@@ -346,5 +354,18 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     private boolean isOrgunitDependent(String pattern) {
         return pattern != null && pattern.contains("ORG_UNIT_CODE");
+    }
+
+    private Integer getFillUpToValue(Integer minNumberOfValuesToHave) {
+        if (minNumberOfValuesToHave == null) {
+            GeneralSettings generalSettings = generalSettingObjectRepository.blockingGet();
+            if (generalSettings == null || generalSettings.reservedValues() == null) {
+                return FILL_UP_TO;
+            } else {
+                return generalSettings.reservedValues();
+            }
+        } else {
+            return minNumberOfValuesToHave;
+        }
     }
 }

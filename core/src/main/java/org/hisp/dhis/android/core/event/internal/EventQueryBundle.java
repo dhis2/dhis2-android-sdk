@@ -26,42 +26,57 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.event.internal;
 
-public enum PeriodType {
-    Daily(59, 1),
-    Weekly(12, 1),
-    WeeklyWednesday(12, 1),
-    WeeklyThursday(12, 1),
-    WeeklySaturday(12, 1),
-    WeeklySunday(12, 1),
-    BiWeekly(12, 1),
-    Monthly(11, 1),
-    BiMonthly(5, 1),
-    Quarterly(4, 1),
-    SixMonthly(4, 1),
-    SixMonthlyApril(4, 1),
-    SixMonthlyNov(4, 1),
-    Yearly(4, 1),
-    FinancialApril(4, 1),
-    FinancialJuly(4, 1),
-    FinancialOct(4, 1),
-    FinancialNov(4, 1);
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-    private Integer defaultPastPeriods;
+import com.google.auto.value.AutoValue;
 
-    private Integer defaultFuturePeriods;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
-    PeriodType(Integer defaultPastPeriods, Integer defaultFuturePeriods) {
-        this.defaultPastPeriods = defaultPastPeriods;
-        this.defaultFuturePeriods = defaultFuturePeriods;
+import java.util.List;
+
+@AutoValue
+abstract class EventQueryBundle {
+
+    @NonNull
+    abstract List<String> orgUnitList();
+
+    @NonNull
+    abstract List<String> programList();
+
+    @NonNull
+    abstract OrganisationUnitMode ouMode();
+
+    @Nullable
+    abstract String lastUpdatedStartDate();
+
+    @Nullable
+    abstract String eventStartDate();
+
+    @NonNull
+    abstract Integer limit();
+
+    static Builder builder() {
+        return new AutoValue_EventQueryBundle.Builder()
+                .ouMode(OrganisationUnitMode.SELECTED);
     }
 
-    public Integer getDefaultPastPeriods() {
-        return this.defaultPastPeriods;
-    }
+    @AutoValue.Builder
+    abstract static class Builder {
+        abstract Builder orgUnitList(List<String> orgUnitList);
 
-    public Integer getDefaultFuturePeriods() {
-        return this.defaultFuturePeriods;
+        abstract Builder programList(List<String> programList);
+
+        abstract Builder ouMode(OrganisationUnitMode ouMode);
+
+        abstract Builder lastUpdatedStartDate(String lastUpdatedStartDate);
+
+        abstract Builder eventStartDate(String eventStartDate);
+
+        abstract Builder limit(Integer limit);
+
+        abstract EventQueryBundle build();
     }
 }

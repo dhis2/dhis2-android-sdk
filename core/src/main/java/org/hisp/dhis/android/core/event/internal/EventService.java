@@ -64,7 +64,6 @@ interface EventService {
             @Query(ORG_UNIT) String orgUnit,
             @Query(OU_MODE) String orgUnitMode,
             @Query(PROGRAM) String program,
-            @Query(TRACKED_ENTITY_INSTANCE) String trackedEntityInstance,
             @Query(FIELDS) @Which Fields<Event> fields,
             @Query(PAGING) Boolean paging,
             @Query(PAGE) int page,

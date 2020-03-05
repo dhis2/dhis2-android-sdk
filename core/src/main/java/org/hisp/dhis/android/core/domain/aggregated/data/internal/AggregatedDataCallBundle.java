@@ -26,42 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
-public enum PeriodType {
-    Daily(59, 1),
-    Weekly(12, 1),
-    WeeklyWednesday(12, 1),
-    WeeklyThursday(12, 1),
-    WeeklySaturday(12, 1),
-    WeeklySunday(12, 1),
-    BiWeekly(12, 1),
-    Monthly(11, 1),
-    BiMonthly(5, 1),
-    Quarterly(4, 1),
-    SixMonthly(4, 1),
-    SixMonthlyApril(4, 1),
-    SixMonthlyNov(4, 1),
-    Yearly(4, 1),
-    FinancialApril(4, 1),
-    FinancialJuly(4, 1),
-    FinancialOct(4, 1),
-    FinancialNov(4, 1);
+import com.google.auto.value.AutoValue;
 
-    private Integer defaultPastPeriods;
+import org.hisp.dhis.android.core.dataset.DataSet;
 
-    private Integer defaultFuturePeriods;
+import java.util.Collection;
 
-    PeriodType(Integer defaultPastPeriods, Integer defaultFuturePeriods) {
-        this.defaultPastPeriods = defaultPastPeriods;
-        this.defaultFuturePeriods = defaultFuturePeriods;
+@AutoValue
+abstract class AggregatedDataCallBundle {
+    abstract Collection<DataSet> dataSets();
+
+    abstract Collection<String> periodIds();
+
+    abstract Collection<String> orgUnitUids();
+
+    static Builder builder() {
+        return new AutoValue_AggregatedDataCallBundle.Builder();
     }
 
-    public Integer getDefaultPastPeriods() {
-        return this.defaultPastPeriods;
-    }
+    @AutoValue.Builder
+    abstract static class Builder {
+        abstract Builder dataSets(Collection<DataSet> dataSets);
 
-    public Integer getDefaultFuturePeriods() {
-        return this.defaultFuturePeriods;
+        abstract Builder periodIds(Collection<String> periodIds);
+
+        abstract Builder orgUnitUids(Collection<String> orgUnitUids);
+
+        abstract AggregatedDataCallBundle build();
     }
 }

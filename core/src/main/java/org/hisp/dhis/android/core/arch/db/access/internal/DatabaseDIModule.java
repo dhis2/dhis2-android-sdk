@@ -28,14 +28,10 @@
 
 package org.hisp.dhis.android.core.arch.db.access.internal;
 
-import android.content.Context;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 
 import dagger.Module;
 import dagger.Provides;
-import dagger.Reusable;
 
 @Module
 public class DatabaseDIModule {
@@ -49,11 +45,5 @@ public class DatabaseDIModule {
     @Provides
     DatabaseAdapter databaseAdapter() {
         return databaseAdapter;
-    }
-
-    @Provides
-    @Reusable
-    DatabaseAdapterFactory databaseAdapterFactory(Context context, SecureStore secureStore) {
-        return DatabaseAdapterFactory.create(context, secureStore);
     }
 }

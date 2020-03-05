@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
- *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,42 +25,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal;
+package org.hisp.dhis.android.core.arch.db.access.internal;
 
-import androidx.annotation.NonNull;
+import java.nio.charset.StandardCharsets;
+import java.util.Random;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import javax.inject.Inject;
 
-import java.util.HashMap;
-import java.util.Map;
+import dagger.Reusable;
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_DatabasesEncryptionPasswords.Builder.class)
-public abstract class DatabasesEncryptionPasswords {
+@Reusable
+class DatabaseEncryptionPasswordGenerator {
 
-    @JsonProperty()
-    @NonNull
-    public abstract Map<String, String> passwords();
-
-    public static Builder builder() {
-        return new AutoValue_DatabasesEncryptionPasswords.Builder();
+    @Inject
+    DatabaseEncryptionPasswordGenerator() {
     }
 
-    public abstract Builder toBuilder();
-
-    public static DatabasesEncryptionPasswords empty() {
-        return DatabasesEncryptionPasswords.builder().passwords(new HashMap<>()).build();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-
-        public abstract Builder passwords(Map<String, String> passwords);
-
-        public abstract DatabasesEncryptionPasswords build();
+    String generate() {
+        int PASSWORD_LENGTH = 32;
+        byte[] array = new byte[PASSWORD_LENGTH];
+        new Random().nextBytes(array);
+        return new String(array, StandardCharsets.UTF_8);
     }
 }

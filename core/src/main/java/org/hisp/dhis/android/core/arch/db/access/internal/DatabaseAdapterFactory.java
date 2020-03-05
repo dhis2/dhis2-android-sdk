@@ -41,9 +41,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DatabaseAdapterFactory {
+import javax.inject.Inject;
 
-    private static String ENCRYPTION_PASSWORD = "dhis-password";
+import dagger.Reusable;
+
+@Reusable
+public class DatabaseAdapterFactory {
 
     private static Map<String, UnencryptedDatabaseOpenHelper> unencryptedOpenHelpers = new HashMap<>();
     private static Map<String, EncryptedDatabaseOpenHelper> encryptedOpenHelpers = new HashMap<>();
@@ -51,14 +54,20 @@ public class DatabaseAdapterFactory {
 
     private final Context context;
     private final ObjectSecureStore<DatabasesEncryptionPasswords> passwordsStore;
+    private final DatabaseEncryptionPasswordGenerator passwordGenerator;
 
-    private DatabaseAdapterFactory(Context context, ObjectSecureStore<DatabasesEncryptionPasswords> passwordsStore) {
+    @Inject
+    DatabaseAdapterFactory(Context context,
+                           ObjectSecureStore<DatabasesEncryptionPasswords> passwordsStore,
+                           DatabaseEncryptionPasswordGenerator passwordGenerator) {
         this.context = context;
         this.passwordsStore = passwordsStore;
+        this.passwordGenerator = passwordGenerator;
     }
 
     public static DatabaseAdapterFactory create(Context context, SecureStore secureStore) {
-        return new DatabaseAdapterFactory(context, DatabaseEncryptionPasswordsSecureStore.get(secureStore));
+        return new DatabaseAdapterFactory(context, DatabaseEncryptionPasswordsSecureStore.get(secureStore),
+                new DatabaseEncryptionPasswordGenerator());
     }
 
     public DatabaseAdapter newParentDatabaseAdapter() {
@@ -91,12 +100,25 @@ public class DatabaseAdapterFactory {
         if (encrypt) {
             EncryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, encryptedOpenHelpers,
                     v -> new EncryptedDatabaseOpenHelper(context, databaseName, version));
-            return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(ENCRYPTION_PASSWORD));
+            String password = getEncryptionPassword(databaseName);
+            return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(password));
         } else {
             UnencryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, unencryptedOpenHelpers,
                     v -> new UnencryptedDatabaseOpenHelper(context, databaseName, version));
             return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
         }
+    }
+
+    private String getEncryptionPassword(String databaseName) {
+        DatabasesEncryptionPasswords passwordsInStore = passwordsStore.get();
+        DatabasesEncryptionPasswords passwords = passwordsInStore == null ? DatabasesEncryptionPasswords.empty()
+                : passwordsInStore;
+        if (!passwords.passwords().containsKey(databaseName)) {
+            passwords.passwords().put(databaseName, passwordGenerator.generate());
+            passwordsStore.set(passwords);
+        }
+
+        return passwords.passwords().get(databaseName);
     }
 
     private interface Function<I, O> {

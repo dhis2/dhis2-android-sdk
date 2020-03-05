@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.Reusable;
 
 @Module
 public class DatabaseDIModule {
@@ -45,5 +46,11 @@ public class DatabaseDIModule {
     @Provides
     DatabaseAdapter databaseAdapter() {
         return databaseAdapter;
+    }
+
+    @Provides
+    @Reusable
+    DatabaseEncryptionPasswordGenerator passwordGenerator() {
+        return new DatabaseEncryptionPasswordGenerator();
     }
 }

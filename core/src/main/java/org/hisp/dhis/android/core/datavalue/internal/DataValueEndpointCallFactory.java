@@ -75,7 +75,8 @@ final class DataValueEndpointCallFactory extends QueryCallFactoryImpl<DataValue,
                         commaSeparatedCollectionValues(query.periodIds()),
                         commaSeparatedCollectionValues(query.orgUnitUids()),
                         Boolean.TRUE,
-                        Boolean.FALSE);
+                        Boolean.FALSE,
+                        Boolean.TRUE);
             }
         };
     }

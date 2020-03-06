@@ -34,8 +34,11 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader;
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader;
 import org.hisp.dhis.android.core.dataset.DataSet;
@@ -46,6 +49,7 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModu
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader;
 import org.hisp.dhis.android.core.settings.SystemSetting;
+import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall;
 import org.hisp.dhis.android.core.settings.internal.SettingModuleDownloader;
 import org.hisp.dhis.android.core.sms.SmsModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
@@ -61,6 +65,7 @@ import dagger.Reusable;
 import io.reactivex.Observable;
 
 @Reusable
+@SuppressWarnings("PMD.ExcessiveImports")
 public class MetadataCall {
 
     private final RxAPICallExecutor rxCallExecutor;
@@ -75,6 +80,9 @@ public class MetadataCall {
     private final ConstantModuleDownloader constantModuleDownloader;
     private final SmsModule smsModule;
     private final DatabaseAdapter databaseAdapter;
+    private final GeneralSettingCall generalSettingCall;
+    private final MultiUserDatabaseManager multiUserDatabaseManager;
+    private final ObjectSecureStore<Credentials> credentialsSecureStore;
 
     @Inject
     MetadataCall(@NonNull RxAPICallExecutor rxCallExecutor,
@@ -87,7 +95,10 @@ public class MetadataCall {
                  @NonNull DataSetModuleDownloader dataSetDownloader,
                  @NonNull ConstantModuleDownloader constantModuleDownloader,
                  @NonNull SmsModule smsModule,
-                 @NonNull DatabaseAdapter databaseAdapter) {
+                 @NonNull DatabaseAdapter databaseAdapter,
+                 @NonNull GeneralSettingCall generalSettingCall,
+                 @NonNull MultiUserDatabaseManager multiUserDatabaseManager,
+                 @NonNull ObjectSecureStore<Credentials> credentialsSecureStore) {
         this.rxCallExecutor = rxCallExecutor;
         this.systemInfoDownloader = systemInfoDownloader;
         this.systemSettingDownloader = systemSettingDownloader;
@@ -99,10 +110,16 @@ public class MetadataCall {
         this.constantModuleDownloader = constantModuleDownloader;
         this.smsModule = smsModule;
         this.databaseAdapter = databaseAdapter;
+        this.generalSettingCall = generalSettingCall;
+        this.multiUserDatabaseManager = multiUserDatabaseManager;
+        this.credentialsSecureStore = credentialsSecureStore;
     }
 
     public Observable<D2Progress> download() {
         D2ProgressManager progressManager = new D2ProgressManager(9);
+
+        boolean encrypt = generalSettingCall.isDatabaseEncrypted().blockingGet();
+        multiUserDatabaseManager.changeEncryptionIfRequired(credentialsSecureStore.get(), encrypt);
 
         return rxCallExecutor.wrapObservableTransactionally(
                 systemInfoDownloader.downloadMetadata().andThen(Observable.create(emitter -> {

@@ -32,9 +32,12 @@ import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader;
 import org.hisp.dhis.android.core.dataset.DataSet;
@@ -44,6 +47,7 @@ import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader;
+import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall;
 import org.hisp.dhis.android.core.settings.internal.SettingModuleDownloader;
 import org.hisp.dhis.android.core.sms.SmsModule;
 import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase;
@@ -62,6 +66,7 @@ import java.util.concurrent.Callable;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -147,6 +152,15 @@ public class MetadataCallShould extends BaseCallShould {
     @Mock
     private Callable<Void> refreshMetadataIdsCallable;
 
+    @Mock
+    private GeneralSettingCall generalSettingCall;
+
+    @Mock
+    private MultiUserDatabaseManager multiUserDatabaseManager;
+
+    @Mock
+    private ObjectSecureStore<Credentials> credentialsSecureStore;
+
     // object to test
     private MetadataCall metadataCall;
 
@@ -176,6 +190,7 @@ public class MetadataCallShould extends BaseCallShould {
         when(dataSetDownloadCall.call()).thenReturn(Lists.newArrayList(dataSet));
         when(organisationUnitDownloadCall.call()).thenReturn(new Unit());
         when(constantCall.call()).thenReturn(Lists.newArrayList(constant));
+        when(generalSettingCall.isDatabaseEncrypted()).thenReturn(Single.just(false));
 
         when(d2ErrorStore.insert(any(D2Error.class))).thenReturn(0L);
 
@@ -193,7 +208,10 @@ public class MetadataCallShould extends BaseCallShould {
                 dataSetDownloader,
                 constantDownloader,
                 smsModule,
-                databaseAdapter);
+                databaseAdapter,
+                generalSettingCall,
+                multiUserDatabaseManager,
+                credentialsSecureStore);
     }
 
     @Test

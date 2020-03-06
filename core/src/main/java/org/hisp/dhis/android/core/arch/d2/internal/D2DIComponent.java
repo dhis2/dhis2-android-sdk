@@ -140,7 +140,7 @@ public interface D2DIComponent {
     @VisibleForTesting
     D2InternalModules internalModules();
     @VisibleForTesting
-    ListCallFactory<Program> programCallFactory();
+    UidsCallFactory<Program> programCallFactory();
     @VisibleForTesting
     UidsCallFactory<OptionSet> optionSetCallFactory();
     @VisibleForTesting

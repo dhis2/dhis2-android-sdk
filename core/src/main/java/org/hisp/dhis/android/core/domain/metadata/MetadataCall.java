@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader;
+import org.hisp.dhis.android.core.domain.metadata.internal.MetadataHelper;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader;
@@ -136,20 +137,20 @@ public class MetadataCall {
                     emitter.onNext(progressManager.increaseProgress(User.class, false));
 
 
-                    List<Program> programs = programDownloader.downloadMetadata().call();
+                    List<OrganisationUnit> orgUnits = organisationUnitModuleDownloader.downloadMetadata(user).call();
+                    emitter.onNext(progressManager.increaseProgress(OrganisationUnit.class, false));
+
+
+                    programDownloader.downloadMetadata(MetadataHelper.getOrgUnitsProgramUids(orgUnits)).call();
                     emitter.onNext(progressManager.increaseProgress(Program.class, false));
 
 
-                    List<DataSet> dataSets = dataSetDownloader.downloadMetadata().call();
+                    dataSetDownloader.downloadMetadata().call();
                     emitter.onNext(progressManager.increaseProgress(DataSet.class, false));
 
 
                     categoryDownloader.downloadMetadata().call();
                     emitter.onNext(progressManager.increaseProgress(Category.class, false));
-
-
-                    organisationUnitModuleDownloader.downloadMetadata(user, programs, dataSets).call();
-                    emitter.onNext(progressManager.increaseProgress(OrganisationUnit.class, false));
 
 
                     constantModuleDownloader.downloadMetadata().call();

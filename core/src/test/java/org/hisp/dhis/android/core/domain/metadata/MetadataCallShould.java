@@ -177,7 +177,7 @@ public class MetadataCallShould extends BaseCallShould {
         when(programDownloader.downloadMetadata(anySet())).thenReturn(programDownloadCall);
         when(categoryDownloader.downloadMetadata()).thenReturn(categoryDownloadCall);
         when(organisationUnitDownloader.downloadMetadata(same(user))).thenReturn(organisationUnitDownloadCall);
-        when(dataSetDownloader.downloadMetadata()).thenReturn(dataSetDownloadCall);
+        when(dataSetDownloader.downloadMetadata(anySet())).thenReturn(dataSetDownloadCall);
         when(constantDownloader.downloadMetadata()).thenReturn(constantCall);
         when(smsModule.configCase()).thenReturn(configCase);
         when(configCase.refreshMetadataIdsCallable()).thenReturn(refreshMetadataIdsCallable);

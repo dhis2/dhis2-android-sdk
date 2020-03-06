@@ -33,14 +33,8 @@ import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
-import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.user.User;
@@ -120,18 +114,6 @@ public class OrganisationUnitCallUnitShould {
     private ResourceHandler resourceHandler;
 
     @Mock
-    private ProgramStoreInterface programStore;
-
-    @Mock
-    private IdentifiableObjectStore<DataSet> dataSetStore;
-
-    @Mock
-    private LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
-
-    @Mock
-    private LinkStore<DataSetOrganisationUnitLink> dataSetOrganisationUnitLinkStore;
-
-    @Mock
     private GenericCallData genericCallData;
 
     @Mock
@@ -188,8 +170,7 @@ public class OrganisationUnitCallUnitShould {
         when(user.nationality()).thenReturn("user_nationality");
 
         organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService, organisationUnitHandler,
-                organisationUnitDisplayPathTransformer, apiCallExecutor, resourceHandler, programStore, dataSetStore,
-                organisationUnitProgramLinkStore, dataSetOrganisationUnitLinkStore)
+                organisationUnitDisplayPathTransformer, apiCallExecutor, resourceHandler)
                 .create(user);
 
         //Return only one organisationUnit.

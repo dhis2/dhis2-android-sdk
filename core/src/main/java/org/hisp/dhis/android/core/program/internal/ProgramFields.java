@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.Access;
@@ -56,6 +57,8 @@ public final class ProgramFields {
     public static final String PROGRAM_SECTIONS = "programSections";
 
     private static FieldsHelper<Program> fh = new FieldsHelper<>();
+
+    public static final Field<Program, String> uid = fh.uid();
 
     static final Fields<Program> allFields = Fields.<Program>builder()
             .fields(fh.getNameableFields())

@@ -145,7 +145,7 @@ public class MetadataCall {
                     emitter.onNext(progressManager.increaseProgress(Program.class, false));
 
 
-                    dataSetDownloader.downloadMetadata().call();
+                    dataSetDownloader.downloadMetadata(MetadataHelper.getOrgUnitsDataSetUids(orgUnits)).call();
                     emitter.onNext(progressManager.increaseProgress(DataSet.class, false));
 
 

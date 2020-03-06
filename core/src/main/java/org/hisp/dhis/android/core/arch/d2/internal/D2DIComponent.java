@@ -33,7 +33,6 @@ import android.content.Context;
 import androidx.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule;
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseDIModule;
@@ -148,7 +147,7 @@ public interface D2DIComponent {
     @VisibleForTesting
     UidsCallFactory<DataElement> dataElementCallFactory();
     @VisibleForTesting
-    ListCallFactory<DataSet> dataSetCallFactory();
+    UidsCallFactory<DataSet> dataSetCallFactory();
     @VisibleForTesting
     Handler<RelationshipType> relationshipTypeHandler();
     @VisibleForTesting

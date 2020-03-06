@@ -31,16 +31,8 @@ import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
-import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.user.User;
@@ -66,31 +58,19 @@ class OrganisationUnitCallFactory {
 
     private final APICallExecutor apiCallExecutor;
     private final ResourceHandler resourceHandler;
-    private final ProgramStoreInterface programStore;
-    private final IdentifiableObjectStore<DataSet> dataSetStore;
-    private final LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
-    private final LinkStore<DataSetOrganisationUnitLink> dataSetOrganisationUnitLinkStore;
 
     @Inject
     OrganisationUnitCallFactory(@NonNull OrganisationUnitService organisationUnitService,
                                 @NonNull OrganisationUnitHandler handler,
                                 @NonNull OrganisationUnitDisplayPathTransformer pathTransformer,
                                 @NonNull APICallExecutor apiCallExecutor,
-                                @NonNull ResourceHandler resourceHandler,
-                                @NonNull ProgramStoreInterface programStore,
-                                @NonNull IdentifiableObjectStore<DataSet> dataSetStore,
-                                @NonNull LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore,
-                                @NonNull LinkStore<DataSetOrganisationUnitLink> dataSetOrganisationUnitLinkStore) {
+                                @NonNull ResourceHandler resourceHandler) {
 
         this.organisationUnitService = organisationUnitService;
         this.handler = handler;
         this.pathTransformer = pathTransformer;
         this.apiCallExecutor = apiCallExecutor;
         this.resourceHandler = resourceHandler;
-        this.programStore = programStore;
-        this.dataSetStore = dataSetStore;
-        this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
-        this.dataSetOrganisationUnitLinkStore = dataSetOrganisationUnitLinkStore;
     }
 
     public Callable<List<OrganisationUnit>> create(final User user) {
@@ -142,27 +122,6 @@ class OrganisationUnitCallFactory {
         }
 
         return organisationUnitList;
-    }
-
-    private void removeNotLinkedProgramsAndDataSets(final Set<String> programUids,
-                                                    final Set<String> dataSetUids) {
-
-        List<String> programsLinked = organisationUnitProgramLinkStore.selectDistinctSlaves(
-                OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM);
-        List<String> dataSetsLinked = dataSetOrganisationUnitLinkStore.selectDistinctSlaves(
-                DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET);
-
-        for (String programUid : programUids) {
-            if (!programsLinked.contains(programUid)) {
-                programStore.deleteIfExists(programUid);
-            }
-        }
-
-        for (String dataSetUid : dataSetUids) {
-            if (!dataSetsLinked.contains(dataSetUid)) {
-                dataSetStore.deleteIfExists(dataSetUid);
-            }
-        }
     }
 
     private retrofit2.Call<Payload<OrganisationUnit>> getOrganisationUnitAndDescendants(OrganisationUnitQuery query) {

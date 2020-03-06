@@ -27,9 +27,8 @@
  */
 package org.hisp.dhis.android.core.dataset.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
-import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleDownloader;
+import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleByUidDownloader;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.indicator.Indicator;
@@ -47,8 +46,8 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public class DataSetModuleDownloader implements MetadataModuleDownloader<List<DataSet>> {
-    private final ListCallFactory<DataSet> dataSetCallFactory;
+public class DataSetModuleDownloader implements MetadataModuleByUidDownloader<List<DataSet>> {
+    private final UidsCallFactory<DataSet> dataSetCallFactory;
     private final UidsCallFactory<DataElement> dataElementCallFactory;
     private final UidsCallFactory<Indicator> indicatorCallFactory;
     private final UidsCallFactory<IndicatorType> indicatorTypeCallFactory;
@@ -57,7 +56,7 @@ public class DataSetModuleDownloader implements MetadataModuleDownloader<List<Da
     private final PeriodHandler periodHandler;
 
     @Inject
-    DataSetModuleDownloader(ListCallFactory<DataSet> dataSetCallFactory,
+    DataSetModuleDownloader(UidsCallFactory<DataSet> dataSetCallFactory,
                             UidsCallFactory<DataElement> dataElementCallFactory,
                             UidsCallFactory<Indicator> indicatorCallFactory,
                             UidsCallFactory<IndicatorType> indicatorTypeCallFactory,
@@ -74,10 +73,10 @@ public class DataSetModuleDownloader implements MetadataModuleDownloader<List<Da
     }
 
     @Override
-    public Callable<List<DataSet>> downloadMetadata() {
+    public Callable<List<DataSet>> downloadMetadata(Set<String> orgUnitDataSetUids) {
         return () -> {
 
-            List<DataSet> dataSets = dataSetCallFactory.create().call();
+            List<DataSet> dataSets = dataSetCallFactory.create(orgUnitDataSetUids).call();
 
             List<DataElement> dataElements = dataElementCallFactory.create(
                     DataSetParentUidsHelper.getDataElementUids(dataSets)).call();

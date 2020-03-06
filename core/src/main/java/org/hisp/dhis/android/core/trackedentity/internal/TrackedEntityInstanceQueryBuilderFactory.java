@@ -95,8 +95,9 @@ class TrackedEntityInstanceQueryBuilderFactory {
         List<TeiQuery.Builder> builders = new ArrayList<>();
 
         if (params.program() == null) {
+            List<String> trackerPrograms = programStore.getUidsByProgramType(ProgramType.WITH_REGISTRATION);
             if (hasLimitByProgram(params, programSettings)) {
-                for (String programUid : programStore.getUidsByProgramType(ProgramType.WITH_REGISTRATION)) {
+                for (String programUid : trackerPrograms) {
                     builders.addAll(queryPerProgram(params, programSettings, programUid, lastUpdated));
                 }
             } else {
@@ -104,7 +105,10 @@ class TrackedEntityInstanceQueryBuilderFactory {
                         Collections.emptyMap() : programSettings.specificSettings();
 
                 for (Map.Entry<String, ProgramSetting> specificSetting : specificSettings.entrySet()) {
-                    builders.addAll(queryPerProgram(params, programSettings, specificSetting.getKey(), lastUpdated));
+                    String programUid = specificSetting.getKey();
+                    if (trackerPrograms.contains(programUid)) {
+                        builders.addAll(queryPerProgram(params, programSettings, programUid, lastUpdated));
+                    }
                 }
 
                 builders.addAll(queryGlobal(params, programSettings, lastUpdated));
@@ -119,10 +123,13 @@ class TrackedEntityInstanceQueryBuilderFactory {
     private List<TeiQuery.Builder> queryPerProgram(ProgramDataDownloadParams params,
                                                    ProgramSettings programSettings,
                                                    String programUid,
-                                                   String lastUpdated) {
+                                                   String globalLastUpdated) {
         int limit = getLimit(params, programSettings, programUid);
         EnrollmentStatus programStatus = getProgramStatus(params, programSettings, programUid);
         String programStartDate = getProgramStartDate(programSettings, programUid);
+
+        String lastUpdated = globalLastUpdated == null && params.uids().isEmpty() ?
+                getInitialLastpdated(programSettings, programUid) : globalLastUpdated;
 
         List<TeiQuery.Builder> builders = new ArrayList<>();
 
@@ -157,8 +164,11 @@ class TrackedEntityInstanceQueryBuilderFactory {
 
     private List<TeiQuery.Builder> queryGlobal(ProgramDataDownloadParams params,
                                                ProgramSettings programSettings,
-                                               String lastUpdated) {
+                                               String globalLastUpdated) {
         int limit = getLimit(params, programSettings, null);
+
+        String lastUpdated = globalLastUpdated == null && params.uids().isEmpty() ?
+                getInitialLastpdated(programSettings, null) : globalLastUpdated;
 
         List<TeiQuery.Builder> builders = new ArrayList<>();
 
@@ -256,7 +266,7 @@ class TrackedEntityInstanceQueryBuilderFactory {
                 LimitScope scope = specificSetting.settingDownload();
 
                 if (scope != null) {
-                    return scope.equals(LimitScope.ALL_ORG_UNITS);
+                    return scope.equals(LimitScope.PER_ORG_UNIT);
                 }
             }
 
@@ -337,6 +347,27 @@ class TrackedEntityInstanceQueryBuilderFactory {
         }
     }
 
+    private String getInitialLastpdated(ProgramSettings programSettings, String programUid) {
+        DownloadPeriod period = null;
+        if (programSettings != null) {
+            ProgramSetting specificSetting = programSettings.specificSettings().get(programUid);
+            ProgramSetting globalSetting = programSettings.globalSettings();
+
+            if (hasUpdateDownload(specificSetting)) {
+                period = specificSetting.updateDownload();
+            } else if (hasUpdateDownload(globalSetting)) {
+                period = globalSetting.updateDownload();
+            }
+        }
+
+        if (period == null || period == DownloadPeriod.ANY) {
+            return null;
+        } else {
+            Date initialLastUpdated = DateUtils.addMonths(new Date(), -period.getMonths());
+            return BaseIdentifiableObject.dateToSpaceDateStr(initialLastUpdated);
+        }
+    }
+
     private EnrollmentStatus enrollmentScopeToProgramStatus(EnrollmentScope enrollmentScope) {
         if (enrollmentScope != null && enrollmentScope.equals(EnrollmentScope.ONLY_ACTIVE)) {
             return EnrollmentStatus.ACTIVE;
@@ -347,6 +378,10 @@ class TrackedEntityInstanceQueryBuilderFactory {
 
     private boolean hasEnrollmentDateDownload(ProgramSetting programSetting) {
         return programSetting != null && programSetting.enrollmentDateDownload() != null;
+    }
+
+    private boolean hasUpdateDownload(ProgramSetting programSetting) {
+        return programSetting != null && programSetting.updateDownload() != null;
     }
 
 }

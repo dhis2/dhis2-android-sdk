@@ -93,9 +93,9 @@ class EventQueryBundleFactory {
         List<EventQueryBundle> builders = new ArrayList<>();
 
         if (params.program() == null) {
-            List<String> programs = programStore.getUidsByProgramType(ProgramType.WITHOUT_REGISTRATION);
+            List<String> eventPrograms = programStore.getUidsByProgramType(ProgramType.WITHOUT_REGISTRATION);
             if (hasLimitByProgram(params, programSettings)) {
-                for (String programUid : programs) {
+                for (String programUid : eventPrograms) {
                     builders.addAll(queryPerProgram(params, programSettings, programUid, lastUpdated));
                 }
             } else {
@@ -103,11 +103,14 @@ class EventQueryBundleFactory {
                         Collections.emptyMap() : programSettings.specificSettings();
 
                 for (Map.Entry<String, ProgramSetting> specificSetting : specificSettings.entrySet()) {
-                    builders.addAll(queryPerProgram(params, programSettings, specificSetting.getKey(), lastUpdated));
-                    programs.remove(specificSetting.getKey());
+                    String programUid = specificSetting.getKey();
+                    if (eventPrograms.contains(programUid)) {
+                        builders.addAll(queryPerProgram(params, programSettings, programUid, lastUpdated));
+                        eventPrograms.remove(programUid);
+                    }
                 }
 
-                builders.addAll(queryGlobal(params, programSettings, programs, lastUpdated));
+                builders.addAll(queryGlobal(params, programSettings, eventPrograms, lastUpdated));
             }
         } else {
             builders.addAll(queryPerProgram(params, programSettings, params.program(), lastUpdated));

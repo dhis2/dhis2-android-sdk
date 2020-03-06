@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.configuration.internal;
 
 import android.content.Context;
 
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.constant.ConstantModule;
@@ -50,14 +51,21 @@ public final class ConfigurationPackageDIModule {
 
     @Provides
     @Reusable
+    ObjectSecureStore<DatabasesEncryptionPasswords> passwordsSecureStore(SecureStore secureStore) {
+        return DatabaseEncryptionPasswordsSecureStore.get(secureStore);
+    }
+
+    @Provides
+    @Reusable
     DatabaseConfigurationHelper configurationHelper() {
         return new DatabaseConfigurationHelper(new DatabaseNameGenerator());
     }
 
     @Provides
     @Reusable
-    DatabaseConfigurationMigration configurationMigration(Context context, SecureStore secureStore) {
-        return DatabaseConfigurationMigration.create(context, secureStore);
+    DatabaseConfigurationMigration configurationMigration(Context context, SecureStore secureStore,
+                                                          DatabaseAdapterFactory adapterFactory) {
+        return DatabaseConfigurationMigration.create(context, secureStore, adapterFactory);
     }
 
     @Provides

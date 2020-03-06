@@ -34,14 +34,9 @@ import androidx.test.InstrumentationRegistry;
 
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.Collections;
 
@@ -72,7 +67,7 @@ public class D2Factory {
         return d2;
     }
 
-    public static D2Configuration d2Configuration(Context context) {
+    private static D2Configuration d2Configuration(Context context) {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
         return D2Configuration.builder()
@@ -84,24 +79,5 @@ public class D2Factory {
                 .interceptors(Collections.singletonList(loggingInterceptor))
                 .context(context)
                 .build();
-    }
-
-    public static D2 forDatabaseAdapter(DatabaseAdapter databaseAdapter) {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        NotClosedObjectsDetector.enableNotClosedObjectsDetection();
-        SecureStore secureStore = new InMemorySecureStore();
-        ObjectSecureStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
-        try {
-            return new D2(
-                    RetrofitFactory.retrofit(
-                            OkHttpClientFactory.okHttpClient(d2Configuration(context), credentialsSecureStore)),
-                    databaseAdapter,
-                    context,
-                    secureStore,
-                    credentialsSecureStore);
-        } catch (D2Error d2Error) {
-            d2Error.printStackTrace();
-            return null;
-        }
     }
 }

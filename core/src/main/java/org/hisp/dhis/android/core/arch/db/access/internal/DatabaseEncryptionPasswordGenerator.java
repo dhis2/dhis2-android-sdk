@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
- *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,29 +27,18 @@
 
 package org.hisp.dhis.android.core.arch.db.access.internal;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
+import java.util.Random;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+class DatabaseEncryptionPasswordGenerator {
 
-@Module
-public class DatabaseDIModule {
+    Random random = new SecureRandom();
 
-    private final DatabaseAdapter databaseAdapter;
-
-    public DatabaseDIModule(DatabaseAdapter databaseAdapter) {
-        this.databaseAdapter = databaseAdapter;
-    }
-
-    @Provides
-    DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
-    }
-
-    @Provides
-    @Reusable
-    DatabaseEncryptionPasswordGenerator passwordGenerator() {
-        return new DatabaseEncryptionPasswordGenerator();
+    String generate() {
+        int passwordLength = 32;
+        byte[] array = new byte[passwordLength];
+        random.nextBytes(array);
+        return new String(array, StandardCharsets.UTF_8);
     }
 }

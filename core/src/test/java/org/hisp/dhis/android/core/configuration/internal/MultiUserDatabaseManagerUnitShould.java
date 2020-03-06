@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.configuration.internal;
 import android.content.Context;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseCreator;
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.common.BaseCallShould;
@@ -67,7 +67,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     private DatabaseCopy databaseCopy;
 
     @Mock
-    private DatabaseCreator databaseCreator;
+    private DatabaseAdapterFactory databaseAdapterFactory;
 
     @Mock
     private DatabaseConfigurationMigration migration;
@@ -102,7 +102,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     public void setUp() throws Exception {
         super.setUp();
         manager = new MultiUserDatabaseManager(databaseAdapter, databaseConfigurationSecureStore, configurationHelper,
-                context, databaseCopy, migration, databaseCreator);
+                context, databaseCopy, migration, databaseAdapterFactory);
     }
 
     @Test
@@ -114,7 +114,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     @Test
     public void not_try_to_load_db_if_not_logged_when_calling_loadIfLogged() {
         manager.loadIfLogged(null);
-        verifyNoMoreInteractions(databaseCreator);
+        verifyNoMoreInteractions(databaseAdapterFactory);
     }
 
     @Test
@@ -125,7 +125,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
 
         manager.loadIfLogged(credentials);
 
-        verify(databaseCreator).createOrOpenDatabase(databaseAdapter, userConfigurationUnencrypted);
+        verify(databaseAdapterFactory).createOrOpenDatabase(databaseAdapter, userConfigurationUnencrypted);
     }
 
     @Test
@@ -137,7 +137,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
 
         manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(SERVER_URL, USERNAME, encrypt);
 
-        verify(databaseCreator).createOrOpenDatabase(databaseAdapter, userConfigurationUnencrypted);
+        verify(databaseAdapterFactory).createOrOpenDatabase(databaseAdapter, userConfigurationUnencrypted);
     }
 
     @Test
@@ -150,8 +150,8 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
 
         manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(SERVER_URL, USERNAME, encrypt);
 
-        verify(databaseCreator).createOrOpenDatabase(databaseAdapter, userConfigurationEncrypted);
-        verify(databaseCreator).createOrOpenDatabase(any(), same(userConfigurationUnencrypted));
+        verify(databaseAdapterFactory).createOrOpenDatabase(databaseAdapter, userConfigurationEncrypted);
+        verify(databaseAdapterFactory).createOrOpenDatabase(any(), same(userConfigurationUnencrypted));
 
         verify(databaseCopy).copy(any(), same(databaseAdapter));
         verify(databaseCopy).copy(any(), same(databaseAdapter));
@@ -163,7 +163,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     public void not_create_database_when_non_existing_when_calling_loadExistingKeepingEncryption() {
         manager.loadExistingKeepingEncryption(SERVER_URL, USERNAME);
 
-        verifyNoMoreInteractions(databaseCreator);
+        verifyNoMoreInteractions(databaseAdapterFactory);
     }
 
     @Test
@@ -175,6 +175,6 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
 
         manager.loadExistingKeepingEncryption(SERVER_URL, USERNAME);
 
-        verify(databaseCreator).createOrOpenDatabase(databaseAdapter, userConfigurationUnencrypted);
+        verify(databaseAdapterFactory).createOrOpenDatabase(databaseAdapter, userConfigurationUnencrypted);
     }
 }

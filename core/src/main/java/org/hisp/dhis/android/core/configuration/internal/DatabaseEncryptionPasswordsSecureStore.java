@@ -26,31 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.configuration.internal;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.storage.internal.JsonSecureStoreImpl;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+public final class DatabaseEncryptionPasswordsSecureStore {
 
-@Module
-public class DatabaseDIModule {
-
-    private final DatabaseAdapter databaseAdapter;
-
-    public DatabaseDIModule(DatabaseAdapter databaseAdapter) {
-        this.databaseAdapter = databaseAdapter;
+    public static ObjectSecureStore<DatabasesEncryptionPasswords> get(SecureStore secureStore) {
+        return new JsonSecureStoreImpl<>(secureStore, "DB_ENCRYPTION_PWS", DatabasesEncryptionPasswords.class);
     }
 
-    @Provides
-    DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
-    }
-
-    @Provides
-    @Reusable
-    DatabaseEncryptionPasswordGenerator passwordGenerator() {
-        return new DatabaseEncryptionPasswordGenerator();
+    private DatabaseEncryptionPasswordsSecureStore() {
     }
 }

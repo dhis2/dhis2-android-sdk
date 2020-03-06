@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo;
@@ -47,6 +46,7 @@ import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserInternalAccessor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -93,48 +93,37 @@ class OrganisationUnitCallFactory {
         this.dataSetOrganisationUnitLinkStore = dataSetOrganisationUnitLinkStore;
     }
 
-    public Callable<Unit> create(final User user,
-                                 final Set<String> programUids,
-                                 final Set<String> dataSetUids) {
+    public Callable<List<OrganisationUnit>> create(final User user) {
 
         return () -> {
             handler.resetLinks();
 
-            downloadCaptureOrgunits(user, programUids, dataSetUids);
-            downloadSearchOrgunits(user, programUids, dataSetUids);
-
-            removeNotLinkedProgramsAndDataSets(programUids, dataSetUids);
+            List<OrganisationUnit> orgUnits = downloadCaptureOrgunits(user);
+            orgUnits.addAll(downloadSearchOrgunits(user));
 
             resourceHandler.handleResource(Resource.Type.ORGANISATION_UNIT);
 
-            return new Unit();
+            return orgUnits;
         };
     }
 
-    private void downloadCaptureOrgunits(final User user,
-                                         final Set<String> programUids,
-                                         final Set<String> dataSetUids) throws D2Error {
+    private List<OrganisationUnit> downloadCaptureOrgunits(final User user) throws D2Error {
         Set<String> captureOrgunitsUids = findRoots(UserInternalAccessor.accessOrganisationUnits(user));
-        downloadOrgunits(captureOrgunitsUids, user,
-                OrganisationUnit.Scope.SCOPE_DATA_CAPTURE, programUids, dataSetUids);
+        return downloadOrgunits(captureOrgunitsUids, user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
     }
 
-    private void downloadSearchOrgunits(final User user,
-                                        final Set<String> programUids,
-                                        final Set<String> dataSetUids) throws D2Error {
+    private List<OrganisationUnit> downloadSearchOrgunits(final User user) throws D2Error {
         Set<String> searchOrgunitsUids = findRoots(UserInternalAccessor.accessTeiSearchOrganisationUnits(user));
-        downloadOrgunits(searchOrgunitsUids, user,
-                OrganisationUnit.Scope.SCOPE_TEI_SEARCH, programUids, dataSetUids);
+        return downloadOrgunits(searchOrgunitsUids, user, OrganisationUnit.Scope.SCOPE_TEI_SEARCH);
     }
 
-    private void downloadOrgunits(final Set<String> orgUnits,
-                                  final User user,
-                                  final OrganisationUnit.Scope scope,
-                                  final Set<String> programUids,
-                                  final Set<String> dataSetUids) throws D2Error {
+    private List<OrganisationUnit> downloadOrgunits(final Set<String> orgUnits,
+                                                    final User user,
+                                                    final OrganisationUnit.Scope scope) throws D2Error {
 
-        handler.setData(programUids, dataSetUids, user, scope);
+        handler.setData(user, scope);
 
+        List<OrganisationUnit> organisationUnitList = new ArrayList<>();
         for (String uid : orgUnits) {
             OrganisationUnitQuery.Builder queryBuilder = OrganisationUnitQuery.builder().orgUnit(uid);
 
@@ -145,11 +134,14 @@ class OrganisationUnitCallFactory {
                 pageOrgunits = apiCallExecutor.executePayloadCall(getOrganisationUnitAndDescendants(pageQuery));
 
                 handler.handleMany(pageOrgunits, pathTransformer);
+                organisationUnitList.addAll(pageOrgunits);
 
                 queryBuilder.page(pageQuery.page() + 1);
             }
             while (pageOrgunits.size() == pageQuery.pageSize());
         }
+
+        return organisationUnitList;
     }
 
     private void removeNotLinkedProgramsAndDataSets(final Set<String> programUids,

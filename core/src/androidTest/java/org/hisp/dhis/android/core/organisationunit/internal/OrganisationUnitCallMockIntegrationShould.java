@@ -30,15 +30,11 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 
 import android.content.ContentValues;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
@@ -75,7 +71,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrationTestEmptyEnqueable {
     
     //The return of the organisationUnitCall to be tested:
-    private Callable<Unit> organisationUnitCall;
+    private Callable<List<OrganisationUnit>> organisationUnitCall;
 
     private OrganisationUnit expectedAfroArabicClinic = OrganisationUnitSamples.getAfroArabClinic();
     private OrganisationUnit expectedAdonkiaCHP = OrganisationUnitSamples.getAdonkiaCHP();
@@ -106,7 +102,6 @@ public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrati
         // inserting programs for creating OrgUnitProgramLinks
         String programUid = "lxAQ7Zs9VYR";
         insertProgramWithUid(programUid);
-        Set<String> programUids = Sets.newHashSet(Lists.newArrayList(programUid));
 
         OrganisationUnitHandler organisationUnitHandler =
                 OrganisationUnitHandlerImpl.create(databaseAdapter);
@@ -126,7 +121,7 @@ public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrati
         organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService,
                 organisationUnitHandler, pathTransformer, apiCallExecutor, objects.resourceHandler, programStore,
                 dataSetStore, organisationUnitProgramLinkStore, dataSetOrganisationUnitLinkStore)
-                .create(user, programUids, Sets.newHashSet());
+                .create(user);
     }
 
     private void insertProgramWithUid(String uid) {

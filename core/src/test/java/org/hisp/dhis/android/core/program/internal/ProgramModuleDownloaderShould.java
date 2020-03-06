@@ -59,6 +59,7 @@ import retrofit2.Response;
 
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
@@ -101,7 +102,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private Callable<List<OptionGroup>> optionGroupCall;
 
     @Mock
-    private ListCallFactory<Program> programCallFactory;
+    private UidsCallFactory<Program> programCallFactory;
 
     @Mock
     private UidsCallFactory<ProgramStage> programStageCallFactory;
@@ -143,7 +144,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 ResponseBody.create(MediaType.parse("application/json"), "{}"));
 
         // Call factories
-        when(programCallFactory.create())
+        when(programCallFactory.create(anySet()))
                 .thenReturn(programEndpointCall);
         when(programStageCallFactory.create(any(Set.class)))
                 .thenReturn(programStageEndpointCall);
@@ -186,7 +187,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 optionSetCallFactory,
                 optionCallFactory,
                 optionGroupCallFactory,
-                versionManager).downloadMetadata();
+                versionManager).downloadMetadata(anySet());
     }
 
     @Test

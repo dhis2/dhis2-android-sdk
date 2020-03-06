@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -60,7 +59,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -143,7 +141,7 @@ public class OrganisationUnitCallUnitShould {
     private OrganisationUnitDisplayPathTransformer organisationUnitDisplayPathTransformer;
 
     //the call we are testing:
-    private Callable<Unit> organisationUnitCall;
+    private Callable<List<OrganisationUnit>> organisationUnitCall;
 
     @Before
     public void setUp() throws IOException {
@@ -192,7 +190,7 @@ public class OrganisationUnitCallUnitShould {
         organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService, organisationUnitHandler,
                 organisationUnitDisplayPathTransformer, apiCallExecutor, resourceHandler, programStore, dataSetStore,
                 organisationUnitProgramLinkStore, dataSetOrganisationUnitLinkStore)
-                .create(user, new HashSet<>(), new HashSet<>());
+                .create(user);
 
         //Return only one organisationUnit.
         organisationUnits = Collections.singletonList(organisationUnit);

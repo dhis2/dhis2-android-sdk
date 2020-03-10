@@ -44,9 +44,9 @@ public final class AndroidInsecureStore implements InsecureStore {
     }
 
     public void setData(@NonNull String key, @NonNull String data) {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(key, data);
-        editor.apply();
+        preferences.edit()
+                .putString(key, data)
+                .apply();
     }
 
     public String getData(@NonNull String key) {
@@ -55,8 +55,8 @@ public final class AndroidInsecureStore implements InsecureStore {
     }
 
     public void removeData(String key) {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.remove(key);
-        editor.apply();
+        preferences.edit()
+                .remove(key)
+                .apply();
     }
 }

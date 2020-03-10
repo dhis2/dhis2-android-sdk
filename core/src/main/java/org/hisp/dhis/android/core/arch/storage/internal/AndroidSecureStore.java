@@ -126,6 +126,7 @@ public final class AndroidSecureStore implements SecureStore {
             kpGenerator.generateKeyPair();
         } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException | NoSuchProviderException e) {
             deleteKeyStoreEntry(ks, ALIAS);
+            throw new RuntimeException("Couldn't initialize AndroidSecureStore");
         }
     }
 
@@ -154,6 +155,7 @@ public final class AndroidSecureStore implements SecureStore {
                 | IllegalBlockSizeException | BadPaddingException | KeyStoreException |
                 CertificateException | IOException e) {
             deleteKeyStoreEntry(ks, ALIAS);
+            throw new RuntimeException("Couldn't store value in AndroidSecureStore for key: " + key);
         }
     }
 
@@ -171,8 +173,8 @@ public final class AndroidSecureStore implements SecureStore {
                 | UnrecoverableEntryException | InvalidKeyException | NoSuchPaddingException
                 | IllegalBlockSizeException | BadPaddingException e) {
             deleteKeyStoreEntry(ks, ALIAS);
+            throw new RuntimeException("Couldn't get value from AndroidSecureStore for key: " + key);
         }
-        return null;
     }
 
     public void removeData(String key) {

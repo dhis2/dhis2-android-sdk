@@ -30,11 +30,9 @@ package org.hisp.dhis.android.core.arch.db.access.internal;
 import android.content.Context;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
-import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordsSecureStore;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration;
-import org.hisp.dhis.android.core.configuration.internal.DatabasesEncryptionPasswords;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,21 +51,17 @@ public class DatabaseAdapterFactory {
     private static List<DatabaseAdapter> adaptersToPreventNotClosedError = new ArrayList<>();
 
     private final Context context;
-    private final ObjectKeyValueStore<DatabasesEncryptionPasswords> passwordsStore;
-    private final DatabaseEncryptionPasswordGenerator passwordGenerator;
+    private final DatabaseEncryptionPasswordManager passwordManager;
 
     @Inject
     DatabaseAdapterFactory(Context context,
-                           ObjectKeyValueStore<DatabasesEncryptionPasswords> passwordsStore,
-                           DatabaseEncryptionPasswordGenerator passwordGenerator) {
+                           DatabaseEncryptionPasswordManager passwordManager) {
         this.context = context;
-        this.passwordsStore = passwordsStore;
-        this.passwordGenerator = passwordGenerator;
+        this.passwordManager = passwordManager;
     }
 
     public static DatabaseAdapterFactory create(Context context, SecureStore secureStore) {
-        return new DatabaseAdapterFactory(context, DatabaseEncryptionPasswordsSecureStore.get(secureStore),
-                new DatabaseEncryptionPasswordGenerator());
+        return new DatabaseAdapterFactory(context, DatabaseEncryptionPasswordManager.create(secureStore));
     }
 
     public DatabaseAdapter newParentDatabaseAdapter() {
@@ -100,25 +94,13 @@ public class DatabaseAdapterFactory {
         if (encrypt) {
             EncryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, encryptedOpenHelpers,
                     v -> new EncryptedDatabaseOpenHelper(context, databaseName, version));
-            String password = getEncryptionPassword(databaseName);
+            String password = passwordManager.getEncryptionPassword(databaseName);
             return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(password));
         } else {
             UnencryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, unencryptedOpenHelpers,
                     v -> new UnencryptedDatabaseOpenHelper(context, databaseName, version));
             return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
         }
-    }
-
-    private String getEncryptionPassword(String databaseName) {
-        DatabasesEncryptionPasswords passwordsInStore = passwordsStore.get();
-        DatabasesEncryptionPasswords passwords = passwordsInStore == null ? DatabasesEncryptionPasswords.empty()
-                : passwordsInStore;
-        if (!passwords.passwords().containsKey(databaseName)) {
-            passwords.passwords().put(databaseName, passwordGenerator.generate());
-            passwordsStore.set(passwords);
-        }
-
-        return passwords.passwords().get(databaseName);
     }
 
     private interface Function<I, O> {

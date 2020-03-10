@@ -28,40 +28,30 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+public class DatabaseEncryptionPasswordManager {
 
-import java.util.HashMap;
-import java.util.Map;
+    private final SecureStore secureStore;
+    private final DatabaseEncryptionPasswordGenerator passwordGenerator;
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_DatabasesEncryptionPasswords.Builder.class)
-public abstract class DatabasesEncryptionPasswords {
-
-    @JsonProperty()
-    @NonNull
-    public abstract Map<String, String> passwords();
-
-    public static Builder builder() {
-        return new AutoValue_DatabasesEncryptionPasswords.Builder();
+    private DatabaseEncryptionPasswordManager(SecureStore secureStore,
+                                              DatabaseEncryptionPasswordGenerator passwordGenerator) {
+        this.secureStore = secureStore;
+        this.passwordGenerator = passwordGenerator;
     }
 
-    public abstract Builder toBuilder();
+    public String getEncryptionPassword(String databaseName) {
+        String key = "DBPW_<>_" + databaseName;
+        String existingPassword = secureStore.getData(key);
+        if (existingPassword == null) {
+            secureStore.setData(key, passwordGenerator.generate());
+        }
 
-    public static DatabasesEncryptionPasswords empty() {
-        return DatabasesEncryptionPasswords.builder().passwords(new HashMap<>()).build();
+        return secureStore.getData(key);
     }
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-
-        public abstract Builder passwords(Map<String, String> passwords);
-
-        public abstract DatabasesEncryptionPasswords build();
+    public static DatabaseEncryptionPasswordManager create(SecureStore secureStore) {
+        return new DatabaseEncryptionPasswordManager(secureStore, new DatabaseEncryptionPasswordGenerator());
     }
 }

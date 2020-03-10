@@ -55,7 +55,7 @@ public class JsonKeyValueStoreImpl<O> implements ObjectKeyValueStore<O> {
             this.secureStore.setData(key, strObject);
             this.object = o;
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Couldn't persist object in secure store");
+            throw new RuntimeException("Couldn't persist object in key value store");
         }
     }
 
@@ -68,7 +68,7 @@ public class JsonKeyValueStoreImpl<O> implements ObjectKeyValueStore<O> {
                 try {
                     return ObjectMapperFactory.objectMapper().readValue(strObject, clazz);
                 } catch (IOException e) {
-                    throw new RuntimeException("Couldn't read object from secure store");
+                    throw new RuntimeException("Couldn't read object from key value store");
                 }
             }
 

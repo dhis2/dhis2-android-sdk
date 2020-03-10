@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
- *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,16 +27,23 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import org.hisp.dhis.android.core.arch.storage.internal.JsonKeyValueStoreImpl;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
-import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
+import java.security.SecureRandom;
+import java.util.Random;
 
-public final class DatabaseEncryptionPasswordsSecureStore {
+class DatabaseEncryptionPasswordGenerator {
 
-    public static ObjectKeyValueStore<DatabasesEncryptionPasswords> get(SecureStore secureStore) {
-        return new JsonKeyValueStoreImpl<>(secureStore, "DB_ENCRYPTION_PWS", DatabasesEncryptionPasswords.class);
-    }
+    private final Random random = new SecureRandom();
 
-    private DatabaseEncryptionPasswordsSecureStore() {
+    private static final String ALLOWED_CHARS = "0123456789" + "abcdefghijklmnopqrstuvwxyz"
+            + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final int CODESIZE = 32;
+
+    public String generate() {
+        char[] randomChars = new char[CODESIZE];
+        for (int i = 0; i < CODESIZE; ++i) {
+            randomChars[i] = ALLOWED_CHARS.charAt(random.nextInt(ALLOWED_CHARS.length()));
+        }
+
+        return new String(randomChars);
     }
 }

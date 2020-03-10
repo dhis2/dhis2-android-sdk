@@ -52,14 +52,14 @@ public final class ConfigurationPackageDIModule {
 
     @Provides
     @Reusable
-    ObjectKeyValueStore<DatabasesEncryptionPasswords> passwordsSecureStore(SecureStore secureStore) {
-        return DatabaseEncryptionPasswordsSecureStore.get(secureStore);
+    DatabaseConfigurationHelper configurationHelper() {
+        return new DatabaseConfigurationHelper(new DatabaseNameGenerator());
     }
 
     @Provides
     @Reusable
-    DatabaseConfigurationHelper configurationHelper() {
-        return new DatabaseConfigurationHelper(new DatabaseNameGenerator());
+    DatabaseEncryptionPasswordManager passwordManager(SecureStore secureStore) {
+        return DatabaseEncryptionPasswordManager.create(secureStore);
     }
 
     @Provides

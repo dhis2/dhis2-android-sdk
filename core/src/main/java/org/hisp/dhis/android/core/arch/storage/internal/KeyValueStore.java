@@ -28,30 +28,11 @@
 
 package org.hisp.dhis.android.core.arch.storage.internal;
 
-import javax.inject.Singleton;
+public interface KeyValueStore {
 
-import dagger.Module;
-import dagger.Provides;
+    void setData(String key, String data);
 
-@Module
-public class SecureStorageDIModule {
-    private final SecureStore secureStore;
-    private final ObjectSecureStore<Credentials> credentialsSecureStore;
+    String getData(String key);
 
-    public SecureStorageDIModule(SecureStore secureStore, ObjectSecureStore<Credentials> credentialsSecureStore) {
-        this.secureStore = secureStore;
-        this.credentialsSecureStore = credentialsSecureStore;
-    }
-
-    @Provides
-    @Singleton
-    SecureStore secureStore() {
-        return secureStore;
-    }
-
-    @Provides
-    @Singleton
-    ObjectSecureStore<Credentials> credentialsSecureStore() {
-        return credentialsSecureStore;
-    }
+    void removeData(String key);
 }

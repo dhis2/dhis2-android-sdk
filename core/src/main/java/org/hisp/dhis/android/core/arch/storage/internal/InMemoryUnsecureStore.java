@@ -26,24 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.wipe.internal;
+package org.hisp.dhis.android.core.arch.storage.internal;
 
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
+import androidx.annotation.NonNull;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import java.util.HashMap;
+import java.util.Map;
 
-@Module()
-public final class WipeDIModule {
+public final class InMemoryUnsecureStore implements InsecureStore {
 
-    @Provides
-    @Reusable
-    WipeModule wipeModule(D2CallExecutor d2CallExecutor,
-                          D2ModuleWipers moduleWipers,
-                          ObjectKeyValueStore<Credentials> credentialsSecureStore) {
-        return new WipeModuleImpl(d2CallExecutor, moduleWipers.wipers, credentialsSecureStore);
+    private final Map<String, String> dataMap = new HashMap<>();
+
+    public void setData(@NonNull String key, @NonNull String data) {
+        dataMap.put(key, data);
+    }
+
+    public String getData(@NonNull String key) {
+        return dataMap.get(key);
+    }
+
+    public void removeData(String key) {
+        dataMap.remove(key);
     }
 }

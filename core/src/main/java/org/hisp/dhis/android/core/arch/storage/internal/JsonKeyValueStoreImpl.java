@@ -28,11 +28,57 @@
 
 package org.hisp.dhis.android.core.arch.storage.internal;
 
-public interface ObjectSecureStore<O> {
+import com.fasterxml.jackson.core.JsonProcessingException;
 
-    void set(O o);
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
 
-    O get();
+import java.io.IOException;
 
-    void remove();
+@SuppressWarnings({"PMD.PreserveStackTrace"})
+public class JsonKeyValueStoreImpl<O> implements ObjectKeyValueStore<O> {
+
+    private final KeyValueStore secureStore;
+    private final String key;
+    private final Class<O> clazz;
+
+    private O object;
+
+    public JsonKeyValueStoreImpl(KeyValueStore secureStore, String key, Class<O> clazz) {
+        this.secureStore = secureStore;
+        this.key = key;
+        this.clazz = clazz;
+    }
+
+    public void set(O o) {
+        try {
+            String strObject = ObjectMapperFactory.objectMapper().writeValueAsString(o);
+            this.secureStore.setData(key, strObject);
+            this.object = o;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Couldn't persist object in secure store");
+        }
+    }
+
+    public O get() {
+        if (this.object == null) {
+            String strObject = this.secureStore.getData(key);
+            if (strObject == null) {
+                return null;
+            } else {
+                try {
+                    return ObjectMapperFactory.objectMapper().readValue(strObject, clazz);
+                } catch (IOException e) {
+                    throw new RuntimeException("Couldn't read object from secure store");
+                }
+            }
+
+        } else {
+            return this.object;
+        }
+    }
+
+    public void remove() {
+        this.object = null;
+        this.secureStore.removeData(key);
+    }
 }

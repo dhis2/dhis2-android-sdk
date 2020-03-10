@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager;
@@ -83,7 +83,7 @@ public class MetadataCall {
     private final DatabaseAdapter databaseAdapter;
     private final GeneralSettingCall generalSettingCall;
     private final MultiUserDatabaseManager multiUserDatabaseManager;
-    private final ObjectSecureStore<Credentials> credentialsSecureStore;
+    private final ObjectKeyValueStore<Credentials> credentialsSecureStore;
 
     @Inject
     MetadataCall(@NonNull RxAPICallExecutor rxCallExecutor,
@@ -99,7 +99,7 @@ public class MetadataCall {
                  @NonNull DatabaseAdapter databaseAdapter,
                  @NonNull GeneralSettingCall generalSettingCall,
                  @NonNull MultiUserDatabaseManager multiUserDatabaseManager,
-                 @NonNull ObjectSecureStore<Credentials> credentialsSecureStore) {
+                 @NonNull ObjectKeyValueStore<Credentials> credentialsSecureStore) {
         this.rxCallExecutor = rxCallExecutor;
         this.systemInfoDownloader = systemInfoDownloader;
         this.systemSettingDownloader = systemSettingDownloader;

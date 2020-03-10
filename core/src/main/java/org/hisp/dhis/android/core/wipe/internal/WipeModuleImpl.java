@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.wipe.internal;
 
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
@@ -40,11 +40,11 @@ final class WipeModuleImpl implements WipeModule {
 
     private final D2CallExecutor d2CallExecutor;
     private final List<ModuleWiper> moduleWipers;
-    private final ObjectSecureStore<Credentials> credentialsSecureStore;
+    private final ObjectKeyValueStore<Credentials> credentialsSecureStore;
 
     WipeModuleImpl(D2CallExecutor d2CallExecutor,
                    List<ModuleWiper> moduleWipers,
-                   ObjectSecureStore<Credentials> credentialsSecureStore) {
+                   ObjectKeyValueStore<Credentials> credentialsSecureStore) {
         this.d2CallExecutor = d2CallExecutor;
         this.moduleWipers = moduleWipers;
         this.credentialsSecureStore = credentialsSecureStore;

@@ -37,7 +37,8 @@ import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 
 import javax.inject.Inject;
@@ -48,7 +49,7 @@ import dagger.Reusable;
 public class MultiUserDatabaseManager {
 
     private final DatabaseAdapter databaseAdapter;
-    private final ObjectSecureStore<DatabasesConfiguration> databaseConfigurationSecureStore;
+    private final ObjectKeyValueStore<DatabasesConfiguration> databaseConfigurationSecureStore;
     private final DatabaseConfigurationHelper configurationHelper;
     private final Context context;
     private final DatabaseCopy databaseCopy;
@@ -58,7 +59,7 @@ public class MultiUserDatabaseManager {
     @Inject
     MultiUserDatabaseManager(
             @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull ObjectSecureStore<DatabasesConfiguration> databaseConfigurationSecureStore,
+            @NonNull ObjectKeyValueStore<DatabasesConfiguration> databaseConfigurationSecureStore,
             @NonNull DatabaseConfigurationHelper configurationHelper,
             @NonNull Context context,
             @NonNull DatabaseCopy databaseCopy,
@@ -75,12 +76,13 @@ public class MultiUserDatabaseManager {
 
     public static MultiUserDatabaseManager create(DatabaseAdapter databaseAdapter, Context context,
                                                   SecureStore secureStore,
+                                                  InsecureStore insecureStore,
                                                   DatabaseAdapterFactory databaseAdapterFactory) {
         DatabaseConfigurationHelper configHelper = new DatabaseConfigurationHelper(new DatabaseNameGenerator());
         return new MultiUserDatabaseManager(databaseAdapter,
-                DatabaseConfigurationSecureStore.get(secureStore), configHelper, context,
-                new DatabaseCopy(), DatabaseConfigurationMigration.create(context, secureStore, databaseAdapterFactory),
-                databaseAdapterFactory);
+                DatabaseConfigurationInsecureStore.get(insecureStore), configHelper, context,
+                new DatabaseCopy(), DatabaseConfigurationMigration.create(context, secureStore,
+                insecureStore, databaseAdapterFactory), databaseAdapterFactory);
     }
 
     public void loadIfLogged(Credentials credentials) {

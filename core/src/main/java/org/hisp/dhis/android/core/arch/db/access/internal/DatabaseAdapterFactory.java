@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.db.access.internal;
 import android.content.Context;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordsSecureStore;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration;
@@ -53,12 +53,12 @@ public class DatabaseAdapterFactory {
     private static List<DatabaseAdapter> adaptersToPreventNotClosedError = new ArrayList<>();
 
     private final Context context;
-    private final ObjectSecureStore<DatabasesEncryptionPasswords> passwordsStore;
+    private final ObjectKeyValueStore<DatabasesEncryptionPasswords> passwordsStore;
     private final DatabaseEncryptionPasswordGenerator passwordGenerator;
 
     @Inject
     DatabaseAdapterFactory(Context context,
-                           ObjectSecureStore<DatabasesEncryptionPasswords> passwordsStore,
+                           ObjectKeyValueStore<DatabasesEncryptionPasswords> passwordsStore,
                            DatabaseEncryptionPasswordGenerator passwordGenerator) {
         this.context = context;
         this.passwordsStore = passwordsStore;

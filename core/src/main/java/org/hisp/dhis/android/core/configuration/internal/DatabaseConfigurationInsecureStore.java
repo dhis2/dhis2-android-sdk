@@ -28,57 +28,17 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import android.content.Context;
-
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.JsonKeyValueStoreImpl;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
-import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
-import org.hisp.dhis.android.core.constant.ConstantModule;
-import org.hisp.dhis.android.core.constant.internal.ConstantModuleImpl;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+public final class DatabaseConfigurationInsecureStore {
 
-@Module
-public final class ConfigurationPackageDIModule {
-
-    @Provides
-    @Reusable
-    ObjectKeyValueStore<DatabasesConfiguration> configurationSecureStore(InsecureStore secureStore) {
-        return DatabaseConfigurationInsecureStore.get(secureStore);
+    public static ObjectKeyValueStore<DatabasesConfiguration> get(InsecureStore insecureStore) {
+        return new JsonKeyValueStoreImpl<>(insecureStore, "DB_CONFIGS", DatabasesConfiguration.class);
     }
 
-    @Provides
-    @Reusable
-    ObjectKeyValueStore<DatabasesEncryptionPasswords> passwordsSecureStore(SecureStore secureStore) {
-        return DatabaseEncryptionPasswordsSecureStore.get(secureStore);
-    }
+    private DatabaseConfigurationInsecureStore() {
 
-    @Provides
-    @Reusable
-    DatabaseConfigurationHelper configurationHelper() {
-        return new DatabaseConfigurationHelper(new DatabaseNameGenerator());
-    }
-
-    @Provides
-    @Reusable
-    DatabaseConfigurationMigration configurationMigration(Context context, SecureStore secureStore,
-                                                          InsecureStore insecureStore,
-                                                          DatabaseAdapterFactory adapterFactory) {
-        return DatabaseConfigurationMigration.create(context, secureStore, insecureStore, adapterFactory);
-    }
-
-    @Provides
-    @Reusable
-    DatabaseCopy databaseCopy() {
-        return new DatabaseCopy();
-    }
-
-    @Provides
-    @Reusable
-    ConstantModule module(ConstantModuleImpl impl) {
-        return impl;
     }
 }

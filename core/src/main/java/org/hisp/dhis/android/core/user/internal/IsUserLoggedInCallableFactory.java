@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.user.internal;
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 
 import javax.inject.Inject;
 
@@ -40,10 +40,10 @@ import io.reactivex.Single;
 final class IsUserLoggedInCallableFactory {
 
     @NonNull
-    private final ObjectSecureStore<Credentials> credentialsSecureStore;
+    private final ObjectKeyValueStore<Credentials> credentialsSecureStore;
 
     @Inject
-    IsUserLoggedInCallableFactory(@NonNull ObjectSecureStore<Credentials> credentialsSecureStore) {
+    IsUserLoggedInCallableFactory(@NonNull ObjectKeyValueStore<Credentials> credentialsSecureStore) {
         this.credentialsSecureStore = credentialsSecureStore;
     }
 

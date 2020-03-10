@@ -35,7 +35,9 @@ import androidx.test.InstrumentationRegistry;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.InMemoryUnsecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.user.UserCredentials;
@@ -77,14 +79,15 @@ public class DatabaseConfigurationMigrationIntegrationShould {
             .user(ObjectWithUid.create("user"))
             .build();
 
-    private ObjectSecureStore<Configuration> oldConfigurationStore;
-    private ObjectSecureStore<DatabasesConfiguration> newConfigurationStore;
+    private ObjectKeyValueStore<Configuration> oldConfigurationStore;
+    private ObjectKeyValueStore<DatabasesConfiguration> newConfigurationStore;
 
     @Before
     public void setUp() throws IOException {
         SecureStore secureStore = new InMemorySecureStore();
+        InsecureStore insecureStore = new InMemoryUnsecureStore();
         oldConfigurationStore = new ConfigurationSecureStoreImpl(secureStore);
-        newConfigurationStore = DatabaseConfigurationSecureStore.get(secureStore);
+        newConfigurationStore = DatabaseConfigurationInsecureStore.get(insecureStore);
         migration = new DatabaseConfigurationMigration(context, oldConfigurationStore, newConfigurationStore,
                 transformer, nameGenerator, renamer, databaseAdapterFactory);
     }

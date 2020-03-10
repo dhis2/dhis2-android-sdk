@@ -33,7 +33,7 @@ import android.content.Context;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +55,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     private DatabaseAdapter databaseAdapter;
 
     @Mock
-    private ObjectSecureStore<DatabasesConfiguration> databaseConfigurationSecureStore;
+    private ObjectKeyValueStore<DatabasesConfiguration> databaseConfigurationSecureStore;
 
     @Mock
     private DatabaseConfigurationHelper configurationHelper;

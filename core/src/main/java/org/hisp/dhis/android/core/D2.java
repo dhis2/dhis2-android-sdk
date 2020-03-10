@@ -38,7 +38,8 @@ import org.hisp.dhis.android.core.arch.d2.internal.D2Modules;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.category.CategoryModule;
 import org.hisp.dhis.android.core.constant.ConstantModule;
@@ -77,10 +78,11 @@ public final class D2 {
 
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter, @NonNull Context context,
        @NonNull SecureStore secureStore,
-       @NonNull ObjectSecureStore<Credentials> credentialsSecureStore) {
+       @NonNull InsecureStore insecureStore,
+       @NonNull ObjectKeyValueStore<Credentials> credentialsSecureStore) {
         this.retrofit = retrofit;
         this.databaseAdapter = databaseAdapter;
-        this.d2DIComponent = D2DIComponent.create(context, retrofit, databaseAdapter, secureStore,
+        this.d2DIComponent = D2DIComponent.create(context, retrofit, databaseAdapter, secureStore, insecureStore,
                 credentialsSecureStore);
         this.modules = d2DIComponent.modules();
     }

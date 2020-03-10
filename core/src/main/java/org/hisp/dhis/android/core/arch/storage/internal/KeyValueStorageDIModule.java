@@ -26,24 +26,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.wipe.internal;
+package org.hisp.dhis.android.core.arch.storage.internal;
 
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import dagger.Reusable;
 
-@Module()
-public final class WipeDIModule {
+@Module
+public class KeyValueStorageDIModule {
+    private final SecureStore secureStore;
+    private final InsecureStore insecureStore;
+    private final ObjectKeyValueStore<Credentials> credentialsSecureStore;
+
+    public KeyValueStorageDIModule(SecureStore secureStore,
+                                   InsecureStore insecureStore,
+                                   ObjectKeyValueStore<Credentials> credentialsSecureStore) {
+        this.secureStore = secureStore;
+        this.insecureStore = insecureStore;
+        this.credentialsSecureStore = credentialsSecureStore;
+    }
 
     @Provides
-    @Reusable
-    WipeModule wipeModule(D2CallExecutor d2CallExecutor,
-                          D2ModuleWipers moduleWipers,
-                          ObjectKeyValueStore<Credentials> credentialsSecureStore) {
-        return new WipeModuleImpl(d2CallExecutor, moduleWipers.wipers, credentialsSecureStore);
+    @Singleton
+    SecureStore secureStore() {
+        return secureStore;
+    }
+
+    @Provides
+    @Singleton
+    InsecureStore insecureStore() {
+        return insecureStore;
+    }
+
+    @Provides
+    @Singleton
+    ObjectKeyValueStore<Credentials> credentialsSecureStore() {
+        return credentialsSecureStore;
     }
 }

@@ -26,19 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal;
+package org.hisp.dhis.android.core.arch.storage.internal;
 
-import org.hisp.dhis.android.core.arch.storage.internal.JsonSecureStoreImpl;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
+import android.content.Context;
+import android.content.SharedPreferences;
 
-public final class DatabaseConfigurationSecureStore {
+import androidx.annotation.NonNull;
 
-    public static ObjectSecureStore<DatabasesConfiguration> get(SecureStore secureStore) {
-        return new JsonSecureStoreImpl<>(secureStore, "DB_CONFIGS", DatabasesConfiguration.class);
+public final class AndroidInsecureStore implements InsecureStore {
+
+    private static final String PREFERENCES_FILE = "preferences";
+
+    private final SharedPreferences preferences;
+
+    public AndroidInsecureStore(Context context) {
+        preferences = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
     }
 
-    private DatabaseConfigurationSecureStore() {
+    public void setData(@NonNull String key, @NonNull String data) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(key, data);
+        editor.apply();
+    }
 
+    public String getData(@NonNull String key) {
+        return preferences.getString(key, null);
+
+    }
+
+    public void removeData(String key) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove(key);
+        editor.apply();
     }
 }

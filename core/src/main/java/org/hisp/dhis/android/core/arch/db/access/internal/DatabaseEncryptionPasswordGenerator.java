@@ -27,18 +27,23 @@
 
 package org.hisp.dhis.android.core.arch.db.access.internal;
 
-import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Random;
 
 class DatabaseEncryptionPasswordGenerator {
 
-    Random random = new SecureRandom();
+    private final Random random = new SecureRandom();
 
-    String generate() {
-        int passwordLength = 32;
-        byte[] array = new byte[passwordLength];
-        random.nextBytes(array);
-        return new String(array, StandardCharsets.UTF_8);
+    private static final String ALLOWED_CHARS = "0123456789" + "abcdefghijklmnopqrstuvwxyz"
+            + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final int CODESIZE = 32;
+
+    public String generate() {
+        char[] randomChars = new char[CODESIZE];
+        for (int i = 0; i < CODESIZE; ++i) {
+            randomChars[i] = ALLOWED_CHARS.charAt(random.nextInt(ALLOWED_CHARS.length()));
+        }
+
+        return new String(randomChars);
     }
 }

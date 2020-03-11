@@ -25,13 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.organisationunit.internal;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.user.User;
+package org.hisp.dhis.android.core.arch.modules.internal;
 
-interface OrganisationUnitHandler extends HandlerWithTransformer<OrganisationUnit> {
-    void resetLinks();
-    void setData(User user, OrganisationUnit.Scope scope);
+import java.util.Set;
+import java.util.concurrent.Callable;
+
+public interface MetadataModuleByUidDownloader<O> {
+   Callable<O> downloadMetadata(Set<String> uids);
 }

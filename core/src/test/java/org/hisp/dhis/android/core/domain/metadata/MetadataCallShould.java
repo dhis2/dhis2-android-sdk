@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader;
@@ -71,7 +72,7 @@ import io.reactivex.observers.TestObserver;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
@@ -87,10 +88,10 @@ public class MetadataCallShould extends BaseCallShould {
     private RxAPICallExecutor rxAPICallExecutor;
 
     @Mock
-    private Program program;
+    private DataSet dataSet;
 
     @Mock
-    private DataSet dataSet;
+    private OrganisationUnit organisationUnit;
 
     @Mock
     private Constant constant;
@@ -114,7 +115,7 @@ public class MetadataCallShould extends BaseCallShould {
     private Callable<List<Constant>> constantCall;
 
     @Mock
-    private Callable<Unit> organisationUnitDownloadCall;
+    private Callable<List<OrganisationUnit>> organisationUnitDownloadCall;
 
     @Mock
     private SystemInfoModuleDownloader systemInfoDownloader;
@@ -173,11 +174,10 @@ public class MetadataCallShould extends BaseCallShould {
         when(systemInfoDownloader.downloadMetadata()).thenReturn(Completable.complete());
         when(systemSettingDownloader.downloadMetadata()).thenReturn(systemSettingDownloadCall);
         when(userDownloader.downloadMetadata()).thenReturn(userCall);
-        when(programDownloader.downloadMetadata()).thenReturn(programDownloadCall);
+        when(programDownloader.downloadMetadata(anySet())).thenReturn(programDownloadCall);
         when(categoryDownloader.downloadMetadata()).thenReturn(categoryDownloadCall);
-        when(organisationUnitDownloader.downloadMetadata(same(user), anyCollection(),
-                anyCollection())).thenReturn(organisationUnitDownloadCall);
-        when(dataSetDownloader.downloadMetadata()).thenReturn(dataSetDownloadCall);
+        when(organisationUnitDownloader.downloadMetadata(same(user))).thenReturn(organisationUnitDownloadCall);
+        when(dataSetDownloader.downloadMetadata(anySet())).thenReturn(dataSetDownloadCall);
         when(constantDownloader.downloadMetadata()).thenReturn(constantCall);
         when(smsModule.configCase()).thenReturn(configCase);
         when(configCase.refreshMetadataIdsCallable()).thenReturn(refreshMetadataIdsCallable);
@@ -186,15 +186,15 @@ public class MetadataCallShould extends BaseCallShould {
         when(systemSettingDownloadCall.call()).thenReturn(new Unit());
         when(userCall.call()).thenReturn(user);
         when(categoryDownloadCall.call()).thenReturn(new Unit());
-        when(programDownloadCall.call()).thenReturn(Lists.newArrayList(program));
         when(dataSetDownloadCall.call()).thenReturn(Lists.newArrayList(dataSet));
-        when(organisationUnitDownloadCall.call()).thenReturn(new Unit());
+        when(organisationUnitDownloadCall.call()).thenReturn(Lists.newArrayList(organisationUnit));
         when(constantCall.call()).thenReturn(Lists.newArrayList(constant));
         when(generalSettingCall.isDatabaseEncrypted()).thenReturn(Single.just(false));
 
         when(d2ErrorStore.insert(any(D2Error.class))).thenReturn(0L);
 
-        when(rxAPICallExecutor.wrapObservableTransactionally(any(Observable.class), anyBoolean())).then(AdditionalAnswers.returnsFirstArg());
+        when(rxAPICallExecutor.wrapObservableTransactionally(any(Observable.class), anyBoolean()))
+                .then(AdditionalAnswers.returnsFirstArg());
 
         // Metadata call
         metadataCall = new MetadataCall(

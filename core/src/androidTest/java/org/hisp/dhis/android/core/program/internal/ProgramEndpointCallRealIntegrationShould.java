@@ -26,12 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
-import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.program.Program;
 import org.junit.Before;
 import org.mockito.internal.util.collections.Sets;
 
@@ -39,28 +39,28 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class DataSetEndpointCallRealIntegrationShould extends BaseRealIntegrationTest {
+public class ProgramEndpointCallRealIntegrationShould extends BaseRealIntegrationTest {
     /**
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
-    private Callable<List<DataSet>> dataSetCall;
+    private Callable<List<Program>> programCall;
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
         d2 = D2Factory.forNewDatabase();
-        dataSetCall = createCall();
+        programCall = createCall();
     }
 
-    private Callable<List<DataSet>> createCall() {
-        return getD2DIComponent(d2).dataSetCallFactory().create(Sets.newSet("lyLU2wR22tC", "BfMAe6Itzgt"));
+    private Callable<List<Program>> createCall() {
+        return getD2DIComponent(d2).programCallFactory().create(Sets.newSet("lxAQ7Zs9VYR", "AwNmMxxakEo"));
     }
 
     // @Test
-    public void download_data_sets() throws Exception {
+    public void download_programs() throws Exception {
         if (!d2.userModule().isLogged().blockingGet()) {
             d2.userModule().logIn(username, password, url).blockingGet();
         }
@@ -71,6 +71,6 @@ public class DataSetEndpointCallRealIntegrationShould extends BaseRealIntegratio
             DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
             uncomment the @Test tag */
 
-        dataSetCall.call();
+        programCall.call();
     }
 }

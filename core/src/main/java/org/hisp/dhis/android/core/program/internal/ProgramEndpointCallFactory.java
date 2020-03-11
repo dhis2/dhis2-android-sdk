@@ -30,22 +30,27 @@ package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactoryImpl;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.PayloadNoResourceCallFetcher;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.program.Program;
+
+import java.util.Set;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-final class ProgramEndpointCallFactory extends ListCallFactoryImpl<Program> {
+final class ProgramEndpointCallFactory extends UidsCallFactoryImpl<Program> {
+
+    private static final int MAX_UID_LIST_SIZE = 50;
 
     private final ProgramService service;
     private final Handler<Program> handler;
@@ -61,13 +66,17 @@ final class ProgramEndpointCallFactory extends ListCallFactoryImpl<Program> {
     }
 
     @Override
-    protected CallFetcher<Program> fetcher() {
+    protected CallFetcher<Program> fetcher(Set<String> uids) {
 
-        return new PayloadNoResourceCallFetcher<Program>(apiCallExecutor) {
+        return new UidsNoResourceCallFetcher<Program>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
+            String accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString();
+
             @Override
-            protected retrofit2.Call<Payload<Program>> getCall() {
-                String accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString();
-                return service.getPrograms(ProgramFields.allFields, accessDataReadFilter, Boolean.FALSE);
+            protected retrofit2.Call<Payload<Program>> getCall(UidsQuery query) {
+                return service.getPrograms(ProgramFields.allFields,
+                        ProgramFields.uid.in(query.uids()),
+                        accessDataReadFilter,
+                        Boolean.FALSE);
             }
         };
     }

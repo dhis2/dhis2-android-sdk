@@ -94,7 +94,7 @@ public class DatabaseAdapterFactory {
         if (encrypt) {
             EncryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, encryptedOpenHelpers,
                     v -> new EncryptedDatabaseOpenHelper(context, databaseName, version));
-            String password = passwordManager.getEncryptionPassword(databaseName);
+            String password = passwordManager.getPassword(databaseName);
             return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(password));
         } else {
             UnencryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, unencryptedOpenHelpers,

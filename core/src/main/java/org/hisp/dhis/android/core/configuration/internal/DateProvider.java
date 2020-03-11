@@ -28,40 +28,6 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import androidx.annotation.NonNull;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
-import java.util.List;
-
-@AutoValue
-@JsonDeserialize(builder = AutoValue_DatabaseServerConfiguration.Builder.class)
-public abstract class DatabaseServerConfiguration {
-
-    @JsonProperty()
-    @NonNull
-    public abstract String serverUrl();
-
-    @JsonProperty()
-    @NonNull
-    public abstract List<DatabaseUserConfiguration> users();
-
-    public static Builder builder() {
-        return new AutoValue_DatabaseServerConfiguration.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder serverUrl(String serverUrl);
-
-        public abstract Builder users(List<DatabaseUserConfiguration> users);
-
-        public abstract DatabaseServerConfiguration build();
-    }
+interface DateProvider {
+   String getDateStr();
 }

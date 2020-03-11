@@ -28,15 +28,30 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
+import androidx.annotation.NonNull;
+
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 class DatabaseConfigurationHelper {
 
     private final DatabaseNameGenerator databaseNameGenerator;
+    private final DateProvider dateProvider;
 
-    DatabaseConfigurationHelper(DatabaseNameGenerator databaseNameGenerator) {
+    DatabaseConfigurationHelper(DatabaseNameGenerator databaseNameGenerator, DateProvider dateProvider) {
         this.databaseNameGenerator = databaseNameGenerator;
+        this.dateProvider = dateProvider;
+    }
+
+    static DatabaseConfigurationHelper create() {
+        return new DatabaseConfigurationHelper(new DatabaseNameGenerator(),
+                () -> BaseIdentifiableObject.dateToDateStr(new Date()));
     }
 
     @SuppressWarnings("PMD.AvoidDeeplyNestedIfStmts")
@@ -53,6 +68,24 @@ class DatabaseConfigurationHelper {
             }
         }
         return null;
+    }
+
+    DatabasesConfiguration removeServerUserConfiguration(DatabasesConfiguration configuration,
+                                                         DatabaseUserConfiguration userToRemove) {
+        List<DatabaseServerConfiguration> servers = new ArrayList<>(configuration.servers().size());
+        for (DatabaseServerConfiguration server: configuration.servers()) {
+            List<DatabaseUserConfiguration> users = new ArrayList<>(server.users().size());
+            for (DatabaseUserConfiguration user: server.users()) {
+                if (!user.databaseName().equals(userToRemove.databaseName())) {
+                    users.add(user);
+                }
+            }
+
+            if (users.size() > 0) {
+                servers.add(server.toBuilder().users(users).build());
+            }
+        }
+        return configuration.toBuilder().servers(servers).build();
     }
 
     DatabaseUserConfiguration getLoggedUserConfiguration(DatabasesConfiguration configuration, String username) {
@@ -92,6 +125,7 @@ class DatabaseConfigurationHelper {
                 .username(username)
                 .databaseName(databaseNameGenerator.getDatabaseName(serverUrl, username, encrypt))
                 .encrypted(encrypt)
+                .databaseCreationDate(dateProvider.getDateStr())
                 .build();
 
         newUsers.add(newUserConf);
@@ -114,5 +148,52 @@ class DatabaseConfigurationHelper {
                 .loggedServerUrl(serverUrl)
                 .servers(newServers)
                 .build();
+    }
+
+    int countServerUserPairs(DatabasesConfiguration configuration) {
+        if (configuration == null) {
+            return 0;
+        } else {
+            int count = 0;
+            for (DatabaseServerConfiguration server: configuration.servers()) {
+                count += server.users().size();
+            }
+            return count;
+        }
+    }
+
+    DatabaseUserConfiguration getOldestServerUser(DatabasesConfiguration configuration) {
+        if (configuration == null) {
+            return null;
+        } else {
+            DatabaseUserConfiguration oldestUser = null;
+            for (DatabaseServerConfiguration server: configuration.servers()) {
+                for (DatabaseUserConfiguration user: server.users()) {
+                    try {
+                        oldestUser = getOlderUserInternal(oldestUser, user);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            return oldestUser;
+        }
+    }
+
+    private DatabaseUserConfiguration getOlderUserInternal(@Nullable DatabaseUserConfiguration oldestUser,
+                                                           @NonNull DatabaseUserConfiguration user) throws ParseException {
+        if (oldestUser == null) {
+            return user;
+        } else {
+            Date oldestUserDate = BaseIdentifiableObject.parseDate(oldestUser.databaseCreationDate());
+            Date userDate = BaseIdentifiableObject.parseDate(user.databaseCreationDate());
+            if (userDate.compareTo(oldestUserDate) < 0) {
+                return user;
+            } else {
+                return oldestUser;
+            }
+        }
     }
 }

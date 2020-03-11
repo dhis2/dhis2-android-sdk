@@ -80,20 +80,27 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     private final String UNENCRYPTED_DB_NAME = "un.db";
     private final String ENCRYPTED_DB_NAME = "un.db";
 
+    private static final String DATE = "2014-06-06T20:44:21.375";
+
     private DatabaseUserConfiguration userConfigurationUnencrypted = DatabaseUserConfiguration.builder()
             .databaseName(UNENCRYPTED_DB_NAME)
             .username(USERNAME)
             .encrypted(false)
+            .databaseCreationDate(DATE)
             .build();
 
     private DatabaseUserConfiguration userConfigurationEncrypted = DatabaseUserConfiguration.builder()
             .databaseName(ENCRYPTED_DB_NAME)
             .username(USERNAME)
             .encrypted(false)
+            .databaseCreationDate(DATE)
             .build();
 
     @Mock
     private DatabasesConfiguration databasesConfiguration;
+
+    @Mock
+    private DatabaseEncryptionPasswordManager passwordManager;
 
     private MultiUserDatabaseManager manager;
 
@@ -102,7 +109,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     public void setUp() throws Exception {
         super.setUp();
         manager = new MultiUserDatabaseManager(databaseAdapter, databaseConfigurationSecureStore, configurationHelper,
-                context, databaseCopy, migration, databaseAdapterFactory);
+                context, databaseCopy, migration, databaseAdapterFactory, passwordManager);
     }
 
     @Test

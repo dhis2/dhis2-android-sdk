@@ -31,9 +31,8 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 public final class MetadataHelper {
@@ -41,7 +40,7 @@ public final class MetadataHelper {
     private MetadataHelper() {}
 
     public static Set<String> getOrgUnitsProgramUids(Collection<OrganisationUnit> organisationUnits) {
-        List<ObjectWithUid> programs = new ArrayList<>();
+        Set<ObjectWithUid> programs = new HashSet<>();
         for (OrganisationUnit organisationUnit : organisationUnits) {
             if (organisationUnit.programs() != null) {
                 programs.addAll(organisationUnit.programs());
@@ -52,7 +51,7 @@ public final class MetadataHelper {
     }
 
     public static Set<String> getOrgUnitsDataSetUids(Collection<OrganisationUnit> organisationUnits) {
-        List<ObjectWithUid> dataSets = new ArrayList<>();
+        Set<ObjectWithUid> dataSets = new HashSet<>();
         for (OrganisationUnit organisationUnit : organisationUnits) {
             if (organisationUnit.dataSets() != null) {
                 dataSets.addAll(organisationUnit.dataSets());

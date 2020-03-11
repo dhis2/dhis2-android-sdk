@@ -114,7 +114,9 @@ public class MultiUserDatabaseManager {
                 DatabasesConfiguration updatedConfigurations =
                         configurationHelper.removeServerUserConfiguration(configuration, userConfiguration);
                 databaseConfigurationSecureStore.set(updatedConfigurations);
-                passwordManager.deletePassword(userConfiguration.databaseName());
+                if (userConfiguration.encrypted()) {
+                    passwordManager.deletePassword(userConfiguration.databaseName());
+                }
                 context.deleteDatabase(userConfiguration.databaseName());
             }
             DatabaseUserConfiguration userConfiguration = addNewConfigurationInternal(serverUrl, username, encrypt);

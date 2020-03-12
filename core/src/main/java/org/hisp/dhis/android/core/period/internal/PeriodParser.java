@@ -40,6 +40,10 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+@SuppressWarnings({
+        "PMD.CyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity"
+})
 @Singleton
 public class PeriodParser {
 
@@ -56,110 +60,85 @@ public class PeriodParser {
     }
 
     public Date parse(@NonNull String periodId, @NonNull PeriodType periodType) throws IllegalArgumentException {
-        Calendar calendar = calendarProvider.getCalendar();
-
-        Pattern pattern = Pattern.compile(periodType.getPattern());
-        Matcher matcher = pattern.matcher(periodId);
-        Date date = new Date();
-        boolean match = matcher.find();
-
-        if (!match) {
-            return null;
-        }
-
-        if (PeriodType.Daily == periodType) {
-            int year = Integer.parseInt(matcher.group(1));
-            int month = Integer.parseInt(matcher.group(2));
-            int day = Integer.parseInt(matcher.group(3));
-
-            calendar.set(year, month - 1, day);
-            date = calendar.getTime();
-
-        } else if (PeriodType.Weekly == periodType ||
-                PeriodType.WeeklyWednesday == periodType ||
-                PeriodType.WeeklyThursday == periodType ||
-                PeriodType.WeeklySaturday == periodType ||
-                PeriodType.WeeklySunday == periodType) {
-            int year = Integer.parseInt(matcher.group(1));
-            int week = Integer.parseInt(matcher.group(2));
-
-            date = getDateTimeFromWeek(year, week, calendar, PeriodType.firstDayOfTheWeek(periodType));
-
-        } else if (PeriodType.BiWeekly == periodType) {
-            int year = Integer.parseInt(matcher.group(1));
-            int week = Integer.parseInt(matcher.group(2)) * 2 - 1;
-
-            date = getDateTimeFromWeek(year, week, calendar, PeriodType.firstDayOfTheWeek(periodType));
-
-        } else if (PeriodType.Monthly == periodType) {
-            int year = Integer.parseInt(matcher.group(1));
-            int month = Integer.parseInt(matcher.group(2));
-
-            date = getDateTimeFromMonth(year, month - 1, calendar);
-
-        } else if (PeriodType.BiMonthly == periodType) {
-            int year = Integer.parseInt(matcher.group(1));
-            int biMonth = Integer.parseInt(matcher.group(2));
-
-            date = getDateTimeFromMonth(year, (biMonth * 2) - 2, calendar);
-
-        } else if (PeriodType.Quarterly == periodType) {
-            int year = Integer.parseInt(matcher.group(1));
-            int quarter = Integer.parseInt(matcher.group(2));
-
-            date = getDateTimeFromMonth(year, (quarter * 3) - 3, calendar);
-
-        } else if (PeriodType.SixMonthly == periodType) {
-            int year = Integer.parseInt(matcher.group(1));
-            int semester = Integer.parseInt(matcher.group(2));
-
-            date = getDateTimeFromMonth(year, (semester * 6) - 6, calendar);
-
-        } else if (PeriodType.SixMonthlyApril == periodType) {
-            int year = Integer.parseInt(matcher.group(1));
-            int semester = Integer.parseInt(matcher.group(2));
-
-            date = getDateTimeFromMonth(year, (semester * 6) - 3, calendar);
-
-        } else if (PeriodType.SixMonthlyNov == periodType) {
-            int year = Integer.parseInt(matcher.group(1));
-            int semester = Integer.parseInt(matcher.group(2));
-
-            date = getDateTimeFromMonth(semester == 1 ? year - 1 : year,
-                    semester == 1 ? Calendar.NOVEMBER :
-                    semester == 2 ? Calendar.MAY : -1, calendar);
-
-        } else if (PeriodType.Yearly == periodType) {
-            int year = Integer.parseInt(matcher.group(1));
-
-            date = getDateTimeFromMonth(year, Calendar.JANUARY, calendar);
-
-        } else if (PeriodType.FinancialApril == periodType) {
-            int year = Integer.parseInt(matcher.group(1));
-
-            date = getDateTimeFromMonth(year, Calendar.APRIL, calendar);
-
-        } else if (PeriodType.FinancialJuly == periodType) {
-            int year = Integer.parseInt(matcher.group(1));
-
-            date = getDateTimeFromMonth(year, Calendar.JULY, calendar);
-
-        } else if (PeriodType.FinancialOct == periodType) {
-            int year = Integer.parseInt(matcher.group(1));
-
-            date = getDateTimeFromMonth(year, Calendar.OCTOBER, calendar);
-
-        } else if (PeriodType.FinancialNov == periodType) {
-            int year = Integer.parseInt(matcher.group(1));
-
-            date = getDateTimeFromMonth(year - 1, Calendar.NOVEMBER, calendar);
-        }
-
+        Matcher matcher = getMatcherFromPeriodId(periodId, periodType);
+        Date date = getDateFromPeriodId(matcher, periodType);
         if (date == null) {
             throw new IllegalArgumentException(
                     "It has not been possible to generate a date for the given periodId.");
         } else {
             return date;
+        }
+    }
+
+    private Matcher getMatcherFromPeriodId(String periodId, PeriodType periodType) {
+        Pattern pattern = Pattern.compile(periodType.getPattern());
+        Matcher matcher = pattern.matcher(periodId);
+        boolean match = matcher.find();
+
+        if (!match) {
+            throw new IllegalArgumentException(
+                    "It has not been possible to generate a match for the period pattern.");
+        }
+
+        return matcher;
+    }
+
+    private Date getDateFromPeriodId(Matcher matcher, PeriodType periodType) {
+        Calendar calendar = calendarProvider.getCalendar();
+        int year = Integer.parseInt(matcher.group(1));
+        int month;
+        int semester;
+        int week;
+
+        switch (periodType) {
+            case Daily:
+                month = Integer.parseInt(matcher.group(2));
+                int day = Integer.parseInt(matcher.group(3));
+
+                calendar.set(year, month - 1, day);
+                return calendar.getTime();
+            case Weekly:
+            case WeeklyWednesday:
+            case WeeklyThursday:
+            case WeeklySaturday:
+            case WeeklySunday:
+                week = Integer.parseInt(matcher.group(2));
+                return getDateTimeFromWeek(year, week, calendar, PeriodType.firstDayOfTheWeek(periodType));
+            case BiWeekly:
+                week = Integer.parseInt(matcher.group(2)) * 2 - 1;
+                return getDateTimeFromWeek(year, week, calendar, PeriodType.firstDayOfTheWeek(periodType));
+            case Monthly:
+                month = Integer.parseInt(matcher.group(2));
+                return getDateTimeFromMonth(year, month - 1, calendar);
+            case BiMonthly:
+                int biMonth = Integer.parseInt(matcher.group(2));
+                return getDateTimeFromMonth(year, biMonth * 2 - 2, calendar);
+            case Quarterly:
+                int quarter = Integer.parseInt(matcher.group(2));
+                return getDateTimeFromMonth(year, quarter * 3 - 3, calendar);
+            case SixMonthly:
+                semester = Integer.parseInt(matcher.group(2));
+                return getDateTimeFromMonth(year, semester * 6 - 6, calendar);
+            case SixMonthlyApril:
+                semester = Integer.parseInt(matcher.group(2));
+                return getDateTimeFromMonth(year, semester * 6 - 3, calendar);
+            case SixMonthlyNov:
+                semester = Integer.parseInt(matcher.group(2));
+                return getDateTimeFromMonth(semester == 1 ? year - 1 : year,
+                        semester == 1 ? Calendar.NOVEMBER :
+                                semester == 2 ? Calendar.MAY : -1, calendar);
+            case Yearly:
+                return getDateTimeFromMonth(year, Calendar.JANUARY, calendar);
+            case FinancialApril:
+                return getDateTimeFromMonth(year, Calendar.APRIL, calendar);
+            case FinancialJuly:
+                return getDateTimeFromMonth(year, Calendar.JULY, calendar);
+            case FinancialOct:
+                return getDateTimeFromMonth(year, Calendar.OCTOBER, calendar);
+            case FinancialNov:
+                return getDateTimeFromMonth(year - 1, Calendar.NOVEMBER, calendar);
+            default:
+                return null;
         }
     }
 

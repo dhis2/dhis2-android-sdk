@@ -56,7 +56,7 @@ public class MultiUserDatabaseManager {
     private final DatabaseConfigurationMigration migration;
     private final DatabaseAdapterFactory databaseAdapterFactory;
 
-    private static final int MAX_SERVER_USER_PAIRS = 1;
+    private static int maxServerUserPairs = 1;
 
     @Inject
     MultiUserDatabaseManager(
@@ -74,6 +74,10 @@ public class MultiUserDatabaseManager {
         this.databaseCopy = databaseCopy;
         this.migration = migration;
         this.databaseAdapterFactory = databaseAdapterFactory;
+    }
+
+    public static void setMaxServerUserPairs(int pairs) {
+        maxServerUserPairs = pairs;
     }
 
     public static MultiUserDatabaseManager create(DatabaseAdapter databaseAdapter, Context context,
@@ -105,7 +109,7 @@ public class MultiUserDatabaseManager {
         if (!existing) {
             DatabasesConfiguration configuration = databaseConfigurationSecureStore.get();
             int pairsCount = configurationHelper.countServerUserPairs(configuration);
-            if (pairsCount == MAX_SERVER_USER_PAIRS) {
+            if (pairsCount == maxServerUserPairs) {
                 DatabaseUserConfiguration oldestUserConfig = configurationHelper.getOldestServerUser(configuration);
                 DatabasesConfiguration updatedConfigurations =
                         configurationHelper.removeServerUserConfiguration(configuration, oldestUserConfig);

@@ -136,7 +136,8 @@ public class MetadataCall {
                         emitter.onNext(progressManager.increaseProgress(User.class, false));
 
 
-                        List<OrganisationUnit> orgUnits = organisationUnitModuleDownloader.downloadMetadata(user).call();
+                        List<OrganisationUnit> orgUnits = organisationUnitModuleDownloader.downloadMetadata(user)
+                                .call();
                         emitter.onNext(progressManager.increaseProgress(OrganisationUnit.class, false));
 
 

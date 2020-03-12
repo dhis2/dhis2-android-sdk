@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import android.content.Context;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
@@ -59,9 +57,6 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
 
     @Mock
     private DatabaseConfigurationHelper configurationHelper;
-
-    @Mock
-    private Context context;
 
     @Mock
     private DatabaseCopy databaseCopy;
@@ -99,9 +94,6 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     @Mock
     private DatabasesConfiguration databasesConfiguration;
 
-    @Mock
-    private DatabaseEncryptionPasswordManager passwordManager;
-
     private MultiUserDatabaseManager manager;
 
 
@@ -109,7 +101,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     public void setUp() throws Exception {
         super.setUp();
         manager = new MultiUserDatabaseManager(databaseAdapter, databaseConfigurationSecureStore, configurationHelper,
-                context, databaseCopy, migration, databaseAdapterFactory);
+                databaseCopy, migration, databaseAdapterFactory);
     }
 
     @Test
@@ -160,10 +152,9 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
         verify(databaseAdapterFactory).createOrOpenDatabase(databaseAdapter, userConfigurationEncrypted);
         verify(databaseAdapterFactory).createOrOpenDatabase(any(), same(userConfigurationUnencrypted));
 
-        verify(databaseCopy).copy(any(), same(databaseAdapter));
-        verify(databaseCopy).copy(any(), same(databaseAdapter));
+        verify(databaseCopy).copyDatabase(any(), same(databaseAdapter));
 
-        verify(context).deleteDatabase(UNENCRYPTED_DB_NAME);
+        verify(databaseAdapterFactory).deleteDatabase(userConfigurationEncrypted);
     }
 
     @Test

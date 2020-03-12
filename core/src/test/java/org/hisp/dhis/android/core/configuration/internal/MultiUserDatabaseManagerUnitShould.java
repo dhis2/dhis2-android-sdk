@@ -109,7 +109,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     public void setUp() throws Exception {
         super.setUp();
         manager = new MultiUserDatabaseManager(databaseAdapter, databaseConfigurationSecureStore, configurationHelper,
-                context, databaseCopy, migration, databaseAdapterFactory, passwordManager);
+                context, databaseCopy, migration, databaseAdapterFactory);
     }
 
     @Test

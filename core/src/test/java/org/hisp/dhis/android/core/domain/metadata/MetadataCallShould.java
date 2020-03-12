@@ -274,8 +274,8 @@ public class MetadataCallShould extends BaseCallShould {
     }
 
     @Test
-    public void call_foreign_key_cleaner() {
-        metadataCall.download();
+    public void call_wrapObservableTransactionally() {
+        metadataCall.blockingDownload();
         verify(rxAPICallExecutor).wrapObservableTransactionally(any(), eq(true));
     }
 

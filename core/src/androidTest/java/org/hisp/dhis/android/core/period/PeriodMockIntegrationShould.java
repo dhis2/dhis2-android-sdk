@@ -97,20 +97,20 @@ public class PeriodMockIntegrationShould extends BaseMockIntegrationTestFullDisp
         period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2019W53");
         assertThat(period.periodId()).isEqualTo("2020W1");
 
-        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2015WedW5");
-        assertThat(period.periodId()).isEqualTo("2015WedW5");
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2020WedW5");
+        assertThat(period.periodId()).isEqualTo("2020WedW5");
 
-        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2015ThuW6");
-        assertThat(period.periodId()).isEqualTo("2015ThuW6");
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2020ThuW6");
+        assertThat(period.periodId()).isEqualTo("2020ThuW6");
 
-        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2015SatW7");
-        assertThat(period.periodId()).isEqualTo("2015SatW7");
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2020SatW7");
+        assertThat(period.periodId()).isEqualTo("2020SatW7");
 
-        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2015SunW8");
-        assertThat(period.periodId()).isEqualTo("2015SunW8");
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2020SunW8");
+        assertThat(period.periodId()).isEqualTo("2020SunW8");
 
-        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2015BiW1");
-        assertThat(period.periodId()).isEqualTo("2015BiW1");
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2020BiW1");
+        assertThat(period.periodId()).isEqualTo("2020BiW1");
 
         period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("202003");
         assertThat(period.periodId()).isEqualTo("202003");

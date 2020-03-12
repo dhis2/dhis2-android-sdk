@@ -56,7 +56,7 @@ public class MultiUserDatabaseManager {
     private final DatabaseConfigurationMigration migration;
     private final DatabaseAdapterFactory databaseAdapterFactory;
 
-    private final int MAX_SERVER_USER_PAIRS = 1;
+    private static final int MAX_SERVER_USER_PAIRS = 1;
 
     @Inject
     MultiUserDatabaseManager(

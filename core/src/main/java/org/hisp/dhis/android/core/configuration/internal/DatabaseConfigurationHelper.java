@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -70,6 +72,7 @@ class DatabaseConfigurationHelper {
         return null;
     }
 
+    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
     DatabasesConfiguration removeServerUserConfiguration(DatabasesConfiguration configuration,
                                                          DatabaseUserConfiguration userToRemove) {
         List<DatabaseServerConfiguration> servers = new ArrayList<>(configuration.servers().size());
@@ -81,7 +84,7 @@ class DatabaseConfigurationHelper {
                 }
             }
 
-            if (users.size() > 0) {
+            if (!users.isEmpty()) {
                 servers.add(server.toBuilder().users(users).build());
             }
         }
@@ -172,7 +175,7 @@ class DatabaseConfigurationHelper {
                     try {
                         oldestUser = getOlderUserInternal(oldestUser, user);
                     } catch (ParseException e) {
-                        e.printStackTrace();
+                        Log.e("DbConfigHelper", "Error parsing databaseCreationDate");
                         throw new RuntimeException(e);
                     }
                 }
@@ -182,8 +185,9 @@ class DatabaseConfigurationHelper {
         }
     }
 
-    private DatabaseUserConfiguration getOlderUserInternal(@Nullable DatabaseUserConfiguration oldestUser,
-                                                           @NonNull DatabaseUserConfiguration user) throws ParseException {
+    private DatabaseUserConfiguration getOlderUserInternal(
+            @Nullable DatabaseUserConfiguration oldestUser,
+            @NonNull DatabaseUserConfiguration user) throws ParseException {
         if (oldestUser == null) {
             return user;
         } else {
